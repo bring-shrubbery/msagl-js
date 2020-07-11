@@ -1,0 +1,14 @@
+{
+  "name": "hwrld",
+  "version": "0.0.1",
+  "description": "MSAGL layout on js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "@types/lodash": "^4.14.157",
+    "graphlib": "^2.1.8",
+    "lodash": "4.17.19"
+  }
+}
