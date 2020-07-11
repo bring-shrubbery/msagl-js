@@ -1,14 +1,24 @@
 {
   "name": "hwrld",
   "version": "0.0.1",
-  "description": "MSAGL layout on js",
+  "description": "MSAGL layout in js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "private": true,
   "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc"
+  },
   "dependencies": {
     "@types/lodash": "^4.14.157",
     "graphlib": "^2.1.8",
-    "lodash": "4.17.19"
+    "lodash": "4.17.19",
+    "typescript": "^3.9.6"
+  },
+  "devDependencies": {
+    "@types/jest": "26.0.4",
+    "jest": "26.1.0",
+    "ts-jest": "26.1.1"
   }
 }

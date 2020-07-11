@@ -1,24 +1,7 @@
-// var feasibleTree = require("./feasible-tree");
-// var slack = require("./util").slack;
-// var initRank = require("./util").longestPath;
-// var preorder = require("../graphlib").alg.preorder;
-// var postorder = require("../graphlib").alg.postorder;
-// var simplify = require("../util").simplify;
-
 import { longestPath, slack } from "./util";
 import { feasibleTree } from "./feasible-tree";
 import { Graph, alg } from "graphlib";
 import * as _ from "lodash";
-
-// module.exports = networkSimplex;
-
-// // Expose some internals for testing purposes
-// networkSimplex.initLowLimValues = initLowLimValues;
-// networkSimplex.initCutValues = initCutValues;
-// networkSimplex.calcCutValue = calcCutValue;
-// networkSimplex.leaveEdge = leaveEdge;
-// networkSimplex.enterEdge = enterEdge;
-// networkSimplex.exchangeEdges = exchangeEdges;
 
 /*
  * The network simplex algorithm assigns ranks to each node in the input graph
@@ -251,8 +234,13 @@ function simplify(g) {
     var simpleLabel = simplified.edge(e.v, e.w) || { weight: 0, minlen: 1 };
     var label = g.edge(e);
     simplified.setEdge(e.v, e.w, {
-      weight: simpleLabel.weight + label.weight,
-      minlen: Math.max(simpleLabel.minlen, label.minlen),
+      weight:
+        (simpleLabel.weight ? simpleLabel.weight : 1) +
+        (label && label.weight ? label.weight : 1),
+      minlen: Math.max(
+        simpleLabel.minlen,
+        label && label.minlen ? label.minlen : 1
+      ),
     });
   });
   return simplified;

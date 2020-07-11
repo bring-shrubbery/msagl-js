@@ -1,11 +1,3 @@
-// "use strict";
-
-// var _ = require("../lodash");
-// var Graph = require("../graphlib").Graph;
-// var slack = require("./util").slack;
-
-// module.exports = feasibleTree;
-
 import { Graph } from "graphlib";
 import { slack } from "./util";
 import * as _ from "lodash";
