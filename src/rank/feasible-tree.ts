@@ -27,14 +27,14 @@ import * as _ from "lodash";
  * edges.
  */
 export function feasibleTree(g) {
-  var t = new Graph({ directed: false });
+  let t = new Graph({ directed: false });
 
   // Choose arbitrary node from which to start our tree
-  var start = g.nodes()[0];
-  var size = g.nodeCount();
+  let start = g.nodes()[0];
+  let size = g.nodeCount();
   t.setNode(start, {});
 
-  var edge, delta;
+  let edge, delta;
   while (tightTree(t, g) < size) {
     edge = findMinSlackEdge(t, g);
     delta = t.hasNode(edge.v) ? slack(g, edge) : -slack(g, edge);
@@ -51,7 +51,7 @@ export function feasibleTree(g) {
 function tightTree(t, g) {
   function dfs(v) {
     _.forEach(g.nodeEdges(v), function (e) {
-      var edgeV = e.v,
+      let edgeV = e.v,
         w = v === edgeV ? e.w : edgeV;
       if (!t.hasNode(w) && !slack(g, e)) {
         t.setNode(w, {});

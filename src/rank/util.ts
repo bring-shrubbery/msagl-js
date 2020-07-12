@@ -22,16 +22,16 @@ import * as _ from "lodash";
  *    1. Each node will be assign an (unnormalized) "rank" property.
  */
 export function longestPath(g) {
-  var visited = {};
+  let visited = {};
 
   function dfs(v) {
-    var label = g.node(v);
+    let label = g.node(v);
     if (_.has(visited, v)) {
       return label.rank;
     }
     visited[v] = true;
 
-    var rank = _.min(
+    let rank = _.min(
       _.map(g.outEdges(v), function (e) {
         return dfs(e.w) - g.edge(e).minlen;
       })
