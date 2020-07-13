@@ -1,11 +1,12 @@
 import { layer } from "./layers";
+import { NodeLayout, GraphLayout } from "./models";
 
-function calculateLayers(graph) {
+function calculateLayers(graph): GraphLayout {
   layer(graph);
 
   // Sort and extract layer value
   const nodes: string[] = graph.nodes();
-  let result = nodes
+  let nodesLayout: NodeLayout[] = nodes
     .map((nodeId) => {
       const nodeLabel = graph.node(nodeId);
       return {
@@ -16,20 +17,24 @@ function calculateLayers(graph) {
     .sort((a, b) => a.layer - b.layer);
 
   // Move layers value to positive if needed
-  if (result && result.length > 0 && result[0].layer < 0) {
-    const value = result[0].layer * -1;
-    result.forEach((node) => {
+  if (nodesLayout && nodesLayout.length > 0 && nodesLayout[0].layer < 0) {
+    const value = nodesLayout[0].layer * -1;
+    nodesLayout.forEach((node) => {
       node.layer = node.layer + value;
     });
   }
 
-  return result;
+  const layerAmount = nodesLayout.length > 0 ? nodesLayout[nodesLayout.length - 1].layer + 1 : 0;
+  return {
+    layerAmount: layerAmount,
+    nodes: nodesLayout,
+  };
 }
 
 export function runLayout(graph) {
   // Step 1 - Divide the nodes into layers
-  let result = calculateLayers(graph);
+  const graphLayout = calculateLayers(graph);
 
-  console.log(result);
+  console.log(graphLayout);
   return graph;
 }
