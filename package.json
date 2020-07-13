@@ -1,5 +1,5 @@
 {
-  "name": "hwrld",
+  "name": "msagl-js",
   "version": "0.0.1",
   "description": "MSAGL layout in js",
   "main": "dist/index.js",
@@ -11,10 +11,11 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@types/lodash": "^4.14.157",
-    "graphlib": "^2.1.8",
+    "@types/graphlib": "2.1.6",
+    "@types/lodash": "4.14.157",
+    "graphlib": "2.1.8",
     "lodash": "4.17.19",
-    "typescript": "^3.9.6"
+    "typescript": "3.9.6"
   },
   "devDependencies": {
     "@types/jest": "26.0.4",

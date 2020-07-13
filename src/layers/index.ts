@@ -19,6 +19,6 @@ import { networkSimplex } from "./network-simplex";
  *       algorithm. Ranks can start at any index (including negative), we'll
  *       fix them up later.
  */
-export function rank(g) {
+export function layer(g) {
   networkSimplex(g);
 }
