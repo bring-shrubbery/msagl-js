@@ -3,7 +3,7 @@ import { slack } from "./util";
 import * as _ from "lodash";
 /*
  * Constructs a spanning tree with tight edges and adjusted the input node's
- * ranks to achieve this. A tight edge is one that is has a length that matches
+ * layers to achieve this. A tight edge is one that is has a length that matches
  * its "minlen" attribute.
  *
  * The basic structure for this function is derived from Gansner, et al., "A
@@ -14,13 +14,13 @@ import * as _ from "lodash";
  *    1. Graph must be a DAG.
  *    2. Graph must be connected.
  *    3. Graph must have at least one node.
- *    5. Graph nodes must have been previously assigned a "rank" property that
+ *    5. Graph nodes must have been previously assigned a "layer" property that
  *       respects the "minlen" property of incident edges.
  *    6. Graph edges must have a "minlen" property.
  *
  * Post-conditions:
  *
- *    - Graph nodes will have their rank adjusted to ensure that all edges are
+ *    - Graph nodes will have their layer adjusted to ensure that all edges are
  *      tight.
  *
  * Returns a tree (undirected graph) that is constructed using only "tight"
@@ -38,7 +38,7 @@ export function feasibleTree(g) {
   while (tightTree(t, g) < size) {
     edge = findMinSlackEdge(t, g);
     delta = t.hasNode(edge.v) ? slack(g, edge) : -slack(g, edge);
-    shiftRanks(t, g, delta);
+    shiftlayers(t, g, delta);
   }
 
   return t;
@@ -77,8 +77,8 @@ function findMinSlackEdge(t, g) {
   });
 }
 
-function shiftRanks(t, g, delta) {
+function shiftlayers(t, g, delta) {
   _.forEach(t.nodes(), function (v) {
-    g.node(v).rank += delta;
+    g.node(v).layer += delta;
   });
 }

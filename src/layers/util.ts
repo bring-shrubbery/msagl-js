@@ -1,11 +1,11 @@
 import * as _ from "lodash";
 
 /*
- * Initializes ranks for the input graph using the longest path algorithm. This
+ * Initializes layers for the input graph using the longest path algorithm. This
  * algorithm scales well and is fast in practice, it yields rather poor
  * solutions. Nodes are pushed to the lowest layer possible, leaving the bottom
- * ranks wide and leaving edges longer than necessary. However, due to its
- * speed, this algorithm is good for getting an initial ranking that can be fed
+ * layers wide and leaving edges longer than necessary. However, due to its
+ * speed, this algorithm is good for getting an initial layering that can be fed
  * into other algorithms.
  *
  * This algorithm does not normalize layers because it will be used by other
@@ -19,7 +19,7 @@ import * as _ from "lodash";
  *
  * Post-conditions:
  *
- *    1. Each node will be assign an (unnormalized) "rank" property.
+ *    1. Each node will be assign an (unnormalized) "layer" property.
  */
 export function longestPath(g) {
   let visited = {};
@@ -27,26 +27,27 @@ export function longestPath(g) {
   function dfs(v) {
     let label = g.node(v);
     if (_.has(visited, v)) {
-      return label.rank;
+      return label.layer;
     }
+
     visited[v] = true;
 
-    let rank = _.min(
+    let layer = _.min(
       _.map(g.outEdges(v), function (e) {
         return dfs(e.w) - g.edge(e).minlen;
       })
     );
 
     if (
-      rank === Number.POSITIVE_INFINITY || // return value of _.map([]) for Lodash 3
-      rank === undefined || // return value of _.map([]) for Lodash 4
-      rank === null
+      layer === Number.POSITIVE_INFINITY || // return value of _.map([]) for Lodash 3
+      layer === undefined || // return value of _.map([]) for Lodash 4
+      layer === null
     ) {
       // return value of _.map([null])
-      rank = 0;
+      layer = 0;
     }
 
-    return (label.rank = rank);
+    return (label.layer = layer);
   }
 
   _.forEach(g.sources(), dfs);
@@ -57,5 +58,5 @@ export function longestPath(g) {
  * difference between the length of the edge and its minimum length.
  */
 export function slack(g, e) {
-  return g.node(e.w).rank - g.node(e.v).rank - g.edge(e).minlen;
+  return g.node(e.w).layer - g.node(e.v).layer - g.edge(e).minlen;
 }

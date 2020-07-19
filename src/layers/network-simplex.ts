@@ -4,8 +4,8 @@ import { Graph, alg } from "graphlib";
 import * as _ from "lodash";
 
 /*
- * The network simplex algorithm assigns ranks to each node in the input graph
- * and iteratively improves the ranking to reduce the length of edges.
+ * The network simplex algorithm assigns layers to each node in the input graph
+ * and iteratively improves the layering to reduce the length of edges.
  *
  * Preconditions:
  *
@@ -15,19 +15,19 @@ import * as _ from "lodash";
  *
  * Postconditions:
  *
- *    1. All nodes in the graph will have an assigned "rank" attribute that has
- *       been optimized by the network simplex algorithm. Ranks start at 0.
+ *    1. All nodes in the graph will have an assigned "layer" attribute that has
+ *       been optimized by the network simplex algorithm. layers start at 0.
  *
  *
  * A rough sketch of the algorithm is as follows:
  *
- *    1. Assign initial ranks to each node. We use the longest path algorithm,
- *       which assigns ranks to the lowest position possible. In general this
- *       leads to very wide bottom ranks and unnecessarily long edges.
+ *    1. Assign initial layers to each node. We use the longest path algorithm,
+ *       which assigns layers to the lowest position possible. In general this
+ *       leads to very wide bottom layers and unnecessarily long edges.
  *    2. Construct a feasible tight tree. A tight tree is one such that all
  *       edges in the tree have no slack (difference between length of edge
  *       and minlen for the edge). This by itself greatly improves the assigned
- *       rankings by shorting edges.
+ *       layerings by shorting edges.
  *    3. Iteratively find edges that have negative cut values. Generally a
  *       negative cut value indicates that the edge could be removed and a new
  *       tree edge could be added to produce a more compact graph.
@@ -37,17 +37,24 @@ import * as _ from "lodash";
  * structure of the overall algorithm.
  */
 export function networkSimplex(g) {
-  g = simplify(g);
+  //make sure each edge has weight
+  g = init(g);
+
   longestPath(g);
-  let t = feasibleTree(g);
-  initLowLimValues(t);
-  initCutValues(t, g);
+
+  const fTree = feasibleTree(g);
+
+  initLowLimValues(fTree);
+
+  initCutValues(fTree, g);
 
   let e, f;
-  while ((e = leaveEdge(t))) {
-    f = enterEdge(t, g, e);
-    exchangeEdges(t, g, e, f);
+  while ((e = leaveEdge(fTree))) {
+    f = enterEdge(fTree, g, e);
+    exchangeEdges(fTree, g, e, f);
   }
+
+  return g;
 }
 
 /*
@@ -111,6 +118,7 @@ function initLowLimValues(tree, root?) {
   if (arguments.length < 2) {
     root = tree.nodes()[0];
   }
+
   dfsAssignLowLim(tree, {}, 1, root);
 }
 
@@ -183,10 +191,10 @@ function exchangeEdges(t, g, e, f) {
   t.setEdge(f.v, f.w, {});
   initLowLimValues(t);
   initCutValues(t, g);
-  updateRanks(t, g);
+  updatelayers(t, g);
 }
 
-function updateRanks(t, g) {
+function updatelayers(t, g) {
   let root = _.find(t.nodes(), function (v) {
     return !g.node(v).parent;
   });
@@ -202,7 +210,7 @@ function updateRanks(t, g) {
       flipped = true;
     }
 
-    g.node(v).rank = g.node(parent).rank + (flipped ? edge.minlen : -edge.minlen);
+    g.node(v).layer = g.node(parent).layer + (flipped ? edge.minlen : -edge.minlen);
   });
 }
 
@@ -221,7 +229,7 @@ function isDescendant(tree, vLabel, rootLabel) {
   return rootLabel.low <= vLabel.lim && vLabel.lim <= rootLabel.lim;
 }
 
-function simplify(g) {
+function init(g) {
   let simplified = new Graph().setGraph(g.graph());
   _.forEach(g.nodes(), function (v) {
     simplified.setNode(v, g.node(v));
