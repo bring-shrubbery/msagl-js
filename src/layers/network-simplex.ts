@@ -238,7 +238,7 @@ function init(g) {
     let simpleLabel = simplified.edge(e.v, e.w) || { weight: 0, minlen: 1 };
     let label = g.edge(e);
     simplified.setEdge(e.v, e.w, {
-      weight: (simpleLabel.weight ? simpleLabel.weight : 1) + (label && label.weight ? label.weight : 1),
+      weight: label && label.weight ? label.weight : 1,
       minlen: Math.max(simpleLabel.minlen, label && label.minlen ? label.minlen : 1),
     });
   });

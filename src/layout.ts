@@ -11,6 +11,10 @@ export function runLayout(graph) {
 
   //**** Order ****//
 
+  //**** Node position ****//
+
+  //**** Edge points ****//
+
   //**** Restore edge cycles ****//
 
   console.log(graphLayout);

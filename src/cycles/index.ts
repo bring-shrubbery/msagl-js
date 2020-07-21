@@ -34,6 +34,5 @@ export function removeCycles(g) {
     g.setEdge(e.w, e.v, label, _.uniqueId("rev"));
   });
 
-  console.log(g);
   return g;
 }

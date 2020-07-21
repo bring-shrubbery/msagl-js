@@ -27,6 +27,7 @@ function layer(g) {
 function normalizeLayer(graph): NodeLayout[] {
   // Sort and extract layer value
   const nodes: string[] = graph.nodes();
+
   let nodesLayout: NodeLayout[] = nodes
     .map((nodeId) => {
       const nodeLabel = graph.node(nodeId);
@@ -50,6 +51,7 @@ function normalizeLayer(graph): NodeLayout[] {
 
 export function calculateLayers(graph): GraphLayout {
   const layerGraph = layer(graph);
+  console.log(layerGraph);
   const nodesLayout = normalizeLayer(layerGraph);
 
   const layerAmount = nodesLayout.length > 0 ? nodesLayout[nodesLayout.length - 1].layer + 1 : 0;
