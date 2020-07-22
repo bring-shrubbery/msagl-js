@@ -36,7 +36,7 @@ import * as _ from "lodash";
  * for Drawing Directed Graphs." The structure of the file roughly follows the
  * structure of the overall algorithm.
  */
-export function networkSimplex(g) {
+export function networkSimplex(g): Graph {
   //make sure each edge has weight
   g = init(g);
 

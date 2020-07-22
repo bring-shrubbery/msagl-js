@@ -1,5 +1,6 @@
 import { networkSimplex } from "./network-simplex";
 import { GraphLayout, NodeLayout } from "../models";
+import { Graph, Edge } from "graphlib";
 
 /*
  * Assigns a layer to each node in the input graph that respects the "minlen"
@@ -20,7 +21,7 @@ import { GraphLayout, NodeLayout } from "../models";
  *       algorithm. layers can start at any index (including negative), we'll
  *       fix them up later.
  */
-function layer(g) {
+function layer(g): Graph {
   return networkSimplex(g);
 }
 
@@ -49,10 +50,39 @@ function normalizeLayer(graph): NodeLayout[] {
   return nodesLayout;
 }
 
+function balance(nodesLayout: NodeLayout[], graphWIthLayers: Graph): NodeLayout[] {
+  const nodes: string[] = graphWIthLayers.nodes();
+
+  const nodesWithEqualWeights = nodes.filter((nodeId) => {
+    const inEdges: Edge[] = graphWIthLayers.inEdges(nodeId) || [];
+    const outEdges: Edge[] = graphWIthLayers.outEdges(nodeId) || [];
+
+    let inEdgesWeight = 0;
+    let outEdgesWeight = 0;
+
+    inEdges.forEach((edge) => {
+      const edgeLabel = graphWIthLayers.edge(edge.v, edge.w);
+      inEdgesWeight += edgeLabel.weight;
+    });
+
+    outEdges.forEach((edge) => {
+      const edgeLabel = graphWIthLayers.edge(edge.v, edge.w);
+      outEdgesWeight += edgeLabel.weight;
+    });
+
+    return outEdgesWeight === inEdgesWeight;
+  });
+
+  console.log(nodesWithEqualWeights);
+
+  return nodesLayout;
+}
+
 export function calculateLayers(graph): GraphLayout {
-  const layerGraph = layer(graph);
-  console.log(layerGraph);
-  const nodesLayout = normalizeLayer(layerGraph);
+  const graphWithLayers: Graph = layer(graph);
+  console.log(graphWithLayers);
+  let nodesLayout: NodeLayout[] = normalizeLayer(graphWithLayers);
+  nodesLayout = balance(nodesLayout, graphWithLayers);
 
   const layerAmount = nodesLayout.length > 0 ? nodesLayout[nodesLayout.length - 1].layer + 1 : 0;
   return {

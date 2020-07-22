@@ -11,7 +11,7 @@ export function runLayout(graph) {
 
   //**** Order ****//
 
-  //**** Node position ****//
+  //**** Node position points ****//
 
   //**** Edge points ****//
 
