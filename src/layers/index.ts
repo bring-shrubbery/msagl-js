@@ -1,6 +1,6 @@
 import { networkSimplex } from "./network-simplex";
-import { GraphLayout, NodeLayout } from "../models";
-import { Graph, Edge } from "graphlib";
+import { GraphLayoutResult, NodeLayout } from "../models";
+import { Graph } from "graphlib";
 
 /*
  * Assigns a layer to each node in the input graph that respects the "minlen"
@@ -21,7 +21,7 @@ import { Graph, Edge } from "graphlib";
  *       algorithm. layers can start at any index (including negative), we'll
  *       fix them up later.
  */
-function layer(g): Graph {
+function createLayers(g): Graph {
   return networkSimplex(g);
 }
 
@@ -35,6 +35,7 @@ function normalizeLayer(graph): NodeLayout[] {
       return {
         id: nodeId,
         layer: nodeLabel.layer,
+        order: -1
       };
     })
     .sort((a, b) => a.layer - b.layer);
@@ -44,6 +45,8 @@ function normalizeLayer(graph): NodeLayout[] {
     const value = nodesLayout[0].layer * -1;
     nodesLayout.forEach((node) => {
       node.layer = node.layer + value;
+      const graphNode = graph.node(node.id);
+      graph.setNode(node.id, {...graphNode, layer: node.layer})
     });
   }
 
@@ -51,36 +54,37 @@ function normalizeLayer(graph): NodeLayout[] {
 }
 
 function balance(nodesLayout: NodeLayout[], graphWIthLayers: Graph): NodeLayout[] {
-  const nodes: string[] = graphWIthLayers.nodes();
+  /* TODO still work in progress */
 
-  const nodesWithEqualWeights = nodes.filter((nodeId) => {
-    const inEdges: Edge[] = graphWIthLayers.inEdges(nodeId) || [];
-    const outEdges: Edge[] = graphWIthLayers.outEdges(nodeId) || [];
+  // const nodes: string[] = graphWIthLayers.nodes();
 
-    let inEdgesWeight = 0;
-    let outEdgesWeight = 0;
+  // const nodesWithEqualWeights = nodes.filter((nodeId) => {
+  //   const inEdges: Edge[] = graphWIthLayers.inEdges(nodeId) || [];
+  //   const outEdges: Edge[] = graphWIthLayers.outEdges(nodeId) || [];
 
-    inEdges.forEach((edge) => {
-      const edgeLabel = graphWIthLayers.edge(edge.v, edge.w);
-      inEdgesWeight += edgeLabel.weight;
-    });
+  //   let inEdgesWeight = 0;
+  //   let outEdgesWeight = 0;
 
-    outEdges.forEach((edge) => {
-      const edgeLabel = graphWIthLayers.edge(edge.v, edge.w);
-      outEdgesWeight += edgeLabel.weight;
-    });
+  //   inEdges.forEach((edge) => {
+  //     const edgeLabel = graphWIthLayers.edge(edge.v, edge.w);
+  //     inEdgesWeight += edgeLabel.weight;
+  //   });
 
-    return outEdgesWeight === inEdgesWeight;
-  });
+  //   outEdges.forEach((edge) => {
+  //     const edgeLabel = graphWIthLayers.edge(edge.v, edge.w);
+  //     outEdgesWeight += edgeLabel.weight;
+  //   });
 
-  console.log(nodesWithEqualWeights);
+  //   return outEdgesWeight === inEdgesWeight;
+  // });
+
+  // console.log(nodesWithEqualWeights);
 
   return nodesLayout;
 }
 
-export function calculateLayers(graph): GraphLayout {
-  const graphWithLayers: Graph = layer(graph);
-  console.log(graphWithLayers);
+export function calculateLayers(graph): GraphLayoutResult {
+  const graphWithLayers: Graph = createLayers(graph);
   let nodesLayout: NodeLayout[] = normalizeLayer(graphWithLayers);
   nodesLayout = balance(nodesLayout, graphWithLayers);
 
@@ -88,5 +92,6 @@ export function calculateLayers(graph): GraphLayout {
   return {
     layerAmount: layerAmount,
     nodes: nodesLayout,
+    graph: graphWithLayers,
   };
 }

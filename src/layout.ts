@@ -1,15 +1,18 @@
 import { calculateLayers } from "./layers";
-import { GraphLayout } from "./models";
+import { GraphLayoutResult } from "./models";
 import { removeCycles } from "./cycles";
+import { Graph } from "graphlib";
+import { calculateOrder } from "./order";
 
 export function runLayout(graph) {
   //**** remove edge cycles - reverse an edge in order to prevent the cycle ****//
-  const noCyclesGraph = removeCycles(graph);
+  const noCyclesGraph: Graph = removeCycles(graph);
 
   //**** Divide the nodes into layers ****//
-  const graphLayout: GraphLayout = calculateLayers(noCyclesGraph);
+  let graphLayoutResult: GraphLayoutResult = calculateLayers(noCyclesGraph);
 
   //**** Order ****//
+  graphLayoutResult = calculateOrder(graphLayoutResult); 
 
   //**** Node position points ****//
 
@@ -17,6 +20,6 @@ export function runLayout(graph) {
 
   //**** Restore edge cycles ****//
 
-  console.log(graphLayout);
+  console.log(graphLayoutResult.graph);
   return graph;
 }
