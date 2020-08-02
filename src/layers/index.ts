@@ -46,7 +46,7 @@ function normalizeLayer(graph): NodeLayout[] {
     nodesLayout.forEach((node) => {
       node.layer = node.layer + value;
       const graphNode = graph.node(node.id);
-      graph.setNode(node.id, {...graphNode, layer: node.layer})
+      graph.setNode(node.id, {...graphNode, layer: node.layer});
     });
   }
 

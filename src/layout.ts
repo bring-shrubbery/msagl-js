@@ -20,6 +20,6 @@ export function runLayout(graph) {
 
   //**** Restore edge cycles ****//
 
-  console.log(graphLayoutResult.graph);
+  console.log(graphLayoutResult);
   return graph;
 }

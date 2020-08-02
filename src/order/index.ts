@@ -34,5 +34,11 @@ function initOrder(g) {
 export function calculateOrder(graphLayoutResult: GraphLayoutResult): GraphLayoutResult {
     let layering = initOrder(graphLayoutResult.graph);
     assignOrder(graphLayoutResult.graph, layering);
+
+    graphLayoutResult.nodes.forEach((node) => {
+        const graphNode = graphLayoutResult.graph.node(node.id);
+        node.order = graphNode.order;
+    });
+
     return graphLayoutResult;
 }
