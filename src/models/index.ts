@@ -1,13 +1,19 @@
 import { Graph } from "graphlib";
 
-export interface NodeLayout {
+export interface NodeResult {
   id: string;
-  layer: number;
-  order: number;
+  layer?: number;
+  order?: number;
+  centerPoint?: Point;
 }
 
 export interface GraphLayoutResult {
   layerAmount: number;
-  nodes: NodeLayout[];
+  nodeResults: NodeResult[];
   graph: Graph;
+}
+
+export interface Point {
+  x: number;
+  y: number;
 }

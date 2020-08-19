@@ -3,6 +3,7 @@ import { GraphLayoutResult } from "./models";
 import { removeCycles } from "./cycles";
 import { Graph } from "graphlib";
 import { calculateOrder } from "./order";
+import { setNodeCoordinates } from "./nodePosition";
 
 export function runLayout(graph) {
   //**** remove edge cycles - reverse an edge in order to prevent the cycle ****//
@@ -15,6 +16,7 @@ export function runLayout(graph) {
   graphLayoutResult = calculateOrder(graphLayoutResult); 
 
   //**** Node position points ****//
+  graphLayoutResult = setNodeCoordinates(graphLayoutResult); 
 
   //**** Edge points ****//
 
