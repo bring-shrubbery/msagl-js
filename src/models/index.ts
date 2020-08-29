@@ -5,6 +5,8 @@ export interface NodeResult {
   layer?: number;
   order?: number;
   centerPoint?: Point;
+  width: number,
+  height: number
 }
 
 export interface GraphLayoutResult {
@@ -16,4 +18,9 @@ export interface GraphLayoutResult {
 export interface Point {
   x: number;
   y: number;
+}
+
+export interface Segment {
+  start: number;
+  end: number;
 }

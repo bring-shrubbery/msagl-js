@@ -35,7 +35,9 @@ function normalizeLayer(graph): NodeResult[] {
       return {
         id: nodeId,
         layer: nodeLabel.layer,
-        order: -1
+        order: -1,
+        width: nodeLabel.width,
+        height: nodeLabel.height
       };
     })
     .sort((a, b) => a.layer - b.layer);

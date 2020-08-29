@@ -4,8 +4,11 @@ import { removeCycles } from "./cycles";
 import { Graph } from "graphlib";
 import { calculateOrder } from "./order";
 import { setNodeCoordinates } from "./nodePosition";
+import { setEdges } from "./edgePosition";
 
 export function runLayout(graph) {
+  // coordinates of nodes
+
   //**** remove edge cycles - reverse an edge in order to prevent the cycle ****//
   const noCyclesGraph: Graph = removeCycles(graph);
 
@@ -19,6 +22,7 @@ export function runLayout(graph) {
   graphLayoutResult = setNodeCoordinates(graphLayoutResult); 
 
   //**** Edge points ****//
+  graphLayoutResult = setEdges(graphLayoutResult); 
 
   //**** Restore edge cycles ****//
 
