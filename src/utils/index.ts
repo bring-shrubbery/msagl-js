@@ -1,4 +1,4 @@
-import { Point, Segment } from "../models";
+import { Curve, Point } from "../models";
 
 export function addPoints(point1: Point, point2: Point): Point {
     return {
@@ -7,9 +7,9 @@ export function addPoints(point1: Point, point2: Point): Point {
     }
 }
 
-export function mapSegment(num: number, segment: Segment): Point {
-    return {
-        x: segment.start ?? 0,
-        y: segment.end ?? 0
-    }
+function intersect(curveA: Curve, curveB: Curve): Point[] {
+    return [{
+        x: 0,
+        y: 0
+    }];
 }

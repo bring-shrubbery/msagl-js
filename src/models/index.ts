@@ -24,3 +24,15 @@ export interface Segment {
   start: number;
   end: number;
 }
+
+export class Curve {
+  start: number;
+  end: number;
+
+  public getPoint(num: number): Point {
+    return {
+      x: 0,
+      y: 0
+    }
+  }
+}
