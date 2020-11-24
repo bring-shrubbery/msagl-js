@@ -1,7 +1,7 @@
 import { Graph } from "graphlib";
 import { runLayout } from "./layout";
 import { Point } from "./models";
-import { add } from "./utils";
+import { addPoints } from "./utils";
 
 xtest("Test layout cases", () => {
   const g = new Graph({ multigraph: true });
@@ -32,8 +32,7 @@ test("add point test", () => {
     y: d
   };
 
-  const resultPoint = add(p1, p2);
-
+  const resultPoint = addPoints(p1, p2);
   expect(resultPoint.x).toBe(a + c);
   expect(resultPoint.y).toBe(b + d);
 });
