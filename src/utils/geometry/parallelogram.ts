@@ -3,7 +3,7 @@ import { Point, distanceEpsilon, parallelWithinEpsilon, dot } from "./point";
 enum VertexId { Corner,  VertexA, otherCorner, VertexB }
 
     
-class Parallelogram {
+export class Parallelogram {
         isSeg:Boolean
         corner: Point
         a:Point //a side adjacent to the corner
@@ -37,21 +37,22 @@ class Parallelogram {
         }
 
 
-        Area () { return Math.abs(this.a.x * this.b.y - this.a.y * this.b.x) } 
+        area () { return Math.abs(this.a.x * this.b.y - this.a.y * this.b.x) } 
      
-        /// Return the correspoinding vertex of the parallelogram
-        vertex(vertexPar:VertexId) {
-            switch (vertexPar) {
-                case VertexId.Corner: return this.corner;
-                case VertexId.VertexA: return this.aPlusCorner;
-                case VertexId.otherCorner: return this.otherCorner;
-                case VertexId.VertexB: return this.bPlusCorner;
-                default:
-                    throw undefined;
-            }
-        }        
+       
 }
 
+ /// Return the correspoinding vertex of the parallelogram
+ export function vertex(p:Parallelogram, vertexPar:VertexId) {
+    switch (vertexPar) {
+        case VertexId.Corner: return p.corner;
+        case VertexId.VertexA: return p.aPlusCorner;
+        case VertexId.otherCorner: return p.otherCorner;
+        case VertexId.VertexB: return p.bPlusCorner;
+        default:
+            throw undefined;
+    }
+}        
 
 function PumpMinMax(minx:number, maxx:number, miny:number, maxy:number, 
                 p:Point) {
@@ -68,7 +69,7 @@ function PumpMinMax(minx:number, maxx:number, miny:number, maxy:number,
             }
    
              // returns true if parallelograms intersect
-function Intersect( parallelogram0:Parallelogram, parallelogram1:Parallelogram) {
+export function intersect(parallelogram0:Parallelogram, parallelogram1:Parallelogram) {
     // It can be shown that two parallelograms do not intersect if and only if
     // they are separated with one of the parallelogram sides 
 
@@ -125,18 +126,18 @@ function ParallelSegsIntersect(p0:Parallelogram, p1:Parallelogram) :Boolean{
 
 function separByB(p0:Parallelogram, p1:Parallelogram) {
     let eps = distanceEpsilon
-    let p1a = p1.vertex(0).min(p0.corner).dot(p0.bRot)
+    let p1a = vertex(p1, 0).min(p0.corner).dot(p0.bRot)
     let list = [VertexId.VertexA, VertexId.otherCorner, VertexId.VertexB]        
     if (p1a > p0.abRot + eps) {
         for (let i of list) {
-            if (p1.vertex(i).min(p0.corner).dot(p0.bRot) <= p0.abRot + eps)
+            if (vertex(p1, i).min(p0.corner).dot(p0.bRot) <= p0.abRot + eps)
                 return false;
         }
 
         return true;
     } else if (p1a < -eps) {
         for (let i of list) {
-            if (p1.vertex(i).min(p0.corner).dot(p0.bRot) >= -eps)
+            if (vertex(p1, i).min(p0.corner).dot(p0.bRot) >= -eps)
                 return false;
         }
         return true;
@@ -222,17 +223,17 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
     }
 
 
-    function parallelogramByCornerSideSide(corner:Point, sideA:Point, sideB:Point):Parallelogram {
+    export function parallelogramByCornerSideSide(corner:Point, sideA:Point, sideB:Point):Parallelogram {
         this.corner = corner;
         this.a = sideA;
         this.b = sideB;
 
         this.aRot = new Point(-sideA.y, sideA.x);
-        if (this.aRot.Length() > 0.5)
+        if (this.aRot.length() > 0.5)
             this.aRot = this.aRot.Normalize();
 
         this.bRot = new Point(-sideB.y, sideB.x);
-        if (this.bRot.Length() > 0.5)
+        if (this.bRot.length() > 0.5)
             this.bRot = this.bRot.Normalize();
 
         this.abRot = this.bRot.dot(sideA)
@@ -251,7 +252,7 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
         }
 
 
-        this.isSeg = sideA.min(sideB).Length() < distanceEpsilon;
+        this.isSeg = sideA.min(sideB).length() < distanceEpsilon;
 
         this.aPlusCorner = sideA.add(corner)
         this.otherCorner =  sideB.add(this.aPlusCorner)
@@ -282,11 +283,11 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
         this.bPlusCorner = this.b.add(this.corner);
 
         this.aRot = new Point(-this.a.y, this.a.x);
-        if (this.aRot.Length > 0.5)
+        if (this.aRot.length > 0.5)
             this.aRot = this.aRot.Normalize();
 
         this.bRot = new Point(-this.b.y, this.b.x);
-        if (this.bRot.Length > 0.5)
+        if (this.bRot.length > 0.5)
         this.bRot = this.bRot.Normalize()   
 
         this.abRot = this.a.dot( this.bRot)
@@ -303,7 +304,7 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
             this.aRot = this.aRot.neg();
         }
 
-        this.isSeg = this.a.min(this.b).Length < distanceEpsilon
+        this.isSeg = this.a.min(this.b).length < distanceEpsilon
         return this
     }
  
