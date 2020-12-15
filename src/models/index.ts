@@ -1,5 +1,5 @@
 import { Graph } from "graphlib";
-
+import {Point} from "../utils/geometry/point"
 export interface NodeResult {
   id: string;
   layer?: number;
@@ -15,24 +15,4 @@ export interface GraphLayoutResult {
   graph: Graph;
 }
 
-export interface Point {
-  x: number;
-  y: number;
-}
 
-export interface Segment {
-  start: number;
-  end: number;
-}
-
-export class Curve {
-  start: number;
-  end: number;
-
-  public getPoint(num: number): Point {
-    return {
-      x: 0,
-      y: 0
-    }
-  }
-}

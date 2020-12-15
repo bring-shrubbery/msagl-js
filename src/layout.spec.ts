@@ -1,7 +1,6 @@
 import { Graph } from "graphlib";
 import { runLayout } from "./layout";
-import { Point } from "./models";
-import { addPoints } from "./utils";
+import { Point } from "./utils/geometry/point";
 
 xtest("Test layout cases", () => {
   const g = new Graph({ multigraph: true });
@@ -15,24 +14,27 @@ xtest("Test layout cases", () => {
   g.setEdge("3", "1", { reversed: false });
 
   runLayout(g);
-
   // finish the test, inspect the output
   expect(true).toBe(true);
 });
 
-test("add point test", () => {
+pointtest("point test", () => {
   const a : number = 1; const b : number = 2; const c: number = 3.1; const d: number = 5.9;
-  const p1: Point = {
-    x: a,
-    y: b
-  };
+  const p1: Point = new Point(a, b);
+  const p2: Point = new Point(c, d);
 
-  const p2: Point = {
-    x: c,
-    y: d
-  };
-
-  const resultPoint = addPoints(p1, p2);
+  var resultPoint = p1.add(p2);
   expect(resultPoint.x).toBe(a + c);
   expect(resultPoint.y).toBe(b + d);
+  resultPoint = p1.min(p2);
+  expect(resultPoint.x).toBe(a - c);
+  expect(resultPoint.y).toBe(b - d);
+  resultPoint = p1.mult(2);
+  expect(resultPoint.x).toBe(a*2);
+  expect(resultPoint.y).toBe(b*2); 
+});
+
+parallelogramtest("par test", () => {
+  var l = true;
+  expect(l).toBe(true);
 });

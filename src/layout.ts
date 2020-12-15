@@ -6,7 +6,7 @@ import { calculateOrder } from "./order";
 import { setNodeCoordinates } from "./nodePosition";
 import { setEdges } from "./edgePosition";
 
-export function runLayout(graph) {
+export function runLayout(graph:Graph) {
   // coordinates of nodes
 
   //**** remove edge cycles - reverse an edge in order to prevent the cycle ****//

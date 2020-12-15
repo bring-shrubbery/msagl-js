@@ -1,7 +1,8 @@
 import { GraphLayoutResult } from "../models";
 import _ = require("lodash");
+import { Graph } from "graphlib";
 
-function assignOrder(g, layering) {
+function assignOrder(g: Graph, layering) {
     _.forEach(layering, function(layer) {
       _.forEach(layer, function(v, i) {
         g.node(v).order = i;
