@@ -24,7 +24,7 @@ export class Parallelogram {
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        Contains(point:Point) :Boolean{
+        Contains(point:Point): Boolean{
             let g = point.min(this.corner)
             let e = distanceEpsilon
 
@@ -38,8 +38,6 @@ export class Parallelogram {
 
 
         area () { return Math.abs(this.a.x * this.b.y - this.a.y * this.b.x) } 
-     
-       
 }
 
  /// Return the correspoinding vertex of the parallelogram
@@ -223,44 +221,46 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
     }
 
 
-    export function parallelogramByCornerSideSide(corner:Point, sideA:Point, sideB:Point):Parallelogram {
-        this.corner = corner;
-        this.a = sideA;
-        this.b = sideB;
+    export function parallelogramByCornerSideSide(corner:Point, sideA:Point, sideB:Point): Parallelogram {
+        const result = new Parallelogram();
 
-        this.aRot = new Point(-sideA.y, sideA.x);
-        if (this.aRot.length() > 0.5)
-            this.aRot = this.aRot.Normalize();
+        result.corner = corner;
+        result.a = sideA;
+        result.b = sideB;
 
-        this.bRot = new Point(-sideB.y, sideB.x);
-        if (this.bRot.length() > 0.5)
-            this.bRot = this.bRot.Normalize();
+        result.aRot = new Point(-sideA.y, sideA.x);
+        if (result.aRot.length() > 0.5)
+        result.aRot = this.aRot.Normalize();
 
-        this.abRot = this.bRot.dot(sideA)
+        result.bRot = new Point(-sideB.y, sideB.x);
+        if (result.bRot.length() > 0.5)
+        result.bRot = this.bRot.Normalize();
 
-        this.baRot = sideB.dot(this.aRot)
+        result.abRot = result.bRot.dot(sideA)
+
+        result.baRot = sideB.dot(this.aRot)
 
 
-        if (this.abRot < 0) {
-            this.abRot = -this.abRot;
-            this.bRot = this.bRot.neg();
+        if (result.abRot < 0) {
+            result.abRot = -result.abRot;
+            result.bRot = result.bRot.neg();
         }
 
-        if (this.baRot < 0) {
-            this.baRot = -this.baRot
-            this.aRot = this.aRot.neg()
+        if (result.baRot < 0) {
+            result.baRot = -result.baRot
+            result.aRot = result.aRot.neg()
         }
 
+        result.isSeg = sideA.min(sideB).length() < distanceEpsilon;
 
-        this.isSeg = sideA.min(sideB).length() < distanceEpsilon;
-
-        this.aPlusCorner = sideA.add(corner)
-        this.otherCorner =  sideB.add(this.aPlusCorner)
-        this.bPlusCorner = sideB.add(corner)
-        return this
+        result.aPlusCorner = sideA.add(corner);
+        result.otherCorner =  sideB.add(result.aPlusCorner);
+        result.bPlusCorner = sideB.add(corner);
+        
+        return result;
     }
 
-    function parallelogramOfTwo(box0:Parallelogram, box1:Parallelogram) {
+    function parallelogramOfTwo(box0:Parallelogram, box1:Parallelogram): Parallelogram {
         let v = box0.corner
         let minx = v.x, maxx = v.x, miny = v.y, maxy = v.y
         
