@@ -4,8 +4,9 @@ export class Point {
     dot(a: Point): number { return dot(this, a) }
     x:number
     y:number
-    Normalize() { let l = this.length()
-                  return new Point(this.x/l, this.y/l) 
+    Normalize() { 
+                  let l = this.length();
+                  return new Point(this.x/l, this.y/l);
                 }
     length() {return Math.sqrt(this.x*this.x + this.y*this.y)}
     constructor (x:number, y:number) {

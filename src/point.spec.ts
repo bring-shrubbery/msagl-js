@@ -26,11 +26,15 @@ test("point test", () => {
   expect(resultPoint.y).toBe(b*2); 
   
   let pr0 =  parallelogramByCornerSideSide(new Point(0, 0),new Point(1, 0), new Point(0, 1) );
-  console.log(pr0);
   expect(pr0.corner.equal(new Point(0,0))).toBe(true); 
   expect(vertex(pr0, 0).equal(pr0.corner)).toBe(true); 
   
   let pr1 =  parallelogramByCornerSideSide(new Point(2, 0),new Point(1, 0), new Point(0, 1) );
   expect(intersect(pr0, pr1)).toBe(false);
+  let pr2 =  parallelogramByCornerSideSide(new Point(0, 0),new Point(2, 0), new Point(0, 1) );
+  expect(intersect(pr0, pr2)).toBe(true); 
+  let pr3 =  parallelogramByCornerSideSide(new Point(0, 0),new Point(2.0-0.00001, 0), new Point(0, 1) );
+  expect(intersect(pr1, pr3)).toBe(false); 
+  
 });
 

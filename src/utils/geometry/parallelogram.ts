@@ -230,15 +230,15 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
 
         result.aRot = new Point(-sideA.y, sideA.x);
         if (result.aRot.length() > 0.5)
-        result.aRot = this.aRot.Normalize();
+        result.aRot = result.aRot.Normalize();
 
         result.bRot = new Point(-sideB.y, sideB.x);
         if (result.bRot.length() > 0.5)
-        result.bRot = this.bRot.Normalize();
+        result.bRot = result.bRot.Normalize();
 
         result.abRot = result.bRot.dot(sideA)
 
-        result.baRot = sideB.dot(this.aRot)
+        result.baRot = sideB.dot(result.aRot)
 
 
         if (result.abRot < 0) {
@@ -261,6 +261,7 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
     }
 
     function parallelogramOfTwo(box0:Parallelogram, box1:Parallelogram): Parallelogram {
+        let result = new Parallelogram();
         let v = box0.corner
         let minx = v.x, maxx = v.x, miny = v.y, maxy = v.y
         
@@ -274,38 +275,38 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
         PumpMinMax( minx,  maxx,  miny,  maxy,  box1.otherCorner);
         PumpMinMax( minx,  maxx,  miny,  maxy,  box1.bPlusCorner);
 
-        this.corner = new Point(minx, miny);
-        this.a = new Point(0, maxy - miny);
-        this.b = new Point(maxx - minx, 0);
+        result.corner = new Point(minx, miny);
+        result.a = new Point(0, maxy - miny);
+        result.b = new Point(maxx - minx, 0);
 
-        this.aPlusCorner = this.a + this.corner;
-        this.otherCorner = this.b.add(this.aPlusCorner);
-        this.bPlusCorner = this.b.add(this.corner);
+        result.aPlusCorner = result.a.add(result.corner);
+        result.otherCorner = result.b.add(result.aPlusCorner);
+        result.bPlusCorner = result.b.add(result.corner);
 
-        this.aRot = new Point(-this.a.y, this.a.x);
-        if (this.aRot.length > 0.5)
-            this.aRot = this.aRot.Normalize();
+        result.aRot = new Point(-result.a.y, result.a.x);
+        if (result.aRot.length() > 0.5)
+            result.aRot = result.aRot.Normalize();
 
-        this.bRot = new Point(-this.b.y, this.b.x);
-        if (this.bRot.length > 0.5)
-        this.bRot = this.bRot.Normalize()   
+        result.bRot = new Point(-result.b.y, result.b.x);
+        if (result.bRot.length() > 0.5)
+        result.bRot = result.bRot.Normalize()   
 
-        this.abRot = this.a.dot( this.bRot)
-        this.baRot = this.b.dot(this.aRot)
+        result.abRot = result.a.dot( result.bRot)
+        result.baRot = result.b.dot(result.aRot)
 
 
-        if (this.abRot < 0) {
-            this.abRot = -this.abRot;
-            this.bRot = this.bRot.neg();
+        if (result.abRot < 0) {
+            result.abRot = -result.abRot;
+            result.bRot = result.bRot.neg();
         }
 
-        if (this.baRot < 0) {
-            this.baRot = -this.baRot;
-            this.aRot = this.aRot.neg();
+        if (result.baRot < 0) {
+            result.baRot = -result.baRot;
+            result.aRot = result.aRot.neg();
         }
 
-        this.isSeg = this.a.min(this.b).length < distanceEpsilon
-        return this
+        result.isSeg = result.a.min(result.b).length() < distanceEpsilon
+        return result
     }
  
  function *AllVertices(p:Parallelogram)  {            
