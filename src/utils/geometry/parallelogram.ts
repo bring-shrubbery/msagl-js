@@ -1,4 +1,4 @@
-import { Point, distanceEpsilon, parallelWithinEpsilon, dot } from "./point";
+import { Point, parallelWithinEpsilon, dot } from "./point";
  
 export enum VertexId { Corner,  VertexA, otherCorner, VertexB }
 
@@ -22,7 +22,7 @@ export class Parallelogram {
         // Return true if the parallelogram contains the point
         contains(point:Point): Boolean{
             let g = point.minus(this.corner)
-            let e = distanceEpsilon
+            let e = Point.distanceEpsilon
 
             let gbRot = g.dot(this.bRot)
             if (gbRot > this.abRot + e || gbRot < -e)
@@ -114,12 +114,12 @@ function ParallelSegsIntersect(p0:Parallelogram, p1:Parallelogram) :Boolean{
         r3 = t;
     }
 
-    return !(r3 < r0 - distanceEpsilon || r2 > r1 + distanceEpsilon);
+    return !(r3 < r0 - Point.distanceEpsilon || r2 > r1 + Point.distanceEpsilon);
 
 }
 
 function separByB(p0:Parallelogram, p1:Parallelogram) {
-    let eps = distanceEpsilon
+    let eps = Point.distanceEpsilon
     let p1a = vertex(p1, 0).minus(p0.corner).dot(p0.bRot)
     let list = [VertexId.VertexA, VertexId.otherCorner, VertexId.VertexB]        
     if (p1a > p0.abRot + eps) {
@@ -140,7 +140,7 @@ function separByB(p0:Parallelogram, p1:Parallelogram) {
 }
 function separByA(p0:Parallelogram, p1:Parallelogram) {
 
-    let eps = distanceEpsilon;
+    let eps = Point.distanceEpsilon;
 
     let t = p1.corner.minus(p0.corner)
     let p1a = dot(t , p0.aRot);
@@ -226,11 +226,11 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
 
         result.aRot = new Point(-sideA.y, sideA.x);
         if (result.aRot.length() > 0.5)
-        result.aRot = result.aRot.Normalize();
+        result.aRot = result.aRot.normalize();
 
         result.bRot = new Point(-sideB.y, sideB.x);
         if (result.bRot.length() > 0.5)
-        result.bRot = result.bRot.Normalize();
+        result.bRot = result.bRot.normalize();
 
         result.abRot = result.bRot.dot(sideA)
 
@@ -246,7 +246,7 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
             result.aRot = result.aRot.neg()
         }
 
-        result.isSeg = sideA.minus(sideB).length() < distanceEpsilon;
+        result.isSeg = sideA.minus(sideB).length() < Point.distanceEpsilon;
 
         result.aPlusCorner = sideA.add(corner);
         result.otherCorner =  sideB.add(result.aPlusCorner);
@@ -280,11 +280,11 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
 
         result.aRot = new Point(-result.a.y, result.a.x);
         if (result.aRot.length() > 0.5)
-            result.aRot = result.aRot.Normalize();
+            result.aRot = result.aRot.normalize();
 
         result.bRot = new Point(-result.b.y, result.b.x);
         if (result.bRot.length() > 0.5)
-        result.bRot = result.bRot.Normalize()   
+        result.bRot = result.bRot.normalize()   
 
         result.abRot = result.a.dot( result.bRot)
         result.baRot = result.b.dot(result.aRot)
@@ -300,7 +300,7 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
             result.aRot = result.aRot.neg();
         }
 
-        result.isSeg = result.a.minus(result.b).length() < distanceEpsilon
+        result.isSeg = result.a.minus(result.b).length() < Point.distanceEpsilon
         return result
     }
  
