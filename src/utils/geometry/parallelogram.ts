@@ -1,6 +1,6 @@
 import { Point, distanceEpsilon, parallelWithinEpsilon, dot } from "./point";
  
-enum VertexId { Corner,  VertexA, otherCorner, VertexB }
+export enum VertexId { Corner,  VertexA, otherCorner, VertexB }
 
     
 export class Parallelogram {
@@ -19,13 +19,9 @@ export class Parallelogram {
         
         constructor() {}
         
-        /// <summary>
-        /// Return true if the parallelogram contains the point
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        Contains(point:Point): Boolean{
-            let g = point.min(this.corner)
+        // Return true if the parallelogram contains the point
+        contains(point:Point): Boolean{
+            let g = point.minus(this.corner)
             let e = distanceEpsilon
 
             let gbRot = g.dot(this.bRot)
@@ -82,8 +78,8 @@ export function intersect(parallelogram0:Parallelogram, parallelogram1:Parallelo
         return true;
 
 
-    if (!parallelWithinEpsilon(parallelogram0.otherCorner.min(parallelogram0.corner),
-                                     parallelogram1.otherCorner.min(parallelogram1.corner), 1.0E-5))
+    if (!parallelWithinEpsilon(parallelogram0.otherCorner.minus(parallelogram0.corner),
+                                     parallelogram1.otherCorner.minus(parallelogram1.corner), 1.0E-5))
         return true
 
     //here we know that the segs are parallel
@@ -98,17 +94,17 @@ function ParallelSegsIntersect(p0:Parallelogram, p1:Parallelogram) :Boolean{
     let v2 = p1.corner
     let v3 = p1.otherCorner
 
-    let d = v1.min(v0)
+    let d = v1.minus(v0)
 
     //let us imagine that v0 is at zero
     let r0:number = 0; // position of v0
     let r1 = d.dot(d) //offset of v1
     
     //offset of v2
-    let r2 = v2.min(v0). dot(d)
+    let r2 = v2.minus(v0). dot(d)
 
     //offset of v3
-    let r3 = v3.min(v0).dot(d)
+    let r3 = v3.minus(v0).dot(d)
 
     // we need to check if [r0,r1] intersects [r2,r3]
 
@@ -124,18 +120,18 @@ function ParallelSegsIntersect(p0:Parallelogram, p1:Parallelogram) :Boolean{
 
 function separByB(p0:Parallelogram, p1:Parallelogram) {
     let eps = distanceEpsilon
-    let p1a = vertex(p1, 0).min(p0.corner).dot(p0.bRot)
+    let p1a = vertex(p1, 0).minus(p0.corner).dot(p0.bRot)
     let list = [VertexId.VertexA, VertexId.otherCorner, VertexId.VertexB]        
     if (p1a > p0.abRot + eps) {
         for (let i of list) {
-            if (vertex(p1, i).min(p0.corner).dot(p0.bRot) <= p0.abRot + eps)
+            if (vertex(p1, i).minus(p0.corner).dot(p0.bRot) <= p0.abRot + eps)
                 return false;
         }
 
         return true;
     } else if (p1a < -eps) {
         for (let i of list) {
-            if (vertex(p1, i).min(p0.corner).dot(p0.bRot) >= -eps)
+            if (vertex(p1, i).minus(p0.corner).dot(p0.bRot) >= -eps)
                 return false;
         }
         return true;
@@ -146,7 +142,7 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
 
     let eps = distanceEpsilon;
 
-    let t = p1.corner.min(p0.corner)
+    let t = p1.corner.minus(p0.corner)
     let p1a = dot(t , p0.aRot);
 
     if (p1a > p0.baRot + eps) {
@@ -240,7 +236,6 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
 
         result.baRot = sideB.dot(result.aRot)
 
-
         if (result.abRot < 0) {
             result.abRot = -result.abRot;
             result.bRot = result.bRot.neg();
@@ -251,7 +246,7 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
             result.aRot = result.aRot.neg()
         }
 
-        result.isSeg = sideA.min(sideB).length() < distanceEpsilon;
+        result.isSeg = sideA.minus(sideB).length() < distanceEpsilon;
 
         result.aPlusCorner = sideA.add(corner);
         result.otherCorner =  sideB.add(result.aPlusCorner);
@@ -260,7 +255,7 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
         return result;
     }
 
-    function parallelogramOfTwo(box0:Parallelogram, box1:Parallelogram): Parallelogram {
+   export function parallelogramOfTwo(box0:Parallelogram, box1:Parallelogram): Parallelogram {
         let result = new Parallelogram();
         let v = box0.corner
         let minx = v.x, maxx = v.x, miny = v.y, maxy = v.y
@@ -305,7 +300,7 @@ function separByA(p0:Parallelogram, p1:Parallelogram) {
             result.aRot = result.aRot.neg();
         }
 
-        result.isSeg = result.a.min(result.b).length() < distanceEpsilon
+        result.isSeg = result.a.minus(result.b).length() < distanceEpsilon
         return result
     }
  

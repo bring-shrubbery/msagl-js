@@ -1,7 +1,7 @@
 export const distanceEpsilon = Math.pow(10, -6)
 
 export class Point {
-    dot(a: Point): number { return dot(this, a) }
+    dot(a:Point): number { return dot(this, a) }
     x:number
     y:number
     Normalize() { 
@@ -16,7 +16,7 @@ export class Point {
     add(a:Point) {
         return new Point(this.x + a.x, this.y + a.y)
     }
-    min(a:Point) {
+    minus(a:Point) {
         return new Point(this.x - a.x, this.y - a.y)
     }
     mult(c:number) {
