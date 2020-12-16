@@ -1,5 +1,5 @@
+import { PlaneTransformation } from "./planeTransformation";
 import {Point} from "./point"
-class PlaneTransformation {}
 class ParallelogramNodeOverICurve {}
 class Rectangle {}
 /// <summary>

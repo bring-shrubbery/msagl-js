@@ -1,4 +1,4 @@
-import { distanceEpsilon, Point } from "./utils/geometry/point";
+import { Point } from "./utils/geometry/point";
 import {VertexId, vertex, intersect, parallelogramByCornerSideSide, parallelogramOfTwo} from "./utils/geometry/parallelogram";
 
 test("point test", () => {
@@ -26,19 +26,19 @@ test("point test", () => {
     expect(resultPoint.y).toBe(b*2); 
 });
 
-test("parallelogram intersect test", () => {
+    test("parallelogram intersect test", () => {
 
-    let pr0 =  parallelogramByCornerSideSide(new Point(0, 0),new Point(1, 0), new Point(0, 1) );
-    expect(pr0.corner.equal(new Point(0,0))).toBe(true); 
-    expect(vertex(pr0, 0).equal(pr0.corner)).toBe(true); 
-    
-    let pr1 =  parallelogramByCornerSideSide(new Point(2, 0),new Point(1, 0), new Point(0, 1) );
-    expect(intersect(pr0, pr1)).toBe(false);
-    let pr2 =  parallelogramByCornerSideSide(new Point(0, 0),new Point(2, 0), new Point(0, 1) );
-    expect(intersect(pr0, pr2)).toBe(true); 
-    let pr3 =  parallelogramByCornerSideSide(new Point(0, 0),new Point(2.0-0.00001, 0), new Point(0, 1) );
-    expect(intersect(pr1, pr3)).toBe(false);    
-});
+        let pr0 =  parallelogramByCornerSideSide(new Point(0, 0),new Point(1, 0), new Point(0, 1) );
+        expect(pr0.corner.equal(new Point(0,0))).toBe(true); 
+        expect(vertex(pr0, 0).equal(pr0.corner)).toBe(true); 
+        
+        let pr1 =  parallelogramByCornerSideSide(new Point(2, 0),new Point(1, 0), new Point(0, 1) );
+        expect(intersect(pr0, pr1)).toBe(false);
+        let pr2 =  parallelogramByCornerSideSide(new Point(0, 0),new Point(2, 0), new Point(0, 1) );
+        expect(intersect(pr0, pr2)).toBe(true); 
+        let pr3 =  parallelogramByCornerSideSide(new Point(0, 0),new Point(2.0-0.00001, 0), new Point(0, 1) );
+        expect(intersect(pr1, pr3)).toBe(false);    
+    });
 
 test("parallelogram contains test", () => {
     let par =  parallelogramByCornerSideSide(new Point(0, 0),new Point(1, 0), new Point(0, 1) );
@@ -56,11 +56,11 @@ test("parallelogram contains test", () => {
     }    
 });
 test("parallelogram seg case", () => {
-    let par =  parallelogramByCornerSideSide(new Point(0, 0),new Point(1, 0), new Point(1, distanceEpsilon) );
+    let par =  parallelogramByCornerSideSide(new Point(0, 0),new Point(1, 0), new Point(1, Point.distanceEpsilon) );
     let par0 =  parallelogramByCornerSideSide(new Point(0.5, 0),new Point(2, 1), new Point(2, 1) );
     let par1 =  parallelogramByCornerSideSide(new Point(0.5, 0.1),new Point(2, 1), new Point(2, 1) );
     let par2 =  parallelogramByCornerSideSide(new Point(0.5, -0.1),new Point(2, 1), new Point(2, 1) );
-    let par3 =  parallelogramByCornerSideSide(new Point(0.5, -0.1 - distanceEpsilon/2),new Point(2, 1), new Point(2, 1) );
+    let par3 =  parallelogramByCornerSideSide(new Point(0.5, -0.1 - Point.distanceEpsilon/2),new Point(2, 1), new Point(2, 1) );
     expect(intersect(par, par0)).toBe(true);
     expect(intersect(par, par1)).toBe(false);    
     expect(intersect(par, par2)).toBe(true);

@@ -1,10 +1,17 @@
-export const distanceEpsilon = Math.pow(10, -6)
-
 export class Point {
+    static distanceEpsilon = Math.pow(10, -6)
     dot(a:Point): number { return dot(this, a) }
     x:number
     y:number
-    Normalize() { 
+
+    static close(a:Point, b:Point, tol:number):Boolean {
+        return a.minus(b).length() <= tol;
+    }
+    static closeD(a:number, b:number):Boolean {
+        let d = a  - b;
+        return - Point.distanceEpsilon <= d && Point.distanceEpsilon >= d;
+    }
+    normalize() { 
                   let l = this.length();
                   return new Point(this.x/l, this.y/l);
                 }
