@@ -1,27 +1,27 @@
-﻿import { ICurve } from "./icurve"
-import { Parallelogram } from "./parallelogram"
+﻿import {ICurve} from './icurve';
+import {Parallelogram} from './parallelogram';
 // Serves to hold a Parallelogram and a ICurve,
 // and is used in curve intersections routines.
 // The node can be a top of the hierarchy if its sons are non-nulls.
 // The sons are either both nulls or both non-nulls
 
 export type PN = {
-    parallelogram: Parallelogram
-    node: PNInternal | PNLeaf | PNBinary
-}
+	parallelogram: Parallelogram;
+	node: PNInternal | PNLeaf | PNBinary;
+};
 type PNBinary = {
-    leftSon: PN
-    rightSon: PN
-}
+	leftSon: PN;
+	rightSon: PN;
+};
 
 type PNLeaf = {
-    seg: ICurve
-    leafOffset: number
-}
+	seg: ICurve;
+	leafOffset: number;
+};
 
 type PNInternal = {
-    children: [PN]
-}
+	children: [PN];
+};
 // export class ParallelogramNode {
 //     seg: ICurve | null;
 //     // The segment bounded by the parallelogram
@@ -45,15 +45,12 @@ type PNInternal = {
 //     }
 // }
 
-
-
-
 // internal ParallelogramNodeOverICurve(ICurve s, number leafBoxesOffset) {
 //     seg = s;
 //     this.leafBoxesOffset = leafBoxesOffset;
 // }
 
-// // 
+// //
 //         static public ParallelogramNodeOverICurve CreateParallelogramNodeForCurveSegment(ICurve segment) {
 //     ValidateArg.IsNotNull(segment, "segment");
 //     return CreateParallelogramNodeForCurveSeg(segment.ParStart, segment.ParEnd, segment, DefaultLeafBoxesOffset);
@@ -89,8 +86,6 @@ type PNInternal = {
 
 // }
 
-
-
 // // Creates a bounding parallelogram on a curve segment
 // // We suppose here that the segment is convex or concave from start to end,
 // // that is the region bounded by the straight segment seg[start], seg[end] and the curve seg is convex
@@ -105,8 +100,6 @@ type PNInternal = {
 //     Point tan2 = seg.Derivative(end);
 //     Point tan2Perp = Point.P(-tan2.Y, tan2.X);
 
-
-
 //     Point p = endPoint - startPoint;
 
 //     number numerator = p * tan2Perp;
@@ -115,7 +108,7 @@ type PNInternal = {
 //     if (Math.Abs(numerator) < ApproximateComparer.DistanceEpsilon)
 //         x = 0;
 //     else if (Math.Abs(denumerator) < ApproximateComparer.DistanceEpsilon) {
-//         //it is degenerated; adjacent sides are parallel, but 
+//         //it is degenerated; adjacent sides are parallel, but
 //         //since p * tan2Perp is big it does not contain e
 //         return false;
 //     } else x = numerator / denumerator;
@@ -137,13 +130,11 @@ type PNInternal = {
 //     }
 //     return true;
 
-
 // }
 // delegate Point B(int i);
 // internal static bool CreateParallelogramOnSubSegOnBezierSeg(number start, number end, ICurve seg, ref Parallelogram box) {
 
 //     CubicBezierSegment trimSeg = seg.Trim(start, end) as CubicBezierSegment;
-
 
 //     B b = trimSeg.B;
 //     Point a = b(1) - b(0);
@@ -160,7 +151,6 @@ type PNInternal = {
 
 //     return false;
 // }
-
 
 // internal static ParallelogramNodeOverICurve CreateParallelogramNodeForCurveSeg(number start, number end, ICurve seg, number eps) {
 
@@ -207,5 +197,3 @@ type PNInternal = {
 
 // }
 // }
-
-

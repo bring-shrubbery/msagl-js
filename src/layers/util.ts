@@ -1,4 +1,5 @@
-import * as _ from "lodash";
+import {Graph} from 'graphlib';
+import * as _ from 'lodash';
 
 /*
  * Initializes layers for the input graph using the longest path algorithm. This
@@ -21,42 +22,42 @@ import * as _ from "lodash";
  *
  *    1. Each node will be assign an (unnormalized) "layer" property.
  */
-export function longestPath(g) {
-  let visited = {};
+export function longestPath(g: any): any {
+	const visited = {};
 
-  function dfs(v) {
-    let label = g.node(v);
-    if (_.has(visited, v)) {
-      return label.layer;
-    }
+	function dfs(v) {
+		const label = g.node(v);
+		if (_.has(visited, v)) {
+			return label.layer;
+		}
 
-    visited[v] = true;
+		visited[v] = true;
 
-    let layer = _.min(
-      _.map(g.outEdges(v), function (e) {
-        return dfs(e.w) - g.edge(e).minlen;
-      })
-    );
+		let layer = _.min(
+			_.map(g.outEdges(v), function (e) {
+				return dfs(e.w) - g.edge(e).minlen;
+			}),
+		);
 
-    if (
-      layer === Number.POSITIVE_INFINITY || // return value of _.map([]) for Lodash 3
-      layer === undefined || // return value of _.map([]) for Lodash 4
-      layer === null
-    ) {
-      // return value of _.map([null])
-      layer = 0;
-    }
+		if (
+			layer === Number.POSITIVE_INFINITY || // return value of _.map([]) for Lodash 3
+			layer === undefined || // return value of _.map([]) for Lodash 4
+			layer === null
+		) {
+			// return value of _.map([null])
+			layer = 0;
+		}
 
-    return (label.layer = layer);
-  }
+		return (label.layer = layer);
+	}
 
-  _.forEach(g.sources(), dfs);
+	_.forEach(g.sources(), dfs);
 }
 
 /*
  * Returns the amount of slack for the given edge. The slack is defined as the
  * difference between the length of the edge and its minimum length.
  */
-export function slack(g, e) {
-  return g.node(e.w).layer - g.node(e.v).layer - g.edge(e).minlen;
+export function slack(g: Graph, e: any): any {
+	return g.node(e.w).layer - g.node(e.v).layer - g.edge(e).minlen;
 }
