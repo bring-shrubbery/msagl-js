@@ -85,7 +85,7 @@ export class PlaneTransformation {
         return null;
     }
 
- // returns the inversed matrix
+    // returns the inversed matrix
     Inverse() {
         let det = this.getElem(0, 0) * this.getElem(1, 1) - this.getElem(1, 0) * this.getElem(0, 1);
 
