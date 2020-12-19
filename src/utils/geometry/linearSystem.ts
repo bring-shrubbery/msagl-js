@@ -2,11 +2,11 @@
 export class LinearSystem2 {
 	static eps = 1.0e-8;
 
-	static Solve(a00: number, a01: number, b0: number, a10: number, a11: number, b1: number): {x?: number; y?: number} {
+	static Solve(a00: number, a01: number, b0: number, a10: number, a11: number, b1: number): {x: number; y: number} | undefined {
 		const d = a00 * a11 - a10 * a01;
 
 		if (Math.abs(d) < LinearSystem2.eps) {
-			return {};
+			return;
 		}
 
 		return {

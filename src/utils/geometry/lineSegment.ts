@@ -7,6 +7,7 @@ export class LineSegment implements ICurve {
 	a: Point; //the line goes from a to b
 	b: Point; // the line end point
 	// Offsets the curve in the direction of dir
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	OffsetCurve(offset: number, dir: Point) {
 		return null;
 	}
@@ -51,6 +52,7 @@ export class LineSegment implements ICurve {
 		return this.a.add(this.b.minus(this.a).mult(t));
 	}
 	// Not Implemented: Returns the trimmed curve, wrapping around the end if start is greater than end.
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	TrimWithWrap(start: number, end: number) {
 		return null;
 	} // not implemented
@@ -88,14 +90,17 @@ export class LineSegment implements ICurve {
 		return new LineSegment(p.x, p.y, x, y);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	Derivative(t: number) {
 		return this.b.minus(this.a);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	SecondDerivative(t: number) {
 		return new Point(0, 0);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	ThirdDerivative(t: number) {
 		return new Point(0, 0);
 	}
@@ -248,11 +253,11 @@ export class LineSegment implements ICurve {
 		return this.Derivative(t);
 	}
 	// returns true if segments are not parallel and are intesecting
-	static IntersectPPPP(a: Point, b: Point, c: Point, d: Point): {x?: Point} {
+	static IntersectPPPP(a: Point, b: Point, c: Point, d: Point): Point | undefined {
 		const r = Point.lineLineIntersection(a, b, c, d);
-		if (r.x == undefined) return {};
-		if (LineSegment.XIsBetweenPoints(a, b, r.x) && LineSegment.XIsBetweenPoints(c, d, r.x)) return r;
-		else return {};
+		if (r == undefined) return;
+		if (LineSegment.XIsBetweenPoints(a, b, r) && LineSegment.XIsBetweenPoints(c, d, r)) return r;
+		else return;
 	}
 
 	static XIsBetweenPoints(a: Point, b: Point, x: Point): boolean {
@@ -260,14 +265,17 @@ export class LineSegment implements ICurve {
 	}
 
 	//
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	Curvature(t: number) {
 		return 0;
 	}
 	//
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	CurvatureDerivative(t: number) {
 		return 0;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	CurvatureSecondDerivative(_: number) {
 		return 0;
 	}

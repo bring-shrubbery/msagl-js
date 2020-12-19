@@ -52,17 +52,17 @@ export class Point {
 		return new Point(-this.x, -this.y);
 	}
 
-	static lineLineIntersection(a: Point, b: Point, c: Point, d: Point): {x?: Point} {
+	static lineLineIntersection(a: Point, b: Point, c: Point, d: Point): Point | undefined {
 		//look for the solution in the form a+u*(b-a)=c+v*(d-c)
 		const ba = b.minus(a);
 		const cd = c.minus(d);
 		const ca = c.minus(a);
 		const eps = Point.tolerance;
 		const ret = LinearSystem2.Solve(ba.x, cd.x, ca.x, ba.y, cd.y, ca.y);
-		if (ret.x && ret.x > -eps && ret.x < 1.0 + eps && ret.y > -eps && ret.y < 1.0 + eps) {
-			return {x: a.add(ba.mult(ret.x))};
+		if (ret != undefined && ret.x > -eps && ret.x < 1.0 + eps && ret.y > -eps && ret.y < 1.0 + eps) {
+			return a.add(ba.mult(ret.x));
 		} else {
-			return {};
+			return;
 		}
 	}
 
