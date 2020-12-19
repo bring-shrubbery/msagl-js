@@ -1,5 +1,5 @@
-import {Point} from './utils/geometry/point';
-import {VertexId, vertex, intersect, parallelogramByCornerSideSide, parallelogramOfTwo} from './utils/geometry/parallelogram';
+import {Point} from './../utils/geometry/point';
+import {VertexId, vertex, intersect, parallelogramByCornerSideSide, parallelogramOfTwo} from './../utils/geometry/parallelogram';
 
 test('point test', () => {
 	const a = 1;

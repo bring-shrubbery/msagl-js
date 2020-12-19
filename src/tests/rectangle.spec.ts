@@ -1,5 +1,5 @@
-import {Rectangle} from './utils/geometry/rectangle';
-import {Point} from './utils/geometry/point';
+import {Rectangle} from './../utils/geometry/rectangle';
+import {Point} from './../utils/geometry/point';
 
 test('rectangle test', () => {
 	const r = new Rectangle(0, 1, 1, 0);

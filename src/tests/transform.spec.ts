@@ -1,5 +1,5 @@
-import {PlaneTransformation} from './utils/geometry/planeTransformation';
-import {Point} from './utils/geometry/point';
+import {PlaneTransformation} from './../utils/geometry/planeTransformation';
+import {Point} from './../utils/geometry/point';
 
 test('plane transform test', () => {
 	const m = new PlaneTransformation();
