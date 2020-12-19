@@ -3,7 +3,7 @@ export class Point {
 	static distanceEpsilon = Math.pow(10, -6);
 	static tolerance = 1.0e-8;
 	dot(a: Point): number {
-		return dot(this, a);
+		return this.x * a.x + this.y * a.y;
 	}
 	x: number;
 	y: number;
@@ -80,10 +80,10 @@ export class Point {
 	static crossProduct(point0: Point, point1: Point) {
 		return point0.x * point1.y - point0.y * point1.x;
 	}
-}
-export function dot(a: Point, b: Point) {
-	return a.x * b.x + a.y * b.y;
-}
-export function add(a: Point, b: Point) {
-	return a.add(b);
+	static dot(a: Point, b: Point) {
+		return a.x * b.x + a.y * b.y;
+	}
+	static add(a: Point, b: Point) {
+		return a.add(b);
+	}
 }

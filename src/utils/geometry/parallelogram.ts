@@ -1,4 +1,4 @@
-import {Point, dot} from './point';
+import {Point} from './point';
 
 export enum VertexId {
 	Corner,
@@ -194,34 +194,34 @@ export class Parallelogram {
 		const eps = Point.distanceEpsilon;
 
 		const t = p1.corner.minus(p0.corner);
-		const p1a = dot(t, p0.aRot);
+		const p1a = Point.dot(t, p0.aRot);
 
 		if (p1a > p0.baRot + eps) {
 			t.x = p1.aPlusCorner.x - p0.corner.x;
 			t.y = p1.aPlusCorner.y - p0.corner.y;
-			if (dot(t, p0.aRot) <= p0.baRot + eps) return false;
+			if (Point.dot(t, p0.aRot) <= p0.baRot + eps) return false;
 
 			t.x = p1.bPlusCorner.x - p0.corner.x;
 			t.y = p1.bPlusCorner.y - p0.corner.y;
-			if (dot(t, p0.aRot) <= p0.baRot + eps) return false;
+			if (Point.dot(t, p0.aRot) <= p0.baRot + eps) return false;
 
 			t.x = p1.otherCorner.x - p0.corner.x;
 			t.y = p1.otherCorner.y - p0.corner.y;
-			if (dot(t, p0.aRot) <= p0.baRot + eps) return false;
+			if (Point.dot(t, p0.aRot) <= p0.baRot + eps) return false;
 
 			return true;
 		} else if (p1a < -eps) {
 			t.x = p1.aPlusCorner.x - p0.corner.x;
 			t.y = p1.aPlusCorner.y - p0.corner.y;
-			if (dot(t, p0.aRot) >= -eps) return false;
+			if (Point.dot(t, p0.aRot) >= -eps) return false;
 
 			t.x = p1.bPlusCorner.x - p0.corner.x;
 			t.y = p1.bPlusCorner.y - p0.corner.y;
-			if (dot(t, p0.aRot) >= -eps) return false;
+			if (Point.dot(t, p0.aRot) >= -eps) return false;
 
 			t.x = p1.otherCorner.x - p0.corner.x;
 			t.y = p1.otherCorner.y - p0.corner.y;
-			if (dot(t, p0.aRot) >= -eps) return false;
+			if (Point.dot(t, p0.aRot) >= -eps) return false;
 
 			return true;
 		}
