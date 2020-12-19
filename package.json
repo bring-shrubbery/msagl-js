@@ -9,7 +9,8 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "eslint": "eslint src/**"
+    "eslint": "eslint src/**",
+    "prettier": "prettier --write src/**"
   },
   "dependencies": {
     "@types/graphlib": "2.1.6",
@@ -38,6 +39,7 @@
   "lint-staged": {
     "*.{js,ts}": [
       "eslint",
+      "npm run prettier",
       "git add"
     ]
   }
