@@ -1,5 +1,7 @@
+import {LinearSystem2} from './linearSystem';
 export class Point {
 	static distanceEpsilon = Math.pow(10, -6);
+	static tolerance = 1.0e-8;
 	dot(a: Point): number {
 		return dot(this, a);
 	}
@@ -24,6 +26,13 @@ export class Point {
 		this.x = x;
 		this.y = y;
 	}
+	move(a: Point): void {
+		this.x += a.x;
+		this.y += a.y;
+	}
+	scale(sx: number, sy: number): Point {
+		return new Point(this.x * sx, this.y * sy);
+	}
 	add(a: Point) {
 		return new Point(this.x + a.x, this.y + a.y);
 	}
@@ -42,20 +51,39 @@ export class Point {
 	neg() {
 		return new Point(-this.x, -this.y);
 	}
+
+	static lineLineIntersection(a: Point, b: Point, c: Point, d: Point): {x?: Point} {
+		//look for the solution in the form a+u*(b-a)=c+v*(d-c)
+		const ba = b.minus(a);
+		const cd = c.minus(d);
+		const ca = c.minus(a);
+		const eps = Point.tolerance;
+		const ret = LinearSystem2.Solve(ba.x, cd.x, ca.x, ba.y, cd.y, ca.y);
+		if (ret.x && ret.x > -eps && ret.x < 1.0 + eps && ret.y > -eps && ret.y < 1.0 + eps) {
+			return {x: a.add(ba.mult(ret.x))};
+		} else {
+			return {};
+		}
+	}
+
+	static parallelWithinEpsilon(a: Point, b: Point, eps: number) {
+		const alength = a.length();
+		const blength = b.length();
+		if (alength < eps || blength < eps) return true;
+
+		a = a.div(alength);
+		b = b.div(blength);
+
+		return Math.abs(-a.x * b.y + a.y * b.x) < eps;
+	}
+
+	static crossProduct(point0: Point, point1: Point) {
+		return point0.x * point1.y - point0.y * point1.x;
+	}
 }
 export function dot(a: Point, b: Point) {
 	return a.x * b.x + a.y * b.y;
 }
 export function add(a: Point, b: Point) {
 	return a.add(b);
-}
-export function parallelWithinEpsilon(a: Point, b: Point, eps: number) {
-	const alength = a.length();
-	const blength = b.length();
-	if (alength < eps || blength < eps) return true;
-
-	a = a.div(alength);
-	b = b.div(blength);
-
-	return Math.abs(-a.x * b.y + a.y * b.x) < eps;
 }

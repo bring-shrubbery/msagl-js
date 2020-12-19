@@ -1,4 +1,5 @@
 ﻿import {ICurve} from './icurve';
+import {LineSegment} from './lineSegment';
 import {Parallelogram} from './parallelogram';
 // Serves to hold a Parallelogram and a ICurve,
 // and is used in curve intersections routines.
@@ -7,6 +8,8 @@ import {Parallelogram} from './parallelogram';
 
 export type PN = {
 	parallelogram: Parallelogram;
+	seg: ICurve;
+	leafBoxesOffset: number;
 	node: PNInternal | PNLeaf | PNBinary;
 };
 type PNBinary = {
@@ -15,8 +18,9 @@ type PNBinary = {
 };
 
 type PNLeaf = {
-	seg: ICurve;
-	leafOffset: number;
+	low: number;
+	high: number;
+	chord: LineSegment;
 };
 
 type PNInternal = {

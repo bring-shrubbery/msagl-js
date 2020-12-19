@@ -6,7 +6,7 @@ import {Rectangle} from './rectangle';
 /// are BSpline,Curve,LineSeg, Ellipse,CubicBezierSeg and ArrowTipCurve.
 export interface ICurve {
 	/// Returns the point on the curve corresponding to parameter t
-	value(t: number): number;
+	value(t: number): Point;
 	/// first derivative at t
 	Derivative(t: number): Point;
 	/// second derivative

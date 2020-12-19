@@ -132,14 +132,14 @@ export class Rectangle {
 	}
 
 	// create a box of two points
-	static RectangleOnTwoPoints(point0: Point, point1: Point) {
+	static RectanglePointPoint(point0: Point, point1: Point) {
 		const r = new Rectangle(point0.x, point0.y, point0.x, point0.x);
 		r.Add(point1);
 		return r;
 	}
 
 	// create rectangle from a point
-	static RectangleOnPoint(point: Point) {
+	static RectanglePoint(point: Point) {
 		return new Rectangle(point.x, point.y, point.x, point.x);
 	}
 
@@ -319,7 +319,7 @@ export class Rectangle {
 	// Returns the intersection of two rectangles.
 	static Intersect(rect1: Rectangle, rect2: Rectangle): Rectangle {
 		if (rect1.Intersects(rect2))
-			return Rectangle.RectangleOnTwoPoints(
+			return Rectangle.RectanglePointPoint(
 				new Point(Math.max(rect1.Left, rect2.Left), Math.max(rect1.Bottom, rect2.Bottom)),
 				new Point(Math.min(rect1.Right, rect2.Right), Math.min(rect1.Top, rect2.Top)),
 			);
@@ -327,15 +327,15 @@ export class Rectangle {
 	}
 
 	/*
-    public Polyline Perimeter() {
-        const poly = new Polyline();
-        poly.AddPoint(LeftTop);
-        poly.AddPoint(RightTop);
-        poly.AddPoint(RightBottom);
-        poly.AddPoint(LeftBottom);
-        poly.Closed = true;
-        return poly;
-    }
+public Polyline Perimeter() {
+    const poly = new Polyline();
+    poly.AddPoint(LeftTop);
+    poly.AddPoint(RightTop);
+    poly.AddPoint(RightBottom);
+    poly.AddPoint(LeftBottom);
+    poly.Closed = true;
+    return poly;
+}
 */
 	ScaleAroundCenter(scale: number) {
 		this.Width = this.Width * scale;
@@ -343,7 +343,7 @@ export class Rectangle {
 	}
 
 	Clone(): Rectangle {
-		return Rectangle.RectangleOnTwoPoints(this.LeftTop, this.RightBottom);
+		return Rectangle.RectanglePointPoint(this.LeftTop, this.RightBottom);
 	}
 
 	// gets or sets the Size

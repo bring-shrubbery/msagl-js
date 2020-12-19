@@ -1,5 +1,5 @@
 import {Point} from './../utils/geometry/point';
-import {VertexId, vertex, intersect, parallelogramByCornerSideSide, parallelogramOfTwo} from './../utils/geometry/parallelogram';
+import {VertexId, Parallelogram} from './../utils/geometry/parallelogram';
 
 test('point test', () => {
 	const a = 1;
@@ -27,41 +27,41 @@ test('point test', () => {
 });
 
 test('parallelogram intersect test', () => {
-	const pr0 = parallelogramByCornerSideSide(new Point(0, 0), new Point(1, 0), new Point(0, 1));
+	const pr0 = Parallelogram.parallelogramByCornerSideSide(new Point(0, 0), new Point(1, 0), new Point(0, 1));
 	expect(pr0.corner.equal(new Point(0, 0))).toBe(true);
-	expect(vertex(pr0, 0).equal(pr0.corner)).toBe(true);
+	expect(pr0.vertex(0).equal(pr0.corner)).toBe(true);
 
-	const pr1 = parallelogramByCornerSideSide(new Point(2, 0), new Point(1, 0), new Point(0, 1));
-	expect(intersect(pr0, pr1)).toBe(false);
-	const pr2 = parallelogramByCornerSideSide(new Point(0, 0), new Point(2, 0), new Point(0, 1));
-	expect(intersect(pr0, pr2)).toBe(true);
-	const pr3 = parallelogramByCornerSideSide(new Point(0, 0), new Point(2.0 - 0.00001, 0), new Point(0, 1));
-	expect(intersect(pr1, pr3)).toBe(false);
+	const pr1 = Parallelogram.parallelogramByCornerSideSide(new Point(2, 0), new Point(1, 0), new Point(0, 1));
+	expect(Parallelogram.intersect(pr0, pr1)).toBe(false);
+	const pr2 = Parallelogram.parallelogramByCornerSideSide(new Point(0, 0), new Point(2, 0), new Point(0, 1));
+	expect(Parallelogram.intersect(pr0, pr2)).toBe(true);
+	const pr3 = Parallelogram.parallelogramByCornerSideSide(new Point(0, 0), new Point(2.0 - 0.00001, 0), new Point(0, 1));
+	expect(Parallelogram.intersect(pr1, pr3)).toBe(false);
 });
 
 test('parallelogram contains test', () => {
-	const par = parallelogramByCornerSideSide(new Point(0, 0), new Point(1, 0), new Point(0, 1));
-	const pOut = vertex(par, VertexId.otherCorner).mult(1.1);
+	const par = Parallelogram.parallelogramByCornerSideSide(new Point(0, 0), new Point(1, 0), new Point(0, 1));
+	const pOut = par.vertex(VertexId.otherCorner).mult(1.1);
 	expect(par.contains(pOut)).toBe(false);
 
-	const par0 = parallelogramByCornerSideSide(new Point(1, 0), new Point(2, 1), new Point(0, 1));
-	const pIn = vertex(par0, VertexId.otherCorner).add(vertex(par0, VertexId.Corner)).div(2);
+	const par0 = Parallelogram.parallelogramByCornerSideSide(new Point(1, 0), new Point(2, 1), new Point(0, 1));
+	const pIn = par0.vertex(VertexId.otherCorner).add(par0.vertex(VertexId.Corner)).div(2);
 	expect(par0.contains(pIn)).toBe(true);
 
-	const parTwo = parallelogramOfTwo(par, par0);
+	const parTwo = Parallelogram.parallelogramOfTwo(par, par0);
 	for (const i of [0, 1, 2, 3]) {
-		expect(parTwo.contains(vertex(par, i))).toBe(true);
-		expect(parTwo.contains(vertex(par0, i))).toBe(true);
+		expect(parTwo.contains(par.vertex(i))).toBe(true);
+		expect(parTwo.contains(par0.vertex(i))).toBe(true);
 	}
 });
 test('parallelogram seg case', () => {
-	const par = parallelogramByCornerSideSide(new Point(0, 0), new Point(1, 0), new Point(1, Point.distanceEpsilon));
-	const par0 = parallelogramByCornerSideSide(new Point(0.5, 0), new Point(2, 1), new Point(2, 1));
-	const par1 = parallelogramByCornerSideSide(new Point(0.5, 0.1), new Point(2, 1), new Point(2, 1));
-	const par2 = parallelogramByCornerSideSide(new Point(0.5, -0.1), new Point(2, 1), new Point(2, 1));
-	const par3 = parallelogramByCornerSideSide(new Point(0.5, -0.1 - Point.distanceEpsilon / 2), new Point(2, 1), new Point(2, 1));
-	expect(intersect(par, par0)).toBe(true);
-	expect(intersect(par, par1)).toBe(false);
-	expect(intersect(par, par2)).toBe(true);
-	expect(intersect(par2, par3)).toBe(true);
+	const par = Parallelogram.parallelogramByCornerSideSide(new Point(0, 0), new Point(1, 0), new Point(1, Point.distanceEpsilon));
+	const par0 = Parallelogram.parallelogramByCornerSideSide(new Point(0.5, 0), new Point(2, 1), new Point(2, 1));
+	const par1 = Parallelogram.parallelogramByCornerSideSide(new Point(0.5, 0.1), new Point(2, 1), new Point(2, 1));
+	const par2 = Parallelogram.parallelogramByCornerSideSide(new Point(0.5, -0.1), new Point(2, 1), new Point(2, 1));
+	const par3 = Parallelogram.parallelogramByCornerSideSide(new Point(0.5, -0.1 - Point.distanceEpsilon / 2), new Point(2, 1), new Point(2, 1));
+	expect(Parallelogram.intersect(par, par0)).toBe(true);
+	expect(Parallelogram.intersect(par, par1)).toBe(false);
+	expect(Parallelogram.intersect(par, par2)).toBe(true);
+	expect(Parallelogram.intersect(par2, par3)).toBe(true);
 });
