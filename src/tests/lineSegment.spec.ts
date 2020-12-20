@@ -55,3 +55,59 @@ test('lineSegment mindist test1', () => {
 
 	expect(Point.closeD(minPerp.dot(ls0dir), 0)).toBeTruthy();
 });
+
+function getUniformMd(a: Point, b: Point, c: Point, d: Point): number {
+	const n = 20;
+	const abDel = b.minus(a).div(n);
+	const cdDel = d.minus(c).div(n);
+	let dist = b.minus(c).length();
+	for (let i = 0; i <= n; i++) {
+		const p = a.add(abDel.mult(i));
+		for (let j = 0; j <= n; j++) {
+			const q = c.add(cdDel.mult(j));
+			const ndist = p.minus(q).length();
+			if (dist > ndist) dist = ndist;
+		}
+	}
+	return dist;
+}
+
+test('lineSegment mindist uniform', () => {
+	const a = new Point(0, 0);
+	const b = new Point(2, 4.2);
+	const c = new Point(1, 0);
+	const d = new Point(2, 3);
+	const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
+	const uniformMd = getUniformMd(a, b, c, d);
+	expect(md.dist <= uniformMd + Point.tolerance).toBeTruthy();
+});
+
+test('lineSegment mindist parallel', () => {
+	const a = new Point(0, 0);
+	const b = new Point(2, 4);
+	const c = new Point(1, 1);
+	const d = new Point(3, 4);
+	const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
+	const uniformMd = getUniformMd(a, b, c, d);
+	expect(md.dist <= uniformMd + Point.tolerance).toBeTruthy();
+});
+
+test('lineSegment mindist parallel', () => {
+	const a = new Point(0, 0);
+	const b = new Point(2, 4);
+	const c = new Point(1, 1);
+	const d = new Point(3, 5);
+	const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
+	const uniformMd = getUniformMd(a, b, c, d);
+	expect(md.dist <= uniformMd + Point.tolerance).toBeTruthy();
+});
+
+test('lineSegment mindist overlap', () => {
+	const a = new Point(0, 0);
+	const b = new Point(2, 4);
+	const c = new Point(1, 2);
+	const d = new Point(3, 6);
+	const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
+	const uniformMd = getUniformMd(a, b, c, d);
+	expect(md.dist <= uniformMd + Point.tolerance).toBeTruthy();
+});
