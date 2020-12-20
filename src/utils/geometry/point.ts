@@ -86,4 +86,10 @@ export class Point {
 	static add(a: Point, b: Point) {
 		return a.add(b);
 	}
+	/// returns this rotated by the angle counterclockwise; does not change "this" value
+	rotate(angle: number): Point {
+		const c = Math.cos(angle);
+		const s = Math.sin(angle);
+		return new Point(c * this.x - s * this.y, s * this.x + c * this.y);
+	}
 }

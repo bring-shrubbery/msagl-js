@@ -19,3 +19,39 @@ test('lineSegment case', () => {
 	console.log(inters0);
 	expect(inters0).toBe(undefined);
 });
+test('lineSegment mindist test', () => {
+	const a = new Point(0, 0);
+	const b = new Point(2, 4);
+	const perp = b.minus(a).rotate(Math.PI / 2);
+	const t = 0.2;
+	const ls = LineSegment.lineSegmentPointPoint(a, b);
+	const ls0start = ls.value(t).add(perp);
+
+	const ls0dir = b.minus(a).rotate(0.1);
+	const ls0 = LineSegment.lineSegmentPointPoint(ls0start, ls0start.add(ls0dir));
+	const md = LineSegment.MinDistBetweenLineSegments(ls.Start(), ls.End(), ls0.Start(), ls0.End());
+	expect(Point.closeD(md.dist, perp.length())).toBe(true);
+	expect(Point.closeD(md.parab, t)).toBeTruthy();
+	expect(Point.closeD(md.parcd, 0)).toBeTruthy();
+});
+test('lineSegment mindist test1', () => {
+	const a = new Point(0, 0);
+	const b = new Point(2, 4);
+	const perp = b.minus(a).rotate(Math.PI / 2);
+	const t = 0.2;
+	const ls = LineSegment.lineSegmentPointPoint(a, b);
+	const ls0start = ls.value(t).add(perp);
+
+	const ls0dir = b.minus(a).rotate(-0.001);
+	const ls0 = LineSegment.lineSegmentPointPoint(ls0start, ls0start.add(ls0dir));
+	const md = LineSegment.MinDistBetweenLineSegments(ls.Start(), ls.End(), ls0.Start(), ls0.End());
+	expect(md.dist < perp.length()).toBeTruthy();
+	expect(Point.closeD(md.parab, 1)).toBeTruthy();
+
+	const lsPoint = ls.value(md.parab);
+	const ls0Point = ls0.value(md.parcd);
+
+	const minPerp = lsPoint.minus(ls0Point);
+
+	expect(Point.closeD(minPerp.dot(ls0dir), 0)).toBeTruthy();
+});
