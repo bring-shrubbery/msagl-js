@@ -1,6 +1,9 @@
+import {ICurve} from '../utils/geometry/icurve';
 import {LineSegment} from '../utils/geometry/lineSegment';
 import {Point} from '../utils/geometry/point';
-test('lineSegment case', () => {
+import {svgDebugWriter} from '../utils/geometry/svgDebugWriter';
+
+test('lineSegment basic case', () => {
 	const a = new LineSegment(0, 0, 1, 1);
 
 	expect(a.value(0)).toStrictEqual(new Point(0, 0));
@@ -19,7 +22,7 @@ test('lineSegment case', () => {
 	console.log(inters0);
 	expect(inters0).toBe(undefined);
 });
-test('lineSegment mindist test', () => {
+test('lineSegment mindist test 0', () => {
 	const a = new Point(0, 0);
 	const b = new Point(2, 4);
 	const perp = b.minus(a).rotate(Math.PI / 2);
@@ -92,7 +95,7 @@ test('lineSegment mindist parallel', () => {
 	expect(md.dist <= uniformMd + Point.tolerance).toBeTruthy();
 });
 
-test('lineSegment mindist parallel', () => {
+test('lineSegment mindist parallel 0', () => {
 	const a = new Point(0, 0);
 	const b = new Point(2, 4);
 	const c = new Point(1, 1);
@@ -110,4 +113,8 @@ test('lineSegment mindist overlap', () => {
 	const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
 	const uniformMd = getUniformMd(a, b, c, d);
 	expect(md.dist <= uniformMd + Point.tolerance).toBeTruthy();
+	const w = new svgDebugWriter();
+	const cs: ICurve[] = [];
+	cs.push(LineSegment.lineSegmentPointPoint(a, b));
+	w.write(cs, 'c:/tmp/try.svg');
 });
