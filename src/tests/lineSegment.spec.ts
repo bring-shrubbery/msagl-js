@@ -1,4 +1,4 @@
-import {ICurve} from '../utils/geometry/icurve';
+// import {ICurve} from '../utils/geometry/icurve';
 import {LineSegment} from '../utils/geometry/lineSegment';
 import {Point} from '../utils/geometry/point';
 import {svgDebugWriter} from '../utils/geometry/svgDebugWriter';
@@ -27,11 +27,11 @@ test('lineSegment mindist test 0', () => {
 	const b = new Point(2, 4);
 	const perp = b.minus(a).rotate(Math.PI / 2);
 	const t = 0.2;
-	const ls = LineSegment.lineSegmentPointPoint(a, b);
+	const ls = LineSegment.lineSegmentStartEnd(a, b);
 	const ls0start = ls.value(t).add(perp);
 
 	const ls0dir = b.minus(a).rotate(0.1);
-	const ls0 = LineSegment.lineSegmentPointPoint(ls0start, ls0start.add(ls0dir));
+	const ls0 = LineSegment.lineSegmentStartEnd(ls0start, ls0start.add(ls0dir));
 	const md = LineSegment.MinDistBetweenLineSegments(ls.Start(), ls.End(), ls0.Start(), ls0.End());
 	expect(Point.closeD(md.dist, perp.length())).toBe(true);
 	expect(Point.closeD(md.parab, t)).toBeTruthy();
@@ -42,11 +42,11 @@ test('lineSegment mindist test1', () => {
 	const b = new Point(2, 4);
 	const perp = b.minus(a).rotate(Math.PI / 2);
 	const t = 0.2;
-	const ls = LineSegment.lineSegmentPointPoint(a, b);
+	const ls = LineSegment.lineSegmentStartEnd(a, b);
 	const ls0start = ls.value(t).add(perp);
 
 	const ls0dir = b.minus(a).rotate(-0.001);
-	const ls0 = LineSegment.lineSegmentPointPoint(ls0start, ls0start.add(ls0dir));
+	const ls0 = LineSegment.lineSegmentStartEnd(ls0start, ls0start.add(ls0dir));
 	const md = LineSegment.MinDistBetweenLineSegments(ls.Start(), ls.End(), ls0.Start(), ls0.End());
 	expect(md.dist < perp.length()).toBeTruthy();
 	expect(Point.closeD(md.parab, 1)).toBeTruthy();
@@ -114,7 +114,11 @@ test('lineSegment mindist overlap', () => {
 	const uniformMd = getUniformMd(a, b, c, d);
 	expect(md.dist <= uniformMd + Point.tolerance).toBeTruthy();
 	const w = new svgDebugWriter();
-	const cs: ICurve[] = [];
-	cs.push(LineSegment.lineSegmentPointPoint(a, b));
-	w.write(cs, 'c:/tmp/try.svg');
+	w.test();
+	w.close();
+
+	// const cs: ICurve[] = [];
+	// cs.push(LineSegment.lineSegmentStartEnd(a, b));
+	// w.write(cs, '/tmp/try.svg');
+	// w.close();
 });

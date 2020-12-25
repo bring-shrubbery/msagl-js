@@ -45,7 +45,7 @@ export class LineSegment implements ICurve {
 		if (Point.close(p1, p2, Point.distanceEpsilon)) {
 			return null;
 		}
-		return LineSegment.lineSegmentPointPoint(p1, p2);
+		return LineSegment.lineSegmentStartEnd(p1, p2);
 	}
 
 	value(t: number): Point {
@@ -81,7 +81,7 @@ export class LineSegment implements ICurve {
 	}
 
 	// construct a line segment
-	static lineSegmentPointPoint(start: Point, end: Point) {
+	static lineSegmentStartEnd(start: Point, end: Point) {
 		return new LineSegment(start.x, start.y, end.x, end.y);
 	}
 
@@ -106,73 +106,73 @@ export class LineSegment implements ICurve {
 	}
 
 	Reverse() {
-		return LineSegment.lineSegmentPointPoint(this.b, this.a);
+		return LineSegment.lineSegmentStartEnd(this.b, this.a);
 	}
 
 	/*      
-            static internal IntersectionInfo Cross(LineSeg coeff, LineSeg side1){
-            IntersectionInfo xx=CrossTwoLines(coeff.Start, coeff.End-coeff.Start,side1.Start, side1.End-side1.Start);
-            if (xx == null)
-            {
-            //parallel segs
-            Point adir=coeff.d1(0);
-            Point bdir=side1.d1(0);
+        static internal IntersectionInfo Cross(LineSeg coeff, LineSeg side1){
+        IntersectionInfo xx=CrossTwoLines(coeff.Start, coeff.End-coeff.Start,side1.Start, side1.End-side1.Start);
+        if (xx == null)
+        {
+        //parallel segs
+        Point adir=coeff.d1(0);
+        Point bdir=side1.d1(0);
 
-            if (adir.Length > bdir.Length)
-            {
-            if (adir.Length > Curve.DistEps)
-            {
-            adir = adir.Normalize();
-            if(Math.Abs((coeff-side1)*adir<Curve.DistEps)){
+        if (adir.Length > bdir.Length)
+        {
+        if (adir.Length > Curve.DistEps)
+        {
+        adir = adir.Normalize();
+        if(Math.Abs((coeff-side1)*adir<Curve.DistEps)){
 
-            }
-            }
-            }
-            return null;
-            }
+        }
+        }
+        }
+        return null;
+        }
 
-            if(xx.Par0>1){
-            if (ApproximateComparer.Close(coeff.End, xx.X))
-            {
-            xx.X = coeff.End;
-            xx.Par0 = 1;
-            }
-            else
-            return null;
-            }
-            else if(xx.Par0<0){
-            if(ApproximateComparer.Close(coeff.Start,xx.X)){
-            xx.X=coeff.Start; 
-            xx.Par0=1;
-            }
-            else
-            return null;
-            }
+        if(xx.Par0>1){
+        if (ApproximateComparer.Close(coeff.End, xx.X))
+        {
+        xx.X = coeff.End;
+        xx.Par0 = 1;
+        }
+        else
+        return null;
+        }
+        else if(xx.Par0<0){
+        if(ApproximateComparer.Close(coeff.Start,xx.X)){
+        xx.X=coeff.Start; 
+        xx.Par0=1;
+        }
+        else
+        return null;
+        }
 
-            if (xx.Par1 > 1)
-            {
-            if (ApproximateComparer.Close(side1.End, xx.X))
-            {
-            xx.X = coeff.End;
-            xx.Par1 = 1;
-            }
-            else
-            return null;
-            }
-            else if (xx.Par1 < 0)
-            {
-            if (ApproximateComparer.Close(side1.Start, xx.X))
-            {
-            xx.X = coeff.Start;
-            xx.Par1 = 1;
-            }
-            else
-            return null;
-            }
+        if (xx.Par1 > 1)
+        {
+        if (ApproximateComparer.Close(side1.End, xx.X))
+        {
+        xx.X = coeff.End;
+        xx.Par1 = 1;
+        }
+        else
+        return null;
+        }
+        else if (xx.Par1 < 0)
+        {
+        if (ApproximateComparer.Close(side1.Start, xx.X))
+        {
+        xx.X = coeff.Start;
+        xx.Par1 = 1;
+        }
+        else
+        return null;
+        }
 
-            return xx;
-            }
-            * */
+        return xx;
+        }
+        * */
 
 	// Returns the curved moved by delta
 	Translate(delta: Point) {
@@ -182,7 +182,7 @@ export class LineSegment implements ICurve {
 
 	// Scale (multiply) from origin by x and y
 	ScaleFromOrigin(xScale: number, yScale: number) {
-		return LineSegment.lineSegmentPointPoint(this.a.scale(xScale, yScale), this.b.scale(xScale, yScale));
+		return LineSegment.lineSegmentStartEnd(this.a.scale(xScale, yScale), this.b.scale(xScale, yScale));
 	}
 
 	// gets the parameter at a specific length from the start along the curve
@@ -195,7 +195,7 @@ export class LineSegment implements ICurve {
 
 	// Return the transformed curve
 	Transform(transformation: PlaneTransformation) {
-		return LineSegment.lineSegmentPointPoint(transformation.MultiplyPoint(this.a), transformation.MultiplyPoint(this.b));
+		return LineSegment.lineSegmentStartEnd(transformation.MultiplyPoint(this.a), transformation.MultiplyPoint(this.b));
 	}
 
 	// returns a parameter t such that the distance between curve[t] and targetPoint is minimal
@@ -224,7 +224,7 @@ export class LineSegment implements ICurve {
 	// clones the curve.
 
 	Clone() {
-		return LineSegment.lineSegmentPointPoint(this.a, this.b);
+		return LineSegment.lineSegmentStartEnd(this.a, this.b);
 	}
 
 	static closestParameterOnLineSegment(point: Point, segmentStart: Point, segmentEnd: Point) {

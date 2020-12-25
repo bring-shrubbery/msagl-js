@@ -1,4 +1,5 @@
 ﻿import {ICurve} from './icurve';
+import {Point} from './point';
 import {LineSegment} from './lineSegment';
 import {Parallelogram} from './parallelogram';
 // Serves to hold a Parallelogram and a ICurve,
@@ -12,83 +13,85 @@ export type PN = {
 	leafBoxesOffset: number;
 	node: PNInternal | PNLeaf | PNBinary;
 };
-type PNBinary = {
+
+export function createPNLeaf(start: number, end: number, box: Parallelogram, seg: ICurve, eps: number): PN {
+	return {
+		parallelogram: box,
+		seg: seg,
+		leafBoxesOffset: eps,
+		node: {
+			low: start,
+			high: end,
+			chord: LineSegment.lineSegmentStartEnd(seg.Start(), seg.End()),
+		},
+	};
+}
+
+export type PNBinary = {
 	leftSon: PN;
 	rightSon: PN;
 };
 
-type PNLeaf = {
+export type PNLeaf = {
 	low: number;
 	high: number;
 	chord: LineSegment;
 };
 
-type PNInternal = {
-	children: [PN];
+export type PNInternal = {
+	children: PN[];
 };
-// export class ParallelogramNode {
-//     seg: ICurve | null;
-//     // The segment bounded by the parallelogram
-//     internal ICurve Seg {
-//     get {
-//         return seg;
-//     }
-//     set {
-//         seg = value;
-//     }
-// }
 
-// number leafBoxesOffset = DefaultLeafBoxesOffset;
+export class ParallelogramNode {
+	//     seg: ICurve | null;
+	//     // The segment bounded by the parallelogram
+	//     internal ICurve Seg {
+	//     get {
+	//         return seg;
+	//     }
+	//     set {
+	//         seg = value;
+	//     }
+	// }
 
-//         static internal number DefaultLeafBoxesOffset = 0.5;
-// // The leafs of this node are as tight as the offset
-// // <value></value>
-// internal number LeafBoxesOffset {
-//     get {
-//         return leafBoxesOffset;
-//     }
-// }
+	// internal ParallelogramNodeOverICurve(ICurve s, number leafBoxesOffset) {
+	//     seg = s;
+	//     this.leafBoxesOffset = leafBoxesOffset;
+	// }
 
-// internal ParallelogramNodeOverICurve(ICurve s, number leafBoxesOffset) {
-//     seg = s;
-//     this.leafBoxesOffset = leafBoxesOffset;
-// }
+	// //
+	//         static public ParallelogramNodeOverICurve CreateParallelogramNodeForWholeCurveSeg(ICurve segment) {
+	//     ValidateArg.IsNotNull(segment, "segment");
+	//     return CreateParallelogramNodeForCurveSeg(segment.ParStart, segment.ParEnd, segment, DefaultLeafBoxesOffset);
+	// }
 
-// //
-//         static public ParallelogramNodeOverICurve CreateParallelogramNodeForCurveSegment(ICurve segment) {
-//     ValidateArg.IsNotNull(segment, "segment");
-//     return CreateParallelogramNodeForCurveSeg(segment.ParStart, segment.ParEnd, segment, DefaultLeafBoxesOffset);
-// }
+	//         static bool WithinEpsilon(ICurve seg, number start, number end, number eps) {
+	//     if (seg is LineSegment)
+	//     return true;
 
-//         static bool WithinEpsilon(ICurve seg, number start, number end, number eps) {
-//     if (seg is LineSegment)
-//     return true;
+	//     int n = 3; //hack !!!! but maybe can be proven for Bezier curves and other regular curves
+	//     number d = (end - start) / n;
+	//     Point s = seg[start];
+	//     Point e = seg[end];
 
-//     int n = 3; //hack !!!! but maybe can be proven for Bezier curves and other regular curves
-//     number d = (end - start) / n;
-//     Point s = seg[start];
-//     Point e = seg[end];
+	//     number d0 = DistToSegm(seg[start + d], s, e);
+	//     number d1 = DistToSegm(seg[start + d * (n - 1)], s, e);
+	//     //number d1d1 = seg.d1(start) * seg.d1(end);
 
-//     number d0 = DistToSegm(seg[start + d], s, e);
-//     number d1 = DistToSegm(seg[start + d * (n - 1)], s, e);
-//     //number d1d1 = seg.d1(start) * seg.d1(end);
+	//     return d0 < eps
+	//         &&
+	//         d1 < eps;// && d1d1 > 0;
 
-//     return d0 < eps
-//         &&
-//         d1 < eps;// && d1d1 > 0;
+	// }
 
-// }
-
-// internal static number DistToSegm(Point p, Point s, Point e) {
-
-//     Point l = e - s;
-//     if (l.Length < ApproximateComparer.IntersectionEpsilon)
-//         return (p - (0.5f * (s + e))).Length;
-//     Point perp = new Point(-l.Y, l.X);
-//     perp = perp * (1.0f / perp.Length);
-//     return Math.Abs((p - s) * perp);
-
-// }
+	static distToSegm(p: Point, s: Point, e: Point): number {
+		const l = e.minus(s);
+		if (l.length() < Point.intersectionEpsilon) return p.minus(s.add(e).div(2)).length();
+		let perp = new Point(-l.y, l.x);
+		perp = perp.mult(1 / perp.length());
+		return Math.abs(p.minus(s).dot(perp));
+	}
+}
 
 // // Creates a bounding parallelogram on a curve segment
 // // We suppose here that the segment is convex or concave from start to end,

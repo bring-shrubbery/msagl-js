@@ -15,10 +15,12 @@
   "dependencies": {
     "@types/graphlib": "2.1.6",
     "@types/lodash": "4.14.157",
+    "file-system": "^2.2.2",
     "graphlib": "2.1.8",
     "lodash": "4.17.19",
     "tsc": "1.20150623.0",
-    "typescript": "3.9.6"
+    "typescript": "3.9.6",
+    "xml-writer": "^1.7.0"
   },
   "devDependencies": {
     "@types/jest": "26.0.4",
