@@ -11,7 +11,7 @@ import {ClosestPointOnCurve} from './closestPointOnCurve';
 export class Ellipse implements ICurve {
 	box: Rectangle;
 
-	parallelogramNodeOverICurve: PN;
+	pNode: PN;
 	aAxis: Point;
 	bAxis: Point;
 	center: Point;
@@ -27,7 +27,7 @@ export class Ellipse implements ICurve {
 	}
 
 	// offsets the curve in the given direction
-	OffsetCurve(offset: number, dir: Point): ICurve {
+	offsetCurve(offset: number, dir: Point): ICurve {
 		//is dir inside or outside of the ellipse
 		const d = dir.minus(this.center);
 		const angle = Point.angle(this.aAxis, d);
@@ -45,7 +45,7 @@ export class Ellipse implements ICurve {
 	}
 
 	// Reverse the ellipe: not implemented.
-	Reverse() {
+	reverse() {
 		return null; // throw new Exception("not implemented");
 	}
 
@@ -63,19 +63,19 @@ export class Ellipse implements ICurve {
 		this.aAxis = axis0;
 		this.bAxis = axis1;
 		this.center = center;
-		this.parallelogramNodeOverICurve = null;
+		this.pNode = null;
 		this.SetBoundingBox();
 	}
 
-	Start() {
+	start() {
 		return this.value(this.parStart);
 	}
-	End() {
+	end() {
 		return this.value(this.parEnd);
 	}
 
 	// Trims the curve
-	Trim(start: number, end: number): ICurve {
+	trim(start: number, end: number): ICurve {
 		// Debug.Assert(start <= end);
 		// Debug.Assert(start >= ParStart - ApproximateComparer.Tolerance);
 		// Debug.Assert(end <= ParEnd + ApproximateComparer.Tolerance);
@@ -83,12 +83,12 @@ export class Ellipse implements ICurve {
 	}
 
 	// Not Implemented: Returns the trimmed curve, wrapping around the end if start is greater than end.
-	TrimWithWrap(start: number, end: number): ICurve {
+	trimWithWrap(start: number, end: number): ICurve {
 		return null;
 	}
 
 	// The bounding box of the ellipse
-	BoundingBox() {
+	boundingBox() {
 		return this.box;
 	}
 
@@ -98,24 +98,24 @@ export class Ellipse implements ICurve {
 	}
 
 	// first derivative
-	Derivative(t: number) {
+	derivative(t: number) {
 		return Point.mkPoint(-Math.sin(t), this.aAxis, Math.cos(t), this.bAxis);
 	}
 
 	// second derivative
-	SecondDerivative(t: number) {
+	secondDerivative(t: number) {
 		return Point.mkPoint(-Math.cos(t), this.aAxis, -Math.sin(t), this.bAxis);
 	}
 
 	// third derivative
-	ThirdDerivative(t: number) {
+	thirdDerivative(t: number) {
 		return Point.mkPoint(Math.sin(t), this.aAxis, -Math.cos(t), this.bAxis);
 	}
 
 	// a tree of ParallelogramNodes covering the edge
-	ParallelogramNodeOverICurve() {
-		if (this.parallelogramNodeOverICurve != null) return this.parallelogramNodeOverICurve;
-		return (this.parallelogramNodeOverICurve = Ellipse.createParallelogramNodeForCurveSeg(this));
+	pNodeOverICurve() {
+		if (this.pNode != null) return this.pNode;
+		return (this.pNode = Ellipse.createParallelogramNodeForCurveSeg(this));
 	}
 
 	static CreateNodeWithSegmentSplit(start: number, end: number, ell: Ellipse, eps: number) {
@@ -138,7 +138,7 @@ export class Ellipse implements ICurve {
 	}
 
 	static CreateParallelogramNodeForCurveSeg(start: number, end: number, seg: Ellipse, eps: number): PN {
-		const closedSeg = start == seg.parStart && end == seg.parEnd && Point.close(seg.Start(), seg.End(), Point.distanceEpsilon);
+		const closedSeg = start == seg.parStart && end == seg.parEnd && Point.close(seg.start(), seg.end(), Point.distanceEpsilon);
 		if (closedSeg) return Ellipse.CreateNodeWithSegmentSplit(start, end, seg, eps);
 
 		const s = seg[start];
@@ -152,7 +152,7 @@ export class Ellipse implements ICurve {
 			end - start < GeomConstants.lineSegmentThreshold
 		) {
 			const ls = LineSegment.lineSegmentStartEnd(s, e);
-			const pn: PN = ls.ParallelogramNodeOverICurve();
+			const pn: PN = ls.pNodeOverICurve();
 			pn.seg = seg as ICurve;
 			const leaf = pn.node as PNLeaf;
 			leaf.low = start;
@@ -171,8 +171,8 @@ export class Ellipse implements ICurve {
 	}
 
 	static CreateParallelogramOnSubSeg(start: number, end: number, seg: Ellipse, box: Parallelogram): boolean {
-		let tan1 = seg.Derivative(start);
-		const tan2 = seg.Derivative(end);
+		let tan1 = seg.derivative(start);
+		const tan2 = seg.derivative(end);
 		const tan2Perp = new Point(-tan2.y, tan2.x);
 		const corner = seg[start];
 		const e = seg[end];
@@ -222,7 +222,7 @@ export class Ellipse implements ICurve {
 		if (Point.closeD(this.parStart, 0) && Point.closeD(this.parEnd, Math.PI * 2)) this.box = this.FullBox();
 		else {
 			//the idea is that the box of an arc staying in one quadrant is just the box of the start and the end point of the arc
-			this.box = Rectangle.RectanglePointPoint(this.Start(), this.End());
+			this.box = Rectangle.RectanglePointPoint(this.start(), this.end());
 			//now Start and End are in the box, we need just add all k*P/2 that are in between
 			let t: number;
 			for (let i = Math.ceil(this.parStart / (Math.PI / 2)); (t = (i * Math.PI) / 2) < this.parEnd; i++)
@@ -245,19 +245,19 @@ export class Ellipse implements ICurve {
 	}
 
 	// Moves the ellipse to the delta vector
-	Translate(delta: Point) {
+	translate(delta: Point) {
 		this.center.move(delta);
 		this.box.Center = this.box.Center.add(delta);
-		this.parallelogramNodeOverICurve = null;
+		this.pNode = null;
 	}
 
 	// Scales the ellipse by x and by y
-	ScaleFromOrigin(xScale: number, yScale: number) {
+	scaleFromOrigin(xScale: number, yScale: number) {
 		return new Ellipse(this.parStart, this.parEnd, this.aAxis.mult(xScale), this.bAxis.mult(yScale), this.center.scale(xScale, yScale));
 	}
 
 	//
-	GetParameterAtLength(length: number) {
+	getParameterAtLength(length: number) {
 		//todo: slow version!
 		const eps = 0.001;
 
@@ -267,7 +267,7 @@ export class Ellipse implements ICurve {
 		const lenminsu = length - eps;
 		while (u - l > Point.distanceEpsilon) {
 			const m = 0.5 * (u + l);
-			const len = this.LengthPartial(this.parStart, m);
+			const len = this.lengthPartial(this.parStart, m);
 			if (len > lenplus) u = m;
 			else if (len < lenminsu) l = m;
 			else return m;
@@ -276,7 +276,7 @@ export class Ellipse implements ICurve {
 	}
 
 	// Transforms the ellipse
-	Transform(transformation: PlaneTransformation) {
+	transform(transformation: PlaneTransformation) {
 		if (transformation != null) {
 			const ap = transformation.MultiplyPoint(this.aAxis).minus(transformation.Offset());
 			const bp = transformation.MultiplyPoint(this.bAxis).minus(transformation.Offset());
@@ -287,7 +287,7 @@ export class Ellipse implements ICurve {
 
 	// returns a parameter t such that the distance between curve[t] and targetPoint is minimal
 	// and t belongs to the closed segment [low,high]
-	ClosestParameterWithinBounds(targetPoint: Point, low: number, high: number) {
+	closestParameterWithinBounds(targetPoint: Point, low: number, high: number) {
 		const numberOfTestPoints = 8;
 		const t = (high - low) / (numberOfTestPoints + 1);
 		let closest = low;
@@ -308,21 +308,21 @@ export class Ellipse implements ICurve {
 	}
 
 	// return length of the curve segment [start,end] : not implemented
-	LengthPartial(start: number, end: number) {
-		return Curve.LengthWithInterpolationAndThreshold(this.Trim(start, end), GeomConstants.lineSegmentThreshold / 100);
+	lengthPartial(start: number, end: number) {
+		return Curve.LengthWithInterpolationAndThreshold(this.trim(start, end), GeomConstants.lineSegmentThreshold / 100);
 	}
 
-	Length() {
+	length() {
 		return Curve.LengthWithInterpolation(this);
 	}
 
 	// clones the curve.
-	Clone() {
+	clone() {
 		return new Ellipse(this.parStart, this.parEnd, this.aAxis, this.bAxis, this.center);
 	}
 
 	// returns a parameter t such that the distance between curve[t] and a is minimal
-	ClosestParameter(targetPoint: Point) {
+	closestParameter(targetPoint: Point) {
 		let savedParStart = 0;
 		const numberOfTestPoints = 8;
 		const t = (this.parEnd - this.parStart) / (numberOfTestPoints + 1);
@@ -350,27 +350,27 @@ export class Ellipse implements ICurve {
 	}
 
 	// left derivative at t
-	LeftDerivative(t: number) {
-		return this.Derivative(t);
+	leftDerivative(t: number) {
+		return this.derivative(t);
 	}
 
 	// right derivative at t
-	RightDerivative(t: number) {
-		return this.Derivative(t);
+	rightDerivative(t: number) {
+		return this.derivative(t);
 	}
 
 	//
-	Curvature(t: number) {
+	curvature(t: number) {
 		throw 'NotImplementedException()';
 		return 0;
 	}
 
-	CurvatureDerivative(t: number) {
+	curvatureDerivative(t: number) {
 		throw 'NotImplementedException();';
 		return 0;
 	}
 
-	CurvatureSecondDerivative(t: number) {
+	curvatureSecondDerivative(t: number) {
 		throw 'NotImplementedException()';
 		return 0;
 	}

@@ -22,7 +22,7 @@ export function createPNLeaf(start: number, end: number, box: Parallelogram, seg
 		node: {
 			low: start,
 			high: end,
-			chord: LineSegment.lineSegmentStartEnd(seg.Start(), seg.End()),
+			chord: LineSegment.lineSegmentStartEnd(seg.start(), seg.end()),
 		},
 	};
 }

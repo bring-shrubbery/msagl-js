@@ -6,38 +6,32 @@ import {Rectangle} from './rectangle';
 export class LineSegment implements ICurve {
 	a: Point; //the line goes from a to b
 	b: Point; // the line end point
+	parStart: number;
+	parEnd: number;
 	// Offsets the curve in the direction of dir
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	OffsetCurve(offset: number, dir: Point) {
+	offsetCurve(offset: number, dir: Point) {
 		return null;
 	}
 	// the line start point
-	Start() {
+	start() {
 		return this.a;
 	}
-	End() {
+	end() {
 		return this.b;
-	}
-
-	// the start parameter
-	ParStart() {
-		return 0;
-	}
-
-	// the end parameter
-	ParEnd() {
-		return 1;
 	}
 
 	constructor(x: number, y: number, x1: number, y1: number) {
 		this.a = new Point(x, y);
 		this.b = new Point(x1, y1);
+		this.parStart = 0;
+		this.parEnd = 1;
 	}
 
 	// Returns the trim curve
-	Trim(start: number, end: number): ICurve {
-		start = Math.max(this.ParStart(), start);
-		end = Math.min(this.ParEnd(), end);
+	trim(start: number, end: number): ICurve {
+		start = Math.max(this.parStart, start);
+		end = Math.min(this.parEnd, end);
 		if (start > end) throw 'wrong params in trimming';
 
 		const p1 = this.value(start);
@@ -53,23 +47,23 @@ export class LineSegment implements ICurve {
 	}
 	// Not Implemented: Returns the trimmed curve, wrapping around the end if start is greater than end.
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	TrimWithWrap(start: number, end: number) {
+	trimWithWrap(start: number, end: number) {
 		return null;
 	} // not implemented
 
 	// A tree of ParallelogramNodes covering the curve.
 	// This tree is used in curve intersections routines.
 	// <value></value>
-	ParallelogramNodeOverICurve() {
+	pNodeOverICurve() {
 		const side = this.b.minus(this.a).mult(0.5);
 		return {
 			parallelogram: Parallelogram.parallelogramByCornerSideSide(this.a, side, side),
-			seg: this.Clone(),
+			seg: this.clone(),
 			leafBoxesOffset: 0,
 			node: {
 				low: 0,
 				high: 1,
-				chord: this.Clone(),
+				chord: this.clone(),
 			},
 		};
 	}
@@ -91,102 +85,102 @@ export class LineSegment implements ICurve {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	Derivative(t: number) {
+	derivative(t: number) {
 		return this.b.minus(this.a);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	SecondDerivative(t: number) {
+	secondDerivative(t: number) {
 		return new Point(0, 0);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	ThirdDerivative(t: number) {
+	thirdDerivative(t: number) {
 		return new Point(0, 0);
 	}
 
-	Reverse() {
+	reverse() {
 		return LineSegment.lineSegmentStartEnd(this.b, this.a);
 	}
 
 	/*      
-        static internal IntersectionInfo Cross(LineSeg coeff, LineSeg side1){
-        IntersectionInfo xx=CrossTwoLines(coeff.Start, coeff.End-coeff.Start,side1.Start, side1.End-side1.Start);
-        if (xx == null)
-        {
-        //parallel segs
-        Point adir=coeff.d1(0);
-        Point bdir=side1.d1(0);
+    static internal IntersectionInfo Cross(LineSeg coeff, LineSeg side1){
+    IntersectionInfo xx=CrossTwoLines(coeff.Start, coeff.End-coeff.Start,side1.Start, side1.End-side1.Start);
+    if (xx == null)
+    {
+    //parallel segs
+    Point adir=coeff.d1(0);
+    Point bdir=side1.d1(0);
 
-        if (adir.Length > bdir.Length)
-        {
-        if (adir.Length > Curve.DistEps)
-        {
-        adir = adir.Normalize();
-        if(Math.Abs((coeff-side1)*adir<Curve.DistEps)){
+    if (adir.Length > bdir.Length)
+    {
+    if (adir.Length > Curve.DistEps)
+    {
+    adir = adir.Normalize();
+    if(Math.Abs((coeff-side1)*adir<Curve.DistEps)){
 
-        }
-        }
-        }
-        return null;
-        }
+    }
+    }
+    }
+    return null;
+    }
 
-        if(xx.Par0>1){
-        if (ApproximateComparer.Close(coeff.End, xx.X))
-        {
-        xx.X = coeff.End;
-        xx.Par0 = 1;
-        }
-        else
-        return null;
-        }
-        else if(xx.Par0<0){
-        if(ApproximateComparer.Close(coeff.Start,xx.X)){
-        xx.X=coeff.Start; 
-        xx.Par0=1;
-        }
-        else
-        return null;
-        }
+    if(xx.Par0>1){
+    if (ApproximateComparer.Close(coeff.End, xx.X))
+    {
+    xx.X = coeff.End;
+    xx.Par0 = 1;
+    }
+    else
+    return null;
+    }
+    else if(xx.Par0<0){
+    if(ApproximateComparer.Close(coeff.Start,xx.X)){
+    xx.X=coeff.Start; 
+    xx.Par0=1;
+    }
+    else
+    return null;
+    }
 
-        if (xx.Par1 > 1)
-        {
-        if (ApproximateComparer.Close(side1.End, xx.X))
-        {
-        xx.X = coeff.End;
-        xx.Par1 = 1;
-        }
-        else
-        return null;
-        }
-        else if (xx.Par1 < 0)
-        {
-        if (ApproximateComparer.Close(side1.Start, xx.X))
-        {
-        xx.X = coeff.Start;
-        xx.Par1 = 1;
-        }
-        else
-        return null;
-        }
+    if (xx.Par1 > 1)
+    {
+    if (ApproximateComparer.Close(side1.End, xx.X))
+    {
+    xx.X = coeff.End;
+    xx.Par1 = 1;
+    }
+    else
+    return null;
+    }
+    else if (xx.Par1 < 0)
+    {
+    if (ApproximateComparer.Close(side1.Start, xx.X))
+    {
+    xx.X = coeff.Start;
+    xx.Par1 = 1;
+    }
+    else
+    return null;
+    }
 
-        return xx;
-        }
-        * */
+    return xx;
+    }
+    * */
 
 	// Returns the curved moved by delta
-	Translate(delta: Point) {
+	translate(delta: Point) {
 		this.a.move(delta);
 		this.b.move(delta);
 	}
 
 	// Scale (multiply) from origin by x and y
-	ScaleFromOrigin(xScale: number, yScale: number) {
+	scaleFromOrigin(xScale: number, yScale: number) {
 		return LineSegment.lineSegmentStartEnd(this.a.scale(xScale, yScale), this.b.scale(xScale, yScale));
 	}
 
 	// gets the parameter at a specific length from the start along the curve
-	GetParameterAtLength(length: number): number {
+	getParameterAtLength(length: number): number {
 		const len = this.b.minus(this.a).length();
 		if (len < Point.tolerance) return 0;
 		const t = length / len;
@@ -194,36 +188,36 @@ export class LineSegment implements ICurve {
 	}
 
 	// Return the transformed curve
-	Transform(transformation: PlaneTransformation) {
+	transform(transformation: PlaneTransformation) {
 		return LineSegment.lineSegmentStartEnd(transformation.MultiplyPoint(this.a), transformation.MultiplyPoint(this.b));
 	}
 
 	// returns a parameter t such that the distance between curve[t] and targetPoint is minimal
 	// and t belongs to the closed segment [low,high]
-	ClosestParameterWithinBounds(targetPoint: Point, low: number, high: number) {
-		let t = this.ClosestParameter(targetPoint);
+	closestParameterWithinBounds(targetPoint: Point, low: number, high: number) {
+		let t = this.closestParameter(targetPoint);
 		if (t < low) t = low;
 		if (t > high) t = high;
 		return t;
 	}
 
 	// return length of the curve segment [start,end]
-	LengthPartial(start: number, end: number) {
+	lengthPartial(start: number, end: number) {
 		return this.value(end).minus(this.value(start)).length();
 	}
 
 	// Get the length of the curve
-	Length() {
+	length() {
 		return this.a.minus(this.b).length();
 	}
 	// The bounding box of the line
-	BoundingBox() {
+	boundingBox() {
 		return Rectangle.RectanglePointPoint(this.a, this.b);
 	}
 
 	// clones the curve.
 
-	Clone() {
+	clone() {
 		return LineSegment.lineSegmentStartEnd(this.a, this.b);
 	}
 
@@ -240,17 +234,17 @@ export class LineSegment implements ICurve {
 	}
 
 	// returns a parameter t such that the distance between curve[t] and a is minimal
-	ClosestParameter(targetPoint: Point) {
+	closestParameter(targetPoint: Point) {
 		return LineSegment.closestParameterOnLineSegment(targetPoint, this.a, this.b);
 	}
 	// left derivative at t
-	LeftDerivative(t: number) {
-		return this.Derivative(t);
+	leftDerivative(t: number) {
+		return this.derivative(t);
 	}
 
 	// right derivative at t
-	RightDerivative(t: number) {
-		return this.Derivative(t);
+	rightDerivative(t: number) {
+		return this.derivative(t);
 	}
 	// returns true if segments are not parallel and are intesecting
 	static IntersectPPPP(a: Point, b: Point, c: Point, d: Point): Point | undefined {
@@ -266,17 +260,17 @@ export class LineSegment implements ICurve {
 
 	//
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	Curvature(t: number) {
+	curvature(t: number) {
 		return 0;
 	}
 	//
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	CurvatureDerivative(t: number) {
+	curvatureDerivative(t: number) {
 		return 0;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	CurvatureSecondDerivative(_: number) {
+	curvatureSecondDerivative(_: number) {
 		return 0;
 	}
 
