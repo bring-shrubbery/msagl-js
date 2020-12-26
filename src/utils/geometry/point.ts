@@ -1,8 +1,6 @@
 import {LinearSystem2} from './linearSystem';
+import {GeomConstants} from './geomConstants';
 export class Point {
-	static intersectionEpsilon = 0.0001;
-	static distanceEpsilon = Math.pow(10, -6);
-	static tolerance = 1.0e-8;
 	dot(a: Point): number {
 		return this.x * a.x + this.y * a.y;
 	}
@@ -14,7 +12,7 @@ export class Point {
 	}
 	static closeD(a: number, b: number): boolean {
 		const d = a - b;
-		return -Point.distanceEpsilon <= d && Point.distanceEpsilon >= d;
+		return -GeomConstants.distanceEpsilon <= d && GeomConstants.distanceEpsilon >= d;
 	}
 	normalize() {
 		const l = this.length();
@@ -58,7 +56,7 @@ export class Point {
 		const ba = b.minus(a);
 		const cd = c.minus(d);
 		const ca = c.minus(a);
-		const eps = Point.tolerance;
+		const eps = GeomConstants.tolerance;
 		const ret = LinearSystem2.Solve(ba.x, cd.x, ca.x, ba.y, cd.y, ca.y);
 		if (ret != undefined && ret.x > -eps && ret.x < 1.0 + eps && ret.y > -eps && ret.y < 1.0 + eps) {
 			return a.add(ba.mult(ret.x));
@@ -111,20 +109,22 @@ export class Point {
 		const cross = ax * by - ay * bx;
 		const dot = ax * bx + ay * by;
 
-		if (Math.abs(dot) < Point.tolerance) {
-			if (Math.abs(cross) < Point.tolerance) return 0;
+		if (Math.abs(dot) < GeomConstants.tolerance) {
+			if (Math.abs(cross) < GeomConstants.tolerance) return 0;
 
-			if (cross < -Point.tolerance) return (3 * Math.PI) / 2;
+			if (cross < -GeomConstants.tolerance) return (3 * Math.PI) / 2;
 			return Math.PI / 2;
 		}
 
-		if (Math.abs(cross) < Point.tolerance) {
-			if (dot < -Point.tolerance) return Math.PI;
+		if (Math.abs(cross) < GeomConstants.tolerance) {
+			if (dot < -GeomConstants.tolerance) return Math.PI;
 			return 0.0;
 		}
 
 		const atan2 = Math.atan2(cross, dot);
-		if (cross >= -Point.tolerance) return atan2;
+		if (cross >= -GeomConstants.tolerance) return atan2;
 		return Math.PI * 2.0 + atan2;
 	}
 }
+
+// todo add tests for 'angle'

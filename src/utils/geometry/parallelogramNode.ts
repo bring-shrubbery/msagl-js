@@ -2,6 +2,8 @@
 import {Point} from './point';
 import {LineSegment} from './lineSegment';
 import {Parallelogram} from './parallelogram';
+import {GeomConstants} from './geomConstants';
+
 // Serves to hold a Parallelogram and a ICurve,
 // and is used in curve intersections routines.
 // The node can be a top of the hierarchy if its sons are non-nulls.
@@ -86,7 +88,7 @@ export class ParallelogramNode {
 
 	static distToSegm(p: Point, s: Point, e: Point): number {
 		const l = e.minus(s);
-		if (l.length() < Point.intersectionEpsilon) return p.minus(s.add(e).div(2)).length();
+		if (l.length() < GeomConstants.intersectionEpsilon) return p.minus(s.add(e).div(2)).length();
 		let perp = new Point(-l.y, l.x);
 		perp = perp.mult(1 / perp.length());
 		return Math.abs(p.minus(s).dot(perp));

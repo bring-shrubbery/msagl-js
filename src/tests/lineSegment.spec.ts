@@ -1,4 +1,5 @@
 // import {ICurve} from '../utils/geometry/icurve';
+import {GeomConstants} from '../utils/geometry/geomConstants';
 import {LineSegment} from '../utils/geometry/lineSegment';
 import {Point} from '../utils/geometry/point';
 import {svgDebugWriter} from '../utils/geometry/svgDebugWriter';
@@ -9,14 +10,14 @@ test('lineSegment basic case', () => {
 	expect(a.value(0)).toStrictEqual(new Point(0, 0));
 	expect(a.value(0)).toStrictEqual(a.start());
 	expect(a.value(1)).toStrictEqual(a.end());
-	expect(Point.close(a.value(0.5), a.start().add(a.end()).div(2), Point.distanceEpsilon)).toBe(true);
+	expect(Point.close(a.value(0.5), a.start().add(a.end()).div(2), GeomConstants.distanceEpsilon)).toBe(true);
 	const t = 0.2;
-	expect(Point.close(a.value(t), a.start().add(a.end().minus(a.start()).mult(t)), Point.distanceEpsilon)).toBe(true);
+	expect(Point.close(a.value(t), a.start().add(a.end().minus(a.start()).mult(t)), GeomConstants.distanceEpsilon)).toBe(true);
 	const p0 = new Point(1, 1);
 	const p1 = new Point(10, 10);
 	const p2 = new Point(10, -10);
 	const intersection = LineSegment.IntersectPPPP(p0, p1, p0, p2);
-	expect(Point.close(intersection, p0, Point.distanceEpsilon)).toBe(true);
+	expect(Point.close(intersection, p0, GeomConstants.distanceEpsilon)).toBe(true);
 	const inters0 = LineSegment.IntersectPPPP(new Point(1, 1.1), p1, p0, p2);
 	console.log('intersection = ');
 	console.log(inters0);
@@ -82,7 +83,7 @@ test('lineSegment mindist uniform', () => {
 	const d = new Point(2, 3);
 	const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
 	const uniformMd = getUniformMd(a, b, c, d);
-	expect(md.dist <= uniformMd + Point.tolerance).toBeTruthy();
+	expect(md.dist <= uniformMd + GeomConstants.tolerance).toBeTruthy();
 });
 
 test('lineSegment mindist parallel', () => {
@@ -92,7 +93,7 @@ test('lineSegment mindist parallel', () => {
 	const d = new Point(3, 4);
 	const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
 	const uniformMd = getUniformMd(a, b, c, d);
-	expect(md.dist <= uniformMd + Point.tolerance).toBeTruthy();
+	expect(md.dist <= uniformMd + GeomConstants.tolerance).toBeTruthy();
 });
 
 test('lineSegment mindist parallel 0', () => {
@@ -102,7 +103,7 @@ test('lineSegment mindist parallel 0', () => {
 	const d = new Point(3, 5);
 	const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
 	const uniformMd = getUniformMd(a, b, c, d);
-	expect(md.dist <= uniformMd + Point.tolerance).toBeTruthy();
+	expect(md.dist <= uniformMd + GeomConstants.tolerance).toBeTruthy();
 });
 
 test('lineSegment mindist overlap', () => {
@@ -112,7 +113,7 @@ test('lineSegment mindist overlap', () => {
 	const d = new Point(3, 6);
 	const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
 	const uniformMd = getUniformMd(a, b, c, d);
-	expect(md.dist <= uniformMd + Point.tolerance).toBeTruthy();
+	expect(md.dist <= uniformMd + GeomConstants.tolerance).toBeTruthy();
 	const w = new svgDebugWriter();
 	w.test();
 	w.close();

@@ -3,6 +3,8 @@ import {Point} from './point';
 import {Parallelogram} from './parallelogram';
 import {PlaneTransformation} from './planeTransformation';
 import {Rectangle} from './rectangle';
+import {GeomConstants} from './geomConstants';
+
 export class LineSegment implements ICurve {
 	a: Point; //the line goes from a to b
 	b: Point; // the line end point
@@ -36,7 +38,7 @@ export class LineSegment implements ICurve {
 
 		const p1 = this.value(start);
 		const p2 = this.value(end);
-		if (Point.close(p1, p2, Point.distanceEpsilon)) {
+		if (Point.close(p1, p2, GeomConstants.distanceEpsilon)) {
 			return null;
 		}
 		return LineSegment.lineSegmentStartEnd(p1, p2);
@@ -104,69 +106,69 @@ export class LineSegment implements ICurve {
 	}
 
 	/*      
-    static internal IntersectionInfo Cross(LineSeg coeff, LineSeg side1){
-    IntersectionInfo xx=CrossTwoLines(coeff.Start, coeff.End-coeff.Start,side1.Start, side1.End-side1.Start);
-    if (xx == null)
-    {
-    //parallel segs
-    Point adir=coeff.d1(0);
-    Point bdir=side1.d1(0);
+static internal IntersectionInfo Cross(LineSeg coeff, LineSeg side1){
+IntersectionInfo xx=CrossTwoLines(coeff.Start, coeff.End-coeff.Start,side1.Start, side1.End-side1.Start);
+if (xx == null)
+{
+//parallel segs
+Point adir=coeff.d1(0);
+Point bdir=side1.d1(0);
 
-    if (adir.Length > bdir.Length)
-    {
-    if (adir.Length > Curve.DistEps)
-    {
-    adir = adir.Normalize();
-    if(Math.Abs((coeff-side1)*adir<Curve.DistEps)){
+if (adir.Length > bdir.Length)
+{
+if (adir.Length > Curve.DistEps)
+{
+adir = adir.Normalize();
+if(Math.Abs((coeff-side1)*adir<Curve.DistEps)){
 
-    }
-    }
-    }
-    return null;
-    }
+}
+}
+}
+return null;
+}
 
-    if(xx.Par0>1){
-    if (ApproximateComparer.Close(coeff.End, xx.X))
-    {
-    xx.X = coeff.End;
-    xx.Par0 = 1;
-    }
-    else
-    return null;
-    }
-    else if(xx.Par0<0){
-    if(ApproximateComparer.Close(coeff.Start,xx.X)){
-    xx.X=coeff.Start; 
-    xx.Par0=1;
-    }
-    else
-    return null;
-    }
+if(xx.Par0>1){
+if (ApproximateComparer.Close(coeff.End, xx.X))
+{
+xx.X = coeff.End;
+xx.Par0 = 1;
+}
+else
+return null;
+}
+else if(xx.Par0<0){
+if(ApproximateComparer.Close(coeff.Start,xx.X)){
+xx.X=coeff.Start; 
+xx.Par0=1;
+}
+else
+return null;
+}
 
-    if (xx.Par1 > 1)
-    {
-    if (ApproximateComparer.Close(side1.End, xx.X))
-    {
-    xx.X = coeff.End;
-    xx.Par1 = 1;
-    }
-    else
-    return null;
-    }
-    else if (xx.Par1 < 0)
-    {
-    if (ApproximateComparer.Close(side1.Start, xx.X))
-    {
-    xx.X = coeff.Start;
-    xx.Par1 = 1;
-    }
-    else
-    return null;
-    }
+if (xx.Par1 > 1)
+{
+if (ApproximateComparer.Close(side1.End, xx.X))
+{
+xx.X = coeff.End;
+xx.Par1 = 1;
+}
+else
+return null;
+}
+else if (xx.Par1 < 0)
+{
+if (ApproximateComparer.Close(side1.Start, xx.X))
+{
+xx.X = coeff.Start;
+xx.Par1 = 1;
+}
+else
+return null;
+}
 
-    return xx;
-    }
-    * */
+return xx;
+}
+* */
 
 	// Returns the curved moved by delta
 	translate(delta: Point) {
@@ -182,7 +184,7 @@ export class LineSegment implements ICurve {
 	// gets the parameter at a specific length from the start along the curve
 	getParameterAtLength(length: number): number {
 		const len = this.b.minus(this.a).length();
-		if (len < Point.tolerance) return 0;
+		if (len < GeomConstants.tolerance) return 0;
 		const t = length / len;
 		return t > 1 ? 1 : t < 0 ? 0 : t;
 	}
@@ -225,10 +227,10 @@ export class LineSegment implements ICurve {
 		const bc = segmentEnd.minus(segmentStart);
 		const ba = point.minus(segmentStart);
 		const c1 = bc.dot(ba);
-		if (c1 <= 0.0 + Point.tolerance) return 0;
+		if (c1 <= 0.0 + GeomConstants.tolerance) return 0;
 
 		const c2 = bc.dot(bc);
-		if (c2 <= c1 + Point.tolerance) return 1;
+		if (c2 <= c1 + GeomConstants.tolerance) return 1;
 
 		return c1 / c2;
 	}
@@ -255,7 +257,7 @@ export class LineSegment implements ICurve {
 	}
 
 	static XIsBetweenPoints(a: Point, b: Point, x: Point): boolean {
-		return a.minus(x).dot(b.minus(x)) <= Point.distanceEpsilon;
+		return a.minus(x).dot(b.minus(x)) <= GeomConstants.distanceEpsilon;
 	}
 
 	//
@@ -294,7 +296,7 @@ export class LineSegment implements ICurve {
 			tD = absD;
 
 		// compute the line parameters of the two closest points
-		if (absD < Point.tolerance) {
+		if (absD < GeomConstants.tolerance) {
 			// the lines are almost parallel
 			sN = 0.0; // force using point a on segment [a..b]
 			sD = 1.0; // to prevent possible division by 0.0 later
@@ -344,8 +346,8 @@ export class LineSegment implements ICurve {
 			}
 		}
 
-		const parab_ = Math.abs(sN) < Point.tolerance ? 0.0 : sN / sD;
-		const parcd_ = Math.abs(tN) < Point.tolerance ? 0.0 : tN / tD;
+		const parab_ = Math.abs(sN) < GeomConstants.tolerance ? 0.0 : sN / sD;
+		const parcd_ = Math.abs(tN) < GeomConstants.tolerance ? 0.0 : tN / tD;
 		// finally do the division to get parameters
 		return {
 			parab: parab_,

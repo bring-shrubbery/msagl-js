@@ -1,6 +1,6 @@
 import {Point} from './../utils/geometry/point';
 import {VertexId, Parallelogram} from './../utils/geometry/parallelogram';
-
+import {GeomConstants} from './../utils/geometry/geomConstants';
 test('point test', () => {
 	const a = 1;
 	const b = 2;
@@ -55,11 +55,15 @@ test('parallelogram contains test', () => {
 	}
 });
 test('parallelogram seg case', () => {
-	const par = Parallelogram.parallelogramByCornerSideSide(new Point(0, 0), new Point(1, 0), new Point(1, Point.distanceEpsilon));
+	const par = Parallelogram.parallelogramByCornerSideSide(new Point(0, 0), new Point(1, 0), new Point(1, GeomConstants.distanceEpsilon));
 	const par0 = Parallelogram.parallelogramByCornerSideSide(new Point(0.5, 0), new Point(2, 1), new Point(2, 1));
 	const par1 = Parallelogram.parallelogramByCornerSideSide(new Point(0.5, 0.1), new Point(2, 1), new Point(2, 1));
 	const par2 = Parallelogram.parallelogramByCornerSideSide(new Point(0.5, -0.1), new Point(2, 1), new Point(2, 1));
-	const par3 = Parallelogram.parallelogramByCornerSideSide(new Point(0.5, -0.1 - Point.distanceEpsilon / 2), new Point(2, 1), new Point(2, 1));
+	const par3 = Parallelogram.parallelogramByCornerSideSide(
+		new Point(0.5, -0.1 - GeomConstants.distanceEpsilon / 2),
+		new Point(2, 1),
+		new Point(2, 1),
+	);
 	expect(Parallelogram.intersect(par, par0)).toBe(true);
 	expect(Parallelogram.intersect(par, par1)).toBe(false);
 	expect(Parallelogram.intersect(par, par2)).toBe(true);

@@ -1,4 +1,5 @@
 import {Point} from './point';
+import {GeomConstants} from './geomConstants';
 
 class Size {
 	width: number;
@@ -51,17 +52,17 @@ export class Rectangle {
 	}
 
 	IntersectsOnY(r: Rectangle): boolean {
-		if (r.bottom > this.top + Point.distanceEpsilon) return false;
+		if (r.bottom > this.top + GeomConstants.distanceEpsilon) return false;
 
-		if (r.top < this.bottom - Point.distanceEpsilon) return false;
+		if (r.top < this.bottom - GeomConstants.distanceEpsilon) return false;
 
 		return true;
 	}
 
 	IntersectsOnX(r: Rectangle): boolean {
-		if (r.Left > this.right + Point.distanceEpsilon) return false;
+		if (r.Left > this.right + GeomConstants.distanceEpsilon) return false;
 
-		if (r.Right < this.left - Point.distanceEpsilon) return false;
+		if (r.Right < this.left - GeomConstants.distanceEpsilon) return false;
 
 		return true;
 	}
@@ -217,10 +218,10 @@ export class Rectangle {
 	// contains with padding
 	ContainsWithPadding(point: Point, padding: number): boolean {
 		return (
-			this.left - padding - Point.distanceEpsilon <= point.x &&
-			point.x <= this.right + padding + Point.distanceEpsilon &&
-			this.bottom - padding - Point.distanceEpsilon <= point.y &&
-			point.y <= this.top + padding + Point.distanceEpsilon
+			this.left - padding - GeomConstants.distanceEpsilon <= point.x &&
+			point.x <= this.right + padding + GeomConstants.distanceEpsilon &&
+			this.bottom - padding - GeomConstants.distanceEpsilon <= point.y &&
+			point.y <= this.top + padding + GeomConstants.distanceEpsilon
 		);
 	}
 
@@ -328,13 +329,13 @@ export class Rectangle {
 
 	/*
 public Polyline Perimeter() {
-    const poly = new Polyline();
-    poly.AddPoint(LeftTop);
-    poly.AddPoint(RightTop);
-    poly.AddPoint(RightBottom);
-    poly.AddPoint(LeftBottom);
-    poly.Closed = true;
-    return poly;
+const poly = new Polyline();
+poly.AddPoint(LeftTop);
+poly.AddPoint(RightTop);
+poly.AddPoint(RightBottom);
+poly.AddPoint(LeftBottom);
+poly.Closed = true;
+return poly;
 }
 */
 	ScaleAroundCenter(scale: number) {

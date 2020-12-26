@@ -1,4 +1,5 @@
 import {Point} from './point';
+import {GeomConstants} from './geomConstants';
 
 export enum VertexId {
 	Corner,
@@ -23,7 +24,7 @@ export class Parallelogram {
 	// Return true if the parallelogram contains the point
 	contains(point: Point): boolean {
 		const g = point.minus(this.corner);
-		const e = Point.distanceEpsilon;
+		const e = GeomConstants.distanceEpsilon;
 
 		const gbRot = g.dot(this.bRot);
 		if (gbRot > this.abRot + e || gbRot < -e) return false;
@@ -95,7 +96,7 @@ export class Parallelogram {
 			result.aRot = result.aRot.neg();
 		}
 
-		result.isSeg = result.a.minus(result.b).length() < Point.distanceEpsilon;
+		result.isSeg = result.a.minus(result.b).length() < GeomConstants.distanceEpsilon;
 		return result;
 	}
 
@@ -168,11 +169,11 @@ export class Parallelogram {
 			r3 = t;
 		}
 
-		return !(r3 < r0 - Point.distanceEpsilon || r2 > r1 + Point.distanceEpsilon);
+		return !(r3 < r0 - GeomConstants.distanceEpsilon || r2 > r1 + GeomConstants.distanceEpsilon);
 	}
 
 	static separByB(p0: Parallelogram, p1: Parallelogram): boolean {
-		const eps = Point.distanceEpsilon;
+		const eps = GeomConstants.distanceEpsilon;
 		const p1a = p1.vertex(0).minus(p0.corner).dot(p0.bRot);
 		const list = [VertexId.VertexA, VertexId.otherCorner, VertexId.VertexB];
 		if (p1a > p0.abRot + eps) {
@@ -191,7 +192,7 @@ export class Parallelogram {
 	}
 
 	static separByA(p0: Parallelogram, p1: Parallelogram): boolean {
-		const eps = Point.distanceEpsilon;
+		const eps = GeomConstants.distanceEpsilon;
 
 		const t = p1.corner.minus(p0.corner);
 		const p1a = Point.dot(t, p0.aRot);
@@ -256,7 +257,7 @@ export class Parallelogram {
 			result.aRot = result.aRot.neg();
 		}
 
-		result.isSeg = sideA.minus(sideB).length() < Point.distanceEpsilon;
+		result.isSeg = sideA.minus(sideB).length() < GeomConstants.distanceEpsilon;
 
 		result.aPlusCorner = sideA.add(corner);
 		result.otherCorner = sideB.add(result.aPlusCorner);

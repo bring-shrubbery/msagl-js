@@ -18,14 +18,6 @@ export class Ellipse implements ICurve {
 	parStart: number;
 	parEnd: number;
 
-	// remove later
-	ParStart() {
-		return this.parStart;
-	}
-	ParEnd() {
-		return this.parEnd;
-	}
-
 	// offsets the curve in the given direction
 	offsetCurve(offset: number, dir: Point): ICurve {
 		//is dir inside or outside of the ellipse
@@ -139,7 +131,7 @@ export class Ellipse implements ICurve {
 	}
 
 	static CreateParallelogramNodeForCurveSeg(start: number, end: number, seg: Ellipse, eps: number): PN {
-		const closedSeg = start == seg.parStart && end == seg.parEnd && Point.close(seg.start(), seg.end(), Point.distanceEpsilon);
+		const closedSeg = start == seg.parStart && end == seg.parEnd && Point.close(seg.start(), seg.end(), GeomConstants.distanceEpsilon);
 		if (closedSeg) return Ellipse.CreateNodeWithSegmentSplit(start, end, seg, eps);
 
 		const s = seg[start];
@@ -148,7 +140,7 @@ export class Ellipse implements ICurve {
 		const middle = seg.value((start + end) / 2);
 
 		if (
-			ParallelogramNode.distToSegm(middle, s, e) <= Point.intersectionEpsilon &&
+			ParallelogramNode.distToSegm(middle, s, e) <= GeomConstants.intersectionEpsilon &&
 			w * w < GeomConstants.lineSegmentThreshold * GeomConstants.lineSegmentThreshold &&
 			end - start < GeomConstants.lineSegmentThreshold
 		) {
@@ -184,8 +176,8 @@ export class Ellipse implements ICurve {
 		//x  = (p * tan2Perp) / (tan1 * tan2Perp);
 		// x*tan1 will be a side of the parallelogram
 
-		const numeratorTiny = Math.abs(numerator) < Point.distanceEpsilon;
-		if (!numeratorTiny && Math.abs(denumerator) < Point.distanceEpsilon) {
+		const numeratorTiny = Math.abs(numerator) < GeomConstants.distanceEpsilon;
+		if (!numeratorTiny && Math.abs(denumerator) < GeomConstants.distanceEpsilon) {
 			//it is degenerated; the adjacent sides would parallel, but
 			//since p * tan2Perp is big the parallelogram would not contain e
 			return false;
@@ -267,7 +259,7 @@ export class Ellipse implements ICurve {
 		let u = this.parEnd;
 		const lenplus = length + eps;
 		const lenminsu = length - eps;
-		while (u - l > Point.distanceEpsilon) {
+		while (u - l > GeomConstants.distanceEpsilon) {
 			const m = 0.5 * (u + l);
 			const len = this.lengthPartial(this.parStart, m);
 			if (len > lenplus) u = m;
