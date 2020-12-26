@@ -83,6 +83,7 @@ export class Ellipse implements ICurve {
 	}
 
 	// Not Implemented: Returns the trimmed curve, wrapping around the end if start is greater than end.
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	trimWithWrap(start: number, end: number): ICurve {
 		return null;
 	}
@@ -194,6 +195,7 @@ export class Ellipse implements ICurve {
 
 		tan1 = tan1.mult(x);
 
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		box = Parallelogram.parallelogramByCornerSideSide(corner, tan1, e.minus(corner).minus(tan1));
 		// assert(box.Contains(seg[end] && box.contain(seg((start + end)/2)
 
@@ -360,16 +362,19 @@ export class Ellipse implements ICurve {
 	}
 
 	//
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	curvature(t: number) {
 		throw 'NotImplementedException()';
 		return 0;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	curvatureDerivative(t: number) {
 		throw 'NotImplementedException();';
 		return 0;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	curvatureSecondDerivative(t: number) {
 		throw 'NotImplementedException()';
 		return 0;
