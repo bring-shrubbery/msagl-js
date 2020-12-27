@@ -272,9 +272,9 @@ export class Ellipse implements ICurve {
 	// Transforms the ellipse
 	transform(transformation: PlaneTransformation) {
 		if (transformation != null) {
-			const ap = transformation.MultiplyPoint(this.aAxis).minus(transformation.Offset());
-			const bp = transformation.MultiplyPoint(this.bAxis).minus(transformation.Offset());
-			return new Ellipse(this.parStart, this.parEnd, ap, bp, transformation.MultiplyPoint(this.center));
+			const ap = transformation.multiplyPoint(this.aAxis).minus(transformation.offset());
+			const bp = transformation.multiplyPoint(this.bAxis).minus(transformation.offset());
+			return new Ellipse(this.parStart, this.parEnd, ap, bp, transformation.multiplyPoint(this.center));
 		}
 		return this;
 	}

@@ -12,7 +12,7 @@ export class Point {
 	}
 	static closeD(a: number, b: number): boolean {
 		const d = a - b;
-		return -GeomConstants.distanceEpsilon <= d && GeomConstants.distanceEpsilon >= d;
+		return -GeomConstants.distanceEpsilon <= d && d <= GeomConstants.distanceEpsilon;
 	}
 	normalize() {
 		const l = this.length();
@@ -126,5 +126,3 @@ export class Point {
 		return Math.PI * 2.0 + atan2;
 	}
 }
-
-// todo add tests for 'angle'

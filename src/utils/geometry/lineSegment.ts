@@ -191,7 +191,7 @@ return xx;
 
 	// Return the transformed curve
 	transform(transformation: PlaneTransformation) {
-		return LineSegment.lineSegmentStartEnd(transformation.MultiplyPoint(this.a), transformation.MultiplyPoint(this.b));
+		return LineSegment.lineSegmentStartEnd(transformation.multiplyPoint(this.a), transformation.multiplyPoint(this.b));
 	}
 
 	// returns a parameter t such that the distance between curve[t] and targetPoint is minimal

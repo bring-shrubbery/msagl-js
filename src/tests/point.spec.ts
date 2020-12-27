@@ -1,6 +1,46 @@
 import {Point} from './../utils/geometry/point';
+import {PlaneTransformation} from './../utils/geometry/planeTransformation';
 import {VertexId, Parallelogram} from './../utils/geometry/parallelogram';
 import {GeomConstants} from './../utils/geometry/geomConstants';
+
+test('angle test', () => {
+	const eps = 0.00001;
+	for (const ang of [0, eps, 2 * Math.PI - eps, Math.PI / 2, (3 * Math.PI) / 2 + eps, (3 * Math.PI) / 2 - eps, Math.PI / 3])
+		for (const p of [new Point(0, 1), new Point(0, 1), new Point(20, 30)]) {
+			testOnPointAngle(p, ang);
+		}
+});
+
+function testOnPointAngle(p: Point, ang: number) {
+	const tr = PlaneTransformation.rotation(ang);
+	const p0 = tr.multiplyPoint(p);
+	const ang1 = Point.angle(p, p0);
+	const tr1 = PlaneTransformation.rotation(ang1);
+	const p1 = tr1.multiplyPoint(p);
+	const res = Point.close(p1, p0, GeomConstants.distanceEpsilon);
+	if (!res) {
+		console.log('p = ');
+		console.log(p);
+		console.log('ang = ');
+		console.log(ang);
+		console.log('ang1 = ');
+		console.log(ang1);
+		console.log('ang1 - ang');
+		console.log(ang1 - ang);
+
+		console.log('ang1 - 2*Math.PI  - ang');
+		console.log(ang1 - 2 * Math.PI - ang);
+
+		console.log(p);
+		console.log(p0);
+		console.log(p1);
+
+		console.log('dist=');
+		console.log(p0.minus(p1).length());
+	}
+	expect(res).toBeTruthy();
+}
+
 test('point test', () => {
 	const a = 1;
 	const b = 2;
@@ -10,7 +50,6 @@ test('point test', () => {
 	const p1: Point = new Point(a, b);
 	const p2: Point = new Point(c, d);
 
-	console.log(p1.length());
 	expect(p1.length()).toBe(Math.sqrt(a * a + b * b));
 
 	let resultPoint = p1.add(p2);
