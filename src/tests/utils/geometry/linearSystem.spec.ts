@@ -1,4 +1,4 @@
-import {LinearSystem2} from '../utils/geometry/linearSystem';
+import {LinearSystem2} from '../../../utils/geometry/linearSystem';
 test('linearSystem2 test', () => {
 	let xy = LinearSystem2.Solve(1, 0, 0, 0, 1, 0);
 	expect(xy.x).toBe(0);

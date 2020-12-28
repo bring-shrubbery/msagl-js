@@ -1,9 +1,9 @@
 // import {ICurve} from '../utils/geometry/icurve';
-import {LineSegment} from '../utils/geometry/lineSegment';
-import {Point} from '../utils/geometry/point';
-import {svgDebugWriter} from '../utils/geometry/svgDebugWriter';
-import {Ellipse} from '../utils/geometry/ellipse';
-import {GeomConstants} from '../utils/geometry/geomConstants';
+import {LineSegment} from '../../../utils/geometry/lineSegment';
+import {Point} from '../../../utils/geometry/point';
+import {svgDebugWriter} from '../../../utils/geometry/svgDebugWriter';
+import {Ellipse} from '../../../utils/geometry/ellipse';
+import {GeomConstants} from '../../../utils/geometry/geomConstants';
 test('ellipse value test', () => {
 	const a = new Point(1, 0);
 	const b = new Point(0, 2);
