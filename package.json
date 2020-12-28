@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "eslint": "eslint src/**",
+    "eslint": "eslint [src/**]",
     "prettier": "prettier --write src/**"
   },
   "dependencies": {
