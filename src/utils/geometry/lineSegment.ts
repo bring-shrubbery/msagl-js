@@ -8,8 +8,12 @@ import {GeomConstants} from './geomConstants';
 export class LineSegment implements ICurve {
 	a: Point; //the line goes from a to b
 	b: Point; // the line end point
-	parStart: number;
-	parEnd: number;
+	parStart() {
+		return 0;
+	}
+	parEnd() {
+		return 1;
+	}
 	// Offsets the curve in the direction of dir
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	offsetCurve(offset: number, dir: Point) {
@@ -26,14 +30,12 @@ export class LineSegment implements ICurve {
 	constructor(x: number, y: number, x1: number, y1: number) {
 		this.a = new Point(x, y);
 		this.b = new Point(x1, y1);
-		this.parStart = 0;
-		this.parEnd = 1;
 	}
 
 	// Returns the trim curve
 	trim(start: number, end: number): ICurve {
-		start = Math.max(this.parStart, start);
-		end = Math.min(this.parEnd, end);
+		start = Math.max(this.parStart(), start);
+		end = Math.min(this.parEnd(), end);
 		if (start > end) throw 'wrong params in trimming';
 
 		const p1 = this.value(start);

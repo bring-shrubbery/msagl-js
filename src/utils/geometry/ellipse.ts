@@ -15,9 +15,15 @@ export class Ellipse implements ICurve {
 	aAxis: Point;
 	bAxis: Point;
 	center: Point;
-	parStart: number;
-	parEnd: number;
+	parS: number;
+	parE: number;
 
+	parStart() {
+		return this.parS;
+	}
+	parEnd() {
+		return this.parE;
+	}
 	// offsets the curve in the given direction
 	offsetCurve(offset: number, dir: Point): ICurve {
 		//is dir inside or outside of the ellipse
@@ -48,10 +54,10 @@ export class Ellipse implements ICurve {
 	// the formula center + cos(t)*axis0 + sin(t) * axis1.
 	// To get an ellipse rotating clockwise use, for example,
 	// axis0=(-1,0) and axis1=(0,1)
-	constructor(parStart: number, parEnd: number, axis0: Point, axis1: Point, center: Point) {
-		//    assert(parStart <= parEnd);
-		this.parStart = parStart;
-		this.parEnd = parEnd;
+	constructor(parS: number, parE: number, axis0: Point, axis1: Point, center: Point) {
+		//    assert(parS <= parE);
+		this.parS = parS;
+		this.parE = parE;
 		this.aAxis = axis0;
 		this.bAxis = axis1;
 		this.center = center;
@@ -60,10 +66,10 @@ export class Ellipse implements ICurve {
 	}
 
 	start() {
-		return this.value(this.parStart);
+		return this.value(this.parS);
 	}
 	end() {
-		return this.value(this.parEnd);
+		return this.value(this.parE);
 	}
 
 	// Trims the curve
@@ -71,7 +77,7 @@ export class Ellipse implements ICurve {
 		// Debug.Assert(start <= end);
 		// Debug.Assert(start >= ParStart - ApproximateComparer.Tolerance);
 		// Debug.Assert(end <= ParEnd + ApproximateComparer.Tolerance);
-		return new Ellipse(Math.max(start, this.parStart), Math.min(end, this.parEnd), this.aAxis, this.bAxis, this.center);
+		return new Ellipse(Math.max(start, this.parS), Math.min(end, this.parE), this.aAxis, this.bAxis, this.center);
 	}
 
 	// Not Implemented: Returns the trimmed curve, wrapping around the end if start is greater than end.
@@ -108,124 +114,22 @@ export class Ellipse implements ICurve {
 	// a tree of ParallelogramNodes covering the edge
 	pNodeOverICurve() {
 		if (this.pNode != null) return this.pNode;
-		return (this.pNode = Ellipse.createParallelogramNodeForCurveSeg(this));
-	}
-
-	static CreateNodeWithSegmentSplit(start: number, end: number, ell: Ellipse, eps: number) {
-		const pBNode: PN = {
-			parallelogram: null,
-			seg: ell,
-			leafBoxesOffset: 1,
-			node: {children: []},
-		};
-
-		const intNode: PNInternal = pBNode.node as PNInternal;
-
-		intNode.children.push(Ellipse.CreateParallelogramNodeForCurveSeg(start, 0.5 * (start + end), ell, eps));
-		intNode.children.push(Ellipse.CreateParallelogramNodeForCurveSeg(0.5 * (start + end), end, ell, eps));
-		const boxes: Parallelogram[] = [];
-		boxes.push(intNode.children[0].parallelogram);
-		boxes.push(intNode.children[1].parallelogram);
-		pBNode.parallelogram = Parallelogram.parallelogramOfTwo(boxes[0], boxes[1]);
-		return pBNode;
-	}
-
-	static CreateParallelogramNodeForCurveSeg(start: number, end: number, seg: Ellipse, eps: number): PN {
-		const closedSeg = start == seg.parStart && end == seg.parEnd && Point.close(seg.start(), seg.end(), GeomConstants.distanceEpsilon);
-		if (closedSeg) return Ellipse.CreateNodeWithSegmentSplit(start, end, seg, eps);
-
-		const s = seg[start];
-		const e = seg[end];
-		const w = e.minus(s);
-		const middle = seg.value((start + end) / 2);
-
-		if (
-			ParallelogramNode.distToSegm(middle, s, e) <= GeomConstants.intersectionEpsilon &&
-			w * w < GeomConstants.lineSegmentThreshold * GeomConstants.lineSegmentThreshold &&
-			end - start < GeomConstants.lineSegmentThreshold
-		) {
-			const ls = LineSegment.lineSegmentStartEnd(s, e);
-			const pn: PN = ls.pNodeOverICurve();
-			pn.seg = seg as ICurve;
-			const leaf = pn.node as PNLeaf;
-			leaf.low = start;
-			leaf.high = end;
-			leaf.chord = ls;
-			return pn;
-		}
-
-		const we = Ellipse.WithinEpsilon(seg, start, end, eps);
-		const box = new Parallelogram();
-		if (we && Ellipse.CreateParallelogramOnSubSeg(start, end, seg, box)) {
-			return createPNLeaf(start, end, box, seg, eps);
-		} else {
-			return Ellipse.CreateNodeWithSegmentSplit(start, end, seg, eps);
-		}
-	}
-
-	static CreateParallelogramOnSubSeg(start: number, end: number, seg: Ellipse, box: Parallelogram): boolean {
-		let tan1 = seg.derivative(start);
-		const tan2 = seg.derivative(end);
-		const tan2Perp = new Point(-tan2.y, tan2.x);
-		const corner = seg[start];
-		const e = seg[end];
-		const p = e.minus(corner);
-
-		const numerator = p.dot(tan2Perp);
-		const denumerator = tan1.dot(tan2Perp);
-		//x  = (p * tan2Perp) / (tan1 * tan2Perp);
-		// x*tan1 will be a side of the parallelogram
-
-		const numeratorTiny = Math.abs(numerator) < GeomConstants.distanceEpsilon;
-		if (!numeratorTiny && Math.abs(denumerator) < GeomConstants.distanceEpsilon) {
-			//it is degenerated; the adjacent sides would parallel, but
-			//since p * tan2Perp is big the parallelogram would not contain e
-			return false;
-		}
-
-		const x = numeratorTiny ? 0 : numerator / denumerator;
-
-		tan1 = tan1.mult(x);
-
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		box = Parallelogram.parallelogramByCornerSideSide(corner, tan1, e.minus(corner).minus(tan1));
-		// assert(box.Contains(seg[end] && box.contain(seg((start + end)/2)
-
-		return true;
-	}
-
-	static WithinEpsilon(seg: Ellipse, start: number, end: number, eps: number) {
-		const n = 3; //hack !!!! but maybe can be proven for Bezier curves and other regular curves
-		const d = (end - start) / n;
-		const s = seg[start];
-		const e = seg[end];
-
-		const d0 = ParallelogramNode.distToSegm(seg[start + d], s, e);
-		if (d0 > eps) return false;
-
-		const d1 = ParallelogramNode.distToSegm(seg[start + d * (n - 1)], s, e);
-
-		return d1 <= eps;
-	}
-
-	static createParallelogramNodeForCurveSeg(seg: Ellipse) {
-		return Ellipse.CreateParallelogramNodeForCurveSeg(seg.parStart, seg.parEnd, seg, GeomConstants.defaultLeafBoxesOffset);
+		return (this.pNode = ParallelogramNode.createParallelogramNodeForCurveSeg(this));
 	}
 
 	SetBoundingBox() {
-		if (Point.closeD(this.parStart, 0) && Point.closeD(this.parEnd, Math.PI * 2)) this.box = this.FullBox();
+		if (Point.closeD(this.parS, 0) && Point.closeD(this.parE, Math.PI * 2)) this.box = this.FullBox();
 		else {
 			//the idea is that the box of an arc staying in one quadrant is just the box of the start and the end point of the arc
 			this.box = Rectangle.RectanglePointPoint(this.start(), this.end());
 			//now Start and End are in the box, we need just add all k*P/2 that are in between
 			let t: number;
-			for (let i = Math.ceil(this.parStart / (Math.PI / 2)); (t = (i * Math.PI) / 2) < this.parEnd; i++)
-				if (t > this.parStart) this.box.Add(this.value(t));
+			for (let i = Math.ceil(this.parS / (Math.PI / 2)); (t = (i * Math.PI) / 2) < this.parE; i++) if (t > this.parS) this.box.Add(this.value(t));
 		}
 	}
 
-	getEllipse(parStart: number, parEnd: number, axis0: Point, axis1: Point, centerX: number, centerY: number) {
-		return new Ellipse(parStart, parEnd, axis0, axis1, new Point(centerX, centerY));
+	getEllipse(parS: number, parE: number, axis0: Point, axis1: Point, centerX: number, centerY: number) {
+		return new Ellipse(parS, parE, axis0, axis1, new Point(centerX, centerY));
 	}
 
 	// Construct a full ellipse by two axes
@@ -247,7 +151,7 @@ export class Ellipse implements ICurve {
 
 	// Scales the ellipse by x and by y
 	scaleFromOrigin(xScale: number, yScale: number) {
-		return new Ellipse(this.parStart, this.parEnd, this.aAxis.mult(xScale), this.bAxis.mult(yScale), this.center.scale(xScale, yScale));
+		return new Ellipse(this.parS, this.parE, this.aAxis.mult(xScale), this.bAxis.mult(yScale), this.center.scale(xScale, yScale));
 	}
 
 	//
@@ -255,13 +159,13 @@ export class Ellipse implements ICurve {
 		//todo: slow version!
 		const eps = 0.001;
 
-		let l = this.parStart;
-		let u = this.parEnd;
+		let l = this.parS;
+		let u = this.parE;
 		const lenplus = length + eps;
 		const lenminsu = length - eps;
 		while (u - l > GeomConstants.distanceEpsilon) {
 			const m = 0.5 * (u + l);
-			const len = this.lengthPartial(this.parStart, m);
+			const len = this.lengthPartial(this.parS, m);
 			if (len > lenplus) u = m;
 			else if (len < lenminsu) l = m;
 			else return m;
@@ -274,7 +178,7 @@ export class Ellipse implements ICurve {
 		if (transformation != null) {
 			const ap = transformation.multiplyPoint(this.aAxis).minus(transformation.offset());
 			const bp = transformation.multiplyPoint(this.bAxis).minus(transformation.offset());
-			return new Ellipse(this.parStart, this.parEnd, ap, bp, transformation.multiplyPoint(this.center));
+			return new Ellipse(this.parS, this.parE, ap, bp, transformation.multiplyPoint(this.center));
 		}
 		return this;
 	}
@@ -312,18 +216,18 @@ export class Ellipse implements ICurve {
 
 	// clones the curve.
 	clone() {
-		return new Ellipse(this.parStart, this.parEnd, this.aAxis, this.bAxis, this.center);
+		return new Ellipse(this.parS, this.parE, this.aAxis, this.bAxis, this.center);
 	}
 
 	// returns a parameter t such that the distance between curve[t] and a is minimal
 	closestParameter(targetPoint: Point) {
 		let savedParStart = 0;
 		const numberOfTestPoints = 8;
-		const t = (this.parEnd - this.parStart) / (numberOfTestPoints + 1);
-		let closest = this.parStart;
+		const t = (this.parE - this.parS) / (numberOfTestPoints + 1);
+		let closest = this.parS;
 		let minDist = Number.MAX_VALUE;
 		for (let i = 0; i <= numberOfTestPoints; i++) {
-			const par = this.parStart + i * t;
+			const par = this.parS + i * t;
 			const p = targetPoint.minus(this.value(par));
 			const d = p.dot(p);
 			if (d < minDist) {
@@ -331,15 +235,15 @@ export class Ellipse implements ICurve {
 				closest = par;
 			}
 		}
-		let parStartWasChanged = false;
-		if (closest == 0 && this.parEnd == Math.PI * 2) {
-			parStartWasChanged = true;
-			savedParStart = this.parStart;
-			this.parStart = -Math.PI;
+		let parSWasChanged = false;
+		if (closest == 0 && this.parE == Math.PI * 2) {
+			parSWasChanged = true;
+			savedParStart = this.parS;
+			this.parS = -Math.PI;
 		}
-		let ret = ClosestPointOnCurve.closestPoint(this, targetPoint, closest, this.parStart, this.parEnd);
+		let ret = ClosestPointOnCurve.closestPoint(this, targetPoint, closest, this.parS, this.parE);
 		if (ret < 0) ret += 2 * Math.PI;
-		if (parStartWasChanged) this.parStart = savedParStart;
+		if (parSWasChanged) this.parS = savedParStart;
 		return ret;
 	}
 

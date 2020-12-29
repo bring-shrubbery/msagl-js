@@ -10,6 +10,11 @@ export class Point {
 	static close(a: Point, b: Point, tol: number): boolean {
 		return a.minus(b).length() <= tol;
 	}
+
+	static closeDistEps(a: Point, b: Point): boolean {
+		return a.minus(b).length() <= GeomConstants.distanceEpsilon;
+	}
+
 	static closeD(a: number, b: number): boolean {
 		const d = a - b;
 		return -GeomConstants.distanceEpsilon <= d && d <= GeomConstants.distanceEpsilon;
@@ -29,6 +34,11 @@ export class Point {
 		this.x += a.x;
 		this.y += a.y;
 	}
+
+	static middle(a: Point, b: Point) {
+		return a.add(b).div(2);
+	}
+
 	scale(sx: number, sy: number): Point {
 		return new Point(this.x * sx, this.y * sy);
 	}

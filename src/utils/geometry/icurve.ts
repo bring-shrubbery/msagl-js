@@ -22,10 +22,10 @@ export interface ICurve {
 	boundingBox(): Rectangle;
 
 	// the start of the parameter domain
-	parStart: number;
+	parStart(): number;
 
 	// the end of the parameter domain
-	parEnd: number;
+	parEnd(): number;
 
 	// Returns the trim curve between start and end, without wrap
 	trim(start: number, end: number): ICurve;
