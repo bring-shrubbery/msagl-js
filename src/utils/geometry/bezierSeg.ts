@@ -20,7 +20,7 @@ export class BezierSeg implements ICurve {
 	}
 
 	// control points
-	b: Point[] = new Point[4]();
+	b: Point[] = new Array(4);
 
 	// coefficients
 	l: Point;
