@@ -207,11 +207,11 @@ export class Ellipse implements ICurve {
 
 	// return length of the curve segment [start,end] : not implemented
 	lengthPartial(start: number, end: number) {
-		return Curve.LengthWithInterpolationAndThreshold(this.trim(start, end), GeomConstants.lineSegmentThreshold / 100);
+		return Curve.lengthWithInterpolationAndThreshold(this.trim(start, end), GeomConstants.lineSegmentThreshold / 100);
 	}
 
 	length() {
-		return Curve.LengthWithInterpolation(this);
+		return Curve.lengthWithInterpolation(this);
 	}
 
 	// clones the curve.

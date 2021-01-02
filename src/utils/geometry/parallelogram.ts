@@ -265,35 +265,44 @@ export class Parallelogram {
 
 		return result;
 	}
+
+	static getParallelogramOfAGroup(boxes: Parallelogram[]) {
+		let minx = 0,
+			maxx = 0,
+			miny = 0,
+			maxy = 0;
+		let firstTime = true;
+		for (const b of boxes) {
+			const verts = allVerticesOfParall(b);
+			for (const v of verts) {
+				const x = v.x;
+				const y = v.y;
+				if (firstTime) {
+					firstTime = false;
+					minx = maxx = x;
+					miny = maxy = y;
+				} else {
+					if (x < minx) {
+						minx = x;
+					} else if (x > maxx) {
+						maxx = x;
+					}
+					if (y < miny) {
+						miny = y;
+					} else if (y > maxy) {
+						maxy = y;
+					}
+				}
+			}
+		}
+
+		return Parallelogram.parallelogramByCornerSideSide(new Point(minx, miny), new Point(0, maxy - miny), new Point(maxx - minx, 0));
+	}
 }
-/// create a Parallelogram over a group
-// function GetParallelogramOfAGroup( boxes:[Parallelogram]) {
-//     const minx = 0, maxx = 0, miny = 0, maxy = 0
-//     const firstTime = true;
-//     for (const b of boxes) {
-//         const verts = AllVertices(b)
-//         for (const v of verts) {
-//             const x = v.x;
-//             const y = v.y;
-//             if (firstTime) {
-//                 firstTime = false;
-//                 minx = maxx = x;
-//                 miny = maxy = y;
-//             } else {
-//                 if (x < minx) {
-//                     minx = x;
-//                 } else if (x > maxx) {
-//                     maxx = x;
-//                 }
-//                 if (y < miny) {
-//                     miny = y;
-//                 } else if (y > maxy) {
-//                     maxy = y;
-//                 }
-//             }
-//         }
-//     }
-//     return parallelogramByCornerSideSide(new Point(minx, miny),
-//     new Point(0, maxy - miny),
-//     new Point(maxx - minx, 0));
-// }
+
+export function* allVerticesOfParall(p: Parallelogram) {
+	yield p.corner;
+	yield p.aPlusCorner;
+	yield p.otherCorner;
+	yield p.bPlusCorner;
+}

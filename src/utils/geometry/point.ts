@@ -11,6 +11,10 @@ export class Point {
 		return a.minus(b).length() <= tol;
 	}
 
+	static closeSquare(a: Point, b: Point, tol: number): boolean {
+		const d = b.minus(a);
+		return d.dot(d) <= tol;
+	}
 	static closeDistEps(a: Point, b: Point): boolean {
 		return a.minus(b).length() <= GeomConstants.distanceEpsilon;
 	}
