@@ -7,6 +7,10 @@ export class Point {
     x: number;
     y: number;
 
+    assign(a: Point) {
+        this.x = a.x;
+        this.y = a.y;
+    }
     static close(a: Point, b: Point, tol: number): boolean {
         return a.minus(b).length() <= tol;
     }
