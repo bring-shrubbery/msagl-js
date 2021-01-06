@@ -1,7 +1,8 @@
-import {ICurve} from './icurve';
-import {Point} from './point';
-import {LineSegment} from './lineSegment';
-import {GeomConstants} from './geomConstants';
+import { ICurve } from './icurve';
+import { Point } from './point';
+import { LineSegment } from './lineSegment';
+import { GeomConstants } from './geomConstants';
+
 // For curves A(s) and B(t), when we have some evidence that
 // there is at most one intersection point, and we have a guess for the parameters (s0, t0),
 // we try to bring to (0,0) vector F(s,t) = A(s) - B(t).  To minimize the length of F(s,t)

@@ -1,5 +1,5 @@
 import { ICurve } from './icurve';
-import { PN, PNInternal, PNLeaf } from './parallelogramNode';
+import { PN, PNInternal, PNLeaf, ParallelogramNode } from './parallelogramNode';
 import { Point } from './point';
 import { LineSegment } from './lineSegment';
 import { IntersectionInfo } from './intersectionInfo';
@@ -14,6 +14,20 @@ type SegParam = {
     seg: ICurve,
     par: number
 };
+
+type SegIndexParam = {
+    segIndex: number,
+    par: number
+};
+
+
+export type MinDistOutput = {
+    aSol: number, bSol: number, aX: Point, bX: Point
+};
+
+type CurveCrossOutput = {
+    aSol: number, bSol: number, x: Point
+}
 
 function segParamValue(sp: SegParam) {
     return sp.seg.value(sp.par);
@@ -32,10 +46,6 @@ function segParamThirdDerivative(sp: SegParam) {
 }
 
 
-type SegIndexParam = {
-    segIndex: number,
-    par: number
-};
 
 enum PointLocation { Outside, Boundary, Inside };
 
@@ -499,16 +509,14 @@ export class Curve {
             const p0 = i * d0 + l0.low;
             for (let j = 1; j < 2; j++) {
                 const p1 = j * d1 + l1.low;
-                let aSol: number;
-                let bSol: number;
-                let x: Point;
+                let sol: CurveCrossOutput;
                 let r: boolean;
                 if (l0.chord == null && l1.chord == null)
                     r = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high,
-                        p0, p1, aSol, bSol, x);
+                        p0, p1, sol);
                 else if (l0.chord != null && l1.chord == null) {
                     r = Curve.crossWithinIntervalsWithGuess(l0.chord, n1.seg, 0, 1, l1.low, l1.high,
-                        0.5 * i, p1, aSol, bSol, x);
+                        0.5 * i, p1, sol);
                     if (r) {
 
                     }
@@ -516,89 +524,84 @@ export class Curve {
                 else if (l0.chord == null) {
                     r = Curve.crossWithinIntervalsWithGuess(n0.seg, l1.chord,
                         l0.low, l0.high, 0, 1, p0,
-                        0.5 * j, aSol, bSol, x);
+                        0.5 * j, sol);
                     if (r) {
-                        bSol = l1.low + bSol * (l1.high - l1.low);;
+                        sol.bSol = l1.low + sol.bSol * (l1.high - l1.low);;
                     }
                 }
                 else //if (l0.chord != null && l1.chord != null)
                 {
                     r = Curve.crossWithinIntervalsWithGuess(l0.chord, l1.chord,
                         0, 1, 0, 1, 0.5 * i,
-                        0.5 * j, aSol, bSol, x);
+                        0.5 * j, sol);
                     if (r) {
-                        aSol = l0.low + aSol * (l0.high - l0.low);
-                        bSol = l1.low + bSol * (l1.high - l1.low);
+                        sol.aSol = l0.low + sol.aSol * (l0.high - l0.low);
+                        sol.bSol = l1.low + sol.bSol * (l1.high - l1.low);
                     }
                 }
 
                 if (r) {
-                    return Curve.createIntersectionOne(l0, l1, aSol, bSol, x);
+                    return Curve.createIntersectionOne(l0, l1, sol.aSol, sol.bSol, sol.x);
                 }
             }
         }
 
-        return Curve.goDeeperOne(l0, l1);
+        return Curve.goDeeperOne(n0, n1);
     }
 
     static crossOverIntervals(n0: PN, n1: PN,
         intersections: IntersectionInfo[]) {
         //both are leafs 
-        var l0 = n0 as ParallelogramLeaf;
-        var l1 = n1 as ParallelogramLeaf;
+        var l0 = n0.node as PNLeaf;
+        var l1 = n1.node as PNLeaf;
         const d0 = (l0.high - l0.low) / 2;
         const d1 = (l1.high - l1.low) / 2;
         let found = false;
 
-        for (int i = 1; i < 2; i++) {
-            number p0 = i * d0 + l0.low;
-            for (int j = 1; j < 2; j++) {
-                number p1 = j * d1 + l1.low;
-
-
-                number aSol, bSol;
-                Point x;
-
-
-                boolean r;
+        for (let i = 1; i < 2; i++) {
+            const p0 = i * d0 + l0.low;
+            for (let j = 1; j < 2; j++) {
+                const p1 = j * d1 + l1.low;
+                let sol: CurveCrossOutput;
+                let r: boolean;
                 if (l0.chord == null && l1.chord == null)
                     r = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high,
-                        p0, p1, out aSol, out bSol, out x);
+                        p0, p1, sol);
                 else if (l0.chord != null && l1.chord == null) {
                     r = Curve.crossWithinIntervalsWithGuess(l0.chord, n1.seg, 0, 1, l1.low, l1.high,
                         0.5 * i,
-                        p1, out aSol, out bSol, out x);
+                        p1, sol);
                     if (r)
-                        aSol = l0.low + aSol * (l0.high - l0.low);
+                        sol.aSol = l0.low + sol.aSol * (l0.high - l0.low);
                 }
                 else if (l0.chord == null) {
                     //&& l1.chord != null) 
                     r = Curve.crossWithinIntervalsWithGuess(n0.seg, l1.chord,
                         l0.low, l0.high, 0, 1, p0,
-                        0.5 * j, out aSol, out bSol, out x);
+                        0.5 * j, sol);
                     if (r)
-                        bSol = l1.low + bSol * (l1.high - l1.low);
+                        sol.bSol = l1.low + sol.bSol * (l1.high - l1.low);
                 }
                 else //if (l0.chord != null && l1.chord != null)
                 {
                     r = Curve.crossWithinIntervalsWithGuess(l0.chord, l1.chord,
                         0, 1, 0, 1, 0.5 * i,
-                        0.5 * j, out aSol, out bSol, out x);
+                        0.5 * j, sol);
                     if (r) {
-                        bSol = l1.low + bSol * (l1.high - l1.low);
-                        aSol = l0.low + aSol * (l0.high - l0.low);
+                        sol.bSol = l1.low + sol.bSol * (l1.high - l1.low);
+                        sol.aSol = l0.low + sol.aSol * (l0.high - l0.low);
                     }
                 }
 
                 if (r) {
-                    AddIntersection(l0, l1, intersections, aSol, bSol, x);
+                    Curve.addIntersection(l0, l1, intersections, sol.aSol, sol.bSol, sol.x);
                     found = true;
                 }
             }
         }
 
         if (!found)
-            GoDeeper(ref intersections, l0, l1);
+            Curve.goDeeper(intersections, l0, l1);
         return intersections;
     }
 
@@ -644,7 +647,7 @@ export class Curve {
         return false;
     }
 
-    static createIntersectionOne(n0: ParallelogramLeaf, n1: ParallelogramLeaf,
+    static createIntersectionOne(n0: PNLeaf, n1: PNLeaf,
         aSol: number, bSol: number, x: Point) {
         //adjust the intersection if it is close to the ends of the segs
         if (Curve.closeIntersections(x, n0.seg[n0.low])) {
@@ -675,28 +678,34 @@ export class Curve {
         return new IntersectionInfo(a, b, x, c0, c1);
     }
 
-    static IntersectionInfo DropIntersectionToSegs(IntersectionInfo xx) {
-        ICurve seg0;
-        number par0;
+    static DropIntersectionToSegs(xx: IntersectionInfo) {
+        let seg0: ICurve;
+        let par0: number;
 
-        if (xx.segment0 is Curve)
-        (xx.segment0 as Curve).this.getSegmentAndParameter(xx.Par0, out par0, out seg0);
+        if (xx.seg0 instanceof Curve) {
+            const sp = (xx.seg0 as Curve).getSegParam(xx.par0);
+            seg0 = sp.seg;
+            par0 = sp.par;
+        }
         else {
-            par0 = xx.Par0;
-            seg0 = xx.segment0;
+            par0 = xx.par0;
+            seg0 = xx.seg0;
         }
 
-        ICurve seg1;
-        number par1;
+        let seg1: ICurve;
+        let par1: number;
 
-        if (xx.seg1 is Curve)
-        (xx.seg1 as Curve).this.getSegmentAndParameter(xx.par1, out par1, out seg1);
+        if (xx.seg1 instanceof Curve) {
+            const sp = (xx.seg1 as Curve).getSegParam(xx.par1);
+            par1 = sp.par;
+            seg1 = sp.seg;
+        }
         else {
             par1 = xx.par1;
             seg1 = xx.seg1;
         }
 
-        return new IntersectionInfo(par0, par1, xx.intersectionPoint, seg0, seg1);
+        return new IntersectionInfo(par0, par1, xx.x, seg0, seg1);
     }
 
 
@@ -725,168 +734,163 @@ export class Curve {
         return s.parEnd() - s.parStart();
     }
 
-    static goDeeperOne(l0: PNLeaf, l1: PNLeaf): IntersectionInfo {
-        number eps = GeomConstants.distanceEpsilon;
-        // did not find an intersection
-        if (l0.LeafBoxesOffset > eps && l1.LeafBoxesOffset > eps) {
+    static goDeeperOne(nl0: PN, nl1: PN): IntersectionInfo {
+        // did not find an intersection yet
+        const l0 = nl0.node as PNLeaf;
+        const l1 = nl1.node as PNLeaf;
+
+        if (nl0.leafBoxesOffset > GeomConstants.distanceEpsilon && nl1.leafBoxesOffset > GeomConstants.distanceEpsilon) {
             // going deeper on both with offset l0.LeafBoxesOffset / 2, l1.LeafBoxesOffset / 2
-            PN nn0 = PN.CreateParallelogramNodeForCurveSeg(
-                l0.low, l0.high, l0.seg, l0.LeafBoxesOffset / 2);
-            PN nn1 = PN.CreateParallelogramNodeForCurveSeg(
-                l1.low, l1.high, l1.seg, l1.LeafBoxesOffset / 2);
+            const nn0 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(
+                l0.low, l0.high, nl0.seg, nl0.leafBoxesOffset / 2);
+            const nn1 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(
+                l1.low, l1.high, nl1.seg, nl1.leafBoxesOffset / 2);
             return Curve.curveCurveXWithParallelogramNodesOne(nn0, nn1);
         }
-        if (l0.LeafBoxesOffset > eps) {
+        if (nl0.leafBoxesOffset > GeomConstants.distanceEpsilon) {
             // go deeper on the left
-            PN nn0 = PN.CreateParallelogramNodeForCurveSeg(
-                l0.low, l0.high, l0.seg, l0.LeafBoxesOffset / 2);
+            const nn0 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(
+                l0.low, l0.high, nl0.seg, nl0.leafBoxesOffset / 2);
             return Curve.curveCurveXWithParallelogramNodesOne(nn0, l1);
         }
-        if (l1.LeafBoxesOffset > eps) {
+        if (nl1.leafBoxesOffset > GeomConstants.distanceEpsilon) {
             // go deeper on the right
-            PN nn1 = PN.CreateParallelogramNodeForCurveSeg(
-                l1.low, l1.high, l1.seg, l1.LeafBoxesOffset / 2);
-            return Curve.curveCurveXWithParallelogramNodesOne(l0, nn1);
+            const nn1 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(
+                l1.low, l1.high, nl1.seg, nl1.leafBoxesOffset / 2);
+            return Curve.curveCurveXWithParallelogramNodesOne(nl0, nn1);
         }
         //just cross LineSegs and adjust the solutions if the segments are not straight lines
-        Point l0Low = l0.seg[l0.low];
-        Point l0High = l0.seg[l0.high];
-        if (!GeomConstants.Close(l0Low, l0High)) {
-            Point l1Low = l1.seg[l1.low];
-            Point l1High = l1.seg[l1.high];
-            if (!GeomConstants.Close(l1Low, l1High)) {
-                LineSegment ls0 = l0.seg is LineSegment ? l0.seg as LineSegment : new LineSegment(l0Low, l0High);
-                LineSegment ls1 = l1.seg is LineSegment ? l1.seg as LineSegment : new LineSegment(l1Low, l1High);
+        const l0Low = nl0.seg.value(l0.low);
+        const l0High = nl0.seg.value(l0.high);
+        if (!Point.closeDistEps(l0Low, l0High)) {
+            const l1Low = nl1.seg.value(l1.low);
+            const l1High = nl1.seg.value(l1.high);
+            if (!Point.closeDistEps(l1Low, l1High)) {
+                const ls0 = nl0.seg instanceof LineSegment ? nl0.seg as LineSegment : LineSegment.lineSegmentStartEnd(l0Low, l0High);
+                const ls1 = nl1.seg instanceof LineSegment ? nl1.seg as LineSegment : LineSegment.lineSegmentStartEnd(l1Low, l1High);
 
-                number asol, bsol;
-                Point x;
-                boolean r = Curve.crossWithinIntervalsWithGuess(ls0, ls1, 0, 1, 0, 1, 0.5, 0.5, out asol, out bsol, out x);
+                let sol: CurveCrossOutput;
+                const r = Curve.crossWithinIntervalsWithGuess(ls0, ls1, 0, 1, 0, 1, 0.5, 0.5, sol);
                 if (r) {
-                    AdjustParameters(l0, ls0, l1, ls1, x, ref asol, ref bsol);
-                    return CreateIntersectionOne(l0, l1, asol, bsol, x);
+                    Curve.adjustParameters(nl0, ls0, nl1, ls1, sol);
+                    return Curve.createIntersectionOne(l0, l1, sol.aSol, sol.bSol, sol.x);
                 }
             }
         }
         return null;
     }
 
-    static void GoDeeper(ref List <IntersectionInfo > intersections, ParallelogramLeaf l0, ParallelogramLeaf l1) {
-    number eps = GeomConstants.distanceEpsilon;
-    // did not find an intersection
-    if (l0.LeafBoxesOffset > eps && l1.LeafBoxesOffset > eps) {
-        // going deeper on both with offset l0.LeafBoxesOffset / 2, l1.LeafBoxesOffset / 2
-        PN nn0 = PN.CreateParallelogramNodeForCurveSeg(
-            l0.low, l0.high, l0.seg, l0.LeafBoxesOffset / 2);
-        PN nn1 = PN.CreateParallelogramNodeForCurveSeg(
-            l1.low, l1.high, l1.seg, l1.LeafBoxesOffset / 2);
-        curveCurveXWithParallelogramNodes(nn0, nn1, ref intersections);
-    }
-    else if (l0.LeafBoxesOffset > eps) {
-        // go deeper on the left
-        PN nn0 = PN.CreateParallelogramNodeForCurveSeg(
-            l0.low, l0.high, l0.seg, l0.LeafBoxesOffset / 2);
-        curveCurveXWithParallelogramNodes(nn0, l1, ref intersections);
-    }
-    else if (l1.LeafBoxesOffset > eps) {
-        // go deeper on the right
-        PN nn1 = PN.CreateParallelogramNodeForCurveSeg(
-            l1.low, l1.high, l1.seg, l1.LeafBoxesOffset / 2);
-        curveCurveXWithParallelogramNodes(l0, nn1, ref intersections);
-    }
-    else {
-        //just cross LineSegs since the polylogramms are so thin
-        Point l0Low = l0.seg[l0.low];
-        Point l0High = l0.seg[l0.high];
-        if (!GeomConstants.Close(l0Low, l0High)) {
-            Point l1Low = l1.seg[l1.low];
-            Point l1High = l1.seg[l1.high];
-            if (!GeomConstants.Close(l1Low, l1High)) {
-                LineSegment ls0 = l0.seg is LineSegment ? l0.seg as LineSegment : new LineSegment(l0Low, l0High);
-                LineSegment ls1 = l1.seg is LineSegment ? l1.seg as LineSegment : new LineSegment(l1Low, l1High);
+    static goDeeper(intersections: IntersectionInfo[], l0: PNLeaf, l1: PNLeaf) {
+        number eps = GeomConstants.distanceEpsilon;
+        // did not find an intersection
+        if (l0.leafBoxesOffset > GeomConstants.distanceEpsilon && l1.leafBoxesOffset > GeomConstants.distanceEpsilon) {
+            // going deeper on both with offset l0.leafBoxesOffset / 2, l1.leafBoxesOffset / 2
+            PN nn0 = PN.CreateParallelogramNodeForCurveSeg(
+                l0.low, l0.high, l0.seg, l0.leafBoxesOffset / 2);
+            PN nn1 = PN.CreateParallelogramNodeForCurveSeg(
+                l1.low, l1.high, l1.seg, l1.leafBoxesOffset / 2);
+            curveCurveXWithParallelogramNodes(nn0, nn1, ref intersections);
+        }
+        else if (l0.leafBoxesOffset > GeomConstants.distanceEpsilon) {
+            // go deeper on the left
+            PN nn0 = PN.CreateParallelogramNodeForCurveSeg(
+                l0.low, l0.high, l0.seg, l0.leafBoxesOffset / 2);
+            curveCurveXWithParallelogramNodes(nn0, l1, ref intersections);
+        }
+        else if (l1.leafBoxesOffset > GeomConstants.distanceEpsilon) {
+            // go deeper on the right
+            PN nn1 = PN.CreateParallelogramNodeForCurveSeg(
+                l1.low, l1.high, l1.seg, l1.leafBoxesOffset / 2);
+            curveCurveXWithParallelogramNodes(l0, nn1, ref intersections);
+        }
+        else {
+            //just cross LineSegs since the polylogramms are so thin
+            Point l0Low = l0.seg[l0.low];
+            Point l0High = l0.seg[l0.high];
+            if (!Point.closeDistEps(l0Low, l0High)) {
+                Point l1Low = l1.seg[l1.low];
+                Point l1High = l1.seg[l1.high];
+                if (!Point.closeDistEps(l1Low, l1High)) {
+                    LineSegment ls0 = l0.seg is LineSegment ? l0.seg as LineSegment : new LineSegment(l0Low, l0High);
+                    LineSegment ls1 = l1.seg is LineSegment ? l1.seg as LineSegment : new LineSegment(l1Low, l1High);
 
-                number asol, bsol;
-                Point x;
-                boolean r = Curve.crossWithinIntervalsWithGuess(ls0, ls1, 0, 1, 0, 1, 0.5, 0.5, out asol, out bsol, out x);
-                if (r) {
-                    AdjustParameters(l0, ls0, l1, ls1, x, ref asol, ref bsol);
-                    AddIntersection(l0, l1, intersections, asol, bsol, x);
+                    number asol, bsol;
+                    Point x;
+                    boolean r = Curve.crossWithinIntervalsWithGuess(ls0, ls1, 0, 1, 0, 1, 0.5, 0.5, out asol, out bsol, out x);
+                    if (r) {
+                        Curve.adjustParameters(l0, ls0, l1, ls1, x, ref asol, ref bsol);
+                        AddIntersection(l0, l1, intersections, asol, bsol, x);
+                    }
                 }
             }
         }
     }
-}
-        
-        
-       static void AdjustParameters(ParallelogramLeaf l0, LineSegment ls0, ParallelogramLeaf l1, LineSegment ls1,
-    Point x, ref number asol, ref number bsol) {
-    if (ls0 != l0.seg && l0.seg is Polyline == false) //l0.seg is not a LineSegment and not a polyline
-    asol = l0.seg.ClosestParameter(x); //we need to find the correct parameter
-       else
-    asol = l0.low + asol * (l0.high - l0.low);
-    if (ls1 != l1.seg && l1.seg is Polyline == false) //l1.seg is not a LineSegment and not a polyline
-    bsol = l1.seg.ClosestParameter(x); //we need to find the correct parameter
-       else
-    bsol = l1.low + bsol * (l1.high - l1.low);
-}
-        
-       static number lineSegThreshold = 0.05;
 
-       // The distance between the start and end point of a curve segment for which we consider the segment as a line segment
-       public static number LineSegmentThreshold {
-    get { return lineSegThreshold; }
-    set { lineSegThreshold = value; }
-}
 
-// returns the segment correspoinding to t and the segment parameter
-getSegParam(t: number): SegParam {
-    let u = this.parStart(); //u is the sum of param domains
-    for (let sg of this.segs) {
-        const nextu = u + sg.parEnd() - sg.parStart();
-        if (t >= u && t <= nextu) {
-            return {
-                par: t - u + sg.parStart(),
-                seg: sg
+    static adjustParameters(l0: PN, ls0: LineSegment, l1: PN, ls1: LineSegment, sol: CurveCrossOutput) {
+        const leaf0 = l0.node as PNLeaf;
+        const leaf1 = l1.node as PNLeaf;
+        if (ls0 != l0.seg && l0.seg instanceof Polyline == false) //l0.seg is not a LineSegment and not a polyline
+            sol.aSol = l0.seg.closestParameter(sol.x); //we need to find the correct parameter
+        else
+            sol.aSol = leaf0.low + sol.aSol * (leaf0.high - leaf0.low);
+        if (ls1 != l1.seg && l1.seg instanceof Polyline == false) //l1.seg is not a LineSegment and not a polyline
+            sol.bSol = l1.seg.closestParameter(sol.x); //we need to find the correct parameter
+        else
+            sol.bSol = leaf1.low + sol.bSol * (leaf1.high - leaf1.low);
+    }
+
+
+    // returns the segment correspoinding to t and the segment parameter
+    getSegParam(t: number): SegParam {
+        let u = this.parStart(); //u is the sum of param domains
+        for (let sg of this.segs) {
+            const nextu = u + sg.parEnd() - sg.parStart();
+            if (t >= u && t <= nextu) {
+                return {
+                    par: t - u + sg.parStart(),
+                    seg: sg
+                }
             }
+            u = nextu;
         }
-        u = nextu;
-    }
-    const lastSeg = this.segs[this.segs.length - 1];
-    return {
-        seg: lastSeg,
-        par: lastSeg.parEnd()
-    }
-}
-
-getSegIndexParam(t: number): SegIndexParam {
-    let u = 0; //u is the sum of param domains
-    const segLen = this.segs.length;
-    for (let i = 0; i < segLen; i++) {
-        var sg = this.segs[i];
-        const nextu = u + sg.parEnd() - sg.parStart();
-        if (t >= u && t <= nextu) {
-            return {
-                segIndex: i,
-                par: t - u + sg.parStart()
-            };
+        const lastSeg = this.segs[this.segs.length - 1];
+        return {
+            seg: lastSeg,
+            par: lastSeg.parEnd()
         }
-        u = nextu;
     }
-    const lastSeg = this.segs[segLen - 1];
-    return {
-        segIndex: segLen - 1,
-        par: lastSeg.parEnd()
+
+    getSegIndexParam(t: number): SegIndexParam {
+        let u = 0; //u is the sum of param domains
+        const segLen = this.segs.length;
+        for (let i = 0; i < segLen; i++) {
+            var sg = this.segs[i];
+            const nextu = u + sg.parEnd() - sg.parStart();
+            if (t >= u && t <= nextu) {
+                return {
+                    segIndex: i,
+                    par: t - u + sg.parStart()
+                };
+            }
+            u = nextu;
+        }
+        const lastSeg = this.segs[segLen - 1];
+        return {
+            segIndex: segLen - 1,
+            par: lastSeg.parEnd()
+        }
     }
-}
 
 
-// Returns the point on the curve corresponding to parameter t
-value(t: number) { return segParamValue(this.getSegParam(t)); }
-// first derivative at t
-derivative(t: number) { return segParamDerivative(this.getSegParam(t)); }
-// second derivative
-secondDerivative(t: number) { return segParamSecondDerivative(this.getSegParam(t)); }
-// third derivative
-thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t)); }
+    // Returns the point on the curve corresponding to parameter t
+    value(t: number) { return segParamValue(this.getSegParam(t)); }
+    // first derivative at t
+    derivative(t: number) { return segParamDerivative(this.getSegParam(t)); }
+    // second derivative
+    secondDerivative(t: number) { return segParamSecondDerivative(this.getSegParam(t)); }
+    // third derivative
+    thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t)); }
 
 
     // For curves A(s) and B(t), when we have some evidence that 
@@ -901,69 +905,72 @@ thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t))
     //We adjust ds and dt to stay in the domain.
 
     static crossWithinIntervalsWithGuess(
-    a: ICurve, b: ICurve,
-    amin: number, amax: number,
-    bmin: number, bmax: number,
-    aGuess: number,
-    bGuess: number,
-    aSolution: number,
-    bSolution: number, x: Point): boolean {
-    let aPoint: Point;
-    let bPoint: Point;
-    let r: boolean;
-    if (a instanceof LineSegment && b instanceof LineSegment) {
-        r = Curve.minDistWithinIntervals(a,
+        a: ICurve, b: ICurve,
+        amin: number, amax: number,
+        bmin: number, bmax: number,
+        aGuess: number,
+        bGuess: number,
+        ccout: CurveCrossOutput): boolean {
+
+        if (a instanceof LineSegment && b instanceof LineSegment) {
+            if (Curve.crossTwoLineSegs(a.start(), a.end(), b.start(), b.end(), amin, amax, bmin, bmax, ccout))
+                return true;
+        }
+
+        let mdout: MinDistOutput;
+
+        const r = Curve.minDistWithinIntervals(a,
             b,
             amin,
             amax, bmin,
             bmax,
             aGuess, bGuess,
-            aSolution,
-            bSolution, aPoint, bPoint);
+            mdout);
 
 
-        x.assign(Point.middle(aPoint, bPoint));
+        ccout.x.assign(Point.middle(aPoint, bPoint));
         const aMinusB = aPoint.minus(bPoint);
 
         return r && aMinusB.dot(aMinusB) < GeomConstants.distanceEpsilon * GeomConstants.distanceEpsilon;
     }
-}
 
 
-    static crossTwoLineSegs(aStart: Point, aEnd: Point, bStart: Point, bEnd: Point, amin: number, amax: number,
-    bmin: number, bmax: number, aSolution: number, bSolution: number, x: Point) {
-    const u = aEnd.minus(aStart);
-    const v = bStart.minus(bEnd);
-    const w = bStart.minus(aStart);
-    const sol = LinearSystem2.solve(u.x, v.x, w.x, u.y, v.y, w.y);
-    if (sol == undefined)
-        return false;
-    aSolution = sol.x;
-    bSolution = sol.y;
-    x.assign(aStart.add(u.mult(aSolution)));
-    if (aSolution < amin - GeomConstants.tolerance)
-        return false;
 
-    aSolution = Math.max(aSolution, amin);
+    static crossTwoLineSegs(aStart: Point,
+        aEnd: Point, bStart: Point, bEnd: Point, amin: number, amax: number,
+        bmin: number, bmax: number, ccout: CurveCrossOutput) {
+        const u = aEnd.minus(aStart);
+        const v = bStart.minus(bEnd);
+        const w = bStart.minus(aStart);
+        const sol = LinearSystem2.solve(u.x, v.x, w.x, u.y, v.y, w.y);
+        if (sol == undefined)
+            return false;
+        aSolution = sol.x;
+        bSolution = sol.y;
+        x.assign(aStart.add(u.mult(aSolution)));
+        if (aSolution < amin - GeomConstants.tolerance)
+            return false;
 
-    if (aSolution > amax + GeomConstants.tolerance)
-        return false;
+        aSolution = Math.max(aSolution, amin);
 
-    aSolution = Math.min(aSolution, amax);
+        if (aSolution > amax + GeomConstants.tolerance)
+            return false;
 
-    if (bSolution < bmin - GeomConstants.tolerance)
-        return false;
+        aSolution = Math.min(aSolution, amax);
 
-    bSolution = Math.max(bSolution, bmin);
+        if (bSolution < bmin - GeomConstants.tolerance)
+            return false;
 
-    if (bSolution > bmax + GeomConstants.tolerance)
-        return false;
+        bSolution = Math.max(bSolution, bmin);
 
-    bSolution = Math.min(bSolution, bmax);
+        if (bSolution > bmax + GeomConstants.tolerance)
+            return false;
 
-    Assert.assert(Point.closeDistEps(x, Point.mkPoint(bSolution, bStart, (1 - bSolution), bEnd)));
-    return true;
-}
+        bSolution = Math.min(bSolution, bmax);
+
+        Assert.assert(Point.closeDistEps(x, Point.mkPoint(bSolution, bStart, (1 - bSolution), bEnd)));
+        return true;
+    }
     /*
         // Decides if the point lies inside, outside or on the curve
         PointRelativeToCurveLocation(Point point, ICurve curve) {
@@ -986,7 +993,7 @@ thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t))
                 // CurveSerializer.Serialize("cornerC:\\tmp\\pol",curve);
                 if (AllIntersectionsAreGood(intersections, curve)) {
                     for (IntersectionInfo xx in intersections)
-                        if (GeomConstants.Close(xx.intersectionPoint, point))
+                        if (Point.closeDistEps(xx.intersectionPoint, point))
                             return PointLocation.Boundary;
                     boolean insideThisTime = intersections.length % 2 == 1;
                     //to be on the safe side we need to get the same result at least twice
@@ -1040,7 +1047,7 @@ thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t))
               Point ts = sseg.derivative(spar).Normalize();
               Point pn = pseg.derivative(ppar).Normalize().Rotate(Math.PI/2);
         
-              if (GeomConstants.Close(x, pseg.end())) {
+              if (Point.closeDistEps(x, pseg.end())) {
               //so pseg enters the spline 
               ICurve exitSeg = null;
               for (int i = 0; i < polygon.segs.length; i++)
@@ -1060,7 +1067,7 @@ thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t))
               return !touch;
               }
         
-              if (GeomConstants.Close(x, pseg.start())) {
+              if (Point.closeDistEps(x, pseg.start())) {
               //so pseg exits the spline 
               ICurve enterSeg = null;
               for (int i = 0; i < polygon.segs.length; i++)
@@ -1097,7 +1104,7 @@ thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t))
               Point ts = sseg.derivative(spar).Normalize();
               Point pn = pseg.derivative(ppar).Normalize().Rotate(Math.PI/2);
         
-              if (GeomConstants.Close(x, pseg.end())) {
+              if (Point.closeDistEps(x, pseg.end())) {
               //so pseg enters the spline 
               ICurve exitSeg = null;
               for (int i = 0; i < polyline.segs.length - 1; i++)
@@ -1117,7 +1124,7 @@ thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t))
               return !touch;
               }
         
-              if (GeomConstants.Close(x, pseg.start())) {
+              if (Point.closeDistEps(x, pseg.start())) {
               //so pseg exits the spline 
               ICurve enterSeg = null;
               for (int i = polyline.segs.length - 1; i > 0; i--)
@@ -1139,19 +1146,20 @@ thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t))
               return d > GeomConstants.distanceEpsilon;
               return Math.Abs(d) > GeomConstants.distanceEpsilon;
               }
-        */
-    static minDistWithinIntervals(
-    a: ICurve, b: ICurve, aMin: number, aMax: number, bMin: number, bMax: number,
-    aGuess: number, bGuess: number, aSolution: number, bSolution: number, aPoint: Point, bPoint: Point) {
-    var md = new MinDistCurveCurve(a, b, aMin, aMax, bMin, bMax, aGuess, bGuess);
-    md.solve();
-    aSolution = md.aSolution;
-    aPoint = md.aPoint;
-    bSolution = md.bSolution;
-    bPoint = md.bPoint;
+    */
 
-    return md.status;
-}
+    static minDistWithinIntervals(
+        a: ICurve, b: ICurve, aMin: number, aMax: number, bMin: number, bMax: number,
+        aGuess: number, bGuess: number,
+        mdout: MinDistOutput) {
+        var md = new MinDistCurveCurve(a, b, aMin, aMax, bMin, bMax, aGuess, bGuess);
+        md.solve();
+        mdout.aSolution = md.aSolution;
+        mdout.aPoint = md.aPoint;
+        mdout.bSolution = md.bSolution;
+        mdout.bPoint = md.bPoint;
+        return md.status;
+    }
     /*
           #if DEBUGCURVES
           public override string ToString()
@@ -1266,12 +1274,12 @@ thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t))
           }
     
           // returns a parameter t such that the distance between curve[t] and a is minimal
-          public number ClosestParameter(Point targetPoint) {
+          public number closestParameter(Point targetPoint) {
           number par = 0;
           number dist = Double.maxValue;
           number offset = 0;
           for (ICurve c in segs) {
-          number t = c.ClosestParameter(targetPoint);
+          number t = c.closestParameter(targetPoint);
           Point d = targetPoint - c[t];
           number dd = d*d;
           if (dd < dist) {
@@ -1371,9 +1379,9 @@ thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t))
           }
     
           // gets the closest point together with its parameter
-          public static number ClosestParameterWithPoint(ICurve curve, Point location, out Point pointOnCurve) {
+          public static number closestParameterWithPoint(ICurve curve, Point location, out Point pointOnCurve) {
           ValidateArg.IsNotNull(curve, "curve");
-          number t = curve.ClosestParameter(location);
+          number t = curve.closestParameter(location);
           pointOnCurve = curve[t];
           return t;
           }
@@ -1381,7 +1389,7 @@ thirdDerivative(t: number) { return segParamThirdDerivative(this.getSegParam(t))
           // gets the point on the curve that is closest to the given point
           public static Point ClosestPoint(ICurve curve, Point location) {
           ValidateArg.IsNotNull(curve, "curve");
-          return curve[curve.ClosestParameter(location)];
+          return curve[curve.closestParameter(location)];
           }
     
           // Tests whether the first curve is inside the second.
