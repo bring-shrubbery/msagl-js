@@ -310,7 +310,7 @@ export class Curve implements ICurve {
 
     return Curve.getAllIntersectionsInternal(lineSeg as ICurve, iCurve, liftIntersections);
   }
-
+  // empty comment for testing
   static getAllIntersectionsOfLineAndCurve(lineSeg: LineSegment, curve: Curve, liftIntersections: boolean): IntersectionInfo[] {
     const ret: IntersectionInfo[] = [];
     const lineParallelogram = lineSeg.pNodeOverICurve();
