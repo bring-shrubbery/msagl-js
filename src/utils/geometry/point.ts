@@ -75,7 +75,7 @@ export class Point {
         const cd = c.minus(d);
         const ca = c.minus(a);
         const eps = GeomConstants.tolerance;
-        const ret = LinearSystem2.Solve(ba.x, cd.x, ca.x, ba.y, cd.y, ca.y);
+        const ret = LinearSystem2.solve(ba.x, cd.x, ca.x, ba.y, cd.y, ca.y);
         if (ret != undefined && ret.x > -eps && ret.x < 1.0 + eps && ret.y > -eps && ret.y < 1.0 + eps) {
             return a.add(ba.mult(ret.x));
         } else {

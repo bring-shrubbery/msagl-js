@@ -4,7 +4,7 @@ import { Parallelogram } from './parallelogram';
 import { PlaneTransformation } from './planeTransformation';
 import { Rectangle } from './rectangle';
 import { GeomConstants } from './geomConstants';
-
+import { PN } from './parallelogramNode'
 export class LineSegment implements ICurve {
     a: Point; //the line goes from a to b
     b: Point; // the line end point
@@ -58,7 +58,7 @@ export class LineSegment implements ICurve {
     // A tree of ParallelogramNodes covering the curve.
     // This tree is used in curve intersections routines.
     // <value></value>
-    pNodeOverICurve() {
+    pNodeOverICurve(): PN {
         const side = this.b.minus(this.a).mult(0.5);
         return {
             parallelogram: Parallelogram.parallelogramByCornerSideSide(this.a, side, side),
@@ -68,7 +68,8 @@ export class LineSegment implements ICurve {
                 low: 0,
                 high: 1,
                 chord: this.clone(),
-            },
+            }
+
         };
     }
 
