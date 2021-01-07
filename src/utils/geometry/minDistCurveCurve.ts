@@ -1,7 +1,7 @@
-import { ICurve } from './icurve';
-import { Point } from './point';
-import { LineSegment } from './lineSegment';
-import { GeomConstants } from './geomConstants';
+import {ICurve} from './icurve';
+import {Point} from './point';
+import {LineSegment} from './lineSegment';
+import {GeomConstants} from './geomConstants';
 
 // For curves A(s) and B(t), when we have some evidence that
 // there is at most one intersection point, and we have a guess for the parameters (s0, t0),

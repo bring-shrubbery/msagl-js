@@ -1,5 +1,5 @@
-import { Point } from './point';
-import { GeomConstants } from './geomConstants';
+import {Point} from './point';
+import {GeomConstants} from './geomConstants';
 
 class Size {
   width: number;
@@ -140,7 +140,7 @@ export class Rectangle {
   }
 
   // create rectangle from a point
-  static RectanglePoint(point: Point) {
+  static rectanglePoint(point: Point) {
     return new Rectangle(point.x, point.y, point.x, point.x);
   }
 

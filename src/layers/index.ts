@@ -22,78 +22,78 @@ import {Graph} from 'graphlib';
  *       fix them up later.
  */
 function createLayers(g): Graph {
-	return networkSimplex(g);
+  return networkSimplex(g);
 }
 
 function normalizeLayer(graph): NodeResult[] {
-	// Sort and extract layer value
-	const nodes: string[] = graph.nodes();
+  // Sort and extract layer value
+  const nodes: string[] = graph.nodes();
 
-	const nodeResult: NodeResult[] = nodes
-		.map((nodeId) => {
-			const nodeLabel = graph.node(nodeId);
-			return {
-				id: nodeId,
-				layer: nodeLabel.layer,
-				order: -1,
-				width: nodeLabel.width,
-				height: nodeLabel.height,
-			};
-		})
-		.sort((a, b) => a.layer - b.layer);
+  const nodeResult: NodeResult[] = nodes
+    .map((nodeId) => {
+      const nodeLabel = graph.node(nodeId);
+      return {
+        id: nodeId,
+        layer: nodeLabel.layer,
+        order: -1,
+        width: nodeLabel.width,
+        height: nodeLabel.height,
+      };
+    })
+    .sort((a, b) => a.layer - b.layer);
 
-	// Move layers value to positive if needed
-	if (nodeResult && nodeResult.length > 0 && nodeResult[0].layer < 0) {
-		const value = nodeResult[0].layer * -1;
-		nodeResult.forEach((node) => {
-			node.layer = node.layer + value;
-			const graphNode = graph.node(node.id);
-			graph.setNode(node.id, {...graphNode, layer: node.layer});
-		});
-	}
+  // Move layers value to positive if needed
+  if (nodeResult && nodeResult.length > 0 && nodeResult[0].layer < 0) {
+    const value = nodeResult[0].layer * -1;
+    nodeResult.forEach((node) => {
+      node.layer = node.layer + value;
+      const graphNode = graph.node(node.id);
+      graph.setNode(node.id, {...graphNode, layer: node.layer});
+    });
+  }
 
-	return nodeResult;
+  return nodeResult;
 }
 
 function balance(nodeResult: NodeResult[]): NodeResult[] {
-	/* TODO still work in progress */
+  /* TODO still work in progress */
 
-	// const nodes: string[] = graphWIthLayers.nodes();
+  // const nodes: string[] = graphWIthLayers.nodes();
 
-	// const nodesWithEqualWeights = nodes.filter((nodeId) => {
-	//   const inEdges: Edge[] = graphWIthLayers.inEdges(nodeId) || [];
-	//   const outEdges: Edge[] = graphWIthLayers.outEdges(nodeId) || [];
+  // const nodesWithEqualWeights = nodes.filter((nodeId) => {
+  //   const inEdges: Edge[] = graphWIthLayers.inEdges(nodeId) || [];
+  //   const outEdges: Edge[] = graphWIthLayers.outEdges(nodeId) || [];
 
-	//   let inEdgesWeight = 0;
-	//   let outEdgesWeight = 0;
+  //   let inEdgesWeight = 0;
+  //   let outEdgesWeight = 0;
 
-	//   inEdges.forEach((edge) => {
-	//     const edgeLabel = graphWIthLayers.edge(edge.v, edge.w);
-	//     inEdgesWeight += edgeLabel.weight;
-	//   });
+  //   inEdges.forEach((edge) => {
+  //     const edgeLabel = graphWIthLayers.edge(edge.v, edge.w);
+  //     inEdgesWeight += edgeLabel.weight;
+  //   });
 
-	//   outEdges.forEach((edge) => {
-	//     const edgeLabel = graphWIthLayers.edge(edge.v, edge.w);
-	//     outEdgesWeight += edgeLabel.weight;
-	//   });
+  //   outEdges.forEach((edge) => {
+  //     const edgeLabel = graphWIthLayers.edge(edge.v, edge.w);
+  //     outEdgesWeight += edgeLabel.weight;
+  //   });
 
-	//   return outEdgesWeight === inEdgesWeight;
-	// });
+  //   return outEdgesWeight === inEdgesWeight;
+  // });
 
-	// console.log(nodesWithEqualWeights);
+  // console.log(nodesWithEqualWeights);
 
-	return nodeResult;
+  return nodeResult;
 }
 
 export function calculateLayers(graph: Graph): GraphLayoutResult {
-	const graphWithLayers: Graph = createLayers(graph);
-	let nodeResult: NodeResult[] = normalizeLayer(graphWithLayers);
-	nodeResult = balance(nodeResult);
+  const graphWithLayers: Graph = createLayers(graph);
+  let nodeResult: NodeResult[] = normalizeLayer(graphWithLayers);
+  nodeResult = balance(nodeResult);
 
-	const layerAmount = nodeResult.length > 0 ? nodeResult[nodeResult.length - 1].layer + 1 : 0;
-	return {
-		layerAmount: layerAmount,
-		nodeResults: nodeResult,
-		graph: graphWithLayers,
-	};
+  const layerAmount = nodeResult.length > 0 ? nodeResult[nodeResult.length - 1].layer + 1 : 0;
+  return {
+    layerAmount: layerAmount,
+    nodeResults: nodeResult,
+    graph: graphWithLayers,
+  };
 }
