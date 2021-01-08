@@ -420,22 +420,23 @@ export class Curve implements ICurve {
   static getAllIntersectionsOfLineAndPolyline(lineSeg: LineSegment, poly: Polyline) {
     const ret: IntersectionInfo[] = [];
     let offset = 0.0;
-    let sol: CurveCrossOutput;
     let polyPoint = poly.startPoint;
 
     for (; polyPoint != null && polyPoint.getNext() != null; polyPoint = polyPoint.getNext()) {
-      if (Curve.crossTwoLineSegs(lineSeg.start(), lineSeg.end(), polyPoint.point, polyPoint.getNext().point, 0, 1, 0, 1, sol)) {
+      const sol = Curve.crossTwoLineSegs(lineSeg.start(), lineSeg.end(), polyPoint.point, polyPoint.getNext().point, 0, 1, 0, 1);
+      if (sol != undefined) {
         Curve.adjustSolution(lineSeg.start(), lineSeg.end(), polyPoint.point, polyPoint.getNext().point, sol);
         if (!Curve.oldIntersection(ret, sol.x)) ret.push(new IntersectionInfo(sol.aSol, offset + sol.bSol, sol.x, lineSeg, poly));
       }
       offset++;
     }
-    if (poly.isClosed())
-      if (Curve.crossTwoLineSegs(lineSeg.start(), lineSeg.end(), polyPoint.point, poly.start(), 0, 1, 0, 1, sol)) {
+    if (poly.isClosed()) {
+      const sol = Curve.crossTwoLineSegs(lineSeg.start(), lineSeg.end(), polyPoint.point, poly.start(), 0, 1, 0, 1);
+      if (sol != undefined) {
         Curve.adjustSolution(lineSeg.start(), lineSeg.end(), polyPoint.point, poly.start(), sol);
         if (!Curve.oldIntersection(ret, sol.x)) ret.push(new IntersectionInfo(sol.aSol, offset + sol.bSol, sol.x, lineSeg, poly));
       }
-
+    }
     return ret;
   }
 
@@ -463,8 +464,8 @@ export class Curve implements ICurve {
 
     const n0Pb = n0.node;
     const n1Pb = n1.node;
-    const n0Internal = n0Pb['children'] != undefined;
-    const n1Internal = n1Pb['children'] != undefined;
+    const n0Internal = n0Pb.hasOwnProperty('children');
+    const n1Internal = n1Pb.hasOwnProperty('children');
     if (n0Internal && n1Internal)
       for (const n00 of (n0Pb as PNInternal).children)
         for (const n11 of (n1Pb as PNInternal).children) {
@@ -510,7 +511,7 @@ export class Curve implements ICurve {
       const p0 = i * d0 + l0.low;
       for (let j = 1; j < 2; j++) {
         const p1 = j * d1 + l1.low;
-        let sol: CurveCrossOutput;
+        const sol: CurveCrossOutput = {aSol: 0, bSol: 0, x: new Point(0, 0)};
         let r: boolean;
         if (l0.chord == null && l1.chord == null)
           r = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high, p0, p1, sol);
@@ -880,7 +881,7 @@ export class Curve implements ICurve {
     ccout: CurveCrossOutput,
   ): boolean {
     if (a instanceof LineSegment && b instanceof LineSegment) {
-      if (Curve.crossTwoLineSegs(a.start(), a.end(), b.start(), b.end(), amin, amax, bmin, bmax, ccout)) return true;
+      if (Curve.crossTwoLineSegs(a.start(), a.end(), b.start(), b.end(), amin, amax, bmin, bmax)) return true;
     }
 
     let mdout: MinDistOutput;
@@ -902,35 +903,38 @@ export class Curve implements ICurve {
     amax: number,
     bmin: number,
     bmax: number,
-    ccout: CurveCrossOutput,
-  ) {
+  ): CurveCrossOutput | undefined {
     const u = aEnd.minus(aStart);
     const v = bStart.minus(bEnd);
     const w = bStart.minus(aStart);
     const sol = LinearSystem2.solve(u.x, v.x, w.x, u.y, v.y, w.y);
-    if (sol == undefined) return false;
-    ccout.aSol = sol.x;
-    ccout.bSol = sol.y;
-    ccout.x.assign(aStart.add(u.mult(ccout.aSol)));
+    if (sol == undefined) return;
+    let aSol = sol.x;
+    let bSol = sol.y;
+    const x = aStart.add(u.mult(aSol));
 
-    if (ccout.aSol < amin - GeomConstants.tolerance) return false;
+    if (aSol < amin - GeomConstants.tolerance) return;
 
-    ccout.aSol = Math.max(ccout.aSol, amin);
+    aSol = Math.max(aSol, amin);
 
-    if (ccout.aSol > amax + GeomConstants.tolerance) return false;
+    if (aSol > amax + GeomConstants.tolerance) return;
 
-    ccout.aSol = Math.min(ccout.aSol, amax);
+    aSol = Math.min(aSol, amax);
 
-    if (ccout.bSol < bmin - GeomConstants.tolerance) return false;
+    if (bSol < bmin - GeomConstants.tolerance) return;
 
-    ccout.bSol = Math.max(ccout.bSol, bmin);
+    bSol = Math.max(bSol, bmin);
 
-    if (ccout.bSol > bmax + GeomConstants.tolerance) return false;
+    if (bSol > bmax + GeomConstants.tolerance) return;
 
-    ccout.bSol = Math.min(ccout.bSol, bmax);
+    bSol = Math.min(bSol, bmax);
 
-    Assert.assert(Point.closeDistEps(ccout.x, Point.mkPoint(ccout.bSol, bStart, 1 - ccout.bSol, bEnd)));
-    return true;
+    Assert.assert(Point.closeDistEps(x, Point.mkPoint(bSol, bStart, 1 - bSol, bEnd)));
+    return {
+      aSol: aSol,
+      bSol: bSol,
+      x: x,
+    };
   }
   /*
     // Decides if the point lies inside, outside or on the curve
