@@ -27,6 +27,27 @@ export class Polyline implements ICurve {
     this.requireInit_ = true;
   }
 
+  addPointXY(x: number, y: number) {
+    this.addPoint(new Point(x, y));
+  }
+
+  addPoint(p: Point) {
+    Assert.assert(this.endPoint == null || !Point.closeDistEps(p, this.endPoint.point));
+    const pp = new PolylinePoint();
+    pp.polyline = this;
+    pp.point = p.clone();
+    if (this.startPoint != null) {
+      if (!Point.closeDistEps(p, this.startPoint.point)) {
+        this.startPoint.prev = pp;
+        pp.next = this.startPoint;
+        this.startPoint = pp;
+      }
+    } else {
+      this.startPoint = this.endPoint = pp;
+    }
+    this.requireInit();
+  }
+
   *polylinePoints(): IterableIterator<PolylinePoint> {
     for (let s = this.startPoint; s != null; s = s.next) yield s;
   }

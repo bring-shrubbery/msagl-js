@@ -461,21 +461,23 @@ export class Curve implements ICurve {
   static curveCurveXWithParallelogramNodesOne(n0: PN, n1: PN) {
     if (!Parallelogram.intersect(n0.parallelogram, n1.parallelogram)) return null;
 
-    const n0Pb = n0.node as PNInternal;
-    const n1Pb = n1.node as PNInternal;
-    if (n0Pb != null && n1Pb != null)
-      for (const n00 of n0Pb.children)
-        for (const n11 of n1Pb.children) {
+    const n0Pb = n0.node;
+    const n1Pb = n1.node;
+    const n0Internal = n0Pb['children'] != undefined;
+    const n1Internal = n1Pb['children'] != undefined;
+    if (n0Internal && n1Internal)
+      for (const n00 of (n0Pb as PNInternal).children)
+        for (const n11 of (n1Pb as PNInternal).children) {
           const x = Curve.curveCurveXWithParallelogramNodesOne(n00, n11);
           if (x != null) return x;
         }
-    else if (n1Pb != null)
-      for (const n of n1Pb.children) {
+    else if (n1Internal)
+      for (const n of (n1Pb as PNInternal).children) {
         const x = Curve.curveCurveXWithParallelogramNodesOne(n0, n);
         if (x != null) return x;
       }
-    else if (n0Pb != null)
-      for (const n of n0Pb.children) {
+    else if (n0Internal)
+      for (const n of (n0Pb as PNInternal).children) {
         const x = Curve.curveCurveXWithParallelogramNodesOne(n, n1);
         if (x != null) return x;
       }
