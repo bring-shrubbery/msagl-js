@@ -1,17 +1,17 @@
-import { ICurve } from './icurve';
-import { PN, PNInternal, PNLeaf, ParallelogramNode } from './parallelogramNode';
-import { Point } from './point';
-import { LineSegment } from './lineSegment';
-import { IntersectionInfo } from './intersectionInfo';
-import { Assert } from './../assert';
-import { Parallelogram, allVerticesOfParall } from './parallelogram';
-import { Ellipse } from './ellipse';
-import { Polyline } from './polyline';
-import { GeomConstants } from './geomConstants';
-import { LinearSystem2 } from './linearSystem';
-import { MinDistCurveCurve } from './minDistCurveCurve';
-import { Rectangle } from './rectangle';
-import { PlaneTransformation } from './planeTransformation';
+import {ICurve} from './icurve';
+import {PN, PNInternal, PNLeaf, ParallelogramNode} from './parallelogramNode';
+import {Point} from './point';
+import {LineSegment} from './lineSegment';
+import {IntersectionInfo} from './intersectionInfo';
+import {Assert} from './../assert';
+import {Parallelogram} from './parallelogram';
+import {Ellipse} from './ellipse';
+import {Polyline} from './polyline';
+import {GeomConstants} from './geomConstants';
+import {LinearSystem2} from './linearSystem';
+import {MinDistCurveCurve} from './minDistCurveCurve';
+import {Rectangle} from './rectangle';
+import {PlaneTransformation} from './planeTransformation';
 
 type Params = {
   start: number;
@@ -236,7 +236,7 @@ export class Curve implements ICurve {
       parallelogram: Parallelogram.getParallelogramOfAGroup(parallelograms),
       seg: this,
       leafBoxesOffset: GeomConstants.defaultLeafBoxesOffset,
-      node: { children: childrenNodes },
+      node: {children: childrenNodes},
     };
 
     return this.pBNode;
@@ -513,8 +513,7 @@ export class Curve implements ICurve {
         const p1 = j * d1 + l1.low;
         let sol: CurveCrossOutput;
         let r: boolean;
-        if (l0.chord == null && l1.chord == null)
-          sol = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high, p0, p1);
+        if (l0.chord == null && l1.chord == null) sol = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high, p0, p1);
         else if (l0.chord != null && l1.chord == null) {
           sol = Curve.crossWithinIntervalsWithGuess(l0.chord, n1.seg, 0, 1, l1.low, l1.high, 0.5 * i, p1);
         } else if (l0.chord == null) {
@@ -554,8 +553,7 @@ export class Curve implements ICurve {
         const p1 = j * d1 + l1.low;
         let sol: CurveCrossOutput;
         let r: boolean;
-        if (l0.chord == null && l1.chord == null)
-          sol = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high, p0, p1);
+        if (l0.chord == null && l1.chord == null) sol = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high, p0, p1);
         else if (l0.chord != null && l1.chord == null) {
           sol = Curve.crossWithinIntervalsWithGuess(l0.chord, n1.seg, 0, 1, l1.low, l1.high, 0.5 * i, p1);
           if (sol != undefined) sol.aSol = l0.low + sol.aSol * (l0.high - l0.low);
@@ -686,15 +684,13 @@ export class Curve implements ICurve {
 
   static liftParameterToCurve(curve: ICurve, par: number, seg: ICurve) {
     if (curve == seg) return par;
-
+    if (!curve.hasOwnProperty('segs')) return;
     const c = curve as Curve;
 
-    if (c != null) {
-      let offset = 0;
-      for (const s of c.segs) {
-        if (s == seg) return par + offset;
-        offset += Curve.paramSpan(s);
-      }
+    let offset = 0;
+    for (const s of c.segs) {
+      if (s == seg) return par + offset;
+      offset += Curve.paramSpan(s);
     }
     throw 'bug in liftParameterToCurve';
   }
@@ -734,7 +730,7 @@ export class Curve implements ICurve {
         const ls0 = nl0.seg instanceof LineSegment ? (nl0.seg as LineSegment) : LineSegment.lineSegmentStartEnd(l0Low, l0High);
         const ls1 = nl1.seg instanceof LineSegment ? (nl1.seg as LineSegment) : LineSegment.lineSegmentStartEnd(l1Low, l1High);
 
-        let sol = Curve.crossWithinIntervalsWithGuess(ls0, ls1, 0, 1, 0, 1, 0.5, 0.5);
+        const sol = Curve.crossWithinIntervalsWithGuess(ls0, ls1, 0, 1, 0, 1, 0.5, 0.5);
         if (sol != undefined) {
           Curve.adjustParameters(nl0, ls0, nl1, ls1, sol);
           return Curve.createIntersectionOne(nl0, nl1, sol.aSol, sol.bSol, sol.x);
@@ -772,7 +768,7 @@ export class Curve implements ICurve {
           const ls0 = nl0.seg instanceof LineSegment ? (nl0.seg as LineSegment) : LineSegment.lineSegmentStartEnd(l0Low, l0High);
           const ls1 = nl1.seg instanceof LineSegment ? (nl1.seg as LineSegment) : LineSegment.lineSegmentStartEnd(l1Low, l1High);
 
-          let sol = Curve.crossWithinIntervalsWithGuess(ls0, ls1, 0, 1, 0, 1, 0.5, 0.5);
+          const sol = Curve.crossWithinIntervalsWithGuess(ls0, ls1, 0, 1, 0, 1, 0.5, 0.5);
           if (sol != undefined) {
             Curve.adjustParameters(nl0, ls0, nl1, ls1, sol);
             Curve.addIntersection(nl0, nl1, intersections, sol);
@@ -880,14 +876,16 @@ export class Curve implements ICurve {
       return Curve.crossTwoLineSegs(a.start(), a.end(), b.start(), b.end(), amin, amax, bmin, bmax);
     }
 
-    let mdout: MinDistOutput;
+    const mdout: MinDistOutput = Curve.minDistWithinIntervals(a, b, amin, amax, bmin, bmax, aGuess, bGuess);
+    if (mdout == undefined) return;
 
-    const r = Curve.minDistWithinIntervals(a, b, amin, amax, bmin, bmax, aGuess, bGuess, mdout);
-
-    ccout.x.assign(Point.middle(mdout.aX, mdout.bX));
     const aMinusB = mdout.aX.minus(mdout.bX);
-
-    return r && aMinusB.dot(aMinusB) < GeomConstants.distanceEpsilon * GeomConstants.distanceEpsilon;
+    if (aMinusB.dot(aMinusB) >= GeomConstants.distanceEpsilon) return;
+    return {
+      aSol: mdout.aSol,
+      bSol: mdout.bSol,
+      x: Point.middle(mdout.aX, mdout.bX),
+    };
   }
 
   static crossTwoLineSegs(
@@ -1118,15 +1116,17 @@ export class Curve implements ICurve {
     bMax: number,
     aGuess: number,
     bGuess: number,
-    mdout: MinDistOutput,
-  ) {
+  ): MinDistOutput | undefined {
     const md = new MinDistCurveCurve(a, b, aMin, aMax, bMin, bMax, aGuess, bGuess);
     md.solve();
-    mdout.aSol = md.aSolution;
-    mdout.aX = md.aPoint;
-    mdout.bSol = md.bSolution;
-    mdout.bX = md.bPoint;
-    return md.status;
+    return md.success
+      ? {
+          aSol: md.aSolution,
+          bSol: md.bSolution,
+          aX: md.aPoint,
+          bX: md.bPoint,
+        }
+      : undefined;
   }
   /*
       #if DEBUGCURVES

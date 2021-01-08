@@ -28,7 +28,7 @@ export class MinDistCurveCurve {
 
   aPoint: Point;
   bPoint: Point;
-  status: boolean;
+  success: boolean;
   si: number;
   ti: number;
 
@@ -118,7 +118,7 @@ export class MinDistCurveCurve {
       const del = Math.abs(an.dot(bd1));
 
       if (Math.abs(del) < GeomConstants.distanceEpsilon || this.delta(this.Fss(), this.Fst(), this.Fst(), this.Ftt()) < GeomConstants.tolerance) {
-        this.status = true;
+        this.success = true;
         this.parallelLineSegLineSegMinDist();
         return;
       }
@@ -130,7 +130,7 @@ export class MinDistCurveCurve {
       //hopefully it will be inlined by the compiler
       const delta = this.delta(this.Fss(), this.Fst(), this.Fst(), this.Ftt());
       if (Math.abs(delta) < GeomConstants.tolerance) {
-        this.status = false;
+        this.success = false;
         abort = true;
         break;
       }
@@ -180,16 +180,15 @@ export class MinDistCurveCurve {
         this.bSolution = this.bGuess;
         this.aPoint = this.curveA.value(this.aGuess);
         this.bPoint = this.curveB.value(this.bGuess);
-        this.status = true;
+        this.success = true;
         return;
       }
     }
-
     this.aSolution = this.si;
     this.bSolution = this.ti;
     this.aPoint = this.a;
     this.bPoint = this.b;
-    this.status = !abort;
+    this.success = !abort;
   }
 
   chopDsDt(ds: number, dt: number) {

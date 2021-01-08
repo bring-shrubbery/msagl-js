@@ -185,10 +185,11 @@ export class Polyline implements ICurve {
     throw new Error('Method not implemented.');
   }
   parStart(): number {
-    throw new Error('Method not implemented.');
+    return 0;
   }
   parEnd(): number {
-    throw new Error('Method not implemented.');
+    if (this.requireInit_) this.init();
+    return this.isClosed ? this.count : this.count - 1;
   }
   trim(start: number, end: number): ICurve {
     throw new Error('Method not implemented.');
