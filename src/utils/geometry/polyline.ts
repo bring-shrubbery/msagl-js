@@ -6,6 +6,8 @@ import {Rectangle} from './rectangle';
 import {PolylinePoint} from './polylinePoint';
 import {GeomConstants} from './geomConstants';
 import {Assert} from './../assert';
+import {Parallelogram} from './parallelogram';
+import {LineSegment} from './lineSegment';
 
 type AdjustedPar = {
   a: Point;
@@ -19,27 +21,86 @@ export class Polyline implements ICurve {
   requireInit_: boolean;
   private isClosed_: boolean;
   pBNode: PN;
-  boundingBox: Rectangle;
+  bBox: Rectangle;
   count: number;
   requireInit() {
     this.requireInit_ = true;
   }
 
-  *polylinePoints(count: number): IterableIterator<PolylinePoint> {
-    while (true) yield count++;
+  *polylinePoints(): IterableIterator<PolylinePoint> {
+    for (let s = this.startPoint; s != null; s = s.next) yield s;
+  }
+
+  *skip(skipCount: number): IterableIterator<PolylinePoint> {
+    for (let s = this.startPoint; s != null; s = s.next) {
+      if (skipCount > 0) skipCount--;
+      else yield s;
+    }
+  }
+
+  static parallelogramOfLineSeg(a: Point, b: Point) {
+    const side = b.minus(a).div(2);
+    return Parallelogram.parallelogramByCornerSideSide(a, side, side);
+  }
+
+  calculatePbNode() {
+    const parallelograms: Parallelogram[] = [];
+    const children: PN[] = [];
+    let pp = this.startPoint;
+
+    let offset = 0;
+    while (pp.next != null) {
+      const parallelogram = Polyline.parallelogramOfLineSeg(pp.point, pp.next.point);
+      parallelograms.push(parallelogram);
+      children.push({
+        parallelogram: parallelogram,
+        seg: this,
+        leafBoxesOffset: 0,
+        node: {
+          low: offset,
+          high: offset + 1,
+          chord: LineSegment.lineSegmentStartEnd(pp.point, pp.next.point),
+        },
+      });
+
+      pp = pp.next;
+      offset++;
+    }
+
+    if (this.isClosed_) {
+      const parallelogram = Polyline.parallelogramOfLineSeg(this.endPoint.point, this.startPoint.point);
+      parallelograms.push(parallelogram);
+      children.push({
+        parallelogram: parallelogram,
+        seg: this,
+        leafBoxesOffset: 0,
+        node: {
+          low: offset,
+          high: offset + 1,
+          chord: LineSegment.lineSegmentStartEnd(this.endPoint.point, this.startPoint.point),
+        },
+      });
+    }
+
+    this.pBNode = {
+      parallelogram: Parallelogram.getParallelogramOfAGroup(parallelograms),
+      seg: this,
+      leafBoxesOffset: 0,
+      node: {
+        children: children,
+      },
+    };
   }
 
   init() {
-    this.boundingBox = Rectangle.rectanglePoint(this.startPoint.point);
-    this.count = 1;
+    this.bBox = Rectangle.rectanglePoint(this.startPoint.point);
     for (const p of this.skip(1)) {
-      this.boundingBox.add(p);
-      this.count++;
+      this.bBox.add(p.point);
     }
 
-    CalculatePbNode();
+    this.calculatePbNode();
 
-    NeedToInit = false;
+    this.requireInit_ = false;
   }
 
   isClosed() {
