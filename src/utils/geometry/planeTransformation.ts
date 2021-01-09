@@ -3,10 +3,7 @@ import {Point} from './point';
 // 2 by 3 matrix of plane affine transformations
 export class PlaneTransformation {
   // the identity transform
-  elements: number[][] = [
-    [1, 0, 0],
-    [0, 1, 0],
-  ];
+  elements: number[][];
 
   // the matrix elements
   get Elements() {
@@ -41,21 +38,22 @@ export class PlaneTransformation {
   offset(): Point {
     return new Point(this.getElem(0, 2), this.getElem(1, 2));
   }
-  static getPlaneTransformation(m00: number, m01: number, m02: number, m10: number, m11: number, m12: number) {
-    const r = new PlaneTransformation();
-    r.elements[0][0] = m00;
-    r.elements[0][1] = m01;
-    r.elements[0][2] = m02;
-    r.elements[1][0] = m10;
-    r.elements[1][1] = m11;
-    r.elements[1][2] = m12;
-    return r;
+
+  static getIdentity() {
+    return new PlaneTransformation(1, 0, 0, 0, 1, 0);
+  }
+
+  constructor(m00: number, m01: number, m02: number, m10: number, m11: number, m12: number) {
+    this.elements = [
+      [m00, m01, m02],
+      [m10, m11, m12],
+    ];
   }
   // Rotation matrix - rotates counterclockwise by 'angle'
   static rotation(angle: number): PlaneTransformation {
     const cos = Math.cos(angle);
     const sin = Math.sin(angle);
-    return PlaneTransformation.getPlaneTransformation(cos, -sin, 0, sin, cos, 0);
+    return new PlaneTransformation(cos, -sin, 0, sin, cos, 0);
   }
 
   static scaleAroundCenterTransformation(xScale: number, yScale: number, center: Point): PlaneTransformation {
@@ -67,7 +65,7 @@ export class PlaneTransformation {
   return t;*/
     const dX = 1 - xScale;
     const dY = 1 - yScale;
-    return PlaneTransformation.getPlaneTransformation(xScale, 0, dX * center.x, 0, yScale, dY * center.y);
+    return new PlaneTransformation(xScale, 0, dX * center.x, 0, yScale, dY * center.y);
   }
 
   // Point by matrix multiplication
@@ -81,7 +79,7 @@ export class PlaneTransformation {
   // matrix matrix multiplication
   multiply(b: PlaneTransformation): PlaneTransformation {
     if (b != null)
-      return PlaneTransformation.getPlaneTransformation(
+      return new PlaneTransformation(
         this.getElem(0, 0) * b.getElem(0, 0) + this.getElem(0, 1) * b.getElem(1, 0),
         this.getElem(0, 0) * b.getElem(0, 1) + this.getElem(0, 1) * b.getElem(1, 1),
         this.getElem(0, 0) * b.getElem(0, 2) + this.getElem(0, 1) * b.getElem(1, 2) + this.getElem(0, 2),
@@ -102,6 +100,6 @@ export class PlaneTransformation {
     const a11 = this.getElem(0, 0) / det;
     const a02 = -a00 * this.getElem(0, 2) - a01 * this.getElem(1, 2);
     const a12 = -a10 * this.getElem(0, 2) - a11 * this.getElem(1, 2);
-    return PlaneTransformation.getPlaneTransformation(a00, a01, a02, a10, a11, a12);
+    return new PlaneTransformation(a00, a01, a02, a10, a11, a12);
   }
 }

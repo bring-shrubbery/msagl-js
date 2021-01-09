@@ -204,10 +204,10 @@ export class Polyline implements ICurve {
     throw new Error('Method not implemented.');
   }
   start(): Point {
-    throw new Error('Method not implemented.');
+    return this.startPoint.point;
   }
   end(): Point {
-    throw new Error('Method not implemented.');
+    return this.isClosed() ? this.startPoint.point : this.endPoint.point;
   }
   reverse(): ICurve {
     throw new Error('Method not implemented.');
@@ -225,7 +225,11 @@ export class Polyline implements ICurve {
     throw new Error('Method not implemented.');
   }
   transform(transformation: PlaneTransformation): ICurve {
-    throw new Error('Method not implemented.');
+    const ret = new Polyline();
+    for (const p of this.polylinePoints()) {
+      ret.addPoint(transformation.multiplyPoint(p.point));
+    }
+    return ret;
   }
   closestParameterWithinBounds(targetPoint: Point, low: number, high: number): number {
     throw new Error('Method not implemented.');
