@@ -1,6 +1,8 @@
 // import {ICurve} from '../utils/geometry/icurve';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {LineSegment} from '../../../utils/geometry/lineSegment';
 import {Point} from '../../../utils/geometry/point';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {svgDebugWriter} from '../../../utils/geometry/svgDebugWriter';
 import {Ellipse} from '../../../utils/geometry/ellipse';
 import {GeomConstants} from '../../../utils/geometry/geomConstants';

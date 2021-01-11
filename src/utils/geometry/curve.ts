@@ -57,6 +57,7 @@ function segParamThirdDerivative(sp: SegParam) {
   return sp.seg.thirdDerivative(sp.par);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 enum PointLocation {
   Outside,
   Boundary,
@@ -71,11 +72,13 @@ export class Curve implements ICurve {
   //the parameter domain is [0,parEnd_] where parEnd_ is the sum (seg.parEnd() - seg.parStart()) over all segment in this.segs
   segs: ICurve[];
 
-  static lengthWithInterpolationAndThreshold(seg: ICurve, eps: number): number {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  static lengthWithInterpolationAndThreshold(_seg: ICurve, _eps: number): number {
     throw 'not implemented';
     return 0;
   }
-  static lengthWithInterpolation(seg: ICurve): number {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  static lengthWithInterpolation(_seg: ICurve): number {
     throw 'not implemented';
     return 0;
   }
@@ -1164,7 +1167,7 @@ export class Curve implements ICurve {
       #endif
    */
   // Offsets the curve in the direction of dir
-  offsetCurve(offset: number, dir: Point) {
+  offsetCurve(_offset: number, _dir: Point) {
     throw new Error('Method not implemented.');
     return null;
   }
@@ -1427,12 +1430,12 @@ export class Curve implements ICurve {
     return sp.seg.curvature(sp.par);
   }
 
-  curvatureDerivative(t: number): number {
+  curvatureDerivative(_t: number): number {
     throw new Error('Not implemente');
   }
 
   //
-  curvatureSecondDerivative(t: number): number {
+  curvatureSecondDerivative(_t: number): number {
     throw new Error('Not implemented');
   }
 
