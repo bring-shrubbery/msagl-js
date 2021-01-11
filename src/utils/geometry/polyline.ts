@@ -80,7 +80,7 @@ export class Polyline implements ICurve {
         node: {
           low: offset,
           high: offset + 1,
-          chord: LineSegment.lineSegmentStartEnd(pp.point, pp.next.point),
+          chord: LineSegment.mkLinePP(pp.point, pp.next.point),
         },
       });
 
@@ -98,7 +98,7 @@ export class Polyline implements ICurve {
         node: {
           low: offset,
           high: offset + 1,
-          chord: LineSegment.lineSegmentStartEnd(this.endPoint.point, this.startPoint.point),
+          chord: LineSegment.mkLinePP(this.endPoint.point, this.startPoint.point),
         },
       });
     }

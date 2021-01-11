@@ -43,7 +43,7 @@ export class LineSegment implements ICurve {
     if (Point.close(p1, p2, GeomConstants.distanceEpsilon)) {
       return null;
     }
-    return LineSegment.lineSegmentStartEnd(p1, p2);
+    return LineSegment.mkLinePP(p1, p2);
   }
 
   value(t: number): Point {
@@ -79,12 +79,12 @@ export class LineSegment implements ICurve {
   }
 
   // construct a line segment
-  static lineSegmentStartEnd(start: Point, end: Point) {
+  static mkLinePP(start: Point, end: Point) {
     return new LineSegment(start.x, start.y, end.x, end.y);
   }
 
   // constructs a line segment
-  static lineSegmentPointCoordCoord(p: Point, x: number, y: number) {
+  static mkLinePXY(p: Point, x: number, y: number) {
     return new LineSegment(p.x, p.y, x, y);
   }
 
@@ -104,7 +104,7 @@ export class LineSegment implements ICurve {
   }
 
   reverse() {
-    return LineSegment.lineSegmentStartEnd(this.b, this.a);
+    return LineSegment.mkLinePP(this.b, this.a);
   }
 
   /*      
@@ -180,7 +180,7 @@ return xx;
 
   // Scale (multiply) from origin by x and y
   scaleFromOrigin(xScale: number, yScale: number) {
-    return LineSegment.lineSegmentStartEnd(this.a.scale(xScale, yScale), this.b.scale(xScale, yScale));
+    return LineSegment.mkLinePP(this.a.scale(xScale, yScale), this.b.scale(xScale, yScale));
   }
 
   // gets the parameter at a specific length from the start along the curve
@@ -193,7 +193,7 @@ return xx;
 
   // Return the transformed curve
   transform(transformation: PlaneTransformation) {
-    return LineSegment.lineSegmentStartEnd(transformation.multiplyPoint(this.a), transformation.multiplyPoint(this.b));
+    return LineSegment.mkLinePP(transformation.multiplyPoint(this.a), transformation.multiplyPoint(this.b));
   }
 
   // returns a parameter t such that the distance between curve[t] and targetPoint is minimal
@@ -222,7 +222,7 @@ return xx;
   // clones the curve.
 
   clone() {
-    return LineSegment.lineSegmentStartEnd(this.a, this.b);
+    return LineSegment.mkLinePP(this.a, this.b);
   }
 
   static closestParameterOnLineSegment(point: Point, segmentStart: Point, segmentEnd: Point) {

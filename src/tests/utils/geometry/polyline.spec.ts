@@ -33,7 +33,7 @@ test('polyline test intersection one', () => {
   for (const p of ps) {
     poly.addPoint(p);
   }
-  const ls = LineSegment.lineSegmentStartEnd(new Point(10, 0), new Point(10, 40));
+  const ls = LineSegment.mkLinePP(new Point(10, 0), new Point(10, 40));
   const x = Curve.curveCurveIntersectionOne(ls, poly, true);
   expect(x != undefined).toBe(true);
 });
@@ -44,10 +44,10 @@ test('polyline test all intersection', () => {
   for (const p of ps) {
     poly.addPoint(p);
   }
-  let ls = LineSegment.lineSegmentStartEnd(new Point(10, 0), new Point(10, 40));
+  let ls = LineSegment.mkLinePP(new Point(10, 0), new Point(10, 40));
   let xx = Curve.getAllIntersections(ls, poly, true);
   expect(xx.length == 1).toBe(true);
-  ls = LineSegment.lineSegmentStartEnd(new Point(0, 5), new Point(40, 6));
+  ls = LineSegment.mkLinePP(new Point(0, 5), new Point(40, 6));
   xx = Curve.getAllIntersections(ls, poly, true);
   expect(xx.length == 3).toBe(true);
   for (const i of xx) {
@@ -67,4 +67,6 @@ test('polyline test all intersection with polyline', () => {
   const polyFlipped = poly.transform(trans);
   expect(polyFlipped.end().x == poly.start().x).toBeTruthy();
   expect(polyFlipped.end().y == 5 - poly.start().y).toBeTruthy();
+  const xx = Curve.getAllIntersections(poly, polyFlipped, false);
+  expect(xx.length == 3).toBe(true);
 });

@@ -280,9 +280,9 @@ export class Curve implements ICurve {
     //                }
     //            }
 
-    const lineSeg = (curve0 as unknown) as LineSegment;
-    if (lineSeg != null) return Curve.getAllIntersectionsOfLineAndICurve(lineSeg, curve1, liftIntersections);
-
+    if (curve0 instanceof LineSegment) {
+      return Curve.getAllIntersectionsOfLineAndICurve(curve0, curve1, liftIntersections);
+    }
     return Curve.getAllIntersectionsInternal(curve0, curve1, liftIntersections);
   }
 
@@ -299,16 +299,13 @@ export class Curve implements ICurve {
   }
 
   static getAllIntersectionsOfLineAndICurve(lineSeg: LineSegment, iCurve: ICurve, liftIntersections: boolean): IntersectionInfo[] {
-    const poly = iCurve as Polyline;
-    if (poly != null) return Curve.getAllIntersectionsOfLineAndPolyline(lineSeg, poly);
+    if (iCurve instanceof Polyline) return Curve.getAllIntersectionsOfLineAndPolyline(lineSeg, iCurve);
 
-    const curve = iCurve as Curve;
-    if (curve != null) return Curve.getAllIntersectionsOfLineAndCurve(lineSeg, curve, liftIntersections);
+    if (iCurve instanceof Curve) return Curve.getAllIntersectionsOfLineAndCurve(lineSeg, iCurve, liftIntersections);
 
-    const ellipse = iCurve as Ellipse;
-    if (ellipse != null && ellipse.isArc()) return Curve.getAllIntersectionsOfLineAndArc(lineSeg, ellipse);
+    if (iCurve instanceof Ellipse && (iCurve as Ellipse).isArc()) return Curve.getAllIntersectionsOfLineAndArc(lineSeg, iCurve);
 
-    return Curve.getAllIntersectionsInternal(lineSeg as ICurve, iCurve, liftIntersections);
+    return Curve.getAllIntersectionsInternal(lineSeg, iCurve, liftIntersections);
   }
   // empty comment for testing
   static getAllIntersectionsOfLineAndCurve(lineSeg: LineSegment, curve: Curve, liftIntersections: boolean): IntersectionInfo[] {
@@ -491,13 +488,14 @@ export class Curve implements ICurve {
     if (!Parallelogram.intersect(n0.parallelogram, n1.parallelogram))
       // Boxes n0.Box and n1.Box do not intersect
       return;
-    const n0Pb = n0.node as PNInternal;
-    const n1Pb = n1.node as PNInternal;
-    if (n0Pb != null && n1Pb != null)
-      for (const n00 of n0Pb.children) for (const n11 of n1Pb.children) Curve.curveCurveXWithParallelogramNodes(n00, n11, intersections);
-    else if (n1Pb != null) for (const n of n1Pb.children) Curve.curveCurveXWithParallelogramNodes(n0, n, intersections);
-    else if (n0Pb != null) for (const n of n0Pb.children) Curve.curveCurveXWithParallelogramNodes(n, n1, intersections);
-    else intersections = Curve.crossOverIntervals(n0, n1, intersections);
+    const isInternal0 = n0.node.hasOwnProperty('children');
+    const isInternal1 = n1.node.hasOwnProperty('children');
+    if (isInternal0 && isInternal1)
+      for (const n00 of (n0.node as PNInternal).children)
+        for (const n11 of (n1.node as PNInternal).children) Curve.curveCurveXWithParallelogramNodes(n00, n11, intersections);
+    else if (isInternal0) for (const n of (n1.node as PNInternal).children) Curve.curveCurveXWithParallelogramNodes(n0, n, intersections);
+    else if (isInternal1) for (const n of (n0.node as PNInternal).children) Curve.curveCurveXWithParallelogramNodes(n, n1, intersections);
+    else intersections = Curve.crossOverLeaves(n0, n1, intersections);
   }
 
   static crossOverIntervalsOne(n0: PN, n1: PN): IntersectionInfo | undefined {
@@ -512,7 +510,6 @@ export class Curve implements ICurve {
       for (let j = 1; j < 2; j++) {
         const p1 = j * d1 + l1.low;
         let sol: CurveCrossOutput;
-        let r: boolean;
         if (l0.chord == null && l1.chord == null) sol = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high, p0, p1);
         else if (l0.chord != null && l1.chord == null) {
           sol = Curve.crossWithinIntervalsWithGuess(l0.chord, n1.seg, 0, 1, l1.low, l1.high, 0.5 * i, p1);
@@ -539,7 +536,7 @@ export class Curve implements ICurve {
     return Curve.goDeeperOne(n0, n1);
   }
 
-  static crossOverIntervals(n0: PN, n1: PN, intersections: IntersectionInfo[]) {
+  static crossOverLeaves(n0: PN, n1: PN, intersections: IntersectionInfo[]) {
     //both are leafs
     const l0 = n0.node as PNLeaf;
     const l1 = n1.node as PNLeaf;
@@ -727,8 +724,8 @@ export class Curve implements ICurve {
       const l1Low = nl1.seg.value(l1.low);
       const l1High = nl1.seg.value(l1.high);
       if (!Point.closeDistEps(l1Low, l1High)) {
-        const ls0 = nl0.seg instanceof LineSegment ? (nl0.seg as LineSegment) : LineSegment.lineSegmentStartEnd(l0Low, l0High);
-        const ls1 = nl1.seg instanceof LineSegment ? (nl1.seg as LineSegment) : LineSegment.lineSegmentStartEnd(l1Low, l1High);
+        const ls0 = nl0.seg instanceof LineSegment ? (nl0.seg as LineSegment) : LineSegment.mkLinePP(l0Low, l0High);
+        const ls1 = nl1.seg instanceof LineSegment ? (nl1.seg as LineSegment) : LineSegment.mkLinePP(l1Low, l1High);
 
         const sol = Curve.crossWithinIntervalsWithGuess(ls0, ls1, 0, 1, 0, 1, 0.5, 0.5);
         if (sol != undefined) {
@@ -765,8 +762,8 @@ export class Curve implements ICurve {
         const l1Low = nl1.seg.value(l1.low);
         const l1High = nl1.seg.value(l1.high);
         if (!Point.closeDistEps(l1Low, l1High)) {
-          const ls0 = nl0.seg instanceof LineSegment ? (nl0.seg as LineSegment) : LineSegment.lineSegmentStartEnd(l0Low, l0High);
-          const ls1 = nl1.seg instanceof LineSegment ? (nl1.seg as LineSegment) : LineSegment.lineSegmentStartEnd(l1Low, l1High);
+          const ls0 = nl0.seg instanceof LineSegment ? (nl0.seg as LineSegment) : LineSegment.mkLinePP(l0Low, l0High);
+          const ls1 = nl1.seg instanceof LineSegment ? (nl1.seg as LineSegment) : LineSegment.mkLinePP(l1Low, l1High);
 
           const sol = Curve.crossWithinIntervalsWithGuess(ls0, ls1, 0, 1, 0, 1, 0.5, 0.5);
           if (sol != undefined) {
@@ -779,18 +776,22 @@ export class Curve implements ICurve {
   }
 
   static adjustParameters(l0: PN, ls0: LineSegment, l1: PN, ls1: LineSegment, sol: CurveCrossOutput) {
-    const leaf0 = l0.node as PNLeaf;
-    const leaf1 = l1.node as PNLeaf;
     if (ls0 != l0.seg && l0.seg instanceof Polyline == false)
       //l0.seg is not a LineSegment and not a polyline
       sol.aSol = l0.seg.closestParameter(sol.x);
     //we need to find the correct parameter
-    else sol.aSol = leaf0.low + sol.aSol * (leaf0.high - leaf0.low);
+    else {
+      const leaf0 = l0.node as PNLeaf;
+      sol.aSol = leaf0.low + sol.aSol * (leaf0.high - leaf0.low);
+    }
     if (ls1 != l1.seg && l1.seg instanceof Polyline == false)
       //l1.seg is not a LineSegment and not a polyline
       sol.bSol = l1.seg.closestParameter(sol.x);
     //we need to find the correct parameter
-    else sol.bSol = leaf1.low + sol.bSol * (leaf1.high - leaf1.low);
+    else {
+      const leaf1 = l1.node as PNLeaf;
+      sol.bSol = leaf1.low + sol.bSol * (leaf1.high - leaf1.low);
+    }
   }
 
   // returns the segment correspoinding to t and the segment parameter
@@ -1611,7 +1612,7 @@ function interpolate(a: number, ap: Point, b: number, bp: Point, s: ICurve, eps:
   Assert.assert(Point.closeDistEps(s.value(a), ap));
   Assert.assert(Point.closeDistEps(s.value(b), bp));
   const r = new Array<LineSegment>(0);
-  if (isCloseToLineSeg(a, ap, b, bp, s, eps)) r.push(LineSegment.lineSegmentStartEnd(ap, bp));
+  if (isCloseToLineSeg(a, ap, b, bp, s, eps)) r.push(LineSegment.mkLinePP(ap, bp));
   else {
     const m = 0.5 * (a + b);
     const mp = s.value(m);

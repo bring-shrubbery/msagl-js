@@ -33,12 +33,12 @@ export class Ellipse implements ICurve {
     if (s.length() < d.length()) {
       const al = this.aAxis.length();
       const bl = this.bAxis.length();
-      return Ellipse.getEllipse(this.aAxis.normalize().mult(al + offset), this.bAxis.normalize().mult(bl + offset), this.center);
+      return Ellipse.mkEllipsePPP(this.aAxis.normalize().mult(al + offset), this.bAxis.normalize().mult(bl + offset), this.center);
     }
     {
       const al = this.aAxis.length();
       const bl = this.bAxis.length();
-      return Ellipse.getEllipse(this.aAxis.normalize().mult(al - offset), this.bAxis.normalize().mult(bl - offset), this.center);
+      return Ellipse.mkEllipsePPP(this.aAxis.normalize().mult(al - offset), this.bAxis.normalize().mult(bl - offset), this.center);
     }
   }
 
@@ -47,7 +47,7 @@ export class Ellipse implements ICurve {
     return null; // throw new Exception("not implemented");
   }
 
-  static getEllipse(a: Point, b: Point, center: Point) {
+  static mkEllipsePPP(a: Point, b: Point, center: Point) {
     return new Ellipse(0, Math.PI * 2, a, b, center);
   }
   // The point on the ellipse corresponding to the parameter t is calculated by
@@ -128,18 +128,22 @@ export class Ellipse implements ICurve {
     }
   }
 
-  getEllipse(parS: number, parE: number, axis0: Point, axis1: Point, centerX: number, centerY: number) {
+  static mkEllipse(parS: number, parE: number, axis0: Point, axis1: Point, centerX: number, centerY: number) {
     return new Ellipse(parS, parE, axis0, axis1, new Point(centerX, centerY));
   }
 
   // Construct a full ellipse by two axes
-  fullEllipse(axis0: Point, axis1: Point, center: Point) {
+  static mkFullEllipse(axis0: Point, axis1: Point, center: Point) {
     return new Ellipse(0, Math.PI * 2, axis0, axis1, center);
   }
 
   // Constructs a full ellipse with axes aligned to X and Y directions
-  getAlignedEllipse(axisA: number, axisB: number, center: Point) {
+  static mkAlignedEllipse(axisA: number, axisB: number, center: Point) {
     return new Ellipse(0, Math.PI * 2, new Point(axisA, 0), new Point(0, axisB), center);
+  }
+
+  static mkCircle(radius: number, center: Point) {
+    return Ellipse.mkAlignedEllipse(radius, radius, center);
   }
 
   // Moves the ellipse to the delta vector

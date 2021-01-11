@@ -24,7 +24,7 @@ export function createPNLeaf(start: number, end: number, box: Parallelogram, seg
     node: {
       low: start,
       high: end,
-      chord: LineSegment.lineSegmentStartEnd(seg.start(), seg.end()),
+      chord: LineSegment.mkLinePP(seg.start(), seg.end()),
     },
   };
 }
@@ -93,7 +93,7 @@ export class ParallelogramNode {
       w * w < GeomConstants.lineSegmentThreshold * GeomConstants.lineSegmentThreshold &&
       end - start < GeomConstants.lineSegmentThreshold
     ) {
-      const ls = LineSegment.lineSegmentStartEnd(s, e);
+      const ls = LineSegment.mkLinePP(s, e);
       const pn: PN = ls.pNodeOverICurve();
       pn.seg = seg as ICurve;
       const leaf = pn.node as PNLeaf;
