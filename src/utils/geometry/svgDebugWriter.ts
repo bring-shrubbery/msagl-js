@@ -7,19 +7,21 @@ export class svgDebugWriter {
   // Here we import the File System module of node
   private fs = require('fs');
   private xmlw = require('xml-writer');
+  xw: any;
+  ws: any;
   test() {
-    const ws = this.fs.createWriteStream('/tmp/foo.xml');
-    const xw = new this.xmlw(false, function (string: string, encoding) {
-      ws.write(string, encoding);
+    this.ws = this.fs.createWriteStream('/tmp/foo.xml');
+    this.xw = new this.xmlw(false, function (string: string, encoding) {
+      this.ws.write(string, encoding);
     });
 
-    xw.startDocument();
-    xw.startElement('root');
-    xw.writeAttribute('foo', 'value');
-    xw.text('Some content');
-    xw.endElement();
-    xw.endDocument();
-    ws.end();
+    this.xw.startDocument();
+    this.xw.startElement('root');
+    this.xw.writeAttribute('foo', 'value');
+    this.xw.text(typeof this);
+    this.xw.endElement();
+    this.xw.endDocument();
+    this.ws.end();
   }
   close() {
     console.log('foo');
