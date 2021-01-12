@@ -8,22 +8,18 @@ export class svgDebugWriter {
   private fs = require('fs');
   private xmlw = require('xml-writer');
   test() {
-    const logger = this.fs.createWriteStream('/tmp/log.txt', {
-      flags: 'a', // 'a' means appending (old data will be preserved)
+    const ws = this.fs.createWriteStream('/tmp/foo.xml');
+    const xw = new this.xmlw(false, function (string: string, encoding) {
+      ws.write(string, encoding);
     });
 
-    logger.write('some data'); // append string to your file
-    logger.write('more data'); // again
-    logger.write('and more'); // again
-    logger.close();
-    const xw = new this.xmlw();
     xw.startDocument();
     xw.startElement('root');
     xw.writeAttribute('foo', 'value');
     xw.text('Some content');
+    xw.endElement();
     xw.endDocument();
-
-    console.log(xw.toString());
+    ws.end();
   }
   close() {
     console.log('foo');

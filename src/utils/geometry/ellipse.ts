@@ -1,10 +1,8 @@
 import {ICurve} from './icurve';
-import {LineSegment} from './lineSegment';
 import {Curve} from './curve';
 import {Rectangle} from './rectangle';
-import {PN, PNInternal, PNLeaf, createPNLeaf, ParallelogramNode} from './parallelogramNode';
+import {PN, ParallelogramNode} from './parallelogramNode';
 import {Point} from './point';
-import {Parallelogram} from './parallelogram';
 import {GeomConstants} from './geomConstants';
 import {PlaneTransformation} from './planeTransformation';
 import {ClosestPointOnCurve} from './closestPointOnCurve';

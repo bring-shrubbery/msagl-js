@@ -552,6 +552,7 @@ export class Curve implements ICurve {
       for (let j = 1; j < 2; j++) {
         const p1 = j * d1 + l1.low;
         let sol: CurveCrossOutput;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let r: boolean;
         if (l0.chord == null && l1.chord == null) sol = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high, p0, p1);
         else if (l0.chord != null && l1.chord == null) {
@@ -1167,7 +1168,8 @@ export class Curve implements ICurve {
       #endif
    */
   // Offsets the curve in the direction of dir
-  offsetCurve(_offset: number, _dir: Point) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  offsetCurve(offset: number, dir: Point) {
     throw new Error('Method not implemented.');
     return null;
   }
@@ -1430,12 +1432,14 @@ export class Curve implements ICurve {
     return sp.seg.curvature(sp.par);
   }
 
-  curvatureDerivative(_t: number): number {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  curvatureDerivative(t: number): number {
     throw new Error('Not implemente');
   }
 
   //
-  curvatureSecondDerivative(_t: number): number {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  curvatureSecondDerivative(t: number): number {
     throw new Error('Not implemented');
   }
 
@@ -1626,6 +1630,7 @@ function interpolate(a: number, ap: Point, b: number, bp: Point, s: ICurve, eps:
 }
 
 // this function always produces at least two segments
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function interpolateWithAtLeastTwoSegs(eps: number, a: number, ap: Point, b: number, bp: Point, s: ICurve) {
   const m = (a + b) / 2;
   const mp = s.value(m);
@@ -1634,6 +1639,7 @@ function interpolateWithAtLeastTwoSegs(eps: number, a: number, ap: Point, b: num
   return ret;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function interpolateICurve(s: ICurve, eps: number) {
   return interpolate(s.parStart(), s.start(), s.parEnd(), s.end(), s, eps);
 }
