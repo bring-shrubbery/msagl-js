@@ -9,12 +9,15 @@ export class svgDebugWriter {
   private xmlw = require('xml-writer');
   xw: any;
   ws: any;
-  test() {
-    this.ws = this.fs.createWriteStream('/tmp/foo.xml');
-    this.xw = new this.xmlw(false, function (string: string, encoding) {
-      this.ws.write(string, encoding);
-    });
 
+  constructor(svgFileName: string) {
+    this.ws = this.fs.createWriteStream(svgFileName);
+    const wsCapture = this.ws;
+    this.xw = new this.xmlw(false, function (string: string, encoding) {
+      wsCapture.write(string, encoding);
+    });
+  }
+  test() {
     this.xw.startDocument();
     this.xw.startElement('root');
     this.xw.writeAttribute('foo', 'value');
