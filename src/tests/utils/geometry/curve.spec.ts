@@ -29,7 +29,6 @@ test('curve intersect line circle', () => {
     const m = PlaneTransformation.rotation(angle);
     const ac = m.multiplyPoint(a);
     const bc = m.multiplyPoint(b);
-    console.log(i);
     intersectOnDiameter(ac, bc);
   }
 });

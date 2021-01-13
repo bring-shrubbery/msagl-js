@@ -11,16 +11,16 @@ class Size {
 }
 
 export class Rectangle {
-  left: number;
-  right: number;
-  top: number;
-  bottom: number;
+  left_: number;
+  right_: number;
+  top_: number;
+  bottom_: number;
 
   constructor(left: number, right: number, top: number, bottom: number) {
-    this.left = left;
-    this.right = right;
-    this.top = top;
-    this.bottom = bottom;
+    this.left_ = left;
+    this.right_ = right;
+    this.top_ = top;
+    this.bottom_ = bottom;
   }
   // returns true if r intersect this rectangle
   Intersects(rectangle: Rectangle): boolean {
@@ -30,111 +30,111 @@ export class Rectangle {
   // intersection (possibly empty) of rectangles
   Intersection(rectangle: Rectangle): Rectangle {
     if (!this.Intersects(rectangle)) {
-      const intersection = Rectangle.CreateEmptyRectangle();
+      const intersection = Rectangle.mkEmpty();
       intersection.SetToEmpty();
       return intersection;
     }
-    const l = Math.max(this.Left, rectangle.Left);
-    const r = Math.min(this.Right, rectangle.Right);
-    const b = Math.max(this.Bottom, rectangle.Bottom);
+    const l = Math.max(this.left, rectangle.left);
+    const r = Math.min(this.right, rectangle.right);
+    const b = Math.max(this.bottom, rectangle.bottom);
     const t = Math.min(this.Top, rectangle.Top);
     return new Rectangle(l, b, r, t);
   }
 
   // the center of the bounding box
-  get Center(): Point {
-    return this.LeftTop.add(this.RightBottom).mult(0.5);
+  get center(): Point {
+    return this.leftTop.add(this.rightBottom).mult(0.5);
   }
-  set Center(value: Point) {
-    const shift = value.minus(this.Center);
-    this.LeftTop = this.LeftTop.add(shift);
-    this.RightBottom = this.RightBottom.add(shift);
+  set center(value: Point) {
+    const shift = value.minus(this.center);
+    this.leftTop = this.leftTop.add(shift);
+    this.rightBottom = this.rightBottom.add(shift);
   }
 
   IntersectsOnY(r: Rectangle): boolean {
-    if (r.bottom > this.top + GeomConstants.distanceEpsilon) return false;
+    if (r.bottom_ > this.top_ + GeomConstants.distanceEpsilon) return false;
 
-    if (r.top < this.bottom - GeomConstants.distanceEpsilon) return false;
+    if (r.top_ < this.bottom_ - GeomConstants.distanceEpsilon) return false;
 
     return true;
   }
 
   IntersectsOnX(r: Rectangle): boolean {
-    if (r.Left > this.right + GeomConstants.distanceEpsilon) return false;
+    if (r.left > this.right_ + GeomConstants.distanceEpsilon) return false;
 
-    if (r.Right < this.left - GeomConstants.distanceEpsilon) return false;
+    if (r.right < this.left_ - GeomConstants.distanceEpsilon) return false;
 
     return true;
   }
 
   // creates an empty rectangle
-  static CreateEmptyRectangle() {
+  static mkEmpty() {
     return new Rectangle(0, 0, -1, -1);
   }
 
-  get Left() {
-    return this.left;
+  get left() {
+    return this.left_;
   }
-  set Left(value: number) {
-    this.left = value;
+  set left(value: number) {
+    this.left_ = value;
   }
 
-  get Right() {
-    return this.right;
+  get right() {
+    return this.right_;
   }
-  set Right(value: number) {
-    this.right = value;
+  set right(value: number) {
+    this.right_ = value;
   }
 
   get Top() {
-    return this.top;
+    return this.top_;
   }
   set Top(value: number) {
-    this.top = value;
+    this.top_ = value;
   }
 
-  get Bottom() {
-    return this.bottom;
+  get bottom() {
+    return this.bottom_;
   }
-  set Bottom(value: number) {
-    this.bottom = value;
-  }
-
-  get LeftBottom() {
-    return new Point(this.left, this.bottom);
-  }
-  set LeftBottom(value) {
-    this.left = value.x;
-    this.bottom = value.y;
+  set bottom(value: number) {
+    this.bottom_ = value;
   }
 
-  get RightTop() {
-    return new Point(this.right, this.top);
+  get leftBottom() {
+    return new Point(this.left_, this.bottom_);
   }
-  set RightTop(value) {
-    this.right = value.x;
-    this.top = value.y;
-  }
-
-  get LeftTop() {
-    return new Point(this.left, this.top);
-  }
-  set LeftTop(value: Point) {
-    this.left = value.x;
-    this.top = value.y;
+  set leftBottom(value) {
+    this.left_ = value.x;
+    this.bottom_ = value.y;
   }
 
-  get RightBottom() {
-    return new Point(this.right, this.bottom);
+  get rightTop() {
+    return new Point(this.right_, this.top_);
   }
-  set RightBottom(value) {
-    this.right = value.x;
-    this.bottom = value.y;
+  set rightTop(value) {
+    this.right_ = value.x;
+    this.top_ = value.y;
+  }
+
+  get leftTop() {
+    return new Point(this.left_, this.top_);
+  }
+  set leftTop(value: Point) {
+    this.left_ = value.x;
+    this.top_ = value.y;
+  }
+
+  get rightBottom() {
+    return new Point(this.right_, this.bottom_);
+  }
+  set rightBottom(value) {
+    this.right_ = value.x;
+    this.bottom_ = value.y;
   }
 
   // create a box of two points
   static RectanglePointPoint(point0: Point, point1: Point) {
-    const r = new Rectangle(point0.x, point0.y, point0.x, point0.x);
+    const r = new Rectangle(point0.x, point0.y, point0.x, point0.y);
     r.add(point1);
     return r;
   }
@@ -159,7 +159,7 @@ export class Rectangle {
 
   // Create rectangle that is the bounding box of the given points
   static RectangleOnPoints(points: [Point]): Rectangle {
-    const r = Rectangle.CreateEmptyRectangle();
+    const r = Rectangle.mkEmpty();
     for (const p of points) {
       r.add(p);
     }
@@ -168,7 +168,7 @@ export class Rectangle {
 
   // Create rectangle that is the bounding box of the given Rectangles
   static RectangleOnRectangles(rectangles: [Rectangle]) {
-    const r = Rectangle.CreateEmptyRectangle();
+    const r = Rectangle.mkEmpty();
     for (const p of rectangles) {
       r.addRec(p);
     }
@@ -176,41 +176,41 @@ export class Rectangle {
   }
 
   // the width of the rectangle
-  get Width() {
-    return this.right - this.left;
+  get width() {
+    return this.right_ - this.left_;
   }
-  set Width(value: number) {
+  set width(value: number) {
     const hw = value / 2.0;
-    const cx = (this.left + this.right) / 2.0;
-    this.left = cx - hw;
-    this.right = cx + hw;
+    const cx = (this.left_ + this.right_) / 2.0;
+    this.left_ = cx - hw;
+    this.right_ = cx + hw;
   }
 
   // returns true if the rectangle has negative width
-  IsEmpty(): boolean {
-    return this.Width < 0;
+  isEmpty(): boolean {
+    return this.width < 0;
   }
 
   // makes the rectangle empty
   SetToEmpty() {
-    this.Left = 0;
-    this.Right = -1;
+    this.left = 0;
+    this.right = -1;
   }
 
-  // Height of the rectangle
-  get Height() {
-    return this.top - this.bottom;
+  // height of the rectangle
+  get height() {
+    return this.top_ - this.bottom_;
   }
-  set Height(value) {
+  set height(value) {
     const hw = value / 2.0;
-    const cx = (this.top + this.bottom) / 2.0;
-    this.top = cx + hw;
-    this.bottom = cx - hw;
+    const cx = (this.top_ + this.bottom_) / 2.0;
+    this.top_ = cx + hw;
+    this.bottom_ = cx - hw;
   }
 
   // rectangle containing both a and b
   static RectangleOfTwo(a: Rectangle, b: Rectangle) {
-    const r = new Rectangle(a.left, a.right, a.top, a.bottom);
+    const r = new Rectangle(a.left_, a.right_, a.top_, a.bottom_);
     r.addRec(b);
     return r;
   }
@@ -218,31 +218,31 @@ export class Rectangle {
   // contains with padding
   ContainsWithPadding(point: Point, padding: number): boolean {
     return (
-      this.left - padding - GeomConstants.distanceEpsilon <= point.x &&
-      point.x <= this.right + padding + GeomConstants.distanceEpsilon &&
-      this.bottom - padding - GeomConstants.distanceEpsilon <= point.y &&
-      point.y <= this.top + padding + GeomConstants.distanceEpsilon
+      this.left_ - padding - GeomConstants.distanceEpsilon <= point.x &&
+      point.x <= this.right_ + padding + GeomConstants.distanceEpsilon &&
+      this.bottom_ - padding - GeomConstants.distanceEpsilon <= point.y &&
+      point.y <= this.top_ + padding + GeomConstants.distanceEpsilon
     );
   }
 
   // Rectangle area
   Area() {
-    return (this.right - this.left) * (this.top - this.bottom);
+    return (this.right_ - this.left_) * (this.top_ - this.bottom_);
   }
 
   // adding a point to the rectangle
   add(point: Point) {
-    if (!this.IsEmpty) {
-      if (this.left > point.x) this.left = point.x;
+    if (!this.isEmpty()) {
+      if (this.left_ > point.x) this.left_ = point.x;
 
-      if (this.top < point.y) this.top = point.y;
+      if (this.top_ < point.y) this.top_ = point.y;
 
-      if (this.right < point.x) this.right = point.x;
+      if (this.right_ < point.x) this.right_ = point.x;
 
-      if (this.bottom > point.y) this.bottom = point.y;
+      if (this.bottom_ > point.y) this.bottom_ = point.y;
     } else {
-      this.left = this.right = point.x;
-      this.top = this.bottom = point.y;
+      this.left_ = this.right_ = point.x;
+      this.top_ = this.bottom_ = point.y;
     }
   }
 
@@ -250,27 +250,27 @@ export class Rectangle {
   // Assume here that the box is initialized correctly
   addWithCheck(point: Point): boolean {
     let wider: boolean;
-    if ((wider = point.x < this.left)) this.left = point.x;
-    else if ((wider = this.right < point.x)) this.right = point.x;
+    if ((wider = point.x < this.left_)) this.left_ = point.x;
+    else if ((wider = this.right_ < point.x)) this.right_ = point.x;
 
     let higher: boolean;
 
-    if ((higher = point.y > this.top)) this.top = point.y;
-    else if ((higher = this.bottom > point.y)) this.bottom = point.y;
+    if ((higher = point.y > this.top_)) this.top_ = point.y;
+    else if ((higher = this.bottom_ > point.y)) this.bottom_ = point.y;
 
     return wider || higher;
   }
 
   // adding rectangle
   addRec(rectangle: Rectangle) {
-    this.add(rectangle.LeftTop);
-    this.add(rectangle.RightBottom);
+    this.add(rectangle.leftTop);
+    this.add(rectangle.rightBottom);
   }
 
   // Return copy of specified rectangle translated by the specified delta
   static Translate(rectangle: Rectangle, delta: Point): Rectangle {
     const r = rectangle.clone();
-    r.Center = rectangle.Center.add(delta);
+    r.center = rectangle.center.add(delta);
     return r;
   }
 
@@ -281,39 +281,39 @@ export class Rectangle {
 
   // returns true if this rectangle compconstely contains the specified rectangle
   ContainsRect(rect: Rectangle): boolean {
-    return this.Contains(rect.LeftTop) && this.Contains(rect.RightBottom);
+    return this.Contains(rect.leftTop) && this.Contains(rect.rightBottom);
   }
 
   // return the length of the diagonal
   Diagonal() {
-    return Math.sqrt(this.Width * this.Width + this.Height * this.Height);
+    return Math.sqrt(this.width * this.width + this.height * this.height);
   }
 
   // pad the rectangle horizontally by the given padding
   PadWidth(padding: number) {
-    this.Left -= padding;
-    this.Right += padding;
+    this.left -= padding;
+    this.right += padding;
   }
 
   // pad the rectangle vertically by the given padding
   PadHeight(padding: number) {
     this.Top += padding;
-    this.Bottom -= padding;
+    this.bottom -= padding;
   }
 
   // pad the rectangle by the given padding
   Pad(padding: number) {
-    if (padding < -this.Width / 2) padding = -this.Width / 2;
-    if (padding < -this.Height / 2) padding = -this.Height / 2;
+    if (padding < -this.width / 2) padding = -this.width / 2;
+    if (padding < -this.height / 2) padding = -this.height / 2;
     this.PadWidth(padding);
     this.PadHeight(padding);
   }
 
   // Pad the rectangle by the given amount on each side
   PadEverywhere(left: number, bottom: number, right: number, top: number) {
-    this.Left -= left;
-    this.Right += right;
-    this.Bottom -= bottom;
+    this.left -= left;
+    this.right += right;
+    this.bottom -= bottom;
     this.Top += top;
   }
 
@@ -321,10 +321,10 @@ export class Rectangle {
   static Intersect(rect1: Rectangle, rect2: Rectangle): Rectangle {
     if (rect1.Intersects(rect2))
       return Rectangle.RectanglePointPoint(
-        new Point(Math.max(rect1.Left, rect2.Left), Math.max(rect1.Bottom, rect2.Bottom)),
-        new Point(Math.min(rect1.Right, rect2.Right), Math.min(rect1.Top, rect2.Top)),
+        new Point(Math.max(rect1.left, rect2.left), Math.max(rect1.bottom, rect2.bottom)),
+        new Point(Math.min(rect1.right, rect2.right), Math.min(rect1.Top, rect2.Top)),
       );
-    return Rectangle.CreateEmptyRectangle();
+    return Rectangle.mkEmpty();
   }
 
   /*
@@ -339,22 +339,22 @@ export class Rectangle {
     }
   */
   ScaleAroundCenter(scale: number) {
-    this.Width = this.Width * scale;
-    this.Height = this.Height * scale;
+    this.width = this.width * scale;
+    this.height = this.height * scale;
   }
 
   clone(): Rectangle {
-    return Rectangle.RectanglePointPoint(this.LeftTop, this.RightBottom);
+    return Rectangle.RectanglePointPoint(this.leftTop, this.rightBottom);
   }
 
   // gets or sets the Size
 
   get Size(): Size {
-    return new Size(this.Width, this.Height);
+    return new Size(this.width, this.height);
   }
   set Size(value: Size) {
-    this.Width = value.width;
-    this.Height = value.height;
+    this.width = value.width;
+    this.height = value.height;
   }
 
   // constructor with Size and center

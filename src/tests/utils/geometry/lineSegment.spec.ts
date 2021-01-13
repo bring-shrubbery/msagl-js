@@ -2,7 +2,8 @@
 import {GeomConstants} from '../../../utils/geometry/geomConstants';
 import {LineSegment} from '../../../utils/geometry/lineSegment';
 import {Point} from '../../../utils/geometry/point';
-import {svgDebugWriter} from '../../../utils/geometry/svgDebugWriter';
+import {SvgDebugWriter} from '../../../utils/geometry/svgDebugWriter';
+import {DebugCurve} from '../../../utils/geometry/debugCurve';
 
 test('lineSegment basic case', () => {
   const a = new LineSegment(0, 0, 1, 1);
@@ -114,8 +115,8 @@ test('lineSegment mindist overlap', () => {
   const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
   const uniformMd = getUniformMd(a, b, c, d);
   expect(md.dist <= uniformMd + GeomConstants.tolerance).toBeTruthy();
-  const w = new svgDebugWriter('/tmp/svg.xml');
-  w.test();
+  const w = new SvgDebugWriter('/tmp/ttt.svg');
+  w.writeDebugCurves([DebugCurve.mkDebugCurveI(LineSegment.mkLinePP(a, b))]);
   w.close();
 
   // const cs: ICurve[] = [];

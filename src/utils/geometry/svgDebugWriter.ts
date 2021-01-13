@@ -1,9 +1,17 @@
 import {ICurve} from './icurve';
-// import {LineSegment} from './lineSegment';
-//import {fs} from 'file-system';
+import {Curve} from './curve';
+import {Point} from './point';
+import {Polyline} from './polyline';
+import {Rectangle} from './rectangle';
+import {Ellipse} from './ellipse';
+import {LineSegment} from './lineSegment';
+import {BezierSeg} from './bezierSeg';
+import {DebugCurve} from './debugCurve';
+import {String, StringBuilder} from 'typescript-string-operations';
+
 /// <reference path="path/to/node.d.ts" />s
 
-export class svgDebugWriter {
+export class SvgDebugWriter {
   // Here we import the File System module of node
   private fs = require('fs');
   private xmlw = require('xml-writer');
@@ -17,25 +25,189 @@ export class svgDebugWriter {
       wsCapture.write(string, encoding);
     });
   }
-  test() {
-    this.xw.startDocument();
-    this.xw.startElement('root');
-    this.xw.writeAttribute('foo', 'value');
-    this.xw.text(typeof this);
-    this.xw.endElement();
-    this.xw.endDocument();
-    this.ws.end();
+
+  static getBoundingBox(dcurves: DebugCurve[]): Rectangle {
+    const r = Rectangle.mkEmpty();
+    for (const c of dcurves) {
+      r.addRec(c.icurve.boundingBox());
+    }
+    return r;
   }
-  close() {
-    console.log('foo');
+
+  writeBoundingBox(box: Rectangle) {
+    this.xw.writeAttribute('width', box.width);
+
+    this.xw.writeAttribute('version', '1.1');
+    this.xw.startElement('g');
+    this.xw.writeAttribute('transform', 'translate(' + -box.left + ',' + -box.bottom + ')');
   }
-  write(cs: ICurve[], fileName: string): void {
-    this.fs.writeFile(fileName, 'I am cool!', function (err) {
-      if (err) {
-        return console.error(err);
+
+  open(box: Rectangle) {
+    this.xw.startElement('svg');
+    this.xw.writeAttribute('xmlns:svg', 'http://www.w3.org/2000/svg');
+    this.xw.writeAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    this.xw.writeAttribute('width', box.width);
+    this.xw.writeAttribute('height', box.height);
+    this.xw.writeAttribute('id', 'svg2');
+    this.xw.writeAttribute('version', '1.1');
+    this.xw.startElement('g');
+    this.xw.writeAttribute('transform', 'translate(' + -box.left + ',' + -box.bottom + ')');
+  }
+
+  pointToString(start: Point) {
+    return this.doubleToString(start.x) + ' ' + this.doubleToString(start.y);
+  }
+
+  doubleToString(d: number) {
+    return Math.abs(d) < 1e-11 ? '0' : d.toString(); //formatForDoubleString, CultureInfo.InvariantCulture);
+  }
+
+  segmentString(c: ICurve): string {
+    const isls = c instanceof LineSegment;
+    if (isls) return this.lineSegmentString(c as LineSegment);
+
+    const iscubic = c instanceof BezierSeg;
+    if (iscubic) return this.bezierSegToString(c as BezierSeg);
+
+    const isell = c instanceof Ellipse;
+    if (isell) return this.ellipseToString(c as Ellipse);
+
+    throw new Error('NotImplementedException');
+  }
+  bezierSegToString(arg0: BezierSeg): string {
+    throw new Error('Method not implemented.');
+  }
+  lineSegmentString(arg0: LineSegment): string {
+    throw new Error('Method not implemented.');
+  }
+
+  pointsToString(points: Point[]) {
+    const strs: string[] = [];
+    for (const p of points) {
+      strs.push(this.pointToString(p));
+    }
+    return String.Join(' ', strs);
+  }
+
+  cubicBezierSegmentToString(cubic: BezierSeg): string {
+    return 'C' + this.pointsToString([cubic.B(1), cubic.B(2), cubic.B(3)]);
+  }
+
+  static isFullEllipse(e: Ellipse): boolean {
+    throw new Error('not implemented');
+  }
+
+  ellipseToString(ellipse: Ellipse): string {
+    const largeArc = Math.abs(ellipse.parEnd() - ellipse.parStart()) >= Math.PI ? '1' : '0';
+    const sweepFlag = ellipse.orientedCounterclockwise() ? '1' : '0';
+
+    return String.Join(
+      ' ',
+      'A',
+      this.ellipseRadiuses(ellipse),
+      this.doubleToString(Point.angle(new Point(1, 0), ellipse.aAxis) / (Math.PI / 180.0)),
+      largeArc,
+      sweepFlag,
+      this.pointToString(ellipse.end()),
+    );
+  }
+  ellipseRadiuses(ellipse: Ellipse): string {
+    throw new Error('Method not implemented.');
+  }
+
+  curveString(iCurve: ICurve): string {
+    return String.Join(' ', Array.from(this.curveStringTokens(iCurve)));
+  }
+
+  *curveStringTokens(iCurve: ICurve): IterableIterator<string> {
+    yield 'M';
+    yield this.pointToString(iCurve.start());
+    const iscurve = iCurve instanceof Curve;
+    if (iscurve) for (const segment of (iCurve as Curve).segs) yield this.segmentString(segment);
+    else {
+      const islineSeg = iCurve instanceof LineSegment;
+      if (islineSeg) {
+        yield 'L';
+        yield this.pointToString(iCurve.end());
+      } else {
+        const isbezier = iCurve instanceof BezierSeg;
+        if (isbezier != null) {
+          yield this.cubicBezierSegmentToString(iCurve as BezierSeg);
+        } else {
+          const ispoly = iCurve instanceof Polyline;
+          if (ispoly != null) {
+            const poly = iCurve as Polyline;
+            for (const p of poly.skip(1)) {
+              yield 'L';
+              yield this.pointToString(p.point);
+            }
+            if (poly.isClosed()) {
+              yield 'L';
+              yield this.pointToString(poly.start());
+            }
+          } else {
+            const isellipse = iCurve instanceof Ellipse;
+            if (isellipse) {
+              const ellipse = iCurve as Ellipse;
+              if (SvgDebugWriter.isFullEllipse(ellipse)) {
+                yield this.ellipseToString(new Ellipse(0, Math.PI, ellipse.aAxis, ellipse.bAxis, ellipse.center));
+                yield this.ellipseToString(new Ellipse(Math.PI, Math.PI * 2, ellipse.aAxis, ellipse.bAxis, ellipse.center));
+              } else yield this.ellipseToString(ellipse);
+            }
+          }
+        }
       }
-      console.log('File created!');
-    });
+    }
+  }
+
+  writeStroke(c: DebugCurve) {
+    const color = SvgDebugWriter.validColor(c.color);
+    this.xw.writeAttribute('stroke', color);
+    this.xw.writeAttribute('stroke-opacity', c.transparency / 255.0);
+    this.xw.writeAttribute('stroke-width', c.width);
+  }
+
+  static validColor(color: string) {
+    if (DebugCurve.colors.includes(color)) return color;
+    return 'Black';
+  }
+
+  dashArrayString(da: number[]): string {
+    const stringBuilder = new StringBuilder('stroke-dasharray:');
+    for (let i = 0; ; ) {
+      stringBuilder.Append(da[i].toString());
+      i++;
+      if (i < da.length) stringBuilder.Append(' ');
+      else {
+        stringBuilder.Append(';');
+        break;
+      }
+    }
+    return stringBuilder.ToString();
+  }
+
+  writeDebugCurve(c: DebugCurve) {
+    this.xw.startElement('path');
+    this.xw.writeAttribute('fill', 'none');
+    const iCurve = c.icurve;
+    this.writeStroke(c);
+    this.xw.writeAttribute('d', this.curveString(iCurve));
+    if (c.dashArray != null) this.xw.writeAttribute('style', this.dashArrayString(c.dashArray));
+    this.xw.endElement();
+  }
+
+  writeDebugCurves(dcurves: DebugCurve[]) {
+    this.open(SvgDebugWriter.getBoundingBox(dcurves));
+    for (const c of dcurves) {
+      this.writeDebugCurve(c);
+    }
+    this.close();
+  }
+
+  close() {
+    this.xw.endElement('g');
+    this.xw.endDocument();
+    this.xw.flush();
   }
 
   // this.fs.close();

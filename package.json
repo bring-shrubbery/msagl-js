@@ -20,6 +20,7 @@
     "lodash": "4.17.19",
     "tsc": "1.20150623.0",
     "typescript": "3.9.6",
+    "typescript-string-operations": "^1.4.1",
     "xml-writer": "^1.7.0"
   },
   "devDependencies": {

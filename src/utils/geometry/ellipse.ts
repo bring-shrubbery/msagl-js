@@ -147,7 +147,7 @@ export class Ellipse implements ICurve {
   // Moves the ellipse to the delta vector
   translate(delta: Point) {
     this.center.move(delta);
-    this.box.Center = this.box.Center.add(delta);
+    this.box.center = this.box.center.add(delta);
     this.pNode = null;
   }
 
@@ -279,7 +279,7 @@ export class Ellipse implements ICurve {
   }
 
   // returns true if the ellipse goes counterclockwise
-  OrientedCounterclockwise() {
+  orientedCounterclockwise() {
     return Point.crossProduct(this.aAxis, this.bAxis) > 0;
   }
 
