@@ -109,9 +109,9 @@ test('lineSegment mindist parallel 0', () => {
 
 test('lineSegment mindist overlap', () => {
   const a = new Point(0, 0);
-  const b = new Point(2, 4);
+  const b = new Point(100, 100);
   const c = new Point(1, 2);
-  const d = new Point(3, 6);
+  const d = new Point(300, 300);
   const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
   const uniformMd = getUniformMd(a, b, c, d);
   expect(md.dist <= uniformMd + GeomConstants.tolerance).toBeTruthy();

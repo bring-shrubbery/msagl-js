@@ -20,7 +20,7 @@ export class SvgDebugWriter {
   constructor(svgFileName: string) {
     this.ws = this.fs.createWriteStream(svgFileName);
     const wsCapture = this.ws;
-    this.xw = new this.xmlw(false, function (string: string, encoding) {
+    this.xw = new this.xmlw(true, function (string: string, encoding) {
       wsCapture.write(string, encoding);
     });
   }
