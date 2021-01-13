@@ -8,8 +8,7 @@ import {LineSegment} from './lineSegment';
 import {BezierSeg} from './bezierSeg';
 import {DebugCurve} from './debugCurve';
 import {String, StringBuilder} from 'typescript-string-operations';
-
-/// <reference path="path/to/node.d.ts" />s
+import {from} from 'linq-to-typescript';
 
 export class SvgDebugWriter {
   // Here we import the File System module of node
@@ -82,11 +81,12 @@ export class SvgDebugWriter {
   }
 
   pointsToString(points: Point[]) {
-    const strs: string[] = [];
-    for (const p of points) {
-      strs.push(this.pointToString(p));
-    }
-    return String.Join(' ', strs);
+    return String.Join(
+      ' ',
+      from(points)
+        .select((p) => this.pointToString(p))
+        .toArray(),
+    );
   }
 
   cubicBezierSegmentToString(cubic: BezierSeg): string {

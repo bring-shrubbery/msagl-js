@@ -17,6 +17,7 @@
     "@types/lodash": "4.14.157",
     "file-system": "^2.2.2",
     "graphlib": "2.1.8",
+    "linq-to-typescript": "^8.0.0",
     "lodash": "4.17.19",
     "tsc": "1.20150623.0",
     "typescript": "3.9.6",

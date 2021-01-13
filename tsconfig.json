@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2015",
+    "target": "es2018",
     "declaration": true,
     "outDir": "./dist",
-    "sourceMap": false
-  },
+    "sourceMap": false,
+    "lib": [
+      "dom",
+      "es2018"
+    ],
+    "importHelpers": true  },
   "include": ["src/**/*"],
   "exclude": ["dist", "node_modules"]
 }
