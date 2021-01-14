@@ -6,7 +6,6 @@ import {PlaneTransformation} from './../../../utils/geometry/planeTransformation
 import {CurveFactory} from './../../../utils/geometry/curveFactory';
 import {SvgDebugWriter} from './../../../utils/geometry/svgDebugWriter';
 import {DebugCurve} from './../../../utils/geometry/debugCurve';
-
 function intersectOnDiameter(a: Point, b: Point) {
   const ls = LineSegment.mkLinePP(a, b);
   const circ = Ellipse.mkCircle(b.minus(a).length() / 2, Point.middle(a, b));
@@ -27,6 +26,11 @@ test('rounded rectangle', () => {
   const w = new SvgDebugWriter('/tmp/curve.svg');
   w.writeDebugCurves([DebugCurve.mkDebugCurveI(rr0)]);
   w.close();
+});
+test('intersect rounded rect', () => {
+  const rr = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
+  const rr0 = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
+  const x = Curve.curveCurveIntersectionOne(rr, rr0, true);
 });
 test('curve intersect line circle', () => {
   const a = new Point(1, 0);

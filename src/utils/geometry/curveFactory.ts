@@ -1,4 +1,3 @@
-import {ICurve} from './icurve';
 import {Ellipse} from './ellipse';
 import {Curve} from './curve';
 import {Point} from './point';

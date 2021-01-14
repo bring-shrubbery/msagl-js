@@ -623,18 +623,18 @@ export class Curve implements ICurve {
     const l0 = n0.node as PNLeaf;
     const l1 = n1.node as PNLeaf;
     if (Curve.closeIntersectionPoints(x, n0.seg.value(l0.low))) {
-      x = n0.seg[l0.low];
+      x = n0.seg.value(l0.low);
       aSol = l0.low;
     } else if (Curve.closeIntersectionPoints(x, n0.seg.value(l0.high))) {
-      x = n0.seg[l0.high];
+      x = n0.seg.value(l0.high);
       aSol = l0.high;
     }
 
     if (Curve.closeIntersectionPoints(x, n1.seg.value(l1.low))) {
-      x = n1.seg[l1.low];
+      x = n1.seg.value(l1.low);
       bSol = l1.low;
     } else if (Curve.closeIntersectionPoints(x, n1.seg.value(l1.high))) {
-      x = n1.seg[l1.high];
+      x = n1.seg.value(l1.high);
       bSol = l1.high;
     }
 
@@ -874,19 +874,21 @@ export class Curve implements ICurve {
     bGuess: number,
   ): CurveCrossOutput | undefined {
     if (a instanceof LineSegment && b instanceof LineSegment) {
-      return Curve.crossTwoLineSegs(a.start(), a.end(), b.start(), b.end(), amin, amax, bmin, bmax);
+      const r = Curve.crossTwoLineSegs(a.start(), a.end(), b.start(), b.end(), amin, amax, bmin, bmax);
+      if (r != undefined) return r;
     }
 
-    const mdout: MinDistOutput = Curve.minDistWithinIntervals(a, b, amin, amax, bmin, bmax, aGuess, bGuess);
+    const mdout = Curve.minDistWithinIntervals(a, b, amin, amax, bmin, bmax, aGuess, bGuess);
     if (mdout == undefined) return;
 
     const aMinusB = mdout.aX.minus(mdout.bX);
-    if (aMinusB.dot(aMinusB) >= GeomConstants.distanceEpsilon) return;
-    return {
-      aSol: mdout.aSol,
-      bSol: mdout.bSol,
-      x: Point.middle(mdout.aX, mdout.bX),
-    };
+    return aMinusB.dot(aMinusB) >= GeomConstants.distanceEpsilon
+      ? undefined
+      : {
+          aSol: mdout.aSol,
+          bSol: mdout.bSol,
+          x: Point.middle(mdout.aX, mdout.bX),
+        };
   }
 
   static crossTwoLineSegs(

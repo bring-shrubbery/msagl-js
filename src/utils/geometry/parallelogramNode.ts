@@ -48,12 +48,12 @@ export class ParallelogramNode {
     return Math.abs(p.minus(s).dot(perp));
   }
 
-  static CreateParallelogramOnSubSeg(start: number, end: number, seg: ICurve, box: Parallelogram): boolean {
+  static createParallelogramOnSubSeg(start: number, end: number, seg: ICurve): Parallelogram | undefined {
     let tan1 = seg.derivative(start);
     const tan2 = seg.derivative(end);
     const tan2Perp = new Point(-tan2.y, tan2.x);
-    const corner = seg[start];
-    const e = seg[end];
+    const corner = seg.value(start);
+    const e = seg.value(end);
     const p = e.minus(corner);
 
     const numerator = p.dot(tan2Perp);
@@ -65,7 +65,7 @@ export class ParallelogramNode {
     if (!numeratorTiny && Math.abs(denumerator) < GeomConstants.distanceEpsilon) {
       //it is degenerated; the adjacent sides would parallel, but
       //since p * tan2Perp is big the parallelogram would not contain e
-      return false;
+      return;
     }
 
     const x = numeratorTiny ? 0 : numerator / denumerator;
@@ -73,24 +73,22 @@ export class ParallelogramNode {
     tan1 = tan1.mult(x);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    box = Parallelogram.parallelogramByCornerSideSide(corner, tan1, e.minus(corner).minus(tan1));
-    // assert(box.Contains(seg[end] && box.contain(seg((start + end)/2)
-
-    return true;
+    return Parallelogram.parallelogramByCornerSideSide(corner, tan1, e.minus(corner).minus(tan1));
+    // assert(box.Contains(seg.value(end) && box.contain(seg((start + end)/2)
   }
 
   static CreateParallelogramNodeForCurveSeg(start: number, end: number, seg: ICurve, eps: number): PN {
     const closedSeg = start == seg.parStart() && end == seg.parEnd() && Point.close(seg.start(), seg.end(), GeomConstants.distanceEpsilon);
-    if (closedSeg) return ParallelogramNode.CreateNodeWithSegmentSplit(start, end, seg, eps);
+    if (closedSeg) return ParallelogramNode.createNodeWithSegmentSplit(start, end, seg, eps);
 
-    const s = seg[start];
-    const e = seg[end];
+    const s = seg.value(start);
+    const e = seg.value(end);
     const w = e.minus(s);
     const middle = seg.value((start + end) / 2);
 
     if (
       ParallelogramNode.distToSegm(middle, s, e) <= GeomConstants.intersectionEpsilon &&
-      w * w < GeomConstants.lineSegmentThreshold * GeomConstants.lineSegmentThreshold &&
+      w.dot(w) < GeomConstants.lineSegmentThreshold * GeomConstants.lineSegmentThreshold &&
       end - start < GeomConstants.lineSegmentThreshold
     ) {
       const ls = LineSegment.mkLinePP(s, e);
@@ -104,24 +102,24 @@ export class ParallelogramNode {
     }
 
     const we = ParallelogramNode.WithinEpsilon(seg, start, end, eps);
-    const box = new Parallelogram();
-    if (we && ParallelogramNode.CreateParallelogramOnSubSeg(start, end, seg, box)) {
+    const box = we ? undefined : ParallelogramNode.createParallelogramOnSubSeg(start, end, seg);
+    if (box != undefined) {
       return createPNLeaf(start, end, box, seg, eps);
     } else {
-      return ParallelogramNode.CreateNodeWithSegmentSplit(start, end, seg, eps);
+      return ParallelogramNode.createNodeWithSegmentSplit(start, end, seg, eps);
     }
   }
 
   static WithinEpsilon(seg: ICurve, start: number, end: number, eps: number) {
     const n = 3; //hack !!!! but maybe can be proven for Bezier curves and other regular curves
     const d = (end - start) / n;
-    const s = seg[start];
-    const e = seg[end];
+    const s = seg.value(start);
+    const e = seg.value(end);
 
-    const d0 = ParallelogramNode.distToSegm(seg[start + d], s, e);
+    const d0 = ParallelogramNode.distToSegm(seg.value(start + d), s, e);
     if (d0 > eps) return false;
 
-    const d1 = ParallelogramNode.distToSegm(seg[start + d * (n - 1)], s, e);
+    const d1 = ParallelogramNode.distToSegm(seg.value(start + d * (n - 1)), s, e);
 
     return d1 <= eps;
   }
@@ -130,7 +128,7 @@ export class ParallelogramNode {
     return ParallelogramNode.CreateParallelogramNodeForCurveSeg(seg.parStart(), seg.parEnd(), seg, GeomConstants.defaultLeafBoxesOffset);
   }
 
-  static CreateNodeWithSegmentSplit(start: number, end: number, ell: ICurve, eps: number) {
+  static createNodeWithSegmentSplit(start: number, end: number, ell: ICurve, eps: number) {
     const pBNode: PN = {
       parallelogram: null,
       seg: ell,
@@ -142,10 +140,8 @@ export class ParallelogramNode {
 
     intNode.children.push(ParallelogramNode.CreateParallelogramNodeForCurveSeg(start, 0.5 * (start + end), ell, eps));
     intNode.children.push(ParallelogramNode.CreateParallelogramNodeForCurveSeg(0.5 * (start + end), end, ell, eps));
-    const boxes: Parallelogram[] = [];
-    boxes.push(intNode.children[0].parallelogram);
-    boxes.push(intNode.children[1].parallelogram);
-    pBNode.parallelogram = Parallelogram.parallelogramOfTwo(boxes[0], boxes[1]);
+
+    pBNode.parallelogram = Parallelogram.parallelogramOfTwo(intNode.children[0].parallelogram, intNode.children[1].parallelogram);
     return pBNode;
   }
 }

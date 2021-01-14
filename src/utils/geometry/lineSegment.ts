@@ -62,12 +62,12 @@ export class LineSegment implements ICurve {
     const side = this.b.minus(this.a).mult(0.5);
     return {
       parallelogram: Parallelogram.parallelogramByCornerSideSide(this.a, side, side),
-      seg: this.clone(),
+      seg: this,
       leafBoxesOffset: 0,
       node: {
         low: 0,
         high: 1,
-        chord: this.clone(),
+        chord: this,
       },
     };
   }
