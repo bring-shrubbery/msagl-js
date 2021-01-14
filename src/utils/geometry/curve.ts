@@ -113,14 +113,14 @@ export class Curve implements ICurve {
 
   // this[Reverse[t]]=this[ParEnd+ParStart-t]
   reverse() {
-    const ret = new Curve(this.segs.length);
+    const ret = new Curve();
     for (let i = this.segs.length - 1; i >= 0; i--) ret.addSegment(this.segs[i].reverse());
     return ret;
   }
 
   // Constructs the curve for a given number of segments
-  constructor(capacity: number) {
-    this.segs = new Array(capacity);
+  constructor() {
+    this.segs = [];
     this.parEnd_ = 0;
   }
 
@@ -138,7 +138,7 @@ export class Curve implements ICurve {
   }
 
   scaleFromOrigin(xScale: number, yScale: number) {
-    const c = new Curve(this.segs.length);
+    const c = new Curve();
     for (const s of this.segs) c.addSegment(s.scaleFromOrigin(xScale, yScale));
     return c;
   }
@@ -157,7 +157,7 @@ export class Curve implements ICurve {
 
     if (s.segIndex == e.segIndex) return this.segs[s.segIndex].trim(s.par, e.par);
 
-    let c = new Curve(e.segIndex - s.segIndex + 1);
+    let c = new Curve();
 
     if (s.par < this.segs[s.segIndex].parEnd()) c = c.addSegment(this.segs[s.segIndex].trim(s.par, this.segs[s.segIndex].parEnd()));
 
@@ -192,16 +192,20 @@ export class Curve implements ICurve {
     if (start < end) return this.trim(start, end) as Curve;
 
     Assert.assert(Point.closeDistEps(this.start(), this.end())); // Curve must be closed to wrap
-    const c = new Curve(2);
+    const c = new Curve();
     c.addSegment(this.trim(start, this.parEnd()) as Curve);
     c.addSegment(this.trim(this.parStart(), end) as Curve);
     return c;
   }
 
+  addSegs(segs: ICurve[]) {
+    for (const s of segs) this.addSegment(s);
+  }
+
   // Adds a segment to the curve
   addSegment(curve: ICurve) {
     if (curve == null) return this; //nothing happens
-    Assert.assert(this.segs.length == 0 || !Point.close(this.end(), curve.start(), 0.001));
+    Assert.assert(this.segs.length == 0 || Point.close(this.end(), curve.start(), 0.001));
     if (!(curve instanceof Curve)) {
       this.segs.push(curve);
       this.parEnd_ += Curve.paramSpan(curve);
@@ -212,14 +216,6 @@ export class Curve implements ICurve {
       }
     }
     return this;
-  }
-
-  addSegs(a: ICurve, b: ICurve) {
-    return this.addSegment(a).addSegment(b);
-  }
-
-  addFourSegs(a: ICurve, b: ICurve, c: ICurve, d: ICurve) {
-    return this.addSegs(a, b).addSegs(c, d);
   }
 
   // A tree of ParallelogramNodes covering the curve.
@@ -1186,7 +1182,7 @@ export class Curve implements ICurve {
 
   // clones the curve.
   clone() {
-    const c = new Curve(this.segs.length);
+    const c = new Curve();
     for (const seg of this.segs) c.addSegment(seg.clone());
     return c;
   }
@@ -1209,7 +1205,7 @@ export class Curve implements ICurve {
     return r;
   }
   transform(transformation: PlaneTransformation): ICurve {
-    const c = new Curve(this.segs.length);
+    const c = new Curve();
     for (const s of this.segs) c.addSegment(s.transform(transformation));
 
     return c;

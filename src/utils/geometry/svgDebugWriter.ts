@@ -76,8 +76,8 @@ export class SvgDebugWriter {
     throw new Error('NotImplementedException');
   }
 
-  lineSegmentString(arg0: LineSegment): string {
-    throw new Error('Method not implemented.');
+  lineSegmentString(ls: LineSegment): string {
+    return 'L ' + this.pointToString(ls.end());
   }
 
   pointsToString(points: Point[]) {

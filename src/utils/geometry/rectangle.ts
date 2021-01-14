@@ -1,5 +1,6 @@
 import {Point} from './point';
 import {GeomConstants} from './geomConstants';
+import {Assert} from '../assert';
 
 class Size {
   width: number;
@@ -17,6 +18,7 @@ export class Rectangle {
   bottom_: number;
 
   constructor(left: number, right: number, top: number, bottom: number) {
+    Assert.assert(left <= right && top >= bottom);
     this.left_ = left;
     this.right_ = right;
     this.top_ = top;
