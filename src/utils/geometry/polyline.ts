@@ -182,7 +182,8 @@ export class Polyline implements ICurve {
     return this.pBNode;
   }
   boundingBox(): Rectangle {
-    throw new Error('Method not implemented.');
+    if (this.requireInit_) this.init();
+    return this.bBox;
   }
   parStart(): number {
     return 0;

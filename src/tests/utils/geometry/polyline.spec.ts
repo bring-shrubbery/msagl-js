@@ -3,6 +3,9 @@ import {Point} from './../../../utils/geometry/point';
 import {Polyline} from './../../../utils/geometry/polyline';
 import {Curve} from './../../../utils/geometry/curve';
 import {PlaneTransformation} from './../../../utils/geometry/planeTransformation';
+import {SvgDebugWriter} from './../../../utils/geometry/svgDebugWriter';
+import {DebugCurve} from './../../../utils/geometry/debugCurve';
+
 test('polyline test iterator', () => {
   const poly = new Polyline();
   const ps = [new Point(0, 0), new Point(10, 20), new Point(20, 0), new Point(30, 10)];
@@ -13,6 +16,9 @@ test('polyline test iterator', () => {
   for (const pp of poly.polylinePoints()) {
     expect(pp.point.equal(ps[--i])).toBe(true); // the points are added at the start of the polyline
   }
+  const w = new SvgDebugWriter('/tmp/polyline.svg');
+  w.writeDebugCurves([DebugCurve.mkDebugCurveWCI(5, 'Green', poly)]);
+  w.close();
 });
 test('polyline test skip', () => {
   const poly = new Polyline();

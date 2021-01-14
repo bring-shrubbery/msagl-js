@@ -20,8 +20,6 @@ test('lineSegment basic case', () => {
   const intersection = LineSegment.IntersectPPPP(p0, p1, p0, p2);
   expect(Point.close(intersection, p0, GeomConstants.distanceEpsilon)).toBe(true);
   const inters0 = LineSegment.IntersectPPPP(new Point(1, 1.1), p1, p0, p2);
-  console.log('intersection = ');
-  console.log(inters0);
   expect(inters0).toBe(undefined);
 });
 test('lineSegment mindist test 0', () => {
@@ -115,12 +113,7 @@ test('lineSegment mindist overlap', () => {
   const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
   const uniformMd = getUniformMd(a, b, c, d);
   expect(md.dist <= uniformMd + GeomConstants.tolerance).toBeTruthy();
-  const w = new SvgDebugWriter('/tmp/ttt.svg');
+  const w = new SvgDebugWriter('/tmp/lineSegment.svg');
   w.writeDebugCurves([DebugCurve.mkDebugCurveI(LineSegment.mkLinePP(a, b))]);
   w.close();
-
-  // const cs: ICurve[] = [];
-  // cs.push(LineSegment.lineSegmentStartEnd(a, b));
-  // w.write(cs, '/tmp/try.svg');
-  // w.close();
 });

@@ -134,14 +134,14 @@ export class Rectangle {
 
   // create a box of two points
   static RectanglePointPoint(point0: Point, point1: Point) {
-    const r = new Rectangle(point0.x, point0.y, point0.x, point0.y);
+    const r = new Rectangle(point0.x, point0.x, point0.y, point0.y);
     r.add(point1);
     return r;
   }
 
   // create rectangle from a point
   static rectanglePoint(point: Point) {
-    return new Rectangle(point.x, point.y, point.x, point.x);
+    return new Rectangle(point.x, point.x, point.y, point.y);
   }
 
   static RectangleFromLeftBottomAndSize(left: number, bottom: number, sizeF: Point) {
@@ -290,23 +290,23 @@ export class Rectangle {
   }
 
   // pad the rectangle horizontally by the given padding
-  PadWidth(padding: number) {
+  padWidth(padding: number) {
     this.left -= padding;
     this.right += padding;
   }
 
   // pad the rectangle vertically by the given padding
-  PadHeight(padding: number) {
+  padHeight(padding: number) {
     this.Top += padding;
     this.bottom -= padding;
   }
 
   // pad the rectangle by the given padding
-  Pad(padding: number) {
+  pad(padding: number) {
     if (padding < -this.width / 2) padding = -this.width / 2;
     if (padding < -this.height / 2) padding = -this.height / 2;
-    this.PadWidth(padding);
-    this.PadHeight(padding);
+    this.padWidth(padding);
+    this.padHeight(padding);
   }
 
   // Pad the rectangle by the given amount on each side

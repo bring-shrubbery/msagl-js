@@ -30,6 +30,8 @@ export class SvgDebugWriter {
     for (const c of dcurves) {
       r.addRec(c.icurve.boundingBox());
     }
+    const s = Math.max(r.width, r.height);
+    r.pad(s / 20);
     return r;
   }
 
@@ -73,9 +75,7 @@ export class SvgDebugWriter {
 
     throw new Error('NotImplementedException');
   }
-  bezierSegToString(arg0: BezierSeg): string {
-    throw new Error('Method not implemented.');
-  }
+
   lineSegmentString(arg0: LineSegment): string {
     throw new Error('Method not implemented.');
   }
@@ -89,12 +89,12 @@ export class SvgDebugWriter {
     );
   }
 
-  cubicBezierSegmentToString(cubic: BezierSeg): string {
+  bezierSegToString(cubic: BezierSeg): string {
     return 'C' + this.pointsToString([cubic.B(1), cubic.B(2), cubic.B(3)]);
   }
 
-  static isFullEllipse(e: Ellipse): boolean {
-    throw new Error('not implemented');
+  static isFullEllipse(ell: Ellipse): boolean {
+    return ell.parEnd() == Math.PI * 2 && ell.parStart() == 0;
   }
 
   ellipseToString(ellipse: Ellipse): string {
@@ -112,7 +112,7 @@ export class SvgDebugWriter {
     );
   }
   ellipseRadiuses(ellipse: Ellipse): string {
-    throw new Error('Method not implemented.');
+    return this.doubleToString(ellipse.aAxis.length()) + ',' + this.doubleToString(ellipse.bAxis.length());
   }
 
   curveString(iCurve: ICurve): string {
@@ -131,11 +131,11 @@ export class SvgDebugWriter {
         yield this.pointToString(iCurve.end());
       } else {
         const isbezier = iCurve instanceof BezierSeg;
-        if (isbezier != null) {
-          yield this.cubicBezierSegmentToString(iCurve as BezierSeg);
+        if (isbezier) {
+          yield this.bezierSegToString(iCurve as BezierSeg);
         } else {
           const ispoly = iCurve instanceof Polyline;
-          if (ispoly != null) {
+          if (ispoly) {
             const poly = iCurve as Polyline;
             for (const p of poly.skip(1)) {
               yield 'L';

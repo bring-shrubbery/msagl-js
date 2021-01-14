@@ -1,6 +1,7 @@
 import {Point} from '../../../utils/geometry/point';
 import {BezierSeg} from '../../../utils/geometry/bezierSeg';
-
+import {DebugCurve} from '../../../utils/geometry/debugCurve';
+import {SvgDebugWriter} from '../../../utils/geometry/svgDebugWriter';
 test('bezier control points', () => {
   const b = [new Point(0, 0), new Point(1, 0), new Point(1, 2), new Point(3, 0)];
   const bezSeg = new BezierSeg(b[0], b[1], b[2], b[3]);
@@ -29,9 +30,12 @@ test('bezier accessors', () => {
 });
 
 test('bezier length', () => {
-  const b = [new Point(0, 0), new Point(1, 1), new Point(2, 1), new Point(3, 0)];
+  const b = [new Point(0, 100), new Point(100, 100), new Point(200, 100), new Point(300, 0)];
   const bezSeg = new BezierSeg(b[0], b[1], b[2], b[3]);
   const l = bezSeg.length();
   expect(l > 3).toBe(true);
-  expect(l < 2 * b[1].minus(b[0]).length() + b[2].minus(b[1]).length()).toBe(true);
+  expect(l < b[1].minus(b[0]).length() + b[2].minus(b[1]).length() + b[2].minus(b[3]).length()).toBe(true);
+  const w = new SvgDebugWriter('/tmp/bezier.svg');
+  w.writeDebugCurves([DebugCurve.mkDebugCurveCI('Red', bezSeg)]);
+  w.close();
 });
