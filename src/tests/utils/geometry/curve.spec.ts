@@ -6,6 +6,7 @@ import {PlaneTransformation} from './../../../utils/geometry/planeTransformation
 import {CurveFactory} from './../../../utils/geometry/curveFactory';
 import {SvgDebugWriter} from './../../../utils/geometry/svgDebugWriter';
 import {DebugCurve} from './../../../utils/geometry/debugCurve';
+
 function intersectOnDiameter(a: Point, b: Point) {
   const ls = LineSegment.mkLinePP(a, b);
   const circ = Ellipse.mkCircle(b.minus(a).length() / 2, Point.middle(a, b));
@@ -27,10 +28,26 @@ test('rounded rectangle', () => {
   w.writeDebugCurves([DebugCurve.mkDebugCurveI(rr0)]);
   w.close();
 });
+
 test('intersect rounded rect', () => {
   const rr = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
   const rr0 = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
-  const x = Curve.curveCurveIntersectionOne(rr, rr0, true);
+  let x = Curve.curveCurveIntersectionOne(rr, rr0, true);
+
+  rr.translate(new Point(10, 0));
+  x = Curve.curveCurveIntersectionOne(rr, rr0, true);
+  let w = new SvgDebugWriter('/tmp/rectIntersect.svg');
+  w.writeDebugCurves([DebugCurve.mkDebugCurveI(rr0), DebugCurve.mkDebugCurveI(rr), DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(5, x.x))]);
+  w.close();
+  rr0.translate(new Point(0, 10));
+  const xx = Curve.getAllIntersections(rr, rr0, true);
+  const dc = [DebugCurve.mkDebugCurveI(rr0), DebugCurve.mkDebugCurveI(rr)];
+  for (const inters of xx) {
+    dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(5, inters.x)));
+  }
+  w = new SvgDebugWriter('/tmp/rectIntersect1.svg');
+  w.writeDebugCurves(dc);
+  w.close();
 });
 test('curve intersect line circle', () => {
   const a = new Point(1, 0);

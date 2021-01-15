@@ -4,6 +4,9 @@ import {Point} from './point';
 import {LineSegment} from './lineSegment';
 
 export class CurveFactory {
+  static mkCircle(radius: number, center: Point) {
+    return Ellipse.mkCircle(radius, center);
+  }
   static createRectangle(width: number, height: number, center: Point): Curve {
     const w = width / 2;
     const h = height / 2;
