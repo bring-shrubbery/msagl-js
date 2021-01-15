@@ -7,6 +7,10 @@ import {CurveFactory} from './../../../utils/geometry/curveFactory';
 import {SvgDebugWriter} from './../../../utils/geometry/svgDebugWriter';
 import {DebugCurve} from './../../../utils/geometry/debugCurve';
 
+function exp(b: boolean) {
+  expect(b).toBeTruthy();
+}
+
 function intersectOnDiameter(a: Point, b: Point) {
   const ls = LineSegment.mkLinePP(a, b);
   const circ = Ellipse.mkCircle(b.minus(a).length() / 2, Point.middle(a, b));
@@ -39,10 +43,10 @@ function intersectTwoRoundedRects(rr: Curve, rr0: Curve, i: number): void {
   const w = new SvgDebugWriter('/tmp/rectIntersect' + i + '.svg');
   w.writeDebugCurves(dc);
   w.close();
-  expect(xx.length == 2).toBeTruthy();
+  exp(xx.length == 2);
 }
 
-xtest('intersect rounded rect', () => {
+test('intersect rounded rect', () => {
   const rr = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
   const rr0 = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
   let x = Curve.curveCurveIntersectionOne(rr, rr0, true);
@@ -57,6 +61,9 @@ xtest('intersect rounded rect', () => {
   const rc = rr.clone();
   rc.translate(new Point(3, 3));
   intersectTwoRoundedRects(rr, rc, 1);
+
+  rc.translate(new Point(3, 0));
+  intersectTwoRoundedRects(rr, rc, 2);
 });
 test('curve intersect line circle', () => {
   const a = new Point(1, 0);
