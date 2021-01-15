@@ -222,7 +222,7 @@ return xx;
   // clones the curve.
 
   clone() {
-    return LineSegment.mkLinePP(this.a, this.b);
+    return LineSegment.mkLinePP(this.a.clone(), this.b.clone());
   }
 
   static closestParameterOnLineSegment(point: Point, segmentStart: Point, segmentEnd: Point) {

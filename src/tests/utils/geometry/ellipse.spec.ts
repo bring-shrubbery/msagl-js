@@ -3,8 +3,11 @@
 import {LineSegment} from '../../../utils/geometry/lineSegment';
 import {Point} from '../../../utils/geometry/point';
 import {DebugCurve} from '../../../utils/geometry/debugCurve';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import {Curve} from '../../../utils/geometry/curve';
+import {CurveFactory} from '../../../utils/geometry/curveFactory';
 import {SvgDebugWriter} from '../../../utils/geometry/svgDebugWriter';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Ellipse} from '../../../utils/geometry/ellipse';
 import {GeomConstants} from '../../../utils/geometry/geomConstants';
 test('ellipse value test', () => {
@@ -17,4 +20,21 @@ test('ellipse value test', () => {
   const w = new SvgDebugWriter('/tmp/ellipse.svg');
   w.writeDebugCurves([DebugCurve.mkDebugCurveI(ell)]);
   w.close();
+});
+
+function exp(b: boolean) {
+  expect(b).toBeTruthy();
+}
+
+test('intersect quarters', () => {
+  const rr = new Ellipse(0, Math.PI / 2, new Point(100, 0), new Point(0, 100), new Point(0, 0));
+  const rc = rr.clone();
+  rc.translate(new Point(-3, 3));
+  const xx = Curve.getAllIntersections(rr, rc, true);
+  const dc = [DebugCurve.mkDebugCurveI(rr), DebugCurve.mkDebugCurveI(rc)];
+  for (const inters of xx) dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(5, inters.x)));
+  const w = new SvgDebugWriter('/tmp/intersectQuarters.svg');
+  w.writeDebugCurves(dc);
+  w.close();
+  exp(xx.length == 1 && Point.closeDistEps(rr.value(xx[0].par0), xx[0].x));
 });

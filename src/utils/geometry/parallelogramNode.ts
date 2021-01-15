@@ -24,7 +24,7 @@ export function createPNLeaf(start: number, end: number, box: Parallelogram, seg
     node: {
       low: start,
       high: end,
-      chord: LineSegment.mkLinePP(seg.start(), seg.end()),
+      chord: null, // create a cord only the segment and the chord are within intersectionEpsilon
     },
   };
 }
@@ -32,7 +32,7 @@ export function createPNLeaf(start: number, end: number, box: Parallelogram, seg
 export type PNLeaf = {
   low: number;
   high: number;
-  chord: LineSegment;
+  chord: LineSegment | null;
 };
 
 export type PNInternal = {
@@ -93,7 +93,7 @@ export class ParallelogramNode {
     ) {
       const ls = LineSegment.mkLinePP(s, e);
       const pn: PN = ls.pNodeOverICurve();
-      pn.seg = seg as ICurve;
+      pn.seg = seg;
       const leaf = pn.node as PNLeaf;
       leaf.low = start;
       leaf.high = end;
@@ -101,13 +101,11 @@ export class ParallelogramNode {
       return pn;
     }
 
-    const we = ParallelogramNode.WithinEpsilon(seg, start, end, eps);
-    const box = we ? undefined : ParallelogramNode.createParallelogramOnSubSeg(start, end, seg);
-    if (box != undefined) {
-      return createPNLeaf(start, end, box, seg, eps);
-    } else {
-      return ParallelogramNode.createNodeWithSegmentSplit(start, end, seg, eps);
+    if (ParallelogramNode.WithinEpsilon(seg, start, end, eps)) {
+      const box = ParallelogramNode.createParallelogramOnSubSeg(start, end, seg);
+      if (box != undefined) return createPNLeaf(start, end, box, seg, eps);
     }
+    return ParallelogramNode.createNodeWithSegmentSplit(start, end, seg, eps);
   }
 
   static WithinEpsilon(seg: ICurve, start: number, end: number, eps: number) {

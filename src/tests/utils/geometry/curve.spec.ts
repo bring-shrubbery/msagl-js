@@ -29,25 +29,34 @@ test('rounded rectangle', () => {
   w.close();
 });
 
-test('intersect rounded rect', () => {
+function intersectTwoRoundedRects(rr: Curve, rr0: Curve, i: number): void {
+  const xx = Curve.getAllIntersections(rr, rr0, true);
+  const dc = [DebugCurve.mkDebugCurveI(rr0), DebugCurve.mkDebugCurveI(rr)];
+  for (const inters of xx) {
+    dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(5, inters.x)));
+  }
+
+  const w = new SvgDebugWriter('/tmp/rectIntersect' + i + '.svg');
+  w.writeDebugCurves(dc);
+  w.close();
+  expect(xx.length == 2).toBeTruthy();
+}
+
+xtest('intersect rounded rect', () => {
   const rr = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
   const rr0 = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
   let x = Curve.curveCurveIntersectionOne(rr, rr0, true);
 
   rr.translate(new Point(10, 0));
   x = Curve.curveCurveIntersectionOne(rr, rr0, true);
-  let w = new SvgDebugWriter('/tmp/rectIntersect.svg');
+  const w = new SvgDebugWriter('/tmp/rectIntersect.svg');
   w.writeDebugCurves([DebugCurve.mkDebugCurveI(rr0), DebugCurve.mkDebugCurveI(rr), DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(5, x.x))]);
   w.close();
   rr0.translate(new Point(0, 10));
-  const xx = Curve.getAllIntersections(rr, rr0, true);
-  const dc = [DebugCurve.mkDebugCurveI(rr0), DebugCurve.mkDebugCurveI(rr)];
-  for (const inters of xx) {
-    dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(5, inters.x)));
-  }
-  w = new SvgDebugWriter('/tmp/rectIntersect1.svg');
-  w.writeDebugCurves(dc);
-  w.close();
+  intersectTwoRoundedRects(rr, rr0, 0);
+  const rc = rr.clone();
+  rc.translate(new Point(3, 3));
+  intersectTwoRoundedRects(rr, rc, 1);
 });
 test('curve intersect line circle', () => {
   const a = new Point(1, 0);

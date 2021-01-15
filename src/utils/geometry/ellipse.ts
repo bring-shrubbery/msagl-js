@@ -216,9 +216,9 @@ export class Ellipse implements ICurve {
     return Curve.lengthWithInterpolation(this);
   }
 
-  // clones the curve.
+  // clones the ellipse .
   clone() {
-    return new Ellipse(this.parS, this.parE, this.aAxis, this.bAxis, this.center);
+    return new Ellipse(this.parS, this.parE, this.aAxis.clone(), this.bAxis.clone(), this.center.clone());
   }
 
   // returns a parameter t such that the distance between curve[t] and a is minimal
