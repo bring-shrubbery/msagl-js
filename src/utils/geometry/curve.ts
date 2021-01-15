@@ -539,39 +539,33 @@ export class Curve implements ICurve {
     //both are leafs
     const l0 = n0.node as PNLeaf;
     const l1 = n1.node as PNLeaf;
-    const d0 = (l0.high - l0.low) / 2;
-    const d1 = (l1.high - l1.low) / 2;
     let found = false;
 
-    for (let i = 1; i < 2; i++) {
-      const p0 = i * d0 + l0.low;
-      for (let j = 1; j < 2; j++) {
-        const p1 = j * d1 + l1.low;
-        let sol: CurveCrossOutput;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        let r: boolean;
-        if (l0.chord == null && l1.chord == null) sol = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high, p0, p1);
-        else if (l0.chord != null && l1.chord == null) {
-          sol = Curve.crossWithinIntervalsWithGuess(l0.chord, n1.seg, 0, 1, l1.low, l1.high, 0.5 * i, p1);
-          if (sol != undefined) sol.aSol = l0.low + sol.aSol * (l0.high - l0.low);
-        } else if (l0.chord == null) {
-          //&& l1.chord != null)
-          sol = Curve.crossWithinIntervalsWithGuess(n0.seg, l1.chord, l0.low, l0.high, 0, 1, p0, 0.5 * j);
-          if (sol != undefined) sol.bSol = l1.low + sol.bSol * (l1.high - l1.low);
-        } //if (l0.chord != null && l1.chord != null)
-        else {
-          sol = Curve.crossWithinIntervalsWithGuess(l0.chord, l1.chord, 0, 1, 0, 1, 0.5 * i, 0.5 * j);
-          if (sol != undefined) {
-            sol.bSol = l1.low + sol.bSol * (l1.high - l1.low);
-            sol.aSol = l0.low + sol.aSol * (l0.high - l0.low);
-          }
-        }
-
-        if (sol != undefined) {
-          Curve.addIntersection(n0, n1, intersections, sol);
-          found = true;
-        }
+    const p0 = (l0.high - l0.low) / 2 + l0.low;
+    const p1 = (l1.high - l1.low) / 2 + l1.low;
+    let sol: CurveCrossOutput;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    let r: boolean;
+    if (l0.chord == null && l1.chord == null) sol = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high, p0, p1);
+    else if (l0.chord != null && l1.chord == null) {
+      sol = Curve.crossWithinIntervalsWithGuess(l0.chord, n1.seg, 0, 1, l1.low, l1.high, 0.5, p1);
+      if (sol != undefined) sol.aSol = l0.low + sol.aSol * (l0.high - l0.low);
+    } else if (l0.chord == null) {
+      //&& l1.chord != null)
+      sol = Curve.crossWithinIntervalsWithGuess(n0.seg, l1.chord, l0.low, l0.high, 0, 1, p0, 0.5);
+      if (sol != undefined) sol.bSol = l1.low + sol.bSol * (l1.high - l1.low);
+    } //if (l0.chord != null && l1.chord != null)
+    else {
+      sol = Curve.crossWithinIntervalsWithGuess(l0.chord, l1.chord, 0, 1, 0, 1, 0.5, 0.5);
+      if (sol != undefined) {
+        sol.bSol = l1.low + sol.bSol * (l1.high - l1.low);
+        sol.aSol = l0.low + sol.aSol * (l0.high - l0.low);
       }
+    }
+
+    if (sol != undefined) {
+      Curve.addIntersection(n0, n1, intersections, sol);
+      found = true;
     }
 
     if (!found) Curve.goDeeper(intersections, n0, n1);
