@@ -545,7 +545,6 @@ export class Curve implements ICurve {
     const p1 = (l1.high - l1.low) / 2 + l1.low;
     let sol: CurveCrossOutput;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let r: boolean;
     if (l0.chord == null && l1.chord == null) sol = Curve.crossWithinIntervalsWithGuess(n0.seg, n1.seg, l0.low, l0.high, l1.low, l1.high, p0, p1);
     else if (l0.chord != null && l1.chord == null) {
       sol = Curve.crossWithinIntervalsWithGuess(l0.chord, n1.seg, 0, 1, l1.low, l1.high, 0.5, p1);
