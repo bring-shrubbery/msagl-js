@@ -242,7 +242,7 @@ export class Curve implements ICurve {
   }
 
   // finds an intersection between to curves,
-  static curveCurveIntersectionOne(curve0: ICurve, curve1: ICurve, liftIntersection: boolean) {
+  static intersectionOne(curve0: ICurve, curve1: ICurve, liftIntersection: boolean) {
     Assert.assert(curve0 != curve1);
     //            number c0S = curve0.parStart(), c1S = curve1.parStart();
     //            if (CurvesAreCloseAtParams(curve0, curve1, c0S, c1S)) {
@@ -484,16 +484,17 @@ export class Curve implements ICurve {
   }
 
   static curveCurveXWithParallelogramNodes(n0: PN, n1: PN, intersections: IntersectionInfo[]) {
-    if (!Parallelogram.intersect(n0.parallelogram, n1.parallelogram))
+    if (!Parallelogram.intersect(n0.parallelogram, n1.parallelogram)) {
       // Boxes n0.Box and n1.Box do not intersect
       return;
+    }
     const isInternal0 = n0.node.hasOwnProperty('children');
     const isInternal1 = n1.node.hasOwnProperty('children');
     if (isInternal0 && isInternal1)
       for (const n00 of (n0.node as PNInternal).children)
         for (const n11 of (n1.node as PNInternal).children) Curve.curveCurveXWithParallelogramNodes(n00, n11, intersections);
-    else if (isInternal0) for (const n of (n1.node as PNInternal).children) Curve.curveCurveXWithParallelogramNodes(n0, n, intersections);
-    else if (isInternal1) for (const n of (n0.node as PNInternal).children) Curve.curveCurveXWithParallelogramNodes(n, n1, intersections);
+    else if (isInternal1) for (const n of (n1.node as PNInternal).children) Curve.curveCurveXWithParallelogramNodes(n0, n, intersections);
+    else if (isInternal0) for (const n of (n0.node as PNInternal).children) Curve.curveCurveXWithParallelogramNodes(n, n1, intersections);
     else intersections = Curve.crossOverLeaves(n0, n1, intersections);
   }
 

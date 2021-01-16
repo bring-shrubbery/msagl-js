@@ -47,24 +47,12 @@ function intersectTwoRoundedRects(rr: Curve, rr0: Curve, i: number): void {
 }
 
 test('intersect rounded rect', () => {
-  const rr = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
-  const rr0 = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
-  let x = Curve.curveCurveIntersectionOne(rr, rr0, true);
-
-  rr.translate(new Point(10, 0));
-  x = Curve.curveCurveIntersectionOne(rr, rr0, true);
-  const w = new SvgDebugWriter('/tmp/rectIntersect.svg');
-  w.writeDebugCurves([DebugCurve.mkDebugCurveI(rr0), DebugCurve.mkDebugCurveI(rr), DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(5, x.x))]);
-  w.close();
-  rr0.translate(new Point(0, 10));
-  intersectTwoRoundedRects(rr, rr0, 0);
-  const rc = rr.clone();
-  rc.translate(new Point(3, 3));
-  intersectTwoRoundedRects(rr, rc, 1);
-
-  rc.translate(new Point(3, 0));
+  const rr: Curve = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
+  const rc: Curve = rr.clone();
+  rc.translate(new Point(13, 3));
   intersectTwoRoundedRects(rr, rc, 2);
 });
+
 test('curve intersect line circle', () => {
   const a = new Point(1, 0);
   const b = new Point(2, 0);

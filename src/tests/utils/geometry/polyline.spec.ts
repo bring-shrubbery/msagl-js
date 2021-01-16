@@ -40,7 +40,7 @@ test('polyline test intersection one', () => {
     poly.addPoint(p);
   }
   const ls = LineSegment.mkLinePP(new Point(10, 0), new Point(10, 40));
-  const x = Curve.curveCurveIntersectionOne(ls, poly, true);
+  const x = Curve.intersectionOne(ls, poly, true);
   expect(x != undefined).toBe(true);
 });
 

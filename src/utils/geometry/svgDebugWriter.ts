@@ -9,7 +9,7 @@ import {BezierSeg} from './bezierSeg';
 import {DebugCurve} from './debugCurve';
 import {String, StringBuilder} from 'typescript-string-operations';
 import {from} from 'linq-to-typescript';
-
+import {allVerticesOfParall} from './parallelogram';
 export class SvgDebugWriter {
   // Here we import the File System module of node
   private fs = require('fs');
@@ -160,11 +160,11 @@ export class SvgDebugWriter {
     }
   }
 
-  writeStroke(c: DebugCurve) {
+  writeStroke(c: DebugCurve, div = 1) {
     const color = SvgDebugWriter.validColor(c.color);
     this.xw.writeAttribute('stroke', color);
-    this.xw.writeAttribute('stroke-opacity', c.transparency / 255.0);
-    this.xw.writeAttribute('stroke-width', c.width);
+    this.xw.writeAttribute('stroke-opacity', c.transparency / 255.0 / div);
+    this.xw.writeAttribute('stroke-width', c.width / div);
   }
 
   static validColor(color: string) {
@@ -194,6 +194,22 @@ export class SvgDebugWriter {
     this.xw.writeAttribute('d', this.curveString(iCurve));
     if (c.dashArray != null) this.xw.writeAttribute('style', this.dashArrayString(c.dashArray));
     this.xw.endElement();
+
+    // parallelogram node
+    if (c.drawPN) {
+      this.xw.startElement('path');
+      this.xw.writeAttribute('fill', 'none');
+      const poly = new Polyline();
+      const pn = c.icurve.pNodeOverICurve();
+      for (const p of allVerticesOfParall(pn.parallelogram)) {
+        poly.addPoint(p);
+      }
+      poly.setIsClosed(true);
+      this.writeStroke(c, 2);
+      this.xw.writeAttribute('d', this.curveString(poly));
+      if (c.dashArray != null) this.xw.writeAttribute('style', this.dashArrayString(c.dashArray));
+      this.xw.endElement();
+    }
   }
 
   writeDebugCurves(dcurves: DebugCurve[]) {

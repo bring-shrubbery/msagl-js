@@ -1,5 +1,6 @@
 import {Point} from './point';
 import {GeomConstants} from './geomConstants';
+import {Assert} from './../assert';
 
 export enum VertexId {
   Corner,
@@ -7,6 +8,13 @@ export enum VertexId {
   otherCorner,
   VertexB,
 }
+
+type MinMax = {
+  minx: number;
+  miny: number;
+  maxx: number;
+  maxy: number;
+};
 
 export class Parallelogram {
   isSeg: boolean;
@@ -55,23 +63,25 @@ export class Parallelogram {
   static parallelogramOfTwo(box0: Parallelogram, box1: Parallelogram): Parallelogram {
     const result = new Parallelogram();
     const v = box0.corner;
-    const minx = v.x,
-      maxx = v.x,
-      miny = v.y,
-      maxy = v.y;
+    const mm = {
+      minx: v.x,
+      maxx: v.x,
+      miny: v.y,
+      maxy: v.y,
+    };
 
-    Parallelogram.PumpMinMax(minx, maxx, miny, maxy, box0.aPlusCorner);
-    Parallelogram.PumpMinMax(minx, maxx, miny, maxy, box0.otherCorner);
-    Parallelogram.PumpMinMax(minx, maxx, miny, maxy, box0.bPlusCorner);
+    Parallelogram.pumpMinMax(mm, box0.aPlusCorner);
+    Parallelogram.pumpMinMax(mm, box0.otherCorner);
+    Parallelogram.pumpMinMax(mm, box0.bPlusCorner);
 
-    Parallelogram.PumpMinMax(minx, maxx, miny, maxy, box1.corner);
-    Parallelogram.PumpMinMax(minx, maxx, miny, maxy, box1.aPlusCorner);
-    Parallelogram.PumpMinMax(minx, maxx, miny, maxy, box1.otherCorner);
-    Parallelogram.PumpMinMax(minx, maxx, miny, maxy, box1.bPlusCorner);
+    Parallelogram.pumpMinMax(mm, box1.corner);
+    Parallelogram.pumpMinMax(mm, box1.aPlusCorner);
+    Parallelogram.pumpMinMax(mm, box1.otherCorner);
+    Parallelogram.pumpMinMax(mm, box1.bPlusCorner);
 
-    result.corner = new Point(minx, miny);
-    result.a = new Point(0, maxy - miny);
-    result.b = new Point(maxx - minx, 0);
+    result.corner = new Point(mm.minx, mm.miny);
+    result.a = new Point(0, mm.maxy - mm.miny);
+    result.b = new Point(mm.maxx - mm.minx, 0);
 
     result.aPlusCorner = result.a.add(result.corner);
     result.otherCorner = result.b.add(result.aPlusCorner);
@@ -100,16 +110,16 @@ export class Parallelogram {
     return result;
   }
 
-  static PumpMinMax(minx: number, maxx: number, miny: number, maxy: number, p: Point): void {
-    if (p.x < minx) {
-      minx = p.x;
-    } else if (p.x > maxx) {
-      maxx = p.x;
+  static pumpMinMax(mm: MinMax, p: Point): void {
+    if (p.x < mm.minx) {
+      mm.minx = p.x;
+    } else if (p.x > mm.maxx) {
+      mm.maxx = p.x;
     }
-    if (p.y < miny) {
-      miny = p.y;
-    } else if (p.y > maxy) {
-      maxy = p.y;
+    if (p.y < mm.miny) {
+      mm.miny = p.y;
+    } else if (p.y > mm.maxy) {
+      mm.maxy = p.y;
     }
   }
 
@@ -234,6 +244,7 @@ export class Parallelogram {
     const result = new Parallelogram();
 
     result.corner = corner;
+    Assert.assert(sideA.length() > GeomConstants.intersectionEpsilon && sideB.length() > GeomConstants.intersectionEpsilon);
     result.a = sideA;
     result.b = sideB;
 

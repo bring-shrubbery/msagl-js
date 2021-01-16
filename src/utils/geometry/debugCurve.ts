@@ -9,7 +9,8 @@ export class DebugCurve {
   icurve: ICurve;
   dashArray: number[];
   label: any;
-  static mkDebugCurveTWCILD(transparency: number, width: number, color: string, curve: ICurve, label: any, dashArray: number[]) {
+  drawPN: boolean;
+  static mkDebugCurveTWCILD(transparency: number, width: number, color: string, curve: ICurve, label: any, dashArray: number[], drawPN = false) {
     const r = new DebugCurve();
     r.transparency = transparency;
     r.width = width;
@@ -17,6 +18,7 @@ export class DebugCurve {
     r.icurve = curve;
     r.label = label;
     r.dashArray = dashArray;
+    r.drawPN = drawPN;
     return r;
   }
 
