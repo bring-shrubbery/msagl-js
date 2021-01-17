@@ -48,16 +48,17 @@ export class BezierSeg implements ICurve {
     return this.l.mult(t3).add(this.e.mult(t2).add(this.c.mult(t)).add(this.b[0]));
   }
 
-  static adjustParamTo01(u: number): void {
-    if (u > 1) u = 1;
-    else if (u < 0) u = 0;
+  static adjustParamTo01(u: number): number {
+    if (u > 1) return 1;
+    else if (u < 0) return 0;
+    return u;
   }
-  //throw away the segments [0,u] and [v,1] of the segment
 
+  //throw away the segments [0,u] and [v,1] of the segment
   // Returns the trimmed curve
   trim(u: number, v: number) {
-    BezierSeg.adjustParamTo01(u);
-    BezierSeg.adjustParamTo01(v);
+    u = BezierSeg.adjustParamTo01(u);
+    v = BezierSeg.adjustParamTo01(v);
 
     if (u > v) return this.trim(v, u);
 

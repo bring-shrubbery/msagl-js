@@ -254,11 +254,11 @@ return xx;
   static IntersectPPPP(a: Point, b: Point, c: Point, d: Point): Point | undefined {
     const r = Point.lineLineIntersection(a, b, c, d);
     if (r == undefined) return;
-    if (LineSegment.XIsBetweenPoints(a, b, r) && LineSegment.XIsBetweenPoints(c, d, r)) return r;
+    if (LineSegment.xIsBetweenPoints(a, b, r) && LineSegment.xIsBetweenPoints(c, d, r)) return r;
     else return;
   }
 
-  static XIsBetweenPoints(a: Point, b: Point, x: Point): boolean {
+  static xIsBetweenPoints(a: Point, b: Point, x: Point): boolean {
     return a.minus(x).dot(b.minus(x)) <= GeomConstants.distanceEpsilon;
   }
 
