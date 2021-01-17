@@ -2,8 +2,21 @@ import {Ellipse} from './ellipse';
 import {Curve} from './curve';
 import {Point} from './point';
 import {LineSegment} from './lineSegment';
-
+import {PlaneTransformation} from './planeTransformation';
+import {ICurve} from './icurve';
 export class CurveFactory {
+  static rotateCurveAroundCenterByDegree(curve: ICurve, center: Point, angle: number) {
+    return CurveFactory.rotateCurveAroundCenterByRadian(curve, center, (angle * Math.PI) / 180);
+  }
+
+  static rotateCurveAroundCenterByRadian(curve: ICurve, center: Point, angle: number) {
+    const c = Math.cos(angle);
+    const s = Math.sin(angle);
+    const transform = new PlaneTransformation(1, 0, center.x, 0, 1, center.y)
+      .multiply(new PlaneTransformation(c, -s, 0, s, c, 0))
+      .multiply(new PlaneTransformation(1, 0, -center.x, 0, 1, -center.y));
+    return curve.transform(transform);
+  }
   static mkCircle(radius: number, center: Point) {
     return Ellipse.mkCircle(radius, center);
   }

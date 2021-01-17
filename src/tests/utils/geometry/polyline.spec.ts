@@ -5,7 +5,7 @@ import {Curve} from './../../../utils/geometry/curve';
 import {PlaneTransformation} from './../../../utils/geometry/planeTransformation';
 import {SvgDebugWriter} from './../../../utils/geometry/svgDebugWriter';
 import {DebugCurve} from './../../../utils/geometry/debugCurve';
-
+import {CurveFactory} from './../../../utils/geometry/curveFactory';
 test('polyline test iterator', () => {
   const poly = new Polyline();
   const ps = [new Point(0, 0), new Point(10, 20), new Point(20, 0), new Point(30, 10)];
@@ -74,5 +74,12 @@ test('polyline test all intersection with polyline', () => {
   expect(polyFlipped.end().x == poly.start().x).toBeTruthy();
   expect(polyFlipped.end().y == 5 - poly.start().y).toBeTruthy();
   const xx = Curve.getAllIntersections(poly, polyFlipped, false);
+  const dc = [DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Black', poly), DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Green', polyFlipped)];
+  for (const inters of xx) {
+    dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(0.05, inters.x)));
+  }
+  const w = new SvgDebugWriter('/tmp/pylylineIntersectionOne.svg');
+  w.writeDebugCurves(dc);
+  w.close();
   expect(xx.length == 3).toBe(true);
 });

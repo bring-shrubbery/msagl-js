@@ -53,6 +53,23 @@ test('intersect rounded rect', () => {
   intersectTwoRoundedRects(rr, rc, 2);
 });
 
+test('intersect rounded rect rotated', () => {
+  const rr: Curve = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
+  const center = rr.boundingBox().center;
+  for (let i = 1; i <= 90; i++) {
+    const rc = CurveFactory.rotateCurveAroundCenterByDegree(rr.clone(), center, i);
+    const xx = Curve.getAllIntersections(rr, rc, true);
+    const dc = [DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Black', rc), DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Green', rr)];
+    for (const inters of xx) {
+      dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(0.05, inters.x)));
+    }
+    const w = new SvgDebugWriter('/tmp/rectRotatedIntersect' + i + '.svg');
+    w.writeDebugCurves(dc);
+    w.close();
+    exp(xx.length > 0 && xx.length % 2 == 0);
+  }
+});
+
 test('curve intersect line circle', () => {
   const a = new Point(1, 0);
   const b = new Point(2, 0);

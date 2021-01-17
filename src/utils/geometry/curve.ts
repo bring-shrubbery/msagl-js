@@ -292,8 +292,9 @@ export class Curve implements ICurve {
     Curve.curveCurveXWithParallelogramNodes(curve0.pNodeOverICurve(), curve1.pNodeOverICurve(), intersections);
 
     if (liftIntersections)
-      for (let i = 0; i < intersections.length; i++) intersections[i] = Curve.liftIntersectionToCurves(curve0, curve1, intersections[i]);
-
+      for (let i = 0; i < intersections.length; i++) {
+        intersections[i] = Curve.liftIntersectionToCurves(curve0, curve1, intersections[i]);
+      }
     return intersections;
   }
 
@@ -601,7 +602,7 @@ export class Curve implements ICurve {
   }
 
   // returns true if the intersection exists already
-  static oldIntersection(intersections: IntersectionInfo[], x: Point) {
+  static oldIntersection(intersections: IntersectionInfo[], x: Point): boolean {
     //we don't expect many intersections so it's ok just go through all of them
     for (const ii of intersections)
       if (x.minus(ii.x).length() < GeomConstants.distanceEpsilon * 100) {

@@ -7,6 +7,10 @@ export class Point {
   x: number;
   y: number;
 
+  toString() {
+    return '(' + this.x + ',' + this.y + ')';
+  }
+
   assign(a: Point) {
     this.x = a.x;
     this.y = a.y;

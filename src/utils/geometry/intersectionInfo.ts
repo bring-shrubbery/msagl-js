@@ -1,5 +1,10 @@
 import {Point} from './point';
 import {ICurve} from './icurve';
+import {GeomConstants} from './geomConstants';
+import {Assert} from './../assert';
+import {String, StringBuilder} from 'typescript-string-operations';
+import {from} from 'linq-to-typescript';
+
 // Contains the result of the intersection of two ICurves.
 export class IntersectionInfo {
   /* The following should hold:
@@ -19,9 +24,14 @@ export class IntersectionInfo {
     this.x = x;
     this.seg0 = s0;
     this.seg1 = s1;
-    //            System.Diagnostics.Debug.Assert(ApproximateComparer.Close(x, s0[pr0], ApproximateComparer.IntersectionEpsilon*10),
-    //                  string.Format("intersection not at curve[param]; x = {0}, s0[pr0] = {1}, diff = {2}", x, s0[pr0], x - s0[pr0]));
-    //        System.Diagnostics.Debug.Assert(ApproximateComparer.Close(x, s1[pr1], ApproximateComparer.IntersectionEpsilon*10),
-    //              string.Format("intersection not at curve[param]; x = {0}, s1[pr1] = {1}, diff = {2}", x, s1[pr1], x - s1[pr1]));
+
+    Assert.assert(
+      Point.close(x, s0.value(pr0), GeomConstants.intersectionEpsilon * 10),
+      String.Format('intersection not at curve[param]; x = {0}, s0[pr0] = {1}, diff = {2}', x, s0.value(pr0), x.minus(s0.value(pr0))),
+    );
+    Assert.assert(
+      Point.close(x, s1.value(pr1), GeomConstants.intersectionEpsilon * 10),
+      String.Format('intersection not at curve[param]; x = {1}, s1[pr1] = {1}, diff = {2}', x, s1.value(pr1), x.minus(s1.value(pr1))),
+    );
   }
 }
