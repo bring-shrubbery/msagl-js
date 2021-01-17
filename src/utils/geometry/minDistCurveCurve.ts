@@ -2,10 +2,6 @@ import {ICurve} from './icurve';
 import {Point} from './point';
 import {LineSegment} from './lineSegment';
 import {GeomConstants} from './geomConstants';
-type DsDt = {
-  ds: number;
-  dt: number;
-};
 // For curves A(s) and B(t), when we have some evidence that
 // there is at most one intersection point, and we have a guess for the parameters (s0, t0),
 // we try to bring to (0,0) vector F(s,t) = A(s) - B(t).  To minimize the length of F(s,t)
@@ -127,7 +123,7 @@ export class MinDistCurveCurve {
       }
     }
 
-    let dsdt: DsDt;
+    let d: any;
     do {
       const delta = this.delta(this.Fss(), this.Fst(), this.Fst(), this.Ftt());
       if (Math.abs(delta) < GeomConstants.tolerance) {
@@ -136,13 +132,13 @@ export class MinDistCurveCurve {
         break;
       }
 
-      dsdt = {
-        ds: this.delta(-this.Fs(), this.Fst(), -this.Ft(), this.Ftt()) / delta,
-        dt: this.delta(this.Fss(), -this.Fs(), this.Fst(), -this.Ft()) / delta,
+      d = {
+        s: this.delta(-this.Fs(), this.Fst(), -this.Ft(), this.Ftt()) / delta,
+        t: this.delta(this.Fss(), -this.Fs(), this.Fst(), -this.Ft()) / delta,
       };
 
-      const nsi = this.si + dsdt.ds;
-      const nti = this.ti + dsdt.dt;
+      const nsi = this.si + d.s;
+      const nti = this.ti + d.t;
 
       let bc: boolean;
 
@@ -153,9 +149,9 @@ export class MinDistCurveCurve {
         nti < this.bMin - GeomConstants.distanceEpsilon
       ) {
         numberOfBoundaryCrossings++;
-        this.chopDsDt(dsdt);
-        this.si += dsdt.ds;
-        this.ti += dsdt.dt;
+        this.chopDsDt(d);
+        this.si += d.s;
+        this.ti += d.t;
         bc = true;
       } else {
         bc = false;
@@ -172,11 +168,8 @@ export class MinDistCurveCurve {
 
       numberOfTotalReps++;
 
-      abort =
-        numberOfBoundaryCrossings >= maxNumberOfBoundaryCrossings ||
-        numberOfTotalReps >= maxNumberOfTotalReps ||
-        (dsdt.ds == 0 && dsdt.dt == 0 && bc);
-    } while ((Math.abs(dsdt.ds) >= GeomConstants.tolerance || Math.abs(dsdt.dt) >= GeomConstants.tolerance) && !abort);
+      abort = numberOfBoundaryCrossings >= maxNumberOfBoundaryCrossings || numberOfTotalReps >= maxNumberOfTotalReps || (d.s == 0 && d.t == 0 && bc);
+    } while ((Math.abs(d.s) >= GeomConstants.tolerance || Math.abs(d.t) >= GeomConstants.tolerance) && !abort);
 
     if (abort) {
       //may be the initial values were just OK
@@ -197,32 +190,33 @@ export class MinDistCurveCurve {
     this.success = !abort;
   }
 
-  chopDsDt(dsdt: DsDt) {
-    if (dsdt.ds != 0 && dsdt.dt != 0) {
-      let k1 = 1; //we are looking for a chopped vector of the form k(dsdsdt.dt.ds,dsdt.dt)
+  // d is is {s:number; d:number}
+  private chopDsDt(d: any) {
+    if (d.s != 0 && d.t != 0) {
+      let k1 = 1; //we are looking for a chopped vector of the form k(ds, dt)
 
-      if (this.si + dsdt.ds > this.aMax)
-        //we have si+k*dsdt.ds=aMax
-        k1 = (this.aMax - this.si) / dsdt.ds;
-      else if (this.si + dsdt.ds < this.aMin) k1 = (this.aMin - this.si) / dsdt.ds;
+      if (this.si + d.s > this.aMax)
+        //we have si+k*ds=aMax
+        k1 = (this.aMax - this.si) / d.s;
+      else if (this.si + d.s < this.aMin) k1 = (this.aMin - this.si) / d.s;
 
       let k2 = 1;
 
-      if (this.ti + dsdt.dt > this.bMax)
-        //we need to have ti+k*dsdt.dt=bMax  or ti+k*dsdt.dt=bMin
-        k2 = (this.bMax - this.ti) / dsdt.dt;
-      else if (this.ti + dsdt.dt < this.bMin) k2 = (this.bMin - this.ti) / dsdt.dt;
+      if (this.ti + d.t > this.bMax)
+        //we need to have ti+k*d.t=bMax  or ti+k*d.t=bMin
+        k2 = (this.bMax - this.ti) / d.t;
+      else if (this.ti + d.t < this.bMin) k2 = (this.bMin - this.ti) / d.t;
 
       const k = Math.min(k1, k2);
-      dsdt.ds *= k;
-      dsdt.dt *= k;
-    } else if (dsdt.ds == 0) {
-      if (this.ti + dsdt.dt > this.bMax) dsdt.dt = this.bMax - this.ti;
-      else if (this.ti + dsdt.dt < this.bMin) dsdt.dt = this.bMin - this.ti;
+      d.s *= k;
+      d.t *= k;
+    } else if (d.s == 0) {
+      if (this.ti + d.t > this.bMax) d.t = this.bMax - this.ti;
+      else if (this.ti + d.t < this.bMin) d.t = this.bMin - this.ti;
     } else {
-      //dsdt.dt==0)
-      if (this.si + dsdt.ds > this.aMax) dsdt.ds = this.aMax - this.si;
-      else if (this.si + dsdt.ds < this.aMin) dsdt.ds = this.aMin - this.si;
+      //d.t==0)
+      if (this.si + d.s > this.aMax) d.s = this.aMax - this.si;
+      else if (this.si + d.s < this.aMin) d.s = this.aMin - this.si;
     }
   }
 
