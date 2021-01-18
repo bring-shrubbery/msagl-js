@@ -236,6 +236,10 @@ export class BezierSeg implements ICurve {
     return new BezierSeg(this.b[0], this.b[1], this.b[2], this.b[3]);
   }
 
+  static mkBezier(b: Point[]) {
+    return new BezierSeg(b[0], b[1], b[2], b[3]);
+  }
+
   parStart() {
     return 0;
   }

@@ -6,6 +6,7 @@ import {PlaneTransformation} from './../../../utils/geometry/planeTransformation
 import {CurveFactory} from './../../../utils/geometry/curveFactory';
 import {SvgDebugWriter} from './../../../utils/geometry/svgDebugWriter';
 import {DebugCurve} from './../../../utils/geometry/debugCurve';
+import {BezierSeg} from './../../../utils/geometry/bezierSeg';
 
 function exp(b: boolean) {
   expect(b).toBeTruthy();
@@ -81,5 +82,30 @@ test('curve intersect line circle', () => {
     const ac = m.multiplyPoint(a);
     const bc = m.multiplyPoint(b);
     intersectOnDiameter(ac, bc);
+  }
+});
+test('bezir rounded rect intersections', () => {
+  const rr: Curve = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
+  const center = rr.boundingBox().center;
+  const outsidePoint = center.add(new Point(rr.boundingBox().width, rr.boundingBox().height));
+  const dir = outsidePoint.minus(center);
+  const perp = dir.div(3).rotate90Cw();
+  const bezSeg = BezierSeg.mkBezier([
+    center,
+    Point.convSum(1 / 3, center, outsidePoint).add(perp),
+    Point.convSum(2 / 3, center, outsidePoint).minus(perp),
+    outsidePoint,
+  ]);
+  for (let i = 1; i <= 190; i++) {
+    const rc = CurveFactory.rotateCurveAroundCenterByDegree(bezSeg.clone(), center, i);
+    const xx = Curve.getAllIntersections(rr, rc, true);
+    const dc = [DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Black', rc), DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Green', rr)];
+    for (const inters of xx) {
+      dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(0.05, inters.x)));
+    }
+    const w = new SvgDebugWriter('/tmp/bezieRectRotatedIntersect' + i + '.svg');
+    w.writeDebugCurves(dc);
+    w.close();
+    exp(xx.length > 0 && xx.length % 2 != 0);
   }
 });
