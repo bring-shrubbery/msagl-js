@@ -112,7 +112,7 @@ export class Ellipse implements ICurve {
   // a tree of ParallelogramNodes covering the edge
   pNodeOverICurve() {
     if (this.pNode != null) return this.pNode;
-    return (this.pNode = ParallelogramNode.createParallelogramNodeForCurveSeg(this));
+    return (this.pNode = ParallelogramNode.createParallelogramNodeForCurveSegDefaultOffset(this));
   }
 
   SetBoundingBox() {

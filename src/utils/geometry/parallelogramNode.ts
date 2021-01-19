@@ -3,7 +3,13 @@ import {Point} from './point';
 import {LineSegment} from './lineSegment';
 import {Parallelogram} from './parallelogram';
 import {GeomConstants} from './geomConstants';
-
+import {Assert} from './../assert';
+import {LinearSystem2} from './linearSystem';
+import {SvgDebugWriter} from './svgDebugWriter';
+import {allVerticesOfParall} from './parallelogram';
+import {Polyline} from './polyline';
+import {DebugCurve} from './debugCurve';
+import {CurveFactory} from './curveFactory';
 // Serves to hold a Parallelogram and a ICurve,
 // and is used in curve intersections routines.
 // The node can be a top of the hierarchy if its sons are non-nulls.
@@ -49,35 +55,34 @@ export class ParallelogramNode {
   }
 
   static createParallelogramOnSubSeg(start: number, end: number, seg: ICurve): Parallelogram | undefined {
-    let tan1 = seg.derivative(start);
-    const tan2 = seg.derivative(end);
-    const tan2Perp = new Point(-tan2.y, tan2.x);
-    const corner = seg.value(start);
+    const a = seg.derivative(start);
+    const b = seg.derivative(end);
+    // a and b are directions of the sides
+    const s = seg.value(start);
     const e = seg.value(end);
-    const p = e.minus(corner);
+    // s + m*a + n*b = e - gives the system
+    const sol = LinearSystem2.solve(a.x, b.x, e.x - s.x, a.y, b.y, e.y - s.y);
+    if (sol == undefined) return;
 
-    const numerator = p.dot(tan2Perp);
-    const denumerator = tan1.dot(tan2Perp);
-    //x  = (p * tan2Perp) / (tan1 * tan2Perp);
-    // x*tan1 will be a side of the parallelogram
-
-    const numeratorTiny = Math.abs(numerator) < GeomConstants.distanceEpsilon;
-    if (!numeratorTiny && Math.abs(denumerator) < GeomConstants.distanceEpsilon) {
-      //it is degenerated; the adjacent sides would parallel, but
-      //since p * tan2Perp is big the parallelogram would not contain e
+    if (sol.x < 0 || sol.y > 0) {
       return;
     }
+    Assert.assert(Point.closeDistEps(s.add(a.mult(sol.x)).add(b.mult(sol.y)), e), 'r should be close to e');
 
-    const x = numeratorTiny ? 0 : numerator / denumerator;
-
-    tan1 = tan1.mult(x);
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return Parallelogram.parallelogramByCornerSideSide(corner, tan1, e.minus(corner).minus(tan1));
-    // assert(box.Contains(seg.value(end) && box.contain(seg((start + end)/2)
+    const sideA = a.mult(sol.x);
+    if (sideA.length() < GeomConstants.intersectionEpsilon) {
+      return;
+    }
+    const sideB = b.mult(sol.y);
+    if (sideB.length() < GeomConstants.intersectionEpsilon) {
+      return;
+    }
+    const ret = Parallelogram.parallelogramByCornerSideSide(s, sideA, sideB);
+    if (!ret.contains(seg.value((start + end) / 2))) return;
+    return ret;
   }
 
-  static CreateParallelogramNodeForCurveSeg(start: number, end: number, seg: ICurve, eps: number): PN {
+  static createParallelogramNodeForCurveSeg(start: number, end: number, seg: ICurve, eps: number): PN {
     const closedSeg = start == seg.parStart() && end == seg.parEnd() && Point.close(seg.start(), seg.end(), GeomConstants.distanceEpsilon);
     if (closedSeg) return ParallelogramNode.createNodeWithSegmentSplit(start, end, seg, eps);
 
@@ -122,8 +127,8 @@ export class ParallelogramNode {
     return d1 <= eps;
   }
 
-  static createParallelogramNodeForCurveSeg(seg: ICurve) {
-    return ParallelogramNode.CreateParallelogramNodeForCurveSeg(seg.parStart(), seg.parEnd(), seg, GeomConstants.defaultLeafBoxesOffset);
+  static createParallelogramNodeForCurveSegDefaultOffset(seg: ICurve) {
+    return ParallelogramNode.createParallelogramNodeForCurveSeg(seg.parStart(), seg.parEnd(), seg, GeomConstants.defaultLeafBoxesOffset);
   }
 
   static createNodeWithSegmentSplit(start: number, end: number, ell: ICurve, eps: number) {
@@ -136,8 +141,8 @@ export class ParallelogramNode {
 
     const intNode: PNInternal = pBNode.node as PNInternal;
 
-    intNode.children.push(ParallelogramNode.CreateParallelogramNodeForCurveSeg(start, 0.5 * (start + end), ell, eps));
-    intNode.children.push(ParallelogramNode.CreateParallelogramNodeForCurveSeg(0.5 * (start + end), end, ell, eps));
+    intNode.children.push(ParallelogramNode.createParallelogramNodeForCurveSeg(start, 0.5 * (start + end), ell, eps));
+    intNode.children.push(ParallelogramNode.createParallelogramNodeForCurveSeg(0.5 * (start + end), end, ell, eps));
 
     pBNode.parallelogram = Parallelogram.parallelogramOfTwo(intNode.children[0].parallelogram, intNode.children[1].parallelogram);
     return pBNode;

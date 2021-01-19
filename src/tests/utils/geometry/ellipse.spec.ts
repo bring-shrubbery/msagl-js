@@ -31,10 +31,6 @@ test('intersect quarters', () => {
   const rc = rr.clone();
   rc.translate(new Point(-3, 3));
   const xx = Curve.getAllIntersections(rr, rc, true);
-  const dc = [DebugCurve.mkDebugCurveI(rr), DebugCurve.mkDebugCurveI(rc)];
-  for (const inters of xx) dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(5, inters.x)));
-  const w = new SvgDebugWriter('/tmp/intersectQuarters.svg');
-  w.writeDebugCurves(dc);
-  w.close();
-  exp(xx.length == 1 && Point.closeDistEps(rr.value(xx[0].par0), xx[0].x));
+  expect(xx.length == 1).toBeTruthy();
+  expect(Point.close(rr.value(xx[0].par0), xx[0].x, GeomConstants.intersectionEpsilon)).toBe(true);
 });

@@ -78,8 +78,5 @@ test('polyline test all intersection with polyline', () => {
   for (const inters of xx) {
     dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(0.05, inters.x)));
   }
-  const w = new SvgDebugWriter('/tmp/pylylineIntersectionOne.svg');
-  w.writeDebugCurves(dc);
-  w.close();
   expect(xx.length == 3).toBe(true);
 });

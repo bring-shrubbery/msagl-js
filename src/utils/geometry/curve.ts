@@ -1,5 +1,6 @@
 import {ICurve} from './icurve';
 import {PN, PNInternal, PNLeaf, ParallelogramNode} from './parallelogramNode';
+import {allVerticesOfParall} from './parallelogram';
 import {Point} from './point';
 import {LineSegment} from './lineSegment';
 import {IntersectionInfo} from './intersectionInfo';
@@ -12,6 +13,8 @@ import {LinearSystem2} from './linearSystem';
 import {MinDistCurveCurve} from './minDistCurveCurve';
 import {Rectangle} from './rectangle';
 import {PlaneTransformation} from './planeTransformation';
+import {SvgDebugWriter} from './svgDebugWriter';
+import {DebugCurve} from './debugCurve';
 
 type Params = {
   start: number;
@@ -697,18 +700,18 @@ export class Curve implements ICurve {
 
     if (nl0.leafBoxesOffset > GeomConstants.distanceEpsilon && nl1.leafBoxesOffset > GeomConstants.distanceEpsilon) {
       // going deeper on both with offset l0.LeafBoxesOffset / 2, l1.LeafBoxesOffset / 2
-      const nn0 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(l0.low, l0.high, nl0.seg, nl0.leafBoxesOffset / 2);
-      const nn1 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(l1.low, l1.high, nl1.seg, nl1.leafBoxesOffset / 2);
+      const nn0 = ParallelogramNode.createParallelogramNodeForCurveSeg(l0.low, l0.high, nl0.seg, nl0.leafBoxesOffset / 2);
+      const nn1 = ParallelogramNode.createParallelogramNodeForCurveSeg(l1.low, l1.high, nl1.seg, nl1.leafBoxesOffset / 2);
       return Curve.curveCurveXWithParallelogramNodesOne(nn0, nn1);
     }
     if (nl0.leafBoxesOffset > GeomConstants.distanceEpsilon) {
       // go deeper on the left
-      const nn0 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(l0.low, l0.high, nl0.seg, nl0.leafBoxesOffset / 2);
+      const nn0 = ParallelogramNode.createParallelogramNodeForCurveSeg(l0.low, l0.high, nl0.seg, nl0.leafBoxesOffset / 2);
       return Curve.curveCurveXWithParallelogramNodesOne(nn0, nl1);
     }
     if (nl1.leafBoxesOffset > GeomConstants.distanceEpsilon) {
       // go deeper on the right
-      const nn1 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(l1.low, l1.high, nl1.seg, nl1.leafBoxesOffset / 2);
+      const nn1 = ParallelogramNode.createParallelogramNodeForCurveSeg(l1.low, l1.high, nl1.seg, nl1.leafBoxesOffset / 2);
       return Curve.curveCurveXWithParallelogramNodesOne(nl0, nn1);
     }
     //just cross LineSegs and adjust the solutions if the segments are not straight lines
@@ -731,22 +734,50 @@ export class Curve implements ICurve {
     return null;
   }
 
+  static writeLeavesToSvg(nl0: PN, nl1: PN): void {
+    const w = new SvgDebugWriter('/tmp/goDeeper.svg');
+    const poly0 = new Polyline();
+    for (const p of allVerticesOfParall(nl0.parallelogram)) {
+      poly0.addPoint(p);
+    }
+    poly0.setIsClosed(true);
+
+    const poly1 = new Polyline();
+    for (const p of allVerticesOfParall(nl1.parallelogram)) {
+      poly1.addPoint(p);
+    }
+    poly1.setIsClosed(true);
+    const l0 = nl0.node as PNLeaf;
+    const l1 = nl1.node as PNLeaf;
+
+    const dc = [
+      DebugCurve.mkDebugCurveTWCI(100, 0.1, 'Black', nl0.seg),
+      DebugCurve.mkDebugCurveTWCI(100, 0.1, 'Black', poly0),
+      DebugCurve.mkDebugCurveTWCI(100, 0.1, 'Red', nl1.seg),
+      DebugCurve.mkDebugCurveTWCI(100, 0.1, 'Red', poly1),
+    ];
+    w.writeDebugCurves(dc);
+    w.close();
+    throw new Error('killed');
+  }
   static goDeeper(intersections: IntersectionInfo[], nl0: PN, nl1: PN) {
     const l0 = nl0.node as PNLeaf;
     const l1 = nl1.node as PNLeaf;
+    Curve.writeLeavesToSvg(nl0, nl1);
+    throw new Error();
     // did not find an intersection
     if (nl0.leafBoxesOffset > GeomConstants.distanceEpsilon && nl1.leafBoxesOffset > GeomConstants.distanceEpsilon) {
       // going deeper on both with offset l0.leafBoxesOffset / 2, l1.leafBoxesOffset / 2
-      const nn0 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(l0.low, l0.high, nl0.seg, nl0.leafBoxesOffset / 2);
-      const nn1 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(l1.low, l1.high, nl1.seg, nl1.leafBoxesOffset / 2);
+      const nn0 = ParallelogramNode.createParallelogramNodeForCurveSeg(l0.low, l0.high, nl0.seg, nl0.leafBoxesOffset / 2);
+      const nn1 = ParallelogramNode.createParallelogramNodeForCurveSeg(l1.low, l1.high, nl1.seg, nl1.leafBoxesOffset / 2);
       Curve.curveCurveXWithParallelogramNodes(nn0, nn1, intersections);
     } else if (nl0.leafBoxesOffset > GeomConstants.distanceEpsilon) {
       // go deeper on the left
-      const nn0 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(l0.low, l0.high, nl0.seg, nl0.leafBoxesOffset / 2);
+      const nn0 = ParallelogramNode.createParallelogramNodeForCurveSeg(l0.low, l0.high, nl0.seg, nl0.leafBoxesOffset / 2);
       Curve.curveCurveXWithParallelogramNodes(nn0, nl1, intersections);
     } else if (nl1.leafBoxesOffset > GeomConstants.distanceEpsilon) {
       // go deeper on the right
-      const nn1 = ParallelogramNode.CreateParallelogramNodeForCurveSeg(l1.low, l1.high, nl1.seg, nl1.leafBoxesOffset / 2);
+      const nn1 = ParallelogramNode.createParallelogramNodeForCurveSeg(l1.low, l1.high, nl1.seg, nl1.leafBoxesOffset / 2);
       Curve.curveCurveXWithParallelogramNodes(nl0, nn1, intersections);
     } else {
       //just cross LineSegs since the polylogramms are so thin
@@ -1289,7 +1320,7 @@ export class Curve implements ICurve {
        }
        
        #endregion
-*/
+  */
   // left derivative at t
   leftDerivative(t: number) {
     const seg = this.tryToGetLeftSegment(t);

@@ -10,7 +10,7 @@ test('bezier control points', () => {
   }
 });
 
-test('bezier accessors', () => {
+xtest('bezier accessors', () => {
   const b = [new Point(0, 0), new Point(1, 1), new Point(2, 1), new Point(3, 0)];
   const bezSeg = new BezierSeg(b[0], b[1], b[2], b[3]);
   const mid = 0.5;
@@ -29,7 +29,7 @@ test('bezier accessors', () => {
   expect(approx_val_at_t_plus_dx.minus(val_t_plus_dx).length() < dx).toBe(true);
 });
 
-test('bezier length', () => {
+xtest('bezier length', () => {
   const b = [new Point(0, 100), new Point(100, 100), new Point(200, 100), new Point(300, 0)];
   const bezSeg = new BezierSeg(b[0], b[1], b[2], b[3]);
   const l = bezSeg.length();

@@ -38,7 +38,7 @@ export class BezierSeg implements ICurve {
   // <value></value>
   pNodeOverICurve() {
     if (this.pBoxNode != null) return this.pBoxNode;
-    return (this.pBoxNode = ParallelogramNode.createParallelogramNodeForCurveSeg(this));
+    return (this.pBoxNode = ParallelogramNode.createParallelogramNodeForCurveSegDefaultOffset(this));
   }
   // Returns the point on the curve corresponding to parameter t
   value(t: number) {
@@ -96,8 +96,7 @@ export class BezierSeg implements ICurve {
   derivative(t: number) {
     return this.l
       .mult(3 * t * t)
-      .add(this.e)
-      .mult(2 * t)
+      .add(this.e.mult(2 * t))
       .add(this.c);
   }
   // second derivative
