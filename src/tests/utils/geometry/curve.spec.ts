@@ -27,23 +27,8 @@ function intersectOnDiameter(a: Point, b: Point) {
   expect(xx.length > 0 && xx.length <= 2).toBeTruthy();
 }
 
-xtest('rounded rectangle', () => {
-  const rr0 = CurveFactory.createRectangleWithRoundedCorners(50, 40, 5, 4, new Point(0, 0));
-  const w = new SvgDebugWriter('/tmp/curve.svg');
-  w.writeDebugCurves([DebugCurve.mkDebugCurveI(rr0)]);
-  w.close();
-});
-
 function intersectTwoRoundedRects(rr: Curve, rr0: Curve, i: number): void {
   const xx = Curve.getAllIntersections(rr, rr0, true);
-  const dc = [DebugCurve.mkDebugCurveI(rr0), DebugCurve.mkDebugCurveI(rr)];
-  for (const inters of xx) {
-    dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(5, inters.x)));
-  }
-
-  const w = new SvgDebugWriter('/tmp/rectIntersect' + i + '.svg');
-  w.writeDebugCurves(dc);
-  w.close();
   exp(xx.length == 2);
 }
 
@@ -60,13 +45,6 @@ xtest('intersect rounded rect rotated', () => {
   for (let i = 1; i <= 90; i++) {
     const rc = CurveFactory.rotateCurveAroundCenterByDegree(rr.clone(), center, i);
     const xx = Curve.getAllIntersections(rr, rc, true);
-    const dc = [DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Black', rc), DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Green', rr)];
-    for (const inters of xx) {
-      dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(0.05, inters.x)));
-    }
-    const w = new SvgDebugWriter('/tmp/rectRotatedIntersect' + i + '.svg');
-    w.writeDebugCurves(dc);
-    w.close();
     exp(xx.length > 0 && xx.length % 2 == 0);
   }
 });
@@ -85,7 +63,7 @@ xtest('curve intersect line circle', () => {
   }
 });
 
-xtest('bezier rounded rect intersections', () => {
+test('bezier rounded rect intersections', () => {
   const rr: Curve = CurveFactory.createRectangleWithRoundedCorners(100, 52, 7, 7, new Point(0, 0));
   const center = rr.boundingBox().center;
   const outsidePoint = center.add(new Point(rr.boundingBox().width, rr.boundingBox().height));
@@ -100,13 +78,6 @@ xtest('bezier rounded rect intersections', () => {
   for (let i = 1; i <= 190; i++) {
     const rc = CurveFactory.rotateCurveAroundCenterByDegree(bezSeg.clone(), center, i);
     const xx = Curve.getAllIntersections(rr, rc, true);
-    const dc = [DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Black', rc), DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Green', rr)];
-    for (const inters of xx) {
-      dc.push(DebugCurve.mkDebugCurveCI('Red', CurveFactory.mkCircle(0.05, inters.x)));
-    }
-    const w = new SvgDebugWriter('/tmp/bezieRectRotatedIntersect' + i + '.svg');
-    w.writeDebugCurves(dc);
-    w.close();
     exp(xx.length > 0 && xx.length % 2 != 0);
   }
 }, 10);
@@ -123,4 +94,4 @@ test('bezier bezier rect intersections', () => {
     exp(xx.length > 0);
   }
   // exp(false);
-}, 20);
+});

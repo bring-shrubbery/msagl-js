@@ -113,7 +113,4 @@ test('lineSegment mindist overlap', () => {
   const md = LineSegment.MinDistBetweenLineSegments(a, b, c, d);
   const uniformMd = getUniformMd(a, b, c, d);
   expect(md.dist <= uniformMd + GeomConstants.tolerance).toBeTruthy();
-  const w = new SvgDebugWriter('/tmp/lineSegment.svg');
-  w.writeDebugCurves([DebugCurve.mkDebugCurveI(LineSegment.mkLinePP(a, b))]);
-  w.close();
 });

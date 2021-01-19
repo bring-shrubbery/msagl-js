@@ -16,9 +16,6 @@ test('polyline test iterator', () => {
   for (const pp of poly.polylinePoints()) {
     expect(pp.point.equal(ps[--i])).toBe(true); // the points are added at the start of the polyline
   }
-  const w = new SvgDebugWriter('/tmp/polyline.svg');
-  w.writeDebugCurves([DebugCurve.mkDebugCurveWCI(5, 'Green', poly)]);
-  w.close();
 });
 test('polyline test skip', () => {
   const poly = new Polyline();

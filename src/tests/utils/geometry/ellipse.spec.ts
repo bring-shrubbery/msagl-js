@@ -17,9 +17,6 @@ test('ellipse value test', () => {
   const ell = Ellipse.mkEllipsePPP(a, b, cen);
   const t = 0.3;
   expect(Point.close(ell.value(t), a.mult(Math.cos(t)).add(b.mult(Math.sin(t))), GeomConstants.distanceEpsilon)).toBeTruthy;
-  const w = new SvgDebugWriter('/tmp/ellipse.svg');
-  w.writeDebugCurves([DebugCurve.mkDebugCurveI(ell)]);
-  w.close();
 });
 
 function exp(b: boolean) {
