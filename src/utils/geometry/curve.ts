@@ -763,8 +763,6 @@ export class Curve implements ICurve {
   static goDeeper(intersections: IntersectionInfo[], nl0: PN, nl1: PN) {
     const l0 = nl0.node as PNLeaf;
     const l1 = nl1.node as PNLeaf;
-    Curve.writeLeavesToSvg(nl0, nl1);
-    throw new Error();
     // did not find an intersection
     if (nl0.leafBoxesOffset > GeomConstants.distanceEpsilon && nl1.leafBoxesOffset > GeomConstants.distanceEpsilon) {
       // going deeper on both with offset l0.leafBoxesOffset / 2, l1.leafBoxesOffset / 2

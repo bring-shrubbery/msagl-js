@@ -55,31 +55,30 @@ export class ParallelogramNode {
   }
 
   static createParallelogramOnSubSeg(start: number, end: number, seg: ICurve): Parallelogram | undefined {
-    const a = seg.derivative(start);
-    const b = seg.derivative(end);
-    // a and b are directions of the sides
-    const s = seg.value(start);
+    let tan1 = seg.derivative(start);
+    const tan2 = seg.derivative(end);
+    const tan2Perp = new Point(-tan2.y, tan2.x);
+    const corner = seg.value(start);
     const e = seg.value(end);
-    // s + m*a + n*b = e - gives the system
-    const sol = LinearSystem2.solve(a.x, b.x, e.x - s.x, a.y, b.y, e.y - s.y);
-    if (sol == undefined) return;
+    const p = e.minus(corner);
 
-    if (sol.x < 0 || sol.y > 0) {
-      return;
-    }
-    Assert.assert(Point.closeDistEps(s.add(a.mult(sol.x)).add(b.mult(sol.y)), e), 'r should be close to e');
+    const numerator = p.dot(tan2Perp);
+    const denumerator = tan1.dot(tan2Perp);
+    //x  = (p * tan2Perp) / (tan1 * tan2Perp);
+    // x*tan1 will be a side of the parallelogram
 
-    const sideA = a.mult(sol.x);
-    if (sideA.length() < GeomConstants.intersectionEpsilon) {
+    const numeratorTiny = Math.abs(numerator) < GeomConstants.distanceEpsilon;
+    if (!numeratorTiny && Math.abs(denumerator) < GeomConstants.distanceEpsilon) {
+      //it is degenerated; the adjacent sides would parallel, but
+      //since p * tan2Perp is big the parallelogram would not contain e
       return;
     }
-    const sideB = b.mult(sol.y);
-    if (sideB.length() < GeomConstants.intersectionEpsilon) {
-      return;
-    }
-    const ret = Parallelogram.parallelogramByCornerSideSide(s, sideA, sideB);
-    if (!ret.contains(seg.value((start + end) / 2))) return;
-    return ret;
+
+    const x = numeratorTiny ? 0 : numerator / denumerator;
+
+    tan1 = tan1.mult(x);
+
+    return Parallelogram.parallelogramByCornerSideSide(corner, tan1, e.minus(corner).minus(tan1));
   }
 
   static createParallelogramNodeForCurveSeg(start: number, end: number, seg: ICurve, eps: number): PN {
