@@ -5,7 +5,7 @@ import {Point} from './point';
 import {Rectangle} from './rectangle';
 import {PolylinePoint} from './polylinePoint';
 import {GeomConstants} from './geomConstants';
-import {Assert} from './../assert';
+import {Assert} from './../../utils/assert';
 import {Parallelogram} from './parallelogram';
 import {LineSegment} from './lineSegment';
 

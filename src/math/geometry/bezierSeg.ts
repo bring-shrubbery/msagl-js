@@ -9,7 +9,7 @@ import {Parallelogram} from './parallelogram';
 import {GeomConstants} from './geomConstants';
 import {PlaneTransformation} from './planeTransformation';
 import {ClosestPointOnCurve} from './closestPointOnCurve';
-import {Assert} from './../assert';
+import {Assert} from './../../utils/assert';
 export class BezierSeg implements ICurve {
   leftDerivative(t: number) {
     return this.derivative(t);

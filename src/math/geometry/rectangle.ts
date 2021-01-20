@@ -1,6 +1,6 @@
 import {Point} from './point';
 import {GeomConstants} from './geomConstants';
-import {Assert} from '../assert';
+import {Assert} from './../../utils/assert';
 
 class Size {
   width: number;

@@ -3,7 +3,7 @@ import {Point} from './point';
 import {LineSegment} from './lineSegment';
 import {Parallelogram} from './parallelogram';
 import {GeomConstants} from './geomConstants';
-import {Assert} from './../assert';
+import {Assert} from './../../utils/assert';
 import {LinearSystem2} from './linearSystem';
 import {SvgDebugWriter} from './svgDebugWriter';
 import {allVerticesOfParall} from './parallelogram';

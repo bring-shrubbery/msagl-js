@@ -1,5 +1,5 @@
 import {Graph} from 'graphlib';
-import {Point} from '../utils/geometry/point';
+import {Point} from '../math/geometry/point';
 export interface NodeResult {
   id: string;
   layer?: number;

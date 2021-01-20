@@ -1,11 +1,11 @@
-import {LineSegment} from '../../../utils/geometry/lineSegment';
-import {Point} from './../../../utils/geometry/point';
-import {Polyline} from './../../../utils/geometry/polyline';
-import {Curve} from './../../../utils/geometry/curve';
-import {PlaneTransformation} from './../../../utils/geometry/planeTransformation';
-import {SvgDebugWriter} from './../../../utils/geometry/svgDebugWriter';
-import {DebugCurve} from './../../../utils/geometry/debugCurve';
-import {CurveFactory} from './../../../utils/geometry/curveFactory';
+import {LineSegment} from '../../../math/geometry/lineSegment';
+import {Point} from './../../../math/geometry/point';
+import {Polyline} from './../../../math/geometry/polyline';
+import {Curve} from './../../../math/geometry/curve';
+import {PlaneTransformation} from './../../../math/geometry/planeTransformation';
+import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter';
+import {DebugCurve} from './../../../math/geometry/debugCurve';
+import {CurveFactory} from './../../../math/geometry/curveFactory';
 test('polyline test iterator', () => {
   const poly = new Polyline();
   const ps = [new Point(0, 0), new Point(10, 20), new Point(20, 0), new Point(30, 10)];

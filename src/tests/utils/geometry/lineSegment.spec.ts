@@ -1,9 +1,9 @@
-// import {ICurve} from '../../../utils/geometry/icurve';
-import {GeomConstants} from '../../../utils/geometry/geomConstants';
-import {LineSegment} from '../../../utils/geometry/lineSegment';
-import {Point} from '../../../utils/geometry/point';
-import {SvgDebugWriter} from '../../../utils/geometry/svgDebugWriter';
-import {DebugCurve} from '../../../utils/geometry/debugCurve';
+// import {ICurve} from '../../../math/geometry/icurve';
+import {GeomConstants} from '../../../math/geometry/geomConstants';
+import {LineSegment} from '../../../math/geometry/lineSegment';
+import {Point} from '../../../math/geometry/point';
+import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter';
+import {DebugCurve} from '../../../math/geometry/debugCurve';
 
 test('lineSegment basic case', () => {
   const a = new LineSegment(0, 0, 1, 1);

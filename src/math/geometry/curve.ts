@@ -4,7 +4,7 @@ import {allVerticesOfParall} from './parallelogram';
 import {Point} from './point';
 import {LineSegment} from './lineSegment';
 import {IntersectionInfo} from './intersectionInfo';
-import {Assert} from './../assert';
+import {Assert} from './../../utils/assert';
 import {Parallelogram} from './parallelogram';
 import {Ellipse} from './ellipse';
 import {Polyline} from './polyline';

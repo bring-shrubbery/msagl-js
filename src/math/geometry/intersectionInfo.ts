@@ -1,7 +1,7 @@
 import {Point} from './point';
 import {ICurve} from './icurve';
 import {GeomConstants} from './geomConstants';
-import {Assert} from './../assert';
+import {Assert} from './../../utils/assert';
 import {String, StringBuilder} from 'typescript-string-operations';
 import {from} from 'linq-to-typescript';
 

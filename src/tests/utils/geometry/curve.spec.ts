@@ -1,12 +1,12 @@
-import {LineSegment} from '../../../utils/geometry/lineSegment';
-import {Ellipse} from '../../../utils/geometry/ellipse';
-import {Point} from './../../../utils/geometry/point';
-import {Curve} from './../../../utils/geometry/curve';
-import {PlaneTransformation} from './../../../utils/geometry/planeTransformation';
-import {CurveFactory} from './../../../utils/geometry/curveFactory';
-import {SvgDebugWriter} from './../../../utils/geometry/svgDebugWriter';
-import {DebugCurve} from './../../../utils/geometry/debugCurve';
-import {BezierSeg} from './../../../utils/geometry/bezierSeg';
+import {LineSegment} from '../../../math/geometry/lineSegment';
+import {Ellipse} from '../../../math/geometry/ellipse';
+import {Point} from './../../../math/geometry/point';
+import {Curve} from './../../../math/geometry/curve';
+import {PlaneTransformation} from './../../../math/geometry/planeTransformation';
+import {CurveFactory} from './../../../math/geometry/curveFactory';
+import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter';
+import {DebugCurve} from './../../../math/geometry/debugCurve';
+import {BezierSeg} from './../../../math/geometry/bezierSeg';
 
 function exp(b: boolean) {
   expect(b).toBeTruthy();
