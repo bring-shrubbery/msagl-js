@@ -216,7 +216,7 @@ return xx;
   }
   // The bounding box of the line
   boundingBox() {
-    return Rectangle.RectanglePointPoint(this.a, this.b);
+    return Rectangle.rectanglePointPoint(this.a, this.b);
   }
 
   // clones the curve.

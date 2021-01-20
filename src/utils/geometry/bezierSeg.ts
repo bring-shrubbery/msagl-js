@@ -195,7 +195,7 @@ export class BezierSeg implements ICurve {
 
   // the segment bounding box
   boundingBox() {
-    const ret = Rectangle.RectanglePointPoint(this.b[0], this.b[1]);
+    const ret = Rectangle.rectanglePointPoint(this.b[0], this.b[1]);
     ret.add(this.b[2]);
     ret.add(this.b[3]);
     return ret;

@@ -119,7 +119,7 @@ export class Ellipse implements ICurve {
     if (Point.closeD(this.parS, 0) && Point.closeD(this.parE, Math.PI * 2)) this.box = this.FullBox();
     else {
       //the idea is that the box of an arc staying in one quadrant is just the box of the start and the end point of the arc
-      this.box = Rectangle.RectanglePointPoint(this.start(), this.end());
+      this.box = Rectangle.rectanglePointPoint(this.start(), this.end());
       //now Start and End are in the box, we need just add all k*P/2 that are in between
       let t: number;
       for (let i = Math.ceil(this.parS / (Math.PI / 2)); (t = (i * Math.PI) / 2) < this.parE; i++) if (t > this.parS) this.box.add(this.value(t));
@@ -286,7 +286,7 @@ export class Ellipse implements ICurve {
   //returns the box of the ellipse that this ellipse is a part of
   FullBox(): Rectangle {
     const del = this.aAxis.add(this.bAxis);
-    return Rectangle.RectanglePointPoint(this.center.add(del), this.center.minus(del));
+    return Rectangle.rectanglePointPoint(this.center.add(del), this.center.minus(del));
   }
 
   //is it a proper arc?
