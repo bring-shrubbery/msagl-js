@@ -48,9 +48,9 @@ export type PNInternal = {
 export class ParallelogramNode {
   static distToSegm(p: Point, s: Point, e: Point): number {
     const l = e.minus(s);
-    if (l.length() < GeomConstants.intersectionEpsilon) return p.minus(s.add(e).div(2)).length();
+    if (l.length < GeomConstants.intersectionEpsilon) return p.minus(s.add(e).div(2)).length;
     let perp = new Point(-l.y, l.x);
-    perp = perp.mult(1 / perp.length());
+    perp = perp.mult(1 / perp.length);
     return Math.abs(p.minus(s).dot(perp));
   }
 

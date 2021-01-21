@@ -55,7 +55,7 @@ export interface ICurve {
   lengthPartial(start: number, end: number): number;
 
   // Get the length of the curve
-  length(): number;
+  length: number;
 
   getParameterAtLength(length: number): number;
 

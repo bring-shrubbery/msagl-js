@@ -88,10 +88,10 @@ export class Parallelogram {
     result.bPlusCorner = result.b.add(result.corner);
 
     result.aRot = new Point(-result.a.y, result.a.x);
-    if (result.aRot.length() > 0.5) result.aRot = result.aRot.normalize();
+    if (result.aRot.length > 0.5) result.aRot = result.aRot.normalize();
 
     result.bRot = new Point(-result.b.y, result.b.x);
-    if (result.bRot.length() > 0.5) result.bRot = result.bRot.normalize();
+    if (result.bRot.length > 0.5) result.bRot = result.bRot.normalize();
 
     result.abRot = result.a.dot(result.bRot);
     result.baRot = result.b.dot(result.aRot);
@@ -106,7 +106,7 @@ export class Parallelogram {
       result.aRot = result.aRot.neg();
     }
 
-    result.isSeg = result.a.minus(result.b).length() < GeomConstants.distanceEpsilon;
+    result.isSeg = result.a.minus(result.b).length < GeomConstants.distanceEpsilon;
     return result;
   }
 
@@ -244,15 +244,15 @@ export class Parallelogram {
     const result = new Parallelogram();
 
     result.corner = corner;
-    Assert.assert(sideA.length() > GeomConstants.intersectionEpsilon && sideB.length() > GeomConstants.intersectionEpsilon);
+    Assert.assert(sideA.length > GeomConstants.intersectionEpsilon && sideB.length > GeomConstants.intersectionEpsilon);
     result.a = sideA;
     result.b = sideB;
 
     result.aRot = new Point(-sideA.y, sideA.x);
-    if (result.aRot.length() > 0.5) result.aRot = result.aRot.normalize();
+    if (result.aRot.length > 0.5) result.aRot = result.aRot.normalize();
 
     result.bRot = new Point(-sideB.y, sideB.x);
-    if (result.bRot.length() > 0.5) result.bRot = result.bRot.normalize();
+    if (result.bRot.length > 0.5) result.bRot = result.bRot.normalize();
 
     result.abRot = result.bRot.dot(sideA);
 
@@ -268,7 +268,7 @@ export class Parallelogram {
       result.aRot = result.aRot.neg();
     }
 
-    result.isSeg = sideA.minus(sideB).length() < GeomConstants.distanceEpsilon;
+    result.isSeg = sideA.minus(sideB).length < GeomConstants.distanceEpsilon;
 
     result.aPlusCorner = sideA.add(corner);
     result.otherCorner = sideB.add(result.aPlusCorner);

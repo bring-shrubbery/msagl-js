@@ -4,6 +4,10 @@ import {Point} from './point';
 import {LineSegment} from './lineSegment';
 import {PlaneTransformation} from './planeTransformation';
 import {ICurve} from './icurve';
+type RoundedRectRadii = {
+  radX: number;
+  radY: number;
+};
 export class CurveFactory {
   static rotateCurveAroundCenterByDegree(curve: ICurve, center: Point, angle: number) {
     return CurveFactory.rotateCurveAroundCenterByRadian(curve, center, (angle * Math.PI) / 180);
@@ -36,33 +40,58 @@ export class CurveFactory {
     return c;
   }
 
-  static createRectangleWithRoundedCorners(
-    width: number,
-    height: number,
-    radiusInXDirection: number,
-    radiusInYDirection: number,
-    center: Point,
-  ): Curve {
-    if (radiusInXDirection == 0 || radiusInYDirection == 0) {
+  static isRoundedRect(ic: ICurve): RoundedRectRadii | undefined {
+    if (!(ic instanceof Curve)) return;
+    const segs = ic.segs;
+    if (segs.length != 8 && segs.length != 4) return;
+    const full = segs.length == 8 ? true : false;
+    let radX: number;
+    let radY: number;
+    for (let k = 0; k < 4; k++) {
+      const i = full ? 2 * k + 1 : k;
+      if (k == 0) {
+        if (!(segs[i] instanceof Ellipse)) {
+          return;
+        }
+        const el = segs[i] as Ellipse;
+        radX = el.aAxis.length;
+        radY = el.bAxis.length;
+      } else {
+        if (!(segs[i] instanceof Ellipse)) {
+          return;
+        }
+        const el = segs[i] as Ellipse;
+        if (radX != el.aAxis.length || radY != el.bAxis.length) return;
+      }
+      // some more checks are missing!
+    }
+    return {
+      radX: radX,
+      radY: radY,
+    };
+  }
+
+  static createRectangleWithRoundedCorners(width: number, height: number, radX: number, radY: number, center: Point): Curve {
+    if (radX == 0 || radY == 0) {
       CurveFactory.createRectangle(width, height, center);
       return;
     }
     const c = new Curve();
     const w = width / 2;
-    if (radiusInXDirection > w / 2) radiusInXDirection = w / 2;
+    if (radX > w / 2) radX = w / 2;
     const h = height / 2;
-    if (radiusInYDirection > h / 2) radiusInYDirection = h / 2;
+    if (radY > h / 2) radY = h / 2;
     const x = center.x;
     const y = center.y;
-    const ox = w - radiusInXDirection;
-    const oy = h - radiusInYDirection;
+    const ox = w - radX;
+    const oy = h - radY;
     const top = y + h;
     const bottom = y - h;
     const left = x - w;
     const right = x + w;
     //ellipse's axises
-    const a = new Point(radiusInXDirection, 0);
-    const b = new Point(0, radiusInYDirection);
+    const a = new Point(radX, 0);
+    const b = new Point(0, radY);
 
     if (ox > 0) c.addSegment(LineSegment.mkLinePP(new Point(x - ox, bottom), new Point(x + ox, bottom)));
     c.addSegment(Ellipse.mkEllipse(1.5 * Math.PI, 2 * Math.PI, a, b, x + ox, y - oy));

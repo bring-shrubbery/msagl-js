@@ -39,7 +39,7 @@ export class Rectangle {
     const l = Math.max(this.left, rectangle.left);
     const r = Math.min(this.right, rectangle.right);
     const b = Math.max(this.bottom, rectangle.bottom);
-    const t = Math.min(this.Top, rectangle.Top);
+    const t = Math.min(this.top, rectangle.top);
     return new Rectangle(l, b, r, t);
   }
 
@@ -88,10 +88,10 @@ export class Rectangle {
     this.right_ = value;
   }
 
-  get Top() {
+  get top() {
     return this.top_;
   }
-  set Top(value: number) {
+  set top(value: number) {
     this.top_ = value;
   }
 
@@ -299,7 +299,7 @@ export class Rectangle {
 
   // pad the rectangle vertically by the given padding
   padHeight(padding: number) {
-    this.Top += padding;
+    this.top += padding;
     this.bottom -= padding;
   }
 
@@ -316,7 +316,7 @@ export class Rectangle {
     this.left -= left;
     this.right += right;
     this.bottom -= bottom;
-    this.Top += top;
+    this.top += top;
   }
 
   // Returns the intersection of two rectangles.
@@ -324,7 +324,7 @@ export class Rectangle {
     if (rect1.intersects(rect2))
       return Rectangle.rectanglePointPoint(
         new Point(Math.max(rect1.left, rect2.left), Math.max(rect1.bottom, rect2.bottom)),
-        new Point(Math.min(rect1.right, rect2.right), Math.min(rect1.Top, rect2.Top)),
+        new Point(Math.min(rect1.right, rect2.right), Math.min(rect1.top, rect2.top)),
       );
     return Rectangle.mkEmpty();
   }

@@ -26,12 +26,12 @@ xtest('bezier accessors', () => {
   const dx = 0.001;
   const val_t_plus_dx = bezSeg.value(t + dx);
   const approx_val_at_t_plus_dx = bezSeg.value(t).add(bezSeg.derivative(t).mult(dx));
-  expect(approx_val_at_t_plus_dx.minus(val_t_plus_dx).length() < dx).toBe(true);
+  expect(approx_val_at_t_plus_dx.minus(val_t_plus_dx).length < dx).toBe(true);
 });
 
 test('bezier length', () => {
   const b = [new Point(0, 100), new Point(100, 100), new Point(200, 100), new Point(300, 0)];
   const bezSeg = new BezierSeg(b[0], b[1], b[2], b[3]);
-  const l = bezSeg.length();
-  expect(l < b[1].minus(b[0]).length() + b[2].minus(b[1]).length() + b[2].minus(b[3]).length()).toBe(true);
+  const l = bezSeg.length;
+  expect(l < b[1].minus(b[0]).length + b[2].minus(b[1]).length + b[2].minus(b[3]).length).toBe(true);
 });

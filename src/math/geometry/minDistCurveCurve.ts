@@ -111,7 +111,7 @@ export class MinDistCurveCurve {
 
     if (this.curveA instanceof LineSegment && this.curveB instanceof LineSegment) {
       let bd1 = this.curveB.derivative(0);
-      bd1 = bd1.div(bd1.length());
+      bd1 = bd1.div(bd1.length);
       const an = (this.curveA as LineSegment).normal();
 
       const del = Math.abs(an.dot(bd1));
@@ -231,7 +231,7 @@ export class MinDistCurveCurve {
 
     let d0 = v1.minus(v0);
 
-    const nd0 = d0.length();
+    const nd0 = d0.length;
 
     let r0 = 0;
     let r1: number, r2: number, r3: number;
@@ -265,7 +265,7 @@ export class MinDistCurveCurve {
       }
     } else {
       let d1 = v3.minus(v2);
-      const nd1 = d1.length();
+      const nd1 = d1.length;
       if (nd1 > GeomConstants.distanceEpsilon) {
         //v2 becomes the zero point
         d1 = d1.div(nd1);

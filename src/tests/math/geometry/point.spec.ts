@@ -36,7 +36,7 @@ function testOnPointAngle(p: Point, ang: number) {
     console.log(p1);
 
     console.log('dist=');
-    console.log(p0.minus(p1).length());
+    console.log(p0.minus(p1).length);
   }
   expect(res).toBeTruthy();
 }
@@ -50,7 +50,7 @@ test('point test', () => {
   const p1: Point = new Point(a, b);
   const p2: Point = new Point(c, d);
 
-  expect(p1.length()).toBe(Math.sqrt(a * a + b * b));
+  expect(p1.length).toBe(Math.sqrt(a * a + b * b));
 
   let resultPoint = p1.add(p2);
   expect(resultPoint.x).toBe(a + c);

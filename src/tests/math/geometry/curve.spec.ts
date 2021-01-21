@@ -14,14 +14,14 @@ function exp(b: boolean) {
 
 function intersectOnDiameter(a: Point, b: Point) {
   const ls = LineSegment.mkLinePP(a, b);
-  const circ = Ellipse.mkCircle(b.minus(a).length() / 2, Point.middle(a, b));
+  const circ = Ellipse.mkCircle(b.minus(a).length / 2, Point.middle(a, b));
   let xx = Curve.getAllIntersections(ls, circ, false);
   expect(xx.length == 2).toBeTruthy();
-  expect(Point.closeD(xx[0].x.minus(xx[1].x).length(), b.minus(a).length())).toBeTruthy();
+  expect(Point.closeD(xx[0].x.minus(xx[1].x).length, b.minus(a).length)).toBeTruthy();
   for (const x of xx) {
     expect(Point.closeDistEps(x.x, a) || Point.closeDistEps(x.x, b)).toBeTruthy();
   }
-  const rad = ls.length() / 2;
+  const rad = ls.length / 2;
   ls.translate(new Point(0, rad));
   xx = Curve.getAllIntersections(ls, circ, false);
   expect(xx.length > 0 && xx.length <= 2).toBeTruthy();

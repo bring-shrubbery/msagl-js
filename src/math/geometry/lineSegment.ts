@@ -74,7 +74,7 @@ export class LineSegment implements ICurve {
 
   normal() {
     let t = this.a.minus(this.b);
-    t = t.div(t.length());
+    t = t.div(t.length);
     return new Point(-t.y, t.x);
   }
 
@@ -185,7 +185,7 @@ return xx;
 
   // gets the parameter at a specific length from the start along the curve
   getParameterAtLength(length: number): number {
-    const len = this.b.minus(this.a).length();
+    const len = this.b.minus(this.a).length;
     if (len < GeomConstants.tolerance) return 0;
     const t = length / len;
     return t > 1 ? 1 : t < 0 ? 0 : t;
@@ -207,12 +207,12 @@ return xx;
 
   // return length of the curve segment [start,end]
   lengthPartial(start: number, end: number) {
-    return this.value(end).minus(this.value(start)).length();
+    return this.value(end).minus(this.value(start)).length;
   }
 
   // Get the length of the curve
-  length() {
-    return this.a.minus(this.b).length();
+  get length() {
+    return this.a.minus(this.b).length;
   }
   // The bounding box of the line
   boundingBox() {
@@ -280,7 +280,7 @@ return xx;
 
   // [a,b] and [c,d] are the segments. u and v are the corresponding closest point params
   // see http://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf
-  static MinDistBetweenLineSegments(a: Point, b: Point, c: Point, d: Point): {dist: number; parab: number; parcd: number} {
+  static minDistBetweenLineSegments(a: Point, b: Point, c: Point, d: Point): {dist: number; parab: number; parcd: number} {
     const u = b.minus(a);
     const v = d.minus(c);
     const w = a.minus(c);
@@ -357,7 +357,7 @@ return xx;
       // get the difference of the two closest points
       //            const dP = w + (parab * u) - (parcd * v),
 
-      dist: w.add(u.mult(parab_).minus(v.mult(parcd_))).length(), // return the closest distance
+      dist: w.add(u.mult(parab_).minus(v.mult(parcd_))).length, // return the closest distance
     };
   }
 }

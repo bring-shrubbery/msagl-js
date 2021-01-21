@@ -28,14 +28,14 @@ export class Ellipse implements ICurve {
     const d = dir.minus(this.center);
     const angle = Point.angle(this.aAxis, d);
     const s = this.aAxis.mult(Math.cos(angle)).add(this.bAxis.mult(Math.sin(angle)));
-    if (s.length() < d.length()) {
-      const al = this.aAxis.length();
-      const bl = this.bAxis.length();
+    if (s.length < d.length) {
+      const al = this.aAxis.length;
+      const bl = this.bAxis.length;
       return Ellipse.mkEllipsePPP(this.aAxis.normalize().mult(al + offset), this.bAxis.normalize().mult(bl + offset), this.center);
     }
     {
-      const al = this.aAxis.length();
-      const bl = this.bAxis.length();
+      const al = this.aAxis.length;
+      const bl = this.bAxis.length;
       return Ellipse.mkEllipsePPP(this.aAxis.normalize().mult(al - offset), this.bAxis.normalize().mult(bl - offset), this.center);
     }
   }
@@ -212,7 +212,7 @@ export class Ellipse implements ICurve {
     return Curve.lengthWithInterpolationAndThreshold(this.trim(start, end), GeomConstants.lineSegmentThreshold / 100);
   }
 
-  length() {
+  get length() {
     return Curve.lengthWithInterpolation(this);
   }
 

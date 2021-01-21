@@ -112,7 +112,7 @@ export class SvgDebugWriter {
     );
   }
   ellipseRadiuses(ellipse: Ellipse): string {
-    return this.doubleToString(ellipse.aAxis.length()) + ',' + this.doubleToString(ellipse.bAxis.length());
+    return this.doubleToString(ellipse.aAxis.length) + ',' + this.doubleToString(ellipse.bAxis.length);
   }
 
   curveString(iCurve: ICurve): string {

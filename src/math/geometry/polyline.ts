@@ -219,7 +219,7 @@ export class Polyline implements ICurve {
   lengthPartial(start: number, end: number): number {
     throw new Error('Method not implemented.');
   }
-  length(): number {
+  get length(): number {
     throw new Error('Method not implemented.');
   }
   getParameterAtLength(length: number): number {

@@ -171,14 +171,14 @@ export class BezierSeg implements ICurve {
     return this.trim(start, end).Length;
   }
   // Get the length of the curve
-  length() {
+  get length() {
     return BezierSeg.lengthOnControlPolygon(this.b[0], this.b[1], this.b[2], this.b[3]);
   }
 
   //
   static lengthOnControlPolygon(b0: Point, b1: Point, b2: Point, b3: Point) {
-    const innerCordLength = b3.minus(b0).length();
-    const controlPointPolygonLength = b1.minus(b0).length() + b2.minus(b1).length() + b3.minus(b2).length();
+    const innerCordLength = b3.minus(b0).length;
+    const controlPointPolygonLength = b1.minus(b0).length + b2.minus(b1).length + b3.minus(b2).length;
     if (controlPointPolygonLength - innerCordLength > GeomConstants.lineSegmentThreshold) {
       const mb0 = Point.middle(b0, b1);
       const mb1 = Point.middle(b1, b2);

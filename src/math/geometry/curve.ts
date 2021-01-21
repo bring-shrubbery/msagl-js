@@ -105,7 +105,7 @@ export class Curve implements ICurve {
     if (si.segIndex < ej.segIndex) {
       let seg = this.segs[si.segIndex];
       let ret = seg.lengthPartial(si.par, seg.parEnd());
-      for (let k = si.segIndex + 1; k < ej.segIndex; k++) ret += this.segs[k].length();
+      for (let k = si.segIndex + 1; k < ej.segIndex; k++) ret += this.segs[k].length;
 
       seg = this.segs[ej.segIndex];
       return ret + seg.lengthPartial(seg.parStart(), ej.par);
@@ -354,11 +354,11 @@ export class Curve implements ICurve {
     Assert.assert(ellipse.isArc());
     let lineDir = lineSeg.end().minus(lineSeg.start());
     const ret: IntersectionInfo[] = [];
-    const segLength = lineDir.length();
+    const segLength = lineDir.length;
     // the case of a very short LineSegment
     if (segLength < GeomConstants.distanceEpsilon) {
       const lsStartMinCen = lineSeg.start().minus(ellipse.center);
-      if (Point.closeD(lsStartMinCen.length(), ellipse.aAxis.length())) {
+      if (Point.closeD(lsStartMinCen.length, ellipse.aAxis.length)) {
         let angle = Point.angle(ellipse.aAxis, lsStartMinCen);
         if (ellipse.parStart() - GeomConstants.tolerance <= angle) {
           angle = Math.max(angle, ellipse.parStart());
@@ -375,7 +375,7 @@ export class Curve implements ICurve {
     const segProjection = lineSeg.start().minus(ellipse.center).dot(perp);
     const closestPointOnLine = ellipse.center.add(perp.mult(segProjection));
 
-    const rad = ellipse.aAxis.length();
+    const rad = ellipse.aAxis.length;
     const absSegProj = Math.abs(segProjection);
     if (rad < absSegProj - GeomConstants.distanceEpsilon) return ret; //we don't have an intersection
     lineDir = perp.rotate90Cw();
@@ -608,7 +608,7 @@ export class Curve implements ICurve {
   static oldIntersection(intersections: IntersectionInfo[], x: Point): boolean {
     //we don't expect many intersections so it's ok just go through all of them
     for (const ii of intersections)
-      if (x.minus(ii.x).length() < GeomConstants.distanceEpsilon * 100) {
+      if (x.minus(ii.x).length < GeomConstants.distanceEpsilon * 100) {
         //please no close intersections
         return true;
       }
@@ -1215,7 +1215,7 @@ export class Curve implements ICurve {
   getParameterAtLength(length: number) {
     let parSpan = 0.0;
     for (const seg of this.segs) {
-      const segL = seg.length();
+      const segL = seg.length;
       if (segL >= length) return parSpan + seg.getParameterAtLength(length);
 
       length -= segL;
@@ -1224,9 +1224,9 @@ export class Curve implements ICurve {
     return this.parEnd();
   }
 
-  length(): number {
+  get length(): number {
     let r = 0;
-    for (const s of this.segs) r += s.length();
+    for (const s of this.segs) r += s.length;
     return r;
   }
   transform(transformation: PlaneTransformation): ICurve {

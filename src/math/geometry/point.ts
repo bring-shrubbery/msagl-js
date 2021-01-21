@@ -16,7 +16,7 @@ export class Point {
     this.y = a.y;
   }
   static close(a: Point, b: Point, tol: number): boolean {
-    return a.minus(b).length() <= tol;
+    return a.minus(b).length <= tol;
   }
 
   static closeSquare(a: Point, b: Point, tol: number): boolean {
@@ -24,7 +24,7 @@ export class Point {
     return d.dot(d) <= tol;
   }
   static closeDistEps(a: Point, b: Point): boolean {
-    return a.minus(b).length() <= GeomConstants.distanceEpsilon;
+    return a.minus(b).length <= GeomConstants.distanceEpsilon;
   }
 
   static closeD(a: number, b: number): boolean {
@@ -32,10 +32,10 @@ export class Point {
     return -GeomConstants.distanceEpsilon <= d && d <= GeomConstants.distanceEpsilon;
   }
   normalize() {
-    const l = this.length();
+    const l = this.length;
     return new Point(this.x / l, this.y / l);
   }
-  length() {
+  get length() {
     return Math.sqrt(this.x * this.x + this.y * this.y);
   }
   constructor(x: number, y: number) {
@@ -88,8 +88,8 @@ export class Point {
   }
 
   static parallelWithinEpsilon(a: Point, b: Point, eps: number) {
-    const alength = a.length();
-    const blength = b.length();
+    const alength = a.length;
+    const blength = b.length;
     if (alength < eps || blength < eps) return true;
 
     a = a.div(alength);
