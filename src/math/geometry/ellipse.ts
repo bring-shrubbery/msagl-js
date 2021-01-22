@@ -1,11 +1,11 @@
-import {ICurve} from './icurve';
-import {Curve} from './curve';
-import {Rectangle} from './rectangle';
-import {PN, ParallelogramNode} from './parallelogramNode';
-import {Point} from './point';
-import {GeomConstants} from './geomConstants';
-import {PlaneTransformation} from './planeTransformation';
-import {ClosestPointOnCurve} from './closestPointOnCurve';
+import { ICurve } from './icurve';
+import { Curve } from './curve';
+import { Rectangle } from './rectangle';
+import { PN, ParallelogramNode } from './parallelogramNode';
+import { Point } from './point';
+import { GeomConstants } from './geomConstants';
+import { PlaneTransformation } from './planeTransformation';
+import { ClosestPointOnCurve } from './closestPointOnCurve';
 export class Ellipse implements ICurve {
   box: Rectangle;
 
@@ -60,7 +60,7 @@ export class Ellipse implements ICurve {
     this.bAxis = axis1;
     this.center = center;
     this.pNode = null;
-    this.SetBoundingBox();
+    this.setBoundingBox();
   }
 
   start() {
@@ -85,7 +85,7 @@ export class Ellipse implements ICurve {
   }
 
   // The bounding box of the ellipse
-  boundingBox() {
+  get boundingBox() {
     return this.box;
   }
 
@@ -115,8 +115,8 @@ export class Ellipse implements ICurve {
     return (this.pNode = ParallelogramNode.createParallelogramNodeForCurveSegDefaultOffset(this));
   }
 
-  SetBoundingBox() {
-    if (Point.closeD(this.parS, 0) && Point.closeD(this.parE, Math.PI * 2)) this.box = this.FullBox();
+  setBoundingBox() {
+    if (Point.closeD(this.parS, 0) && Point.closeD(this.parE, Math.PI * 2)) this.box = this.fullBox();
     else {
       //the idea is that the box of an arc staying in one quadrant is just the box of the start and the end point of the arc
       this.box = Rectangle.rectanglePointPoint(this.start(), this.end());
@@ -284,7 +284,7 @@ export class Ellipse implements ICurve {
   }
 
   //returns the box of the ellipse that this ellipse is a part of
-  FullBox(): Rectangle {
+  fullBox(): Rectangle {
     const del = this.aAxis.add(this.bAxis);
     return Rectangle.rectanglePointPoint(this.center.add(del), this.center.minus(del));
   }

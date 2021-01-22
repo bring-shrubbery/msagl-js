@@ -71,7 +71,7 @@ export class CurveFactory {
     };
   }
 
-  static createRectangleWithRoundedCorners(width: number, height: number, radX: number, radY: number, center: Point): Curve {
+  static mkRectangleWithRoundedCorners(width: number, height: number, radX: number, radY: number, center: Point): Curve {
     if (radX == 0 || radY == 0) {
       CurveFactory.createRectangle(width, height, center);
       return;

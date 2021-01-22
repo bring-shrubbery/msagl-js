@@ -1,10 +1,10 @@
-import {ICurve} from './icurve';
-import {Point} from './point';
-import {Parallelogram} from './parallelogram';
-import {PlaneTransformation} from './planeTransformation';
-import {Rectangle} from './rectangle';
-import {GeomConstants} from './geomConstants';
-import {PN} from './parallelogramNode';
+import { ICurve } from './icurve';
+import { Point } from './point';
+import { Parallelogram } from './parallelogram';
+import { PlaneTransformation } from './planeTransformation';
+import { Rectangle } from './rectangle';
+import { GeomConstants } from './geomConstants';
+import { PN } from './parallelogramNode';
 export class LineSegment implements ICurve {
   a: Point; //the line goes from a to b
   b: Point; // the line end point
@@ -215,7 +215,7 @@ return xx;
     return this.a.minus(this.b).length;
   }
   // The bounding box of the line
-  boundingBox() {
+  get boundingBox() {
     return Rectangle.rectanglePointPoint(this.a, this.b);
   }
 
@@ -280,7 +280,7 @@ return xx;
 
   // [a,b] and [c,d] are the segments. u and v are the corresponding closest point params
   // see http://www.geometrictools.com/Documentation/DistanceLine3Line3.pdf
-  static minDistBetweenLineSegments(a: Point, b: Point, c: Point, d: Point): {dist: number; parab: number; parcd: number} {
+  static minDistBetweenLineSegments(a: Point, b: Point, c: Point, d: Point): { dist: number; parab: number; parcd: number } {
     const u = b.minus(a);
     const v = d.minus(c);
     const w = a.minus(c);

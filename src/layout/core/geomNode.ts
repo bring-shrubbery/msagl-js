@@ -1,24 +1,26 @@
 // A node of a GeomGraph
-import {GeomObject} from './geomObject';
-import {Assert} from './../../utils/assert';
-import {ICurve} from './../../math/geometry/icurve';
-import {Rectangle} from './../../math/geometry/rectangle';
-import {Point} from './../../math/geometry/point';
-import {CurveFactory} from './../../math/geometry/curveFactory';
-import {PlaneTransformation} from './../../math/geometry/planeTransformation';
-import {GeomEdge as Edge} from './geomEdge';
-import {GeomCluster as Cluster} from './geomCluster';
-import {from} from 'linq-to-typescript';
+import { GeomObject } from './geomObject';
+import { Assert } from './../../utils/assert';
+import { ICurve } from './../../math/geometry/icurve';
+import { Rectangle } from './../../math/geometry/rectangle';
+import { Point } from './../../math/geometry/point';
+import { CurveFactory } from './../../math/geometry/curveFactory';
+import { PlaneTransformation } from './../../math/geometry/planeTransformation';
+import { GeomEdge as Edge } from './geomEdge';
+import { GeomCluster as Cluster } from './geomCluster';
+import { from } from 'linq-to-typescript';
 
 export class GeomNode extends GeomObject {
   padding = 1;
 
   boundaryCurve: ICurve;
   // Creates a Node instance
-  mkGeomNode(curve: ICurve, userData: any = null) {
-    this.boundaryCurve = curve;
-    this.userData = userData;
-    this.algorithmData = null;
+  static mkNode(curve: ICurve, userData: any = null) {
+    const n = new GeomNode();
+    n.boundaryCurve = curve;
+    n.userData = userData;
+    n.algorithmData = null;
+    return n;
   }
 
   // Gets the UserData string if present.
@@ -84,7 +86,7 @@ export class GeomNode extends GeomObject {
   // Fields which are set by Msagl
   // return the center of the curve bounding box
   get center() {
-    return this.boundaryCurve.boundingBox().center;
+    return this.boundaryCurve.boundingBox.center;
   }
   set center(value: Point) {
     const del = value.minus(this.center);
@@ -97,15 +99,15 @@ export class GeomNode extends GeomObject {
       // RoundedRect is special, rather then simply scaling the geometry we want to keep the corner radii constant
       const radii = CurveFactory.isRoundedRect(this.boundaryCurve);
       if (radii == undefined) {
-        Assert.assert(this.boundaryCurve.boundingBox().width > 0);
-        Assert.assert(this.boundaryCurve.boundingBox().height > 0);
-        const scaleX = targetBounds.width / this.boundaryCurve.boundingBox().width;
-        const scaleY = targetBounds.height / this.boundaryCurve.boundingBox().height;
+        Assert.assert(this.boundaryCurve.boundingBox.width > 0);
+        Assert.assert(this.boundaryCurve.boundingBox.height > 0);
+        const scaleX = targetBounds.width / this.boundaryCurve.boundingBox.width;
+        const scaleY = targetBounds.height / this.boundaryCurve.boundingBox.height;
 
         this.boundaryCurve = this.boundaryCurve.scaleFromOrigin(scaleX, scaleY);
-        this.boundaryCurve.translate(targetBounds.center.minus(this.boundaryCurve.boundingBox().center));
+        this.boundaryCurve.translate(targetBounds.center.minus(this.boundaryCurve.boundingBox.center));
       } else {
-        this.boundaryCurve = CurveFactory.createRectangleWithRoundedCorners(
+        this.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
           targetBounds.width,
           targetBounds.height,
           radii.radX,
@@ -118,7 +120,7 @@ export class GeomNode extends GeomObject {
 
   // the bounding box of the node
   get boundingBox() {
-    return this.boundaryCurve != null ? this.boundaryCurve.boundingBox() : Rectangle.mkEmpty();
+    return this.boundaryCurve != null ? this.boundaryCurve.boundingBox : Rectangle.mkEmpty();
   }
   set boundingBox(value: Rectangle) {
     if (Math.abs(value.width - this.width) < 0.0001 && Math.abs(value.height - this.height) < 0.0001) {
@@ -130,11 +132,11 @@ export class GeomNode extends GeomObject {
 
   // width of the node does not include the padding
   get width() {
-    return this.boundaryCurve.boundingBox().width;
+    return this.boundaryCurve.boundingBox.width;
   }
   // height of the node does not including the padding
   get height() {
-    return this.boundaryCurve.boundingBox().height;
+    return this.boundaryCurve.boundingBox.height;
   }
 
   get degree(): number {

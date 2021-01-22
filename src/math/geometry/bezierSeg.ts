@@ -1,15 +1,15 @@
 // Cubic Bezier Segment
-import {ICurve} from './icurve';
-import {LineSegment} from './lineSegment';
-import {Curve} from './curve';
-import {Rectangle} from './rectangle';
-import {PN, PNInternal, PNLeaf, createPNLeaf, ParallelogramNode} from './parallelogramNode';
-import {Point} from './point';
-import {Parallelogram} from './parallelogram';
-import {GeomConstants} from './geomConstants';
-import {PlaneTransformation} from './planeTransformation';
-import {ClosestPointOnCurve} from './closestPointOnCurve';
-import {Assert} from './../../utils/assert';
+import { ICurve } from './icurve';
+import { LineSegment } from './lineSegment';
+import { Curve } from './curve';
+import { Rectangle } from './rectangle';
+import { PN, PNInternal, PNLeaf, createPNLeaf, ParallelogramNode } from './parallelogramNode';
+import { Point } from './point';
+import { Parallelogram } from './parallelogram';
+import { GeomConstants } from './geomConstants';
+import { PlaneTransformation } from './planeTransformation';
+import { ClosestPointOnCurve } from './closestPointOnCurve';
+import { Assert } from './../../utils/assert';
 export class BezierSeg implements ICurve {
   leftDerivative(t: number) {
     return this.derivative(t);
@@ -194,7 +194,7 @@ export class BezierSeg implements ICurve {
   }
 
   // the segment bounding box
-  boundingBox() {
+  get boundingBox() {
     const ret = Rectangle.rectanglePointPoint(this.b[0], this.b[1]);
     ret.add(this.b[2]);
     ret.add(this.b[3]);

@@ -18,7 +18,6 @@ export class Rectangle {
   bottom_: number;
 
   constructor(left: number, right: number, top: number, bottom: number) {
-    Assert.assert(left <= right && top >= bottom);
     this.left_ = left;
     this.right_ = right;
     this.top_ = top;
@@ -71,7 +70,7 @@ export class Rectangle {
 
   // creates an empty rectangle
   static mkEmpty() {
-    return new Rectangle(0, 0, -1, -1);
+    return new Rectangle(0, -1, 0, -1);
   }
 
   get left() {

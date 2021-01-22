@@ -1,7 +1,7 @@
-import {PlaneTransformation} from './planeTransformation';
-import {Point} from './point';
-import {PN} from './parallelogramNode';
-import {Rectangle} from './rectangle';
+import { PlaneTransformation } from './planeTransformation';
+import { Point } from './point';
+import { PN } from './parallelogramNode';
+import { Rectangle } from './rectangle';
 // The interface for curves: instances of ICurve inside of GLEE
 // are BSpline,Curve,LineSeg, Ellipse,CubicBezierSeg and ArrowTipCurve.
 export interface ICurve {
@@ -19,7 +19,7 @@ export interface ICurve {
   pNodeOverICurve(): PN;
 
   // XY bounding box of the curve
-  boundingBox(): Rectangle;
+  boundingBox: Rectangle;
 
   // the start of the parameter domain
   parStart(): number;

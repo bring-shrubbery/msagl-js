@@ -1,20 +1,20 @@
-import {ICurve} from './icurve';
-import {PN, PNInternal, PNLeaf, ParallelogramNode} from './parallelogramNode';
-import {allVerticesOfParall} from './parallelogram';
-import {Point} from './point';
-import {LineSegment} from './lineSegment';
-import {IntersectionInfo} from './intersectionInfo';
-import {Assert} from './../../utils/assert';
-import {Parallelogram} from './parallelogram';
-import {Ellipse} from './ellipse';
-import {Polyline} from './polyline';
-import {GeomConstants} from './geomConstants';
-import {LinearSystem2} from './linearSystem';
-import {MinDistCurveCurve} from './minDistCurveCurve';
-import {Rectangle} from './rectangle';
-import {PlaneTransformation} from './planeTransformation';
-import {SvgDebugWriter} from './svgDebugWriter';
-import {DebugCurve} from './debugCurve';
+import { ICurve } from './icurve';
+import { PN, PNInternal, PNLeaf, ParallelogramNode } from './parallelogramNode';
+import { allVerticesOfParall } from './parallelogram';
+import { Point } from './point';
+import { LineSegment } from './lineSegment';
+import { IntersectionInfo } from './intersectionInfo';
+import { Assert } from './../../utils/assert';
+import { Parallelogram } from './parallelogram';
+import { Ellipse } from './ellipse';
+import { Polyline } from './polyline';
+import { GeomConstants } from './geomConstants';
+import { LinearSystem2 } from './linearSystem';
+import { MinDistCurveCurve } from './minDistCurveCurve';
+import { Rectangle } from './rectangle';
+import { PlaneTransformation } from './planeTransformation';
+import { SvgDebugWriter } from './svgDebugWriter';
+import { DebugCurve } from './debugCurve';
 
 type Params = {
   start: number;
@@ -238,7 +238,7 @@ export class Curve implements ICurve {
       parallelogram: Parallelogram.getParallelogramOfAGroup(parallelograms),
       seg: this,
       leafBoxesOffset: GeomConstants.defaultLeafBoxesOffset,
-      node: {children: childrenNodes},
+      node: { children: childrenNodes },
     };
 
     return this.pBNode;
@@ -908,10 +908,10 @@ export class Curve implements ICurve {
     return aMinusB.dot(aMinusB) >= GeomConstants.distanceEpsilon
       ? undefined
       : {
-          aSol: mdout.aSol,
-          bSol: mdout.bSol,
-          x: Point.middle(mdout.aX, mdout.bX),
-        };
+        aSol: mdout.aSol,
+        bSol: mdout.bSol,
+        x: Point.middle(mdout.aX, mdout.bX),
+      };
   }
 
   static crossTwoLineSegs(
@@ -1147,11 +1147,11 @@ export class Curve implements ICurve {
     md.solve();
     return md.success
       ? {
-          aSol: md.aSolution,
-          bSol: md.bSolution,
-          aX: md.aPoint,
-          bX: md.bPoint,
-        }
+        aSol: md.aSolution,
+        bSol: md.bSolution,
+        aX: md.aPoint,
+        bX: md.bPoint,
+      }
       : undefined;
   }
   /*
@@ -1196,11 +1196,11 @@ export class Curve implements ICurve {
   }
 
   // The bounding rectangle of the curve
-  boundingBox() {
+  get boundingBox() {
     if (this.segs.length == 0) return new Rectangle(0, 0, -1, -1);
-    const b = this.segs[0].boundingBox().clone();
+    const b = this.segs[0].boundingBox.clone();
 
-    for (let i = 1; i < this.segs.length; i++) b.addRec(this.segs[i].boundingBox());
+    for (let i = 1; i < this.segs.length; i++) b.addRec(this.segs[i].boundingBox);
 
     return b;
   }

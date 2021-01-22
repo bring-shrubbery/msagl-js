@@ -1,13 +1,13 @@
-import {ICurve} from './icurve';
-import {PN} from './parallelogramNode';
-import {PlaneTransformation} from './planeTransformation';
-import {Point} from './point';
-import {Rectangle} from './rectangle';
-import {PolylinePoint} from './polylinePoint';
-import {GeomConstants} from './geomConstants';
-import {Assert} from './../../utils/assert';
-import {Parallelogram} from './parallelogram';
-import {LineSegment} from './lineSegment';
+import { ICurve } from './icurve';
+import { PN } from './parallelogramNode';
+import { PlaneTransformation } from './planeTransformation';
+import { Point } from './point';
+import { Rectangle } from './rectangle';
+import { PolylinePoint } from './polylinePoint';
+import { GeomConstants } from './geomConstants';
+import { Assert } from './../../utils/assert';
+import { Parallelogram } from './parallelogram';
+import { LineSegment } from './lineSegment';
 
 type AdjustedPar = {
   a: Point;
@@ -181,7 +181,7 @@ export class Polyline implements ICurve {
     if (this.requireInit_) this.init();
     return this.pBNode;
   }
-  boundingBox(): Rectangle {
+  get boundingBox(): Rectangle {
     if (this.requireInit_) this.init();
     return this.bBox;
   }

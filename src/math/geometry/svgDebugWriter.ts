@@ -1,15 +1,15 @@
-import {ICurve} from './icurve';
-import {Curve} from './curve';
-import {Point} from './point';
-import {Polyline} from './polyline';
-import {Rectangle} from './rectangle';
-import {Ellipse} from './ellipse';
-import {LineSegment} from './lineSegment';
-import {BezierSeg} from './bezierSeg';
-import {DebugCurve} from './debugCurve';
-import {String, StringBuilder} from 'typescript-string-operations';
-import {from} from 'linq-to-typescript';
-import {allVerticesOfParall} from './parallelogram';
+import { ICurve } from './icurve';
+import { Curve } from './curve';
+import { Point } from './point';
+import { Polyline } from './polyline';
+import { Rectangle } from './rectangle';
+import { Ellipse } from './ellipse';
+import { LineSegment } from './lineSegment';
+import { BezierSeg } from './bezierSeg';
+import { DebugCurve } from './debugCurve';
+import { String, StringBuilder } from 'typescript-string-operations';
+import { from } from 'linq-to-typescript';
+import { allVerticesOfParall } from './parallelogram';
 export class SvgDebugWriter {
   // Here we import the File System module of node
   private fs = require('fs');
@@ -28,7 +28,7 @@ export class SvgDebugWriter {
   static getBoundingBox(dcurves: DebugCurve[]): Rectangle {
     const r = Rectangle.mkEmpty();
     for (const c of dcurves) {
-      r.addRec(c.icurve.boundingBox());
+      r.addRec(c.icurve.boundingBox);
     }
     const s = Math.max(r.width, r.height);
     r.pad(s / 20);
@@ -174,7 +174,7 @@ export class SvgDebugWriter {
 
   dashArrayString(da: number[]): string {
     const stringBuilder = new StringBuilder('stroke-dasharray:');
-    for (let i = 0; ; ) {
+    for (let i = 0; ;) {
       stringBuilder.Append(da[i].toString());
       i++;
       if (i < da.length) stringBuilder.Append(' ');
