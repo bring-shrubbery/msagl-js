@@ -1,16 +1,16 @@
-import {Graph} from 'graphlib';
-import {Point} from '../math/geometry/point';
+import {Graph} from 'graphlib'
+import {Point} from '../math/geometry/point'
 export interface NodeResult {
-  id: string;
-  layer?: number;
-  order?: number;
-  centerPoint?: Point;
-  width: number;
-  height: number;
+  id: string
+  layer?: number
+  order?: number
+  centerPoint?: Point
+  width: number
+  height: number
 }
 
 export interface GraphLayoutResult {
-  layerAmount: number;
-  nodeResults: NodeResult[];
-  graph: Graph;
+  layerAmount: number
+  nodeResults: NodeResult[]
+  graph: Graph
 }

@@ -1,34 +1,34 @@
-import {Point} from './point';
-import {Polyline} from './polyline';
+import {Point} from './point'
+import {Polyline} from './polyline'
 
 export class PolylinePoint {
-  point: Point;
-  next: PolylinePoint;
-  prev: PolylinePoint;
-  polyline: Polyline;
+  point: Point
+  next: PolylinePoint
+  prev: PolylinePoint
+  polyline: Polyline
 
   //
   getNext(): PolylinePoint {
-    return this.next;
+    return this.next
   }
 
   setNext(nVal: PolylinePoint) {
-    this.next = nVal;
-    if (this.polyline != null) this.polyline.requireInit();
+    this.next = nVal
+    if (this.polyline != null) this.polyline.requireInit()
   }
 
   //
   getPrev() {
-    return this.prev;
+    return this.prev
   }
   setPrev(prevVal: PolylinePoint) {
-    this.prev = prevVal;
-    if (this.polyline != null) this.polyline.requireInit();
+    this.prev = prevVal
+    if (this.polyline != null) this.polyline.requireInit()
   }
 
   static mkPolylinePoint(p: Point) {
-    const pp = new PolylinePoint();
-    pp.point = p.clone();
-    return pp;
+    const pp = new PolylinePoint()
+    pp.point = p.clone()
+    return pp
   }
 }

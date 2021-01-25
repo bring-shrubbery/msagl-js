@@ -1,39 +1,39 @@
-import {Graph} from 'graphlib';
-import _ = require('lodash');
+import {Graph} from 'graphlib'
+import _ = require('lodash')
 
 function dfsFAS(g) {
-  const fas = [];
-  const stack = {};
-  const visited = {};
+  const fas = []
+  const stack = {}
+  const visited = {}
 
   function dfs(v) {
     if (_.has(visited, v)) {
-      return;
+      return
     }
-    visited[v] = true;
-    stack[v] = true;
+    visited[v] = true
+    stack[v] = true
     _.forEach(g.outEdges(v), function (e) {
       if (_.has(stack, e.w)) {
-        fas.push(e);
+        fas.push(e)
       } else {
-        dfs(e.w);
+        dfs(e.w)
       }
-    });
-    delete stack[v];
+    })
+    delete stack[v]
   }
 
-  _.forEach(g.nodes(), dfs);
-  return fas;
+  _.forEach(g.nodes(), dfs)
+  return fas
 }
 
 export function removeCycles(g: Graph): Graph {
-  const fas = dfsFAS(g);
+  const fas = dfsFAS(g)
   _.forEach(fas, function (e) {
-    const label = g.edge(e);
-    g.removeEdge(e);
-    label.reversed = true;
-    g.setEdge(e.w, e.v, label, _.uniqueId('rev'));
-  });
+    const label = g.edge(e)
+    g.removeEdge(e)
+    label.reversed = true
+    g.setEdge(e.w, e.v, label, _.uniqueId('rev'))
+  })
 
-  return g;
+  return g
 }

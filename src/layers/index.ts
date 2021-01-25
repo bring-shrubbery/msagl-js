@@ -1,6 +1,6 @@
-import {networkSimplex} from './network-simplex';
-import {GraphLayoutResult, NodeResult} from '../models';
-import {Graph} from 'graphlib';
+import {networkSimplex} from './network-simplex'
+import {GraphLayoutResult, NodeResult} from '../models'
+import {Graph} from 'graphlib'
 
 /*
  * Assigns a layer to each node in the input graph that respects the "minlen"
@@ -22,37 +22,37 @@ import {Graph} from 'graphlib';
  *       fix them up later.
  */
 function createLayers(g): Graph {
-  return networkSimplex(g);
+  return networkSimplex(g)
 }
 
 function normalizeLayer(graph): NodeResult[] {
   // Sort and extract layer value
-  const nodes: string[] = graph.nodes();
+  const nodes: string[] = graph.nodes()
 
   const nodeResult: NodeResult[] = nodes
     .map((nodeId) => {
-      const nodeLabel = graph.node(nodeId);
+      const nodeLabel = graph.node(nodeId)
       return {
         id: nodeId,
         layer: nodeLabel.layer,
         order: -1,
         width: nodeLabel.width,
         height: nodeLabel.height,
-      };
+      }
     })
-    .sort((a, b) => a.layer - b.layer);
+    .sort((a, b) => a.layer - b.layer)
 
   // Move layers value to positive if needed
   if (nodeResult && nodeResult.length > 0 && nodeResult[0].layer < 0) {
-    const value = nodeResult[0].layer * -1;
+    const value = nodeResult[0].layer * -1
     nodeResult.forEach((node) => {
-      node.layer = node.layer + value;
-      const graphNode = graph.node(node.id);
-      graph.setNode(node.id, {...graphNode, layer: node.layer});
-    });
+      node.layer = node.layer + value
+      const graphNode = graph.node(node.id)
+      graph.setNode(node.id, {...graphNode, layer: node.layer})
+    })
   }
 
-  return nodeResult;
+  return nodeResult
 }
 
 function balance(nodeResult: NodeResult[]): NodeResult[] {
@@ -82,18 +82,19 @@ function balance(nodeResult: NodeResult[]): NodeResult[] {
 
   // console.log(nodesWithEqualWeights);
 
-  return nodeResult;
+  return nodeResult
 }
 
 export function calculateLayers(graph: Graph): GraphLayoutResult {
-  const graphWithLayers: Graph = createLayers(graph);
-  let nodeResult: NodeResult[] = normalizeLayer(graphWithLayers);
-  nodeResult = balance(nodeResult);
+  const graphWithLayers: Graph = createLayers(graph)
+  let nodeResult: NodeResult[] = normalizeLayer(graphWithLayers)
+  nodeResult = balance(nodeResult)
 
-  const layerAmount = nodeResult.length > 0 ? nodeResult[nodeResult.length - 1].layer + 1 : 0;
+  const layerAmount =
+    nodeResult.length > 0 ? nodeResult[nodeResult.length - 1].layer + 1 : 0
   return {
     layerAmount: layerAmount,
     nodeResults: nodeResult,
     graph: graphWithLayers,
-  };
+  }
 }

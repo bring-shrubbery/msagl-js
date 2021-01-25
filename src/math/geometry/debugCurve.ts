@@ -1,41 +1,61 @@
-import {ICurve} from './icurve';
+import {ICurve} from './icurve'
 
 export class DebugCurve {
-  pen: number;
-  color: string;
-  fillColor: string;
-  transparency: number;
-  width: number;
-  icurve: ICurve;
-  dashArray: number[];
-  label: any;
-  drawPN: boolean;
-  static mkDebugCurveTWCILD(transparency: number, width: number, color: string, curve: ICurve, label: any, dashArray: number[], drawPN = false) {
-    const r = new DebugCurve();
-    r.transparency = transparency;
-    r.width = width;
-    r.color = color;
-    r.icurve = curve;
-    r.label = label;
-    r.dashArray = dashArray;
-    r.drawPN = drawPN;
-    return r;
+  pen: number
+  color: string
+  fillColor: string
+  transparency: number
+  width: number
+  icurve: ICurve
+  dashArray: number[]
+  label: any
+  drawPN: boolean
+  static mkDebugCurveTWCILD(
+    transparency: number,
+    width: number,
+    color: string,
+    curve: ICurve,
+    label: any,
+    dashArray: number[],
+    drawPN = false,
+  ) {
+    const r = new DebugCurve()
+    r.transparency = transparency
+    r.width = width
+    r.color = color
+    r.icurve = curve
+    r.label = label
+    r.dashArray = dashArray
+    r.drawPN = drawPN
+    return r
   }
 
-  static mkDebugCurveTWCI(transparency: number, width: number, color: string, curve: ICurve) {
-    return DebugCurve.mkDebugCurveTWCILD(transparency, width, color, curve, null, null);
+  static mkDebugCurveTWCI(
+    transparency: number,
+    width: number,
+    color: string,
+    curve: ICurve,
+  ) {
+    return DebugCurve.mkDebugCurveTWCILD(
+      transparency,
+      width,
+      color,
+      curve,
+      null,
+      null,
+    )
   }
 
   static mkDebugCurveWCI(width: number, color: string, curve: ICurve) {
-    return DebugCurve.mkDebugCurveTWCI(255, width, color, curve);
+    return DebugCurve.mkDebugCurveTWCI(255, width, color, curve)
   }
 
   static mkDebugCurveCI(color: string, curve: ICurve) {
-    return DebugCurve.mkDebugCurveWCI(1, color, curve);
+    return DebugCurve.mkDebugCurveWCI(1, color, curve)
   }
 
   static mkDebugCurveI(curve: ICurve) {
-    return DebugCurve.mkDebugCurveCI('Black', curve);
+    return DebugCurve.mkDebugCurveCI('Black', curve)
   }
 
   // color strings for debugging
@@ -182,5 +202,5 @@ export class DebugCurve {
     'YellowGreen',
     'Khaki',
     'AntiqueWhite',
-  ];
+  ]
 }

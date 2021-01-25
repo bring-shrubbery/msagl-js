@@ -1,6 +1,6 @@
-import {Graph} from 'graphlib';
-import {slack} from './util';
-import * as _ from 'lodash';
+import {Graph} from 'graphlib'
+import {slack} from './util'
+import * as _ from 'lodash'
 /*
  * Constructs a spanning tree with tight edges and adjusted the input node's
  * layers to achieve this. A tight edge is one that is has a length that matches
@@ -27,21 +27,21 @@ import * as _ from 'lodash';
  * edges.
  */
 export function feasibleTree(g: Graph): Graph {
-  const t = new Graph({directed: false});
+  const t = new Graph({directed: false})
 
   // Choose arbitrary node from which to start our tree
-  const start = g.nodes()[0];
-  const size = g.nodeCount();
-  t.setNode(start, {});
+  const start = g.nodes()[0]
+  const size = g.nodeCount()
+  t.setNode(start, {})
 
-  let edge, delta;
+  let edge, delta
   while (tightTree(t, g) < size) {
-    edge = findMinSlackEdge(t, g);
-    delta = t.hasNode(edge.v) ? slack(g, edge) : -slack(g, edge);
-    shiftlayers(t, g, delta);
+    edge = findMinSlackEdge(t, g)
+    delta = t.hasNode(edge.v) ? slack(g, edge) : -slack(g, edge)
+    shiftlayers(t, g, delta)
   }
 
-  return t;
+  return t
 }
 
 /*
@@ -51,18 +51,18 @@ export function feasibleTree(g: Graph): Graph {
 function tightTree(t, g) {
   function dfs(v) {
     _.forEach(g.nodeEdges(v), function (e) {
-      const edgeV = e.v;
-      const w = v === edgeV ? e.w : edgeV;
+      const edgeV = e.v
+      const w = v === edgeV ? e.w : edgeV
       if (!t.hasNode(w) && !slack(g, e)) {
-        t.setNode(w, {});
-        t.setEdge(v, w, {});
-        dfs(w);
+        t.setNode(w, {})
+        t.setEdge(v, w, {})
+        dfs(w)
       }
-    });
+    })
   }
 
-  _.forEach(t.nodes(), dfs);
-  return t.nodeCount();
+  _.forEach(t.nodes(), dfs)
+  return t.nodeCount()
 }
 
 /*
@@ -72,13 +72,13 @@ function tightTree(t, g) {
 function findMinSlackEdge(t, g) {
   return _.minBy(g.edges(), function (e: any) {
     if (t.hasNode(e.v) !== t.hasNode(e.w)) {
-      return slack(g, e);
+      return slack(g, e)
     }
-  });
+  })
 }
 
 function shiftlayers(t, g, delta) {
   _.forEach(t.nodes(), function (v) {
-    g.node(v).layer += delta;
-  });
+    g.node(v).layer += delta
+  })
 }
