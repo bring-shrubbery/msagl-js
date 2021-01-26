@@ -1,4 +1,4 @@
-import {GeomNode as Node} from './../../../layout/core/geomNode'
+import {GeomNode} from './../../../layout/core/geomNode'
 import {CurveFactory} from './../../../math/geometry/curveFactory'
 import {Point} from './../../../math/geometry/point'
 import {Rectangle} from './../../../math/geometry/rectangle'
@@ -13,7 +13,7 @@ test('node fit', () => {
     30,
     new Point(12, 12),
   )
-  const n = Node.mkNode(boundary)
+  const n = GeomNode.mkNode(boundary)
   const rect = new Rectangle(70, 111, 111, 0)
 
   n.boundingBox = rect

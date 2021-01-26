@@ -7,9 +7,7 @@ import {Point} from './../../math/geometry/point'
 import {CurveFactory} from './../../math/geometry/curveFactory'
 import {PlaneTransformation} from './../../math/geometry/planeTransformation'
 import {GeomEdge as Edge} from './geomEdge'
-import {GeomCluster as Cluster} from './geomCluster'
-import {from} from 'linq-to-typescript'
-
+import {Node} from './../../structs/node'
 export class GeomNode extends GeomObject {
   padding = 1
 
@@ -18,69 +16,7 @@ export class GeomNode extends GeomObject {
   static mkNode(curve: ICurve, userData: any = null) {
     const n = new GeomNode()
     n.boundaryCurve = curve
-    n.userData = userData
-    n.algorithmData = null
     return n
-  }
-
-  // Gets the UserData string if present.
-  toString(): string {
-    if (this.userData != null) {
-      return this.userData.toString()
-    }
-    return 'geomNode'
-  }
-
-  // the list of incoming edges
-  inEdges: Set<Edge>
-  // the collection of outcoming edges
-  outEdges: Set<Edge>
-
-  // the list of self edges
-  selfEdges: Set<Edge>
-
-  clusterParent: Cluster;
-  *allClusterAncestors(): IterableIterator<Cluster> {
-    let parent = this.clusterParent
-    while (parent != null) {
-      yield parent
-      parent = parent.clusterParent
-    }
-  }
-
-  setClusterParent(parent: Cluster): void {
-    Assert.assert(!Object.is(parent, this))
-    this.clusterParent = parent
-  }
-
-  removeSelfEdge(edge: Edge) {
-    return this.selfEdges.delete(edge)
-  }
-
-  // adds and outgoing edge
-  addOutEdge(edge: Edge): void {
-    Assert.assert(edge.source != edge.target)
-    Assert.assert(edge.source == this)
-    this.outEdges.add(edge)
-  }
-
-  // add an incoming edge
-  addInEdge(edge: Edge): void {
-    Assert.assert(edge.source != edge.target)
-    Assert.assert(edge.target == this)
-    this.inEdges.add(edge)
-  }
-  // adds a self edge
-  addSelfEdge(edge: Edge): void {
-    Assert.assert(edge.target == this && edge.source == this)
-    this.selfEdges.add(edge)
-  }
-
-  // enumerates over all edges
-  *edges(): IterableIterator<Edge> {
-    for (const e of this.outEdges) yield e
-    for (const e of this.inEdges) yield e
-    for (const e of this.selfEdges) yield e
   }
 
   // Fields which are set by Msagl
@@ -147,37 +83,8 @@ export class GeomNode extends GeomObject {
     return this.boundaryCurve.boundingBox.height
   }
 
-  get degree(): number {
-    return this.outEdges.size + this.inEdges.size + this.selfEdges.size
-  }
-
-  // the rest of the fields
-
-  removeInEdge(edge: Edge): boolean {
-    return this.inEdges.delete(edge)
-  }
-  // removes an incoming edge
-  removeOutEdge(edge: Edge) {
-    return this.outEdges.delete(edge)
-  }
-  // remove all edges
-  clearEdges() {
-    this.inEdges.clear()
-    this.outEdges.clear()
-    this.selfEdges.clear()
-  }
-
   transform(t: PlaneTransformation) {
     if (this.boundaryCurve != null)
       this.boundaryCurve = this.boundaryCurve.transform(t)
-  }
-
-  // Determines if this node is a descendant of the given cluster.
-  isDescendantOf(cluster: Cluster) {
-    return from(this.allClusterAncestors()).any((p) => p == cluster)
-  }
-
-  isUnderCollapsedCluster(): boolean {
-    return this.clusterParent != null && this.clusterParent.isCollapsed
   }
 }

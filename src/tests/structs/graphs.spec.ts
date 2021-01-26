@@ -1,9 +1,12 @@
-import {Graph, Node, Edge} from './../../structs/graph'
+import {Graph} from './../../structs/graph'
+import {Edge} from './../../structs/edge'
+import {Node} from './../../structs/node'
+
 test('graph create', () => {
   const g = new Graph()
   expect(g.nodeCount).toBe(0)
   expect(g.edgeCount).toBe(0)
-  const n = new Node()
+  const n = new Node('n')
   g.addNode(n)
   expect(g.nodeCount).toBe(1)
   expect(g.edgeCount).toBe(0)
@@ -12,7 +15,7 @@ test('graph create', () => {
   g.addEdge(e)
   expect(g.edgeCount).toBe(1)
 
-  const a = new Node()
+  const a = new Node('a')
   e = new Edge(a, n)
   g.addEdge(e)
   expect(g.nodeCount).toBe(2)
@@ -24,7 +27,7 @@ test('graph create', () => {
 
   expect(g.isConsistent()).toBe(true)
 
-  const b = new Node()
+  const b = new Node('b')
   e = new Edge(a, b)
   // at this point the edge does not belong to this.nodes
   expect(g.isConsistent()).toBe(false)
