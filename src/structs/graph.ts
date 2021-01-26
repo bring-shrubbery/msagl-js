@@ -2,7 +2,12 @@ import {Assert} from '../utils/assert'
 
 export class Entity {
   private attrs: any[]
-  constructor() {
+  userData: any
+  toString() {
+    return this.userData == undefined ? '' : this.userData.toString()
+  }
+  constructor(userData: any = undefined) {
+    this.userData = userData
     // extend the array on demand
     this.attrs = []
   }
@@ -21,6 +26,13 @@ export class Node extends Entity {
   inEdges: Set<Edge> = new Set<Edge>()
   outEdges: Set<Edge> = new Set<Edge>()
   selfEdges: Set<Edge> = new Set<Edge>()
+
+  toString(): string {
+    return super.toString()
+  }
+  constructor(userData: any = undefined) {
+    super(userData)
+  }
 
   private *_edges(): IterableIterator<Edge> {
     for (const e of this.inEdges) yield e
@@ -77,12 +89,12 @@ export class Edge extends Entity {
   source: Node
   target: Node
   constructor(s: Node, t: Node) {
-    super()
+    super('(' + s.toString() + '->' + t.toString() + ')')
     this.source = s
     this.target = t
     if (s != t) {
       s.outEdges.add(this)
-      t.outEdges.add(this)
+      t.inEdges.add(this)
     } else {
       s.selfEdges.add(this)
     }
@@ -120,9 +132,11 @@ export class Graph extends Entity {
   }
 
   addEdge(edge: Edge): void {
+    this.nodes.add(edge.source)
+    this.nodes.add(edge.target)
     if (edge.source != edge.target) {
       edge.source.outEdges.add(edge)
-      edge.target.outEdges.add(edge)
+      edge.target.inEdges.add(edge)
     } else {
       edge.source.selfEdges.add(edge)
     }
@@ -135,5 +149,52 @@ export class Graph extends Entity {
       e.source.outEdges.delete(e)
     }
     this.nodes.delete(node)
+  }
+
+  nodeIsConsistent(n: Node): boolean {
+    for (const e of n.outEdges) {
+      if (e.source != n) {
+        return false
+      }
+      if (e.source == e.target) {
+        return false
+      }
+      if (!this.nodes.has(e.target)) {
+        return false
+      }
+    }
+    for (const e of n.inEdges) {
+      if (e.target != n) {
+        return false
+      }
+
+      if (e.source == e.target) {
+        return false
+      }
+      if (!this.nodes.has(e.source)) {
+        return false
+      }
+      return true
+    }
+
+    for (const e of n.selfEdges) {
+      if (e.target != e.source) {
+        return false
+      }
+      if (e.source == n) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  isConsistent(): boolean {
+    for (const n of this.nodes) {
+      if (!this.nodeIsConsistent(n)) {
+        return false
+      }
+    }
+    return true
   }
 }

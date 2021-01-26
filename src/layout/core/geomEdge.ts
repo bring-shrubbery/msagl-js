@@ -1,9 +1,9 @@
 import {GeomNode as Node} from './geomNode'
 
-import {GeomLabel} from './geomLabel'
+//import { GeomLabel } from './geomLabel'
 import {GeomObject} from './geomObject'
 export class GeomEdge extends GeomObject {
-  label: GeomLabel
+  //  label: GeomLabel
   source: Node
   target: Node
 
