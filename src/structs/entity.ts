@@ -1,30 +1,22 @@
 import {from} from 'linq-to-typescript'
 import {Cluster} from './cluster'
 import {Assert} from './../utils/assert'
-
-export class Entity {
+import {AttrContainer} from './attrContainer'
+export class Entity extends AttrContainer {
   parent: Entity = null
   clusterParent: Cluster = null
-
-  private attrs: any[]
   userData: any = undefined
+
   toString() {
     return this.userData == undefined ? '' : this.userData.toString()
   }
+
   constructor(userData: any = undefined) {
+    super()
     this.userData = userData
     // extend the array on demand
-    this.attrs = []
   }
-  setAtrr(position: number, val: any) {
-    if (this.attrs.length < position) {
-      do {
-        this.attrs.push(null)
-      } while (this.attrs.length < position)
-      this.attrs.push(val)
-    } else if (this.attrs.length == position) this.attrs.push(val)
-    else this.attrs[position] = val
-  }
+
   setClusterParent(parent: Cluster): void {
     Assert.assert(!Object.is(parent, this))
     this.clusterParent = parent

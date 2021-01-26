@@ -1,7 +1,7 @@
 import {Graph} from './../../structs/graph'
 import {Edge} from './../../structs/edge'
 import {Node} from './../../structs/node'
-
+import {Rectangle} from './../../math/geometry/rectangle'
 test('graph create', () => {
   const g = new Graph()
   expect(g.nodeCount).toBe(0)
@@ -34,4 +34,16 @@ test('graph create', () => {
 
   g.addEdge(e)
   expect(g.isConsistent()).toBe(true)
+})
+
+test('graph attr', () => {
+  const g = new Graph()
+  const rect = new Rectangle(0, 1, 0, 1)
+  g.setAttr(0, rect)
+  let r = g.getAttr(0) as Rectangle
+  expect(r.width).toBe(rect.width)
+  g.setAttr(3, rect)
+  expect(g.getAttr(2)).toBe(null)
+  r = g.getAttr(0) as Rectangle
+  expect(r.width).toBe(rect.width)
 })

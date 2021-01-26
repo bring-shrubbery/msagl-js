@@ -1,8 +1,8 @@
-import {Entity} from './entity'
 import {Node} from './node'
 import {Edge} from './edge'
+import {AttrContainer} from './attrContainer'
 
-export class Graph {
+export class Graph extends AttrContainer {
   private nodes: Set<Node> = new Set<Node>()
   private *_edges() {
     // if we go over n.inEdges too then not self edges will be reported twice
@@ -16,7 +16,7 @@ export class Graph {
     return this.nodes.size
   }
 
-  // caution it is a linear by the number of nodes method
+  // caution: it is a linear by the number of nodes method
   get edgeCount(): number {
     let count = 0
     for (const n of this.nodes) {
