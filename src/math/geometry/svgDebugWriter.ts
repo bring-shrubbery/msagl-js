@@ -83,7 +83,7 @@ export class SvgDebugWriter {
   }
 
   lineSegmentString(ls: LineSegment): string {
-    return 'L ' + this.pointToString(ls.end())
+    return 'L ' + this.pointToString(ls.end)
   }
 
   pointsToString(points: Point[]) {
@@ -100,12 +100,12 @@ export class SvgDebugWriter {
   }
 
   static isFullEllipse(ell: Ellipse): boolean {
-    return ell.parEnd() == Math.PI * 2 && ell.parStart() == 0
+    return ell.parEnd == Math.PI * 2 && ell.parStart == 0
   }
 
   ellipseToString(ellipse: Ellipse): string {
     const largeArc =
-      Math.abs(ellipse.parEnd() - ellipse.parStart()) >= Math.PI ? '1' : '0'
+      Math.abs(ellipse.parEnd - ellipse.parStart) >= Math.PI ? '1' : '0'
     const sweepFlag = ellipse.orientedCounterclockwise() ? '1' : '0'
 
     return String.Join(
@@ -117,7 +117,7 @@ export class SvgDebugWriter {
       ),
       largeArc,
       sweepFlag,
-      this.pointToString(ellipse.end()),
+      this.pointToString(ellipse.end),
     )
   }
   ellipseRadiuses(ellipse: Ellipse): string {
@@ -134,7 +134,7 @@ export class SvgDebugWriter {
 
   *curveStringTokens(iCurve: ICurve): IterableIterator<string> {
     yield 'M'
-    yield this.pointToString(iCurve.start())
+    yield this.pointToString(iCurve.start)
     const iscurve = iCurve instanceof Curve
     if (iscurve)
       for (const segment of (iCurve as Curve).segs)
@@ -143,7 +143,7 @@ export class SvgDebugWriter {
       const islineSeg = iCurve instanceof LineSegment
       if (islineSeg) {
         yield 'L'
-        yield this.pointToString(iCurve.end())
+        yield this.pointToString(iCurve.end)
       } else {
         const isbezier = iCurve instanceof BezierSeg
         if (isbezier) {
@@ -158,7 +158,7 @@ export class SvgDebugWriter {
             }
             if (poly.isClosed()) {
               yield 'L'
-              yield this.pointToString(poly.start())
+              yield this.pointToString(poly.start)
             }
           } else {
             const isellipse = iCurve instanceof Ellipse

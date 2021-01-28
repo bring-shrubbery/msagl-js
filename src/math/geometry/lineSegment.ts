@@ -6,36 +6,26 @@ import {Rectangle} from './rectangle'
 import {GeomConstants} from './geomConstants'
 import {PN} from './parallelogramNode'
 export class LineSegment implements ICurve {
-  a: Point //the line goes from a to b
-  b: Point // the line end point
-  parStart() {
-    return 0
-  }
-  parEnd() {
-    return 1
-  }
+  start: Point //the line goes from start to end
+  end: Point // the line end point
+  readonly parStart = 0
+  readonly parEnd = 1
+
   // Offsets the curve in the direction of dir
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   offsetCurve(offset: number, dir: Point) {
     return null
   }
-  // the line start point
-  start() {
-    return this.a
-  }
-  end() {
-    return this.b
-  }
 
   constructor(x: number, y: number, x1: number, y1: number) {
-    this.a = new Point(x, y)
-    this.b = new Point(x1, y1)
+    this.start = new Point(x, y)
+    this.end = new Point(x1, y1)
   }
 
   // Returns the trim curve
   trim(start: number, end: number): ICurve {
-    start = Math.max(this.parStart(), start)
-    end = Math.min(this.parEnd(), end)
+    start = Math.max(this.parStart, start)
+    end = Math.min(this.parEnd, end)
     if (start > end) throw 'wrong params in trimming'
 
     const p1 = this.value(start)
@@ -47,7 +37,7 @@ export class LineSegment implements ICurve {
   }
 
   value(t: number): Point {
-    return this.a.add(this.b.minus(this.a).mult(t))
+    return this.start.add(this.end.minus(this.start).mult(t))
   }
   // Not Implemented: Returns the trimmed curve, wrapping around the end if start is greater than end.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -59,10 +49,10 @@ export class LineSegment implements ICurve {
   // This tree is used in curve intersections routines.
   // <value></value>
   pNodeOverICurve(): PN {
-    const side = this.b.minus(this.a).mult(0.5)
+    const side = this.end.minus(this.start).mult(0.5)
     return {
       parallelogram: Parallelogram.parallelogramByCornerSideSide(
-        this.a,
+        this.start,
         side,
         side,
       ),
@@ -77,7 +67,7 @@ export class LineSegment implements ICurve {
   }
 
   normal() {
-    let t = this.a.minus(this.b)
+    let t = this.start.minus(this.end)
     t = t.div(t.length)
     return new Point(-t.y, t.x)
   }
@@ -94,7 +84,7 @@ export class LineSegment implements ICurve {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   derivative(t: number) {
-    return this.b.minus(this.a)
+    return this.end.minus(this.start)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -108,7 +98,7 @@ export class LineSegment implements ICurve {
   }
 
   reverse() {
-    return LineSegment.mkLinePP(this.b, this.a)
+    return LineSegment.mkLinePP(this.end, this.start)
   }
 
   /*      
@@ -178,21 +168,21 @@ return xx;
 
   // Returns the curved moved by delta
   translate(delta: Point) {
-    this.a.move(delta)
-    this.b.move(delta)
+    this.start.move(delta)
+    this.end.move(delta)
   }
 
   // Scale (multiply) from origin by x and y
   scaleFromOrigin(xScale: number, yScale: number) {
     return LineSegment.mkLinePP(
-      this.a.scale(xScale, yScale),
-      this.b.scale(xScale, yScale),
+      this.start.scale(xScale, yScale),
+      this.end.scale(xScale, yScale),
     )
   }
 
   // gets the parameter at a specific length from the start along the curve
   getParameterAtLength(length: number): number {
-    const len = this.b.minus(this.a).length
+    const len = this.end.minus(this.start).length
     if (len < GeomConstants.tolerance) return 0
     const t = length / len
     return t > 1 ? 1 : t < 0 ? 0 : t
@@ -201,8 +191,8 @@ return xx;
   // Return the transformed curve
   transform(transformation: PlaneTransformation) {
     return LineSegment.mkLinePP(
-      transformation.multiplyPoint(this.a),
-      transformation.multiplyPoint(this.b),
+      transformation.multiplyPoint(this.start),
+      transformation.multiplyPoint(this.end),
     )
   }
 
@@ -222,17 +212,17 @@ return xx;
 
   // Get the length of the curve
   get length() {
-    return this.a.minus(this.b).length
+    return this.start.minus(this.end).length
   }
   // The bounding box of the line
   get boundingBox() {
-    return Rectangle.rectanglePointPoint(this.a, this.b)
+    return Rectangle.rectanglePointPoint(this.start, this.end)
   }
 
   // clones the curve.
 
   clone() {
-    return LineSegment.mkLinePP(this.a.clone(), this.b.clone())
+    return LineSegment.mkLinePP(this.start.clone(), this.end.clone())
   }
 
   static closestParameterOnLineSegment(
@@ -255,8 +245,8 @@ return xx;
   closestParameter(targetPoint: Point) {
     return LineSegment.closestParameterOnLineSegment(
       targetPoint,
-      this.a,
-      this.b,
+      this.start,
+      this.end,
     )
   }
   // left derivative at t

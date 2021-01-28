@@ -22,10 +22,10 @@ export interface ICurve {
   boundingBox: Rectangle
 
   // the start of the parameter domain
-  parStart(): number
+  parStart: number
 
   // the end of the parameter domain
-  parEnd(): number
+  parEnd: number
 
   // Returns the trim curve between start and end, without wrap
   trim(start: number, end: number): ICurve
@@ -40,10 +40,10 @@ export interface ICurve {
   scaleFromOrigin(xScale: number, yScale: number): ICurve
 
   // this[ParStart]
-  start(): Point
+  start: Point
 
   // this[ParEnd]
-  end(): Point
+  end: Point
 
   // this[Reverse[t]]=this[ParEnd+ParStart-t]
   reverse(): ICurve

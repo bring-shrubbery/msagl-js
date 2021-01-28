@@ -38,7 +38,7 @@ function bbIsOk(s: ICurve) {
   const del = Curve.paramSpan(s) / n
   const rect = Rectangle.mkEmpty()
   for (let i = 0; i < n; i++) {
-    const v = s.value(Math.min(s.parStart() + i * del, s.parEnd()))
+    const v = s.value(Math.min(s.parStart + i * del, s.parEnd))
     expect(bbox.contains(v)).toBe(true)
     rect.add(v)
   }

@@ -1,14 +1,11 @@
 // A node of a GeomGraph
-import {GeomObject} from './geomObject'
 import {Assert} from './../../utils/assert'
 import {ICurve} from './../../math/geometry/icurve'
 import {Rectangle} from './../../math/geometry/rectangle'
 import {Point} from './../../math/geometry/point'
 import {CurveFactory} from './../../math/geometry/curveFactory'
 import {PlaneTransformation} from './../../math/geometry/planeTransformation'
-import {GeomEdge as Edge} from './geomEdge'
-import {Node} from './../../structs/node'
-export class GeomNode extends GeomObject {
+export class GeomNode {
   padding = 1
 
   boundaryCurve: ICurve

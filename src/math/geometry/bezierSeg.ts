@@ -131,19 +131,12 @@ export class BezierSeg implements ICurve {
     this.l = this.b[3].minus(this.b[0]).minus(this.c).minus(this.e)
   }
 
-  start() {
+  get start() {
     return this.b[0]
   }
 
-  end() {
+  get end() {
     return this.b[3]
-  }
-
-  ParStart() {
-    return 0
-  }
-  ParEnd() {
-    return 1
   }
 
   // this[Reverse[t]]=this[ParEnd+ParStart-t]
@@ -269,16 +262,13 @@ export class BezierSeg implements ICurve {
     return new BezierSeg(b[0], b[1], b[2], b[3])
   }
 
-  parStart() {
-    return 0
-  }
-  parEnd() {
-    return 1
-  }
+  parStart = 0
+
+  parEnd = 1
 
   // the signed curvature of the segment at t
   curvature(t: number) {
-    Assert.assert(t >= this.parStart() && t <= this.parEnd())
+    Assert.assert(t >= this.parStart && t <= this.parEnd)
 
     const den = this.G(t)
 

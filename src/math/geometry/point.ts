@@ -40,6 +40,11 @@ export class Point {
   get length() {
     return Math.sqrt(this.x * this.x + this.y * this.y)
   }
+
+  get lengthSquared() {
+    return this.x * this.x + this.y * this.y
+  }
+
   constructor(x: number, y: number) {
     this.x = x
     this.y = y
@@ -180,5 +185,8 @@ export class Point {
     const atan2 = Math.atan2(cross, dot)
     if (cross >= -GeomConstants.tolerance) return atan2
     return Math.PI * 2.0 + atan2
+  }
+  static signedDoubledTriangleArea(a: Point, b: Point, c: Point): number {
+    return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y)
   }
 }

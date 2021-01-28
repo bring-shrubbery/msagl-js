@@ -1,8 +1,7 @@
 import {GeomNode as Node} from './geomNode'
-
+import {EdgeGeometry} from './edgeGeometry'
 //import { GeomLabel } from './geomLabel'
-import {GeomObject} from './geomObject'
-export class GeomEdge extends GeomObject {
+export class GeomEdge {
   //  label: GeomLabel
   source: Node
   target: Node
@@ -42,18 +41,10 @@ export class GeomEdge extends GeomObject {
     set { throw new NotImplementedException(); }
   }
   
-  
-  EdgeGeometry edgeGeometry = new EdgeGeometry();
-          public object Color;
-  
-          /// <summary>
-          /// Gets or sets the edge geometry: the curve, the arrowhead positions and the underlying polyline
-          /// </summary>
-          public EdgeGeometry EdgeGeometry {
-    get { return edgeGeometry; }
-    set { edgeGeometry = value; }
-  }
-  
+*/
+  edgeGeometry = new EdgeGeometry()
+
+  /*
           /// <summary>
           /// the polyline of the untrimmed spline
           /// </summary>

@@ -252,10 +252,10 @@ export class MinDistCurveCurve {
     const l0 = this.curveA as LineSegment
     const l1 = this.curveB as LineSegment
 
-    const v0 = l0.start()
-    const v1 = l0.end()
-    const v2 = l1.start()
-    const v3 = l1.end()
+    const v0 = l0.start
+    const v1 = l0.end
+    const v2 = l1.start
+    const v3 = l1.end
 
     let d0 = v1.minus(v0)
 

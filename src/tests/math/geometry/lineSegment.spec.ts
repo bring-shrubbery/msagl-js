@@ -9,12 +9,12 @@ test('lineSegment basic case', () => {
   const a = new LineSegment(0, 0, 1, 1)
 
   expect(a.value(0)).toStrictEqual(new Point(0, 0))
-  expect(a.value(0)).toStrictEqual(a.start())
-  expect(a.value(1)).toStrictEqual(a.end())
+  expect(a.value(0)).toStrictEqual(a.start)
+  expect(a.value(1)).toStrictEqual(a.end)
   expect(
     Point.close(
       a.value(0.5),
-      a.start().add(a.end()).div(2),
+      a.start.add(a.end).div(2),
       GeomConstants.distanceEpsilon,
     ),
   ).toBe(true)
@@ -22,7 +22,7 @@ test('lineSegment basic case', () => {
   expect(
     Point.close(
       a.value(t),
-      a.start().add(a.end().minus(a.start()).mult(t)),
+      a.start.add(a.end.minus(a.start).mult(t)),
       GeomConstants.distanceEpsilon,
     ),
   ).toBe(true)
@@ -47,10 +47,10 @@ test('lineSegment mindist test 0', () => {
   const ls0dir = b.minus(a).rotate(0.1)
   const ls0 = LineSegment.mkLinePP(ls0start, ls0start.add(ls0dir))
   const md = LineSegment.minDistBetweenLineSegments(
-    ls.start(),
-    ls.end(),
-    ls0.start(),
-    ls0.end(),
+    ls.start,
+    ls.end,
+    ls0.start,
+    ls0.end,
   )
   expect(Point.closeD(md.dist, perp.length)).toBe(true)
   expect(Point.closeD(md.parab, t)).toBeTruthy()
@@ -67,10 +67,10 @@ test('lineSegment mindist test1', () => {
   const ls0dir = b.minus(a).rotate(-0.001)
   const ls0 = LineSegment.mkLinePP(ls0start, ls0start.add(ls0dir))
   const md = LineSegment.minDistBetweenLineSegments(
-    ls.start(),
-    ls.end(),
-    ls0.start(),
-    ls0.end(),
+    ls.start,
+    ls.end,
+    ls0.start,
+    ls0.end,
   )
   expect(md.dist < perp.length).toBeTruthy()
   expect(Point.closeD(md.parab, 1)).toBeTruthy()

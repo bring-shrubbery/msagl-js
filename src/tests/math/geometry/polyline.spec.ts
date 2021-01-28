@@ -93,8 +93,8 @@ test('polyline test all intersection with polyline', () => {
 
   const trans = new PlaneTransformation(1, 0, 0, 0, -1, 5)
   const polyFlipped = poly.transform(trans)
-  expect(polyFlipped.end().x == poly.start().x).toBeTruthy()
-  expect(polyFlipped.end().y == 5 - poly.start().y).toBeTruthy()
+  expect(polyFlipped.end.x == poly.start.x).toBeTruthy()
+  expect(polyFlipped.end.y == 5 - poly.start.y).toBeTruthy()
   const xx = Curve.getAllIntersections(poly, polyFlipped, false)
   const dc = [
     DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Black', poly),

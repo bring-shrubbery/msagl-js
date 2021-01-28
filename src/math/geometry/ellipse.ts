@@ -13,15 +13,9 @@ export class Ellipse implements ICurve {
   aAxis: Point
   bAxis: Point
   center: Point
-  parS: number
-  parE: number
+  parStart: number
+  parEnd: number
 
-  parStart() {
-    return this.parS
-  }
-  parEnd() {
-    return this.parE
-  }
   // offsets the curve in the given direction
   offsetCurve(offset: number, dir: Point): ICurve {
     //is dir inside or outside of the ellipse
@@ -63,15 +57,15 @@ export class Ellipse implements ICurve {
   // To get an ellipse rotating clockwise use, for example,
   // axis0=(-1,0) and axis1=(0,1)
   constructor(
-    parS: number,
-    parE: number,
+    parStart: number,
+    parEnd: number,
     axis0: Point,
     axis1: Point,
     center: Point,
   ) {
-    //    assert(parS <= parE);
-    this.parS = parS
-    this.parE = parE
+    //    assert(parStart <= parEnd);
+    this.parStart = parStart
+    this.parEnd = parEnd
     this.aAxis = axis0
     this.bAxis = axis1
     this.center = center
@@ -79,11 +73,11 @@ export class Ellipse implements ICurve {
     this.setBoundingBox()
   }
 
-  start() {
-    return this.value(this.parS)
+  get start() {
+    return this.value(this.parStart)
   }
-  end() {
-    return this.value(this.parE)
+  get end() {
+    return this.value(this.parEnd)
   }
 
   // Trims the curve
@@ -92,8 +86,8 @@ export class Ellipse implements ICurve {
     // Debug.Assert(start >= ParStart - ApproximateComparer.Tolerance);
     // Debug.Assert(end <= ParEnd + ApproximateComparer.Tolerance);
     return new Ellipse(
-      Math.max(start, this.parS),
-      Math.min(end, this.parE),
+      Math.max(start, this.parStart),
+      Math.min(end, this.parEnd),
       this.aAxis,
       this.bAxis,
       this.center,
@@ -142,40 +136,49 @@ export class Ellipse implements ICurve {
   }
 
   setBoundingBox() {
-    if (Point.closeD(this.parS, 0) && Point.closeD(this.parE, Math.PI * 2))
+    if (
+      Point.closeD(this.parStart, 0) &&
+      Point.closeD(this.parEnd, Math.PI * 2)
+    )
       this.box = this.fullBox()
     else {
       //the idea is that the box of an arc staying in one quadrant is just the box of the start and the end point of the arc
-      this.box = Rectangle.rectanglePointPoint(this.start(), this.end())
+      this.box = Rectangle.rectanglePointPoint(this.start, this.end)
       //now Start and End are in the box, we need just add all k*P/2 that are in between
       let t: number
       for (
-        let i = Math.ceil(this.parS / (Math.PI / 2));
-        (t = (i * Math.PI) / 2) < this.parE;
+        let i = Math.ceil(this.parStart / (Math.PI / 2));
+        (t = (i * Math.PI) / 2) < this.parEnd;
         i++
       )
-        if (t > this.parS) this.box.add(this.value(t))
+        if (t > this.parStart) this.box.add(this.value(t))
     }
   }
 
   static mkEllipse(
-    parS: number,
-    parE: number,
+    parStart: number,
+    parEnd: number,
     axis0: Point,
     axis1: Point,
     centerX: number,
     centerY: number,
   ) {
-    return new Ellipse(parS, parE, axis0, axis1, new Point(centerX, centerY))
+    return new Ellipse(
+      parStart,
+      parEnd,
+      axis0,
+      axis1,
+      new Point(centerX, centerY),
+    )
   }
 
   // Construct a full ellipse by two axes
-  static mkFullEllipse(axis0: Point, axis1: Point, center: Point) {
+  static mkFullEllipsePPP(axis0: Point, axis1: Point, center: Point) {
     return new Ellipse(0, Math.PI * 2, axis0, axis1, center)
   }
 
   // Constructs a full ellipse with axes aligned to X and Y directions
-  static mkAlignedEllipse(axisA: number, axisB: number, center: Point) {
+  static mkFullEllipseNNP(axisA: number, axisB: number, center: Point) {
     return new Ellipse(
       0,
       Math.PI * 2,
@@ -186,7 +189,7 @@ export class Ellipse implements ICurve {
   }
 
   static mkCircle(radius: number, center: Point) {
-    return Ellipse.mkAlignedEllipse(radius, radius, center)
+    return Ellipse.mkFullEllipseNNP(radius, radius, center)
   }
 
   // Moves the ellipse to the delta vector
@@ -199,8 +202,8 @@ export class Ellipse implements ICurve {
   // Scales the ellipse by x and by y
   scaleFromOrigin(xScale: number, yScale: number) {
     return new Ellipse(
-      this.parS,
-      this.parE,
+      this.parStart,
+      this.parEnd,
       this.aAxis.mult(xScale),
       this.bAxis.mult(yScale),
       this.center.scale(xScale, yScale),
@@ -212,13 +215,13 @@ export class Ellipse implements ICurve {
     //todo: slow version!
     const eps = 0.001
 
-    let l = this.parS
-    let u = this.parE
+    let l = this.parStart
+    let u = this.parEnd
     const lenplus = length + eps
     const lenminsu = length - eps
     while (u - l > GeomConstants.distanceEpsilon) {
       const m = 0.5 * (u + l)
-      const len = this.lengthPartial(this.parS, m)
+      const len = this.lengthPartial(this.parStart, m)
       if (len > lenplus) u = m
       else if (len < lenminsu) l = m
       else return m
@@ -236,8 +239,8 @@ export class Ellipse implements ICurve {
         .multiplyPoint(this.bAxis)
         .minus(transformation.offset())
       return new Ellipse(
-        this.parS,
-        this.parE,
+        this.parStart,
+        this.parEnd,
         ap,
         bp,
         transformation.multiplyPoint(this.center),
@@ -289,8 +292,8 @@ export class Ellipse implements ICurve {
   // clones the ellipse .
   clone() {
     return new Ellipse(
-      this.parS,
-      this.parE,
+      this.parStart,
+      this.parEnd,
       this.aAxis.clone(),
       this.bAxis.clone(),
       this.center.clone(),
@@ -301,11 +304,11 @@ export class Ellipse implements ICurve {
   closestParameter(targetPoint: Point) {
     let savedParStart = 0
     const numberOfTestPoints = 8
-    const t = (this.parE - this.parS) / (numberOfTestPoints + 1)
-    let closest = this.parS
+    const t = (this.parEnd - this.parStart) / (numberOfTestPoints + 1)
+    let closest = this.parStart
     let minDist = Number.MAX_VALUE
     for (let i = 0; i <= numberOfTestPoints; i++) {
-      const par = this.parS + i * t
+      const par = this.parStart + i * t
       const p = targetPoint.minus(this.value(par))
       const d = p.dot(p)
       if (d < minDist) {
@@ -313,21 +316,21 @@ export class Ellipse implements ICurve {
         closest = par
       }
     }
-    let parSWasChanged = false
-    if (closest == 0 && this.parE == Math.PI * 2) {
-      parSWasChanged = true
-      savedParStart = this.parS
-      this.parS = -Math.PI
+    let parStartWasChanged = false
+    if (closest == 0 && this.parEnd == Math.PI * 2) {
+      parStartWasChanged = true
+      savedParStart = this.parStart
+      this.parStart = -Math.PI
     }
     let ret = ClosestPointOnCurve.closestPoint(
       this,
       targetPoint,
       closest,
-      this.parS,
-      this.parE,
+      this.parStart,
+      this.parEnd,
     )
     if (ret < 0) ret += 2 * Math.PI
-    if (parSWasChanged) this.parS = savedParStart
+    if (parStartWasChanged) this.parStart = savedParStart
     return ret
   }
 

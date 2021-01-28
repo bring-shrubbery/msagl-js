@@ -196,10 +196,10 @@ export class Polyline implements ICurve {
     if (this.requireInit_) this.init()
     return this.bBox
   }
-  parStart(): number {
+  get parStart(): number {
     return 0
   }
-  parEnd(): number {
+  get parEnd(): number {
     if (this.requireInit_) this.init()
     return this.isClosed ? this.count : this.count - 1
   }
@@ -215,10 +215,10 @@ export class Polyline implements ICurve {
   scaleFromOrigin(xScale: number, yScale: number): ICurve {
     throw new Error('Method not implemented.')
   }
-  start(): Point {
+  get start(): Point {
     return this.startPoint.point
   }
-  end(): Point {
+  get end(): Point {
     return this.isClosed() ? this.startPoint.point : this.endPoint.point
   }
   reverse(): ICurve {
