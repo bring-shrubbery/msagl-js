@@ -1,14 +1,14 @@
-import {LineSegment} from '../../../math/geometry/lineSegment'
-import {Ellipse} from '../../../math/geometry/ellipse'
-import {Point} from './../../../math/geometry/point'
-import {Curve} from './../../../math/geometry/curve'
-import {PlaneTransformation} from './../../../math/geometry/planeTransformation'
-import {CurveFactory} from './../../../math/geometry/curveFactory'
-import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
-import {DebugCurve} from './../../../math/geometry/debugCurve'
-import {BezierSeg} from './../../../math/geometry/bezierSeg'
-import {ICurve} from './../../../math/geometry/icurve'
-import {Rectangle} from './../../../math/geometry/rectangle'
+import { LineSegment } from '../../../math/geometry/lineSegment'
+import { Ellipse } from '../../../math/geometry/ellipse'
+import { Point } from './../../../math/geometry/point'
+import { Curve } from './../../../math/geometry/curve'
+import { PlaneTransformation } from './../../../math/geometry/planeTransformation'
+import { CurveFactory } from './../../../math/geometry/curveFactory'
+import { SvgDebugWriter } from './../../../math/geometry/svgDebugWriter'
+import { DebugCurve } from './../../../math/geometry/debugCurve'
+import { BezierSeg } from './../../../math/geometry/bezierSeg'
+import { ICurve } from './../../../math/geometry/icurve'
+import { Rectangle } from './../../../math/geometry/rectangle'
 function exp(b: boolean) {
   expect(b).toBeTruthy()
 }
@@ -60,7 +60,7 @@ test('box translate behavior', () => {
   const b = [
     new Point(0, 100),
     new Point(100, 100),
-    new Point(200, 100),
+    new Point(200, 10),
     new Point(300, 0),
   ]
   const bezSeg = new BezierSeg(b[0], b[1], b[2], b[3])

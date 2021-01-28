@@ -1,5 +1,5 @@
 import {Point} from './point'
-export class Site {
+export class CornerSite {
   // the coeffiecient used to calculate the first and the second control points of the
   // Bezier segment for the fillet at the site
   previouisBezierCoefficient = 0.5
@@ -14,17 +14,17 @@ export class Site {
   nextTangentCoefficient: number = 1.0 / 3
   point: Point
 
-  prev: Site
+  prev: CornerSite
 
-  next: Site
-  static mkSiteP(sitePoint: Point): Site {
-    const s = new Site()
+  next: CornerSite
+  static mkSiteP(sitePoint: Point): CornerSite {
+    const s = new CornerSite()
     s.point = sitePoint
     return s
   }
 
-  static mkSiteSP(previousSite: Site, sitePoint: Point): Site {
-    const s = new Site()
+  static mkSiteSP(previousSite: CornerSite, sitePoint: Point): CornerSite {
+    const s = new CornerSite()
     s.point = sitePoint
     s.prev = previousSite
     previousSite.next = s
@@ -33,8 +33,8 @@ export class Site {
   /// <param name="previousSite"></param>
   /// <param name="sitePoint"></param>
   /// <param name="nextSite"></param>
-  static mkSiteSPS(previousSite: Site, sitePoint: Point, nextSite: Site): Site {
-    const s = new Site()
+  static mkSiteSPS(previousSite: CornerSite, sitePoint: Point, nextSite: CornerSite): CornerSite {
+    const s = new CornerSite()
     s.prev = previousSite
     s.point = sitePoint
     s.next = nextSite
@@ -53,8 +53,8 @@ export class Site {
     )
   }
 
-  clone(): Site {
-    const s = new Site()
+  clone(): CornerSite {
+    const s = new CornerSite()
     s.previouisBezierCoefficient = this.previouisBezierCoefficient
     s.point = this.point
     return s

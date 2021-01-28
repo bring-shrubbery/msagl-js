@@ -1,4 +1,4 @@
-import {Site} from './site'
+import {CornerSite} from './cornerSite'
 import {Point} from './../../math/geometry/point'
 import {LineSegment} from './../../math/geometry/lineSegment'
 import {Curve} from './../../math/geometry/curve'
@@ -8,13 +8,13 @@ export class SmoothedPolyline {
   // creates the polyline from corner points
   static mkFromPoints(points: Point[]) {
     let ret: SmoothedPolyline = null
-    let site: Site = null
+    let site: CornerSite = null
     for (const p of points) {
       if (site == null) {
-        site = Site.mkSiteP(p)
+        site = CornerSite.mkSiteP(p)
         ret = new SmoothedPolyline(site)
       } else {
-        const s = Site.mkSiteP(p)
+        const s = CornerSite.mkSiteP(p)
         s.prev = site
         site.next = s
         site = s
@@ -23,12 +23,12 @@ export class SmoothedPolyline {
     return ret
   }
 
-  readonly headSite: Site
+  readonly headSite: CornerSite
   clone(): SmoothedPolyline {
-    let s: Site = this.headSite //the old site
-    let prev: Site = null
-    let h: Site
-    let headOfTheClone: Site = null
+    let s: CornerSite = this.headSite //the old site
+    let prev: CornerSite = null
+    let h: CornerSite
+    let headOfTheClone: CornerSite = null
     while (s != null) {
       h = s.clone()
       h.prev = prev
@@ -40,14 +40,14 @@ export class SmoothedPolyline {
     return new SmoothedPolyline(headOfTheClone)
   }
 
-  constructor(head: Site) {
+  constructor(head: CornerSite) {
     this.headSite = head
   }
 
   /// <summary>
   /// the last site of the polyline
   /// </summary>
-  get lastSite(): Site {
+  get lastSite(): CornerSite {
     let ret = this.headSite
     while (ret.next != null) ret = ret.next
     return ret
@@ -70,7 +70,7 @@ export class SmoothedPolyline {
   createCurve(): Curve {
     const curve = new Curve()
     let a = this.headSite //the corner start
-    let b: Site //the corner origin
+    let b: CornerSite //the corner origin
 
     do {
       const corner = Curve.findCorner(a)
@@ -106,7 +106,7 @@ export class SmoothedPolyline {
     return curve
   }
 
-  static createBezierSegOnSite(b: Site): BezierSeg {
+  static createBezierSegOnSite(b: CornerSite): BezierSeg {
     const kPrev = b.previouisBezierCoefficient
     const kNext = b.nextBezierCoefficient
     const a = b.prev

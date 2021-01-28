@@ -1,13 +1,13 @@
-import {ICurve} from './icurve'
-import {PN} from './parallelogramNode'
-import {PlaneTransformation} from './planeTransformation'
-import {Point} from './point'
-import {Rectangle} from './rectangle'
-import {PolylinePoint} from './polylinePoint'
-import {GeomConstants} from './geomConstants'
-import {Assert} from './../../utils/assert'
-import {Parallelogram} from './parallelogram'
-import {LineSegment} from './lineSegment'
+import { ICurve } from './icurve'
+import { PN } from './parallelogramNode'
+import { PlaneTransformation } from './planeTransformation'
+import { Point } from './point'
+import { Rectangle } from './rectangle'
+import { PolylinePoint } from './polylinePoint'
+import { GeomConstants } from './geomConstants'
+import { Assert } from './../../utils/assert'
+import { Parallelogram } from './parallelogram'
+import { LineSegment } from './lineSegment'
 
 type AdjustedPar = {
   a: Point
@@ -64,6 +64,14 @@ export class Polyline implements ICurve {
   static parallelogramOfLineSeg(a: Point, b: Point) {
     const side = b.minus(a).div(2)
     return Parallelogram.parallelogramByCornerSideSide(a, side, side)
+  }
+
+
+  static mkFromPoints(ps: Point[]) {
+    const r = new Polyline()
+    for (const p of ps)
+      r.addPoint(p)
+    return r
   }
 
   calculatePbNode() {

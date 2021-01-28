@@ -16,7 +16,7 @@ import {PlaneTransformation} from './planeTransformation'
 import {SvgDebugWriter} from './svgDebugWriter'
 import {DebugCurve} from './debugCurve'
 import {BezierSeg} from './bezierSeg'
-import {Site} from './site'
+import {CornerSite} from './cornerSite'
 type Params = {
   start: number
   end: number
@@ -1855,9 +1855,9 @@ export class Curve implements ICurve {
   static createBezierSeg(
     kPrev: number,
     kNext: number,
-    a: Site,
-    b: Site,
-    c: Site,
+    a: CornerSite,
+    b: CornerSite,
+    c: CornerSite,
   ): BezierSeg {
     const s = Point.mkPoint(kPrev, a.point, 1 - kPrev, b.point)
     const e = Point.mkPoint(kNext, c.point, 1 - kNext, b.point)
@@ -1870,7 +1870,7 @@ export class Curve implements ICurve {
     return new BezierSeg(a, a.add(d), b.add(d), b)
   }
 
-  static findCorner(a: Site): {b: Site; c: Site} | undefined {
+  static findCorner(a: CornerSite): {b: CornerSite; c: CornerSite} | undefined {
     const b = a.next
     if (b.next == null) return //no corner has been found
     const c = b.next
