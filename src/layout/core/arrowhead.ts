@@ -26,7 +26,7 @@ export class Arrowhead {
     return r
   }
   /// the edgeGeometry.Curve is trimmed already by the node boundaries</param>
-  static calculateArrowheads(edgeGeometry: EdgeGeometry): boolean {
+  private static calculateArrowheads(edgeGeometry: EdgeGeometry): boolean {
     if (
       edgeGeometry.sourceArrowhead == null &&
       edgeGeometry.targetArrowhead == null

@@ -4,7 +4,7 @@ import {Point} from './../../../math/geometry/point'
 import {Rectangle} from './../../../math/geometry/rectangle'
 import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
 import {DebugCurve} from './../../../math/geometry/debugCurve'
-
+import {Node} from './../../../structs/node'
 test('node fit', () => {
   const boundary = CurveFactory.mkRectangleWithRoundedCorners(
     100,
@@ -13,7 +13,7 @@ test('node fit', () => {
     30,
     new Point(12, 12),
   )
-  const n = GeomNode.mkNode(boundary)
+  const n = GeomNode.mkNode(boundary, new Node())
   const rect = new Rectangle(70, 111, 111, 0)
 
   n.boundingBox = rect

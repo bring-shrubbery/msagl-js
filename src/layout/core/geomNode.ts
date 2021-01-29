@@ -5,13 +5,19 @@ import {Rectangle} from './../../math/geometry/rectangle'
 import {Point} from './../../math/geometry/point'
 import {CurveFactory} from './../../math/geometry/curveFactory'
 import {PlaneTransformation} from './../../math/geometry/planeTransformation'
-export class GeomNode {
-  padding = 1
+import {Node} from './../../structs/node'
+import {GeomObject} from './geomObject'
 
+export class GeomNode extends GeomObject {
+  get node(): Node {
+    return this.entity as Node
+  }
+  padding = 1
   boundaryCurve: ICurve
+
   // Creates a Node instance
-  static mkNode(curve: ICurve, userData: any = null) {
-    const n = new GeomNode()
+  static mkNode(curve: ICurve, node: Node, userData: any = null) {
+    const n = new GeomNode(node)
     n.boundaryCurve = curve
     return n
   }
@@ -27,7 +33,7 @@ export class GeomNode {
   }
 
   // sets the bounding curve scaled to fit the targetBounds
-  fitBoundaryCurveToTarget(targetBounds: Rectangle) {
+  private fitBoundaryCurveToTarget(targetBounds: Rectangle) {
     if (this.boundaryCurve != null) {
       // RoundedRect is special, rather then simply scaling the geometry we want to keep the corner radii constant
       const radii = CurveFactory.isRoundedRect(this.boundaryCurve)
