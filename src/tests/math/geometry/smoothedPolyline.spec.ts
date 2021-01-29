@@ -1,7 +1,7 @@
-import { SmoothedPolyline } from './../../../math/geometry/smoothedPolyline'
-import { SvgDebugWriter } from '../../../math/geometry/svgDebugWriter'
-import { Polyline } from '../../../math/geometry/polyline'
-import { Point } from '../../../math/geometry/point'
+import {SmoothedPolyline} from './../../../math/geometry/smoothedPolyline'
+import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
+import {Polyline} from '../../../math/geometry/polyline'
+import {Point} from '../../../math/geometry/point'
 
 test('smooth test', () => {
   const ps = [
@@ -19,6 +19,4 @@ test('smooth test', () => {
   sp = SmoothedPolyline.mkFromPoints(ps)
   poly = Polyline.mkFromPoints(ps)
   SvgDebugWriter.dumpICurves('/tmp/sp1.svg', [poly, sp.createCurve()])
-
 })
-

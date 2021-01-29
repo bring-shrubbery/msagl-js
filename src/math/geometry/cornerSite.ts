@@ -33,7 +33,11 @@ export class CornerSite {
   /// <param name="previousSite"></param>
   /// <param name="sitePoint"></param>
   /// <param name="nextSite"></param>
-  static mkSiteSPS(previousSite: CornerSite, sitePoint: Point, nextSite: CornerSite): CornerSite {
+  static mkSiteSPS(
+    previousSite: CornerSite,
+    sitePoint: Point,
+    nextSite: CornerSite,
+  ): CornerSite {
     const s = new CornerSite()
     s.prev = previousSite
     s.point = sitePoint
