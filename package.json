@@ -12,6 +12,10 @@
     "eslint": "eslint [src/**]",
     "prettier": "prettier --write src/**"
   },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": ["html"]
+  },
   "dependencies": {
     "@types/graphlib": "2.1.6",
     "@types/lodash": "4.14.157",

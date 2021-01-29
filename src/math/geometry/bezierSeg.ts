@@ -75,8 +75,8 @@ export class BezierSeg implements ICurve {
     if (u > 1.0 - GeomConstants.tolerance)
       return new BezierSeg(this.b[3], this.b[3], this.b[3], this.b[3])
 
-    const b1: Point[] = new Point[3]()
-    const b2: Point[] = new Point[2]()
+    const b1 = new Array<Point>(3)
+    const b2 = new Array<Point>(2)
     const pv = this.casteljau(u, b1, b2)
 
     //this will be the trim to [v,1]
