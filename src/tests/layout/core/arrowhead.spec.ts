@@ -38,6 +38,7 @@ describe('arrowhead', () => {
     const ab = new Edge(a, b)
     const gab = new GeomEdge(ab)
     const curve = LineSegment.mkLinePP(ga.center, gb.center)
+    gab.edgeGeometry.sourceArrowhead = new Arrowhead()
     gab.edgeGeometry.targetArrowhead = new Arrowhead()
     Arrowhead.trimSplineAndCalculateArrowheads(gab, curve, true)
     const xw = new SvgDebugWriter('/tmp/gabTargetArrow.svg')

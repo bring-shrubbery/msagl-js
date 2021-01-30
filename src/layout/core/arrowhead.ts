@@ -130,18 +130,15 @@ export class Arrowhead {
         arrowheadLength,
         curve.start,
       )
-      p =
-        intersections.length != 0
-          ? from(intersections).min((x) => x.par1)
-          : curve.parStart
-      newStart = curve[p]
+      if (intersections.length == 0) return curve.parStart
+      p = from(intersections).min((x) => x.par1)
+      newStart = from(intersections)
+        .where((x) => x.par1 == p)
+        .first().x
+      // check that something is left from the curve
+      if (newStart.minus(curve.end).lengthSquared >= eps) return p
       arrowheadLength /= 2
-    } while (
-      newStart.minus(curve.end).lengthSquared < eps ||
-      intersections.length == 0
-    )
-    //we are checkng that something will be left from the curve
-    return p
+    } while (true)
   }
 
   // trim the edge curve with the node boundaries
