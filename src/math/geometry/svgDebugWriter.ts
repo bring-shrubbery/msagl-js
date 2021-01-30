@@ -10,12 +10,15 @@ import {DebugCurve} from './debugCurve'
 import {String, StringBuilder} from 'typescript-string-operations'
 import {from} from 'linq-to-typescript'
 import {allVerticesOfParall} from './parallelogram'
+import {GeomEdge} from './../../layout/core/geomEdge'
+
 export class SvgDebugWriter {
   // Here we import the File System module of node
   private fs = require('fs')
   private xmlw = require('xml-writer')
   xw: any
   ws: any
+  readonly arrowAngle = 25
 
   constructor(svgFileName: string) {
     this.ws = this.fs.createWriteStream(svgFileName)
@@ -264,5 +267,56 @@ export class SvgDebugWriter {
     const dcs = icurves.map((c) => DebugCurve.mkDebugCurveI(c))
     w.writeDebugCurves(dcs)
     w.close()
+  }
+
+  writeEdges(edges: GeomEdge[]) {
+    const r = Rectangle.mkEmpty()
+    for (const e of edges) {
+      r.addRec(e.boundingBox)
+    }
+    this.open(r)
+    for (const e of edges) {
+      this.writeEdge(e)
+    }
+    this.close()
+  }
+
+  private writeEdge(edge: GeomEdge) {
+    this.xw.startElement('path')
+    this.xw.writeAttribute('fill', 'none')
+    this.xw.writeAttribute('stroke', 'Black')
+    const icurve = edge.curve
+    this.xw.writeAttribute('d', this.curveString(icurve))
+    this.xw.endElement()
+    if (edge.edgeGeometry != null && edge.edgeGeometry.sourceArrowhead != null)
+      this.addArrow(icurve.start, edge.edgeGeometry.sourceArrowhead.tipPosition)
+    if (edge.edgeGeometry != null && edge.edgeGeometry.targetArrowhead != null)
+      this.addArrow(icurve.end, edge.edgeGeometry.targetArrowhead.tipPosition)
+    //  if (edge.Label != null && edge.Label.geometryLabel != null && edge.geometryEdge.Label != null)
+    //  writeLabel(edge.Label);
+  }
+
+  addArrow(start: Point, end: Point) {
+    let dir = end.minus(start)
+    const l = dir.length
+    dir = dir.div(l).rotate90Ccw()
+    dir = dir.mult(l * Math.tan(this.arrowAngle * 0.5 * (Math.PI / 180.0)))
+    this.drawArrowPolygon([start.add(dir), end, start.minus(dir)])
+  }
+
+  drawPolygon(points: Point[]) {
+    this.xw.writeStartElement('polygon')
+    this.xw.writeAttribute('stroke', 'Black')
+    this.xw.writeAttribute('fill', 'none')
+    this.xw.writeAttribute('points', this.pointsToString(points))
+    this.xw.endElement()
+  }
+
+  drawArrowPolygon(points: Point[]) {
+    this.xw.startElement('polygon')
+    this.xw.writeAttribute('stroke', 'Black')
+    this.xw.writeAttribute('fill', 'none')
+    this.xw.writeAttribute('points', this.pointsToString(points))
+    this.xw.endElement()
   }
 }

@@ -14,15 +14,12 @@ export class Arrowhead {
   length = Arrowhead.defaultArrowheadLength
   width: number
   tipPosition: Point
-  // A relative offset that moves the tip position
-  offset: number
 
   clone(): Arrowhead {
     const r = new Arrowhead()
     r.length = this.length
     r.width = this.width
     r.tipPosition = this.tipPosition
-    r.offset = this.offset
     return r
   }
   /// the edgeGeometry.Curve is trimmed already by the node boundaries</param>
@@ -51,17 +48,10 @@ export class Arrowhead {
     const c = edgeGeometry.curve.trim(parStart, parEnd)
     if (c == null) return false
     if (edgeGeometry.sourceArrowhead != null)
-      edgeGeometry.sourceArrowhead.tipPosition = Arrowhead.placeTip(
-        c.start,
-        edgeGeometry.curve.start,
-        edgeGeometry.sourceArrowhead.offset,
-      )
+      edgeGeometry.sourceArrowhead.tipPosition = edgeGeometry.curve.start
+
     if (edgeGeometry.targetArrowhead != null)
-      edgeGeometry.targetArrowhead.tipPosition = Arrowhead.placeTip(
-        c.end,
-        edgeGeometry.curve.end,
-        edgeGeometry.targetArrowhead.offset,
-      )
+      edgeGeometry.targetArrowhead.tipPosition = edgeGeometry.curve.end
     edgeGeometry.curve = c
     return true
   }
@@ -152,15 +142,6 @@ export class Arrowhead {
     )
     //we are checkng that something will be left from the curve
     return p
-  }
-
-  static placeTip(arrowBase: Point, arrowTip: Point, offset: number) {
-    if (Math.abs(offset) < GeomConstants.tolerance) return arrowTip
-
-    const d = arrowBase.minus(arrowTip)
-    const dLen = d.length
-    if (dLen < GeomConstants.tolerance) return arrowTip
-    return arrowTip.add(d.mult(offset / dLen))
   }
 
   // trim the edge curve with the node boundaries

@@ -1,11 +1,10 @@
 import {GeomNode} from './geomNode'
 import {EdgeGeometry} from './edgeGeometry'
-import {Node} from './../../structs/node'
 import {Edge} from './../../structs/edge'
 import {GeomObject} from './geomObject'
 import {Rectangle} from './../../math/geometry/rectangle'
 import {ICurve} from './../../math/geometry/icurve'
-
+import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
 //import { GeomLabel } from './geomLabel'
 
 export class GeomEdge extends GeomObject {
@@ -17,8 +16,33 @@ export class GeomEdge extends GeomObject {
     return GeomObject.getGeom(this.edge.source)
   }
 
+  underlyingPolyline: SmoothedPolyline
+  edgeGeometry = new EdgeGeometry()
+
   get boundingBox(): Rectangle {
-    throw new Error('not implemented')
+    const rect = Rectangle.mkEmpty()
+    if (this.underlyingPolyline != null)
+      for (const p of this.underlyingPolyline.points()) rect.add(p)
+
+    if (this.curve != null) rect.addRec(this.curve.boundingBox)
+
+    if (this.edgeGeometry != null) {
+      if (this.edgeGeometry.sourceArrowhead != null)
+        rect.add(this.edgeGeometry.sourceArrowhead.tipPosition)
+      if (this.edgeGeometry.targetArrowhead != null)
+        rect.add(this.edgeGeometry.targetArrowhead.tipPosition)
+    }
+
+    const del = this.lineWidth
+    rect.left -= del
+    rect.top += del
+    rect.right += del
+    rect.bottom -= del
+    return rect
+  }
+
+  get lineWidth() {
+    return this.edgeGeometry.lineWidth
   }
 
   get target(): GeomNode {
@@ -37,22 +61,22 @@ export class GeomEdge extends GeomObject {
   /*
     public override Rectangle BoundingBox {
     get {
-  
+   
       var rect = Rectangle.CreateAnEmptyBox();
       if (UnderlyingPolyline != null)
         foreach(Point p in UnderlyingPolyline)
       rect.Add(p);
-  
+   
       if (Curve != null)
         rect.Add(Curve.BoundingBox);
-  
-      if (EdgeGeometry != null) {
-        if (EdgeGeometry.SourceArrowhead != null)
-          rect.Add(EdgeGeometry.SourceArrowhead.TipPosition);
-        if (EdgeGeometry.TargetArrowhead != null)
-          rect.Add(EdgeGeometry.TargetArrowhead.TipPosition);
+   
+      if (this.edgeGeometry != null) {
+        if (this.edgeGeometry.sourceArrowhead != null)
+          rect.Add(this.edgeGeometry.sourceArrowhead.tipPosition);
+        if (this.edgeGeometry.targetArrowhead != null)
+          rect.Add(this.edgeGeometry.targetArrowhead.tipPosition);
       }
-  
+   
       double del = LineWidth;
       rect.Left -= del;
       rect.Top += del;
@@ -62,9 +86,8 @@ export class GeomEdge extends GeomObject {
     }
     set { throw new NotImplementedException(); }
   }
-  
-*/
-  edgeGeometry = new EdgeGeometry()
+   
+  */
 
   /*
           /// <summary>
@@ -74,7 +97,7 @@ export class GeomEdge extends GeomObject {
     get { return edgeGeometry.SmoothedPolyline; }
     set { edgeGeometry.SmoothedPolyline = value; }
   }
-  
+   
   */
   // A curve representing the edge
   get curve(): ICurve {
@@ -100,12 +123,12 @@ export class GeomEdge extends GeomObject {
       s = s.Next, s0 = s0.Next)
       s.Point = matrix * s.Point;
     
-      var sourceArrow = edgeGeometry.SourceArrowhead;
+      var sourceArrow = edgeGeometry.sourceArrowhead;
       if (sourceArrow != null)
-        sourceArrow.TipPosition = matrix * sourceArrow.TipPosition;
-      var targetArrow = edgeGeometry.TargetArrowhead;
+        sourceArrow.tipPosition = matrix * sourceArrow.tipPosition;
+      var targetArrow = edgeGeometry.targetArrowhead;
       if (targetArrow != null)
-        targetArrow.TipPosition = matrix * targetArrow.TipPosition;
+        targetArrow.tipPosition = matrix * targetArrow.tipPosition;
     
       if (Label != null)
         Label.Center = matrix * LabelBBox.Center;
@@ -117,8 +140,8 @@ export class GeomEdge extends GeomObject {
             /// <param name="delta">amount to shift geometry</param>
             public void Translate(Point delta)
     {
-      if (this.EdgeGeometry != null) {
-        this.EdgeGeometry.Translate(delta);
+      if (this.this.edgeGeometry != null) {
+        this.this.edgeGeometry.Translate(delta);
       }
       foreach(var l in this.Labels)
       {
@@ -131,7 +154,7 @@ export class GeomEdge extends GeomObject {
                     /// </summary>
                     public void TransformRelativeTo(Rectangle oldBounds, Rectangle newBounds)
     {
-      if (EdgeGeometry != null) {
+      if (this.edgeGeometry != null) {
         var toOrigin = new PlaneTransformation(1, 0, -oldBounds.Left, 0, 1, -oldBounds.Bottom);
         var scale = new PlaneTransformation(newBounds.Width / oldBounds.Width, 0, 0,
           0, newBounds.Height / oldBounds.Height, 0);
@@ -151,7 +174,7 @@ export class GeomEdge extends GeomObject {
     {
       get
       {
-        return EdgeGeometry != null && EdgeGeometry.SourceArrowhead != null;
+        return this.edgeGeometry != null && this.edgeGeometry.sourceArrowhead != null;
       }
     }
     
@@ -162,7 +185,7 @@ export class GeomEdge extends GeomObject {
     {
       get
       {
-        return EdgeGeometry != null && EdgeGeometry.TargetArrowhead != null;
+        return this.edgeGeometry != null && this.edgeGeometry.targetArrowhead != null;
       }
     }
     

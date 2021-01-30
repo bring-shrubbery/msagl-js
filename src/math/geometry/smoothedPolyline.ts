@@ -63,6 +63,14 @@ export class SmoothedPolyline {
     }
   }
 
+  *points(): IterableIterator<Point> {
+    let s0 = this.headSite
+    while (s0 != null) {
+      yield s0.point
+      s0 = s0.next
+    }
+  }
+
   /// <summary>
   /// Creates a curve by using the underlying polyline
   /// </summary>
