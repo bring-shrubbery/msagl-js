@@ -8,16 +8,15 @@ import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
 //import { GeomLabel } from './geomLabel'
 
 export class GeomEdge extends GeomObject {
+  underlyingPolyline: SmoothedPolyline
+  edgeGeometry = new EdgeGeometry()
   //  label: GeomLabel
   get edge(): Edge {
-    return this.entity as Edge
+    return this.attrCont as Edge
   }
   get source(): GeomNode {
     return GeomObject.getGeom(this.edge.source)
   }
-
-  underlyingPolyline: SmoothedPolyline
-  edgeGeometry = new EdgeGeometry()
 
   get boundingBox(): Rectangle {
     const rect = Rectangle.mkEmpty()

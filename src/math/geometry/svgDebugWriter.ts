@@ -11,6 +11,7 @@ import {String, StringBuilder} from 'typescript-string-operations'
 import {from} from 'linq-to-typescript'
 import {allVerticesOfParall} from './parallelogram'
 import {GeomEdge} from './../../layout/core/geomEdge'
+import {GeomGraph} from './../../layout/core/geomGraph'
 
 export class SvgDebugWriter {
   // Here we import the File System module of node
@@ -269,15 +270,16 @@ export class SvgDebugWriter {
     w.close()
   }
 
-  writeEdges(edges: GeomEdge[]) {
-    const r = Rectangle.mkEmpty()
-    for (const e of edges) {
-      r.addRec(e.boundingBox)
-    }
-    this.open(r)
-    for (const e of edges) {
+  writeGraph(gg: GeomGraph) {
+    gg.updateBoundingBox()
+    this.open(gg.boundingBox)
+    for (const e of gg.edges()) {
       this.writeEdge(e)
     }
+    for (const n of gg.nodes()) {
+      this.writeDebugCurve(DebugCurve.mkDebugCurveI(n.boundaryCurve))
+    }
+
     this.close()
   }
 

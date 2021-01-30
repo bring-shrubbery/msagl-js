@@ -9,7 +9,7 @@ export class EdgeGeometry {
 
   targetArrowhead: Arrowhead
 
-  lineWidth: number
+  lineWidth = 1
 
   setSmoothedPolylineAndCurve(poly: SmoothedPolyline) {
     this.smoothedPolyline = poly

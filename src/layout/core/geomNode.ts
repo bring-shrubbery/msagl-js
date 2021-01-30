@@ -10,7 +10,7 @@ import {GeomObject} from './geomObject'
 
 export class GeomNode extends GeomObject {
   get node(): Node {
-    return this.entity as Node
+    return this.attrCont as Node
   }
   padding = 1
   boundaryCurve: ICurve

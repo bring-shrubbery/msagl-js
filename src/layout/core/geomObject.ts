@@ -1,18 +1,19 @@
 import {Entity} from './../../structs/entity'
+import {AttrContainer} from './../../structs/attrContainer'
 import {Rectangle} from './../../math/geometry/rectangle'
 export abstract class GeomObject {
   abstract boundingBox: Rectangle
-  entity: Entity
+  attrCont: AttrContainer
   bindWithGeom() {
-    this.entity.setAttr(0, this) //todo introduce a notation for the attr indices
+    this.attrCont.setAttr(0, this)
   }
 
-  constructor(entity: Entity) {
-    this.entity = entity
+  constructor(attrCont: AttrContainer) {
+    this.attrCont = attrCont
     this.bindWithGeom()
   }
 
-  static getGeom(entity: Entity) {
-    return entity.getAttr(0)
+  static getGeom(attrCont: AttrContainer) {
+    return attrCont.getAttr(0)
   }
 }

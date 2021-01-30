@@ -3,7 +3,7 @@ import {Edge} from './edge'
 import {AttrContainer} from './attrContainer'
 
 export class Graph extends AttrContainer {
-  private nodes: Set<Node> = new Set<Node>()
+  nodes: Set<Node> = new Set<Node>()
   private *_edges() {
     // if we go over n.inEdges too then not self edges will be reported twice
     for (const n of this.nodes) {

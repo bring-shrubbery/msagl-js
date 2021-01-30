@@ -1,7 +1,9 @@
 import {Node} from './../../../structs/node'
 import {Edge} from './../../../structs/edge'
+import {Graph} from './../../../structs/graph'
 import {GeomNode} from './../../../layout/core/geomNode'
 import {GeomEdge} from './../../../layout/core/geomEdge'
+import {GeomGraph} from './../../../layout/core/geomGraph'
 import {Arrowhead} from './../../../layout/core/arrowhead'
 import {CurveFactory} from './../../../math/geometry/curveFactory'
 import {Point} from './../../../math/geometry/point'
@@ -41,8 +43,11 @@ describe('arrowhead', () => {
     gab.edgeGeometry.sourceArrowhead = new Arrowhead()
     gab.edgeGeometry.targetArrowhead = new Arrowhead()
     Arrowhead.trimSplineAndCalculateArrowheads(gab, curve, true)
-    const xw = new SvgDebugWriter('/tmp/gabTargetArrow.svg')
-    xw.writeEdges([gab])
+    const g = new Graph()
+    g.addEdge(ab)
+    const gg = new GeomGraph(g)
+    const xw = new SvgDebugWriter('/tmp/gg.svg')
+    xw.writeGraph(gg)
     xw.close()
   })
 })
