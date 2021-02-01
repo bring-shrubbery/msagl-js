@@ -22,7 +22,7 @@ test('lineSegment basic case', () => {
   expect(
     Point.close(
       a.value(t),
-      a.start.add(a.end.minus(a.start).mult(t)),
+      a.start.add(a.end.sub(a.start).mult(t)),
       GeomConstants.distanceEpsilon,
     ),
   ).toBe(true)
@@ -39,12 +39,12 @@ test('lineSegment basic case', () => {
 test('lineSegment mindist test 0', () => {
   const a = new Point(0, 0)
   const b = new Point(2, 4)
-  const perp = b.minus(a).rotate(Math.PI / 2)
+  const perp = b.sub(a).rotate(Math.PI / 2)
   const t = 0.2
   const ls = LineSegment.mkLinePP(a, b)
   const ls0start = ls.value(t).add(perp)
 
-  const ls0dir = b.minus(a).rotate(0.1)
+  const ls0dir = b.sub(a).rotate(0.1)
   const ls0 = LineSegment.mkLinePP(ls0start, ls0start.add(ls0dir))
   const md = LineSegment.minDistBetweenLineSegments(
     ls.start,
@@ -59,12 +59,12 @@ test('lineSegment mindist test 0', () => {
 test('lineSegment mindist test1', () => {
   const a = new Point(0, 0)
   const b = new Point(2, 4)
-  const perp = b.minus(a).rotate(Math.PI / 2)
+  const perp = b.sub(a).rotate(Math.PI / 2)
   const t = 0.2
   const ls = LineSegment.mkLinePP(a, b)
   const ls0start = ls.value(t).add(perp)
 
-  const ls0dir = b.minus(a).rotate(-0.001)
+  const ls0dir = b.sub(a).rotate(-0.001)
   const ls0 = LineSegment.mkLinePP(ls0start, ls0start.add(ls0dir))
   const md = LineSegment.minDistBetweenLineSegments(
     ls.start,
@@ -78,21 +78,21 @@ test('lineSegment mindist test1', () => {
   const lsPoint = ls.value(md.parab)
   const ls0Point = ls0.value(md.parcd)
 
-  const minPerp = lsPoint.minus(ls0Point)
+  const minPerp = lsPoint.sub(ls0Point)
 
   expect(Point.closeD(minPerp.dot(ls0dir), 0)).toBeTruthy()
 })
 
 function getUniformMd(a: Point, b: Point, c: Point, d: Point): number {
   const n = 20
-  const abDel = b.minus(a).div(n)
-  const cdDel = d.minus(c).div(n)
-  let dist = b.minus(c).length
+  const abDel = b.sub(a).div(n)
+  const cdDel = d.sub(c).div(n)
+  let dist = b.sub(c).length
   for (let i = 0; i <= n; i++) {
     const p = a.add(abDel.mult(i))
     for (let j = 0; j <= n; j++) {
       const q = c.add(cdDel.mult(j))
-      const ndist = p.minus(q).length
+      const ndist = p.sub(q).length
       if (dist > ndist) dist = ndist
     }
   }

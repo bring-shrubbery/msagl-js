@@ -16,15 +16,15 @@ export class Point {
     this.y = a.y
   }
   static close(a: Point, b: Point, tol: number): boolean {
-    return a.minus(b).length <= tol
+    return a.sub(b).length <= tol
   }
 
   static closeSquare(a: Point, b: Point, tol: number): boolean {
-    const d = b.minus(a)
+    const d = b.sub(a)
     return d.dot(d) <= tol
   }
   static closeDistEps(a: Point, b: Point): boolean {
-    return a.minus(b).length <= GeomConstants.distanceEpsilon
+    return a.sub(b).length <= GeomConstants.distanceEpsilon
   }
 
   static closeD(a: number, b: number): boolean {
@@ -64,7 +64,7 @@ export class Point {
   add(a: Point) {
     return new Point(this.x + a.x, this.y + a.y)
   }
-  minus(a: Point) {
+  sub(a: Point) {
     return new Point(this.x - a.x, this.y - a.y)
   }
   mult(c: number) {
@@ -87,9 +87,9 @@ export class Point {
     d: Point,
   ): Point | undefined {
     //look for the solution in the form a+u*(b-a)=c+v*(d-c)
-    const ba = b.minus(a)
-    const cd = c.minus(d)
-    const ca = c.minus(a)
+    const ba = b.sub(a)
+    const cd = c.sub(d)
+    const ca = c.sub(a)
     const eps = GeomConstants.tolerance
     const ret = LinearSystem2.solve(ba.x, cd.x, ca.x, ba.y, cd.y, ca.y)
     if (
@@ -149,7 +149,7 @@ export class Point {
     center: Point,
     point3: Point,
   ): number {
-    return Point.angle(point1.minus(center), point3.minus(center))
+    return Point.angle(point1.sub(center), point3.sub(center))
   }
 
   static mkPoint(x: number, a: Point, y: number, b: Point) {
@@ -157,7 +157,7 @@ export class Point {
   }
 
   static convSum(x: number, a: Point, b: Point) {
-    return a.add(b.minus(a).mult(x))
+    return a.add(b.sub(a).mult(x))
   }
 
   /// The angle you need to turn "side0" counterclockwise to make it collinear with "side1"

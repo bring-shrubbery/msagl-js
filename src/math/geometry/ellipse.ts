@@ -19,7 +19,7 @@ export class Ellipse implements ICurve {
   // offsets the curve in the given direction
   offsetCurve(offset: number, dir: Point): ICurve {
     //is dir inside or outside of the ellipse
-    const d = dir.minus(this.center)
+    const d = dir.sub(this.center)
     const angle = Point.angle(this.aAxis, d)
     const s = this.aAxis
       .mult(Math.cos(angle))
@@ -143,7 +143,7 @@ export class Ellipse implements ICurve {
       this.box = this.fullBox()
     else {
       //the idea is that the box of an arc staying in one quadrant is just the box of the start and the end point of the arc
-      this.box = Rectangle.rectanglePointPoint(this.start, this.end)
+      this.box = Rectangle.mkPP(this.start, this.end)
       //now Start and End are in the box, we need just add all k*P/2 that are in between
       let t: number
       for (
@@ -234,10 +234,10 @@ export class Ellipse implements ICurve {
     if (transformation != null) {
       const ap = transformation
         .multiplyPoint(this.aAxis)
-        .minus(transformation.offset())
+        .sub(transformation.offset())
       const bp = transformation
         .multiplyPoint(this.bAxis)
-        .minus(transformation.offset())
+        .sub(transformation.offset())
       return new Ellipse(
         this.parStart,
         this.parEnd,
@@ -258,7 +258,7 @@ export class Ellipse implements ICurve {
     let minDist = Number.MAX_VALUE
     for (let i = 0; i <= numberOfTestPoints; i++) {
       const par = low + i * t
-      const p = targetPoint.minus(this[par])
+      const p = targetPoint.sub(this[par])
       const d = p.dot(p)
       if (d < minDist) {
         minDist = d
@@ -309,7 +309,7 @@ export class Ellipse implements ICurve {
     let minDist = Number.MAX_VALUE
     for (let i = 0; i <= numberOfTestPoints; i++) {
       const par = this.parStart + i * t
-      const p = targetPoint.minus(this.value(par))
+      const p = targetPoint.sub(this.value(par))
       const d = p.dot(p)
       if (d < minDist) {
         minDist = d
@@ -371,10 +371,7 @@ export class Ellipse implements ICurve {
   //returns the box of the ellipse that this ellipse is a part of
   fullBox(): Rectangle {
     const del = this.aAxis.add(this.bAxis)
-    return Rectangle.rectanglePointPoint(
-      this.center.add(del),
-      this.center.minus(del),
-    )
+    return Rectangle.mkPP(this.center.add(del), this.center.sub(del))
   }
 
   //is it a proper arc?

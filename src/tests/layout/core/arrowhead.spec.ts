@@ -1,10 +1,13 @@
 import {Node} from './../../../structs/node'
 import {Edge} from './../../../structs/edge'
+import {Entity} from './../../../structs/entity'
 import {Graph} from './../../../structs/graph'
 import {GeomNode} from './../../../layout/core/geomNode'
 import {GeomEdge} from './../../../layout/core/geomEdge'
+import {GeomLabel} from './../../../layout/core/geomLabel'
 import {GeomGraph} from './../../../layout/core/geomGraph'
 import {Arrowhead} from './../../../layout/core/arrowhead'
+import {Rectangle} from './../../../math/geometry/rectangle'
 import {CurveFactory} from './../../../math/geometry/curveFactory'
 import {Point} from './../../../math/geometry/point'
 import {LineSegment} from './../../../math/geometry/lineSegment'
@@ -39,6 +42,12 @@ describe('arrowhead', () => {
 
     const ab = new Edge(a, b)
     const gab = new GeomEdge(ab)
+    const label = new Entity()
+    label.parent = ab
+    gab.label = new GeomLabel(label)
+    const m = Point.middle(ga.center, gb.center)
+
+    gab.label.boundingBox = Rectangle.mkPP(m, m.add(new Point(10, 10)))
     const curve = LineSegment.mkLinePP(ga.center, gb.center)
     gab.edgeGeometry.sourceArrowhead = new Arrowhead()
     gab.edgeGeometry.targetArrowhead = new Arrowhead()

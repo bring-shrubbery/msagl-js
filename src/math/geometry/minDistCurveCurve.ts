@@ -42,7 +42,7 @@ export class MinDistCurveCurve {
   initValues() {
     this.a = this.curveA.value(this.si)
     this.b = this.curveB.value(this.ti)
-    this.a_b = this.a.minus(this.b)
+    this.a_b = this.a.sub(this.b)
     this.ad = this.curveA.derivative(this.si)
     this.add = this.curveA.secondDerivative(this.si)
     this.bd = this.curveB.derivative(this.ti)
@@ -198,7 +198,7 @@ export class MinDistCurveCurve {
       //may be the initial values were just OK
       const t = this.curveA
         .value(this.aGuess)
-        .minus(this.curveB.value(this.bGuess))
+        .sub(this.curveB.value(this.bGuess))
       if (
         t.dot(t) <
         GeomConstants.distanceEpsilon * GeomConstants.distanceEpsilon
@@ -257,7 +257,7 @@ export class MinDistCurveCurve {
     const v2 = l1.start
     const v3 = l1.end
 
-    let d0 = v1.minus(v0)
+    let d0 = v1.sub(v0)
 
     const nd0 = d0.length
 
@@ -267,9 +267,9 @@ export class MinDistCurveCurve {
     if (nd0 > GeomConstants.distanceEpsilon) {
       //v0 becomes the zero point
       d0 = d0.div(nd0)
-      r1 = d0.dot(v1.minus(v0))
-      r2 = d0.dot(v2.minus(v0))
-      r3 = d0.dot(v3.minus(v0))
+      r1 = d0.dot(v1.sub(v0))
+      r2 = d0.dot(v2.sub(v0))
+      r3 = d0.dot(v3.sub(v0))
 
       let swapped = false
       if (r2 > r3) {
@@ -292,14 +292,14 @@ export class MinDistCurveCurve {
         if (swapped) this.bSolution = 1 - this.bSolution
       }
     } else {
-      let d1 = v3.minus(v2)
+      let d1 = v3.sub(v2)
       const nd1 = d1.length
       if (nd1 > GeomConstants.distanceEpsilon) {
         //v2 becomes the zero point
         d1 = d1.div(nd1)
         r0 = 0 //v2 position
-        r1 = d1.dot(v3.minus(v2)) //v3 position
-        r2 = d1.dot(v0.minus(v2)) //v0 position - here v0 and v1 are indistinguishable
+        r1 = d1.dot(v3.sub(v2)) //v3 position
+        r2 = d1.dot(v0.sub(v2)) //v0 position - here v0 and v1 are indistinguishable
 
         if (r2 < r0) {
           this.bSolution = 0

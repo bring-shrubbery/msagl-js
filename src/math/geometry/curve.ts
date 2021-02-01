@@ -424,12 +424,12 @@ export class Curve implements ICurve {
     ellipse: Ellipse,
   ): IntersectionInfo[] {
     Assert.assert(ellipse.isArc())
-    let lineDir = lineSeg.end.minus(lineSeg.start)
+    let lineDir = lineSeg.end.sub(lineSeg.start)
     const ret: IntersectionInfo[] = []
     const segLength = lineDir.length
     // the case of a very short LineSegment
     if (segLength < GeomConstants.distanceEpsilon) {
-      const lsStartMinCen = lineSeg.start.minus(ellipse.center)
+      const lsStartMinCen = lineSeg.start.sub(ellipse.center)
       if (Point.closeD(lsStartMinCen.length, ellipse.aAxis.length)) {
         let angle = Point.angle(ellipse.aAxis, lsStartMinCen)
         if (ellipse.parStart - GeomConstants.tolerance <= angle) {
@@ -446,7 +446,7 @@ export class Curve implements ICurve {
     }
 
     const perp = lineDir.rotate90Ccw().div(segLength)
-    const segProjection = lineSeg.start.minus(ellipse.center).dot(perp)
+    const segProjection = lineSeg.start.sub(ellipse.center).dot(perp)
     const closestPointOnLine = ellipse.center.add(perp.mult(segProjection))
 
     const rad = ellipse.aAxis.length
@@ -478,7 +478,7 @@ export class Curve implements ICurve {
         lineSeg,
         ellipse,
         ret,
-        closestPointOnLine.minus(d),
+        closestPointOnLine.sub(d),
         segLength,
         lineDir,
       )
@@ -494,7 +494,7 @@ export class Curve implements ICurve {
     segLength: number,
     lineDir: Point,
   ) {
-    const ds = point.minus(lineSeg.start)
+    const ds = point.sub(lineSeg.start)
     let t = ds.dot(lineDir)
     if (t < -GeomConstants.distanceEpsilon) return
     t = Math.max(t, 0)
@@ -502,7 +502,7 @@ export class Curve implements ICurve {
     t = Math.min(t, segLength)
     t /= segLength
 
-    let angle = Point.angle(ellipse.aAxis, point.minus(ellipse.center))
+    let angle = Point.angle(ellipse.aAxis, point.sub(ellipse.center))
     if (ellipse.parStart - GeomConstants.tolerance <= angle) {
       angle = Math.max(angle, ellipse.parStart)
       if (angle <= ellipse.parEnd + GeomConstants.tolerance) {
@@ -556,7 +556,7 @@ export class Curve implements ICurve {
       }
       offset++
     }
-    if (poly.isClosed()) {
+    if (poly.closed) {
       const sol = Curve.crossTwoLineSegs(
         lineSeg.start,
         lineSeg.end,
@@ -853,7 +853,7 @@ export class Curve implements ICurve {
   static oldIntersection(intersections: IntersectionInfo[], x: Point): boolean {
     //we don't expect many intersections so it's ok just go through all of them
     for (const ii of intersections)
-      if (x.minus(ii.x).length < GeomConstants.distanceEpsilon * 100) {
+      if (x.sub(ii.x).length < GeomConstants.distanceEpsilon * 100) {
         //please no close intersections
         return true
       }
@@ -1055,13 +1055,13 @@ export class Curve implements ICurve {
     for (const p of allVerticesOfParall(nl0.parallelogram)) {
       poly0.addPoint(p)
     }
-    poly0.setIsClosed(true)
+    poly0.closed = true
 
     const poly1 = new Polyline()
     for (const p of allVerticesOfParall(nl1.parallelogram)) {
       poly1.addPoint(p)
     }
-    poly1.setIsClosed(true)
+    poly1.closed = true
     const l0 = nl0.node as PNLeaf
     const l1 = nl1.node as PNLeaf
 
@@ -1281,7 +1281,7 @@ export class Curve implements ICurve {
     )
     if (mdout == undefined) return
 
-    const aMinusB = mdout.aX.minus(mdout.bX)
+    const aMinusB = mdout.aX.sub(mdout.bX)
     return aMinusB.dot(aMinusB) >= GeomConstants.distanceEpsilon
       ? undefined
       : {
@@ -1301,9 +1301,9 @@ export class Curve implements ICurve {
     bmin: number,
     bmax: number,
   ): CurveCrossOutput | undefined {
-    const u = aEnd.minus(aStart)
-    const v = bStart.minus(bEnd)
-    const w = bStart.minus(aStart)
+    const u = aEnd.sub(aStart)
+    const v = bStart.sub(bEnd)
+    const w = bStart.sub(aStart)
     const sol = LinearSystem2.solve(u.x, v.x, w.x, u.y, v.y, w.y)
     if (sol == undefined) return
     let aSol = sol.x
@@ -1639,7 +1639,7 @@ export class Curve implements ICurve {
         const segHigh = Math.min(seg.parEnd, seg.parStart + (high - offset))
         Assert.assert(segHigh >= segLow)
         const t = seg.closestParameterWithinBounds(targetPoint, segLow, segHigh)
-        const d = targetPoint.minus(seg.value(t))
+        const d = targetPoint.sub(seg.value(t))
         const dd = d.dot(d)
         if (dd < dist) {
           par = offset + t - seg.parStart
@@ -1658,7 +1658,7 @@ export class Curve implements ICurve {
     let offset = 0
     for (const c of this.segs) {
       const t = c.closestParameter(targetPoint)
-      const d = targetPoint.minus(c.value(t))
+      const d = targetPoint.sub(c.value(t))
       const dd = d.dot(d)
       if (dd < dist) {
         par = offset + t - c.parStart

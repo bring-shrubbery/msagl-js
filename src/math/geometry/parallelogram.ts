@@ -31,7 +31,7 @@ export class Parallelogram {
 
   // Return true if the parallelogram contains the point
   contains(point: Point): boolean {
-    const g = point.minus(this.corner)
+    const g = point.sub(this.corner)
     const e = GeomConstants.distanceEpsilon
 
     const gbRot = g.dot(this.bRot)
@@ -109,8 +109,7 @@ export class Parallelogram {
       result.aRot = result.aRot.neg()
     }
 
-    result.isSeg =
-      result.a.minus(result.b).length < GeomConstants.distanceEpsilon
+    result.isSeg = result.a.sub(result.b).length < GeomConstants.distanceEpsilon
     return result
   }
 
@@ -148,8 +147,8 @@ export class Parallelogram {
 
     if (
       !Point.parallelWithinEpsilon(
-        parallelogram0.otherCorner.minus(parallelogram0.corner),
-        parallelogram1.otherCorner.minus(parallelogram1.corner),
+        parallelogram0.otherCorner.sub(parallelogram0.corner),
+        parallelogram1.otherCorner.sub(parallelogram1.corner),
         1.0e-5,
       )
     )
@@ -166,17 +165,17 @@ export class Parallelogram {
     const v2 = p1.corner
     const v3 = p1.otherCorner
 
-    const d = v1.minus(v0)
+    const d = v1.sub(v0)
 
     //const us imagine that v0 is at zero
     const r0 = 0 // position of v0
     const r1 = d.dot(d) //offset of v1
 
     //offset of v2
-    let r2 = v2.minus(v0).dot(d)
+    let r2 = v2.sub(v0).dot(d)
 
     //offset of v3
-    let r3 = v3.minus(v0).dot(d)
+    let r3 = v3.sub(v0).dot(d)
 
     // we need to check if [r0,r1] intersects [r2,r3]
 
@@ -194,18 +193,18 @@ export class Parallelogram {
 
   static separByB(p0: Parallelogram, p1: Parallelogram): boolean {
     const eps = GeomConstants.distanceEpsilon
-    const p1a = p1.vertex(0).minus(p0.corner).dot(p0.bRot)
+    const p1a = p1.vertex(0).sub(p0.corner).dot(p0.bRot)
     const list = [VertexId.VertexA, VertexId.otherCorner, VertexId.VertexB]
     if (p1a > p0.abRot + eps) {
       for (const i of list) {
-        if (p1.vertex(i).minus(p0.corner).dot(p0.bRot) <= p0.abRot + eps)
+        if (p1.vertex(i).sub(p0.corner).dot(p0.bRot) <= p0.abRot + eps)
           return false
       }
 
       return true
     } else if (p1a < -eps) {
       for (const i of list) {
-        if (p1.vertex(i).minus(p0.corner).dot(p0.bRot) >= -eps) return false
+        if (p1.vertex(i).sub(p0.corner).dot(p0.bRot) >= -eps) return false
       }
       return true
     }
@@ -215,7 +214,7 @@ export class Parallelogram {
   static separByA(p0: Parallelogram, p1: Parallelogram): boolean {
     const eps = GeomConstants.distanceEpsilon
 
-    const t = p1.corner.minus(p0.corner)
+    const t = p1.corner.sub(p0.corner)
     const p1a = Point.dot(t, p0.aRot)
 
     if (p1a > p0.baRot + eps) {
@@ -286,7 +285,7 @@ export class Parallelogram {
       result.aRot = result.aRot.neg()
     }
 
-    result.isSeg = sideA.minus(sideB).length < GeomConstants.distanceEpsilon
+    result.isSeg = sideA.sub(sideB).length < GeomConstants.distanceEpsilon
 
     result.aPlusCorner = sideA.add(corner)
     result.otherCorner = sideB.add(result.aPlusCorner)

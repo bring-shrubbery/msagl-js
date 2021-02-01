@@ -5,12 +5,12 @@ import {GeomObject} from './geomObject'
 import {Rectangle} from './../../math/geometry/rectangle'
 import {ICurve} from './../../math/geometry/icurve'
 import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
-//import { GeomLabel } from './geomLabel'
+import {GeomLabel} from './geomLabel'
 
 export class GeomEdge extends GeomObject {
   underlyingPolyline: SmoothedPolyline
   edgeGeometry = new EdgeGeometry()
-  //  label: GeomLabel
+  label: GeomLabel
   get edge(): Edge {
     return this.attrCont as Edge
   }

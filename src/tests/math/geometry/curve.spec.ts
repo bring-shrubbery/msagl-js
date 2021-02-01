@@ -15,11 +15,11 @@ function exp(b: boolean) {
 
 function intersectOnDiameter(a: Point, b: Point) {
   const ls = LineSegment.mkLinePP(a, b)
-  const circ = Ellipse.mkCircle(b.minus(a).length / 2, Point.middle(a, b))
+  const circ = Ellipse.mkCircle(b.sub(a).length / 2, Point.middle(a, b))
   let xx = Curve.getAllIntersections(ls, circ, false)
   expect(xx.length == 2).toBeTruthy()
   expect(
-    Point.closeD(xx[0].x.minus(xx[1].x).length, b.minus(a).length),
+    Point.closeD(xx[0].x.sub(xx[1].x).length, b.sub(a).length),
   ).toBeTruthy()
   for (const x of xx) {
     expect(
@@ -144,12 +144,12 @@ test('bezier rounded rect intersections', () => {
   const outsidePoint = center.add(
     new Point(rr.boundingBox.width, rr.boundingBox.height),
   )
-  const dir = outsidePoint.minus(center)
+  const dir = outsidePoint.sub(center)
   const perp = dir.div(3).rotate90Cw()
   const bezSeg = BezierSeg.mkBezier([
     center,
     Point.convSum(1 / 3, center, outsidePoint).add(perp),
-    Point.convSum(2 / 3, center, outsidePoint).minus(perp),
+    Point.convSum(2 / 3, center, outsidePoint).sub(perp),
     outsidePoint,
   ])
   for (let i = 1; i <= 190; i++) {
@@ -166,12 +166,12 @@ test('bezier rounded rect intersections', () => {
 test('bezier bezier rect intersections', () => {
   const a = new Point(0, 0)
   const b = new Point(122, 100)
-  const dir = b.minus(a)
+  const dir = b.sub(a)
   const perp = dir.div(3).rotate90Cw()
   const bezSeg = BezierSeg.mkBezier([
     a,
     Point.convSum(1 / 3, a, b).add(perp),
-    Point.convSum(2 / 3, a, b).minus(perp),
+    Point.convSum(2 / 3, a, b).sub(perp),
     b,
   ])
   for (let i = 1; i < 90; i++) {

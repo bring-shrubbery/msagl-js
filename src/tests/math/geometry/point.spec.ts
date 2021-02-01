@@ -44,7 +44,7 @@ function testOnPointAngle(p: Point, ang: number) {
     console.log(p1)
 
     console.log('dist=')
-    console.log(p0.minus(p1).length)
+    console.log(p0.sub(p1).length)
   }
   expect(res).toBeTruthy()
 }
@@ -64,7 +64,7 @@ test('point test', () => {
   expect(resultPoint.x).toBe(a + c)
   expect(resultPoint.y).toBe(b + d)
 
-  resultPoint = p1.minus(p2)
+  resultPoint = p1.sub(p2)
   expect(resultPoint.x).toBe(a - c)
   expect(resultPoint.y).toBe(b - d)
 

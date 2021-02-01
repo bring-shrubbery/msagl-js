@@ -62,7 +62,7 @@ export class Polyline implements ICurve {
   }
 
   static parallelogramOfLineSeg(a: Point, b: Point) {
-    const side = b.minus(a).div(2)
+    const side = b.sub(a).div(2)
     return Parallelogram.parallelogramByCornerSideSide(a, side, side)
   }
 
@@ -141,11 +141,11 @@ export class Polyline implements ICurve {
     this.requireInit_ = false
   }
 
-  isClosed() {
+  get closed() {
     return this.isClosed_
   }
-  setIsClosed(val: boolean) {
-    this.isClosed_ = val
+  set closed(value: boolean) {
+    this.isClosed_ = value
   }
 
   value(t: number): Point {
@@ -171,7 +171,7 @@ export class Polyline implements ICurve {
       t -= 1
     }
 
-    if (this.isClosed()) {
+    if (this.closed) {
       if (t <= 1) {
         return {
           a: this.endPoint.point,
@@ -185,7 +185,7 @@ export class Polyline implements ICurve {
 
   derivative(t: number): Point {
     const ap = this.getAdjustedParamAndStartEndPoints(t)
-    return ap.b.minus(ap.a)
+    return ap.b.sub(ap.a)
   }
 
   secondDerivative(t: number): Point {
@@ -207,7 +207,7 @@ export class Polyline implements ICurve {
   }
   get parEnd(): number {
     if (this.requireInit_) this.init()
-    return this.isClosed ? this.count : this.count - 1
+    return this.closed ? this.count : this.count - 1
   }
   trim(start: number, end: number): ICurve {
     throw new Error('Method not implemented.')
@@ -225,7 +225,7 @@ export class Polyline implements ICurve {
     return this.startPoint.point
   }
   get end(): Point {
-    return this.isClosed() ? this.startPoint.point : this.endPoint.point
+    return this.closed ? this.startPoint.point : this.endPoint.point
   }
   reverse(): ICurve {
     throw new Error('Method not implemented.')

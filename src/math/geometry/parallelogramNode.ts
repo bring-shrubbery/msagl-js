@@ -53,12 +53,12 @@ export type PNInternal = {
 
 export class ParallelogramNode {
   static distToSegm(p: Point, s: Point, e: Point): number {
-    const l = e.minus(s)
+    const l = e.sub(s)
     if (l.length < GeomConstants.intersectionEpsilon)
-      return p.minus(s.add(e).div(2)).length
+      return p.sub(s.add(e).div(2)).length
     let perp = new Point(-l.y, l.x)
     perp = perp.mult(1 / perp.length)
-    return Math.abs(p.minus(s).dot(perp))
+    return Math.abs(p.sub(s).dot(perp))
   }
 
   static createParallelogramOnSubSeg(
@@ -71,7 +71,7 @@ export class ParallelogramNode {
     const tan2Perp = new Point(-tan2.y, tan2.x)
     const corner = seg.value(start)
     const e = seg.value(end)
-    const p = e.minus(corner)
+    const p = e.sub(corner)
 
     const numerator = p.dot(tan2Perp)
     const denumerator = tan1.dot(tan2Perp)
@@ -95,7 +95,7 @@ export class ParallelogramNode {
     return Parallelogram.parallelogramByCornerSideSide(
       corner,
       tan1,
-      e.minus(corner).minus(tan1),
+      e.sub(corner).sub(tan1),
     )
   }
 
@@ -114,7 +114,7 @@ export class ParallelogramNode {
 
     const s = seg.value(start)
     const e = seg.value(end)
-    const w = e.minus(s)
+    const w = e.sub(s)
     const middle = seg.value((start + end) / 2)
 
     if (

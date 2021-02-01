@@ -98,7 +98,7 @@ export class Arrowhead {
       newCurveEnd = edgeGeometry.curve.value(p)
       arrowheadLength /= 2
     } while (
-      newCurveEnd.minus(curve.start).lengthSquared < eps ||
+      newCurveEnd.sub(curve.start).lengthSquared < eps ||
       intersections.length == 0
     )
     //we would like to have at least something left from the curve
@@ -113,8 +113,7 @@ export class Arrowhead {
       return edgeGeometry.curve.parStart
     const eps = GeomConstants.distanceEpsilon * GeomConstants.distanceEpsilon
     Assert.assert(
-      edgeGeometry.curve.end.minus(edgeGeometry.curve.start).lengthSquared >
-        eps,
+      edgeGeometry.curve.end.sub(edgeGeometry.curve.start).lengthSquared > eps,
     )
     let arrowheadLength = edgeGeometry.sourceArrowhead.length
     let newStart: Point
@@ -136,7 +135,7 @@ export class Arrowhead {
         .where((x) => x.par1 == p)
         .first().x
       // check that something is left from the curve
-      if (newStart.minus(curve.end).lengthSquared >= eps) return p
+      if (newStart.sub(curve.end).lengthSquared >= eps) return p
       arrowheadLength /= 2
     } while (true)
   }
@@ -188,7 +187,7 @@ export class Arrowhead {
       edgeGeometry.targetArrowhead != null
         ? edgeGeometry.targetArrowhead.length
         : 0
-    const len = edgeGeometry.curve.end.minus(edgeGeometry.curve.start).length
+    const len = edgeGeometry.curve.end.sub(edgeGeometry.curve.start).length
     if (edgeGeometry.sourceArrowhead != null)
       edgeGeometry.sourceArrowhead.length = Math.min(
         len,
@@ -243,7 +242,7 @@ export class Arrowhead {
   static createBigEnoughSpline(edge: GeomEdge) {
     const a = edge.source.center
     let b = edge.target.center
-    const bMinA = b.minus(a)
+    const bMinA = b.sub(a)
 
     const l = bMinA.length
     let perp: Point
@@ -288,7 +287,7 @@ export class Arrowhead {
 
   // this method should never be called!
   static createEdgeCurveWithNoTrimming(edge: GeomEdge, a: Point, b: Point) {
-    const ab = b.minus(a).normalize()
+    const ab = b.sub(a).normalize()
 
     let lineStart = a
     let lineEnd = b
@@ -296,7 +295,7 @@ export class Arrowhead {
     const targetArrow = edge.edgeGeometry.targetArrowhead
     if (targetArrow != null) {
       targetArrow.tipPosition = b
-      lineEnd = b.minus(ab.mult(targetArrow.length))
+      lineEnd = b.sub(ab.mult(targetArrow.length))
     }
     const sourceArrow = edge.edgeGeometry.sourceArrowhead
     if (sourceArrow != null) {

@@ -12,6 +12,7 @@ import {from} from 'linq-to-typescript'
 import {allVerticesOfParall} from './parallelogram'
 import {GeomEdge} from './../../layout/core/geomEdge'
 import {GeomGraph} from './../../layout/core/geomGraph'
+import {GeomLabel} from './../../layout/core/geomLabel'
 
 export class SvgDebugWriter {
   // Here we import the File System module of node
@@ -160,7 +161,7 @@ export class SvgDebugWriter {
               yield 'L'
               yield this.pointToString(p.point)
             }
-            if (poly.isClosed()) {
+            if (poly.closed) {
               yield 'L'
               yield this.pointToString(poly.start)
             }
@@ -240,7 +241,7 @@ export class SvgDebugWriter {
       for (const p of allVerticesOfParall(pn.parallelogram)) {
         poly.addPoint(p)
       }
-      poly.setIsClosed(true)
+      poly.closed = true
       this.writeStroke(c, 2)
       this.xw.writeAttribute('d', this.curveString(poly))
       if (c.dashArray != null)
@@ -294,16 +295,22 @@ export class SvgDebugWriter {
       this.addArrow(icurve.start, edge.edgeGeometry.sourceArrowhead.tipPosition)
     if (edge.edgeGeometry != null && edge.edgeGeometry.targetArrowhead != null)
       this.addArrow(icurve.end, edge.edgeGeometry.targetArrowhead.tipPosition)
-    //  if (edge.Label != null && edge.Label.geometryLabel != null && edge.geometryEdge.Label != null)
-    //  writeLabel(edge.Label);
+    if (edge.label != null) this.writeLabel(edge.label)
+  }
+
+  writeLabel(label: GeomLabel) {
+    const dc = DebugCurve.mkDebugCurveI(label.boundingBox.perimeter())
+    dc.transparency = 124
+    dc.width /= 2
+    this.writeDebugCurve(dc)
   }
 
   addArrow(start: Point, end: Point) {
-    let dir = end.minus(start)
+    let dir = end.sub(start)
     const l = dir.length
     dir = dir.div(l).rotate90Ccw()
     dir = dir.mult(l * Math.tan(this.arrowAngle * 0.5 * (Math.PI / 180.0)))
-    this.drawArrowPolygon([start.add(dir), end, start.minus(dir)])
+    this.drawArrowPolygon([start.add(dir), end, start.sub(dir)])
   }
 
   drawPolygon(points: Point[]) {

@@ -28,7 +28,7 @@ export class GeomNode extends GeomObject {
     return this.boundaryCurve.boundingBox.center
   }
   set center(value: Point) {
-    const del = value.minus(this.center)
+    const del = value.sub(this.center)
     this.boundaryCurve.translate(del)
   }
 
@@ -46,7 +46,7 @@ export class GeomNode extends GeomObject {
 
         this.boundaryCurve = this.boundaryCurve.scaleFromOrigin(scaleX, scaleY)
         this.boundaryCurve.translate(
-          targetBounds.center.minus(this.boundaryCurve.boundingBox.center),
+          targetBounds.center.sub(this.boundaryCurve.boundingBox.center),
         )
       } else {
         this.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(

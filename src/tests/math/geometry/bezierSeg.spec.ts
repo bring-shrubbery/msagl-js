@@ -39,7 +39,7 @@ describe('bezier', () => {
     const approx_val_at_t_plus_dx = bezSeg
       .value(t)
       .add(bezSeg.derivative(t).mult(dx))
-    expect(approx_val_at_t_plus_dx.minus(val_t_plus_dx).length < dx).toBe(true)
+    expect(approx_val_at_t_plus_dx.sub(val_t_plus_dx).length < dx).toBe(true)
   })
 
   test('bezier length', () => {
@@ -52,10 +52,7 @@ describe('bezier', () => {
     const bezSeg = new BezierSeg(b[0], b[1], b[2], b[3])
     const l = bezSeg.length
     expect(
-      l <
-        b[1].minus(b[0]).length +
-          b[2].minus(b[1]).length +
-          b[2].minus(b[3]).length,
+      l < b[1].sub(b[0]).length + b[2].sub(b[1]).length + b[2].sub(b[3]).length,
     ).toBe(true)
   })
 

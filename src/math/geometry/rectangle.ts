@@ -1,4 +1,5 @@
 import {Point} from './point'
+import {Polyline} from './polyline'
 import {GeomConstants} from './geomConstants'
 import {Assert} from './../../utils/assert'
 
@@ -47,7 +48,7 @@ export class Rectangle {
     return this.leftTop.add(this.rightBottom).mult(0.5)
   }
   set center(value: Point) {
-    const shift = value.minus(this.center)
+    const shift = value.sub(this.center)
     this.leftTop = this.leftTop.add(shift)
     this.rightBottom = this.rightBottom.add(shift)
   }
@@ -134,7 +135,7 @@ export class Rectangle {
   }
 
   // create a box of two points
-  static rectanglePointPoint(point0: Point, point1: Point) {
+  static mkPP(point0: Point, point1: Point) {
     const r = new Rectangle(point0.x, point0.x, point0.y, point0.y)
     r.add(point1)
     return r
@@ -325,7 +326,7 @@ export class Rectangle {
   // Returns the intersection of two rectangles.
   static intersect(rect1: Rectangle, rect2: Rectangle): Rectangle {
     if (rect1.intersects(rect2))
-      return Rectangle.rectanglePointPoint(
+      return Rectangle.mkPP(
         new Point(
           Math.max(rect1.left, rect2.left),
           Math.max(rect1.bottom, rect2.bottom),
@@ -338,24 +339,23 @@ export class Rectangle {
     return Rectangle.mkEmpty()
   }
 
-  /*
-    public Polyline Perimeter() {
-    const poly = new Polyline();
-    poly.AddPoint(LeftTop);
-    poly.AddPoint(RightTop);
-    poly.AddPoint(RightBottom);
-    poly.AddPoint(LeftBottom);
-    poly.Closed = true;
-    return poly;
-    }
-  */
+  perimeter(): Polyline {
+    const poly = new Polyline()
+    poly.addPoint(this.leftTop)
+    poly.addPoint(this.rightTop)
+    poly.addPoint(this.rightBottom)
+    poly.addPoint(this.leftBottom)
+    poly.closed = true
+    return poly
+  }
+
   scaleAroundCenter(scale: number) {
     this.width = this.width * scale
     this.height = this.height * scale
   }
 
   clone(): Rectangle {
-    return Rectangle.rectanglePointPoint(this.leftTop, this.rightBottom)
+    return Rectangle.mkPP(this.leftTop, this.rightBottom)
   }
 
   // gets or sets the Size

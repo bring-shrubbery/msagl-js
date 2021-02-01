@@ -37,7 +37,7 @@ export class LineSegment implements ICurve {
   }
 
   value(t: number): Point {
-    return this.start.add(this.end.minus(this.start).mult(t))
+    return this.start.add(this.end.sub(this.start).mult(t))
   }
   // Not Implemented: Returns the trimmed curve, wrapping around the end if start is greater than end.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -49,7 +49,7 @@ export class LineSegment implements ICurve {
   // This tree is used in curve intersections routines.
   // <value></value>
   pNodeOverICurve(): PN {
-    const side = this.end.minus(this.start).mult(0.5)
+    const side = this.end.sub(this.start).mult(0.5)
     return {
       parallelogram: Parallelogram.parallelogramByCornerSideSide(
         this.start,
@@ -67,7 +67,7 @@ export class LineSegment implements ICurve {
   }
 
   normal() {
-    let t = this.start.minus(this.end)
+    let t = this.start.sub(this.end)
     t = t.div(t.length)
     return new Point(-t.y, t.x)
   }
@@ -84,7 +84,7 @@ export class LineSegment implements ICurve {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   derivative(t: number) {
-    return this.end.minus(this.start)
+    return this.end.sub(this.start)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -182,7 +182,7 @@ return xx;
 
   // gets the parameter at a specific length from the start along the curve
   getParameterAtLength(length: number): number {
-    const len = this.end.minus(this.start).length
+    const len = this.end.sub(this.start).length
     if (len < GeomConstants.tolerance) return 0
     const t = length / len
     return t > 1 ? 1 : t < 0 ? 0 : t
@@ -207,16 +207,16 @@ return xx;
 
   // return length of the curve segment [start,end]
   lengthPartial(start: number, end: number) {
-    return this.value(end).minus(this.value(start)).length
+    return this.value(end).sub(this.value(start)).length
   }
 
   // Get the length of the curve
   get length() {
-    return this.start.minus(this.end).length
+    return this.start.sub(this.end).length
   }
   // The bounding box of the line
   get boundingBox() {
-    return Rectangle.rectanglePointPoint(this.start, this.end)
+    return Rectangle.mkPP(this.start, this.end)
   }
 
   // clones the curve.
@@ -230,8 +230,8 @@ return xx;
     segmentStart: Point,
     segmentEnd: Point,
   ) {
-    const bc = segmentEnd.minus(segmentStart)
-    const ba = point.minus(segmentStart)
+    const bc = segmentEnd.sub(segmentStart)
+    const ba = point.sub(segmentStart)
     const c1 = bc.dot(ba)
     if (c1 <= 0.0 + GeomConstants.tolerance) return 0
 
@@ -276,7 +276,7 @@ return xx;
   }
 
   static xIsBetweenPoints(a: Point, b: Point, x: Point): boolean {
-    return a.minus(x).dot(b.minus(x)) <= GeomConstants.distanceEpsilon
+    return a.sub(x).dot(b.sub(x)) <= GeomConstants.distanceEpsilon
   }
 
   //
@@ -303,9 +303,9 @@ return xx;
     c: Point,
     d: Point,
   ): {dist: number; parab: number; parcd: number} {
-    const u = b.minus(a)
-    const v = d.minus(c)
-    const w = a.minus(c)
+    const u = b.sub(a)
+    const v = d.sub(c)
+    const w = a.sub(c)
 
     const D = Point.crossProduct(u, v)
 
@@ -379,7 +379,7 @@ return xx;
       // get the difference of the two closest points
       //            const dP = w + (parab * u) - (parcd * v),
 
-      dist: w.add(u.mult(parab_).minus(v.mult(parcd_))).length, // return the closest distance
+      dist: w.add(u.mult(parab_).sub(v.mult(parcd_))).length, // return the closest distance
     }
   }
 }

@@ -126,9 +126,9 @@ export class BezierSeg implements ICurve {
     this.b[1] = b1
     this.b[2] = b2
     this.b[3] = b3
-    this.c = this.b[1].minus(this.b[0]).mult(3)
-    this.e = this.b[2].minus(this.b[1]).mult(3).minus(this.c)
-    this.l = this.b[3].minus(this.b[0]).minus(this.c).minus(this.e)
+    this.c = this.b[1].sub(this.b[0]).mult(3)
+    this.e = this.b[2].sub(this.b[1]).mult(3).sub(this.c)
+    this.l = this.b[3].sub(this.b[0]).sub(this.c).sub(this.e)
   }
 
   get start() {
@@ -150,9 +150,9 @@ export class BezierSeg implements ICurve {
     this.b[1].move(delta)
     this.b[2].move(delta)
     this.b[3].move(delta)
-    this.c = this.b[1].minus(this.b[0]).mult(3)
-    this.e = this.b[2].minus(this.b[1]).mult(3).minus(this.c)
-    this.l = this.b[3].minus(this.b[0]).minus(this.c).minus(this.e)
+    this.c = this.b[1].sub(this.b[0]).mult(3)
+    this.e = this.b[2].sub(this.b[1]).mult(3).sub(this.c)
+    this.l = this.b[3].sub(this.b[0]).sub(this.c).sub(this.e)
     this.pBoxNode = null
   }
 
@@ -187,9 +187,9 @@ export class BezierSeg implements ICurve {
 
   //
   static lengthOnControlPolygon(b0: Point, b1: Point, b2: Point, b3: Point) {
-    const innerCordLength = b3.minus(b0).length
+    const innerCordLength = b3.sub(b0).length
     const controlPointPolygonLength =
-      b1.minus(b0).length + b2.minus(b1).length + b3.minus(b2).length
+      b1.sub(b0).length + b2.sub(b1).length + b3.sub(b2).length
     if (
       controlPointPolygonLength - innerCordLength >
       GeomConstants.lineSegmentThreshold
@@ -212,7 +212,7 @@ export class BezierSeg implements ICurve {
 
   // the segment bounding box
   get boundingBox() {
-    const ret = Rectangle.rectanglePointPoint(this.b[0], this.b[1])
+    const ret = Rectangle.mkPP(this.b[0], this.b[1])
     ret.add(this.b[2])
     ret.add(this.b[3])
     return ret
@@ -237,7 +237,7 @@ export class BezierSeg implements ICurve {
     let closest = 0
     let minDist = Number.MAX_VALUE
     for (let i = 0; i < 9; i++) {
-      const p = targetPoint.minus(this.value(i * t + low))
+      const p = targetPoint.sub(this.value(i * t + low))
       const d = p.dot(p)
       if (d < minDist) {
         minDist = d
@@ -342,7 +342,7 @@ export class BezierSeg implements ICurve {
     let closest = 0
     let minDist = Number.MAX_VALUE
     for (let i = 0; i < 9; i++) {
-      const p = targetPoint.minus(this.value(i * t))
+      const p = targetPoint.sub(this.value(i * t))
       const d = p.dot(p)
       if (d < minDist) {
         minDist = d
