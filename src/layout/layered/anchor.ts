@@ -6,12 +6,12 @@
 //           |
 //           |
 //           |BottomAnchor
-import {Point} from './../../math/geometry/point'
-import {Polyline} from './../../math/geometry/polyline'
-import {PolylinePoint} from './../../math/geometry/polylinePoint'
-import {Curve} from './../../math/geometry/curve'
-import {GeomConstants} from './../../math/geometry/geomConstants'
-import {GeomNode} from './../core/geomNode'
+import { Point } from './../../math/geometry/point'
+import { Polyline } from './../../math/geometry/polyline'
+import { PolylinePoint } from './../../math/geometry/polylinePoint'
+import { Curve } from './../../math/geometry/curve'
+import { GeomConstants } from './../../math/geometry/geomConstants'
+import { GeomNode } from './../core/geomNode'
 export class Anchor {
   // ToString
   toString() {
@@ -150,13 +150,13 @@ export class Anchor {
     this.labelCornersPreserveCoefficient = labelCornersPreserveCoefficient
   }
   // constructor
-  mkAnchor(
+  static mkAnchor(
     leftAnchor: number,
     rightAnchor: number,
     topAnchor: number,
     bottomAnchor: number,
     node: GeomNode,
-    labelCornersPreserveCoefficient: number,
+    labelCornersPreserveCoefficient: number
   ) {
     const a = new Anchor(labelCornersPreserveCoefficient)
     a.la = leftAnchor
