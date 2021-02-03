@@ -1,5 +1,11 @@
-import {LinearSystem2} from './linearSystem'
-import {GeomConstants} from './geomConstants'
+import { LinearSystem2 } from './linearSystem'
+import { GeomConstants } from './geomConstants'
+export enum TriangleOrientation {
+  Clockwise,
+  Counterclockwise,
+  Collinear
+}
+
 export class Point {
   dot(a: Point): number {
     return this.x * a.x + this.y * a.y
@@ -186,7 +192,18 @@ export class Point {
     if (cross >= -GeomConstants.tolerance) return atan2
     return Math.PI * 2.0 + atan2
   }
+
   static signedDoubledTriangleArea(a: Point, b: Point, c: Point): number {
     return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y)
   }
+
+  static getTriangleOrientation(cornerA: Point, cornerB: Point, cornerC: Point) {
+    const area = Point.signedDoubledTriangleArea(cornerA, cornerB, cornerC);
+    if (area > GeomConstants.distanceEpsilon)
+      return TriangleOrientation.Counterclockwise;
+    if (area < -GeomConstants.distanceEpsilon)
+      return TriangleOrientation.Clockwise;
+    return TriangleOrientation.Collinear;
+  }
+
 }

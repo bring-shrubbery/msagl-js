@@ -1,22 +1,24 @@
-import {ICurve} from './icurve'
-import {PN, PNInternal, PNLeaf, ParallelogramNode} from './parallelogramNode'
-import {allVerticesOfParall} from './parallelogram'
-import {Point} from './point'
-import {LineSegment} from './lineSegment'
-import {IntersectionInfo} from './intersectionInfo'
-import {Assert} from './../../utils/assert'
-import {Parallelogram} from './parallelogram'
-import {Ellipse} from './ellipse'
-import {Polyline} from './polyline'
-import {GeomConstants} from './geomConstants'
-import {LinearSystem2} from './linearSystem'
-import {MinDistCurveCurve} from './minDistCurveCurve'
-import {Rectangle} from './rectangle'
-import {PlaneTransformation} from './planeTransformation'
-import {SvgDebugWriter} from './svgDebugWriter'
-import {DebugCurve} from './debugCurve'
-import {BezierSeg} from './bezierSeg'
-import {CornerSite} from './cornerSite'
+import { ICurve } from './icurve'
+import { PN, PNInternal, PNLeaf, ParallelogramNode } from './parallelogramNode'
+import { allVerticesOfParall } from './parallelogram'
+import { Point } from './point'
+import { LineSegment } from './lineSegment'
+import { IntersectionInfo } from './intersectionInfo'
+import { Assert } from './../../utils/assert'
+import { Parallelogram } from './parallelogram'
+import { Ellipse } from './ellipse'
+import { Polyline } from './polyline'
+import { GeomConstants } from './geomConstants'
+import { LinearSystem2 } from './linearSystem'
+import { MinDistCurveCurve } from './minDistCurveCurve'
+import { Rectangle } from './rectangle'
+import { PlaneTransformation } from './planeTransformation'
+import { SvgDebugWriter } from './svgDebugWriter'
+import { DebugCurve } from './debugCurve'
+import { BezierSeg } from './bezierSeg'
+import { CornerSite } from './cornerSite'
+import { from } from 'linq-to-typescript'
+
 type Params = {
   start: number
   end: number
@@ -82,12 +84,10 @@ export class Curve implements ICurve {
     _eps: number,
   ): number {
     throw 'not implemented'
-    return 0
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static lengthWithInterpolation(_seg: ICurve): number {
     throw 'not implemented'
-    return 0
   }
 
   get parStart() {
@@ -254,7 +254,7 @@ export class Curve implements ICurve {
       parallelogram: Parallelogram.getParallelogramOfAGroup(parallelograms),
       seg: this,
       leafBoxesOffset: GeomConstants.defaultLeafBoxesOffset,
-      node: {children: childrenNodes},
+      node: { children: childrenNodes },
     }
 
     return this.pBNode
@@ -1285,10 +1285,10 @@ export class Curve implements ICurve {
     return aMinusB.dot(aMinusB) >= GeomConstants.distanceEpsilon
       ? undefined
       : {
-          aSol: mdout.aSol,
-          bSol: mdout.bSol,
-          x: Point.middle(mdout.aX, mdout.bX),
-        }
+        aSol: mdout.aSol,
+        bSol: mdout.bSol,
+        x: Point.middle(mdout.aX, mdout.bX),
+      }
   }
 
   static crossTwoLineSegs(
@@ -1533,11 +1533,11 @@ export class Curve implements ICurve {
     md.solve()
     return md.success
       ? {
-          aSol: md.aSolution,
-          bSol: md.bSolution,
-          aX: md.aPoint,
-          bX: md.bPoint,
-        }
+        aSol: md.aSolution,
+        bSol: md.bSolution,
+        aX: md.aPoint,
+        bX: md.bPoint,
+      }
       : undefined
   }
   /*
@@ -1870,12 +1870,12 @@ export class Curve implements ICurve {
     return new BezierSeg(a, a.add(d), b.add(d), b)
   }
 
-  static findCorner(a: CornerSite): {b: CornerSite; c: CornerSite} | undefined {
+  static findCorner(a: CornerSite): { b: CornerSite; c: CornerSite } | undefined {
     const b = a.next
     if (b.next == null) return //no corner has been found
     const c = b.next
     if (c == null) return
-    return {b: b, c: c}
+    return { b: b, c: c }
   }
 
   static trimEdgeSplineWithNodeBoundaries(
@@ -1953,78 +1953,69 @@ export class Curve implements ICurve {
     return start
   }
 
-  /* 
-  public static Polyline PolylineAroundClosedCurve(ICurve curve) {
-  Polyline ret;
-  var ellipse = curve as Ellipse;
-  if (ellipse != null)
-  ret = RefineEllipse(ellipse);
-  else {
-  var poly = curve as Polyline;
-  if (poly != null)
-  return poly;
-  var c = curve as Curve;
-  if (c != null && AllSegsAreLines(c)) {
-  ret = new Polyline();
-  for (LineSegment ls in c.segs)
-  ret.AddPoint(ls.start);
-  ret.isClosed = true;
-  if (!ret.IsClockwise())
-  ret = (Polyline) ret.Reverse();
+
+  static polylineAroundClosedCurve(curve: ICurve): Polyline {
+    if (curve instanceof Ellipse)
+      return Curve.refineEllipse(curve as Ellipse);
+    var poly = curve as Polyline;
+    if (poly != null)
+      return poly;
+    if (curve instanceof Curve && Curve.allSegsAreLines(curve as Curve)) {
+      const ret = new Polyline();
+      for (const ls of (curve as Curve).segs)
+        ret.addPoint(ls.start);
+      ret.closed = true;
+      if (!ret.isClockwise())
+        return ret.reverse() as Polyline;
+    }
+    return curve.boundingBox.perimeter()
   }
-  else
-  ret = StandardRectBoundary(curve);
+
+
+  static allSegsAreLines(c: Curve) {
+    for (const s of c.segs)
+      if (!(s instanceof LineSegment))
+        return false;
+    return true;
   }
-  return ret;
-  }
-  
-  static boolean AllSegsAreLines(Curve c) {
-  for (ICurve s in c.segs)
-  if (!(s is LineSegment))
-  return false;
-  return true;
-  }
-  
+
   // this code only works for the standard ellipse
-  static Polyline RefineEllipse(Ellipse ellipse) {
-  Polyline rect = StandardRectBoundary(ellipse);
-  var dict = new SortedDictionary<number, Point>();
-  number a = Math.PI/4;
-  number w = ellipse.BoundingBox.Width;
-  number h = ellipse.BoundingBox.Height;
-  number l = Math.sgrt(w*w + h*h);
-  for (int i = 0; i < 4; i++) {
-  number t = a + i*Math.PI/2; // parameter
-  Point p = ellipse[t]; //point on the ellipse
-  Point tan = l*(ellipse.derivative(t).Normalize()); //make it long enough
-  
-  var ls = new LineSegment(p - tan, p + tan);
-  for (IntersectionInfo ix in GetAllIntersections(rect, ls, true))
-  dict[ix.par0] = ix.intersectionPoint;
+  static refineEllipse(ellipse: Ellipse): Polyline {
+    const rect = ellipse.boundingBox.perimeter();
+    const a = Math.PI / 4;
+    const w = ellipse.boundingBox.width;
+    const h = ellipse.boundingBox.height;
+    const l = Math.sqrt(w * w + h * h);
+    const xs: IntersectionInfo[] = []
+    for (let i = 0; i < 4; i++) {
+      const t = a + i * Math.PI / 2; // parameter
+      const p = ellipse[t]; //point on the ellipse
+      const tan = ellipse.derivative(t).normalize().mult(l); //make it long enough
+
+      var ls = LineSegment.mkLinePP(p.sub(tan), p.add(tan));
+      for (const x of Curve.getAllIntersections(rect, ls, true))
+        xs.push(x)
+    }
+
+    Assert.assert(xs.length > 0);
+    xs.sort((a, b) => a.par0 < b.par0 ? -1 : a.par0 > b.par0 ? 1 : 0)
+    const ret = new Polyline()
+    xs.forEach(x => ret.addPoint(x.x))
+    ret.closed = true
+    return ret
   }
-  
-  Assert.assert(dict.length > 0);
-  return new Polyline(dict.Values) {Closed = true};
-  }
-  
-  internal static Polyline StandardRectBoundary(ICurve curve) {
-  Rectangle bbox = curve.BoundingBox;
-  return bbox.Perimeter();
-  }
-  
   // Create a closed Polyline from a rectangle
-  public static Polyline PolyFromBox(Rectangle rectangle) {
-  var p = new Polyline();
-  p.AddPoint(rectangle.LeftTop);
-  p.AddPoint(rectangle.RightTop);
-  p.AddPoint(rectangle.RightBottom);
-  p.AddPoint(rectangle.LeftBottom);
-  p.setIsClosed(true);
-  return p;
+  static polyFromBox(rectangle: Rectangle) {
+    var p = new Polyline();
+    p.addPoint(rectangle.leftTop);
+    p.addPoint(rectangle.rightTop);
+    p.addPoint(rectangle.rightBottom);
+    p.addPoint(rectangle.leftBottom);
+    p.closed = true;
+    return p;
   }
-  
-*/
 }
+
 
 // a, b are parameters of the curve
 function isCloseToLineSeg(

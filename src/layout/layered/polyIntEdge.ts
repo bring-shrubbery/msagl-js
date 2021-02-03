@@ -1,250 +1,137 @@
 import { IEdge } from './iedge'
+import { GeomEdge } from './../core/geomEdge'
+import { ICurve } from './../../math/geometry/icurve'
+import { LayerEdge } from './layerEdge'
+
+class Routing {
+  static updateLabel(edge: GeomEdge, anchor: Anchor) {
+    throw new Error()
+  }
+}
+class Anchor {
+}
 // An edge with source and target represented as integers, they point to the array of Nodes of the graph
 export class PolyIntEdge implements IEdge {
   source: number
-
   target: number
-
   reversed: boolean
-
-  // A dummy edge that will not be drawn; serves just as a place holder.
-
+  // separation request in number of layers between the sourse and the target layers
+  //  separation: number - should be maintained by sugiama settings
+  // weight: number - should be maintained by sugiama settings
+  // crossingWeight - should be maintained by sugiama settings
+  // If true it is a dummy edge that will not be drawn; serves as a place holder.
   isVirtualEdge: boolean
+  layerEdges: LayerEdge[]
+
+
   constructor(source: number, target: number) {
     this.source = source;
     this.target = target;
   }
 
- 
-  boolean HasLabel {
-  get { return Edge.Label != null; }
-}
+  hasLabel: boolean
 
-/// <summary>
-/// Label width
-/// </summary>
-internal double LabelWidth {
-  get { return Edge.Label.Width; }
-}
+  get labelWidth() { return this.edge.label.width; }
+  get labelHeight() { return this.edge.label.height; }
 
-/// <summary>
-/// Label height
-/// </summary>
-internal double LabelHeight {
-  get { return Edge.Label.Height; }
-}
 
-/// <summary>
-/// This function changes the edge by swapping 
-/// source and target. However Revert(Revert) does not change it.
-/// </summary>
-internal void Revert() {
-  int t = source;
-  source = target;
-  target = t;
-  reversed = !reversed;
-#if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=289 Support Dictionary directly based on object's GetHashCode
-  UpdateHashKey();
-#endif
-}
-
-        /// <summary>
-        /// The original edge corresponding to the PolyIntEdge
-        /// </summary>
-        public Edge Edge { get; set; }
-
-/// <summary>
-/// constructor
-/// </summary>
-/// <param name="source"></param>
-/// <param name="target"></param>
-/// <param name="edge"></param>
-internal PolyIntEdge(number source, number target, Edge edge) {
-  this.source = source;
-  this.target = target;
-  Edge = edge;
-  if (edge != null) {
-    Separation = edge.Separation;
-    Weight = edge.Weight;
+  // This function changes the edge by swapping source and target. 
+  reverse() {
+    const t = this.source;
+    this.source = this.target;
+    this.target = t;
+    this.reversed = !this.reversed;
   }
-#if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=289 Support Dictionary directly based on object's GetHashCode
-  UpdateHashKey();
-#endif
-}
-
-        /// <summary>
-        /// compares only source and target
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public override boolean Equals(object obj) {
-  var ie = obj as PolyIntEdge;
-  if (ie == null)
-    return false;
-  return ie.source == source &&
-    ie.target == target;
-}
-
-#if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=289 Support Dictionary directly based on object's GetHashCode
-        private SharpKit.JavaScript.JsString _hashKey;
-        private void UpdateHashKey()
-{
-  _hashKey = "" + source + "," + target;
-}
-#endif
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public override number GetHashCode() {
-  var hc = (uint) source.GetHashCode();
-  return (int)((hc << 5 | hc >> 27) + (uint) target);
-}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() {
-  return "Edge(" + source + "->" + target + ")";
-}
-
-internal ICurve Curve {
-  get { return Edge.Curve; }
-  set { Edge.Curve = value; }
-}
 
 
-[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-internal SmoothedPolyline UnderlyingPolyline {
-  get { return Edge.UnderlyingPolyline; }
-  set { Edge.UnderlyingPolyline = value; }
-}
+  // The original edge corresponding to the PolyIntEdge
+  edge: GeomEdge
 
-
-number weight = 1;
-
-internal number Weight {
-  get { return weight; }
-  set { weight = value; }
-}
-
-number crossingWeight = 1;
-
-internal number CrossingWeight {
-  get { return crossingWeight; }
-}
-
-number separation;
-
-        /// <summary>
-        /// the distance between the source and the target in the number of layers
-        /// </summary>
-        public number Separation {
-  get { return separation; }
-  set { separation = value; }
-}
-
-        /// <summary>
-        /// the edge span in layers
-        /// </summary>
-        public number LayerSpan {
-  get {
-    return layerEdges != null ? layerEdges.Length : 0;
-    // return virtualStart == -1 ? 1 : VirtualEnd - VirtualStart + 2;
+  // constructor
+  static mkPolyIntEdge(source: number, target: number, edge: GeomEdge) {
+    const pe = new PolyIntEdge(source, target)
+    pe.source = source;
+    pe.target = target;
+    pe.edge = edge;
+    return pe
   }
-}
 
 
-LayerEdge[] layerEdges;
-        /// <summary>
-        /// 
-        /// </summary>
-#if TEST_MSAGL
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-public
-#else
-internal
-#endif
-IList < LayerEdge > LayerEdges {
-  get { return layerEdges; }
-  set { layerEdges = (LayerEdge[]) value; }
-}
+  toString(): string {
+    return "edge(" + this.source + "->" + this.target + ")";
+  }
+
+  get curve(): ICurve { return this.edge.curve; }
+
+  set curve(value) { this.edge.curve = value; }
+
+  get underlyingPolyline() { return this.edge.underlyingPolyline }
+  set underlyingPolyline(value) { this.edge.underlyingPolyline = value; }
 
 
-internal boolean SelfEdge() {
-  return source == target;
-}
 
-internal PolyIntEdge ReversedClone() {
-  var ret = new PolyIntEdge(target, source, Edge);
-  if (layerEdges != null) {
-    number len = layerEdges.Length;
-    ret.layerEdges = new LayerEdge[len];
-    for (number i = 0; i < len; i++) {
-      LayerEdge le = layerEdges[len - 1 - i];
-      ret.layerEdges[i] = new LayerEdge(le.Target, le.Source, le.CrossingWeight);
+  get layerSpan() {
+    return this.layerEdges != null ? this.layerEdges.length : 0;
+  }
+
+
+  isSelfEdge(): boolean {
+    return this.source == this.target;
+  }
+
+  reversedClone() {
+    const ret = PolyIntEdge.mkPolyIntEdge(this.target, this.source, this.edge);
+    if (this.layerEdges != null) {
+      const len = this.layerEdges.length;
+      ret.layerEdges = new Array<LayerEdge>(len);
+      for (let i = 0; i < len; i++) {
+        const le = this.layerEdges[len - 1 - i];
+        ret.layerEdges[i] = new LayerEdge(le.target, le.source, le.crossingWeight);
+      }
+      ret.layerEdges[0].source = this.target;
+      ret.layerEdges[this.layerEdges.length - 1].target = this.source;
     }
-    ret.layerEdges[0].Source = target;
-    ret.layerEdges[layerEdges.Length - 1].Target = source;
+    return ret;
   }
-#if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=289 Support Dictionary directly based on object's GetHashCode
-  ret.UpdateHashKey();
-#endif
-  return ret;
-}
 
-internal LayerEdge this[number i] {
-  get { return layerEdges[i]; }
-}
-
-internal number Count {
-  get { return layerEdges.Length; }
-}
+  get count(): number { return this.layerEdges.length; }
 
 
-internal void UpdateEdgeLabelPosition(Anchor[] anchors) {
-  if (Edge.Label != null) {
-    number m = layerEdges.Length / 2;
-    LayerEdge layerEdge = layerEdges[m];
-    Routing.UpdateLabel(Edge, anchors[layerEdge.Source]);
+
+  updateEdgeLabelPosition(anchors: Anchor[]) {
+    if (this.edge.label != null) {
+      const m = this.layerEdges.length / 2;
+      const layerEdge = this.layerEdges[m];
+      Routing.updateLabel(this.edge, anchors[layerEdge.source]);
+    }
   }
-}
 
-        #region IEnumerable < number > Members
+  #region IEnumerable<number> Members
 
-        /// <summary>
-        /// enumerates over virtual virtices corresponding to the original edge
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerator < number > GetEnumerator() {
-  yield return layerEdges[0].Source;
-  foreach(LayerEdge le in layerEdges)
-  yield return le.Target;
-}
+  // enumerates over virtual virtices corresponding to the original edge
+  public IEnumerator<number> GetEnumerator() {
+    yield return layerEdges[0].Source;
+    foreach(LayerEdge le in layerEdges)
+    yield return le.Target;
+  }
 
-        #endregion
+  #endregion
 
-        #region IEnumerable Members
+  #region IEnumerable Members
 
-IEnumerator IEnumerable.GetEnumerator() {
-  yield return layerEdges[0].Source;
-  foreach(LayerEdge le in layerEdges)
-  yield return le.Target;
-}
+  IEnumerator IEnumerable.GetEnumerator() {
+    yield return layerEdges[0].Source;
+    foreach(LayerEdge le in layerEdges)
+    yield return le.Target;
+  }
 
-        #endregion
+  #endregion
 
-/// <summary>
-/// The function returns an array arr such that
-/// arr is a permutation of the graph vertices,
-/// and for any edge e in graph if e.Source=arr[i]
-/// e.Target=arr[j], then i is less than j
-/// </summary>
-/// <param name="graph"></param>
-/// <returns></returns>
-internal static number[] GetOrder(BasicGraphOnEdges < PolyIntEdge > graph){
+  // The function returns an array arr such that
+  // arr is a permutation of the graph vertices,
+  // and for any edge e in graph if e.Source=arr[i]
+  // e.Target=arr[j], then i is less than j
+  internal static number[] GetOrder(BasicGraphOnEdges <PolyIntEdge > graph) {
   var visited = new boolean[graph.NodeCount];
 
   //no recursion! So we have to organize a stack

@@ -1,7 +1,7 @@
 import {ICurve} from './icurve'
 import {PN} from './parallelogramNode'
 import {PlaneTransformation} from './planeTransformation'
-import {Point} from './point'
+import {Point, TriangleOrientation} from './point'
 import {Rectangle} from './rectangle'
 import {PolylinePoint} from './polylinePoint'
 import {GeomConstants} from './geomConstants'
@@ -29,6 +29,18 @@ export class Polyline implements ICurve {
 
   addPointXY(x: number, y: number) {
     this.addPoint(new Point(x, y))
+  }
+
+  // true in general for convex polylines
+
+  isClockwise() {
+    return (
+      Point.getTriangleOrientation(
+        this.startPoint.point,
+        this.startPoint.next.point,
+        this.startPoint.next.next.point,
+      ) == TriangleOrientation.Clockwise
+    )
   }
 
   addPoint(p: Point) {
