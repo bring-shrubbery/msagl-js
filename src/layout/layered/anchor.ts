@@ -6,12 +6,13 @@
 //           |
 //           |
 //           |BottomAnchor
-import { Point } from './../../math/geometry/point'
-import { Polyline } from './../../math/geometry/polyline'
-import { PolylinePoint } from './../../math/geometry/polylinePoint'
-import { Curve } from './../../math/geometry/curve'
-import { GeomConstants } from './../../math/geometry/geomConstants'
-import { GeomNode } from './../core/geomNode'
+import {Point, TriangleOrientation} from './../../math/geometry/point'
+import {Polyline} from './../../math/geometry/polyline'
+import {PolylinePoint} from './../../math/geometry/polylinePoint'
+import {Curve} from './../../math/geometry/curve'
+import {GeomConstants} from './../../math/geometry/geomConstants'
+import {GeomNode} from './../core/geomNode'
+import {Assert} from './../../utils/assert'
 export class Anchor {
   // ToString
   toString() {
@@ -147,6 +148,10 @@ export class Anchor {
   }
 
   constructor(labelCornersPreserveCoefficient: number) {
+    Assert.assert(
+      0 <= labelCornersPreserveCoefficient &&
+        labelCornersPreserveCoefficient <= 1,
+    )
     this.labelCornersPreserveCoefficient = labelCornersPreserveCoefficient
   }
   // constructor
@@ -156,7 +161,7 @@ export class Anchor {
     topAnchor: number,
     bottomAnchor: number,
     node: GeomNode,
-    labelCornersPreserveCoefficient: number
+    labelCornersPreserveCoefficient: number,
   ) {
     const a = new Anchor(labelCornersPreserveCoefficient)
     a.la = leftAnchor
@@ -278,17 +283,16 @@ export class Anchor {
     const u = first.point
     const v = second.point
     const w = third.point
-    // System.Diagnostics.Debug.Assert(Point.GetTriangleOrientation(u, v, w) == TriangleOrientation.Clockwise);
-
-    const uvPerp = v
-      .sub(u)
-      .rotate(Math.PI / 2)
-      .normalize()
+    const ccw =
+      Point.getTriangleOrientation(u, v, w) ==
+      TriangleOrientation.Counterclockwise
+    const uv = v.sub(u)
+    const uvPerp = uv.rotate(Math.PI / 2).normalize()
     ///uvPerp has to look outside of the curve
     //if (uvPerp * (v - Origin) < 0)
     //    uvPerp *= -1;
 
-    const l = v.sub(u).normalize().add(v.sub(w).normalize())
+    const l = uv.normalize().add(v.sub(w).normalize())
     if (l.length < GeomConstants.intersectionEpsilon) {
       return {
         a: v.add(uvPerp.mult(padding)),
@@ -299,13 +303,14 @@ export class Anchor {
     const d = l.normalize().mult(padding)
     const dp = d.rotate(Math.PI / 2)
 
-    //look for a in the form d+x*dp
+    //look for a in the form d+x*dp + v
     //we have:  Padding=(d+x*dp)*uvPerp
-    const xp = (padding - d.dot(uvPerp)) / dp.dot(uvPerp)
+    let xp = (padding - d.dot(uvPerp)) / dp.dot(uvPerp)
+    if (ccw == false) xp = -xp
     return {
-      a: d.add(dp.mult(xp)).add(v),
-      b: d.sub(dp.mult(xp)).add(v),
-      numberOfPoints: 1, //number of points to add
+      a: d.sub(dp.mult(xp)).add(v),
+      b: d.add(dp.mult(xp)).add(v),
+      numberOfPoints: 2, //number of points to add
     }
   }
 

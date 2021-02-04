@@ -1955,7 +1955,6 @@ export class Curve implements ICurve {
 
   static polylineAroundClosedCurve(curve: ICurve): Polyline {
     if (curve instanceof Ellipse) return Curve.refineEllipse(curve as Ellipse)
-    const poly = curve as Polyline
     if (curve instanceof Polyline) return curve as Polyline
     if (curve instanceof Curve && Curve.allSegsAreLines(curve as Curve)) {
       const ret = new Polyline()
