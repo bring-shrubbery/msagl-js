@@ -287,11 +287,10 @@ export class Anchor {
       Point.getTriangleOrientation(u, v, w) ==
       TriangleOrientation.Counterclockwise
     const uv = v.sub(u)
-    const uvPerp = uv.rotate(Math.PI / 2).normalize()
-    ///uvPerp has to look outside of the curve
-    //if (uvPerp * (v - Origin) < 0)
-    //    uvPerp *= -1;
+    //uvPerp has to look outside of the curve
+    const uvPerp = uv.rotate((ccw ? -Math.PI : Math.PI) / 2).normalize()
 
+    //l is bisector of the corner (u,v,w) pointing out of the corner - outside of the polyline
     const l = uv.normalize().add(v.sub(w).normalize())
     if (l.length < GeomConstants.intersectionEpsilon) {
       return {
@@ -300,45 +299,49 @@ export class Anchor {
         numberOfPoints: 1,
       }
     }
+
     const d = l.normalize().mult(padding)
     const dp = d.rotate(Math.PI / 2)
 
     //look for a in the form d+x*dp + v
-    //we have:  Padding=(d+x*dp)*uvPerp
-    let xp = (padding - d.dot(uvPerp)) / dp.dot(uvPerp)
-    if (ccw == false) xp = -xp
+    //we need to have:  padding = (d+x*dp)*uvPerp
+    const xp = (padding - d.dot(uvPerp)) / dp.dot(uvPerp)
     return {
-      a: d.sub(dp.mult(xp)).add(v),
-      b: d.add(dp.mult(xp)).add(v),
+      a: d.add(dp.mult(xp)).add(v),
+      b: d.sub(dp.mult(xp)).add(v),
       numberOfPoints: 2, //number of points to add
     }
   }
 
-  static curveIsConvex(poly: Polyline) {
-    const orientation = Point.getTriangleOrientation(
+  static *orientations(poly: Polyline): IterableIterator<TriangleOrientation> {
+    yield Point.getTriangleOrientation(
       poly.endPoint.point,
       poly.startPoint.point,
       poly.startPoint.next.point,
     )
-    if (
-      Point.getTriangleOrientation(
-        poly.endPoint.prev.point,
-        poly.endPoint.point,
-        poly.startPoint.point,
-      ) != orientation
+    yield Point.getTriangleOrientation(
+      poly.endPoint.prev.point,
+      poly.endPoint.point,
+      poly.startPoint.point,
     )
-      return false
+
     let pp = poly.startPoint
     while (pp.next.next != null) {
-      if (
-        Point.getTriangleOrientation(
-          pp.point,
-          pp.next.point,
-          pp.next.next.point,
-        ) != orientation
+      yield Point.getTriangleOrientation(
+        pp.point,
+        pp.next.point,
+        pp.next.next.point,
       )
-        return false
       pp = pp.next
+    }
+  }
+
+  static curveIsConvex(poly: Polyline) {
+    let orientation = TriangleOrientation.Collinear
+    for (const or of Anchor.orientations(poly)) {
+      if (or == TriangleOrientation.Collinear) continue
+      if (orientation == TriangleOrientation.Collinear) orientation = or
+      else if (or != orientation) return false
     }
     return true
   }

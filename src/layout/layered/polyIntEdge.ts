@@ -106,26 +106,14 @@ export class PolyIntEdge implements IEdge {
     }
   }
 
-  #region IEnumerable<number> Members
 
   // enumerates over virtual virtices corresponding to the original edge
-  public IEnumerator<number> GetEnumerator() {
-    yield return layerEdges[0].Source;
-    foreach(LayerEdge le in layerEdges)
-    yield return le.Target;
+  * getEnumerator(): IterableIterator<number> {
+    yield this.layerEdges[0].source;
+    for (const le of this.layerEdges)
+      yield le.target;
   }
 
-  #endregion
-
-  #region IEnumerable Members
-
-  IEnumerator IEnumerable.GetEnumerator() {
-    yield return layerEdges[0].Source;
-    foreach(LayerEdge le in layerEdges)
-    yield return le.Target;
-  }
-
-  #endregion
 
   // The function returns an array arr such that
   // arr is a permutation of the graph vertices,
