@@ -73,7 +73,7 @@ export class LineSegment implements ICurve {
   }
 
   // construct a line segment
-  static mkLinePP(start: Point, end: Point) {
+  static mkLinePP(start: Point, end: Point): LineSegment {
     return new LineSegment(start.x, start.y, end.x, end.y)
   }
 

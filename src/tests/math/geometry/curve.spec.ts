@@ -1,14 +1,14 @@
-import {LineSegment} from '../../../math/geometry/lineSegment'
-import {Ellipse} from '../../../math/geometry/ellipse'
-import {Point} from './../../../math/geometry/point'
-import {Curve} from './../../../math/geometry/curve'
-import {PlaneTransformation} from './../../../math/geometry/planeTransformation'
-import {CurveFactory} from './../../../math/geometry/curveFactory'
-import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
-import {DebugCurve} from './../../../math/geometry/debugCurve'
-import {BezierSeg} from './../../../math/geometry/bezierSeg'
-import {ICurve} from './../../../math/geometry/icurve'
-import {Rectangle} from './../../../math/geometry/rectangle'
+import { LineSegment } from '../../../math/geometry/lineSegment'
+import { Ellipse } from '../../../math/geometry/ellipse'
+import { Point } from './../../../math/geometry/point'
+import { Curve } from './../../../math/geometry/curve'
+import { PlaneTransformation } from './../../../math/geometry/planeTransformation'
+import { CurveFactory } from './../../../math/geometry/curveFactory'
+import { SvgDebugWriter } from './../../../math/geometry/svgDebugWriter'
+import { DebugCurve } from './../../../math/geometry/debugCurve'
+import { BezierSeg } from './../../../math/geometry/bezierSeg'
+import { ICurve } from './../../../math/geometry/icurve'
+import { Rectangle } from './../../../math/geometry/rectangle'
 function exp(b: boolean) {
   expect(b).toBeTruthy()
 }
@@ -44,7 +44,7 @@ function bbIsOk(s: ICurve) {
   }
   expect(bbox.contains(rect.leftBottom)).toBe(true)
   expect(bbox.contains(rect.rightTop)).toBe(true)
-  rect.pad(rect.diagonal() / 10)
+  rect.pad(rect.diagonal / 10)
   expect(rect.contains(bbox.leftBottom)).toBe(true)
   expect(rect.contains(bbox.rightTop)).toBe(true)
 }

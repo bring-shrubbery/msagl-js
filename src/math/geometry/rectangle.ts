@@ -1,7 +1,7 @@
-import {Point} from './point'
-import {Polyline} from './polyline'
-import {GeomConstants} from './geomConstants'
-import {Assert} from './../../utils/assert'
+import { Point } from './point'
+import { Polyline } from './polyline'
+import { GeomConstants } from './geomConstants'
+import { Assert } from './../../utils/assert'
 
 class Size {
   width: number
@@ -291,7 +291,7 @@ export class Rectangle {
   }
 
   // return the length of the diagonal
-  diagonal() {
+  get diagonal() {
     return Math.sqrt(this.width * this.width + this.height * this.height)
   }
 
