@@ -1,22 +1,21 @@
 import { LayerCalculator } from './layerCalculator'
 import { BasicGraphOnEdges } from './../basicGraphOnEdges'
-// The algorithm follows "A technique for Drawing Directed Graphs", Gansner, Koutsofios, North, Vo.
-// Consider re-implement this algorithm following Chvatal. The algorithm works for a connected graph.
+// The implementation follows "A technique for Drawing Directed Graphs", Gansner, Koutsofios, North, Vo.
 export class NetworkSimplex implements LayerCalculator {
 
-  static BasicGraphOnEdges CreateGraphWithIEEdges(BasicGraphOnEdges <PolyIntEdge > bg) {
-  List < PolyIntEdge > ieEdges = new List<PolyIntEdge>();
+  static createGraphWithIEEdges(bg: BasicGraphOnEdges) {
+    const ieEdges: PolyIntEdge> ();
 
-  foreach(PolyIntEdge e in bg.Edges)
-  ieEdges.Add(new NetworkEdge(e));
+    foreach(PolyIntEdge e in bg.Edges)
+    ieEdges.Add(new NetworkEdge(e));
 
-  return new BasicGraphOnEdges<PolyIntEdge>(ieEdges, bg.NodeCount);
-}
+    return new BasicGraphOnEdges<PolyIntEdge>(ieEdges, bg.NodeCount);
+  }
 
-int[] layers;
+  int[] layers;
 
 
-internal NetworkSimplex(BasicGraphOnEdges < PolyIntEdge > graph, CancelToken cancelToken)
+  internal NetworkSimplex(BasicGraphOnEdges <PolyIntEdge > graph, CancelToken cancelToken)
 {
   this.graph = CreateGraphWithIEEdges(graph);
   inTree = new bool[graph.NodeCount];
