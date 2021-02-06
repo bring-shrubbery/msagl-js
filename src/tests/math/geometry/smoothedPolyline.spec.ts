@@ -15,7 +15,7 @@ test('smooth test', () => {
   let poly = Polyline.mkFromPoints(ps)
   SvgDebugWriter.dumpICurves('/tmp/sp.svg', [poly, sp.createCurve()])
 
-  ps[0].y = 0
+  ps[0] = new Point(0, 0)
   sp = SmoothedPolyline.mkFromPoints(ps)
   poly = Polyline.mkFromPoints(ps)
   SvgDebugWriter.dumpICurves('/tmp/sp1.svg', [poly, sp.createCurve()])

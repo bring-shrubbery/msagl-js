@@ -1,6 +1,6 @@
-import {Point} from './point'
-import {GeomConstants} from './geomConstants'
-import {Assert} from './../../utils/assert'
+import { Point } from './point'
+import { GeomConstants } from './geomConstants'
+import { Assert } from './../../utils/assert'
 
 export enum VertexId {
   Corner,
@@ -214,34 +214,28 @@ export class Parallelogram {
   static separByA(p0: Parallelogram, p1: Parallelogram): boolean {
     const eps = GeomConstants.distanceEpsilon
 
-    const t = p1.corner.sub(p0.corner)
+    let t = p1.corner.sub(p0.corner)
     const p1a = Point.dot(t, p0.aRot)
 
     if (p1a > p0.baRot + eps) {
-      t.x = p1.aPlusCorner.x - p0.corner.x
-      t.y = p1.aPlusCorner.y - p0.corner.y
+      t = p1.aPlusCorner.sub(p0.corner)
       if (Point.dot(t, p0.aRot) <= p0.baRot + eps) return false
 
-      t.x = p1.bPlusCorner.x - p0.corner.x
-      t.y = p1.bPlusCorner.y - p0.corner.y
+      t = p1.bPlusCorner.sub(p0.corner)
       if (Point.dot(t, p0.aRot) <= p0.baRot + eps) return false
 
-      t.x = p1.otherCorner.x - p0.corner.x
-      t.y = p1.otherCorner.y - p0.corner.y
+      t = p1.otherCorner.sub(p0.corner)
       if (Point.dot(t, p0.aRot) <= p0.baRot + eps) return false
 
       return true
     } else if (p1a < -eps) {
-      t.x = p1.aPlusCorner.x - p0.corner.x
-      t.y = p1.aPlusCorner.y - p0.corner.y
+      t = p1.aPlusCorner.sub(p0.corner)
       if (Point.dot(t, p0.aRot) >= -eps) return false
 
-      t.x = p1.bPlusCorner.x - p0.corner.x
-      t.y = p1.bPlusCorner.y - p0.corner.y
+      t = p1.bPlusCorner.sub(p0.corner)
       if (Point.dot(t, p0.aRot) >= -eps) return false
 
-      t.x = p1.otherCorner.x - p0.corner.x
-      t.y = p1.otherCorner.y - p0.corner.y
+      t = p1.otherCorner.sub(p0.corner)
       if (Point.dot(t, p0.aRot) >= -eps) return false
 
       return true
@@ -260,7 +254,7 @@ export class Parallelogram {
     result.corner = corner
     Assert.assert(
       sideA.length > GeomConstants.intersectionEpsilon &&
-        sideB.length > GeomConstants.intersectionEpsilon,
+      sideB.length > GeomConstants.intersectionEpsilon,
     )
     result.a = sideA
     result.b = sideB

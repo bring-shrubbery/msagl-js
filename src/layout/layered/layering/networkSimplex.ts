@@ -1,45 +1,41 @@
 import { LayerCalculator } from './layerCalculator'
 import { BasicGraphOnEdges } from './../basicGraphOnEdges'
+import { CancelToken } from './../../../utils/cancelToken'
+import { IEdge } from './../iedge'
 // The implementation follows "A technique for Drawing Directed Graphs", Gansner, Koutsofios, North, Vo.
 export class NetworkSimplex implements LayerCalculator {
 
-  static createGraphWithIEEdges(bg: BasicGraphOnEdges) {
-    const ieEdges: PolyIntEdge> ();
+  layers: number[] = null
+  graph: BasicGraphOnEdges;
+  networkCancelToken: CancelToken;
+  treeVertices: number[] = []
+  inTree: boolean[]
 
-    foreach(PolyIntEdge e in bg.Edges)
-    ieEdges.Add(new NetworkEdge(e));
 
-    return new BasicGraphOnEdges<PolyIntEdge>(ieEdges, bg.NodeCount);
+  constructs(graph: BasicGraphOnEdges, cancelToken: CancelToken) {
+    this.graph = graph;
+    this.inTree = new Array<boolean>(graph.nodeCount).fill(false)
+    this.networkCancelToken = cancelToken;
   }
 
-  int[] layers;
+  getLayers() {
+    if (this.layers == null)
+      this.run();
+
+    return this.layers;
+  }
+
+  private void ShiftLayerToZero() {
+    int minLayer = NetworkEdge.Infinity;
+    foreach(int i in layers)
+    if (i < minLayer)
+      minLayer = i;
 
 
-  internal NetworkSimplex(BasicGraphOnEdges <PolyIntEdge > graph, CancelToken cancelToken)
-{
-  this.graph = CreateGraphWithIEEdges(graph);
-  inTree = new bool[graph.NodeCount];
-  NetworkCancelToken = cancelToken;
-}
+    for (int i = 0; i < graph.NodeCount; i++)
+    layers[i] -= minLayer;
 
-        public int[] GetLayers() {
-  if (layers == null)
-    Run(NetworkCancelToken);
-
-  return layers;
-}
-
-        private void ShiftLayerToZero() {
-  int minLayer = NetworkEdge.Infinity;
-  foreach(int i in layers)
-  if (i < minLayer)
-    minLayer = i;
-
-
-  for (int i = 0; i < graph.NodeCount; i++)
-  layers[i] -= minLayer;
-
-}
+  }
 
 
   /*
@@ -397,8 +393,6 @@ export class NetworkSimplex implements LayerCalculator {
   
     }
   
-    List < int > treeVertices = new List<int>();
-    bool[] inTree;
   
   
     // The function TightTree finds a maximal tree of tight edges containing 
@@ -778,25 +772,21 @@ export class NetworkSimplex implements LayerCalculator {
           #endregion
   
   
-  BasicGraphOnEdges < PolyIntEdge > graph;
-          private CancelToken NetworkCancelToken;
-  
-  
-          protected override void RunInternal()
-  {
-    if (graph.Edges.Count == 0 && graph.NodeCount == 0)
-      layers = new int[0];
-  
-    FeasibleTree();
-  
-    Tuple < NetworkEdge, NetworkEdge > leaveEnter;
+  */
+  run() {
+    if (this.graph.edges.length == 0 && this.graph.nodeCount == 0)
+      this.layers = []
+
+    this.feasibleTree();
+
+    let leaveEnter: [IEdge, IEdge]
     while ((leaveEnter = LeaveEnterEdge()) != null) {
       ProgressStep();
       Exchange(leaveEnter.Item1, leaveEnter.Item2);
     }
-  
+
     ShiftLayerToZero();
   }
-  */
+
 }
 

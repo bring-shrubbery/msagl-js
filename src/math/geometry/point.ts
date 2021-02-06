@@ -3,24 +3,23 @@ import { GeomConstants } from './geomConstants'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,
-  Collinear
+  Collinear,
 }
 
 export class Point {
   dot(a: Point): number {
     return this.x * a.x + this.y * a.y
   }
-  x: number
-  y: number
+  private x_: number
+  private y_: number
+
+  get x() { return this.x_ }
+  get y() { return this.y_ }
 
   toString() {
     return '(' + this.x + ',' + this.y + ')'
   }
 
-  assign(a: Point) {
-    this.x = a.x
-    this.y = a.y
-  }
   static close(a: Point, b: Point, tol: number): boolean {
     return a.sub(b).length <= tol
   }
@@ -52,12 +51,8 @@ export class Point {
   }
 
   constructor(x: number, y: number) {
-    this.x = x
-    this.y = y
-  }
-  move(a: Point): void {
-    this.x += a.x
-    this.y += a.y
+    this.x_ = x
+    this.y_ = y
   }
 
   static middle(a: Point, b: Point) {
@@ -197,13 +192,16 @@ export class Point {
     return (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y)
   }
 
-  static getTriangleOrientation(cornerA: Point, cornerB: Point, cornerC: Point) {
-    const area = Point.signedDoubledTriangleArea(cornerA, cornerB, cornerC);
+  static getTriangleOrientation(
+    cornerA: Point,
+    cornerB: Point,
+    cornerC: Point,
+  ) {
+    const area = Point.signedDoubledTriangleArea(cornerA, cornerB, cornerC)
     if (area > GeomConstants.distanceEpsilon)
-      return TriangleOrientation.Counterclockwise;
+      return TriangleOrientation.Counterclockwise
     if (area < -GeomConstants.distanceEpsilon)
-      return TriangleOrientation.Clockwise;
-    return TriangleOrientation.Collinear;
+      return TriangleOrientation.Clockwise
+    return TriangleOrientation.Collinear
   }
-
 }

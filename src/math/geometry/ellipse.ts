@@ -194,7 +194,7 @@ export class Ellipse implements ICurve {
 
   // Moves the ellipse to the delta vector
   translate(delta: Point) {
-    this.center.move(delta)
+    this.center = this.center.add(delta)
     this.box.center = this.box.center.add(delta)
     this.pNode = null
   }

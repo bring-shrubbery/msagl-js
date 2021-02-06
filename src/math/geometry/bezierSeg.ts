@@ -144,12 +144,13 @@ export class BezierSeg implements ICurve {
     return new BezierSeg(this.b[3], this.b[2], this.b[1], this.b[0])
   }
 
+  // mutable! changes "this"
   // Returns the curved moved by delta
   translate(delta: Point) {
-    this.b[0].move(delta)
-    this.b[1].move(delta)
-    this.b[2].move(delta)
-    this.b[3].move(delta)
+    this.b[0] = this.b[0].add(delta)
+    this.b[1] = this.b[1].add(delta)
+    this.b[2] = this.b[2].add(delta)
+    this.b[3] = this.b[3].add(delta)
     this.c = this.b[1].sub(this.b[0]).mult(3)
     this.e = this.b[2].sub(this.b[1]).mult(3).sub(this.c)
     this.l = this.b[3].sub(this.b[0]).sub(this.c).sub(this.e)

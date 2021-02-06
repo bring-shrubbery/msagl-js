@@ -166,10 +166,11 @@ return xx;
 }
 * */
 
+  // mutable! changes this
   // Returns the curved moved by delta
   translate(delta: Point) {
-    this.start.move(delta)
-    this.end.move(delta)
+    this.start = this.start.add(delta)
+    this.end = this.end.add(delta)
   }
 
   // Scale (multiply) from origin by x and y

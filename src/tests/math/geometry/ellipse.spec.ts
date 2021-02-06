@@ -25,10 +25,6 @@ test('ellipse value test', () => {
   ).toBeTruthy
 })
 
-function exp(b: boolean) {
-  expect(b).toBeTruthy()
-}
-
 test('intersect quarters', () => {
   const rr = new Ellipse(
     0,
