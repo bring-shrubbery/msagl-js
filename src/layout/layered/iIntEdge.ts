@@ -1,0 +1,8 @@
+import { IEdge } from './iedge'
+// keeps the basic info on an edge for sugiyama settings
+export interface IIntEdge extends IEdge {
+  separation: number
+  weight: number
+  crossingWeight: number
+
+}

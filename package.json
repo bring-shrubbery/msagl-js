@@ -26,6 +26,7 @@
     "linq-to-typescript": "^8.0.0",
     "lodash": "4.17.19",
     "queue-typescript": "^1.0.1",
+    "stack-typescript": "^1.0.4",
     "tsc": "1.20150623.0",
     "typescript": "3.9.6",
     "typescript-string-operations": "^1.4.1",

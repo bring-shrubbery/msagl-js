@@ -1,8 +1,8 @@
 import { IEdge } from './iedge'
+import { IIntEdge } from './iIntEdge'
 import { GeomEdge } from './../core/geomEdge'
 import { ICurve } from './../../math/geometry/icurve'
 import { LayerEdge } from './layerEdge'
-
 class Routing {
   static updateLabel(edge: GeomEdge, anchor: Anchor) {
     throw new Error()
@@ -11,14 +11,14 @@ class Routing {
 class Anchor {
 }
 // An edge with source and target represented as integers, they point to the array of Nodes of the graph
-export class PolyIntEdge implements IEdge {
+export class PolyIntEdge implements IIntEdge {
   source: number
   target: number
   reversed: boolean
   // separation request in number of layers between the sourse and the target layers
-  //  separation: number - should be maintained by sugiama settings
-  // weight: number - should be maintained by sugiama settings
-  // crossingWeight - should be maintained by sugiama settings
+  separation: number // should be maintained by sugiama settings
+  weight: number // should be maintained by sugiama settings
+  crossingWeight: number // - should be maintained by sugiama settings
   // If true it is a dummy edge that will not be drawn; serves as a place holder.
   isVirtualEdge: boolean
   layerEdges: LayerEdge[]
@@ -114,55 +114,5 @@ export class PolyIntEdge implements IEdge {
       yield le.target;
   }
 
-
-  // The function returns an array arr such that
-  // arr is a permutation of the graph vertices,
-  // and for any edge e in graph if e.Source=arr[i]
-  // e.Target=arr[j], then i is less than j
-  internal static number[] GetOrder(BasicGraphOnEdges <PolyIntEdge > graph) {
-  var visited = new boolean[graph.NodeCount];
-
-  //no recursion! So we have to organize a stack
-  var sv = new Stack<number>();
-  var se = new Stack<IEnumerator<number>>();
-
-  var order = new List<number>();
-
-  IEnumerator < number > en;
-  for (number u = 0; u < graph.NodeCount; u++) {
-    if (visited[u])
-      continue;
-
-    number cu = u;
-    visited[cu] = true;
-    en = new Succ(graph, u).GetEnumerator();
-
-    do {
-      while (en.MoveNext()) {
-        number v = en.Current;
-        if (!visited[v]) {
-          visited[v] = true;
-          sv.Push(cu);
-          se.Push(en);
-          cu = v;
-          en = new Succ(graph, cu).GetEnumerator();
-        }
-      }
-      order.Add(cu);
-
-
-      if (sv.Count > 0) {
-        en = se.Pop();
-        cu = sv.Pop();
-      }
-      else
-        break;
-    } while (true);
-  }
-
-  order.Reverse();
-
-  return order.ToArray();
 }
-}
-}
+

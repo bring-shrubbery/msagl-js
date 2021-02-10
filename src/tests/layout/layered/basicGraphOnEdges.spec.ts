@@ -10,7 +10,7 @@ class myedge implements IEdge {
 }
 test('bgoe', () => {
   const edges = [new myedge(0, 1), new myedge(1, 2), new myedge(2, 0), new myedge(2, 2), new myedge(2, 3)]
-  const bg = BasicGraphOnEdges.mkGraphEdges(edges)
+  const bg = (new BasicGraphOnEdges).mkGraphEdges(edges)
   expect(bg.nodeCount).toBe(4)
   bg.removeEdge(edges[4])
   expect(bg.inEdgesCount(3)).toBe(0)
