@@ -1,35 +1,30 @@
-import { LayerCalculator } from './layerCalculator'
-import { NetworkEdge } from './networkEdge'
-import { BasicGraphOnEdges } from './../basicGraphOnEdges'
-import { PolyIntEdge } from './../polyIntEdge'
+import {LayerCalculator} from './layerCalculator'
+import {NetworkEdge} from './networkEdge'
+import {BasicGraphOnEdges} from './../../../structs/basicGraphOnEdges'
+import {TopologicalSort} from './../../../math/graphAlgorithms/topologicalSort'
 // Layering the DAG by longest path
 export class LongestPathLayering implements LayerCalculator {
-
   graph: BasicGraphOnEdges<NetworkEdge>
 
   getLayers() {
     //sort the vertices in topological order
-    int[] topoOrder = PolyIntEdge.getOrder(this.graph);
-    int[] layering = new int[graph.NodeCount];
+    const topoOrder = TopologicalSort.getOrderOnGraph(this.graph)
+    const layering = new Array<number>(this.graph.nodeCount)
 
     //going backward from leaves
-    int k = graph.NodeCount;
+    let k = this.graph.nodeCount
     while (k-- > 0) {
-      int v = topoOrder[k];
-      foreach(PolyIntEdge e in graph.InEdges(v)) {
-        int u = e.Source;
-        int l = layering[v] + e.Separation;
-        if (layering[u] < l)
-          layering[u] = l;
+      const v = topoOrder[k]
+      for (const e of this.graph.inEdges[v]) {
+        const u = e.source
+        const l = layering[v] + e.separation
+        if (layering[u] < l) layering[u] = l
       }
     }
-    return layering;
-
+    return layering
   }
 
-  internal LongestPathLayering(BasicGraphOnEdges <PolyIntEdge > graph) {
-  this.graph = graph;
+  constructor(graph: BasicGraphOnEdges<NetworkEdge>) {
+    this.graph = graph
+  }
 }
-
-}
-

@@ -6,20 +6,6 @@ import {Stack} from 'stack-typescript'
 import {IEdge} from './../../structs/iedge'
 import {Assert} from '../../utils/assert'
 
-function visitNode(u: number, g: BasicGraphOnEdges<IEdge>, t: boolean[]) {
-  t[u] = true
-  for (const e of g.outEdges[u]) {
-    const v = e.target
-    if (t[v]) continue
-    visitNode(v, g, t)
-  }
-  for (const e of g.inEdges[u]) {
-    const v = e.source
-    if (t[v]) continue
-    visitNode(v, g, t)
-  }
-}
-
 function hasCycle(g: BasicGraphOnEdges<IEdge>) {
   const t = new Array<number>(g.nodeCount)
 
@@ -53,14 +39,6 @@ function visitNodeC(
   return false
 }
 
-function isConnected(g: BasicGraphOnEdges<IEdge>) {
-  const t = new Array<boolean>(g.nodeCount).fill(false)
-  visitNode(0, g, t)
-  for (const l of t) if (l == false) return false
-
-  return true
-}
-
 export class TopologicalSort {
   // Do a topological sort of a list of int edge tuples
   static getOrder(
@@ -71,16 +49,15 @@ export class TopologicalSort {
     const dag = tmp.mkGraphEdges(
       edges.map((e) => new IntPair(e[0], e[1]), numberOfVertices),
     )
-    Assert.assert(isConnected(dag))
-    Assert.assert(!hasCycle(dag), 'no cycles')
-    return TopologicalSort.getOrderOnGraphOnEdges(dag)
+    //    Assert.assert(!hasCycle(dag), 'no cycles')
+    return TopologicalSort.getOrderOnGraph(dag)
   }
 
   // The function returns an array arr such that
   // arr is a permutation of the graph vertices,
   // and for any edge e in graph if e.Source=arr[i]
   // e.Target=arr[j], then i is less than j
-  static getOrderOnGraphOnEdges(graph: BasicGraphOnEdges<IEdge>): number[] {
+  static getOrderOnGraph(graph: BasicGraphOnEdges<IEdge>): number[] {
     const visited = new Array<boolean>(graph.nodeCount).fill(false)
 
     //no recursion! So we have to organize a stack
