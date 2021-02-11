@@ -1,3 +1,4 @@
+import { String } from 'typescript-string-operations'
 import { LayerCalculator } from './layerCalculator'
 import { LongestPathLayering } from './longestPathLayering'
 import { BasicGraphOnEdges } from './../basicGraphOnEdges'
@@ -6,7 +7,7 @@ import { from } from 'linq-to-typescript'
 import { Assert } from './../../../utils/assert'
 import { NetworkEdge } from './networkEdge'
 import { Stack } from 'stack-typescript'
-
+import { randomInt } from './../../../utils/random'
 type VertexInfo = {
   inTree: boolean,
   lim: number,
@@ -429,7 +430,7 @@ export class NetworkSimplex implements LayerCalculator {
         if (this.vertexInTree(e.target))
           continue;
 
-        if (this.layers[e.source] - this.layers[e.target] == e.Separation) {
+        if (this.layers[e.source] - this.layers[e.target] == e.separation) {
           q.push(e.target);
           this.vertexInTree[e.target].inTree = true;
           this.treeVertices.push(e.target);
@@ -441,7 +442,7 @@ export class NetworkSimplex implements LayerCalculator {
         if (this.vertexInTree(e.source))
           continue;
 
-        if (this.layers[e.source] - this.layers[e.target] == e.Separation) {
+        if (this.layers[e.source] - this.layers[e.target] == e.separation) {
           q.push(e.source);
           this.vertexInTree[e.source].inTree = true;
           this.treeVertices.push(e.source);
@@ -458,7 +459,7 @@ export class NetworkSimplex implements LayerCalculator {
   // All edges going from the source component to the
   // target are considered for the replacement, and an edge with the minimum
   // slack being chosen. This maintains feasibility.
-  leaveEnterEdge(): [NetworkEdge, NetworkEdge] {
+  leaveEnterEdge(): { leaving: NetworkEdge, entering: NetworkEdge } {
     let leavingEdge: NetworkEdge
     let enteringEdge: NetworkEdge
     let minCut = 0
@@ -475,12 +476,12 @@ export class NetworkSimplex implements LayerCalculator {
       return null;
 
     //now we are looking for a non-tree edge with a minimal slack belonging to TS
-    bool continuation = false;
-    number minSlack = NetworkEdge.Infinity;
-    for (NetworkEdge f of this.graph.Edges) {
-      number slack = Slack(f);
-      if (f.inTree == false && EdgeSourceTargetVal(f, leavingEdge) == -1 &&
-        (slack < minSlack || (slack == minSlack && (continuation = (random.Next(2) == 1))))
+    let continuation = false;
+    let minSlack = NetworkEdge.infinity;
+    for (const f of this.graph.edges) {
+      const slack = this.slack(f);
+      if (f.inTree == false && this.edgeSourceTargetVal(f, leavingEdge) == -1 &&
+        (slack < minSlack || (slack == minSlack && (continuation = (randomInt(2) == 1))))
       ) {
         minSlack = slack;
         enteringEdge = f;
@@ -493,7 +494,7 @@ export class NetworkSimplex implements LayerCalculator {
     if (enteringEdge == null) {
       throw new Error();
     }
-    return [leavingEdge, enteringEdge]
+    return { leaving: leavingEdge, entering: enteringEdge }
   }
 
   // If f = (w,x) is the entering edge, the
@@ -522,21 +523,21 @@ export class NetworkSimplex implements LayerCalculator {
     front.push(l);
 
     //set layers to infinity under l
-    for (number i = 0; i < this.nodeCount; i++)
-    if (this.low(l) <= this.lim(i) && this.lim(i) <= this.lim(l) && i != l)
-      layers[i] = NetworkEdge.Infinity;
+    for (let i = 0; i < this.nodeCount; i++)
+      if (this.low(l) <= this.lim(i) && this.lim(i) <= this.lim(l) && i != l)
+        this.layers[i] = NetworkEdge.infinity;
 
-    while (front.Count > 0) {
-      number u = front.pop();
-      for (NetworkEdge oe in this.graph.outEdges(u)) {
-        if (oe.inTree && layers[oe.target] == NetworkEdge.Infinity) {
-          layers[oe.target] = layers[u] - oe.Separation;
+    while (front.length > 0) {
+      const u = front.pop();
+      for (const oe of this.graph.outEdges[u]) {
+        if (oe.inTree && this.layers[oe.target] == NetworkEdge.infinity) {
+          this.layers[oe.target] = this.layers[u] - oe.separation;
           front.push(oe.target);
         }
       }
-      for (NetworkEdge ie of this.graph.inEdges(u)) {
-        if (ie.inTree && layers[ie.source] == NetworkEdge.Infinity) {
-          layers[ie.source] = layers[u] + ie.Separation;
+      for (const ie of this.graph.inEdges[u]) {
+        if (ie.inTree && this.layers[ie.source] == NetworkEdge.infinity) {
+          this.layers[ie.source] = this.layers[u] + ie.separation;
           front.push(ie.source);
         }
       }
@@ -545,8 +546,8 @@ export class NetworkSimplex implements LayerCalculator {
 
   updateCuts(e: NetworkEdge): void {
     //going up from the leaves of the branch following parents
-    Stack < number > front = new Stack<number>();
-    Stack < number > newFront = new Stack<number>();
+    let front = new Stack<number>();
+    let newFront = new Stack<number>();
 
 
     //We start cut updates from the vertices of e. It will work only if in the new tree
@@ -563,23 +564,22 @@ export class NetworkSimplex implements LayerCalculator {
     front.push(e.source);
     front.push(e.target);
 
-    while (front.Count > 0) {
-      while (front.Count > 0) {
-        number w = front.pop();
+    while (front.length > 0) {
+      while (front.length > 0) {
+        const w = front.pop();
 
-        ProgressStep();
-        NetworkEdge cutEdge = parent(w); //have to find the cut of cutEdge
+        const cutEdge = this.parent(w); //have to find the cut of cutEdge
 
         if (cutEdge == null)
           continue;
 
-        if (cutEdge.cut != NetworkEdge.Infinity)
+        if (cutEdge.cut != NetworkEdge.infinity)
           continue; //the value of this cut has not been changed
-        number cut = 0;
-        for (NetworkEdge ce of IncidentEdges(w)) {
+        let cut = 0;
+        for (const ce of this.incidentEdges(w)) {
 
           if (ce.inTree == false) {
-            number e0Val = EdgeSourceTargetVal(ce, cutEdge);
+            const e0Val = this.edgeSourceTargetVal(ce, cutEdge);
             if (e0Val != 0)
               cut += e0Val * ce.weight;
           } else //e0 is a tree edge
@@ -587,21 +587,21 @@ export class NetworkSimplex implements LayerCalculator {
             if (ce == cutEdge)
               cut += ce.weight;
             else {
-              number impact = cutEdge.source == ce.target || cutEdge.target == ce.source ? 1 : -1;
-              number edgeContribution = EdgeContribution(ce, w);
+              const impact = cutEdge.source == ce.target || cutEdge.target == ce.source ? 1 : -1;
+              const edgeContribution = this.edgeContribution(ce, w);
               cut += edgeContribution * impact;
             }
           }
         }
 
         cutEdge.cut = cut;
-        number u = cutEdge.source == w ? cutEdge.target : cutEdge.source;
-        if (AllLowCutsHaveBeenDone(u))
+        const u = cutEdge.source == w ? cutEdge.target : cutEdge.source;
+        if (this.allLowCutsHaveBeenDone(u))
           newFront.push(u);
 
       }
       //swap newFrontAndFront
-      Stack < number > t = front;
+      const t = front;
       front = newFront;
       newFront = t;
     }
@@ -611,14 +611,14 @@ export class NetworkSimplex implements LayerCalculator {
   createPathForCutUpdates(e: NetworkEdge, f: NetworkEdge, l: number) {
     //we mark the path by setting the cut value to infinity
 
-    number v = f.target;
+    let v = f.target;
     while (v != l) {
-      NetworkEdge p = parent(v);
-      p.cut = NetworkEdge.Infinity;
+      const p = this.parent(v);
+      p.cut = NetworkEdge.infinity;
       v = p.source == v ? p.target : p.source;
     }
 
-    f.cut = NetworkEdge.Infinity; //have to do it because f will be in the path between end points of e in the new tree
+    f.cut = NetworkEdge.infinity; //have to do it because f will be in the path between end points of e in the new tree
 
     //remove e from the tree and put f inside of it
     e.inTree = false; f.inTree = true;
@@ -627,25 +627,22 @@ export class NetworkSimplex implements LayerCalculator {
 
   commonPredecessorOfSourceAndTargetOfF(f: NetworkEdge): number {
     //find the common predecessor of f.source and f.target
-    number fMin, fmax;
-    if (this.lim[f.sour(f.source) < this.lim[f.targ(f.target)) {
-      fMin = this.lim[f.sour(f.source);
-      fmax = this.lim[f.targ(f.target);
+    let fMin: number, fmax: number;
+    if (this.lim(f.source) < this.lim(f.target)) {
+      fMin = this.lim(f.source);
+      fmax = this.lim(f.target);
     } else {
-      fMin = this.lim[f.targ(f.target);
-      fmax = this.lim[f.sour(f.source);
+      fMin = this.lim(f.target);
+      fmax = this.lim(f.source);
     }
     //it is the best to walk up from the highest of nodes f
     //but we don't know the depths
     //so just start walking up from the source
-    number l = f.source;
-
+    let l = f.source;
 
     while ((this.low(l) <= fMin && fmax <= this.lim(l)) == false) {
-      NetworkEdge p = parent(l);
-
-      p.cut = NetworkEdge.Infinity;
-
+      const p = this.parent(l);
+      p.cut = NetworkEdge.infinity;
       l = p.source == l ? p.target : p.source;
     }
     return l;
@@ -653,24 +650,22 @@ export class NetworkSimplex implements LayerCalculator {
 
 
   checkCutValues() {
-    for (NetworkEdge e of this.graph.Edges) {
+    for (const e of this.graph.edges) {
       if (e.inTree) {
-        number cut = 0;
-        for (NetworkEdge f of this.graph.Edges) {
-
-
-          cut += EdgeSourceTargetVal(f, e) * f.weight;
+        let cut = 0;
+        for (const f of this.graph.edges) {
+          cut += this.edgeSourceTargetVal(f, e) * f.weight;
 
         }
         if (e.cut != cut)
-          System.Diagnostics.Debug.WriteLine("cuts are wrong for {0}; should be {1} but is {2}", e, cut, e.cut);
+          console.log(String.Format("cuts are wrong for {0}; should be {1} but is {2}", e, cut, e.cut))
       }
     }
   }
 
   initLayer(): number[] {
     const lp = new LongestPathLayering(this.graph);
-    this.layers = lp.getLayers();
+    return this.layers = lp.getLayers()
   }
 
 
@@ -680,9 +675,9 @@ export class NetworkSimplex implements LayerCalculator {
 
     this.feasibleTree();
 
-    let leaveEnter: [NetworkEdge, NetworkEdge]
+    let leaveEnter: { leaving: NetworkEdge, entering: NetworkEdge }
     while ((leaveEnter = this.leaveEnterEdge()) != null) {
-      this.exchange(leaveEnter[0], leaveEnter[1]);
+      this.exchange(leaveEnter.leaving, leaveEnter.entering);
     }
 
     this.shiftLayerToZero();

@@ -1,5 +1,5 @@
-import { BasicGraph } from './../../../layout/layered/basicGraph'
-import { IEdge } from './../../../layout/layered/iedge'
+import { BasicGraph } from './../../../structs/basicGraph'
+import { IEdge } from './../../../structs/iedge'
 class myedge implements IEdge {
   source: number
   target: number
