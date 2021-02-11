@@ -1,11 +1,66 @@
 import {IntPair} from './intPair'
-import {BasicGraph} from './../../structs/basicGraph'
 import {BasicGraphOnEdges} from './../../structs/basicGraphOnEdges'
-import {from} from 'linq-to-typescript'
 import {Stack} from 'stack-typescript'
 
 // Implements the topological sort
 import {IEdge} from './../../structs/iedge'
+import {Assert} from '../../utils/assert'
+
+function visitNode(u: number, g: BasicGraphOnEdges<IEdge>, t: boolean[]) {
+  t[u] = true
+  for (const e of g.outEdges[u]) {
+    const v = e.target
+    if (t[v]) continue
+    visitNode(v, g, t)
+  }
+  for (const e of g.inEdges[u]) {
+    const v = e.source
+    if (t[v]) continue
+    visitNode(v, g, t)
+  }
+}
+
+function hasCycle(g: BasicGraphOnEdges<IEdge>) {
+  const t = new Array<number>(g.nodeCount)
+
+  for (let u = 0; u < g.nodeCount; u++) {
+    t.fill(0)
+    if (hasCycleUnderNode(g, u, t)) return true
+  }
+  return false
+}
+
+function hasCycleUnderNode(
+  g: BasicGraphOnEdges<IEdge>,
+  u: number,
+  t: number[],
+) {
+  return visitNodeC(g, u, t, 0)
+}
+
+function visitNodeC(
+  g: BasicGraphOnEdges<IEdge>,
+  u: number,
+  t: number[],
+  level: number,
+) {
+  t[u] = level
+  for (const e of g.outEdges[u]) {
+    const v = e.target
+    if (t[v] < level) return true
+    visitNodeC(g, v, t, level + 1)
+  }
+  return false
+}
+
+function isConnected(g: BasicGraphOnEdges<IEdge>) {
+  const t = new Array<boolean>(g.nodeCount).fill(false)
+  visitNode(0, g, t)
+  for (const l of t) if (l == false) return false
+
+  return true
+}
+
 export class TopologicalSort {
   // Do a topological sort of a list of int edge tuples
   static getOrder(
@@ -16,6 +71,8 @@ export class TopologicalSort {
     const dag = tmp.mkGraphEdges(
       edges.map((e) => new IntPair(e[0], e[1]), numberOfVertices),
     )
+    Assert.assert(isConnected(dag))
+    Assert.assert(!hasCycle(dag), 'no cycles')
     return TopologicalSort.getOrderOnGraphOnEdges(dag)
   }
 
@@ -27,18 +84,17 @@ export class TopologicalSort {
     const visited = new Array<boolean>(graph.nodeCount).fill(false)
 
     //no recursion! So we have to organize a stack
-    const sv = new Stack<number>()
-    const se = new Stack<[IEdge[], number]>()
+    const se = new Stack<{edges: IEdge[]; index: number; current_u: number}>()
 
     const order: number[] = []
 
     let en: any
-    let i = 0
     for (let u = 0; u < graph.nodeCount; u++) {
       if (visited[u]) continue
 
       let cu = u
       visited[cu] = true
+      let i = 0
 
       en = graph.outEdges[u]
       do {
@@ -46,8 +102,7 @@ export class TopologicalSort {
           const v = en[i].target
           if (!visited[v]) {
             visited[v] = true
-            sv.push(cu)
-            se.push([en, i])
+            se.push({edges: en, index: i + 1, current_u: cu})
             cu = v
             en = graph.outEdges[cu]
             i = -1
@@ -55,11 +110,11 @@ export class TopologicalSort {
         }
         order.push(cu)
 
-        if (sv.length > 0) {
+        if (se.length > 0) {
           const t = se.pop()
-          en = t[0]
-          i = t[1]
-          cu = sv.pop()
+          en = t.edges
+          i = t.index
+          cu = t.current_u
         } else break
       } while (true)
     }

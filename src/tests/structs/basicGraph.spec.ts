@@ -1,5 +1,5 @@
-import { BasicGraph } from './../../../structs/basicGraph'
-import { IEdge } from './../../../structs/iedge'
+import {BasicGraph} from './../../structs/basicGraph'
+import {IEdge} from './../../structs/iedge'
 class myedge implements IEdge {
   source: number
   target: number
@@ -9,7 +9,13 @@ class myedge implements IEdge {
   }
 }
 test('bgoe', () => {
-  const edges = [new myedge(0, 1), new myedge(1, 2), new myedge(2, 0), new myedge(2, 2), new myedge(2, 3)]
+  const edges = [
+    new myedge(0, 1),
+    new myedge(1, 2),
+    new myedge(2, 0),
+    new myedge(2, 2),
+    new myedge(2, 3),
+  ]
   const bg = new BasicGraph(edges, 4)
   expect(bg.nodeCount).toBe(4)
   bg.removeEdge(edges[4])
@@ -18,10 +24,9 @@ test('bgoe', () => {
   expect(bg.selfEdgesCount(2)).toBe(1)
   let i = 0
   for (const n of bg.nodesOfConnectedGraph()) {
-    i++;
+    i++
   }
   expect(i).toBe(3)
   bg.addEdge(new myedge(0, 2))
   expect(bg.outEdgesCount(0)).toBe(2)
-
 })
