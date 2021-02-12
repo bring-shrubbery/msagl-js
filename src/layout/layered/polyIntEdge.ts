@@ -1,4 +1,4 @@
-import { IEdge } from './iedge'
+import { IEdge } from './../../structs/iedge'
 import { IIntEdge } from './iIntEdge'
 import { GeomEdge } from './../core/geomEdge'
 import { ICurve } from './../../math/geometry/icurve'

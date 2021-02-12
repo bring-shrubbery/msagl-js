@@ -1,13 +1,13 @@
-import {String} from 'typescript-string-operations'
-import {LayerCalculator} from './layerCalculator'
-import {LongestPathLayering} from './longestPathLayering'
-import {BasicGraphOnEdges} from './../../../structs/basicGraphOnEdges'
-import {CancelToken} from './../../../utils/cancelToken'
-import {from} from 'linq-to-typescript'
-import {Assert} from './../../../utils/assert'
-import {NetworkEdge} from './networkEdge'
-import {Stack} from 'stack-typescript'
-import {randomInt} from './../../../utils/random'
+import { String } from 'typescript-string-operations'
+import { LayerCalculator } from './layerCalculator'
+import { LongestPathLayering } from './longestPathLayering'
+import { BasicGraphOnEdges } from './../../../structs/basicGraphOnEdges'
+import { CancelToken } from './../../../utils/cancelToken'
+import { from } from 'linq-to-typescript'
+import { Assert } from './../../../utils/assert'
+import { NetworkEdge } from './networkEdge'
+import { Stack } from 'stack-typescript'
+import { randomInt } from './../../../utils/random'
 type VertexInfo = {
   inTree: boolean
   lim: number

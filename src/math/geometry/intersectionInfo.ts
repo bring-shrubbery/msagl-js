@@ -1,8 +1,8 @@
-import {Point} from './point'
-import {ICurve} from './icurve'
-import {GeomConstants} from './geomConstants'
-import {Assert} from './../../utils/assert'
-import {String} from 'typescript-string-operations'
+import { Point } from './point'
+import { ICurve } from './icurve'
+import { GeomConstants } from './geomConstants'
+import { Assert } from './../../utils/assert'
+import { String } from 'typescript-string-operations'
 
 // Contains the result of the intersection of two ICurves.
 export class IntersectionInfo {
@@ -25,22 +25,24 @@ export class IntersectionInfo {
     this.seg1 = s1
 
     Assert.assert(
-      Point.close(x, s0.value(pr0), GeomConstants.intersectionEpsilon * 10),
-      String.Format(
-        'intersection not at curve[param]; x = {0}, s0[pr0] = {1}, diff = {2}',
-        x,
-        s0.value(pr0),
-        x.sub(s0.value(pr0)),
-      ),
-    )
+    Point.close(x, s0.value(pr0), GeomConstants.intersectionEpsilon * 10))
+    //,
+    //   String.Format(
+    //     'intersection not at curve[param]; x = {0}, s0[pr0] = {1}, diff = {2}',
+    //     x,
+    //     s0.value(pr0),
+    //     x.sub(s0.value(pr0)),
+    //   ),
+    // )
     Assert.assert(
-      Point.close(x, s1.value(pr1), GeomConstants.intersectionEpsilon * 10),
-      String.Format(
-        'intersection not at curve[param]; x = {1}, s1[pr1] = {1}, diff = {2}',
-        x,
-        s1.value(pr1),
-        x.sub(s1.value(pr1)),
-      ),
-    )
+     Point.close(x, s1.value(pr1), GeomConstants.intersectionEpsilon * 10))
+     //,
+    //   String.Format(
+    //     'intersection not at curve[param]; x = {1}, s1[pr1] = {1}, diff = {2}',
+    //     x,
+    //     s1.value(pr1),
+    //     x.sub(s1.value(pr1)),
+    //   ),
+    // )
   }
 }
