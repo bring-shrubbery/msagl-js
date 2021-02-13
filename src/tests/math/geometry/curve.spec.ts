@@ -90,24 +90,11 @@ function intersectTwoRoundedRects(rr: Curve, rr0: Curve, i: number): void {
   expect(xx.length % 2).toBe(0)
 }
 
-test('intersect rounded rect', () => {
-  const rr: Curve = CurveFactory.mkRectangleWithRoundedCorners(
-    100,
-    52,
-    7,
-    7,
-    new Point(0, 0),
-  )
-  const rc: Curve = rr.clone()
-  rc.translate(new Point(13, 3))
-  intersectTwoRoundedRects(rr, rc, 2)
-})
-
 test('intersect rounded rect rotated', () => {
   const rr: Curve = CurveFactory.mkRectangleWithRoundedCorners(
     100,
     52,
-    7,
+    5,
     7,
     new Point(0, 0),
   )
