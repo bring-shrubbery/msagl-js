@@ -1,17 +1,14 @@
-import { LineSegment } from '../../../math/geometry/lineSegment'
-import { Ellipse } from '../../../math/geometry/ellipse'
-import { Point } from './../../../math/geometry/point'
-import { Curve } from './../../../math/geometry/curve'
-import { PlaneTransformation } from './../../../math/geometry/planeTransformation'
-import { CurveFactory } from './../../../math/geometry/curveFactory'
-import { SvgDebugWriter } from './../../../math/geometry/svgDebugWriter'
-import { DebugCurve } from './../../../math/geometry/debugCurve'
-import { BezierSeg } from './../../../math/geometry/bezierSeg'
-import { ICurve } from './../../../math/geometry/icurve'
-import { Rectangle } from './../../../math/geometry/rectangle'
-function exp(b: boolean) {
-  expect(b).toBeTruthy()
-}
+import {LineSegment} from '../../../math/geometry/lineSegment'
+import {Ellipse} from '../../../math/geometry/ellipse'
+import {Point} from './../../../math/geometry/point'
+import {Curve} from './../../../math/geometry/curve'
+import {PlaneTransformation} from './../../../math/geometry/planeTransformation'
+import {CurveFactory} from './../../../math/geometry/curveFactory'
+import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
+import {DebugCurve} from './../../../math/geometry/debugCurve'
+import {BezierSeg} from './../../../math/geometry/bezierSeg'
+import {ICurve} from './../../../math/geometry/icurve'
+import {Rectangle} from './../../../math/geometry/rectangle'
 
 function intersectOnDiameter(a: Point, b: Point) {
   const ls = LineSegment.mkLinePP(a, b)
@@ -82,7 +79,15 @@ test('box translate behavior', () => {
 
 function intersectTwoRoundedRects(rr: Curve, rr0: Curve, i: number): void {
   const xx = Curve.getAllIntersections(rr, rr0, true)
-  exp(xx.length == 2)
+  const xxD = xx.map((x) =>
+    DebugCurve.mkDebugCurveWCI(0.5, 'Red', CurveFactory.mkCircle(3, x.x)),
+  )
+  xxD.push(DebugCurve.mkDebugCurveI(rr))
+  xxD.push(DebugCurve.mkDebugCurveI(rr0))
+  const svgW = new SvgDebugWriter('/tmp/rr' + i + '.svg')
+  svgW.writeDebugCurves(xxD)
+  svgW.close()
+  expect(xx.length % 2).toBe(0)
 }
 
 test('intersect rounded rect', () => {
@@ -113,8 +118,7 @@ test('intersect rounded rect rotated', () => {
       center,
       i,
     )
-    const xx = Curve.getAllIntersections(rr, rc, true)
-    exp(xx.length > 0 && xx.length % 2 == 0)
+    intersectTwoRoundedRects(rr, rc as Curve, i)
   }
 })
 
@@ -159,7 +163,7 @@ test('bezier rounded rect intersections', () => {
       i,
     )
     const xx = Curve.getAllIntersections(rr, rc, true)
-    exp(xx.length > 0 && xx.length % 2 != 0)
+    expect(xx.length > 0 && xx.length % 2 != 0).toBe(true)
   }
 }, 10)
 
@@ -181,7 +185,7 @@ test('bezier bezier rect intersections', () => {
       i,
     )
     const xx = Curve.getAllIntersections(bezSeg, rc, true)
-    exp(xx.length > 0)
+    expect(xx.length > 0).toBe(true)
   }
   // exp(false);
 })
