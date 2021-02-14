@@ -3,12 +3,12 @@ import {Edge} from './edge'
 import {AttrContainer} from './attrContainer'
 
 export class Graph extends AttrContainer {
-  nodes: Set<Node> = new Set<Node>()
+  nodes: Map<string, Node> = new Map<string, Node>()
   private *_edges() {
     // if we go over n.inEdges too then not self edges will be reported twice
-    for (const n of this.nodes) {
-      for (const e of n.outEdges) yield e
-      for (const e of n.selfEdges) yield e
+    for (const pair of this.nodes) {
+      for (const e of pair[1].outEdges) yield e
+      for (const e of pair[1].selfEdges) yield e
     }
   }
 
@@ -19,8 +19,8 @@ export class Graph extends AttrContainer {
   // caution: it is a linear by the number of nodes method
   get edgeCount(): number {
     let count = 0
-    for (const n of this.nodes) {
-      count += n.outDegree + n.selfDegree
+    for (const pair of this.nodes) {
+      count += pair[1].outDegree + pair[1].selfDegree
     }
     return count
   }
@@ -29,12 +29,12 @@ export class Graph extends AttrContainer {
     return this._edges()
   }
   addNode(node: Node) {
-    this.nodes.add(node)
+    this.nodes.set(node.id, node)
   }
 
   addEdge(edge: Edge): void {
-    this.nodes.add(edge.source)
-    this.nodes.add(edge.target)
+    this.addNode(edge.source)
+    this.addNode(edge.target)
     if (edge.source != edge.target) {
       edge.source.outEdges.add(edge)
       edge.target.inEdges.add(edge)
@@ -49,7 +49,7 @@ export class Graph extends AttrContainer {
     for (const e of node.inEdges) {
       e.source.outEdges.delete(e)
     }
-    this.nodes.delete(node)
+    this.nodes.delete(node.id)
   }
 
   nodeIsConsistent(n: Node): boolean {
@@ -60,7 +60,7 @@ export class Graph extends AttrContainer {
       if (e.source == e.target) {
         return false
       }
-      if (!this.nodes.has(e.target)) {
+      if (!this.nodes.has(e.target.id)) {
         return false
       }
     }
@@ -72,7 +72,7 @@ export class Graph extends AttrContainer {
       if (e.source == e.target) {
         return false
       }
-      if (!this.nodes.has(e.source)) {
+      if (!this.nodes.has(e.source.id)) {
         return false
       }
       return true
@@ -91,8 +91,8 @@ export class Graph extends AttrContainer {
   }
 
   isConsistent(): boolean {
-    for (const n of this.nodes) {
-      if (!this.nodeIsConsistent(n)) {
+    for (const pair of this.nodes) {
+      if (!this.nodeIsConsistent(pair[1])) {
         return false
       }
     }

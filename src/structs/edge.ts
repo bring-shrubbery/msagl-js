@@ -4,7 +4,7 @@ export class Edge extends Entity {
   source: Node
   target: Node
   constructor(s: Node, t: Node) {
-    super('(' + s.toString() + '->' + t.toString() + ')')
+    super()
     this.source = s
     this.target = t
     if (s != t) {
@@ -13,5 +13,8 @@ export class Edge extends Entity {
     } else {
       s.selfEdges.add(this)
     }
+  }
+  toString(): string {
+    return '(' + this.source.toString() + '->' + this.target.toString() + ')'
   }
 }

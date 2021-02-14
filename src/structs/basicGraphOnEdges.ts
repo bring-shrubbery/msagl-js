@@ -1,16 +1,15 @@
-import { IEdge } from './iedge'
-import { Queue } from 'queue-typescript'
-import { from } from 'linq-to-typescript'
+import {IEdge} from './iedge'
+import {Queue} from 'queue-typescript'
+import {from} from 'linq-to-typescript'
 
 export class BasicGraphOnEdges<TEdge extends IEdge> {
   edges: TEdge[]
   nodeCount = 0
   inEdges: TEdge[][]
   outEdges: TEdge[][]
-  selfEdges: TEdge[][]
+  selfEdges: TEdge[][];
 
-
-  * incidentEdges(v: number): IterableIterator<TEdge> {
+  *incidentEdges(v: number): IterableIterator<TEdge> {
     return from(this.outEdges[v]).concatenate(from(this.inEdges[v]))
   }
 
@@ -124,7 +123,7 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
   }
 
   // We assume that the graph is connected here
-  * nodesOfConnectedGraph(): IterableIterator<number> {
+  *nodesOfConnectedGraph(): IterableIterator<number> {
     if (this.edges.length == 0) return
     const enqueed = new Set<number>()
     const q = new Queue<number>()

@@ -36,6 +36,36 @@ test('graph create', () => {
   expect(g.isConsistent()).toBe(true)
 })
 
+test('graph delete node', () => {
+  const g = new Graph()
+  const n = new Node('n')
+  g.addNode(n)
+
+  let e = new Edge(n, n)
+  g.addEdge(e)
+  expect(g.edgeCount).toBe(1)
+  const a = new Node('a')
+  e = new Edge(a, n)
+  g.addEdge(e)
+  expect(g.isConsistent()).toBe(true)
+
+  const b = new Node('b')
+  e = new Edge(a, b)
+  // at this point the edge does not belong to this.nodes
+  expect(g.isConsistent()).toBe(false)
+
+  g.addEdge(e)
+  expect(g.isConsistent()).toBe(true)
+  expect(g.nodeIsConsistent(n)).toBe(true)
+  g.removeNode(n)
+  expect(g.nodeCount).toBe(2)
+  expect(g.isConsistent()).toBe(true)
+  g.removeNode(a)
+  expect(g.isConsistent()).toBe(true)
+  expect(g.nodeCount).toBe(1)
+  expect(g.edgeCount).toBe(0)
+})
+
 test('graph attr', () => {
   const g = new Graph()
   const rect = new Rectangle(0, 1, 0, 1)

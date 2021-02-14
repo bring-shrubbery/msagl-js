@@ -1,5 +1,5 @@
-import { LinearSystem2 } from './linearSystem'
-import { GeomConstants } from './geomConstants'
+import {LinearSystem2} from './linearSystem'
+import {GeomConstants} from './geomConstants'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,
@@ -13,8 +13,12 @@ export class Point {
   private x_: number
   private y_: number
 
-  get x() { return this.x_ }
-  get y() { return this.y_ }
+  get x() {
+    return this.x_
+  }
+  get y() {
+    return this.y_
+  }
 
   toString() {
     return '(' + this.x + ',' + this.y + ')'

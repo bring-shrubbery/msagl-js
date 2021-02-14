@@ -2,18 +2,30 @@ import {Entity} from './entity'
 import {Edge} from './edge'
 import {Cluster} from './cluster'
 import {Assert} from './../utils/assert'
-import {from} from 'linq-to-typescript'
+
+export class Label extends Entity {
+  text: string
+  toString() {
+    return this.text
+  }
+  constructor(t: string) {
+    super()
+    this.text = t
+  }
+}
 
 export class Node extends Entity {
+  id: string
   inEdges: Set<Edge> = new Set<Edge>()
   outEdges: Set<Edge> = new Set<Edge>()
   selfEdges: Set<Edge> = new Set<Edge>()
 
   toString(): string {
-    return super.toString()
+    return this.id
   }
-  constructor(userData: any = undefined) {
-    super(userData)
+  constructor(id: string) {
+    super()
+    this.id = id
   }
 
   private *_edges(): IterableIterator<Edge> {

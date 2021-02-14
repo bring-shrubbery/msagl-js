@@ -4,12 +4,11 @@ import {Rectangle} from './../../math/geometry/rectangle'
 import {GeomObject} from './geomObject'
 import {GeomNode} from './geomNode'
 import {GeomEdge} from './geomEdge'
-import {from} from 'linq-to-typescript'
-import {Edge} from 'graphlib'
 
 export class GeomGraph extends GeomObject {
   *nodes(): IterableIterator<GeomNode> {
-    for (const n of this.graph.nodes) yield GeomObject.getGeom(n) as GeomNode
+    for (const kv of this.graph.nodes)
+      yield GeomObject.getGeom(kv[1]) as GeomNode
   }
 
   *edges(): IterableIterator<GeomEdge> {
@@ -40,8 +39,8 @@ export class GeomGraph extends GeomObject {
       this._boundingBox.addRec(ge.boundingBox)
       padding = Math.max(padding, ge.lineWidth)
     }
-    for (const n of this.graph.nodes) {
-      const gn = GeomObject.getGeom(n) as GeomNode
+    for (const pair of this.graph.nodes) {
+      const gn = GeomObject.getGeom(pair[1]) as GeomNode
       this._boundingBox.addRec(gn.boundingBox)
       padding = Math.max(padding, gn.padding)
     }

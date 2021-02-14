@@ -1,7 +1,7 @@
-import { Point } from './point'
-import { Polyline } from './polyline'
-import { GeomConstants } from './geomConstants'
-import { Assert } from './../../utils/assert'
+import {Point} from './point'
+import {Polyline} from './polyline'
+import {GeomConstants} from './geomConstants'
+import {Assert} from './../../utils/assert'
 
 class Size {
   width: number

@@ -1,6 +1,5 @@
-import {Node} from './../../../structs/node'
+import {Node, Label} from './../../../structs/node'
 import {Edge} from './../../../structs/edge'
-import {Entity} from './../../../structs/entity'
 import {Graph} from './../../../structs/graph'
 import {GeomNode} from './../../../layout/core/geomNode'
 import {GeomEdge} from './../../../layout/core/geomEdge'
@@ -42,7 +41,7 @@ describe('arrowhead', () => {
 
     const ab = new Edge(a, b)
     const gab = new GeomEdge(ab)
-    const label = new Entity()
+    const label = new Label('ab')
     label.parent = ab
     gab.label = new GeomLabel(label)
     const m = Point.middle(ga.center, gb.center)
