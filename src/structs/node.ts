@@ -1,7 +1,8 @@
 import {Entity} from './entity'
 import {Edge} from './edge'
-import {Cluster} from './cluster'
+import {Graph} from './graph'
 import {Assert} from './../utils/assert'
+import {NodeCollection} from './nodeCollection'
 
 export class Label extends Entity {
   text: string
@@ -26,6 +27,16 @@ export class Node extends Entity {
   constructor(id: string) {
     super()
     this.id = id
+  }
+
+  *graphs(): IterableIterator<Graph> {
+    if (this.hasOwnProperty('nodeCollection')) {
+      const nc: NodeCollection = ((this as unknown) as Graph).nodeCollection
+      expect(nc == null).toBe(false)
+      for (const g of nc.graphs) {
+        yield g
+      }
+    }
   }
 
   private *_edges(): IterableIterator<Edge> {
@@ -78,11 +89,11 @@ export class Node extends Entity {
     return this.outDegree + this.inDegree + this.selfDegree
   }
 
-  *allClusterAncestors(): IterableIterator<Cluster> {
-    let parent: Cluster = this.clusterParent
+  *allGraphAncestors(): IterableIterator<Graph> {
+    let parent: Graph = this.graphParent
     while (parent != null) {
       yield parent
-      parent = parent.clusterParent
+      parent = parent.graphParent
     }
   }
 }

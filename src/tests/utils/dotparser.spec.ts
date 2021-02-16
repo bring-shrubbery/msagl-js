@@ -1,6 +1,5 @@
 import {Graph} from './../../structs/graph'
 import {Node} from './../../structs/node'
-import {Cluster} from './../../structs/cluster'
 
 import {parseDotGraph} from './../../utils/dotparser'
 
@@ -20,15 +19,15 @@ function foo(a: A) {
   return a.prop
 }
 
-function isCluster(n: Node) {
+function isGraph(n: Node) {
   return n.hasOwnProperty('isCollapsed')
 }
 
 test('inh', () => {
   const b = new B()
   expect(foo(b)).toBe('BBB')
-  const c = new Cluster('t')
-  expect(isCluster(c)).toBe(true)
+  const c = new Graph()
+  expect(isGraph(c)).toBe(true)
 })
 
 test('dot parser', () => {

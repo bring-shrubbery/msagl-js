@@ -36,6 +36,23 @@ test('graph create', () => {
   expect(g.isConsistent()).toBe(true)
 })
 
+test('node add graph', () => {
+  const g = new Graph()
+  const n = Graph.mkGraph('g0')
+  const m = new Node('m')
+  g.addNode(n)
+  g.addNode(m)
+  const graphs = new Array<Graph>()
+  for (const gr of g.graphs()) {
+    graphs.push(gr)
+  }
+  expect(graphs.length).toBe(1)
+  const p = Graph.mkGraph('g1')
+  n.addNode(p)
+  for (const gr of n.graphs()) graphs.push(gr)
+  expect(graphs.length).toBe(2)
+})
+
 test('graph delete node', () => {
   const g = new Graph()
   const n = new Node('n')

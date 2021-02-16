@@ -1,15 +1,19 @@
-import {AttrContainer} from './attrContainer'
-import {Cluster} from './cluster'
 import {Edge} from './edge'
 import {Node} from './node'
 import {NodeCollection} from './nodeCollection'
-export interface IHasClusters {
-  clusters: Cluster[]
-}
-export class Graph extends AttrContainer implements IHasClusters {
-  clusters: Cluster[] = []
+
+export class Graph extends Node {
+  isCollapsed = false
   get nodes(): IterableIterator<Node> {
     return this.nodeCollection.nodes
+  }
+  constructor() {
+    super('graph')
+  }
+  static mkGraph(id: string): Graph {
+    const g = new Graph()
+    g.id = id
+    return g
   }
   get edges() {
     return this.nodeCollection.edges

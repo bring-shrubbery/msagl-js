@@ -1,12 +1,22 @@
 import {Node} from './node'
 import {Edge} from './edge'
+import {Graph} from './graph'
 export class NodeCollection {
-  *nodes_(): IterableIterator<Node> {
+  private *nodes_(): IterableIterator<Node> {
     for (const p of this.nodeMap) yield p[1]
+  }
+
+  private *graphs_(): IterableIterator<Graph> {
+    for (const n of this.nodes_())
+      if (n.hasOwnProperty('isCollapsed')) yield n as Graph
   }
 
   get nodes(): IterableIterator<Node> {
     return this.nodes_()
+  }
+
+  get graphs(): IterableIterator<Graph> {
+    return this.graphs_()
   }
 
   nodeMap: Map<string, Node> = new Map<string, Node>()
@@ -17,6 +27,10 @@ export class NodeCollection {
       for (const e of pair[1].outEdges) yield e
       for (const e of pair[1].selfEdges) yield e
     }
+  }
+
+  interGraphEdges(): IterableIterator<Edge> {
+    throw new Error('not implemented')
   }
 
   hasNode(id: string) {

@@ -1,32 +1,32 @@
 import {from} from 'linq-to-typescript'
-import {Cluster} from './cluster'
+import {Graph} from './graph'
 import {Assert} from './../utils/assert'
 import {AttrContainer} from './attrContainer'
 export abstract class Entity extends AttrContainer {
   parent: Entity = null
-  clusterParent: Cluster = null
+  graphParent: Graph = null
 
   abstract toString(): string
 
-  setClusterParent(parent: Cluster): void {
+  setGraphParent(parent: Graph): void {
     Assert.assert(!Object.is(parent, this))
-    this.clusterParent = parent
+    this.graphParent = parent
   }
 
-  *allClusterAncestors(): IterableIterator<Cluster> {
-    let parent = this.clusterParent
+  *allGraphAncestors(): IterableIterator<Graph> {
+    let parent = this.graphParent
     while (parent != null) {
       yield parent
-      parent = parent.clusterParent
+      parent = parent.graphParent
     }
   }
 
-  // Determines if this node is a descendant of the given cluster.
-  isDescendantOf(cluster: Cluster) {
-    return from(this.allClusterAncestors()).any((p) => p == cluster)
+  // Determines if this node is a descendant of the given graph.
+  isDescendantOf(graph: Graph) {
+    return from(this.allGraphAncestors()).any((p) => p == graph)
   }
 
-  isUnderCollapsedCluster(): boolean {
-    return this.clusterParent != null && this.clusterParent.isCollapsed
+  isUnderCollapsedGraph(): boolean {
+    return this.graphParent != null && this.graphParent.isCollapsed
   }
 }
