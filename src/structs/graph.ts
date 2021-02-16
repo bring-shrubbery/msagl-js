@@ -1,9 +1,13 @@
 import {AttrContainer} from './attrContainer'
+import {Cluster} from './cluster'
 import {Edge} from './edge'
 import {Node} from './node'
 import {NodeCollection} from './nodeCollection'
-
-export class Graph extends AttrContainer {
+export interface IHasClusters {
+  clusters: Cluster[]
+}
+export class Graph extends AttrContainer implements IHasClusters {
+  clusters: Cluster[] = []
   get nodes(): IterableIterator<Node> {
     return this.nodeCollection.nodes
   }

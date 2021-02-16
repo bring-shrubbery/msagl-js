@@ -24,7 +24,7 @@ export class NodeCollection {
   }
 
   getNode(id: string): Node {
-    return this.nodeMap[id]
+    return this.nodeMap.get(id)
   }
 
   get nodeCount(): number {
