@@ -1,4 +1,3 @@
-import {Entity} from './../../structs/entity'
 import {AttrContainer} from './../../structs/attrContainer'
 import {Rectangle} from './../../math/geometry/rectangle'
 export abstract class GeomObject {

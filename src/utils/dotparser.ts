@@ -26,6 +26,10 @@ function parseCluster(o: any, cluster: Cluster) {
   parseDotGraphOnNodeCollection(o.children, cluster.nodeCollection, cluster)
 }
 
+function parseNode(o: any, nc: NodeCollection) {
+  const node = new Node(o.id)
+  nc.addNode(node)
+}
 function parseDotGraphOnNodeCollection(
   children: any,
   nc: NodeCollection,
@@ -35,13 +39,12 @@ function parseDotGraphOnNodeCollection(
   for (const o of children) {
     switch (o.type) {
       case 'node_stmt':
-        console.log('node')
+        parseNode(o, nc)
         break
       case 'edge_stmt':
         const edgeList: any[] = o.edge_list
         for (let i = 0; i < edgeList.length - 1; i++)
           parseEdge(edgeList[i], edgeList[i + 1], nc)
-        console.log('edge')
         break
       case 'subgraph':
         const cl = new Cluster(o.id)
