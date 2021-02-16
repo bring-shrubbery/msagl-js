@@ -1,4 +1,3 @@
-import {Entity} from './../../structs/entity'
 import {Graph} from './../../structs/graph'
 import {Rectangle} from './../../math/geometry/rectangle'
 import {GeomObject} from './geomObject'
