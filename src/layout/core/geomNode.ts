@@ -16,7 +16,7 @@ export class GeomNode extends GeomObject {
   boundaryCurve: ICurve
 
   // Creates a Node instance
-  static mkNode(curve: ICurve, node: Node, userData: any = null) {
+  static mkNode(curve: ICurve, node: Node) {
     const n = new GeomNode(node)
     n.boundaryCurve = curve
     return n

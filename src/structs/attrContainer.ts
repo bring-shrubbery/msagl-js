@@ -3,6 +3,11 @@ export class AttrContainer {
   constructor() {
     this.attrs = []
   }
+
+  get length() {
+    return this.attrs.length
+  }
+
   clearAttr() {
     this.attrs = []
   }

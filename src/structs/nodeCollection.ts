@@ -1,23 +1,40 @@
 import {Node} from './node'
 import {Edge} from './edge'
 export class NodeCollection {
-  nodes: Map<string, Node> = new Map<string, Node>()
+  *nodes_(): IterableIterator<Node> {
+    for (const p of this.nodeMap) yield p[1]
+  }
+
+  get nodes(): IterableIterator<Node> {
+    return this.nodes_()
+  }
+
+  nodeMap: Map<string, Node> = new Map<string, Node>()
+
   private *_edges() {
     // if we go over n.inEdges too then not self edges will be reported twice
-    for (const pair of this.nodes) {
+    for (const pair of this.nodeMap) {
       for (const e of pair[1].outEdges) yield e
       for (const e of pair[1].selfEdges) yield e
     }
   }
 
+  hasNode(id: string) {
+    return this.nodeMap.has(id)
+  }
+
+  getNode(id: string): Node {
+    return this.nodeMap[id]
+  }
+
   get nodeCount(): number {
-    return this.nodes.size
+    return this.nodeMap.size
   }
 
   // caution: it is a linear by the number of nodes method
   get edgeCount(): number {
     let count = 0
-    for (const pair of this.nodes) {
+    for (const pair of this.nodeMap) {
       count += pair[1].outDegree + pair[1].selfDegree
     }
     return count
@@ -27,7 +44,7 @@ export class NodeCollection {
     return this._edges()
   }
   addNode(node: Node) {
-    this.nodes.set(node.id, node)
+    this.nodeMap.set(node.id, node)
   }
 
   addEdge(edge: Edge): void {
@@ -47,7 +64,7 @@ export class NodeCollection {
     for (const e of node.inEdges) {
       e.source.outEdges.delete(e)
     }
-    this.nodes.delete(node.id)
+    this.nodeMap.delete(node.id)
   }
 
   nodeIsConsistent(n: Node): boolean {
@@ -58,7 +75,7 @@ export class NodeCollection {
       if (e.source == e.target) {
         return false
       }
-      if (!this.nodes.has(e.target.id)) {
+      if (!this.nodeMap.has(e.target.id)) {
         return false
       }
     }
@@ -70,7 +87,7 @@ export class NodeCollection {
       if (e.source == e.target) {
         return false
       }
-      if (!this.nodes.has(e.source.id)) {
+      if (!this.nodeMap.has(e.source.id)) {
         return false
       }
       return true
@@ -89,7 +106,7 @@ export class NodeCollection {
   }
 
   isConsistent(): boolean {
-    for (const pair of this.nodes) {
+    for (const pair of this.nodeMap) {
       if (!this.nodeIsConsistent(pair[1])) {
         return false
       }

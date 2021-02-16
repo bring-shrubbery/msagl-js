@@ -6,8 +6,7 @@ import {GeomEdge} from './geomEdge'
 
 export class GeomGraph extends GeomObject {
   *nodes(): IterableIterator<GeomNode> {
-    for (const kv of this.graph.nodes)
-      yield GeomObject.getGeom(kv[1]) as GeomNode
+    for (const n of this.graph.nodes) yield GeomObject.getGeom(n) as GeomNode
   }
 
   *edges(): IterableIterator<GeomEdge> {
@@ -38,8 +37,8 @@ export class GeomGraph extends GeomObject {
       this._boundingBox.addRec(ge.boundingBox)
       padding = Math.max(padding, ge.lineWidth)
     }
-    for (const pair of this.graph.nodes) {
-      const gn = GeomObject.getGeom(pair[1]) as GeomNode
+    for (const n of this.graph.nodes) {
+      const gn = GeomObject.getGeom(n) as GeomNode
       this._boundingBox.addRec(gn.boundingBox)
       padding = Math.max(padding, gn.padding)
     }

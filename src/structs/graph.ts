@@ -4,7 +4,7 @@ import {Node} from './node'
 import {NodeCollection} from './nodeCollection'
 
 export class Graph extends AttrContainer {
-  get nodes() {
+  get nodes(): IterableIterator<Node> {
     return this.nodeCollection.nodes
   }
   get edges() {
