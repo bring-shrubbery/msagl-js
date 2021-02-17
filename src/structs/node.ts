@@ -29,8 +29,12 @@ export class Node extends Entity {
     this.id = id
   }
 
+  get isGraph(): boolean {
+    return this.hasOwnProperty('nodeCollection')
+  }
+
   *graphs(): IterableIterator<Graph> {
-    if (this.hasOwnProperty('nodeCollection')) {
+    if (this.isGraph) {
       const nc: NodeCollection = ((this as unknown) as Graph).nodeCollection
       expect(nc == null).toBe(false)
       for (const g of nc.graphs) {

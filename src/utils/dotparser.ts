@@ -39,7 +39,7 @@ function parseUnderGraph(children: any, graph: Graph) {
       case 'edge_stmt':
         const edgeList: any[] = o.edge_list
         for (let i = 0; i < edgeList.length - 1; i++)
-          parseEdge(edgeList[i], edgeList[i + 1], graph)
+          parseEdge(edgeList[i].id, edgeList[i + 1].id, graph)
         break
       case 'subgraph':
         const subg = Graph.mkGraph(o.id)

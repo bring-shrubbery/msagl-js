@@ -7,8 +7,11 @@ export class NodeCollection {
   }
 
   private *graphs_(): IterableIterator<Graph> {
-    for (const n of this.nodes_())
-      if (n.hasOwnProperty('isCollapsed')) yield n as Graph
+    for (const n of this.nodes_()) {
+      if (n.isGraph) {
+        yield n as Graph
+      }
+    }
   }
 
   get nodes(): IterableIterator<Node> {
@@ -24,8 +27,12 @@ export class NodeCollection {
   private *_edges() {
     // if we go over n.inEdges too then not self edges will be reported twice
     for (const pair of this.nodeMap) {
-      for (const e of pair[1].outEdges) yield e
-      for (const e of pair[1].selfEdges) yield e
+      for (const e of pair[1].outEdges) {
+        yield e
+      }
+      for (const e of pair[1].selfEdges) {
+        yield e
+      }
     }
   }
 

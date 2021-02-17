@@ -3,28 +3,34 @@ import {IIntEdge} from './iIntEdge'
 import {GeomEdge} from './../core/geomEdge'
 import {ICurve} from './../../math/geometry/icurve'
 import {LayerEdge} from './layerEdge'
+import {Anchor} from './anchor'
+
 class Routing {
   static updateLabel(edge: GeomEdge, anchor: Anchor) {
     throw new Error()
   }
 }
-class Anchor {}
-// An edge with source and target represented as integers, they point to the array of Nodes of the graph
+
+// An edge with source and target represented as integers,
+// they point to the array of Nodes of the graph
 export class PolyIntEdge implements IIntEdge {
   source: number
   target: number
   reversed: boolean
-  // separation request in number of layers between the sourse and the target layers
+  // separation request in the number of layers between the source and the target layers
   separation: number // should be maintained by sugiama settings
   weight: number // should be maintained by sugiama settings
   crossingWeight: number // - should be maintained by sugiama settings
   // If true it is a dummy edge that will not be drawn; serves as a place holder.
   isVirtualEdge: boolean
   layerEdges: LayerEdge[]
+  // the original edge
+  geomEdge: GeomEdge
 
-  constructor(source: number, target: number) {
+  constructor(source: number, target: number, geomEdge: GeomEdge) {
     this.source = source
     this.target = target
+    this.geomEdge = geomEdge
   }
 
   hasLabel: boolean
@@ -46,15 +52,6 @@ export class PolyIntEdge implements IIntEdge {
 
   // The original edge corresponding to the PolyIntEdge
   edge: GeomEdge
-
-  // constructor
-  static mkPolyIntEdge(source: number, target: number, edge: GeomEdge) {
-    const pe = new PolyIntEdge(source, target)
-    pe.source = source
-    pe.target = target
-    pe.edge = edge
-    return pe
-  }
 
   toString(): string {
     return 'edge(' + this.source + '->' + this.target + ')'
@@ -84,7 +81,7 @@ export class PolyIntEdge implements IIntEdge {
   }
 
   reversedClone() {
-    const ret = PolyIntEdge.mkPolyIntEdge(this.target, this.source, this.edge)
+    const ret = new PolyIntEdge(this.target, this.source, this.edge)
     if (this.layerEdges != null) {
       const len = this.layerEdges.length
       ret.layerEdges = new Array<LayerEdge>(len)
