@@ -31,7 +31,6 @@ test('inh', () => {
 })
 
 test('dot parser', () => {
-  console.log('Current directory: ' + process.cwd())
   const g = parseDotGraph('src/tests/data/graphvis/clust4.gv')
   expect(g == null).toBe(false)
 })
