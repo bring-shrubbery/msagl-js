@@ -20,7 +20,7 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
   }
 
   mkGraphEdgesN(edges: TEdge[], numberOfVerts: number) {
-    const n = new BasicGraphOnEdges()
+    const n = new BasicGraphOnEdges<TEdge>()
     n.setEdges(edges, numberOfVerts)
     return n
   }

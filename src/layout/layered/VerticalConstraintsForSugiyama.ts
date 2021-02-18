@@ -1,9 +1,9 @@
 import { BasicGraph } from '../../structs/BasicGraph'
 import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges';
 import { Node } from '../../structs/node'
+import { IntPair } from '../../utils/IntPair';
 import { GeomNode } from '../core/geomNode'
 import { CycleRemoval } from './CycleRemoval';
-import { IntPair } from './layeredLayout';
 import { PolyIntEdge } from './polyIntEdge'
 
 export class VerticalConstraintsForSugiyama {
@@ -48,7 +48,6 @@ export class VerticalConstraintsForSugiyama {
 
   gluedUpDownIntConstraints = new Array<IntPair>()
 
-
   nodeIdToIndex: Map<string, number>
   intGraph: BasicGraph<GeomNode, PolyIntEdge>
   // this graph is obtained from intGraph by glueing together same layer vertices
@@ -70,12 +69,13 @@ export class VerticalConstraintsForSugiyama {
     return this.getFeedbackSet();
   }
 
-  removeCyclesFromGluedConstraints() {
-    const feedbackSet = CycleRemoval<IntPair>.
-      GetFeedbackSetWithConstraints(new BasicGraphOnEdges<IntPair>(GluedUpDownIntConstraints, this.intGraph.NodeCount), null);
+    removeCyclesFromGluedConstraints() {
+        const graph = (new BasicGraphOnEdges<IntPair>()).mkGraphEdgesN(this.gluedUpDownIntConstraints, this.intGraph.nodeCount)
+    const feedbackSet = CycleRemoval.getFeedbackSetWithConstraints( graph, null)
     //feedbackSet contains all glued constraints making constraints cyclic
-    foreach(IntPair p in feedbackSet)
-    GluedUpDownIntConstraints.Remove(p);
+    for (const p of feedbackSet) {
+       this.gluedUpDownIntConstraints.remove(p)
+    }
   }
 
   private void AddMaxMinConstraintsToGluedConstraints() {
@@ -179,25 +179,19 @@ internal int NodeToRepr(int node) {
 
 List < number > maxLayerInt = new List<number>();
 List < number > minLayerInt = new List<number>();
-List < Tuple < number, number >> sameLayerInts = new List<Tuple<number, number>>();
+
+sameLayerInts = new Array<[number, number]>();
 
 // contains also pinned max and min pairs
-internal List < Tuple < number, number >> SameLayerInts {
-  get { return sameLayerInts; }
-  set { sameLayerInts = value; }
-}
-List < Tuple < number, number >> upDownInts = new List<Tuple<number, number>>();
 
-internal List < Tuple < number, number >> UpDownInts {
-  get { return upDownInts; }
-  set { upDownInts = value; }
-}
+upDownInts = new Array<[number, number]>();
+
   
-    private void CreateIntegerConstraints() {
-  CreateMaxIntConstraints();
-  CreateMinIntConstraints();
-  CreateUpDownConstraints();
-  CreateSameLayerConstraints();
+    createIntegerConstraints() {
+  this.createMaxIntConstraints();
+  this.createMinIntConstraints();
+  this.createUpDownConstraints();
+  this.CreateSameLayerConstraints();
 }
   
     private void CreateSameLayerConstraints() {
