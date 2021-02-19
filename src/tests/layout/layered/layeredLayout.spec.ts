@@ -34,7 +34,8 @@ test('map test', () => {
 
   expect(mi.get(ip1)).toBe(undefined)
 })
-xtest('layered layout hookup', () => {
+
+test('layered layout hookup', () => {
   const g = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(g)
   const ll = new LayeredLayout(g, new SugiyamaLayoutSettings())
