@@ -1,5 +1,7 @@
-import {IntPair} from './IntPair'
 export class IntPairMap<T> {
+  set(x: number, y: number, v: T) {
+    this.map[x].set(y, v)
+  }
   map: Map<number, T>[]
   get(x: number, y: number) {
     if (x < 0 || x >= this.map.length) {

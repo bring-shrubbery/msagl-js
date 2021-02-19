@@ -85,9 +85,9 @@ export class LayeredLayout extends Algorithm {
   }
   cycleRemoval() {
     const verticalConstraints = this.sugiyamaSettings.verticalConstraints
-    const feedbackSet: IEdge[] = verticalConstraints.isEmpty
+    const feedbackSet: IEdge[] = verticalConstraints.isEmpty()
       ? CycleRemoval.getFeedbackSet(this.intGraph)
-      : verticalConstraints.getFeedbackSet(this.intGraph, this.nodeIdToIndex)
+      : verticalConstraints.getFeedbackSet()
 
     this.database.addFeedbackSet(feedbackSet)
   }

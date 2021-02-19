@@ -1,14 +1,38 @@
+import {IntPair} from './IntPair'
+import {from} from 'linq-to-typescript'
 
 export class IntPairSet {
-    set: Set<number>[]
-    has(x: number, y: number):boolean {
-        if (x < 0 || x >= this.set.length) {
-            return false
-        }
-        return this.set[x].has(y)
+  arrayOfSets: Set<number>[]
+  remove(p: IntPair) {
+    if (p.x < 0 || p.x >= this.arrayOfSets.length) {
+      return
     }
-    constructor(n: number) {
-        this.set = new Array<Set<number>>(n)
-        for (let i = 0; i < n; i++) this.set[i] = new Set<number>()
+    return this.arrayOfSets[p.x].delete(p.y)
+  }
+  has(x: number, y: number): boolean {
+    if (x < 0 || x >= this.arrayOfSets.length) {
+      return false
     }
+    return this.arrayOfSets[x].has(y)
+  }
+
+  constructor(n: number) {
+    this.arrayOfSets = new Array<Set<number>>(n)
+    for (let i = 0; i < n; i++) this.arrayOfSets[i] = new Set<number>()
+  }
+
+  static mk(ps: Array<IntPair>) {
+    const length = from(ps).max((p) => p.x) + 1
+    const r = new IntPairSet(length)
+    ps.forEach((p) => r.add(p))
+    return r
+  }
+
+  *iter(): IterableIterator<IntPair> {
+    for (let i = 0; i < this.arrayOfSets.length; i++)
+      for (const j of this.arrayOfSets[i]) yield new IntPair(i, j)
+  }
+  add(p: IntPair) {
+    this.arrayOfSets[p.x].add(p.y)
+  }
 }

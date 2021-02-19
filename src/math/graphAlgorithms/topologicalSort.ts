@@ -1,4 +1,4 @@
-import {IntPair} from './intPair'
+import {IntPair} from './../../utils/IntPair'
 import {BasicGraphOnEdges} from './../../structs/basicGraphOnEdges'
 import {Stack} from 'stack-typescript'
 

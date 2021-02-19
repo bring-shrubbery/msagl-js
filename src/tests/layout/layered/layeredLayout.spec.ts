@@ -1,7 +1,7 @@
 import {parseDotGraph} from './../../../utils/dotparser'
 import {SugiyamaLayoutSettings} from './../../../layout/layered/SugiyamaLayoutSettings'
 
-import {IntPair, LayeredLayout} from '../../../layout/layered/layeredLayout'
+import {LayeredLayout} from '../../../layout/layered/layeredLayout'
 import {Graph} from '../../../structs/graph'
 import {GeomNode} from '../../../layout/core/geomNode'
 import {GeomEdge} from '../../../layout/core/geomEdge'
