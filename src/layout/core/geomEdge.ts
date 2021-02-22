@@ -15,7 +15,7 @@ export class GeomEdge extends GeomObject {
     return this.attrCont as Edge
   }
   get source(): GeomNode {
-    return GeomObject.getGeom(this.edge.source)
+    return GeomObject.getGeom(this.edge.source) as GeomNode
   }
 
   get boundingBox(): Rectangle {
@@ -45,7 +45,7 @@ export class GeomEdge extends GeomObject {
   }
 
   get target(): GeomNode {
-    return GeomObject.getGeom(this.edge.target)
+    return GeomObject.getGeom(this.edge.target) as GeomNode
   }
 
   constructor(edge: Edge) {

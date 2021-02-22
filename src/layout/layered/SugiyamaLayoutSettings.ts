@@ -1,5 +1,6 @@
 import {VerticalConstraintsForSugiyama} from './VerticalConstraintsForSugiyama'
 
 export class SugiyamaLayoutSettings {
-  verticalConstraints: VerticalConstraintsForSugiyama = new VerticalConstraintsForSugiyama()
+  verticalConstraints = new VerticalConstraintsForSugiyama()
+  layeringOnly: boolean
 }

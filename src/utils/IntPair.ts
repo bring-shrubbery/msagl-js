@@ -13,4 +13,7 @@ export class IntPair {
   get target() {
     return this.y
   }
+  isDiagonal(): boolean {
+    return this.x == this.y
+  }
 }

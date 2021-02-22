@@ -1,6 +1,5 @@
 import {BasicGraph} from '../../structs/BasicGraph'
 import {PolyIntEdge} from './polyIntEdge'
-import {Node} from '../../structs/node'
 import {IEdge} from '../../structs/iedge'
 import {GeomNode} from '../core/geomNode'
 import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
@@ -41,9 +40,9 @@ export class CycleRemoval {
     stack.push(new StackStruct(v, i))
   }
 
-  static getFeedbackSet(graph: BasicGraph<GeomNode, PolyIntEdge>): IEdge[] {
+  static getFeedbackSet(graph: BasicGraph<GeomNode, IEdge>): IEdge[] {
     const feedbackSet = new Set<IEdge>()
-    if (graph == null || graph.nodeCount > 0) return Array.from(feedbackSet)
+    if (graph == null || graph.nodeCount == 0) return Array.from(feedbackSet)
     const status = new Array<VertStatus>(graph.nodeCount).fill(
       VertStatus.NotVisited,
     )
@@ -58,6 +57,7 @@ export class CycleRemoval {
       while (stack.size > 0) {
         const s = stack.pop()
         vertex = s.v
+        status[vertex] = VertStatus.Visited
         i = s.i
         let outEnum = graph.outEdges[vertex]
         for (; i < outEnum.length; i++) {
@@ -70,10 +70,11 @@ export class CycleRemoval {
             feedbackSet.add(e)
           } else if (targetStatus == VertStatus.NotVisited) {
             //have to go deeper
-            CycleRemoval.push(stack, status, vertex, i)
+            CycleRemoval.push(stack, status, vertex, i + 1)
             vertex = e.target
             status[e.target] = VertStatus.Visited
             outEnum = graph.outEdges[vertex]
+            i = -1
           }
         }
       }

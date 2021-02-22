@@ -65,7 +65,7 @@ export class VerticalConstraintsForSugiyama {
     this.upDownConstraints = []
   }
 
-  gluedUpDownIntConstraints: IntPairSet
+  gluedUpDownIntConstraints = new IntPairSet(0)
 
   nodeIdToIndex: Map<string, number>
   intGraph: BasicGraph<GeomNode, PolyIntEdge>

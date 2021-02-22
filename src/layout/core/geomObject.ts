@@ -12,7 +12,7 @@ export abstract class GeomObject {
     this.bindWithGeom()
   }
 
-  static getGeom(attrCont: AttrContainer) {
+  static getGeom(attrCont: AttrContainer): GeomObject {
     return attrCont.getAttr(0)
   }
 }

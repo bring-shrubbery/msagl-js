@@ -11,7 +11,7 @@ import {String, StringBuilder} from 'typescript-string-operations'
 import {from} from 'linq-to-typescript'
 import {allVerticesOfParall} from './parallelogram'
 import {GeomEdge} from './../../layout/core/geomEdge'
-import {GeomGraph} from './../../layout/core/geomGraph'
+import {GeomGraph} from '../../layout/core/GeomGraph'
 import {GeomLabel} from './../../layout/core/geomLabel'
 
 export class SvgDebugWriter {
