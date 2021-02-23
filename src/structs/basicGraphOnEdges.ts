@@ -1,6 +1,6 @@
 import {IEdge} from './iedge'
 import {Queue} from 'queue-typescript'
-import {from} from 'linq-to-typescript'
+import {from, IEnumerable} from 'linq-to-typescript'
 
 export class BasicGraphOnEdges<TEdge extends IEdge> {
   edges: TEdge[]
@@ -13,13 +13,13 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
     return from(this.outEdges[v]).concatenate(from(this.inEdges[v]))
   }
 
-  mkGraphEdges(edges: TEdge[]): BasicGraphOnEdges<TEdge> {
+  mkGraphOnEdges(edges: IEnumerable<TEdge>): BasicGraphOnEdges<TEdge> {
     const n = new BasicGraphOnEdges<TEdge>()
-    n.setEdges(edges, BasicGraphOnEdges.vertexCount(edges))
+    n.setEdges(edges.toArray(), BasicGraphOnEdges.vertexCount(edges))
     return n
   }
 
-  mkGraphEdgesN(edges: TEdge[], numberOfVerts: number) {
+  mkGraphOnEdgesN(edges: TEdge[], numberOfVerts: number) {
     const n = new BasicGraphOnEdges<TEdge>()
     n.setEdges(edges, numberOfVerts)
     return n
@@ -45,7 +45,7 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
 
   // This method should be static be
   /// finds the maximum of sources and targets, and return it incremented by 1
-  static vertexCount(edges: IEdge[]) {
+  static vertexCount(edges: IEnumerable<IEdge>) {
     let nov = 0
     for (const ie of edges) {
       if (ie.source >= nov) nov = ie.source
@@ -146,6 +146,18 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
           yield s
         }
       }
+    }
+  }
+
+  *pred(n: number): IterableIterator<number> {
+    for (const e of this.inEdges[n]) {
+      yield e.source
+    }
+  }
+
+  *succ(n: number): IterableIterator<number> {
+    for (const e of this.outEdges[n]) {
+      yield e.target
     }
   }
 

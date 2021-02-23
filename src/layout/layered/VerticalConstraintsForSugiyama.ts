@@ -49,7 +49,7 @@ export class VerticalConstraintsForSugiyama {
     this.minLayerOfGeomGraph.add(node)
   }
 
-  isEmpty() {
+  get isEmpty() {
     return (
       this.maxLayerOfGeomGraph.size == 0 &&
       this.minLayerOfGeomGraph.size == 0 &&

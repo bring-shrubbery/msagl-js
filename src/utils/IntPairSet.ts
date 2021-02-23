@@ -1,5 +1,5 @@
-import {IntPair} from './IntPair'
-import {from} from 'linq-to-typescript'
+import { IntPair } from './IntPair'
+import { IEnumerable } from 'linq-to-typescript'
 
 export class IntPairSet {
   arrayOfSets: Set<number>[]
@@ -21,10 +21,11 @@ export class IntPairSet {
     for (let i = 0; i < n; i++) this.arrayOfSets[i] = new Set<number>()
   }
 
-  static mk(ps: Array<IntPair>) {
-    const length = from(ps).max((p) => p.x) + 1
+  static mk(ps: IEnumerable<IntPair>) {
+    const length = ps.max((p) => p.x) + 1
     const r = new IntPairSet(length)
-    ps.forEach((p) => r.add(p))
+    for (const p of ps)
+      r.add(p)
     return r
   }
 

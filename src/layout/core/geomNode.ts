@@ -1,12 +1,12 @@
 // A node of a GeomGraph
-import {Assert} from './../../utils/assert'
-import {ICurve} from './../../math/geometry/icurve'
-import {Rectangle} from './../../math/geometry/rectangle'
-import {Point} from './../../math/geometry/point'
-import {CurveFactory} from './../../math/geometry/curveFactory'
-import {PlaneTransformation} from './../../math/geometry/planeTransformation'
-import {Node} from './../../structs/node'
-import {GeomObject} from './geomObject'
+import { Assert } from './../../utils/assert'
+import { ICurve } from './../../math/geometry/icurve'
+import { Rectangle } from './../../math/geometry/rectangle'
+import { Point } from './../../math/geometry/point'
+import { CurveFactory } from './../../math/geometry/curveFactory'
+import { PlaneTransformation } from './../../math/geometry/planeTransformation'
+import { Node } from './../../structs/node'
+import { GeomObject } from './geomObject'
 
 export class GeomNode extends GeomObject {
   get node(): Node {
@@ -15,6 +15,9 @@ export class GeomNode extends GeomObject {
   padding = 1
   boundaryCurve: ICurve
 
+  get id(): string {
+    return this.node.id
+  }
   // Creates a Node instance
   static mkNode(curve: ICurve, node: Node) {
     const n = new GeomNode(node)

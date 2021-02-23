@@ -1,7 +1,4 @@
-import {BasicGraph} from '../../structs/BasicGraph'
-import {PolyIntEdge} from './polyIntEdge'
 import {IEdge} from '../../structs/iedge'
-import {GeomNode} from '../core/geomNode'
 import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
 import {IntPair} from '../../utils/IntPair'
 import {IntPairSet} from '../../utils/IntPairSet'
@@ -40,7 +37,7 @@ export class CycleRemoval {
     stack.push(new StackStruct(v, i))
   }
 
-  static getFeedbackSet(graph: BasicGraph<GeomNode, IEdge>): IEdge[] {
+  static getFeedbackSet(graph: BasicGraphOnEdges<IEdge>): IEdge[] {
     const feedbackSet = new Set<IEdge>()
     if (graph == null || graph.nodeCount == 0) return Array.from(feedbackSet)
     const status = new Array<VertStatus>(graph.nodeCount).fill(
