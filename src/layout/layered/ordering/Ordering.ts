@@ -43,8 +43,6 @@ export class Ordering implements Algorithm {
   }
 
 
-
-
   // gets the random seed for some random choices inside of layer ordering
   get SeedOfRandom() {
     return randomInt(100)
