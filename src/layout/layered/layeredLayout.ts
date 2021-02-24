@@ -18,6 +18,13 @@ import { CancelToken } from '../../utils/cancelToken'
 import { Balancing } from './Balancing'
 import { LayerCalculator } from './layering/layerCalculator'
 import { ConstrainedOrdering } from './ordering/ConstrainedOrdering'
+import { ProperLayeredGraph } from './ProperLayeredGraph'
+import { LayerEdge } from './layerEdge'
+
+function EdgeSpan(layers: number[], e: PolyIntEdge) {
+  return layers[e.source] - layers[e.target]
+}
+
 export class LayeredLayout extends Algorithm {
   originalGraph: Graph
   sugiyamaSettings: SugiyamaLayoutSettings
@@ -92,7 +99,8 @@ export class LayeredLayout extends Algorithm {
   }
   cycleRemoval() {
     const verticalConstraints = this.sugiyamaSettings.verticalConstraints
-    const feedbackSet: IEdge[] = verticalConstraints.isEmpty ? CycleRemoval.getFeedbackSet(this.intGraph)
+    const feedbackSet: IEdge[] = verticalConstraints.isEmpty
+      ? CycleRemoval.getFeedbackSet(this.intGraph)
       : verticalConstraints.getFeedbackSetExternal(
         this.intGraph,
         this.nodeIdToIndex,
@@ -114,80 +122,169 @@ export class LayeredLayout extends Algorithm {
   }
 
   ExtendLayeringToUngluedSameLayerVertices(p: number[]): number[] {
-    const vc = this.verticalConstraints;
-    for (let i = 0; i < p.length; i++)
-      p[i] = p[vc.nodeToRepr(i)];
-    return p;
+    const vc = this.verticalConstraints
+    for (let i = 0; i < p.length; i++) p[i] = p[vc.nodeToRepr(i)]
+    return p
   }
 
   YLayeringAndOrdering(layering: LayerCalculator): LayerArrays {
-    let yLayers = layering.getLayers();
-    Balancing.Balance(this.gluedDagSkeletonForLayering, yLayers, this.GetNodeCountsOfGluedDag(), null);
-    yLayers = this.ExtendLayeringToUngluedSameLayerVertices(yLayers);
+    let yLayers = layering.getLayers()
+    Balancing.Balance(
+      this.gluedDagSkeletonForLayering,
+      yLayers,
+      this.GetNodeCountsOfGluedDag(),
+      null,
+    )
+    yLayers = this.ExtendLayeringToUngluedSameLayerVertices(yLayers)
 
-    var layerArrays = new LayerArrays(yLayers);
-    if (this.HorizontalConstraints == null || this.HorizontalConstraints.IsEmpty) {
-      layerArrays = this.YLayeringAndOrderingWithoutHorizontalConstraints(layerArrays);
+    let layerArrays = new LayerArrays(yLayers)
+    if (
+      this.HorizontalConstraints == null ||
+      this.HorizontalConstraints.IsEmpty
+    ) {
+      layerArrays = this.YLayeringAndOrderingWithoutHorizontalConstraints(
+        layerArrays,
+      )
 
-      return layerArrays;
+      return layerArrays
     }
 
-    this.constrainedOrdering = new ConstrainedOrdering(this.originalGraph, this.intGraph, layerArrays.Y, this.nodeIdToIndex,
-      this.database, this.sugiyamaSettings);
-    this.constrainedOrdering.Calculate();
-    this.properLayeredGraph = this.constrainedOrdering.ProperLayeredGraph;
-
+    this.constrainedOrdering = new ConstrainedOrdering(
+      this.originalGraph,
+      this.intGraph,
+      layerArrays.Y,
+      this.nodeIdToIndex,
+      this.database,
+      this.sugiyamaSettings,
+    )
+    this.constrainedOrdering.Calculate()
+    this.properLayeredGraph = this.constrainedOrdering.ProperLayeredGraph
 
     // SugiyamaLayoutSettings.ShowDatabase(this.database);
-    return constrainedOrdering.LayerArrays;
+    return this.constrainedOrdering.LayerArrays
   }
 
-  YLayeringAndOrderingWithoutHorizontalConstraints(layerArrays: LayerArrays): LayerArrays {
-    CreaeteProperLayeredGraph(layerArrays.Y, out layerArrays);
-    Ordering.OrderLayers(properLayeredGraph, layerArrays, originalGraph.Nodes.Count,
-      sugiyamaSettings.AspectRatio != 0, sugiyamaSettings, CancelToken);
-    MetroMapOrdering.UpdateLayerArrays(properLayeredGraph, layerArrays);
-    return layerArrays;
+  /// Creating a proper layered graph, a graph where each
+  /// edge goes only one layer down from the i+1-th layer to the i-th layer.
+
+  CreateProperLayeredGraph(layering: number[]): LayerArrays {
+    const n = layering.length
+    let nOfVV = 0
+
+    for (const e of this.database.SkeletonEdges()) {
+      const span = EdgeSpan(layering, e)
+
+      Assert.assert(span >= 0)
+
+      if (span > 0) e.layerEdges = new Array<LayerEdge>(span)
+      let pe = 0 //offset in the string
+
+      if (span > 1) {
+        //we create span-2 dummy nodes and span new edges
+        let d0 = n + nOfVV++
+
+        var layerEdge = new LayerEdge(e.source, d0, e.crossingWeight, e.weight)
+
+        e.layerEdges[pe++] = layerEdge
+
+        //create span-2 internal edges all from dummy nodes
+        for (let j = 0; j < span - 2; j++) {
+          d0++
+          nOfVV++
+          layerEdge = new LayerEdge(d0 - 1, d0, e.crossingWeight, e.weight)
+          e.layerEdges[pe++] = layerEdge
+        }
+
+        layerEdge = new LayerEdge(d0, e.target, e.crossingWeight, e.weight)
+        e.layerEdges[pe] = layerEdge
+      } else if (span == 1) {
+        var layerEdge = new LayerEdge(
+          e.source,
+          e.target,
+          e.crossingWeight,
+          e.weight,
+        )
+        e.layerEdges[pe] = layerEdge
+      }
+    }
+
+    const extendedVertexLayering = new Array<number>(
+      this.originalGraph.nodeCount + nOfVV,
+    )
+
+    for (const e of this.database.SkeletonEdges())
+      if (e.layerEdges != null) {
+        let l = layering[e.source]
+        extendedVertexLayering[e.source] = l--
+        for (const le of e.layerEdges) extendedVertexLayering[le.target] = l--
+      } else {
+        extendedVertexLayering[e.source] = layering[e.source]
+        extendedVertexLayering[e.target] = layering[e.target]
+      }
+
+    this.properLayeredGraph = new ProperLayeredGraph(
+      new BasicGraph<GeomNode, PolyIntEdge>(
+        Array.from(this.database.SkeletonEdges()),
+        layering.length,
+      ),
+    )
+    this.properLayeredGraph.BaseGraph.nodes = this.intGraph.nodes
+    return new LayerArrays(extendedVertexLayering)
   }
 
+  YLayeringAndOrderingWithoutHorizontalConstraints(
+    layerArraysIn: LayerArrays,
+  ): LayerArrays {
+    const layerArrays = this.CreateProperLayeredGraph(layerArraysIn.Y)
+    Ordering.OrderLayers(
+      this.properLayeredGraph,
+      layerArrays,
+      this.originalGraph.nodeCount,
+      this.sugiyamaSettings.AspectRatio != 0,
+      this.sugiyamaSettings,
+      this.cancelToken,
+    )
+    MetroMapOrdering.UpdateLayerArrays(properLayeredGraph, layerArrays)
+    return layerArrays
+  }
 
   CalculateYLayers(): LayerArrays {
-    const layerArrays =
-      YLayeringAndOrdering(new NetworkSimplexForGeneralGraph(GluedDagSkeletonForLayering, CancelToken));
-    if (constrainedOrdering != null)
-      return layerArrays;
-    return InsertLayersIfNeeded(layerArrays);
+    const layerArrays = YLayeringAndOrdering(
+      new NetworkSimplexForGeneralGraph(
+        this.gluedDagSkeletonForLayering,
+        CancelToken,
+      ),
+    )
+    if (constrainedOrdering != null) return layerArrays
+    return InsertLayersIfNeeded(layerArrays)
   }
 
   CalculateLayerArrays(): LayerArrays {
-    const layerArrays = this.CalculateYLayers();
+    const layerArrays = this.CalculateYLayers()
 
     if (this.constrainedOrdering == null) {
-      DecideIfUsingFastXCoordCalculation(layerArrays);
+      this.DecideIfUsingFastXCoordCalculation(layerArrays)
 
-      CalculateAnchorsAndYPositions(layerArrays);
+      this.CalculateAnchorsAndYPositions(layerArrays)
 
-      if (Brandes)
-        CalculateXPositionsByBrandes(layerArrays);
-      else
-        CalculateXLayersByGansnerNorth(layerArrays);
-    } else
-      anchors = database.Anchors;
+      if (Brandes) this.CalculateXPositionsByBrandes(layerArrays)
+      else this.CalculateXLayersByGansnerNorth(layerArrays)
+    } else this.anchors = this.database.Anchors
 
-    OptimizeEdgeLabelsLocations();
+    this.OptimizeEdgeLabelsLocations()
 
-    engineLayerArrays = layerArrays;
-    StraightensShortEdges();
+    this.engineLayerArrays = layerArrays
+    this.StraightensShortEdges()
 
-    double aspectRatio;
-    CalculateOriginalGraphBox(out aspectRatio);
+    const aspectRatio: number = this.CalculateOriginalGraphBox()
 
-    if (sugiyamaSettings.AspectRatio != 0)
-      StretchToDesiredAspectRatio(aspectRatio, sugiyamaSettings.AspectRatio);
+    if (this.sugiyamaSettings.AspectRatio != 0)
+      this.StretchToDesiredAspectRatio(
+        aspectRatio,
+        this.sugiyamaSettings.AspectRatio,
+      )
 
-    return layerArrays;
-
-
+    return layerArrays
   }
 
   GluedDagSkeletonEdges(): PolyIntEdge[] {
@@ -243,6 +340,6 @@ export class LayeredLayout extends Algorithm {
     if (this.verticalConstraints.isEmpty) {
       return new Array<number>(this.intGraph.nodeCount).fill(1)
     }
-    return this.verticalConstraints.getGluedNodeCounts();
+    return this.verticalConstraints.getGluedNodeCounts()
   }
 }

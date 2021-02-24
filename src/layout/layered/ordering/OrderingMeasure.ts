@@ -1,99 +1,103 @@
 
-namespace Microsoft.Msagl.Layout.Layered {
-    
-     class OrderingMeasure {
-        number numberOfCrossings;
-        number layerGroupDisbalance;
-        number[][] la;
-        number virtVertexStart;
-        // for the i-th layer the optimal size of an original group is optimalOriginalGroupSize[i]
-        number[] optimalOriginalGroupSize;
-        // for the i-th layer the optimal size of a virtual group is optimalOriginalGroupSize[i]
-        number[] optimalVirtualGroupSize;
 
-         OrderingMeasure(number[][] layerArraysPar,
-            number numOfCrossings, number virtualVertexStart,
-            number[] optimalOriginalGroupSizePar,
-        number[] optimalVirtualGroupSizePar
-) {
-            this.numberOfCrossings = numOfCrossings;
-            this.la = layerArraysPar;
-            this.virtVertexStart = virtualVertexStart;
-            this.optimalVirtualGroupSize = optimalVirtualGroupSizePar;
-            this.optimalOriginalGroupSize = optimalOriginalGroupSizePar;
+export class OrderingMeasure {
+  numberOfCrossings: number;
+  layerGroupDisbalance: number;
+  la: number[][];
+  virtVertexStart: number;
+  // for the i-th layer the optimal size of an original group is optimalOriginalGroupSize[i]
+  optimalOriginalGroupSize: number[];
+  // for the i-th layer the optimal size of a virtual group is optimalOriginalGroupSize[i]
+  optimalVirtualGroupSize: number[];
 
-            if (optimalOriginalGroupSize != null)
-                CalculateLayerGroupDisbalance();
-        }
+  OrderingMeasure(layerArraysPar: number[][],
+    numOfCrossings: number, virtualVertexStart: number,
+    optimalOriginalGroupSizePar: number[],
+    optimalVirtualGroupSizePar: number[]
+  ) {
+    this.numberOfCrossings = numOfCrossings;
+    this.la = layerArraysPar;
+    this.virtVertexStart = virtualVertexStart;
+    this.optimalVirtualGroupSize = optimalVirtualGroupSizePar;
+    this.optimalOriginalGroupSize = optimalOriginalGroupSizePar;
 
-        void CalculateLayerGroupDisbalance() {
-            for(number i = 0; i<la.Length;i++)     
-                layerGroupDisbalance+=LayerGroupDisbalance(la[i],this.optimalOriginalGroupSize[i],
-                    this.optimalVirtualGroupSize[i]);
+    if (this.optimalOriginalGroupSize != null)
+      this.CalculateLayerGroupDisbalance();
+  }
 
-        }
+  CalculateLayerGroupDisbalance() {
+    for (let i = 0; i < la.Length; i++)
+      this.layerGroupDisbalance += this.LayerGroupDisbalance(la[i], this.optimalOriginalGroupSize[i],
+        this.optimalVirtualGroupSize[i]);
 
-        number LayerGroupDisbalance(number[] l, number origGroupOptSize, number virtGroupOptSize){
-            if (origGroupOptSize == 1)
-                return LayerGroupDisbalanceWithOrigSeparators(l,virtGroupOptSize);
-            else
-                return LayerGroupDisbalanceWithVirtSeparators(l,origGroupOptSize);
-        }
+  }
 
-        private number LayerGroupDisbalanceWithVirtSeparators(number[] l, number origGroupOptSize) {
-            number ret = 0;
-            for (number i = 0; i < l.Length; )
-                ret += CurrentOrigGroupDelta(ref i, l, origGroupOptSize);
-            return ret;
-        }
+  LayerGroupDisbalance(l: number[], origGroupOptSize: number, virtGroupOptSize: number) {
+    if (origGroupOptSize == 1)
+      return this.LayerGroupDisbalanceWithOrigSeparators(l, virtGroupOptSize);
+    else
+      return this.LayerGroupDisbalanceWithVirtSeparators(l, origGroupOptSize);
+  }
 
-        private number CurrentOrigGroupDelta(ref number i, number[] l, number origGroupOptSize) {
-            number groupSize = 0;
-            number j = i;
-            for (; j < l.Length && l[j] < this.virtVertexStart; j++)
-                groupSize++;
-            i = j + 1;
-            return Math.Abs(origGroupOptSize - groupSize);
-        }
-
-        private number LayerGroupDisbalanceWithOrigSeparators(number[] l, number virtGroupOptSize) {
-            number ret = 0;
-            for (number i = 0; i < l.Length; )
-                ret += CurrentVirtGroupDelta(ref i, l, virtGroupOptSize);
-            return ret;
-        }
-
-        private number CurrentVirtGroupDelta(ref number i, number[] l, number virtGroupOptSize) {
-            number groupSize = 0;
-            number j = i;
-            for (; j < l.Length && l[j] >= this.virtVertexStart; j++)
-                groupSize++;
-            i = j + 1;
-            return Math.Abs(virtGroupOptSize - groupSize);
-        }
-
-        static public bool operator<(OrderingMeasure a, OrderingMeasure b){
-            if (a.numberOfCrossings < b.numberOfCrossings)
-                return true;
-            if (a.numberOfCrossings > b.numberOfCrossings)
-                return false;
-           
-            return (number)a.layerGroupDisbalance < (number)b.layerGroupDisbalance;
-        }
-
-         static public bool operator>(OrderingMeasure a, OrderingMeasure b){
-            if (a.numberOfCrossings > b.numberOfCrossings)
-                return true;
-            if (a.numberOfCrossings < b.numberOfCrossings)
-                return false;
-
-           
-            return (number)a.layerGroupDisbalance > (number)b.layerGroupDisbalance;
-        }
-
-
-          bool IsPerfect() {
-             return this.numberOfCrossings == 0 && this.layerGroupDisbalance == 0;
-         }
+  LayerGroupDisbalanceWithVirtSeparators(l: number[], origGroupOptSize: number) {
+    let ret = 0;
+    for (let i = 0; i < l.length;) {
+      const r = this.CurrentOrigGroupDelta(i, l, origGroupOptSize)
+      i = r.i
+      ret += r.ret
     }
+    return ret;
+  }
+
+  CurrentOrigGroupDelta(i: number, l: number[], origGroupOptSize: number): { ret: number, i: number } {
+    let groupSize = 0;
+    let j = i;
+    for (; j < l.length && l[j] < this.virtVertexStart; j++)
+      groupSize++;
+    i = j + 1;
+    return { ret: Math.abs(origGroupOptSize - groupSize), i }
+  }
+
+  LayerGroupDisbalanceWithOrigSeparators(l: number[], virtGroupOptSize: number) {
+    let ret = 0;
+    for (let i = 0; i < l.length;) {
+      const r = this.CurrentVirtGroupDelta(i, l, virtGroupOptSize);
+      ret += r.ret
+    }
+    return ret;
+  }
+
+  CurrentVirtGroupDelta(i: number, l: number[], virtGroupOptSize: number): { ret: number, i: number } {
+    let groupSize = 0;
+    let j = i;
+    for (; j < l.length && l[j] >= this.virtVertexStart; j++)
+      groupSize++;
+    i = j + 1;
+    return { ret: Math.abs(virtGroupOptSize - groupSize), i: i }
+  }
+
+  static less(a: OrderingMeasure, b: OrderingMeasure) {
+    if (a.numberOfCrossings < b.numberOfCrossings)
+      return true;
+    if (a.numberOfCrossings > b.numberOfCrossings)
+      return false;
+
+    return a.layerGroupDisbalance < b.layerGroupDisbalance;
+  }
+
+  static greater(a: OrderingMeasure, b: OrderingMeasure) {
+    if (a.numberOfCrossings > b.numberOfCrossings)
+      return true;
+    if (a.numberOfCrossings < b.numberOfCrossings)
+      return false;
+
+
+    return a.layerGroupDisbalance > b.layerGroupDisbalance;
+  }
+
+
+  IsPerfect() {
+    return this.numberOfCrossings == 0 && this.layerGroupDisbalance == 0;
+  }
 }
+

@@ -1,3 +1,5 @@
+import {copyTo} from '../../utils/copy'
+
 export class LayerArrays {
   Y: number[]
 
@@ -41,15 +43,11 @@ export class LayerArrays {
     return la
   }
 
-  static copyTo(s: number[], t: number[]) {
-    for (let i = 0; i < s.length; i++) t[i] = s[i]
-  }
-
   updateLayers(ulayers: number[][]) {
     if (this.layers == null) this.InitLayers()
 
     for (let i = 0; i < this.layers.length; i++)
-      LayerArrays.copyTo(ulayers[i], this.layers[i])
+      copyTo(ulayers[i], this.layers[i])
 
     this.UpdateXFromLayers()
   }

@@ -34,7 +34,7 @@ number NodeSeparation() {
   return settings.NodeSeparation;
 }
 
-ConstrainedOrdering(
+constructor(
   GeometryGraph geomGraph,
   BasicGraph < Node, PolyIntEdge > basicIntGraph,
   number[] layering,
