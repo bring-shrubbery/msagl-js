@@ -7,12 +7,105 @@ import { ProperLayeredGraph } from "../ProperLayeredGraph";
 import { SugiyamaLayoutSettings } from "../SugiyamaLayoutSettings";
 import { OrderingMeasure } from './OrderingMeasure';
 import SortedMap = require("collections/sorted-map")
+import { CancelToken } from "../../../utils/cancelToken";
+import { LayerEdge } from "../LayerEdge";
+import { Stack } from "stack-typescript";
+import { from } from "linq-to-typescript";
+import { EdgeComparerBySource } from "./EdgeComparerBySource";
+import { EdgeComparerByTarget } from "./EdgeComparerByTarget";
 
 // Works on the layered graph. 
 // See GraphLayout.pdfhttps://www.researchgate.net/profile/Lev_Nachmanson/publication/30509007_Drawing_graphs_with_GLEE/links/54b6b2930cf2e68eb27edf71/Drawing-graphs-with-GLEE.pdf
 
 function HeadOfTheCoin() {
   return randomInt(2) == 0;
+}
+
+
+
+// This method can be improved: see the paper Simple And Efficient ...
+function GetCrossingCountFromStrip(bottom: number, properLayeredGraph: ProperLayeredGraph, layerArrays: LayerArrays) {
+  const topVerts = layerArrays.Layers[bottom + 1];
+  const bottomVerts = layerArrays.Layers[bottom];
+  if (bottomVerts.length <= topVerts.length)
+    return GetCrossingCountFromStripWhenBottomLayerIsShorter(bottomVerts, properLayeredGraph, layerArrays);
+  else
+    return GetCrossingCountFromStripWhenTopLayerIsShorter(topVerts, bottomVerts, properLayeredGraph,
+      layerArrays);
+}
+
+function GetCrossingCountFromStripWhenTopLayerIsShorter(topVerts: number[], bottomVerts: number[],
+  properLayeredGraph: ProperLayeredGraph,
+  layerArrays: LayerArrays) {
+  const edges = EdgesOfStrip(bottomVerts, properLayeredGraph);
+  edges.sort(new EdgeComparerByTarget(layerArrays.X).Compare);
+  //find first n such that 2^n >=topVerts.length
+  let n = 1;
+  while (n < topVerts.length)
+    n *= 2;
+  //init the accumulator tree
+
+  const tree = new Array<number>(2 * n - 1)
+
+  n--; // the first bottom node starts from n now
+
+  let cc = 0; //number of crossings
+  for (const edge of edges) {
+    let index = n + layerArrays.X[edge.Source];
+    const ew = edge.CrossingWeight;
+    tree[index] += ew;
+    while (index > 0) {
+      if (index % 2 != 0)
+        cc += ew * tree[index + 1]; //intersect everything accumulated in the right sibling 
+      index = (index - 1) / 2;
+      tree[index] += ew;
+    }
+  }
+  return cc;
+}
+
+
+function GetCrossingCountFromStripWhenBottomLayerIsShorter(bottomVerts: number[],
+  properLayeredGraph: ProperLayeredGraph,
+  layerArrays: LayerArrays) {
+  const edges: LayerEdge[] = EdgesOfStrip(bottomVerts, properLayeredGraph);
+  edges.sort(new EdgeComparerBySource(layerArrays.X).Compare)
+  //find first n such that 2^n >=bottomVerts.length
+  let n = 1;
+  while (n < bottomVerts.length)
+    n *= 2;
+  //init accumulator
+
+  var tree = new Array<number>(2 * n - 1)
+
+  n--; // the first bottom node starts from n now
+
+  let cc = 0; //number of crossings
+  for (const edge of edges) {
+    let index = n + layerArrays.X[edge.Target];
+    const ew = edge.CrossingWeight;
+    tree[index] += ew;
+    while (index > 0) {
+      if (index % 2 != 0)
+        cc += ew * tree[index + 1]; //intersect everything accumulated in the right sibling 
+      index = (index - 1) / 2;
+      tree[index] += ew;
+    }
+  }
+
+  return cc;
+}
+
+function EdgesOfStrip(bottomVerts: number[], properLayeredGraph: ProperLayeredGraph): LayerEdge[] {
+  return from(bottomVerts).selectMany(v => properLayeredGraph.InEdges(v)).toArray()
+}
+
+function GetCrossingsTotal(properLayeredGraph: ProperLayeredGraph, layerArrays: LayerArrays) {
+  let x = 0;
+  for (let i = 0; i < layerArrays.Layers.length - 1; i++)
+    x += GetCrossingCountFromStrip(i, properLayeredGraph, layerArrays);
+
+  return x;
 }
 
 export class Ordering implements Algorithm {
@@ -41,7 +134,6 @@ export class Ordering implements Algorithm {
     return this.SugSettings.NoGainAdjacentSwapStepsBound *
       this.SugSettings.RepetitionCoefficientForOrdering;
   }
-
 
   // gets the random seed for some random choices inside of layer ordering
   get SeedOfRandom() {
@@ -76,7 +168,7 @@ export class Ordering implements Algorithm {
     settings: SugiyamaLayoutSettings, cancelToken: CancelToken) {
     let hasCrossWeight = false;
     for (const le of graph.Edges)
-      if (le.crossingWeight != 1) {
+      if (le.CrossingWeight != 1) {
         hasCrossWeight = true;
         break;
       }
@@ -88,7 +180,7 @@ export class Ordering implements Algorithm {
 
   Run() {
     // #if DEBUGORDERING
-    // if (graph.NumberOfVertices != layering.Length)
+    // if (graph.NumberOfVertices != layering.length)
     //   throw new System.Exception("the layering does not correspond to the graph");
     // for (IntEdge e of graph.Edges)
     // if (layering[e.Source] - layering[e.Target] != 1)
@@ -263,250 +355,156 @@ export class Ordering implements Algorithm {
   }
 
 
-  // number WMedian(number node, boolean theMedianGoingDown) {
-  //   IEnumerable < LayerEdge > edges;
-  //   number p;
-  //   if (theMedianGoingDown) {
-  //     edges = properLayeredGraph.OutEdges(node);
-  //     p = properLayeredGraph.OutEdgesCount(node);
-  //   } else {
-  //     edges = properLayeredGraph.InEdges(node);
-  //     p = properLayeredGraph.InEdgesCount(node);
-  //   }
+  WMedian(node: number, theMedianGoingDown: boolean) {
+    let edges: IterableIterator<LayerEdge>;
+    let p: number
+    if (theMedianGoingDown) {
+      edges = this.properLayeredGraph.OutEdges(node);
+      p = this.properLayeredGraph.OutEdgesCount(node);
+    } else {
+      edges = this.properLayeredGraph.InEdges(node);
+      p = this.properLayeredGraph.InEdgesCount(node);
+    }
 
-  //   if (p == 0)
-  //     return -1.0f;
+    if (p == 0)
+      return -1.0;
 
-  //   var parray = new number[p]; //we have no multiple edges
+    const parray = new Array<number>(p) //we do not have multiple edges
 
-  //   number i = 0;
-  //   if (theMedianGoingDown)
-  //     for (LayerEdge e of edges)
-  //       parray[i++] = X[e.Target];
-  //   else
-  //     for (LayerEdge e of edges)
-  //       parray[i++] = X[e.Source];
+    let i = 0;
+    if (theMedianGoingDown)
+      for (const e of edges)
+        parray[i++] = this.X[e.Target];
+    else
+      for (const e of edges)
+        parray[i++] = this.X[e.Source];
 
-  //   Array.Sort(parray);
+    parray.sort((a, b) => a - b)
 
-  //   number m = p / 2;
+    const m = Math.floor(p / 2)
 
-  //   if (p % 2 == 1)
-  //     return parray[m];
+    if (p % 2 == 1)
+      return parray[m];
 
-  //   if (p == 2)
-  //     return 0.5f * ((number) parray[0] + (number) parray[1]);
+    if (p == 2)
+      return 0.5 * (parray[0] + parray[1]);
 
-  //   number left = parray[m - 1] - parray[0];
+    const left = parray[m - 1] - parray[0];
 
-  //   number right = parray[p - 1] - parray[m];
+    const right = parray[p - 1] - parray[m];
 
-  //   return ((number) parray[m - 1] * left + (number) parray[m] * right) /(left + right);
-  // }
-
-
-  // // Just depth search and assign the index saying when the node was visited
-  // void Init() {
-  //   var counts = new number[nOfLayers];
-
-  //   //the initial layers are set by following the order of the 
-  //   //depth first traversal inside one layer
-  //   var q = new Stack<number>();
-  //   //enqueue all sources of the graph 
-  //   for (number i = 0; i < properLayeredGraph.NodeCount; i++)
-  //   if (properLayeredGraph.InEdgesCount(i) == 0)
-  //     q.Push(i);
+    return Math.floor((parray[m - 1] * left + parray[m] * right) / (left + right));
+  }
 
 
-  //   var visited = new boolean[properLayeredGraph.NodeCount];
+  // Just depth search and assign the index saying when the node was visited
+  Init() {
+    const counts = new Array<number>(this.nOfLayers).fill(0);
 
-  //   while (q.Count > 0) {
-  //     number u = q.Pop();
-  //     number l = layerArrays.Y[u];
+    //the initial layers are set by following the order of the 
+    //depth first traversal inside one layer
+    var q = new Stack<number>();
+    //enqueue all sources of the graph 
+    for (let i = 0; i < this.properLayeredGraph.NodeCount; i++)
+      if (this.properLayeredGraph.InEdgesCount(i) == 0)
+        q.push(i);
 
+    const visited = new Array<boolean>(this.properLayeredGraph.NodeCount).fill(false)
 
-  //     layerArrays.Layers[l][counts[l]] = u;
-  //     layerArrays.X[u] = counts[l];
-  //     counts[l]++;
+    while (q.size > 0) {
+      let u = q.pop();
+      let l = this.layerArrays.Y[u];
 
-  //     for (number v of properLayeredGraph.Succ(u))
-  //       if (!visited[v]) {
-  //         visited[v] = true;
-  //         q.Push(v);
-  //       }
-  //   }
+      this.layerArrays.Layers[l][counts[l]] = u;
+      this.layerArrays.X[u] = counts[l];
+      counts[l]++;
 
-  //   X = layerArrays.X;
+      for (let v of this.properLayeredGraph.Succ(u))
+        if (!visited[v]) {
+          visited[v] = true;
+          q.push(v);
+        }
+    }
 
-  //   if (balanceVirtAndOrigNodes)
-  //     InitOptimalGroupSizes();
-  // }
+    this.X = this.layerArrays.X;
 
-  // void InitOptimalGroupSizes() {
-  //   optimalOriginalGroupSize = new number[nOfLayers];
-  //   optimalVirtualGroupSize = new number[nOfLayers];
+    if (this.balanceVirtAndOrigNodes)
+      this.InitOptimalGroupSizes();
+  }
 
-  //   for (number i = 0; i < nOfLayers; i++)
-  //   InitOptimalGroupSizesForLayer(i);
-  // }
+  InitOptimalGroupSizes() {
+    this.optimalOriginalGroupSize = new Array<number>(this.nOfLayers).fill(0)
+    this.optimalVirtualGroupSize = new Array<number>(this.nOfLayers).fill(0)
 
-  // void InitOptimalGroupSizesForLayer(number i) {
-  //   //count original and virtual nodes
-  //   number originals = 0;
-  //   for (number j of layers[i])
-  //     if (j < startOfVirtNodes)
-  //       originals++;
+    for (let i = 0; i < this.nOfLayers; i++)
+      this.InitOptimalGroupSizesForLayer(i);
+  }
 
-  //   number virtuals = layers[i].Length - originals;
+  InitOptimalGroupSizesForLayer(i: number) {
+    //count original and virtual nodes
+    let originals = 0;
+    for (let j of layers[i])
+      if (j < this.startOfVirtNodes)
+        originals++;
 
-  //   if (originals < virtuals) {
-  //     optimalOriginalGroupSize[i] = 1;
-  //     optimalVirtualGroupSize[i] = (number) virtuals / (originals + 1);
-  //   } else {
-  //     optimalVirtualGroupSize[i] = 1;
-  //     optimalOriginalGroupSize[i] = (number) originals / (virtuals + 1);
-  //   }
-  // }
+    const virtuals = this.layers[i].length - originals;
 
-
-  //          static number GetCrossingsTotal(ProperLayeredGraph properLayeredGraph, LayerArrays layerArrays) {
-  //   number x = 0;
-  //   for (number i = 0; i < layerArrays.Layers.Length - 1; i++)
-  //   x += GetCrossingCountFromStrip(i, properLayeredGraph, layerArrays);
-
-  //   return x;
-  // }
-
-
-  //         // This method can be improved: see the paper Simple And Efficient ...
-  //         static number GetCrossingCountFromStrip(number bottom, ProperLayeredGraph properLayeredGraph, LayerArrays layerArrays) {
-  //   number[] topVerts = layerArrays.Layers[bottom + 1];
-  //   number[] bottomVerts = layerArrays.Layers[bottom];
-  //   if (bottomVerts.Length <= topVerts.Length)
-  //     return GetCrossingCountFromStripWhenBottomLayerIsShorter(bottomVerts, properLayeredGraph, layerArrays);
-  //   else
-  //     return GetCrossingCountFromStripWhenTopLayerIsShorter(topVerts, bottomVerts, properLayeredGraph,
-  //       layerArrays);
-  // }
-
-  //         static number GetCrossingCountFromStripWhenTopLayerIsShorter(number[] topVerts, number[] bottomVerts,
-  //   ProperLayeredGraph properLayeredGraph,
-  //   LayerArrays layerArrays) {
-  //   LayerEdge[] edges = EdgesOfStrip(bottomVerts, properLayeredGraph);
-  //   Array.Sort(edges, new EdgeComparerByTarget(layerArrays.X));
-  //   //find first n such that 2^n >=topVerts.Length
-  //   number n = 1;
-  //   while (n < topVerts.Length)
-  //     n *= 2;
-  //   //init the accumulator tree
-
-  //   var tree = new number[2 * n - 1];
-
-  //   n--; // the first bottom node starts from n now
-
-  //   number cc = 0; //number of crossings
-  //   for (LayerEdge edge of edges) {
-  //     number index = n + layerArrays.X[edge.Source];
-  //     number ew = edge.CrossingWeight;
-  //     tree[index] += ew;
-  //     while (index > 0) {
-  //       if (index % 2 != 0)
-  //         cc += ew * tree[index + 1]; //intersect everything accumulated in the right sibling 
-  //       index = (index - 1) / 2;
-  //       tree[index] += ew;
-  //     }
-  //   }
-  //   return cc;
-  // }
+    if (originals < virtuals) {
+      this.optimalOriginalGroupSize[i] = 1;
+      this.optimalVirtualGroupSize[i] = Math.floor(virtuals / (originals + 1))
+    } else {
+      this.optimalVirtualGroupSize[i] = 1;
+      this.optimalOriginalGroupSize[i] = Math.floor(originals / (virtuals + 1))
+    }
+  }
 
 
-  //         static number GetCrossingCountFromStripWhenBottomLayerIsShorter(number[] bottomVerts,
-  //   ProperLayeredGraph properLayeredGraph,
-  //   LayerArrays layerArrays) {
-  //   LayerEdge[] edges = EdgesOfStrip(bottomVerts, properLayeredGraph);
-  //   Array.Sort(edges, new EdgeComparerBySource(layerArrays.X));
-  //   //find first n such that 2^n >=bottomVerts.Length
-  //   number n = 1;
-  //   while (n < bottomVerts.Length)
-  //     n *= 2;
-  //   //init accumulator
-
-  //   var tree = new number[2 * n - 1];
-
-  //   n--; // the first bottom node starts from n now
-
-  //   number cc = 0; //number of crossings
-  //   for (LayerEdge edge of edges) {
-  //     number index = n + layerArrays.X[edge.Target];
-  //     number ew = edge.CrossingWeight;
-  //     tree[index] += ew;
-  //     while (index > 0) {
-  //       if (index % 2 != 0)
-  //         cc += ew * tree[index + 1]; //intersect everything accumulated in the right sibling 
-  //       index = (index - 1) / 2;
-  //       tree[index] += ew;
-  //     }
-  //   }
-
-  //   return cc;
-  // }
-
-  //         static LayerEdge[] EdgesOfStrip(number[] bottomVerts, ProperLayeredGraph properLayeredGraph) {
-  //   LayerEdge[] edges = (from v of bottomVerts
-  //   from e in properLayeredGraph.InEdges(v)
-  //   select e).ToArray();
-
-  //   return edges;
-  // }
-  // number[][] predecessors;
+  predecessors: number[][]
 
 
-  // // The array contains a dictionary per vertex
-  // // The value POrder[v][u] gives the offset of u in the array P[v]
-  // Dictionary < number, number > [] pOrder;
+  // The array contains a dictionary per vertex
+  // The value POrder[v][u] gives the offset of u in the array P[v]
+  porder: Map<number, number>[]
 
-  // // for each vertex v let S[v] be the array of successors of v
-  // number[][] successors;
+  // for each vertex v let S[v] be the array of successors of v
+  successors: number[][]
 
-  // // The array contains a dictionary per vertex
-  // // The value SOrder[v][u] gives the offset of u in the array S[v]
-  // Dictionary < number, number > [] sOrder;
+  // The array contains a dictionary per vertex
+  // The value SOrder[v][u] gives the offset of u in the array S[v]
+  sOrder: Map<number, number>[]
 
-  // Dictionary < number, number > [] inCrossingCount;
-  // // Gets or sets the number of of passes over all layers to rung adjacent exchanges, where every pass goes '
-  // // all way up to the top layer and down to the lowest layer
-  // const number MaxNumberOfAdjacentExchanges = 50;
+  inCrossingCount: Map<number, number>[]
+  // Gets or sets the number of of passes over all layers to rung adjacent exchanges, where every pass goes '
+  // all way up to the top layer and down to the lowest layer
+  MaxNumberOfAdjacentExchanges = 50;
 
-  // Dictionary < number, number > [] outCrossingCount;
+  outCrossingCount: Map<number, number>[]
 
+  AdjacentExchangeWithBalancingVirtOrigNodes() {
+    this.InitArrays();
+    let count = 0;
+    let progress = true;
+    while (progress && count++ < this.MaxNumberOfAdjacentExchanges) {
+      progress = false;
+      for (let i = 0; i < this.layers.length; i++)
+        progress = this.AdjExchangeLayerWithBalance(i) || progress;
+      for (let i = this.layers.length - 2; i >= 0; i--)
+        progress = this.AdjExchangeLayerWithBalance(i) || progress;
+    }
+  }
 
-
-
-  // void AdjacentExchangeWithBalancingVirtOrigNodes() {
-  //   InitArrays();
-  //   number count = 0;
-  //   boolean progress = true;
-  //   while (progress && count++ < MaxNumberOfAdjacentExchanges) {
-  //     progress = false;
-  //     for (number i = 0; i < layers.Length; i++)
-  //     progress = AdjExchangeLayerWithBalance(i) || progress;
-  //     for (number i = layers.Length - 2; i >= 0; i--)
-  //     progress = AdjExchangeLayerWithBalance(i) || progress;
-  //   }
-  // }
-
-  // void AdjacentExchange() {
-  //   InitArrays();
-  //   number count = 0;
-  //   boolean progress = true;
-  //   while (progress && count++ < MaxNumberOfAdjacentExchanges) {
-  //     progress = false;
-  //     for (number i = 0; i < layers.Length; i++)
-  //     progress = AdjExchangeLayer(i) || progress;
-  //     for (number i = layers.Length - 2; i >= 0; i--)
-  //     progress = AdjExchangeLayer(i) || progress;
-  //   }
-  // }
+  AdjacentExchange() {
+    this.InitArrays();
+    let count = 0;
+    let progress = true;
+    while (progress && count++ < this.MaxNumberOfAdjacentExchanges) {
+      progress = false;
+      for (let i = 0; i < this.layers.length; i++)
+        progress = this.AdjExchangeLayer(i) || progress;
+      for (let i = layers.length - 2; i >= 0; i--)
+        progress = this.AdjExchangeLayer(i) || progress;
+    }
+  }
 
   // void AllocArrays() {
   //   number n = properLayeredGraph.NodeCount;
@@ -601,7 +599,7 @@ export class Ordering implements Algorithm {
 
   // number CountOnArrays(number[] unbs, number[] vnbs) {
   //   number ret = 0;
-  //   number vl = vnbs.Length - 1;
+  //   number vl = vnbs.length - 1;
   //   number j = -1; //the right most position of vnbs to the left from the current u neighbor 
   //   number vnbsSeenAlready = 0;
   //   for (number uNeighbor of unbs) {
@@ -618,7 +616,7 @@ export class Ordering implements Algorithm {
   // number CountOnArrays(number[] unbs, number[] vnbs, Dictionary < number, number > uCrossingCounts,
   //   Dictionary < number, number > vCrossingCount) {
   //   number ret = 0;
-  //   number vl = vnbs.Length - 1;
+  //   number vl = vnbs.length - 1;
   //   number j = -1; //the right most position of vnbs to the left from the current u neighbor 
 
   //   number vCrossingNumberSeenAlready = 0;
@@ -682,7 +680,7 @@ export class Ordering implements Algorithm {
   // }
 
   // void UpdatePsContainingUv(number u, number v) {
-  //   if (successors[u].Length <= successors[v].Length)
+  //   if (successors[u].length <= successors[v].length)
   //     for (number a of successors[u]) {
   //       Dictionary < number, number > porder = pOrder[a];
   //       //of course porder contains u, let us see if it contains v
@@ -715,7 +713,7 @@ export class Ordering implements Algorithm {
   // }
 
   // void UpdateSsContainingUv(number u, number v) {
-  //   if (predecessors[u].Length <= predecessors[v].Length)
+  //   if (predecessors[u].length <= predecessors[v].length)
   //     for (number a of predecessors[u]) {
   //       Dictionary < number, number > sorder = sOrder[a];
   //       //of course sorder contains u, let us see if it contains v
@@ -749,12 +747,12 @@ export class Ordering implements Algorithm {
 
 
   // void DisturbLayer(number[] layer) {
-  //   for (number i = 0; i < layer.Length - 1; i++)
+  //   for (number i = 0; i < layer.length - 1; i++)
   //   AdjacentSwapToTheRight(layer, i);
   // }
 
   // void DisturbLayerWithBalance(number[] layer) {
-  //   for (number i = 0; i < layer.Length - 1; i++)
+  //   for (number i = 0; i < layer.length - 1; i++)
   //   AdjacentSwapToTheRightWithBalance(layer, i);
   // }
 
@@ -784,7 +782,7 @@ export class Ordering implements Algorithm {
 
   // boolean ExchangeWithGain(number[] layer) {
   //   //find a first pair giving some gain
-  //   for (number i = 0; i < layer.Length - 1; i++)
+  //   for (number i = 0; i < layer.length - 1; i++)
   //   if (SwapWithGain(layer[i], layer[i + 1])) {
   //     SwapToTheLeft(layer, i);
   //     SwapToTheRight(layer, i + 1);
@@ -796,7 +794,7 @@ export class Ordering implements Algorithm {
 
   // boolean ExchangeWithGainWithBalance(number[] layer) {
   //   //find a first pair giving some gain
-  //   for (number i = 0; i < layer.Length - 1; i++)
+  //   for (number i = 0; i < layer.length - 1; i++)
   //   if (SwapWithGainWithBalance(layer[i], layer[i + 1])) {
   //     SwapToTheLeftWithBalance(layer, i);
   //     SwapToTheRightWithBalance(layer, i + 1);
@@ -812,7 +810,7 @@ export class Ordering implements Algorithm {
   // }
 
   // void SwapToTheRight(number[] layer, number i) {
-  //   for (number j = i; j < layer.Length - 1; j++)
+  //   for (number j = i; j < layer.length - 1; j++)
   //   AdjacentSwapToTheRight(layer, j);
   // }
 
@@ -822,7 +820,7 @@ export class Ordering implements Algorithm {
   // }
 
   // void SwapToTheRightWithBalance(number[] layer, number i) {
-  //   for (number j = i; j < layer.Length - 1; j++)
+  //   for (number j = i; j < layer.length - 1; j++)
   //   AdjacentSwapToTheRightWithBalance(layer, j);
   // }
 
@@ -930,7 +928,7 @@ export class Ordering implements Algorithm {
   //   for (number i = separatorPosition - 1; i >= 0 && !kind(layer[i]); i--)
   //   leftGroupSize++;
   //   number rightGroupSize = 0;
-  //   for (number i = separatorPosition + 1; i < layer.Length && !kind(layer[i]); i++)
+  //   for (number i = separatorPosition + 1; i < layer.length && !kind(layer[i]); i++)
   //   rightGroupSize++;
 
   //   return leftGroupSize - rightGroupSize;

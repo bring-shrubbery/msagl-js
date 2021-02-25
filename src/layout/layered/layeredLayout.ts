@@ -1,25 +1,25 @@
-import { BasicGraph } from '../../structs/BasicGraph'
-import { Graph } from '../../structs/graph'
-import { Assert } from '../../utils/assert'
-import { GeomObject } from '../core/geomObject'
-import { Algorithm } from './../../utils/algorithm'
-import { PolyIntEdge } from './polyIntEdge'
-import { SugiyamaLayoutSettings } from './SugiyamaLayoutSettings'
-import { from } from 'linq-to-typescript'
-import { IEdge } from '../../structs/iedge'
-import { CycleRemoval } from './CycleRemoval'
-import { GeomNode } from '../core/geomNode'
-import { Database } from './Database'
-import { LayerArrays } from './LayerArrays'
-import { GeomEdge } from '../core/geomEdge'
-import { IntPairMap } from '../../utils/IntPairMap'
-import { IntPair } from '../../utils/IntPair'
-import { CancelToken } from '../../utils/cancelToken'
-import { Balancing } from './Balancing'
-import { LayerCalculator } from './layering/layerCalculator'
-import { ConstrainedOrdering } from './ordering/ConstrainedOrdering'
-import { ProperLayeredGraph } from './ProperLayeredGraph'
-import { LayerEdge } from './layerEdge'
+import {BasicGraph} from '../../structs/BasicGraph'
+import {Graph} from '../../structs/graph'
+import {Assert} from '../../utils/assert'
+import {GeomObject} from '../core/geomObject'
+import {Algorithm} from './../../utils/algorithm'
+import {PolyIntEdge} from './polyIntEdge'
+import {SugiyamaLayoutSettings} from './SugiyamaLayoutSettings'
+import {from} from 'linq-to-typescript'
+import {IEdge} from '../../structs/iedge'
+import {CycleRemoval} from './CycleRemoval'
+import {GeomNode} from '../core/geomNode'
+import {Database} from './Database'
+import {LayerArrays} from './LayerArrays'
+import {GeomEdge} from '../core/geomEdge'
+import {IntPairMap} from '../../utils/IntPairMap'
+import {IntPair} from '../../utils/IntPair'
+import {CancelToken} from '../../utils/cancelToken'
+import {Balancing} from './Balancing'
+import {LayerCalculator} from './layering/layerCalculator'
+import {ConstrainedOrdering} from './ordering/ConstrainedOrdering'
+import {ProperLayeredGraph} from './ProperLayeredGraph'
+import {LayerEdge} from './LayerEdge'
 
 function EdgeSpan(layers: number[], e: PolyIntEdge) {
   return layers[e.source] - layers[e.target]
@@ -102,9 +102,9 @@ export class LayeredLayout extends Algorithm {
     const feedbackSet: IEdge[] = verticalConstraints.isEmpty
       ? CycleRemoval.getFeedbackSet(this.intGraph)
       : verticalConstraints.getFeedbackSetExternal(
-        this.intGraph,
-        this.nodeIdToIndex,
-      )
+          this.intGraph,
+          this.nodeIdToIndex,
+        )
 
     this.database.addFeedbackSet(feedbackSet)
   }
@@ -216,7 +216,7 @@ export class LayeredLayout extends Algorithm {
       if (e.layerEdges != null) {
         let l = layering[e.source]
         extendedVertexLayering[e.source] = l--
-        for (const le of e.layerEdges) extendedVertexLayering[le.target] = l--
+        for (const le of e.layerEdges) extendedVertexLayering[le.Target] = l--
       } else {
         extendedVertexLayering[e.source] = layering[e.source]
         extendedVertexLayering[e.target] = layering[e.target]

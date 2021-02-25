@@ -1,8 +1,8 @@
-import { from, IEnumerable } from 'linq-to-typescript'
-import { BasicGraph } from '../../structs/BasicGraph'
-import { GeomNode } from '../core/geomNode'
-import { LayerEdge } from './layerEdge'
-import { PolyIntEdge } from './polyIntEdge'
+import {from, IEnumerable} from 'linq-to-typescript'
+import {BasicGraph} from '../../structs/BasicGraph'
+import {GeomNode} from '../core/geomNode'
+import {LayerEdge} from './LayerEdge'
+import {PolyIntEdge} from './polyIntEdge'
 
 // a class representing a graph where every edge goes down only one layer
 export class ProperLayeredGraph {
@@ -27,7 +27,7 @@ export class ProperLayeredGraph {
       this.totalNumberOfNodes = intGraph.nodeCount
       for (const edge of edgesGoingDown)
         for (const layerEdge of edge.layerEdges) {
-          const m = Math.max(layerEdge.source, layerEdge.target) + 1
+          const m = Math.max(layerEdge.Source, layerEdge.Target) + 1
           if (m > this.totalNumberOfNodes) this.totalNumberOfNodes = m
         }
     }
@@ -39,9 +39,9 @@ export class ProperLayeredGraph {
         ),
       )
         .selectMany((e) =>
-          from(e.layerEdges).where((le) => le.source != e.source),
+          from(e.layerEdges).where((le) => le.Source != e.source),
         )
-        .select((le) => le.source)
+        .select((le) => le.Source)
         .min()
     } else {
       this.firstVirtualNode = this.BaseGraph.nodeCount
@@ -57,10 +57,10 @@ export class ProperLayeredGraph {
     for (const e of this.BaseGraph.edges)
       if (e.layerSpan > 0)
         for (const le of e.layerEdges) {
-          if (le.target != e.target)
-            this.virtualNodesToInEdges[le.target - this.firstVirtualNode] = le
-          if (le.source != e.source)
-            this.virtualNodesToOutEdges[le.source - this.firstVirtualNode] = le
+          if (le.Target != e.target)
+            this.virtualNodesToInEdges[le.Target - this.firstVirtualNode] = le
+          if (le.Source != e.source)
+            this.virtualNodesToOutEdges[le.Source - this.firstVirtualNode] = le
         }
   }
 
@@ -170,7 +170,7 @@ export class ProperLayeredGraph {
   }
 
   // returns the node count
-  get nodeCount() {
+  get NodeCount() {
     return this.totalNumberOfNodes
   }
 
@@ -200,10 +200,10 @@ export class ProperLayeredGraph {
   }
 
   *Succ(node: number): IterableIterator<number> {
-    for (const le of this.OutEdges(node)) yield le.target
+    for (const le of this.OutEdges(node)) yield le.Target
   }
 
   *Pred(node: number): IterableIterator<number> {
-    for (const le of this.InEdges(node)) yield le.source
+    for (const le of this.InEdges(node)) yield le.Source
   }
 }

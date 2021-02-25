@@ -96,7 +96,7 @@ export class Balancing implements Algorithm {
   }
 
   InitJumpers() {
-    const deltas = new Array<number>(this.dag.nodeCount)
+    const deltas = new Array<number>(this.dag.nodeCount).fill(0)
     for (const ie of this.dag.edges) {
       deltas[ie.source] -= ie.weight;
       deltas[ie.target] += ie.weight;

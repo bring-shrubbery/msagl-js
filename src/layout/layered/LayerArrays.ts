@@ -1,4 +1,4 @@
-import {copyTo} from '../../utils/copy'
+import { copyTo } from '../../utils/copy'
 
 export class LayerArrays {
   Y: number[]
@@ -103,7 +103,7 @@ export class LayerArrays {
 
     for (const l of this.Y) if (l + 1 > nOfLayers) nOfLayers = l + 1
 
-    const counts = new Array<number>(nOfLayers)
+    const counts = new Array<number>(nOfLayers).fill(0)
 
     //find the number of vertices in the layer
     for (const l of this.Y) counts[l]++

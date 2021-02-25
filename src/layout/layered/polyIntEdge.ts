@@ -2,7 +2,7 @@ import {IEdge} from './../../structs/iedge'
 import {IIntEdge} from './iIntEdge'
 import {GeomEdge} from './../core/geomEdge'
 import {ICurve} from './../../math/geometry/icurve'
-import {LayerEdge} from './layerEdge'
+import {LayerEdge} from './LayerEdge'
 import {Anchor} from './anchor'
 
 class Routing {
@@ -88,13 +88,13 @@ export class PolyIntEdge implements IIntEdge {
       for (let i = 0; i < len; i++) {
         const le = this.layerEdges[len - 1 - i]
         ret.layerEdges[i] = new LayerEdge(
-          le.target,
-          le.source,
-          le.crossingWeight,
+          le.Target,
+          le.Source,
+          le.CrossingWeight,
         )
       }
-      ret.layerEdges[0].source = this.target
-      ret.layerEdges[this.layerEdges.length - 1].target = this.source
+      ret.layerEdges[0].Source = this.target
+      ret.layerEdges[this.layerEdges.length - 1].Target = this.source
     }
     return ret
   }
@@ -107,13 +107,13 @@ export class PolyIntEdge implements IIntEdge {
     if (this.edge.label != null) {
       const m = this.layerEdges.length / 2
       const layerEdge = this.layerEdges[m]
-      Routing.updateLabel(this.edge, anchors[layerEdge.source])
+      Routing.updateLabel(this.edge, anchors[layerEdge.Source])
     }
   }
 
   // enumerates over virtual virtices corresponding to the original edge
   *getEnumerator(): IterableIterator<number> {
-    yield this.layerEdges[0].source
-    for (const le of this.layerEdges) yield le.target
+    yield this.layerEdges[0].Source
+    for (const le of this.layerEdges) yield le.Target
   }
 }
