@@ -1,4 +1,10 @@
-export abstract class Algorithm {
-  abstract run(): void
-}
+import {isThisTypeNode} from 'typescript'
+import {CancelToken} from './cancelToken'
 
+export abstract class Algorithm {
+  constructor(cancelToken: CancelToken) {
+    this.cancelToken = cancelToken
+  }
+  abstract run(): void
+  cancelToken: CancelToken
+}

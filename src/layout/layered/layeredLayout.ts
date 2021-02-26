@@ -1,25 +1,26 @@
-import {BasicGraph} from '../../structs/BasicGraph'
-import {Graph} from '../../structs/graph'
-import {Assert} from '../../utils/assert'
-import {GeomObject} from '../core/geomObject'
-import {Algorithm} from './../../utils/algorithm'
-import {PolyIntEdge} from './polyIntEdge'
-import {SugiyamaLayoutSettings} from './SugiyamaLayoutSettings'
-import {from} from 'linq-to-typescript'
-import {IEdge} from '../../structs/iedge'
-import {CycleRemoval} from './CycleRemoval'
-import {GeomNode} from '../core/geomNode'
-import {Database} from './Database'
-import {LayerArrays} from './LayerArrays'
-import {GeomEdge} from '../core/geomEdge'
-import {IntPairMap} from '../../utils/IntPairMap'
-import {IntPair} from '../../utils/IntPair'
-import {CancelToken} from '../../utils/cancelToken'
-import {Balancing} from './Balancing'
-import {LayerCalculator} from './layering/layerCalculator'
-import {ConstrainedOrdering} from './ordering/ConstrainedOrdering'
-import {ProperLayeredGraph} from './ProperLayeredGraph'
-import {LayerEdge} from './LayerEdge'
+import { BasicGraph } from '../../structs/BasicGraph'
+import { Graph } from '../../structs/graph'
+import { Assert } from '../../utils/assert'
+import { GeomObject } from '../core/geomObject'
+import { Algorithm } from './../../utils/algorithm'
+import { PolyIntEdge } from './polyIntEdge'
+import { SugiyamaLayoutSettings } from './SugiyamaLayoutSettings'
+import { from } from 'linq-to-typescript'
+import { IEdge } from '../../structs/iedge'
+import { CycleRemoval } from './CycleRemoval'
+import { GeomNode } from '../core/geomNode'
+import { Database } from './Database'
+import { LayerArrays } from './LayerArrays'
+import { GeomEdge } from '../core/geomEdge'
+import { IntPairMap } from '../../utils/IntPairMap'
+import { IntPair } from '../../utils/IntPair'
+import { CancelToken } from '../../utils/cancelToken'
+import { Balancing } from './Balancing'
+import { LayerCalculator } from './layering/layerCalculator'
+import { ConstrainedOrdering } from './ordering/ConstrainedOrdering'
+import { ProperLayeredGraph } from './ProperLayeredGraph'
+import { LayerEdge } from './LayerEdge'
+import { Ordering } from './ordering/Ordering'
 
 function EdgeSpan(layers: number[], e: PolyIntEdge) {
   return layers[e.source] - layers[e.target]
@@ -43,8 +44,12 @@ export class LayeredLayout extends Algorithm {
     return this.sugiyamaSettings.horizontalConstraints
   }
 
-  constructor(originalGraph: Graph, settings: SugiyamaLayoutSettings) {
-    super()
+  constructor(
+    originalGraph: Graph,
+    settings: SugiyamaLayoutSettings,
+    cancelToken: CancelToken,
+  ) {
+    super(cancelToken)
     if (originalGraph == null) return
     this.originalGraph = originalGraph
     this.sugiyamaSettings = settings
@@ -102,9 +107,9 @@ export class LayeredLayout extends Algorithm {
     const feedbackSet: IEdge[] = verticalConstraints.isEmpty
       ? CycleRemoval.getFeedbackSet(this.intGraph)
       : verticalConstraints.getFeedbackSetExternal(
-          this.intGraph,
-          this.nodeIdToIndex,
-        )
+        this.intGraph,
+        this.nodeIdToIndex,
+      )
 
     this.database.addFeedbackSet(feedbackSet)
   }
@@ -183,7 +188,7 @@ export class LayeredLayout extends Algorithm {
         //we create span-2 dummy nodes and span new edges
         let d0 = n + nOfVV++
 
-        var layerEdge = new LayerEdge(e.source, d0, e.crossingWeight, e.weight)
+        let layerEdge = new LayerEdge(e.source, d0, e.crossingWeight, e.weight)
 
         e.layerEdges[pe++] = layerEdge
 
@@ -198,7 +203,7 @@ export class LayeredLayout extends Algorithm {
         layerEdge = new LayerEdge(d0, e.target, e.crossingWeight, e.weight)
         e.layerEdges[pe] = layerEdge
       } else if (span == 1) {
-        var layerEdge = new LayerEdge(
+        const layerEdge = new LayerEdge(
           e.source,
           e.target,
           e.crossingWeight,
@@ -249,7 +254,7 @@ export class LayeredLayout extends Algorithm {
   }
 
   CalculateYLayers(): LayerArrays {
-    const layerArrays = YLayeringAndOrdering(
+    const layerArrays = this.YLayeringAndOrdering(
       new NetworkSimplexForGeneralGraph(
         this.gluedDagSkeletonForLayering,
         CancelToken,

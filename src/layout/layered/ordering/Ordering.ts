@@ -1,19 +1,19 @@
 // Following "A technique for Drawing Directed Graphs" of Gansner, Koutsofios, North and Vo
 
-import { copyTo } from '../../../utils/copy'
-import { randomInt } from '../../../utils/random'
-import { LayerArrays } from '../LayerArrays'
-import { ProperLayeredGraph } from '../ProperLayeredGraph'
-import { SugiyamaLayoutSettings } from '../SugiyamaLayoutSettings'
-import { OrderingMeasure } from './OrderingMeasure'
+import {copyTo} from '../../../utils/copy'
+import {randomInt} from '../../../utils/random'
+import {LayerArrays} from '../LayerArrays'
+import {ProperLayeredGraph} from '../ProperLayeredGraph'
+import {SugiyamaLayoutSettings} from '../SugiyamaLayoutSettings'
+import {OrderingMeasure} from './OrderingMeasure'
 import SortedMap = require('collections/sorted-map')
-import { CancelToken } from '../../../utils/cancelToken'
-import { LayerEdge } from '../LayerEdge'
-import { Stack } from 'stack-typescript'
-import { from } from 'linq-to-typescript'
-import { EdgeComparerBySource } from './EdgeComparerBySource'
-import { EdgeComparerByTarget } from './EdgeComparerByTarget'
-import { Algorithm } from './../../../utils/algorithm'
+import {CancelToken} from '../../../utils/cancelToken'
+import {LayerEdge} from '../LayerEdge'
+import {Stack} from 'stack-typescript'
+import {from} from 'linq-to-typescript'
+import {EdgeComparerBySource} from './EdgeComparerBySource'
+import {EdgeComparerByTarget} from './EdgeComparerByTarget'
+import {Algorithm} from './../../../utils/algorithm'
 // Works on the layered graph.
 // See GraphLayout.pdfhttps://www.researchgate.net/profile/Lev_Nachmanson/publication/30509007_Drawing_graphs_with_GLEE/links/54b6b2930cf2e68eb27edf71/Drawing-graphs-with-GLEE.pdf
 
@@ -146,7 +146,6 @@ export class Ordering extends Algorithm {
   startOfVirtNodes: number
 
   tryReverse = true
-
   get NoGainStepsBound() {
     return (
       this.SugSettings.NoGainAdjacentSwapStepsBound *
@@ -169,8 +168,10 @@ export class Ordering extends Algorithm {
     balanceVirtualAndOrigNodes: boolean,
     hasCrossWeights: boolean,
     settings: SugiyamaLayoutSettings,
+    cancelToken: CancelToken,
   ) {
     super()
+    this.cancelToken = cancelToken
     this.tryReverse = tryReverse
     this.startOfVirtNodes = startOfVirtualNodes
     this.layerArrays = layerArraysParam
@@ -214,6 +215,7 @@ export class Ordering extends Algorithm {
       balanceVirtualAndOriginalNodes,
       hasCrossWeight,
       settings,
+      cancelToken,
     )
     o.run()
   }
@@ -240,6 +242,7 @@ export class Ordering extends Algorithm {
         this.balanceVirtAndOrigNodes,
         this.hasCrossWeights,
         this.SugSettings,
+        this.cancelToken,
       )
 
       revOrdering.run()
@@ -394,7 +397,7 @@ export class Ordering extends Algorithm {
     const senum = s.values()
     let j = -1
 
-    for (i = 0; i < vertices.length;) {
+    for (i = 0; i < vertices.length; ) {
       if (medianValues[i] != -1) {
         j++
         const o = senum[j]
@@ -596,7 +599,7 @@ export class Ordering extends Algorithm {
   }
 
   // calculates the number of intersections between edges adjacent to u and v
-  CalcPair(u: number, v: number): { cuv: number; cvu: number } {
+  CalcPair(u: number, v: number): {cuv: number; cvu: number} {
     const su = this.successors[u]
     const sv = this.successors[v]
     const pu = this.predecessors[u]

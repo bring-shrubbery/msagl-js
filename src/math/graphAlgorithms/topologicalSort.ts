@@ -28,7 +28,7 @@ export class TopologicalSort {
     edges: [number, number][],
   ): number[] {
     const tmp = new BasicGraphOnEdges<IntPair>()
-    const dag = tmp.mkGraphEdges(
+    const dag = tmp.mkGraphOnEdgesArray(
       edges.map((e) => new IntPair(e[0], e[1]), numberOfVertices),
     )
     //    Assert.assert(!hasCycle(dag), 'no cycles')

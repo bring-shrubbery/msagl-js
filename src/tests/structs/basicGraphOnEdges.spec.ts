@@ -1,5 +1,5 @@
-import {BasicGraphOnEdges} from './../../structs/basicGraphOnEdges'
-import {IEdge} from './../../structs/iedge'
+import { BasicGraphOnEdges } from './../../structs/basicGraphOnEdges'
+import { IEdge } from './../../structs/iedge'
 class myedge implements IEdge {
   source: number
   target: number
@@ -16,7 +16,7 @@ test('bgoe', () => {
     new myedge(2, 2),
     new myedge(2, 3),
   ]
-  const bg = new BasicGraphOnEdges().mkGraphEdges(edges)
+  const bg = new BasicGraphOnEdges().mkGraphOnEdgesArray(edges)
   expect(bg.nodeCount).toBe(4)
   bg.removeEdge(edges[4])
   expect(bg.inEdgesCount(3)).toBe(0)

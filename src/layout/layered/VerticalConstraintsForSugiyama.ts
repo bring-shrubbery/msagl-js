@@ -1,12 +1,12 @@
-import {BasicGraph} from '../../structs/BasicGraph'
-import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
-import {IntPair} from '../../utils/IntPair'
-import {GeomNode} from '../core/geomNode'
-import {CycleRemoval} from './CycleRemoval'
-import {PolyIntEdge} from './polyIntEdge'
-import {IntPairSet} from './../../utils/IntPairSet'
-import {from} from 'linq-to-typescript'
-import {IEdge} from '../../structs/iedge'
+import { BasicGraph } from '../../structs/BasicGraph'
+import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges'
+import { IntPair } from '../../utils/IntPair'
+import { GeomNode } from '../core/geomNode'
+import { CycleRemoval } from './CycleRemoval'
+import { PolyIntEdge } from './polyIntEdge'
+import { IntPairSet } from './../../utils/IntPairSet'
+import { from } from 'linq-to-typescript'
+import { IEdge } from '../../structs/iedge'
 export class ConnectedComponentCalculator {
   static getComponents(
     graphOfSameLayers: BasicGraphOnEdges<IntPair>,
@@ -101,7 +101,7 @@ export class VerticalConstraintsForSugiyama {
   }
 
   removeCyclesFromGluedConstraints() {
-    const graph = new BasicGraphOnEdges<IntPair>().mkGraphEdgesN(
+    const graph = new BasicGraphOnEdges<IntPair>().mkGraphOnEdgesN(
       from(this.gluedUpDownIntConstraints.iter()).toArray(),
       this.intGraph.nodeCount,
     )
@@ -173,7 +173,7 @@ export class VerticalConstraintsForSugiyama {
   }
 
   createGraphOfSameLayers(): BasicGraphOnEdges<IntPair> {
-    return new BasicGraphOnEdges<IntPair>().mkGraphEdgesN(
+    return new BasicGraphOnEdges<IntPair>().mkGraphOnEdgesN(
       this.createEdgesOfSameLayers(),
       this.intGraph.nodeCount,
     )
@@ -308,7 +308,7 @@ export class VerticalConstraintsForSugiyama {
     const set = new IntPairSet(this.intGraph.nodeCount)
     this.intGraph.edges.forEach((e) => set.add(this.gluedIntPairI(e)))
 
-    return new BasicGraphOnEdges<IntPair>().mkGraphEdgesN(
+    return new BasicGraphOnEdges<IntPair>().mkGraphOnEdgesN(
       from(set.iter()).toArray(),
       this.intGraph.nodeCount,
     )

@@ -1,6 +1,6 @@
-import {IEdge} from './iedge'
-import {Queue} from 'queue-typescript'
-import {from, IEnumerable} from 'linq-to-typescript'
+import { IEdge } from './iedge'
+import { Queue } from 'queue-typescript'
+import { from, IEnumerable } from 'linq-to-typescript'
 
 export class BasicGraphOnEdges<TEdge extends IEdge> {
   edges: TEdge[]
@@ -16,6 +16,12 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
   mkGraphOnEdges(edges: IEnumerable<TEdge>): BasicGraphOnEdges<TEdge> {
     const n = new BasicGraphOnEdges<TEdge>()
     n.setEdges(edges.toArray(), BasicGraphOnEdges.vertexCount(edges))
+    return n
+  }
+
+  mkGraphOnEdgesArray(edges: TEdge[]): BasicGraphOnEdges<TEdge> {
+    const n = new BasicGraphOnEdges<TEdge>()
+    n.setEdges(edges, BasicGraphOnEdges.vertexCount(from(edges)))
     return n
   }
 
