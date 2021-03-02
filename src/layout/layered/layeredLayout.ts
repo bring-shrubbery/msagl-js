@@ -249,7 +249,7 @@ export class LayeredLayout extends Algorithm {
       this.sugiyamaSettings,
       this.cancelToken,
     )
-    MetroMapOrdering.UpdateLayerArrays(properLayeredGraph, layerArrays)
+    MetroMapOrdering.UpdateLayerArrays(this.properLayeredGraph, layerArrays)
     return layerArrays
   }
 

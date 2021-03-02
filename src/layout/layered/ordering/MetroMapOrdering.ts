@@ -1,10 +1,16 @@
 
 // Following "Improving Layered Graph Layouts with Edge Bundling" and
 // "Two polynomial time algorithms for the bundle-Line crossing minimization problem"
+
+import { List } from "lodash";
+import { Point } from "../../../math/geometry/point";
+import { LayerArrays } from "../LayerArrays";
+import { ProperLayeredGraph } from "../ProperLayeredGraph";
+
 // Postprocessing minimizing crossings step that works on the layered graph
 export class MetroMapOrdering {
   layerArrays: LayerArrays;
-  nodePositions: Dictionary<number, Point>
+  nodePositions: Map<number, Point>
   properLayeredGraph: ProperLayeredGraph;
 
   constrainedOrdering(properLayeredGraph: ProperLayeredGraph, layerArrays: LayerArrays,

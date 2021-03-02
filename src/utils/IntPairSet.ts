@@ -36,4 +36,7 @@ export class IntPairSet {
   add(p: IntPair) {
     this.arrayOfSets[p.x].add(p.y)
   }
+  addNN(x: number, y: number) {
+    this.arrayOfSets[x].add(y)
+  }
 }
