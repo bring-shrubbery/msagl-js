@@ -14,56 +14,57 @@ export class MetroMapOrdering {
   properLayeredGraph: ProperLayeredGraph;
 
   constrainedOrdering(properLayeredGraph: ProperLayeredGraph, layerArrays: LayerArrays,
-    Map<number, Point> nodePositions) {
-  this.properLayeredGraph = properLayeredGraph;
-  this.layerArrays = layerArrays;
-  this.nodePositions = nodePositions;
-}
-
-        // Reorder only points having identical nodePositions
-         static void UpdateLayerArrays(ProperLayeredGraph properLayeredGraph, LayerArrays layerArrays,
-  Map < number, Point > nodePositions) {
-  new MetroMapOrdering(properLayeredGraph, layerArrays, nodePositions).UpdateLayerArrays();
-}
-
-        // Reorder virtual nodes between the same pair of real nodes
-         static void UpdateLayerArrays(ProperLayeredGraph properLayeredGraph, LayerArrays layerArrays) {
-  Map < number, Point > nodePositions = BuildInitialNodePositions(properLayeredGraph, layerArrays);
-  UpdateLayerArrays(properLayeredGraph, layerArrays, nodePositions);
-}
-
-        static Map < number, Point > BuildInitialNodePositions(ProperLayeredGraph properLayeredGraph,
-  LayerArrays layerArrays) {
-  var result = new Map<number, Point>();
-  for (number i = 0; i < layerArrays.Layers.Length; i++) {
-    number prev = 0, curr = 0;
-    while (curr < layerArrays.Layers[i].Length) {
-      while (curr < layerArrays.Layers[i].Length &&
-        properLayeredGraph.IsVirtualNode(layerArrays.Layers[i][curr])) curr++;
-      for (number j = prev; j < curr; j++)
-      result[layerArrays.Layers[i][j]] = new Point(i, prev);
-
-      if (curr < layerArrays.Layers[i].Length)
-        result[layerArrays.Layers[i][curr]] = new Point(i, curr);
-      curr++;
-      prev = curr;
-    }
+    nodePositions: Map<number, Point>) {
+    this.properLayeredGraph = properLayeredGraph;
+    this.layerArrays = layerArrays;
+    this.nodePositions = nodePositions;
   }
 
-  return result;
-}
+  // Reorder only points having identical nodePositions
+  static UpdateLayerArraysWithInitialPositions(properLayeredGraph: ProperLayeredGraph, layerArrays: LayerArrays,
+    nodePositions: Map<number, Point>) {
+    new MetroMapOrdering(properLayeredGraph, layerArrays, nodePositions).UpdateLayerArrays();
+  }
 
-UpdateLayerArrays() {
-  //algo stuff here
-  Map < Point, List < number >> ordering = CreateInitialOrdering();
-  ordering = BuildOrdering(ordering);
-  RestoreLayerArrays(ordering);
-}
+  // Reorder virtual nodes between the same pair of real nodes
+  static UpdateLayerArrays(properLayeredGraph: ProperLayeredGraph, layerArrays: LayerArrays) {
+    const nodePositions = MetroMapOrdering.BuildInitialNodePositions(properLayeredGraph, layerArrays);
+    MetroMapOrdering.UpdateLayerArraysWithInitialPositions(properLayeredGraph, layerArrays, nodePositions);
+  }
 
-Map < Point, List < number >> CreateInitialOrdering() { // bug!!!
+  static BuildInitialNodePositions(properLayeredGraph: ProperLayeredGraph,
+    layerArrays: LayerArrays): Map<number, Point> {
+    var result = new Map<number, Point>();
+    for (let i = 0; i < layerArrays.Layers.length; i++) {
+      let prev = 0
+      let curr = 0;
+      while (curr < layerArrays.Layers[i].length) {
+        while (curr < layerArrays.Layers[i].length &&
+          properLayeredGraph.IsVirtualNode(layerArrays.Layers[i][curr])) curr++;
+        for (let j = prev; j < curr; j++)
+          result[layerArrays.Layers[i][j]] = new Point(i, prev);
+
+        if (curr < layerArrays.Layers[i].length)
+          result[layerArrays.Layers[i][curr]] = new Point(i, curr);
+        curr++;
+        prev = curr;
+      }
+    }
+
+    return result;
+  }
+
+  UpdateLayerArrays() {
+    //algo stuff here
+    const ordering = this.CreateInitialOrdering();
+    ordering = this.BuildOrdering(ordering);
+    this.RestoreLayerArrays(ordering);
+  }
+
+  Map<Point, List <number>> CreateInitialOrdering() { // bug!!!
   var initialOrdering = new Map<Point, List<number>>();
-  for (number i = 0; i < layerArrays.Layers.Length; i++)
-  for (number j = 0; j < layerArrays.Layers[i].Length; j++) {
+  for (number i = 0; i < layerArrays.Layers.length; i++)
+  for (number j = 0; j < layerArrays.Layers[i].length; j++) {
     number node = layerArrays.Layers[i][j];
     if (!initialOrdering.ContainsKey(nodePositions[node]))
       initialOrdering[nodePositions[node]] = new List<number>();
@@ -78,8 +79,8 @@ Map < Point, List < number >> BuildOrdering(Map < Point, List < number >> initia
   //run through nodes points and build order
   var result = new Map<Point, List<number>>();
   var reverseOrder = new Map<number, number>();
-  for (number i = 0; i < layerArrays.Layers.Length; i++)
-  for (number j = 0; j < layerArrays.Layers[i].Length; j++) {
+  for (number i = 0; i < layerArrays.Layers.length; i++)
+  for (number j = 0; j < layerArrays.Layers[i].length; j++) {
     number node = layerArrays.Layers[i][j];
 
     //already processed
@@ -143,10 +144,10 @@ Comparison < number > Comparison(Map < number, number > inverseToOrder) {
 }
 
 RestoreLayerArrays(Map < Point, List < number >> ordering) {
-  for (number i = 0; i < layerArrays.Layers.Length; i++) {
+  for (number i = 0; i < layerArrays.Layers.length; i++) {
     number pred = 0, tec = 0;
-    while (tec < layerArrays.Layers[i].Length) {
-      while (tec < layerArrays.Layers[i].Length &&
+    while (tec < layerArrays.Layers[i].length) {
+      while (tec < layerArrays.Layers[i].length &&
         nodePositions[layerArrays.Layers[i][pred]] == nodePositions[layerArrays.Layers[i][tec]])
         tec++;
       for (number j = pred; j < tec; j++)

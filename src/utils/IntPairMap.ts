@@ -1,4 +1,4 @@
-import {IntPair} from './IntPair'
+import { IntPair } from './IntPair'
 
 export class IntPairMap<T> {
   arrayOfMaps: Map<number, T>[]

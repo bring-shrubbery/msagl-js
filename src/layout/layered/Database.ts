@@ -1,39 +1,51 @@
-import {PolyIntEdge} from './polyIntEdge'
-import {IEdge} from '../../structs/iedge'
-import {IntPairMap} from '../../utils/IntPairMap'
-import {IntPair} from '../../utils/IntPair'
-import {Anchor} from './anchor'
+import { PolyIntEdge } from './polyIntEdge'
+import { IEdge } from '../../structs/iedge'
+import { IntPairMap } from '../../utils/IntPairMap'
+import { IntPair } from '../../utils/IntPair'
+import { Anchor } from './anchor'
 
 export class Database {
   Anchors: Anchor[]
-  multiedges: IntPairMap<PolyIntEdge[]>
+  MultipleMiddles = new Set<number>()
+  Multiedges: IntPairMap<PolyIntEdge[]>
+  * RegularMultiedges(): IterableIterator<PolyIntEdge[]> {
+    for (const kv of this.Multiedges.keyValues())
+      if (kv[0].x != kv[0].y)
+        yield kv[1];
+  }
+
+  * AllIntEdges(): IterableIterator<PolyIntEdge> {
+    for (const l of this.Multiedges.values())
+      for (const e of l)
+        yield e
+  }
 
   addFeedbackSet(feedbackSet: IEdge[]) {
     for (const e of feedbackSet) {
-      const ip = new IntPair(e.source, e.target)
-      const ipr = new IntPair(e.target, e.source)
+      const ip = new IntPair(e.Source, e.Target)
+      const ipr = new IntPair(e.Target, e.Source)
 
       //we shuffle reversed edges into the other multiedge
-      const listToShuffle = this.multiedges.get(ip.x, ip.y)
+      const listToShuffle = this.Multiedges.get(ip.x, ip.y)
       for (const er of listToShuffle) er.reverse()
 
-      if (this.multiedges.has(ipr.x, ipr.y)) {
-        const m = this.multiedges.get(ipr.x, ipr.y)
+      if (this.Multiedges.has(ipr.x, ipr.y)) {
+        const m = this.Multiedges.get(ipr.x, ipr.y)
         for (const e of listToShuffle) m.push(e)
       } else {
-        this.multiedges.set(ipr.x, ipr.y, listToShuffle)
+        this.Multiedges.set(ipr.x, ipr.y, listToShuffle)
       }
 
-      this.multiedges.delete(ip.x, ip.y)
+      this.Multiedges.delete(ip.x, ip.y)
     }
   }
   constructor(n: number) {
-    this.multiedges = new IntPairMap(n)
+    this.Multiedges = new IntPairMap(n)
   }
   registerOriginalEdgeInMultiedges(edge: PolyIntEdge) {
-    let o = this.multiedges.get(edge.source, edge.target)
+    let o = this.Multiedges.get(edge.Source, edge.Target)
     if (o == null) {
-      this.multiedges.set(edge.source, edge.target, (o = []))
+      this.Multiedges.set(edge.Source, edge.Target, (o = []))
     } else {
       console.log(o)
     }
@@ -41,8 +53,8 @@ export class Database {
     o.push(edge)
   }
 
-  *SkeletonEdges(): IterableIterator<PolyIntEdge> {
-    for (const kv of this.multiedges.keyValues()) {
+  * SkeletonEdges(): IterableIterator<PolyIntEdge> {
+    for (const kv of this.Multiedges.keyValues()) {
       if (kv[0].x != kv[0].y) yield kv[1][0]
     }
   }

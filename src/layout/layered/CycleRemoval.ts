@@ -1,9 +1,9 @@
-import {IEdge} from '../../structs/iedge'
-import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
-import {IntPair} from '../../utils/IntPair'
-import {IntPairSet} from '../../utils/IntPairSet'
-import {Assert} from '../../utils/assert'
-import {Stack} from 'stack-typescript'
+import { IEdge } from '../../structs/iedge'
+import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges'
+import { IntPair } from '../../utils/IntPair'
+import { IntPairSet } from '../../utils/IntPairSet'
+import { Assert } from '../../utils/assert'
+import { Stack } from 'stack-typescript'
 
 enum VertStatus {
   NotVisited,
@@ -39,11 +39,11 @@ export class CycleRemoval {
 
   static getFeedbackSet(graph: BasicGraphOnEdges<IEdge>): IEdge[] {
     const feedbackSet = new Set<IEdge>()
-    if (graph == null || graph.nodeCount == 0) return Array.from(feedbackSet)
-    const status = new Array<VertStatus>(graph.nodeCount).fill(
+    if (graph == null || graph.NodeCount == 0) return Array.from(feedbackSet)
+    const status = new Array<VertStatus>(graph.NodeCount).fill(
       VertStatus.NotVisited,
     )
-    for (let vertex = 0; vertex < graph.nodeCount; vertex++) {
+    for (let vertex = 0; vertex < graph.NodeCount; vertex++) {
       if (status[vertex] == VertStatus.Visited) continue
 
       Assert.assert(status[vertex] != VertStatus.InStack)
@@ -60,16 +60,16 @@ export class CycleRemoval {
         for (; i < outEnum.length; i++) {
           const e = outEnum[i]
 
-          if (e.source == e.target) continue
+          if (e.Source == e.Target) continue
 
-          const targetStatus = status[e.target]
+          const targetStatus = status[e.Target]
           if (targetStatus == VertStatus.InStack) {
             feedbackSet.add(e)
           } else if (targetStatus == VertStatus.NotVisited) {
             //have to go deeper
             CycleRemoval.push(stack, status, vertex, i + 1)
-            vertex = e.target
-            status[e.target] = VertStatus.Visited
+            vertex = e.Target
+            status[e.Target] = VertStatus.Visited
             outEnum = graph.outEdges[vertex]
             i = -1
           }

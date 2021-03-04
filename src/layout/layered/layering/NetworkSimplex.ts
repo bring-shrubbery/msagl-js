@@ -1,13 +1,13 @@
-import {String} from 'typescript-string-operations'
-import {LayerCalculator} from './layerCalculator'
-import {LongestPathLayering} from './longestPathLayering'
-import {BasicGraphOnEdges} from './../../../structs/basicGraphOnEdges'
-import {CancelToken} from './../../../utils/cancelToken'
-import {from} from 'linq-to-typescript'
-import {Assert} from './../../../utils/assert'
-import {NetworkEdge} from './networkEdge'
-import {Stack} from 'stack-typescript'
-import {randomInt} from './../../../utils/random'
+import { String } from 'typescript-string-operations'
+import { LayerCalculator } from './layerCalculator'
+import { LongestPathLayering } from './longestPathLayering'
+import { BasicGraphOnEdges } from '../../../structs/basicGraphOnEdges'
+import { CancelToken } from '../../../utils/cancelToken'
+import { from } from 'linq-to-typescript'
+import { Assert } from '../../../utils/assert'
+import { NetworkEdge } from './networkEdge'
+import { Stack } from 'stack-typescript'
+import { randomInt } from '../../../utils/random'
 type VertexInfo = {
   inTree: boolean
   lim: number
@@ -75,7 +75,7 @@ export class NetworkSimplex implements LayerCalculator {
     }
   }
 
-  getLayers() {
+  GetLayers() {
     if (this.layers == null) this.run()
 
     return this.layers
@@ -83,7 +83,7 @@ export class NetworkSimplex implements LayerCalculator {
 
   shiftLayerToZero() {
     const minLayer = from(this.layers).min((u) => u)
-    for (let i = 0; i < this.graph.nodeCount; i++) this.layers[i] -= minLayer
+    for (let i = 0; i < this.graph.NodeCount; i++) this.layers[i] -= minLayer
   }
 
   vertexInTree(v: number): boolean {
@@ -430,7 +430,7 @@ export class NetworkSimplex implements LayerCalculator {
   // All edges going from the source component to the
   // target are considered for the replacement, and an edge with the minimum
   // slack being chosen. This maintains feasibility.
-  leaveEnterEdge(): {leaving: NetworkEdge; entering: NetworkEdge} {
+  leaveEnterEdge(): { leaving: NetworkEdge; entering: NetworkEdge } {
     let leavingEdge: NetworkEdge
     let enteringEdge: NetworkEdge
     let minCut = 0
@@ -466,7 +466,7 @@ export class NetworkSimplex implements LayerCalculator {
     if (enteringEdge == null) {
       throw new Error()
     }
-    return {leaving: leavingEdge, entering: enteringEdge}
+    return { leaving: leavingEdge, entering: enteringEdge }
   }
 
   // If f = (w,x) is the entering edge, the
@@ -634,16 +634,16 @@ export class NetworkSimplex implements LayerCalculator {
 
   initLayer(): number[] {
     const lp = new LongestPathLayering(this.graph)
-    return (this.layers = lp.getLayers())
+    return (this.layers = lp.GetLayers())
   }
 
   run() {
-    if (this.graph.edges.length == 0 && this.graph.nodeCount == 0)
+    if (this.graph.edges.length == 0 && this.graph.NodeCount == 0)
       this.layers = []
 
     this.feasibleTree()
 
-    let leaveEnter: {leaving: NetworkEdge; entering: NetworkEdge}
+    let leaveEnter: { leaving: NetworkEdge; entering: NetworkEdge }
     while ((leaveEnter = this.leaveEnterEdge()) != null) {
       this.exchange(leaveEnter.leaving, leaveEnter.entering)
     }

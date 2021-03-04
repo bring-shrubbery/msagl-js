@@ -1,3 +1,3 @@
 export interface LayerCalculator {
-  getLayers(): number[]
+  GetLayers(): number[]
 }

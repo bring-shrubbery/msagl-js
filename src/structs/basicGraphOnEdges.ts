@@ -4,7 +4,7 @@ import { from, IEnumerable } from 'linq-to-typescript'
 
 export class BasicGraphOnEdges<TEdge extends IEdge> {
   edges: TEdge[]
-  nodeCount = 0
+  NodeCount = 0
   inEdges: TEdge[][]
   outEdges: TEdge[][]
   selfEdges: TEdge[][];
@@ -41,11 +41,11 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
   // the method is not efficient, takes linear time
   removeEdge(edge: TEdge) {
     BasicGraphOnEdges.deleteFromArray(this.edges, edge)
-    if (edge.source != edge.target) {
-      BasicGraphOnEdges.deleteFromArray(this.outEdges[edge.source], edge)
-      BasicGraphOnEdges.deleteFromArray(this.inEdges[edge.target], edge)
+    if (edge.Source != edge.Target) {
+      BasicGraphOnEdges.deleteFromArray(this.outEdges[edge.Source], edge)
+      BasicGraphOnEdges.deleteFromArray(this.inEdges[edge.Target], edge)
     } else {
-      BasicGraphOnEdges.deleteFromArray(this.selfEdges[edge.source], edge)
+      BasicGraphOnEdges.deleteFromArray(this.selfEdges[edge.Source], edge)
     }
   }
 
@@ -54,8 +54,8 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
   static vertexCount(edges: IEnumerable<IEdge>) {
     let nov = 0
     for (const ie of edges) {
-      if (ie.source >= nov) nov = ie.source
-      if (ie.target >= nov) nov = ie.target
+      if (ie.Source >= nov) nov = ie.Source
+      if (ie.Target >= nov) nov = ie.Target
     }
     return ++nov
   }
@@ -64,26 +64,26 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
   setEdges(valEdges: TEdge[], nov: number) {
     this.edges = valEdges
 
-    this.nodeCount = nov
-    const outEdgesCounts = new Array(this.nodeCount).fill(0)
-    const inEdgesCounts = new Array(this.nodeCount).fill(0)
-    const selfEdgesCounts = new Array(this.nodeCount).fill(0)
+    this.NodeCount = nov
+    const outEdgesCounts = new Array(this.NodeCount).fill(0)
+    const inEdgesCounts = new Array(this.NodeCount).fill(0)
+    const selfEdgesCounts = new Array(this.NodeCount).fill(0)
 
-    this.outEdges = new Array<TEdge[]>(this.nodeCount)
-    this.inEdges = new Array<TEdge[]>(this.nodeCount)
-    this.selfEdges = new Array<TEdge[]>(this.nodeCount)
+    this.outEdges = new Array<TEdge[]>(this.NodeCount)
+    this.inEdges = new Array<TEdge[]>(this.NodeCount)
+    this.selfEdges = new Array<TEdge[]>(this.NodeCount)
 
     for (const e of this.edges) {
-      if (e.source != e.target) {
-        outEdgesCounts[e.source]++
-        inEdgesCounts[e.target]++
+      if (e.Source != e.Target) {
+        outEdgesCounts[e.Source]++
+        inEdgesCounts[e.Target]++
       } else {
-        selfEdgesCounts[e.source]++
+        selfEdgesCounts[e.Source]++
       }
     }
 
     //allocate now
-    for (let i = 0; i < this.nodeCount; i++) {
+    for (let i = 0; i < this.NodeCount; i++) {
       this.outEdges[i] = new Array<TEdge>(outEdgesCounts[i])
       outEdgesCounts[i] = 0 //used later for edge insertion
 
@@ -96,8 +96,8 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
 
     //set the edges now
     for (const e of this.edges) {
-      const u = e.source
-      const v = e.target
+      const u = e.Source
+      const v = e.Target
       if (u != v) {
         this.outEdges[u][outEdgesCounts[u]++] = e
         this.inEdges[v][inEdgesCounts[v]++] = e
@@ -120,11 +120,11 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
 
   addEdge(e: TEdge) {
     this.edges.push(e)
-    if (e.source != e.target) {
-      this.outEdges[e.source].push(e)
-      this.inEdges[e.target].push(e)
+    if (e.Source != e.Target) {
+      this.outEdges[e.Source].push(e)
+      this.inEdges[e.Target].push(e)
     } else {
-      this.selfEdges[e.source].push(e)
+      this.selfEdges[e.Source].push(e)
     }
   }
 
@@ -133,20 +133,20 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
     if (this.edges.length == 0) return
     const enqueed = new Set<number>()
     const q = new Queue<number>()
-    let i = this.edges[0].source
+    let i = this.edges[0].Source
     BasicGraphOnEdges.enqueue(enqueed, q, i)
     yield i
     while (q.length > 0) {
       i = q.dequeue()
       for (const e of this.outEdges[i]) {
-        const s = e.target
+        const s = e.Target
         if (!enqueed.has(s)) {
           BasicGraphOnEdges.enqueue(enqueed, q, s)
           yield s
         }
       }
       for (const e of this.inEdges[i]) {
-        const s = e.source
+        const s = e.Source
         if (!enqueed.has(s)) {
           BasicGraphOnEdges.enqueue(enqueed, q, s)
           yield s
@@ -157,13 +157,13 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
 
   *pred(n: number): IterableIterator<number> {
     for (const e of this.inEdges[n]) {
-      yield e.source
+      yield e.Source
     }
   }
 
   *succ(n: number): IterableIterator<number> {
     for (const e of this.outEdges[n]) {
-      yield e.target
+      yield e.Target
     }
   }
 

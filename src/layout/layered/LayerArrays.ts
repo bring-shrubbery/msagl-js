@@ -18,7 +18,7 @@ export class LayerArrays {
   }
 
   // Returns the same arrays but with no empty layers.
-  dropEmptyLayers(): LayerArrays {
+  DropEmptyLayers(): LayerArrays {
     const drop = new Array<number>(this.Layers.length)
     let dropVal = 0
     for (let i = 0; i < this.Layers.length; i++) {

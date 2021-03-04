@@ -96,15 +96,15 @@ export class Balancing implements Algorithm {
   }
 
   InitJumpers() {
-    const deltas = new Array<number>(this.dag.nodeCount).fill(0)
+    const deltas = new Array<number>(this.dag.NodeCount).fill(0)
     for (const ie of this.dag.edges) {
-      deltas[ie.source] -= ie.weight;
-      deltas[ie.target] += ie.weight;
+      deltas[ie.Source] -= ie.weight;
+      deltas[ie.Target] += ie.weight;
     }
 
     this.possibleJumperFeasibleIntervals = new Map<number, IntPair>();
 
-    for (let i = 0; i < this.dag.nodeCount; i++)
+    for (let i = 0; i < this.dag.NodeCount; i++)
       if (deltas[i] == 0)
         this.CalculateRegionAndInsertJumper(i);
   }
@@ -168,7 +168,7 @@ export class Balancing implements Algorithm {
     let ret = Number.NEGATIVE_INFINITY
 
     for (const ie of this.dag.outEdges[i]) {
-      const r = this.layering[ie.target] + ie.separation - 1;
+      const r = this.layering[ie.Target] + ie.separation - 1;
       if (r > ret)
         ret = r;
     }

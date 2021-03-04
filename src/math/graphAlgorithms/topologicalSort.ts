@@ -14,7 +14,7 @@ function visitNodeC(
 ) {
   t[u] = level
   for (const e of g.outEdges[u]) {
-    const v = e.target
+    const v = e.Target
     if (t[v] < level) return true
     visitNodeC(g, v, t, level + 1)
   }
@@ -40,7 +40,7 @@ export class TopologicalSort {
   // and for any edge e in graph if e.Source=arr[i]
   // e.Target=arr[j], then i is less than j
   static getOrderOnGraph(graph: BasicGraphOnEdges<IEdge>): number[] {
-    const visited = new Array<boolean>(graph.nodeCount).fill(false)
+    const visited = new Array<boolean>(graph.NodeCount).fill(false)
 
     //no recursion! So we have to organize a stack
     const se = new Stack<{ edges: IEdge[]; index: number; current_u: number }>()
@@ -48,7 +48,7 @@ export class TopologicalSort {
     const order: number[] = []
 
     let en: any
-    for (let u = 0; u < graph.nodeCount; u++) {
+    for (let u = 0; u < graph.NodeCount; u++) {
       if (visited[u]) continue
 
       let cu = u

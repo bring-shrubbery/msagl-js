@@ -1,18 +1,18 @@
-import {LayerCalculator} from './layerCalculator'
-import {NetworkEdge} from './networkEdge'
-import {BasicGraphOnEdges} from './../../../structs/basicGraphOnEdges'
-import {TopologicalSort} from './../../../math/graphAlgorithms/topologicalSort'
+import { LayerCalculator } from './layerCalculator'
+import { NetworkEdge } from './networkEdge'
+import { BasicGraphOnEdges } from './../../../structs/basicGraphOnEdges'
+import { TopologicalSort } from './../../../math/graphAlgorithms/topologicalSort'
 // Layering the DAG by longest path
 export class LongestPathLayering implements LayerCalculator {
   graph: BasicGraphOnEdges<NetworkEdge>
 
-  getLayers() {
+  GetLayers() {
     //sort the vertices in topological order
     const topoOrder = TopologicalSort.getOrderOnGraph(this.graph)
-    const layering = new Array<number>(this.graph.nodeCount)
+    const layering = new Array<number>(this.graph.NodeCount)
 
     //going backward from leaves
-    let k = this.graph.nodeCount
+    let k = this.graph.NodeCount
     while (k-- > 0) {
       const v = topoOrder[k]
       for (const e of this.graph.inEdges[v]) {

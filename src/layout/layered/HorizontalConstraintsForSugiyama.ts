@@ -53,7 +53,7 @@ export class HorizontalConstraintsForSugiyama {
 
   CreateMappingOfNeibBlocks() {
     const graph = this.BasicGraphFromLeftRightIntNeibs();
-    for (let root = 0; root < graph.nodeCount; root++)
+    for (let root = 0; root < graph.NodeCount; root++)
       if (graph.inEdges[root].length == 0 && !this.nodeToBlockRoot.has(root)) {
         var block = new Array<number>();
         let current = root;
@@ -110,7 +110,7 @@ export class HorizontalConstraintsForSugiyama {
       (new BasicGraphOnEdges<IEdge>()).mkGraphOnEdges(
         from(this.LeftRighInts.iter())))
     for (const ip of feedbackSet)
-      this.LeftRighInts.remove(new IntPair(ip.source, ip.target))
+      this.LeftRighInts.remove(new IntPair(ip.Source, ip.Target))
   }
 
   MapNodesToToIntegers(yLayers: number[]) {

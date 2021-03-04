@@ -1,8 +1,8 @@
-import {from, IEnumerable} from 'linq-to-typescript'
-import {BasicGraph} from '../../structs/BasicGraph'
-import {GeomNode} from '../core/geomNode'
-import {LayerEdge} from './LayerEdge'
-import {PolyIntEdge} from './polyIntEdge'
+import { from, IEnumerable } from 'linq-to-typescript'
+import { BasicGraph } from '../../structs/BasicGraph'
+import { GeomNode } from '../core/geomNode'
+import { LayerEdge } from './LayerEdge'
+import { PolyIntEdge } from './polyIntEdge'
 
 // a class representing a graph where every edge goes down only one layer
 export class ProperLayeredGraph {
@@ -22,11 +22,11 @@ export class ProperLayeredGraph {
 
     if (this.BaseGraph.edges.length > 0) {
       const edgesGoingDown = from(this.BaseGraph.edges).where(
-        (edge) => edge.layerEdges != null,
+        (edge) => edge.LayerEdges != null,
       )
-      this.totalNumberOfNodes = intGraph.nodeCount
+      this.totalNumberOfNodes = intGraph.NodeCount
       for (const edge of edgesGoingDown)
-        for (const layerEdge of edge.layerEdges) {
+        for (const layerEdge of edge.LayerEdges) {
           const m = Math.max(layerEdge.Source, layerEdge.Target) + 1
           if (m > this.totalNumberOfNodes) this.totalNumberOfNodes = m
         }
@@ -35,17 +35,17 @@ export class ProperLayeredGraph {
     if (ProperLayeredGraph.HasVirtualNodes(from(this.BaseGraph.edges))) {
       this.firstVirtualNode = from(
         this.BaseGraph.edges.filter(
-          (e) => e.layerEdges != null && e.layerEdges.length > 1,
+          (e) => e.LayerEdges != null && e.LayerEdges.length > 1,
         ),
       )
         .selectMany((e) =>
-          from(e.layerEdges).where((le) => le.Source != e.source),
+          from(e.LayerEdges).where((le) => le.Source != e.Source),
         )
         .select((le) => le.Source)
         .min()
     } else {
-      this.firstVirtualNode = this.BaseGraph.nodeCount
-      this.totalNumberOfNodes = this.BaseGraph.nodeCount
+      this.firstVirtualNode = this.BaseGraph.NodeCount
+      this.totalNumberOfNodes = this.BaseGraph.NodeCount
     }
 
     this.virtualNodesToInEdges = new Array<LayerEdge>(
@@ -55,18 +55,18 @@ export class ProperLayeredGraph {
       this.totalNumberOfNodes - this.firstVirtualNode,
     )
     for (const e of this.BaseGraph.edges)
-      if (e.layerSpan > 0)
-        for (const le of e.layerEdges) {
-          if (le.Target != e.target)
+      if (e.LayerSpan > 0)
+        for (const le of e.LayerEdges) {
+          if (le.Target != e.Target)
             this.virtualNodesToInEdges[le.Target - this.firstVirtualNode] = le
-          if (le.Source != e.source)
+          if (le.Source != e.Source)
             this.virtualNodesToOutEdges[le.Source - this.firstVirtualNode] = le
         }
   }
 
   static HasVirtualNodes(iCollection: IEnumerable<PolyIntEdge>): boolean {
     return iCollection.any(
-      (edge) => edge.layerEdges != null && edge.layerEdges.length > 1,
+      (edge) => edge.LayerEdges != null && edge.LayerEdges.length > 1,
     )
   }
 
@@ -92,7 +92,7 @@ export class ProperLayeredGraph {
   // enumerates over the graph edges
   *edges_(): IterableIterator<LayerEdge> {
     for (const ie of this.BaseGraph.edges) {
-      if (ie.layerSpan > 0) for (const le of ie.layerEdges) yield le
+      if (ie.LayerSpan > 0) for (const le of ie.LayerEdges) yield le
     }
   }
   get Edges(): IterableIterator<LayerEdge> {
@@ -101,17 +101,17 @@ export class ProperLayeredGraph {
 
   // enumerates over edges of a node
   *InEdges(node: number): IterableIterator<LayerEdge> {
-    if (node < this.BaseGraph.nodeCount)
+    if (node < this.BaseGraph.NodeCount)
       //original node
       for (const e of this.BaseGraph.inEdges[node]) {
-        if (e.source != e.target && e.layerEdges != null)
+        if (e.Source != e.Target && e.LayerEdges != null)
           yield ProperLayeredGraph.LastEdge(e)
       }
     else if (node >= this.firstVirtualNode) yield this.InEdgeOfVirtualNode(node)
   }
 
   static LastEdge(e: PolyIntEdge): LayerEdge {
-    return e.layerEdges[e.layerEdges.length - 1]
+    return e.LayerEdges[e.LayerEdges.length - 1]
   }
 
   InEdgeOfVirtualNode(node: number): LayerEdge {
@@ -119,23 +119,23 @@ export class ProperLayeredGraph {
   }
   // enumerates over the node outcoming edges
   *OutEdges(node: number): IterableIterator<LayerEdge> {
-    if (node < this.BaseGraph.nodeCount)
+    if (node < this.BaseGraph.NodeCount)
       //original node
       for (const e of this.BaseGraph.outEdges[node]) {
-        if (e.source != e.target && e.layerEdges != null)
+        if (e.Source != e.Target && e.LayerEdges != null)
           yield ProperLayeredGraph.FirstEdge(e)
       }
     else if (node >= this.firstVirtualNode)
       yield this.OutEdgeOfVirtualNode(node)
   }
   OutDegreeIsMoreThanOne(node: number) {
-    if (node < this.BaseGraph.nodeCount)
+    if (node < this.BaseGraph.NodeCount)
       //original node
       return this.BaseGraph.outEdges[node].length > 1
     else return false
   }
   InDegreeIsMoreThanOne(node: number) {
-    if (node < this.BaseGraph.nodeCount)
+    if (node < this.BaseGraph.NodeCount)
       //original node
       return this.BaseGraph.inEdges[node].length > 1
     else return false
@@ -145,7 +145,7 @@ export class ProperLayeredGraph {
   }
 
   static FirstEdge(e: PolyIntEdge): LayerEdge {
-    return e.layerEdges[0]
+    return e.LayerEdges[0]
   }
   // returns the number of incoming edges for an edge
   InEdgesCount(node: number) {
@@ -153,8 +153,8 @@ export class ProperLayeredGraph {
   }
 
   RealInEdgesCount(node: number) {
-    return node < this.BaseGraph.nodeCount
-      ? this.BaseGraph.inEdges[node].filter((e) => e.layerEdges != null).length
+    return node < this.BaseGraph.NodeCount
+      ? this.BaseGraph.inEdges[node].filter((e) => e.LayerEdges != null).length
       : 1
   }
 
@@ -164,8 +164,8 @@ export class ProperLayeredGraph {
   }
 
   RealOutEdgesCount(node: number) {
-    return node < this.BaseGraph.nodeCount
-      ? this.BaseGraph.outEdges[node].filter((l) => l.layerEdges != null).length
+    return node < this.BaseGraph.NodeCount
+      ? this.BaseGraph.outEdges[node].filter((l) => l.LayerEdges != null).length
       : 1
   }
 
@@ -175,7 +175,7 @@ export class ProperLayeredGraph {
   }
 
   IsRealNode(node: number) {
-    return node < this.BaseGraph.nodeCount
+    return node < this.BaseGraph.NodeCount
   }
 
   IsVirtualNode(node: number) {
@@ -187,7 +187,7 @@ export class ProperLayeredGraph {
     return new ProperLayeredGraph(
       new BasicGraph<GeomNode, PolyIntEdge>(
         reversedEdges,
-        this.BaseGraph.nodeCount,
+        this.BaseGraph.NodeCount,
       ),
     )
   }
