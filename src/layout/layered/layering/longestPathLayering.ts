@@ -1,7 +1,7 @@
-import { LayerCalculator } from './layerCalculator'
-import { NetworkEdge } from './networkEdge'
-import { BasicGraphOnEdges } from './../../../structs/basicGraphOnEdges'
-import { TopologicalSort } from './../../../math/graphAlgorithms/topologicalSort'
+import {LayerCalculator} from './layerCalculator'
+import {NetworkEdge} from './networkEdge'
+import {BasicGraphOnEdges} from './../../../structs/basicGraphOnEdges'
+import {TopologicalSort} from './../../../math/graphAlgorithms/topologicalSort'
 // Layering the DAG by longest path
 export class LongestPathLayering implements LayerCalculator {
   graph: BasicGraphOnEdges<NetworkEdge>

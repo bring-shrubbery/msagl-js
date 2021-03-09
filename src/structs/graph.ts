@@ -1,6 +1,6 @@
-import { Edge } from './edge'
-import { Node } from './node'
-import { NodeCollection } from './nodeCollection'
+import {Edge} from './edge'
+import {Node} from './node'
+import {NodeCollection} from './nodeCollection'
 
 export class Graph extends Node {
   isCollapsed = false

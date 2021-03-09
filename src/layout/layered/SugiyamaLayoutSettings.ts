@@ -1,10 +1,10 @@
-import { VerticalConstraintsForSugiyama } from './VerticalConstraintsForSugiyama'
-import { HorizontalConstraintsForSugiyama } from './HorizontalConstraintsForSugiyama'
+import {VerticalConstraintsForSugiyama} from './VerticalConstraintsForSugiyama'
+import {HorizontalConstraintsForSugiyama} from './HorizontalConstraintsForSugiyama'
 
 export enum SnapToGridByY {
   None,
   Top,
-  Bottom
+  Bottom,
 }
 
 export class SugiyamaLayoutSettings {
@@ -20,17 +20,19 @@ export class SugiyamaLayoutSettings {
   // method for x-coordinates calculations.
   BrandesThreshold = 600
   LabelCornersPreserveCoefficient = 0.1
-  MinNodeHeight = 72 * 0.5 / 4;
-  MinNodeWidth = 72 * 0.75 / 4;
+  MinNodeHeight = (72 * 0.5) / 4
+  MinNodeWidth = (72 * 0.75) / 4
   NodeSeparation: 10
-  SnapToGridByY = SnapToGridByY.None;
-  yLayerSep = 10 * 3;
-  get LayerSeparation() { return this.yLayerSep }
+  SnapToGridByY = SnapToGridByY.None
+  yLayerSep = 10 * 3
+  get LayerSeparation() {
+    return this.yLayerSep
+  }
   set LayerSeparation(value) {
-    this.yLayerSep = Math.max(10 * 3, value);
+    this.yLayerSep = Math.max(10 * 3, value)
   }
   ActualLayerSeparation(layersAreDoubled: boolean) {
-    return layersAreDoubled ? this.LayerSeparation / 2.0 : this.LayerSeparation;
+    return layersAreDoubled ? this.LayerSeparation / 2.0 : this.LayerSeparation
   }
   GridSizeByY = 0
   GridSizeByX = 0

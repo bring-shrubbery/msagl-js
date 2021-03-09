@@ -1,75 +1,81 @@
-
-import { IEnumerable, from } from 'linq-to-typescript'
-import { List, Dictionary } from 'lodash'
-import { TopologicalSort } from '../../../math/graphAlgorithms/topologicalSort'
-import { BasicGraph } from '../../../structs/BasicGraph'
-import { BasicGraphOnEdges } from '../../../structs/basicGraphOnEdges'
-import { Graph } from '../../../structs/graph'
-import { IntPair } from '../../../utils/IntPair'
-import { IntPairMap } from '../../../utils/IntPairMap'
-import { GeomGraph } from '../../core/GeomGraph'
-import { GeomNode } from '../../core/geomNode'
-import { Database } from '../Database'
-import { HorizontalConstraintsForSugiyama } from '../HorizontalConstraintsForSugiyama'
-import { LayerArrays } from '../LayerArrays'
-import { LayerEdge } from '../LayerEdge'
-import { PolyIntEdge } from '../polyIntEdge'
-import { ProperLayeredGraph } from '../ProperLayeredGraph'
-import { SugiyamaLayoutSettings } from '../SugiyamaLayoutSettings'
-import { ConnectedComponentCalculator } from '../VerticalConstraintsForSugiyama'
-import { AdjacentSwapsWithConstraints } from './AdjacentSwapsWithConstraints'
-import { LayerInfo } from './LayerInfo'
-import { GetCrossingsTotal, Ordering } from './Ordering'
+import {IEnumerable, from} from 'linq-to-typescript'
+import {List, Dictionary} from 'lodash'
+import {TopologicalSort} from '../../../math/graphAlgorithms/topologicalSort'
+import {BasicGraph} from '../../../structs/BasicGraph'
+import {BasicGraphOnEdges} from '../../../structs/basicGraphOnEdges'
+import {Graph} from '../../../structs/graph'
+import {IntPair} from '../../../utils/IntPair'
+import {IntPairMap} from '../../../utils/IntPairMap'
+import {GeomGraph} from '../../core/GeomGraph'
+import {GeomNode} from '../../core/geomNode'
+import {Database} from '../Database'
+import {HorizontalConstraintsForSugiyama} from '../HorizontalConstraintsForSugiyama'
+import {LayerArrays} from '../LayerArrays'
+import {LayerEdge} from '../LayerEdge'
+import {PolyIntEdge} from '../polyIntEdge'
+import {ProperLayeredGraph} from '../ProperLayeredGraph'
+import {SugiyamaLayoutSettings} from '../SugiyamaLayoutSettings'
+import {ConnectedComponentCalculator} from '../VerticalConstraintsForSugiyama'
+import {AdjacentSwapsWithConstraints} from './AdjacentSwapsWithConstraints'
+import {LayerInfo} from './LayerInfo'
+import {GetCrossingsTotal, Ordering} from './Ordering'
 
 export class ConstrainedOrdering {
+  geometryGraph: GeomGraph
 
-  geometryGraph: GeomGraph;
+  intGraph: BasicGraph<Node, PolyIntEdge>
 
-  intGraph: BasicGraph<Node, PolyIntEdge>;
+  private /* internal */ ProperLayeredGraph: ProperLayeredGraph
 
-  private /* internal */ ProperLayeredGraph: ProperLayeredGraph;
+  initialLayering: number[]
 
-  initialLayering: number[];
+  layerInfos: LayerInfo[]
 
-  layerInfos: LayerInfo[];
+  private /* internal */ LayerArrays: LayerArrays
 
-  private /* internal */ LayerArrays: LayerArrays;
+  horizontalConstraints: HorizontalConstraintsForSugiyama
 
-  horizontalConstraints: HorizontalConstraintsForSugiyama;
+  numberOfNodesOfProperGraph: number
 
-  numberOfNodesOfProperGraph: number;
+  database: Database
 
-  database: Database;
+  xPositions: number[][]
 
-  xPositions: number[][];
+  yetBestLayers: number[][]
 
-  yetBestLayers: number[][];
+  verticalEdges: Array<PolyIntEdge> = new Array<PolyIntEdge>()
 
-  verticalEdges: Array<PolyIntEdge> = new Array<PolyIntEdge>();
+  adjSwapper: AdjacentSwapsWithConstraints
 
-  adjSwapper: AdjacentSwapsWithConstraints;
+  settings: SugiyamaLayoutSettings
 
-  settings: SugiyamaLayoutSettings;
+  numberOfLayers = -1
 
-  numberOfLayers: number = -1;
+  noGainSteps: number
 
-  noGainSteps: number;
-
-        /* const */ static MaxNumberOfNoGainSteps: number = 5;
+  static MaxNumberOfNoGainSteps = 5
 
   get NumberOfLayers(): number {
-    if ((this.numberOfLayers > 0)) {
-      return this.numberOfLayers;
+    throw new Error('not implemented')
+    if (this.numberOfLayers > 0) {
+      return this.numberOfLayers
     }
 
-    return;
+    return 0
   }
 
   NodeSeparation(): number {
-    return this.settings.NodeSeparation;
+    return this.settings.NodeSeparation
   }
 
-  constructor(geomGraph: GeomGraph, basicIntGraph: BasicGraph<GeomNode, PolyIntEdge>, layering: number[], nodeIdToIndex: Map<string, number>, database: Database, settings: SugiyamaLayoutSettings) {
+  constructor(
+    geomGraph: GeomGraph,
+    basicIntGraph: BasicGraph<GeomNode, PolyIntEdge>,
+    layering: number[],
+    nodeIdToIndex: Map<string, number>,
+    database: Database,
+    settings: SugiyamaLayoutSettings,
+  ) {
     throw new Error('not implemented')
     // this.settings = this.settings;
     // this.horizontalConstraints = this.settings.HorizontalConstraints;
@@ -92,7 +98,7 @@ export class ConstrainedOrdering {
     // this.adjSwapper = new AdjacentSwapsWithConstraints(this.LayerArrays, this.HasCrossWeights(), this.ProperLayeredGraph, this.layerInfos);
   }
 
-  layersAreDoubled: boolean = false
+  layersAreDoubled = false
   get LayersAreDoubled(): boolean {
     return this.layersAreDoubled
   }
@@ -101,11 +107,25 @@ export class ConstrainedOrdering {
   }
 
   NeedToInsertLayers(layering: number[]): boolean {
-    return (ConstrainedOrdering.ExistsShortLabeledEdge(layering, from(this.intGraph.edges)) || ConstrainedOrdering.ExistsShortMultiEdge(layering, this.database.Multiedges));
+    return (
+      ConstrainedOrdering.ExistsShortLabeledEdge(
+        layering,
+        from(this.intGraph.edges),
+      ) ||
+      ConstrainedOrdering.ExistsShortMultiEdge(
+        layering,
+        this.database.Multiedges,
+      )
+    )
   }
 
-  static ExistsShortMultiEdge(layering: number[], multiedges: IntPairMap<Array<PolyIntEdge>>): boolean {
-    return from(multiedges.keyValues()).any(p => p[1].length > 2 && layering[p[0].x] == (1 + layering[p[0].y]));
+  static ExistsShortMultiEdge(
+    layering: number[],
+    multiedges: IntPairMap<Array<PolyIntEdge>>,
+  ): boolean {
+    return from(multiedges.keyValues()).any(
+      (p) => p[1].length > 2 && layering[p[0].x] == 1 + layering[p[0].y],
+    )
   }
 
   // private /* internal */ Calculate() {
@@ -121,20 +141,27 @@ export class ConstrainedOrdering {
   }
 
   HasCrossWeights(): boolean {
-    return from(this.ProperLayeredGraph.Edges).any(le => le.CrossingWeight != 1)
+    return from(this.ProperLayeredGraph.Edges).any(
+      (le) => le.CrossingWeight != 1,
+    )
   }
 
-  static ExistsShortLabeledEdge(layering: number[], edges: IEnumerable<PolyIntEdge>): boolean {
-    return edges.any(edge => layering[edge.source] == layering[edge.target] + 1
-      && edge.edge.label != null);
+  static ExistsShortLabeledEdge(
+    layering: number[],
+    edges: IEnumerable<PolyIntEdge>,
+  ): boolean {
+    return edges.any(
+      (edge) =>
+        layering[edge.source] == layering[edge.target] + 1 &&
+        edge.edge.label != null,
+    )
   }
 
   AllocateXPositions() {
-    this.xPositions = new Array(this.NumberOfLayers);
-    for (let i: number = 0; (i < this.NumberOfLayers); i++) {
-      this.xPositions[i] = new Array(this.LayerArrays.Layers[i].length);
+    this.xPositions = new Array(this.NumberOfLayers)
+    for (let i = 0; i < this.NumberOfLayers; i++) {
+      this.xPositions[i] = new Array(this.LayerArrays.Layers[i].length)
     }
-
   }
 
   Order() {
@@ -159,11 +186,10 @@ export class ConstrainedOrdering {
     //   }
 
     // }
-
   }
 
   SetXPositions() {
-    throw new Error("not implemented")
+    throw new Error('not implemented')
   }
 
   // InitSolverWithoutOrder(): ISolverShell {
@@ -461,7 +487,10 @@ export class ConstrainedOrdering {
   // }
 
   static BelongsToNeighbBlock(p: number, layerInfo: LayerInfo): boolean {
-    return ((layerInfo != null) && (layerInfo.nodeToBlockRoot.has(p) || layerInfo.neigBlocks.has(p)));
+    return (
+      layerInfo != null &&
+      (layerInfo.nodeToBlockRoot.has(p) || layerInfo.neigBlocks.has(p))
+    )
     // p is a root of the block
   }
 
@@ -697,4 +726,3 @@ export class ConstrainedOrdering {
 
   // }
 }
-

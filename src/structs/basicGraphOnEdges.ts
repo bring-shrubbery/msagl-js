@@ -1,6 +1,6 @@
-import { IEdge } from './iedge'
-import { Queue } from 'queue-typescript'
-import { from, IEnumerable } from 'linq-to-typescript'
+import {IEdge} from './iedge'
+import {Queue} from 'queue-typescript'
+import {from, IEnumerable} from 'linq-to-typescript'
 
 export class BasicGraphOnEdges<TEdge extends IEdge> {
   edges: TEdge[]

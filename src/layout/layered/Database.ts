@@ -1,23 +1,20 @@
-import { PolyIntEdge } from './polyIntEdge'
-import { IEdge } from '../../structs/iedge'
-import { IntPairMap } from '../../utils/IntPairMap'
-import { IntPair } from '../../utils/IntPair'
-import { Anchor } from './anchor'
+import {PolyIntEdge} from './polyIntEdge'
+import {IEdge} from '../../structs/iedge'
+import {IntPairMap} from '../../utils/IntPairMap'
+import {IntPair} from '../../utils/IntPair'
+import {Anchor} from './anchor'
 
 export class Database {
   Anchors: Anchor[]
   MultipleMiddles = new Set<number>()
-  Multiedges: IntPairMap<PolyIntEdge[]>
-  * RegularMultiedges(): IterableIterator<PolyIntEdge[]> {
+  Multiedges: IntPairMap<PolyIntEdge[]>;
+  *RegularMultiedges(): IterableIterator<PolyIntEdge[]> {
     for (const kv of this.Multiedges.keyValues())
-      if (kv[0].x != kv[0].y)
-        yield kv[1];
+      if (kv[0].x != kv[0].y) yield kv[1]
   }
 
-  * AllIntEdges(): IterableIterator<PolyIntEdge> {
-    for (const l of this.Multiedges.values())
-      for (const e of l)
-        yield e
+  *AllIntEdges(): IterableIterator<PolyIntEdge> {
+    for (const l of this.Multiedges.values()) for (const e of l) yield e
   }
 
   addFeedbackSet(feedbackSet: IEdge[]) {
@@ -53,21 +50,19 @@ export class Database {
     o.push(edge)
   }
 
-  * SkeletonEdges(): IterableIterator<PolyIntEdge> {
+  *SkeletonEdges(): IterableIterator<PolyIntEdge> {
     for (const kv of this.Multiedges.keyValues()) {
       if (kv[0].x != kv[0].y) yield kv[1][0]
     }
   }
 
   GetMultiedge(source: number, target: number) {
-    return this.GetMultiedgeI(new IntPair(source, target));
+    return this.GetMultiedgeI(new IntPair(source, target))
   }
 
-
   GetMultiedgeI(ip: IntPair): Array<PolyIntEdge> {
-    if (this.Multiedges.has(ip.x, ip.y))
-      return this.Multiedges.get(ip.x, ip.y);
+    if (this.Multiedges.has(ip.x, ip.y)) return this.Multiedges.get(ip.x, ip.y)
 
-    return new Array<PolyIntEdge>();
+    return new Array<PolyIntEdge>()
   }
 }

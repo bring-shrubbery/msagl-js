@@ -1,18 +1,16 @@
-import { Point } from "../math/geometry/point"
+import {Point} from '../math/geometry/point'
 
 export class PointMap<T> {
   mapOfMaps: Map<number, Map<number, T>>
   set(x: number, y: number, v: T) {
     let m = this.mapOfMaps.get(x)
-    if (m == null)
-      this.mapOfMaps.set(x, m = new Map<number, T>())
+    if (m == null) this.mapOfMaps.set(x, (m = new Map<number, T>()))
     m.set(y, v)
   }
 
   delete(x: number, y: number) {
     const m = this.mapOfMaps.get(x)
-    if (m != null)
-      m.delete(y)
+    if (m != null) m.delete(y)
   }
 
   has(x: number, y: number): boolean {
@@ -21,8 +19,7 @@ export class PointMap<T> {
   }
   get(x: number, y: number) {
     const m = this.mapOfMaps.get(x)
-    if (m == null)
-      return
+    if (m == null) return
 
     return m.get(y)
   }

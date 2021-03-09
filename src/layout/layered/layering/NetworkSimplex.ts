@@ -1,22 +1,26 @@
-import { String } from 'typescript-string-operations'
-import { LayerCalculator } from './layerCalculator'
-import { LongestPathLayering } from './longestPathLayering'
-import { BasicGraphOnEdges } from '../../../structs/basicGraphOnEdges'
-import { CancelToken } from '../../../utils/cancelToken'
-import { from } from 'linq-to-typescript'
-import { Assert } from '../../../utils/assert'
-import { NetworkEdge } from './networkEdge'
-import { Stack } from 'stack-typescript'
-import { randomInt } from '../../../utils/random'
-import { PolyIntEdge } from '../polyIntEdge'
+import {String} from 'typescript-string-operations'
+import {LayerCalculator} from './layerCalculator'
+import {LongestPathLayering} from './longestPathLayering'
+import {BasicGraphOnEdges} from '../../../structs/basicGraphOnEdges'
+import {CancelToken} from '../../../utils/cancelToken'
+import {from} from 'linq-to-typescript'
+import {Assert} from '../../../utils/assert'
+import {NetworkEdge} from './networkEdge'
+import {Stack} from 'stack-typescript'
+import {randomInt} from '../../../utils/random'
+import {PolyIntEdge} from '../polyIntEdge'
 
-function CreateGraphWithIEEdges(bg: BasicGraphOnEdges<PolyIntEdge>): BasicGraphOnEdges<NetworkEdge> {
-  const ieEdges = new Array<NetworkEdge>();
+function CreateGraphWithIEEdges(
+  bg: BasicGraphOnEdges<PolyIntEdge>,
+): BasicGraphOnEdges<NetworkEdge> {
+  const ieEdges = new Array<NetworkEdge>()
 
-  for (const e of bg.edges)
-    ieEdges.push(new NetworkEdge(e));
+  for (const e of bg.edges) ieEdges.push(new NetworkEdge(e))
 
-  return (new BasicGraphOnEdges<NetworkEdge>()).mkGraphOnEdgesN(ieEdges, bg.NodeCount);
+  return new BasicGraphOnEdges<NetworkEdge>().mkGraphOnEdgesN(
+    ieEdges,
+    bg.NodeCount,
+  )
 }
 
 type VertexInfo = {
@@ -441,7 +445,7 @@ export class NetworkSimplex implements LayerCalculator {
   // All edges going from the source component to the
   // target are considered for the replacement, and an edge with the minimum
   // slack being chosen. This maintains feasibility.
-  leaveEnterEdge(): { leaving: NetworkEdge; entering: NetworkEdge } {
+  leaveEnterEdge(): {leaving: NetworkEdge; entering: NetworkEdge} {
     let leavingEdge: NetworkEdge
     let enteringEdge: NetworkEdge
     let minCut = 0
@@ -477,7 +481,7 @@ export class NetworkSimplex implements LayerCalculator {
     if (enteringEdge == null) {
       throw new Error()
     }
-    return { leaving: leavingEdge, entering: enteringEdge }
+    return {leaving: leavingEdge, entering: enteringEdge}
   }
 
   // If f = (w,x) is the entering edge, the
@@ -654,7 +658,7 @@ export class NetworkSimplex implements LayerCalculator {
 
     this.feasibleTree()
 
-    let leaveEnter: { leaving: NetworkEdge; entering: NetworkEdge }
+    let leaveEnter: {leaving: NetworkEdge; entering: NetworkEdge}
     while ((leaveEnter = this.leaveEnterEdge()) != null) {
       this.exchange(leaveEnter.leaving, leaveEnter.entering)
     }

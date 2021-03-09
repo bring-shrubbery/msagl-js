@@ -1,5 +1,5 @@
-import { BasicGraphOnEdges } from './../../structs/basicGraphOnEdges'
-import { IEdge } from './../../structs/iedge'
+import {BasicGraphOnEdges} from './../../structs/basicGraphOnEdges'
+import {IEdge} from './../../structs/iedge'
 class myedge implements IEdge {
   source: number
   target: number

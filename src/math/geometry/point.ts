@@ -1,5 +1,5 @@
-import { LinearSystem2 } from './linearSystem'
-import { GeomConstants } from './geomConstants'
+import {LinearSystem2} from './linearSystem'
+import {GeomConstants} from './geomConstants'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,
@@ -28,8 +28,7 @@ export class Point {
 
   compareTo(other: Point): number {
     const r = compareTo(this.x, other.x)
-    if (r != 0)
-      return r
+    if (r != 0) return r
     return compareTo(this.y, other.y)
   }
 

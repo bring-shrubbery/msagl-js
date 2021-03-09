@@ -49,7 +49,7 @@ export class OrderingMeasure {
     origGroupOptSize: number,
   ) {
     let ret = 0
-    for (let i = 0; i < l.length;) {
+    for (let i = 0; i < l.length; ) {
       const r = this.CurrentOrigGroupDelta(i, l, origGroupOptSize)
       i = r.i
       ret += r.ret
@@ -61,12 +61,12 @@ export class OrderingMeasure {
     i: number,
     l: number[],
     origGroupOptSize: number,
-  ): { ret: number; i: number } {
+  ): {ret: number; i: number} {
     let groupSize = 0
     let j = i
     for (; j < l.length && l[j] < this.virtVertexStart; j++) groupSize++
     i = j + 1
-    return { ret: Math.abs(origGroupOptSize - groupSize), i }
+    return {ret: Math.abs(origGroupOptSize - groupSize), i}
   }
 
   LayerGroupDisbalanceWithOrigSeparators(
@@ -74,7 +74,7 @@ export class OrderingMeasure {
     virtGroupOptSize: number,
   ) {
     let ret = 0
-    for (let i = 0; i < l.length;) {
+    for (let i = 0; i < l.length; ) {
       const r = this.CurrentVirtGroupDelta(i, l, virtGroupOptSize)
       ret += r.ret
     }
@@ -85,12 +85,12 @@ export class OrderingMeasure {
     i: number,
     l: number[],
     virtGroupOptSize: number,
-  ): { ret: number; i: number } {
+  ): {ret: number; i: number} {
     let groupSize = 0
     let j = i
     for (; j < l.length && l[j] >= this.virtVertexStart; j++) groupSize++
     i = j + 1
-    return { ret: Math.abs(virtGroupOptSize - groupSize), i: i }
+    return {ret: Math.abs(virtGroupOptSize - groupSize), i: i}
   }
 
   static less(a: OrderingMeasure, b: OrderingMeasure) {

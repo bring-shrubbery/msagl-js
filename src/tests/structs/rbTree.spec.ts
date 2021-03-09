@@ -1,6 +1,6 @@
-import { RBTree } from './../../structs/RBTree/rbTree'
-import { RbTreeUtils } from './../testUtils/rbTreeUtils'
-import { Assert } from './../../utils/assert'
+import {RBTree} from './../../structs/RBTree/rbTree'
+import {RbTreeUtils} from './../testUtils/rbTreeUtils'
+import {Assert} from './../../utils/assert'
 
 test('check if has correct in-order-traversal', () => {
   const comparer = (a: number, b: number) => a - b
@@ -23,10 +23,8 @@ test('check black height(s) are equal', () => {
   const tree: RBTree<number> = RbTreeUtils.buildTreeWithNums(vals, comparer)
   const blackHeight = RbTreeUtils.computeBlackHeight(tree.getRoot())
   //  console.log(blackHeight)
-  expect(
-    blackHeight != -1).toBe(true)
+  expect(blackHeight != -1).toBe(true)
   //    'difference in black height of left and right branch of a subtree',
-
 })
 
 test('check removal', () => {

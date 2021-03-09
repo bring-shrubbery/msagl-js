@@ -3,15 +3,13 @@ export class CoupleSet {
   mapOfSets = new Map<number, Set<number>>()
   insert(x: number, y: number) {
     let m = this.mapOfSets.get(x)
-    if (m == null)
-      this.mapOfSets.set(x, m = new Set<number>())
+    if (m == null) this.mapOfSets.set(x, (m = new Set<number>()))
     m.add(y)
   }
 
   delete(x: number, y: number) {
     const m = this.mapOfSets.get(x)
-    if (m != null)
-      m.delete(y)
+    if (m != null) m.delete(y)
   }
 
   has(x: number, y: number): boolean {

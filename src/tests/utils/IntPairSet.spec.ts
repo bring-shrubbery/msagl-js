@@ -1,6 +1,6 @@
-import { Assert } from '../../utils/assert'
-import { IntPairSet } from '../../utils/IntPairSet'
-import { randomInt } from '../../utils/random'
+import {Assert} from '../../utils/assert'
+import {IntPairSet} from '../../utils/IntPairSet'
+import {randomInt} from '../../utils/random'
 
 test('IntPairSet', () => {
   const m = new IntPairSet(3)
@@ -14,15 +14,12 @@ test('IntPairSet', () => {
   expect(p[0].y < 3).toBe(true)
 })
 
-
 test('IntPairSet perf', () => {
   const n = 10000
   const m = new IntPairSet(n)
   for (let i = 0; i < n; i++) {
     const j = randomInt(10)
     Assert.assert(j >= 0 && j < 10)
-    for (let k = 0; k < j; k++)
-      m.addNN(i, k)
+    for (let k = 0; k < j; k++) m.addNN(i, k)
   }
-
 })

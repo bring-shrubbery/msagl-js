@@ -1,12 +1,14 @@
-import { Graph } from '../../structs/graph'
-import { Rectangle } from '../../math/geometry/rectangle'
-import { GeomObject } from './geomObject'
-import { GeomNode } from './geomNode'
-import { GeomEdge } from './geomEdge'
+import {Graph} from '../../structs/graph'
+import {Rectangle} from '../../math/geometry/rectangle'
+import {GeomObject} from './geomObject'
+import {GeomNode} from './geomNode'
+import {GeomEdge} from './geomEdge'
 
 export class GeomGraph extends GeomObject {
   Margins = 10
-  get edgeCount() { return this.graph.edgeCount }
+  get edgeCount() {
+    return this.graph.edgeCount
+  }
   *nodes(): IterableIterator<GeomNode> {
     for (const n of this.graph.nodes) yield GeomObject.getGeom(n) as GeomNode
   }

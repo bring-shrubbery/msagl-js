@@ -1,4 +1,4 @@
-import { PointMap } from '../../utils/PointMap'
+import {PointMap} from '../../utils/PointMap'
 
 test('PointMap', () => {
   const m = new PointMap<number>()
@@ -17,6 +17,4 @@ test('PointMap', () => {
   m.delete(1.3, 1)
   expect(m.has(1.3, 1)).toBe(false)
   expect(m.has(2, 1.2)).toBe(true)
-
-
 })

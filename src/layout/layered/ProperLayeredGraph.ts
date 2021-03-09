@@ -1,8 +1,8 @@
-import { from, IEnumerable } from 'linq-to-typescript'
-import { BasicGraph } from '../../structs/BasicGraph'
-import { GeomNode } from '../core/geomNode'
-import { LayerEdge } from './LayerEdge'
-import { PolyIntEdge } from './polyIntEdge'
+import {from, IEnumerable} from 'linq-to-typescript'
+import {BasicGraph} from '../../structs/BasicGraph'
+import {GeomNode} from '../core/geomNode'
+import {LayerEdge} from './LayerEdge'
+import {PolyIntEdge} from './polyIntEdge'
 
 // a class representing a graph where every edge goes down only one layer
 export class ProperLayeredGraph {

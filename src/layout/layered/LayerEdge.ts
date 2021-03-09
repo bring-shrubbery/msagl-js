@@ -1,4 +1,4 @@
-import { String } from 'typescript-string-operations'
+import {String} from 'typescript-string-operations'
 export class LayerEdge {
   Weight: number
   CrossingWeight: number

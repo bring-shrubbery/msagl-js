@@ -1,9 +1,9 @@
-import { IEdge } from '../../structs/iedge'
-import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges'
-import { IntPair } from '../../utils/IntPair'
-import { IntPairSet } from '../../utils/IntPairSet'
-import { Assert } from '../../utils/assert'
-import { Stack } from 'stack-typescript'
+import {IEdge} from '../../structs/iedge'
+import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
+import {IntPair} from '../../utils/IntPair'
+import {IntPairSet} from '../../utils/IntPairSet'
+import {Assert} from '../../utils/assert'
+import {Stack} from 'stack-typescript'
 
 enum VertStatus {
   NotVisited,

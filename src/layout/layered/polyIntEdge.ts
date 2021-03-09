@@ -1,9 +1,9 @@
-import { IEdge } from './../../structs/iedge'
-import { IIntEdge } from './iIntEdge'
-import { GeomEdge } from './../core/geomEdge'
-import { ICurve } from './../../math/geometry/icurve'
-import { LayerEdge } from './LayerEdge'
-import { Anchor } from './anchor'
+import {IEdge} from './../../structs/iedge'
+import {IIntEdge} from './iIntEdge'
+import {GeomEdge} from './../core/geomEdge'
+import {ICurve} from './../../math/geometry/icurve'
+import {LayerEdge} from './LayerEdge'
+import {Anchor} from './anchor'
 
 class Routing {
   static updateLabel(edge: GeomEdge, anchor: Anchor) {

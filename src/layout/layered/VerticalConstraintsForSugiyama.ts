@@ -1,12 +1,12 @@
-import { BasicGraph } from '../../structs/BasicGraph'
-import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges'
-import { IntPair } from '../../utils/IntPair'
-import { GeomNode } from '../core/geomNode'
-import { CycleRemoval } from './CycleRemoval'
-import { PolyIntEdge } from './polyIntEdge'
-import { IntPairSet } from './../../utils/IntPairSet'
-import { from } from 'linq-to-typescript'
-import { IEdge } from '../../structs/iedge'
+import {BasicGraph} from '../../structs/BasicGraph'
+import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
+import {IntPair} from '../../utils/IntPair'
+import {GeomNode} from '../core/geomNode'
+import {CycleRemoval} from './CycleRemoval'
+import {PolyIntEdge} from './polyIntEdge'
+import {IntPairSet} from './../../utils/IntPairSet'
+import {from} from 'linq-to-typescript'
+import {IEdge} from '../../structs/iedge'
 export class ConnectedComponentCalculator {
   static GetComponents(
     graphOfSameLayers: BasicGraphOnEdges<IEdge>,

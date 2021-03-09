@@ -1,8 +1,8 @@
-import { Entity } from './entity'
-import { Edge } from './edge'
-import { Graph } from './graph'
-import { Assert } from './../utils/assert'
-import { NodeCollection } from './nodeCollection'
+import {Entity} from './entity'
+import {Edge} from './edge'
+import {Graph} from './graph'
+import {Assert} from './../utils/assert'
+import {NodeCollection} from './nodeCollection'
 
 export class Label extends Entity {
   text: string

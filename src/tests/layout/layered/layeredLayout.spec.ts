@@ -1,15 +1,15 @@
-import { parseDotGraph } from './../../../utils/dotparser'
-import { SugiyamaLayoutSettings } from './../../../layout/layered/SugiyamaLayoutSettings'
+import {parseDotGraph} from './../../../utils/dotparser'
+import {SugiyamaLayoutSettings} from './../../../layout/layered/SugiyamaLayoutSettings'
 
-import { LayeredLayout } from '../../../layout/layered/LayeredLayout'
-import { Graph } from '../../../structs/graph'
-import { GeomNode } from '../../../layout/core/geomNode'
-import { GeomEdge } from '../../../layout/core/geomEdge'
-import { CurveFactory } from '../../../math/geometry/curveFactory'
-import { Point } from '../../../math/geometry/point'
-import { CancelToken } from '../../../utils/cancelToken'
-import { GeomGraph } from '../../../layout/core/GeomGraph'
-import { GeomObject } from '../../../layout/core/geomObject'
+import {LayeredLayout} from '../../../layout/layered/LayeredLayout'
+import {Graph} from '../../../structs/graph'
+import {GeomNode} from '../../../layout/core/geomNode'
+import {GeomEdge} from '../../../layout/core/geomEdge'
+import {CurveFactory} from '../../../math/geometry/curveFactory'
+import {Point} from '../../../math/geometry/point'
+import {CancelToken} from '../../../utils/cancelToken'
+import {GeomGraph} from '../../../layout/core/GeomGraph'
+import {GeomObject} from '../../../layout/core/geomObject'
 function createGeometry(g: Graph) {
   for (const n of g.nodes) {
     const gn = new GeomNode(n)
@@ -44,6 +44,10 @@ test('map test', () => {
 xtest('layered layout hookup', () => {
   const g = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(g)
-  const ll = new LayeredLayout(GeomObject.getGeom(g) as GeomGraph, new SugiyamaLayoutSettings(), new CancelToken())
+  const ll = new LayeredLayout(
+    GeomObject.getGeom(g) as GeomGraph,
+    new SugiyamaLayoutSettings(),
+    new CancelToken(),
+  )
   ll.run()
 })

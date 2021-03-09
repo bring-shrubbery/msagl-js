@@ -1,4 +1,4 @@
-import { copyTo } from '../../utils/copy'
+import {copyTo} from '../../utils/copy'
 
 export class LayerArrays {
   Y: number[]

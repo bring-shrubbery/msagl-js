@@ -1,6 +1,6 @@
 // Differs from IntEdge in containing a flag indicating belonging to the tree
 // and containing the cut value
-import { IIntEdge } from './../iIntEdge'
+import {IIntEdge} from './../iIntEdge'
 
 export class NetworkEdge {
   iedge: IIntEdge
