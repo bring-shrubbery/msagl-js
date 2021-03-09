@@ -13,6 +13,8 @@ import { LayerEdge } from "./LayerEdge";
 import { PolyIntEdge } from "./polyIntEdge";
 import { ProperLayeredGraph } from "./ProperLayeredGraph";
 
+type MedianType = number | IntPair
+
 export class XCoordsWithAlignment {
 
   la: LayerArrays;
@@ -33,9 +35,9 @@ export class XCoordsWithAlignment {
 
   nodeSep: number;
 
-  lowMedians: (IntPair | number[])[];
+  lowMedians: MedianType[];
 
-  upperMedians: Object[];
+  upperMedians: MedianType[];
 
   // each element or int or IntPair
   markedEdges: IntPairSet
@@ -145,7 +147,7 @@ export class XCoordsWithAlignment {
   }
 
   private FillLowMedians() {
-    this.lowMedians = new Array<IntPair | number[]>(this.graph.NodeCount);
+    this.lowMedians = new Array<MedianType>(this.graph.NodeCount);
     for (let i: number = 0; (i < this.graph.NodeCount); i++) {
       this.FillLowMediansForNode(i);
     }
@@ -168,7 +170,7 @@ export class XCoordsWithAlignment {
         this.lowMedians[i] = new IntPair(successors[(m - 1)], successors[m]);
       }
       else {
-        this.lowMedians[i] = successors[m]; todo - bugs with lowMedians - upperMedians
+        this.lowMedians[i] = successors[m];
       }
 
     }
@@ -307,7 +309,7 @@ export class XCoordsWithAlignment {
       }
     }
     else {
-      const i: number = <number>(medians)
+      const i = <number>(medians)
       if (i >= 0) {
         yield i
       }
