@@ -1,9 +1,15 @@
-import {LinearSystem2} from './linearSystem'
-import {GeomConstants} from './geomConstants'
+import { LinearSystem2 } from './linearSystem'
+import { GeomConstants } from './geomConstants'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,
   Collinear,
+}
+
+export function compareTo(a: number, b: number) {
+  if (a < b) return -1
+  if (a > b) return 1
+  return 0
 }
 
 export class Point {
@@ -18,6 +24,13 @@ export class Point {
   }
   get y() {
     return this.y_
+  }
+
+  compareTo(other: Point): number {
+    const r = compareTo(this.x, other.x)
+    if (r != 0)
+      return r
+    return compareTo(this.y, other.y)
   }
 
   toString() {

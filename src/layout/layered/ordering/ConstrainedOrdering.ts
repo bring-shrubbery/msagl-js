@@ -1,573 +1,700 @@
-import {BasicGraph} from '../../../structs/BasicGraph'
-import {Graph} from '../../../structs/graph'
-import {GeomNode} from '../../core/geomNode'
-import {Database} from '../Database'
-import {LayerArrays} from '../LayerArrays'
-import {PolyIntEdge} from '../polyIntEdge'
-import {ProperLayeredGraph} from '../ProperLayeredGraph'
-import {SugiyamaLayoutSettings} from '../SugiyamaLayoutSettings'
+
+import { IEnumerable, from } from 'linq-to-typescript'
+import { List, Dictionary } from 'lodash'
+import { TopologicalSort } from '../../../math/graphAlgorithms/topologicalSort'
+import { BasicGraph } from '../../../structs/BasicGraph'
+import { BasicGraphOnEdges } from '../../../structs/basicGraphOnEdges'
+import { Graph } from '../../../structs/graph'
+import { IntPair } from '../../../utils/IntPair'
+import { IntPairMap } from '../../../utils/IntPairMap'
+import { GeomGraph } from '../../core/GeomGraph'
+import { GeomNode } from '../../core/geomNode'
+import { Database } from '../Database'
+import { HorizontalConstraintsForSugiyama } from '../HorizontalConstraintsForSugiyama'
+import { LayerArrays } from '../LayerArrays'
+import { LayerEdge } from '../LayerEdge'
+import { PolyIntEdge } from '../polyIntEdge'
+import { ProperLayeredGraph } from '../ProperLayeredGraph'
+import { SugiyamaLayoutSettings } from '../SugiyamaLayoutSettings'
+import { ConnectedComponentCalculator } from '../VerticalConstraintsForSugiyama'
+import { AdjacentSwapsWithConstraints } from './AdjacentSwapsWithConstraints'
+import { LayerInfo } from './LayerInfo'
+import { GetCrossingsTotal, Ordering } from './Ordering'
 
 export class ConstrainedOrdering {
-  //   readonly GeometryGraph geometryGraph;
-  //   readonly BasicGraph<Node, PolyIntEdge> intGraph;
-  ProperLayeredGraph: ProperLayeredGraph
-  //   readonly number[] initialLayering;
-  //   LayerInfo[] layerInfos;
-  LayerArrays: LayerArrays
-  //   readonly HorizontalConstraintsForSugiyama horizontalConstraints;
-  //         number numberOfNodesOfProperGraph;
-  //         readonly Database database;
-  // number[][] xPositions;
-  // number[][] yetBestLayers;
 
-  //         readonly List < PolyIntEdge > verticalEdges = new List<PolyIntEdge>();
+  geometryGraph: GeomGraph;
 
-  //         readonly AdjacentSwapsWithConstraints adjSwapper;
+  intGraph: BasicGraph<Node, PolyIntEdge>;
 
-  // SugiyamaLayoutSettings settings;
+  private /* internal */ ProperLayeredGraph: ProperLayeredGraph;
 
-  // number numberOfLayers = -1;
-  // number noGainSteps;
-  // const number MaxNumberOfNoGainSteps = 5;
+  initialLayering: number[];
 
-  // number NumberOfLayers {
-  //   get {
-  //     if (numberOfLayers > 0)
-  //       return numberOfLayers;
-  //     return numberOfLayers = initialLayering.Max(i => i + 1);
-  //   }
-  // }
+  layerInfos: LayerInfo[];
 
-  // number NodeSeparation() {
-  //   return settings.NodeSeparation;
-  // }
+  private /* internal */ LayerArrays: LayerArrays;
 
-  constructor(
-    geomGraph: Graph,
-    basicIntGraph: BasicGraph<GeomNode, PolyIntEdge>,
-    layering: number[],
-    nodeIdToIndex: Map<string, number>,
-    database: Database,
-    settings: SugiyamaLayoutSettings,
-  ) {
+  horizontalConstraints: HorizontalConstraintsForSugiyama;
+
+  numberOfNodesOfProperGraph: number;
+
+  database: Database;
+
+  xPositions: number[][];
+
+  yetBestLayers: number[][];
+
+  verticalEdges: Array<PolyIntEdge> = new Array<PolyIntEdge>();
+
+  adjSwapper: AdjacentSwapsWithConstraints;
+
+  settings: SugiyamaLayoutSettings;
+
+  numberOfLayers: number = -1;
+
+  noGainSteps: number;
+
+        /* const */ static MaxNumberOfNoGainSteps: number = 5;
+
+  get NumberOfLayers(): number {
+    if ((this.numberOfLayers > 0)) {
+      return this.numberOfLayers;
+    }
+
+    return;
+  }
+
+  NodeSeparation(): number {
+    return this.settings.NodeSeparation;
+  }
+
+  constructor(geomGraph: GeomGraph, basicIntGraph: BasicGraph<GeomNode, PolyIntEdge>, layering: number[], nodeIdToIndex: Map<string, number>, database: Database, settings: SugiyamaLayoutSettings) {
     throw new Error('not implemented')
-    // this.settings = settings;
-    // horizontalConstraints = settings.HorizontalConstraints;
+    // this.settings = this.settings;
+    // this.horizontalConstraints = this.settings.HorizontalConstraints;
+    // this.horizontalConstraints.PrepareForOrdering(nodeIdToIndex, layering);
+    // this.geometryGraph = geomGraph;
+    // this.database = this.database;
+    // this.intGraph = basicIntGraph;
+    // this.initialLayering = layering;
+    // // this has to be changed only to insert layers that are needed
+    // if (this.NeedToInsertLayers(layering)) {
+    //   for (let i: number = 0; (i < layering.length); i++) {
+    //     layering[i] = (layering[i] * 2);
+    //   }
 
-    // horizontalConstraints.PrepareForOrdering(nodeIdToIndex, layering);
-
-    // geometryGraph = geomGraph;
-    // this.database = database;
-    // intGraph = basicIntGraph;
-    // initialLayering = layering;
-    // //this has to be changed only to insert layers that are needed
-    // if (NeedToInsertLayers(layering)) {
-    //   for (number i = 0; i < layering.Length; i++)
-    //   layering[i] *= 2;
-    //   LayersAreDoubled = true;
-    //   numberOfLayers = -1;
+    //   this.LayersAreDoubled = true;
+    //   this.numberOfLayers = -1;
     // }
 
-    // PrepareProperLayeredGraphAndFillLayerInfos();
-
-    // adjSwapper = new AdjacentSwapsWithConstraints(
-    //   LayerArrays,
-    //   HasCrossWeights(),
-    //   ProperLayeredGraph,
-    //   layerInfos);
+    // this.PrepareProperLayeredGraphAndFillLayerInfos();
+    // this.adjSwapper = new AdjacentSwapsWithConstraints(this.LayerArrays, this.HasCrossWeights(), this.ProperLayeredGraph, this.layerInfos);
   }
 
-  // bool LayersAreDoubled { get; set; }
+  layersAreDoubled: boolean = false
+  get LayersAreDoubled(): boolean {
+    return this.layersAreDoubled
+  }
+  set LayersAreDoubled(value: boolean) {
+    this.layersAreDoubled = value
+  }
 
-  // bool NeedToInsertLayers(number[] layering) {
-  //   return ExistsShortLabeledEdge(layering, intGraph.Edges) ||
-  //     ExistsShortMultiEdge(layering, database.Multiedges);
+  NeedToInsertLayers(layering: number[]): boolean {
+    return (ConstrainedOrdering.ExistsShortLabeledEdge(layering, from(this.intGraph.edges)) || ConstrainedOrdering.ExistsShortMultiEdge(layering, this.database.Multiedges));
+  }
+
+  static ExistsShortMultiEdge(layering: number[], multiedges: IntPairMap<Array<PolyIntEdge>>): boolean {
+    return from(multiedges.keyValues()).any(p => p[1].length > 2 && layering[p[0].x] == (1 + layering[p[0].y]));
+  }
+
+  // private /* internal */ Calculate() {
+  //   this.AllocateXPositions();
+  //   let originalGraph = (<GeomGraph>(this.intGraph.Nodes[0].GeometryParent));
+  //   LayeredLayoutEngine.CalculateAnchorSizes(this.database, /* out */this.database.anchors, this.ProperLayeredGraph, originalGraph, this.intGraph, this.settings);
+  //   LayeredLayoutEngine.CalcInitialYAnchorLocations(this.LayerArrays, 500, this.geometryGraph, this.database, this.intGraph, this.settings, this.LayersAreDoubled);
+  //   this.Order();
   // }
 
-  //         static bool ExistsShortMultiEdge(number[] layering, Dictionary < IntPair, List < PolyIntEdge >> multiedges) {
-  //   return multiedges.Any(multiedge => multiedge.Value.Count > 2 && layering[multiedge.Key.x] == 1 + layering[multiedge.Key.y]);
-  // }
+  CreateMeasure(): number {
+    return GetCrossingsTotal(this.ProperLayeredGraph, this.LayerArrays)
+  }
 
-  Calculate() {
+  HasCrossWeights(): boolean {
+    return from(this.ProperLayeredGraph.Edges).any(le => le.CrossingWeight != 1)
+  }
+
+  static ExistsShortLabeledEdge(layering: number[], edges: IEnumerable<PolyIntEdge>): boolean {
+    return edges.any(edge => layering[edge.source] == layering[edge.target] + 1
+      && edge.edge.label != null);
+  }
+
+  AllocateXPositions() {
+    this.xPositions = new Array(this.NumberOfLayers);
+    for (let i: number = 0; (i < this.NumberOfLayers); i++) {
+      this.xPositions[i] = new Array(this.LayerArrays.Layers[i].length);
+    }
+
+  }
+
+  Order() {
     throw new Error('not implemented')
-    //   AllocateXPositions();
-    //   var originalGraph = intGraph.Nodes[0].GeometryParent as GeometryGraph;
-    //   LayeredLayoutEngine.CalculateAnchorSizes(database, out database.anchors, ProperLayeredGraph, originalGraph, intGraph, settings);
-    //   LayeredLayoutEngine.CalcInitialYAnchorLocations(LayerArrays, 500, geometryGraph, database, intGraph, settings, LayersAreDoubled);
-    //   Order();
+    // this.CreateInitialOrderInLayers();
+    // this.TryPushingOutStrangersFromHorizontalBlocks();
+    // let n: number = 5;
+    // let measure = Number.MAX_SAFE_INTEGER;
+    // while (n-- > 0 && this.noGainSteps <= ConstrainedOrdering.MaxNumberOfNoGainSteps) {
+    //   this.SetXPositions();
+    //   let newMeasure = this.CreateMeasure();
+    //   if (newMeasure < measure) {
+    //     this.noGainSteps = 0;
+    //     const t = { layerArraysCopy: this.yetBestLayers }
+    //     Ordering.CloneLayers(this.LayerArrays.Layers, t);
+    //     this.yetBestLayers = t.layerArraysCopy
+    //     measure = newMeasure;
+    //   }
+    //   else {
+    //     this.noGainSteps++;
+    //     this.RestoreState();
+    //   }
+
+    // }
+
   }
 
-  // ConstrainedOrderMeasure CreateMeasure() {
-  //   return new ConstrainedOrderMeasure(Ordering.GetCrossingsTotal(ProperLayeredGraph, LayerArrays));
-  // }
+  SetXPositions() {
+    throw new Error("not implemented")
+  }
 
-  // bool HasCrossWeights() {
-  //   return ProperLayeredGraph.Edges.Any(le => le.CrossingWeight != 1);
-  // }
-
-  //         static bool ExistsShortLabeledEdge(number[] layering, IEnumerable < PolyIntEdge > edges) {
-  //   return edges.Any(edge => layering[edge.Source] == layering[edge.Target] + 1 && edge.Edge.Label != null);
-  // }
-
-  // void AllocateXPositions() {
-  //   xPositions = new number[NumberOfLayers][];
-  //   for (number i = 0; i < NumberOfLayers; i++)
-  //   xPositions[i] = new number[LayerArrays.Layers[i].Length];
-  // }
-
-  // void Order() {
-  //   CreateInitialOrderInLayers();
-  //   TryPushingOutStrangersFromHorizontalBlocks();
-  //   number n = 5;
-
-  //   ConstrainedOrderMeasure measure = null;
-
-  //   while (n-- > 0 && noGainSteps <= MaxNumberOfNoGainSteps) {
-
-  //     SetXPositions();
-
-  //     ConstrainedOrderMeasure newMeasure = CreateMeasure();
-  //     if (measure == null || newMeasure < measure) {
-  //       noGainSteps = 0;
-  //       Ordering.CloneLayers(LayerArrays.Layers, ref yetBestLayers);
-  //       measure = newMeasure;
-  //     } else {
-  //       noGainSteps++;
-  //       RestoreState();
-  //     }
-
-  //   }
-  // }
-
-  // void SetXPositions() {
-  //   ISolverShell solver = InitSolverWithoutOrder();
-  //   ImproveWithAdjacentSwaps();
-  //   PutLayerNodeSeparationsIntoSolver(solver);
-  //   solver.Solve();
-  //   SortLayers(solver);
-  //   for (number i = 0; i < LayerArrays.Y.Length; i++)
-  //   database.Anchors[i].X = solver.GetVariableResolvedPosition(i);
-
-  // }
-
-  // ISolverShell InitSolverWithoutOrder() {
-  //   ISolverShell solver = CreateSolver();
-  //   InitSolverVars(solver);
-
-  //   PutLeftRightConstraintsIntoSolver(solver);
-  //   PutVerticalConstraintsIntoSolver(solver);
-  //   AddGoalsToKeepProperEdgesShort(solver);
-
-  //   AddGoalsToKeepFlatEdgesShort(solver);
+  // InitSolverWithoutOrder(): ISolverShell {
+  //   let solver: ISolverShell = ConstrainedOrdering.CreateSolver();
+  //   this.InitSolverVars(solver);
+  //   this.PutLeftRightConstraintsIntoSolver(solver);
+  //   this.PutVerticalConstraintsIntoSolver(solver);
+  //   this.AddGoalsToKeepProperEdgesShort(solver);
+  //   this.AddGoalsToKeepFlatEdgesShort(solver);
   //   return solver;
   // }
 
-  // void SortLayers(ISolverShell solver) {
-  //   for (number i = 0; i < LayerArrays.Layers.Length; i++)
-  //   SortLayerBasedOnSolution(LayerArrays.Layers[i], solver);
-  // }
-
-  // void AddGoalsToKeepFlatEdgesShort(ISolverShell solver) {
-  //   for(var layerInfo in layerInfos)
-  //   AddGoalToKeepFlatEdgesShortOnBlockLevel(layerInfo, solver);
-  // }
-
-  // void InitSolverVars(ISolverShell solver) {
-  //   for (number i = 0; i < LayerArrays.Y.Length; i++)
-  //   solver.AddVariableWithIdealPosition(i, 0);
-  // }
-
-  // void AddGoalsToKeepProperEdgesShort(ISolverShell solver) {
-  //   for(var edge in ProperLayeredGraph.Edges)
-  //   solver.AddGoalTwoVariablesAreClose(edge.Source, edge.Target, PositionOverBaricenterWeight);
+  // SortLayers(solver: ISolverShell) {
+  //   for (let i: number = 0; (i < this.LayerArrays.Layers.length); i++) {
+  //     this.SortLayerBasedOnSolution(this.LayerArrays.Layers[i], solver);
+  //   }
 
   // }
 
-  // void PutVerticalConstraintsIntoSolver(ISolverShell solver) {
-  //   for(var pair in horizontalConstraints.VerticalInts) {
+  // AddGoalsToKeepFlatEdgesShort(solver: ISolverShell) {
+  //   for (let layerInfo in this.layerInfos) {
+  //     ConstrainedOrdering.AddGoalToKeepFlatEdgesShortOnBlockLevel(layerInfo, solver);
+  //   }
+
+  // }
+
+  // InitSolverVars(solver: ISolverShell) {
+  //   for (let i: number = 0; (i < this.LayerArrays.Y.length); i++) {
+  //     solver.AddVariableWithIdealPosition(i, 0);
+  //   }
+
+  // }
+
+  // AddGoalsToKeepProperEdgesShort(solver: ISolverShell) {
+  //   for (let edge in this.ProperLayeredGraph.edges) {
+  //     solver.AddGoalTwoVariablesAreClose(edge.Source, edge.Target, PositionOverBaricenterWeight);
+  //   }
+
+  // }
+
+  // PutVerticalConstraintsIntoSolver(solver: ISolverShell) {
+  //   for (let pair in this.horizontalConstraints.VerticalInts) {
   //     solver.AddGoalTwoVariablesAreClose(pair.Item1, pair.Item2, ConstrainedVarWeight);
   //   }
+
   // }
 
-  // void PutLeftRightConstraintsIntoSolver(ISolverShell solver) {
-  //   for(var pair in horizontalConstraints.LeftRighInts) {
-  //     solver.AddLeftRightSeparationConstraint(pair.Item1, pair.Item2, SimpleGapBetweenTwoNodes(pair.Item1, pair.Item2));
+  // PutLeftRightConstraintsIntoSolver(solver: ISolverShell) {
+  //   for (let pair in this.horizontalConstraints.LeftRighInts) {
+  //     solver.AddLeftRightSeparationConstraint(pair.Item1, pair.Item2, this.SimpleGapBetweenTwoNodes(pair.Item1, pair.Item2));
   //   }
+
   // }
 
-  // void PutLayerNodeSeparationsIntoSolver(ISolverShell solver) {
-  //   for(var layer in LayerArrays.Layers) {
-  //     for (number i = 0; i < layer.Length - 1; i++) {
-  //       number l = layer[i];
-  //       number r = layer[i + 1];
-  //       solver.AddLeftRightSeparationConstraint(l, r, SimpleGapBetweenTwoNodes(l, r));
+  // PutLayerNodeSeparationsIntoSolver(solver: ISolverShell) {
+  //   for (let layer in this.LayerArrays.Layers) {
+  //     for (let i: number = 0; (i
+  //       < (layer.length - 1)); i++) {
+  //       let l: number = layer[i];
+  //       let r: number = layer[(i + 1)];
+  //       solver.AddLeftRightSeparationConstraint(l, r, this.SimpleGapBetweenTwoNodes(l, r));
   //     }
+
   //   }
-  // }
-
-  // void ImproveWithAdjacentSwaps() {
-  //   adjSwapper.DoSwaps();
-  // }
-
-  // void TryPushingOutStrangersFromHorizontalBlocks() {
 
   // }
 
-  // void CreateInitialOrderInLayers() {
-  //   //the idea is to topologically ordering all nodes horizontally, by using vertical components, then fill the layers according to this order
-  //   Dictionary < number, number > nodesToVerticalComponentsRoots = CreateVerticalComponents();
-  //   IEnumerable < IntPair > liftedLeftRightRelations = LiftLeftRightRelationsToComponentRoots(nodesToVerticalComponentsRoots).ToArray();
-  //   number[] orderOfVerticalComponentRoots = TopologicalSort.GetOrderOnEdges(liftedLeftRightRelations);
-  //   FillLayersWithVerticalComponentsOrder(orderOfVerticalComponentRoots, nodesToVerticalComponentsRoots);
-  //   LayerArrays.UpdateXFromLayers();
+  // ImproveWithAdjacentSwaps() {
+  //   this.adjSwapper.DoSwaps();
   // }
 
-  // void FillLayersWithVerticalComponentsOrder(number[] order, Dictionary < number, number > nodesToVerticalComponentsRoots) {
-  //   Dictionary < number, List < number >> componentRootsToComponents = CreateComponentRootsToComponentsMap(nodesToVerticalComponentsRoots);
-  //   var alreadyInLayers = new bool[LayerArrays.Y.Length];
-  //   var runninglayerCounts = new number[LayerArrays.Layers.Length];
-  //   for(var vertCompRoot in order)
-  //   PutVerticalComponentIntoLayers(EnumerateVertComponent(componentRootsToComponents, vertCompRoot), runninglayerCounts, alreadyInLayers);
-  //   for (number i = 0; i < ProperLayeredGraph.NodeCount; i++)
-  //   if (alreadyInLayers[i] == false)
-  //     AddVertToLayers(i, runninglayerCounts, alreadyInLayers);
+  // TryPushingOutStrangersFromHorizontalBlocks() {
 
   // }
 
-  // IEnumerable < number > EnumerateVertComponent(Dictionary < number, List < number >> componentRootsToComponents, number vertCompRoot) {
-  //   List < number > compList;
-  //   if (componentRootsToComponents.TryGetValue(vertCompRoot, out compList)) {
-  //     for(var i in compList)
-  //     yield return i;
-  //   } else
-  //     yield return vertCompRoot;
+  // CreateInitialOrderInLayers() {
+  //   // the idea is to topologically ordering all nodes horizontally, by using vertical components, then fill the layers according to this order
+  //   let nodesToVerticalComponentsRoots: Dictionary<number, number> = this.CreateVerticalComponents();
+  //   let liftedLeftRightRelations: IEnumerable<IntPair> = this.LiftLeftRightRelationsToComponentRoots(nodesToVerticalComponentsRoots).ToArray();
+  //   let orderOfVerticalComponentRoots: number[] = TopologicalSort.GetOrderOnEdges(liftedLeftRightRelations);
+  //   this.FillLayersWithVerticalComponentsOrder(orderOfVerticalComponentRoots, nodesToVerticalComponentsRoots);
+  //   this.LayerArrays.UpdateXFromLayers();
+  // }
+
+  // FillLayersWithVerticalComponentsOrder(order: number[], nodesToVerticalComponentsRoots: Dictionary<number, number>) {
+  //   let componentRootsToComponents: Dictionary<number, Array<number>> = ConstrainedOrdering.CreateComponentRootsToComponentsMap(nodesToVerticalComponentsRoots);
+  //   let alreadyInLayers = new Array(this.LayerArrays.Y.length);
+  //   let runninglayerCounts = new Array(this.LayerArrays.Layers.length);
+  //   for (let vertCompRoot in order) {
+  //     this.PutVerticalComponentIntoLayers(this.EnumerateVertComponent(componentRootsToComponents, vertCompRoot), runninglayerCounts, alreadyInLayers);
+  //   }
+
+  //   for (let i: number = 0; (i < this.ProperLayeredGraph.NodeCount); i++) {
+  //     if ((alreadyInLayers[i] == false)) {
+  //       this.AddVertToLayers(i, runninglayerCounts, alreadyInLayers);
+  //     }
+
+  //   }
 
   // }
 
-  // void PutVerticalComponentIntoLayers(IEnumerable < number > vertComponent, number[] runningLayerCounts, bool[] alreadyInLayers) {
-  //   for(var i in vertComponent)
-  //   AddVertToLayers(i, runningLayerCounts, alreadyInLayers);
+  // EnumerateVertComponent(componentRootsToComponents: Dictionary<number, Array<number>>, vertCompRoot: number): IEnumerable<number> {
+  //   let compList: Array<number>;
+  //   if (componentRootsToComponents.TryGetValue(vertCompRoot, /* out */compList)) {
+  //     for (let i in compList) {
+  //       yield;
+  //     }
+
+  //     return i;
+  //   }
+  //   else {
+  //     yield;
+  //   }
+
+  //   return vertCompRoot;
   // }
 
-  // void AddVertToLayers(number i, number[] runningLayerCounts, bool[] alreadyInLayers) {
-  //   if (alreadyInLayers[i])
+  // PutVerticalComponentIntoLayers(vertComponent: IEnumerable<number>, runningLayerCounts: number[], alreadyInLayers: boolean[]) {
+  //   for (let i in vertComponent) {
+  //     this.AddVertToLayers(i, runningLayerCounts, alreadyInLayers);
+  //   }
+
+  // }
+
+  // AddVertToLayers(i: number, runningLayerCounts: number[], alreadyInLayers: boolean[]) {
+  //   if (alreadyInLayers[i]) {
   //     return;
-  //   number layerIndex = LayerArrays.Y[i];
+  //   }
 
-  //   number xIndex = runningLayerCounts[layerIndex];
-  //   var layer = LayerArrays.Layers[layerIndex];
-
+  //   let layerIndex: number = this.LayerArrays.Y[i];
+  //   let xIndex: number = runningLayerCounts[layerIndex];
+  //   let layer = this.LayerArrays.Layers[layerIndex];
   //   layer[xIndex++] = i;
   //   alreadyInLayers[i] = true;
-  //   List < number > block;
-  //   if (horizontalConstraints.BlockRootToBlock.TryGetValue(i, out block))
-  //     for(var v in block) {
-  //     if (alreadyInLayers[v]) continue;
-  //     layer[xIndex++] = v;
-  //     alreadyInLayers[v] = true;
+  //   let block: Array<number>;
+  //   if (this.horizontalConstraints.BlockRootToBlock.TryGetValue(i, /* out */block)) {
+  //     for (let v in block) {
+  //       if (alreadyInLayers[v]) {
+  //         // TODO: Warning!!! continue If
+  //       }
+
+  //       layer[xIndex++] = v;
+  //       alreadyInLayers[v] = true;
+  //     }
+
   //   }
+
   //   runningLayerCounts[layerIndex] = xIndex;
   // }
 
-  //         static Dictionary < number, List < number >> CreateComponentRootsToComponentsMap(Dictionary < number, number > nodesToVerticalComponentsRoots) {
-  //   var d = new Dictionary<number, List<number>>();
-  //   for(var kv in nodesToVerticalComponentsRoots) {
-  //     number i = kv.Key;
-  //     var root = kv.Value;
-  //     List < number > component;
-  //     if (!d.TryGetValue(root, out component)) {
-  //       d[root] = component = new List<number>();
+  // static CreateComponentRootsToComponentsMap(nodesToVerticalComponentsRoots: Dictionary<number, number>): Dictionary<number, Array<number>> {
+  //   let d = new Dictionary<number, Array<number>>();
+  //   for (let kv in nodesToVerticalComponentsRoots) {
+  //     let i: number = kv.Key;
+  //     let root = kv.Value;
+  //     let component: Array<number>;
+  //     if (!d.TryGetValue(root, /* out */component)) {
+  //       component = new Array<number>();
+  //       d[root] = new Array<number>();
   //     }
+
   //     component.Add(i);
   //   }
+
   //   return d;
   // }
 
-  // IEnumerable < IntPair > LiftLeftRightRelationsToComponentRoots(Dictionary < number, number > nodesToVerticalComponentsRoots) {
-  //   for(var pair in horizontalConstraints.LeftRighInts)
-  //   yield return new IntPair(GetFromDictionaryOrIdentical(nodesToVerticalComponentsRoots, pair.Item1),
-  //     GetFromDictionaryOrIdentical(nodesToVerticalComponentsRoots, pair.Item2));
-  //   for(var pair in horizontalConstraints.LeftRightIntNeibs)
-  //   yield return new IntPair(GetFromDictionaryOrIdentical(nodesToVerticalComponentsRoots, pair.Item1),
-  //     GetFromDictionaryOrIdentical(nodesToVerticalComponentsRoots, pair.Item2));
+  // LiftLeftRightRelationsToComponentRoots(nodesToVerticalComponentsRoots: Dictionary<number, number>): IEnumerable<IntPair> {
+  //   for (let pair in this.horizontalConstraints.LeftRighInts) {
+  //     yield;
+  //   }
+
+  //   return new IntPair(ConstrainedOrdering.GetFromDictionaryOrIdentical(nodesToVerticalComponentsRoots, pair.Item1), ConstrainedOrdering.GetFromDictionaryOrIdentical(nodesToVerticalComponentsRoots, pair.Item2));
+  //   for (let pair in this.horizontalConstraints.LeftRightIntNeibs) {
+  //     yield;
+  //   }
+
+  //   return new IntPair(ConstrainedOrdering.GetFromDictionaryOrIdentical(nodesToVerticalComponentsRoots, pair.Item1), ConstrainedOrdering.GetFromDictionaryOrIdentical(nodesToVerticalComponentsRoots, pair.Item2));
   // }
 
-  //         static number GetFromDictionaryOrIdentical(Dictionary < number, number > d, number key) {
-  //   number i;
-  //   if (d.TryGetValue(key, out i))
+  // static GetFromDictionaryOrIdentical(d: Dictionary<number, number>, key: number): number {
+  //   let i: number;
+  //   if (d.TryGetValue(key, /* out */i)) {
   //     return i;
+  //   }
+
   //   return key;
   // }
 
-  // // These blocks are connected components in the vertical constraints. They don't necesserely span consequent layers.
-  // Dictionary < number, number > CreateVerticalComponents() {
-  //   var vertGraph = new BasicGraphOnEdges<PolyIntEdge>(from pair in horizontalConstraints.VerticalInts select new PolyIntEdge(pair.Item1, pair.Item2));
-  //   var verticalComponents = ConnectedComponentCalculator<PolyIntEdge>.GetComponents(vertGraph);
-  //   var nodesToComponentRoots = new Dictionary<number, number>();
-  //   for(var component in verticalComponents) {
-  //     var ca = component.ToArray();
-  //     if (ca.Length == 1)
-  //       continue;
-  //     number componentRoot = -1;
-  //     for(var j in component) {
-  //       if (componentRoot == -1)
+  // ///  <summary>
+  // ///  These blocks are connected components in the vertical constraints. They don't necesserely span consequent layers.
+  // ///  </summary>
+  // ///  <returns></returns>
+  // CreateVerticalComponents(): Dictionary<number, number> {
+  //   let vertGraph = new BasicGraphOnEdges<PolyIntEdge>(from, pair, in, this.horizontalConstraints.VerticalInts, select, new PolyIntEdge(pair.Item1, pair.Item2));
+  //   let verticalComponents = ConnectedComponentCalculator.GetComponents(vertGraph);
+  //   let nodesToComponentRoots = new Dictionary<number, number>();
+  //   for (let component in verticalComponents) {
+  //     let ca = component.ToArray();
+  //     if ((ca.length == 1)) {
+  //       // TODO: Warning!!! continue If
+  //     }
+
+  //     let componentRoot: number = -1;
+  //     for (let j in component) {
+  //       if ((componentRoot == -1)) {
   //         componentRoot = j;
+  //       }
+
   //       nodesToComponentRoots[j] = componentRoot;
   //     }
+
   //   }
+
   //   return nodesToComponentRoots;
   // }
 
-  // void RestoreState() {
-  //   LayerArrays.UpdateLayers(yetBestLayers);
+  // RestoreState() {
+  //   this.LayerArrays.UpdateLayers(this.yetBestLayers);
   // }
 
-  // #if TEST_MSAGL
-  // void Show() {
-  //   SugiyamaLayoutSettings.ShowDatabase(database);
+  // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledCode")
+  // Show() {
+  //   SugiyamaLayoutSettings.ShowDatabase(this.database);
   // }
-  // #endif
 
-  // #if TEST_MSAGL
-  //         static void PrintPositions(number[] positions) {
-  //   for (number j = 0; j < positions.Length; j++)
-  //   System.Diagnostics.Debug.Write(" " + positions[j]);
+  // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Diagnostics.Debug.Write(System.String)")
+  // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledCode")
+  // static PrintPositions(positions: number[]) {
+  //   for (let j: number = 0; (j < positions.length); j++) {
+  //     System.Diagnostics.Debug.Write((" " + positions[j]));
+  //   }
+
   //   System.Diagnostics.Debug.WriteLine("");
   // }
-  // #endif
 
-  // void SortLayerBasedOnSolution(number[] layer, ISolverShell solver) {
-  //   number length = layer.Length;
-  //   var positions = new number[length];
-  //   number k = 0;
-  //   for(number v in layer)
-  //   positions[k++] = solver.GetVariableResolvedPosition(v);
+  // SortLayerBasedOnSolution(layer: number[], solver: ISolverShell) {
+  //   let length: number = layer.length;
+  //   let positions = new Array(length);
+  //   let k: number = 0;
+  //   for (let v: number in layer) {
+  //     positions[k++] = solver.GetVariableResolvedPosition(v);
+  //   }
 
   //   Array.Sort(positions, layer);
-  //   number i = 0;
-  //   for(number v in layer)
-  //   LayerArrays.X[v] = i++;
-  // }
-
-  // const number ConstrainedVarWeight = 10e6;
-  // const number PositionOverBaricenterWeight = 5;
-
-  //         static number NodeToBlockRootSoftOnLayerInfo(LayerInfo layerInfo, number node) {
-  //   number root;
-  //   return layerInfo.nodeToBlockRoot.TryGetValue(node, out root) ? root : node;
-  // }
-
-  //         static void AddGoalToKeepFlatEdgesShortOnBlockLevel(LayerInfo layerInfo, ISolverShell solver) {
-  //   if (layerInfo != null)
-  //     for(var couple in layerInfo.flatEdges) {
-  //     number sourceBlockRoot = NodeToBlockRootSoftOnLayerInfo(layerInfo, couple.Item1);
-  //     number targetBlockRoot = NodeToBlockRootSoftOnLayerInfo(layerInfo, couple.Item2);
-  //     if (sourceBlockRoot != targetBlockRoot)
-  //       solver.AddGoalTwoVariablesAreClose(sourceBlockRoot, targetBlockRoot);
+  //   let i: number = 0;
+  //   for (let v: number in layer) {
+  //     i++;
   //   }
+
+  //   this.LayerArrays.X[v] = i;
   // }
 
-  //         static bool NodeIsConstrainedBelow(number v, LayerInfo layerInfo) {
-  //   if (layerInfo == null)
+  //       /* const */ static ConstrainedVarWeight: number = 10000000;
+
+  //       /* const */ static PositionOverBaricenterWeight: number = 5;
+
+  // static NodeToBlockRootSoftOnLayerInfo(layerInfo: LayerInfo, node: number): number {
+  //   let root: number;
+  //   return layerInfo.nodeToBlockRoot.TryGetValue(node, /* out */root);
+  //   // TODO: Warning!!!, inline IF is not supported ?
+  //   // TODO: Warning!!!! NULL EXPRESSION DETECTED...
+  //   ;
+  // }
+
+  // static AddGoalToKeepFlatEdgesShortOnBlockLevel(layerInfo: LayerInfo, solver: ISolverShell) {
+  //   if ((layerInfo != null)) {
+  //     for (let couple in layerInfo.flatEdges) {
+  //       let sourceBlockRoot: number = ConstrainedOrdering.NodeToBlockRootSoftOnLayerInfo(layerInfo, couple.Item1);
+  //       let targetBlockRoot: number = ConstrainedOrdering.NodeToBlockRootSoftOnLayerInfo(layerInfo, couple.Item2);
+  //       if ((sourceBlockRoot != targetBlockRoot)) {
+  //         solver.AddGoalTwoVariablesAreClose(sourceBlockRoot, targetBlockRoot);
+  //       }
+
+  //     }
+
+  //   }
+
+  // }
+
+  // static NodeIsConstrainedBelow(v: number, layerInfo: LayerInfo): boolean {
+  //   if ((layerInfo == null)) {
   //     return false;
+  //   }
+
   //   return layerInfo.constrainedFromBelow.ContainsKey(v);
   // }
 
-  //         static bool NodeIsConstrainedAbove(number v, LayerInfo layerInfo) {
-  //   if (layerInfo == null)
+  // static NodeIsConstrainedAbove(v: number, layerInfo: LayerInfo): boolean {
+  //   if ((layerInfo == null)) {
   //     return false;
+  //   }
+
   //   return layerInfo.constrainedFromAbove.ContainsKey(v);
   // }
 
-  //          static bool BelongsToNeighbBlock(number p, LayerInfo layerInfo) {
-  //   return layerInfo != null && (layerInfo.nodeToBlockRoot.ContainsKey(p) || layerInfo.neigBlocks.ContainsKey(p));
-  //   //p is a root of the block
+  static BelongsToNeighbBlock(p: number, layerInfo: LayerInfo): boolean {
+    return ((layerInfo != null) && (layerInfo.nodeToBlockRoot.has(p) || layerInfo.neigBlocks.has(p)));
+    // p is a root of the block
+  }
+
+  // static NodesAreConstrainedBelow(leftNode: number, rightNode: number, layerInfo: LayerInfo): boolean {
+  //   return (ConstrainedOrdering.NodeIsConstrainedBelow(leftNode, layerInfo) && ConstrainedOrdering.NodeIsConstrainedBelow(rightNode, layerInfo));
   // }
 
-  //         static bool NodesAreConstrainedBelow(number leftNode, number rightNode, LayerInfo layerInfo) {
-  //   return NodeIsConstrainedBelow(leftNode, layerInfo) && NodeIsConstrainedBelow(rightNode, layerInfo);
+  // static NodesAreConstrainedAbove(leftNode: number, rightNode: number, layerInfo: LayerInfo): boolean {
+  //   return (ConstrainedOrdering.NodeIsConstrainedAbove(leftNode, layerInfo) && ConstrainedOrdering.NodeIsConstrainedAbove(rightNode, layerInfo));
   // }
 
-  //         static bool NodesAreConstrainedAbove(number leftNode, number rightNode, LayerInfo layerInfo) {
-  //   return NodeIsConstrainedAbove(leftNode, layerInfo) && NodeIsConstrainedAbove(rightNode, layerInfo);
-  // }
-
-  // number GetGapFromNodeNodesConstrainedBelow(number leftNode, number rightNode, LayerInfo layerInfo,
-  //   number layerIndex) {
-  //   number gap = SimpleGapBetweenTwoNodes(leftNode, rightNode);
+  // GetGapFromNodeNodesConstrainedBelow(leftNode: number, rightNode: number, layerInfo: LayerInfo, layerIndex: number): number {
+  //   let gap: number = this.SimpleGapBetweenTwoNodes(leftNode, rightNode);
   //   leftNode = layerInfo.constrainedFromBelow[leftNode];
   //   rightNode = layerInfo.constrainedFromBelow[rightNode];
   //   layerIndex--;
-  //   layerInfo = layerInfos[layerIndex];
-  //   if (layerIndex > 0 && NodesAreConstrainedBelow(leftNode, rightNode, layerInfo))
-  //     return Math.Max(gap, GetGapFromNodeNodesConstrainedBelow(leftNode, rightNode, layerInfo, layerIndex));
-  //   return Math.Max(gap, SimpleGapBetweenTwoNodes(leftNode, rightNode));
+  //   layerInfo = this.layerInfos[layerIndex];
+  //   if (((layerIndex > 0)
+  //     && ConstrainedOrdering.NodesAreConstrainedBelow(leftNode, rightNode, layerInfo))) {
+  //     return Math.Max(gap, this.GetGapFromNodeNodesConstrainedBelow(leftNode, rightNode, layerInfo, layerIndex));
+  //   }
+
+  //   return Math.Max(gap, this.SimpleGapBetweenTwoNodes(leftNode, rightNode));
   // }
 
-  // number GetGapFromNodeNodesConstrainedAbove(number leftNode, number rightNode, LayerInfo layerInfo,
-  //   number layerIndex) {
-  //   number gap = SimpleGapBetweenTwoNodes(leftNode, rightNode);
+  // GetGapFromNodeNodesConstrainedAbove(leftNode: number, rightNode: number, layerInfo: LayerInfo, layerIndex: number): number {
+  //   let gap: number = this.SimpleGapBetweenTwoNodes(leftNode, rightNode);
   //   leftNode = layerInfo.constrainedFromAbove[leftNode];
   //   rightNode = layerInfo.constrainedFromAbove[rightNode];
   //   layerIndex++;
-  //   layerInfo = layerInfos[layerIndex];
-  //   if (layerIndex < LayerArrays.Layers.Length - 1 && NodesAreConstrainedAbove(leftNode, rightNode, layerInfo))
-  //     return Math.Max(gap, GetGapFromNodeNodesConstrainedAbove(leftNode, rightNode, layerInfo, layerIndex));
-  //   return Math.Max(gap, SimpleGapBetweenTwoNodes(leftNode, rightNode));
+  //   layerInfo = this.layerInfos[layerIndex];
+  //   if (((layerIndex
+  //     < (this.LayerArrays.Layers.length - 1))
+  //     && ConstrainedOrdering.NodesAreConstrainedAbove(leftNode, rightNode, layerInfo))) {
+  //     return Math.Max(gap, this.GetGapFromNodeNodesConstrainedAbove(leftNode, rightNode, layerInfo, layerIndex));
+  //   }
+
+  //   return Math.Max(gap, this.SimpleGapBetweenTwoNodes(leftNode, rightNode));
   // }
 
-  // number SimpleGapBetweenTwoNodes(number leftNode, number rightNode) {
-  //   return database.anchors[leftNode].RightAnchor +
-  //     NodeSeparation() + database.anchors[rightNode].LeftAnchor;
+  // SimpleGapBetweenTwoNodes(leftNode: number, rightNode: number): number {
+  //   return (this.database.anchors[leftNode].RightAnchor
+  //     + (this.NodeSeparation() + this.database.anchors[rightNode].LeftAnchor));
   // }
 
-  //          static ISolverShell CreateSolver() {
+  // private /* internal */ static CreateSolver(): ISolverShell {
   //   return new SolverShell();
   // }
 
-  // void PrepareProperLayeredGraphAndFillLayerInfos() {
-  //   layerInfos = new LayerInfo[NumberOfLayers];
-  //   CreateProperLayeredGraph();
-  //   CreateExtendedLayerArrays();
-  //   FillBlockRootToBlock();
-  //   FillLeftRightPairs();
-  //   FillFlatEdges();
-  //   FillAboveBelow();
-  //   FillBlockRootToVertConstrainedNode();
+  // PrepareProperLayeredGraphAndFillLayerInfos() {
+  //   this.layerInfos = new Array(this.NumberOfLayers);
+  //   this.CreateProperLayeredGraph();
+  //   this.CreateExtendedLayerArrays();
+  //   this.FillBlockRootToBlock();
+  //   this.FillLeftRightPairs();
+  //   this.FillFlatEdges();
+  //   this.FillAboveBelow();
+  //   this.FillBlockRootToVertConstrainedNode();
   // }
 
-  // void FillBlockRootToVertConstrainedNode() {
-  //   for(LayerInfo layerInfo in layerInfos)
-  //   for(number v in VertConstrainedNodesOfLayer(layerInfo)) {
-  //     number blockRoot;
-  //     if (TryGetBlockRoot(v, out blockRoot, layerInfo))
-  //       layerInfo.blockRootToVertConstrainedNodeOfBlock[blockRoot] = v;
+  // FillBlockRootToVertConstrainedNode() {
+  //   for (let layerInfo: LayerInfo in this.layerInfos) {
+  //     for (let v: number in ConstrainedOrdering.VertConstrainedNodesOfLayer(layerInfo)) {
+  //       let blockRoot: number;
+  //       if (ConstrainedOrdering.TryGetBlockRoot(v, /* out */blockRoot, layerInfo)) {
+  //         layerInfo.blockRootToVertConstrainedNodeOfBlock[blockRoot] = v;
+  //       }
+
+  //     }
+
   //   }
+
   // }
 
-  //         static bool TryGetBlockRoot(number v, out number blockRoot, LayerInfo layerInfo) {
-  //   if (layerInfo.nodeToBlockRoot.TryGetValue(v, out blockRoot))
+  // static TryGetBlockRoot(v: number, /* out */blockRoot: number, layerInfo: LayerInfo): boolean {
+  //   if (layerInfo.nodeToBlockRoot.TryGetValue(v, /* out */blockRoot)) {
   //     return true;
+  //   }
+
   //   if (layerInfo.neigBlocks.ContainsKey(v)) {
   //     blockRoot = v;
   //     return true;
   //   }
+
   //   return false;
   // }
 
-  //         static IEnumerable < number > VertConstrainedNodesOfLayer(LayerInfo layerInfo) {
-  //   if (layerInfo != null) {
-  //     for(number v in layerInfo.constrainedFromAbove.Keys)
-  //     yield return v;
-  //     for(number v in layerInfo.constrainedFromBelow.Keys)
-  //     yield return v;
-  //   }
-  // }
-
-  // void CreateExtendedLayerArrays() {
-  //   var layeringExt = new number[numberOfNodesOfProperGraph];
-  //   Array.Copy(initialLayering, layeringExt, initialLayering.Length);
-  //   for(PolyIntEdge edge in ProperLayeredGraph.BaseGraph.Edges) {
-  //     var ledges = (LayerEdge[])edge.LayerEdges;
-  //     if (ledges != null && ledges.Length > 1) {
-  //       number layerIndex = initialLayering[edge.Source] - 1;
-  //       for (number i = 0; i < ledges.Length - 1; i++)
-  //       layeringExt[ledges[i].Target] = layerIndex--;
+  // static VertConstrainedNodesOfLayer(layerInfo: LayerInfo): IEnumerable<number> {
+  //   if ((layerInfo != null)) {
+  //     for (let v: number in layerInfo.constrainedFromAbove.Keys) {
+  //       yield;
   //     }
+
+  //     return v;
+  //     for (let v: number in layerInfo.constrainedFromBelow.Keys) {
+  //       yield;
+  //     }
+
+  //     return v;
   //   }
-  //   LayerArrays = new LayerArrays(layeringExt);
+
   // }
 
-  // void CreateProperLayeredGraph() {
-  //   IEnumerable < PolyIntEdge > edges = CreatePathEdgesOnIntGraph();
-  //   var nodeCount = Math.Max(intGraph.NodeCount, BasicGraph<Node, PolyIntEdge>.VertexCount(edges));
-  //   var baseGraph = new BasicGraph<Node, PolyIntEdge>(edges, nodeCount) { Nodes = intGraph.Nodes };
-  //   ProperLayeredGraph = new ProperLayeredGraph(baseGraph);
+  // CreateExtendedLayerArrays() {
+  //   let layeringExt = new Array(this.numberOfNodesOfProperGraph);
+  //   Array.Copy(this.initialLayering, layeringExt, this.initialLayering.length);
+  //   for (let edge: PolyIntEdge in this.ProperLayeredGraph.BaseGraph.edges) {
+  //     let ledges = (<LayerEdge[]>(edge.LayerEdges));
+  //     if (((ledges != null)
+  //       && (ledges.length > 1))) {
+  //       let layerIndex: number = (this.initialLayering[edge.Source] - 1);
+  //       for (let i: number = 0; (i
+  //         < (ledges.length - 1)); i++) {
+  //         // TODO: Warning!!!! NULL EXPRESSION DETECTED...
+  //         --;
+  //       }
+
+  //     }
+
+  //   }
+
+  //   this.LayerArrays = new LayerArrays(layeringExt);
   // }
 
-  // IEnumerable < PolyIntEdge > CreatePathEdgesOnIntGraph() {
-  //   numberOfNodesOfProperGraph = intGraph.NodeCount;
-  //   var ret = new List<PolyIntEdge>();
-  //   for(PolyIntEdge ie in intGraph.Edges) {
-  //     if (initialLayering[ie.Source] > initialLayering[ie.Target]) {
-  //       CreateLayerEdgesUnderIntEdge(ie);
+  // CreateProperLayeredGraph() {
+  //   let edges: IEnumerable<PolyIntEdge> = this.CreatePathEdgesOnIntGraph();
+  //   let nodeCount = Math.Max(this.intGraph.NodeCount, BasicGraph.VertexCount(edges));
+  //   let baseGraph = new BasicGraph<Node, PolyIntEdge>(edges, nodeCount);
+  //   this.ProperLayeredGraph = new ProperLayeredGraph(baseGraph);
+  // }
+
+  // CreatePathEdgesOnIntGraph(): IEnumerable<PolyIntEdge> {
+  //   this.numberOfNodesOfProperGraph = this.intGraph.NodeCount;
+  //   let ret = new Array<PolyIntEdge>();
+  //   for (let ie: PolyIntEdge in this.intGraph.edges) {
+  //     if ((this.initialLayering[ie.Source] > this.initialLayering[ie.Target])) {
+  //       this.CreateLayerEdgesUnderIntEdge(ie);
   //       ret.Add(ie);
-  //       if (horizontalConstraints.VerticalInts.Contains(new Tuple<number, number>(ie.Source, ie.Target)))
-  //         verticalEdges.Add(ie);
+  //       if (this.horizontalConstraints.VerticalInts.Contains(new Tuple<number, number>(ie.Source, ie.Target))) {
+  //         this.verticalEdges.Add(ie);
+  //       }
+
   //     }
+
   //   }
 
   //   return ret;
   // }
 
-  // void CreateLayerEdgesUnderIntEdge(PolyIntEdge ie) {
-  //   number source = ie.Source;
-  //   number target = ie.Target;
-
-  //   number span = LayeredLayoutEngine.EdgeSpan(initialLayering, ie);
-  //   ie.LayerEdges = new LayerEdge[span];
-  //   Debug.Assert(span > 0);
-  //   if (span == 1)
+  // CreateLayerEdgesUnderIntEdge(ie: PolyIntEdge) {
+  //   let source: number = ie.Source;
+  //   let target: number = ie.Target;
+  //   let span: number = LayeredLayoutEngine.EdgeSpan(this.initialLayering, ie);
+  //   ie.LayerEdges = new Array(span);
+  //   Debug.Assert((span > 0));
+  //   if ((span == 1)) {
   //     ie.LayerEdges[0] = new LayerEdge(ie.Source, ie.Target, ie.CrossingWeight);
+  //   }
   //   else {
-  //     ie.LayerEdges[0] = new LayerEdge(source, numberOfNodesOfProperGraph, ie.CrossingWeight);
-  //     for (number i = 0; i < span - 2; i++)
-  //     ie.LayerEdges[i + 1] = new LayerEdge(numberOfNodesOfProperGraph++, numberOfNodesOfProperGraph,
-  //       ie.CrossingWeight);
-  //     ie.LayerEdges[span - 1] = new LayerEdge(numberOfNodesOfProperGraph++, target, ie.CrossingWeight);
-  //   }
-  // }
-
-  // void FillAboveBelow() {
-  //   for(PolyIntEdge ie in verticalEdges) {
-  //     for(LayerEdge le in ie.LayerEdges) {
-  //       number upper = le.Source;
-  //       number lower = le.Target;
-  //       RegisterAboveBelowOnConstrainedUpperLower(upper, lower);
+  //     ie.LayerEdges[0] = new LayerEdge(source, this.numberOfNodesOfProperGraph, ie.CrossingWeight);
+  //     for (let i: number = 0; (i
+  //       < (span - 2)); i++) {
+  //       ie.LayerEdges[(i + 1)] = new LayerEdge(numberOfNodesOfProperGraph++, this.numberOfNodesOfProperGraph, ie.CrossingWeight);
   //     }
+
+  //     ie.LayerEdges[(span - 1)] = new LayerEdge(numberOfNodesOfProperGraph++, target, ie.CrossingWeight);
   //   }
 
-  //   for(var p in horizontalConstraints.VerticalInts)
-  //   RegisterAboveBelowOnConstrainedUpperLower(p.Item1, p.Item2);
   // }
 
-  // void RegisterAboveBelowOnConstrainedUpperLower(number upper, number lower) {
-  //   LayerInfo topLayerInfo = GetOrCreateLayerInfo(LayerArrays.Y[upper]);
-  //   LayerInfo bottomLayerInfo = GetOrCreateLayerInfo(LayerArrays.Y[lower]);
+  // FillAboveBelow() {
+  //   for (let ie: PolyIntEdge in this.verticalEdges) {
+  //     for (let le: LayerEdge in ie.LayerEdges) {
+  //       let upper: number = le.Source;
+  //       let lower: number = le.Target;
+  //       this.RegisterAboveBelowOnConstrainedUpperLower(upper, lower);
+  //     }
 
+  //   }
+
+  //   for (let p in this.horizontalConstraints.VerticalInts) {
+  //     this.RegisterAboveBelowOnConstrainedUpperLower(p.Item1, p.Item2);
+  //   }
+
+  // }
+
+  // RegisterAboveBelowOnConstrainedUpperLower(upper: number, lower: number) {
+  //   let topLayerInfo: LayerInfo = this.GetOrCreateLayerInfo(this.LayerArrays.Y[upper]);
+  //   let bottomLayerInfo: LayerInfo = this.GetOrCreateLayerInfo(this.LayerArrays.Y[lower]);
   //   topLayerInfo.constrainedFromBelow[upper] = lower;
   //   bottomLayerInfo.constrainedFromAbove[lower] = upper;
   // }
 
-  // void FillFlatEdges() {
-  //   for(PolyIntEdge edge in intGraph.Edges) {
-  //     number l = initialLayering[edge.Source];
-  //     if (l == initialLayering[edge.Target]) {
-  //       GetOrCreateLayerInfo(l).flatEdges.Insert(new Tuple<number, number>(edge.Source, edge.Target));
+  // FillFlatEdges() {
+  //   for (let edge: PolyIntEdge in this.intGraph.edges) {
+  //     let l: number = this.initialLayering[edge.Source];
+  //     if ((l == this.initialLayering[edge.Target])) {
+  //       this.GetOrCreateLayerInfo(l).flatEdges.Insert(new Tuple<number, number>(edge.Source, edge.Target));
   //     }
+
   //   }
+
   // }
 
-  // void FillLeftRightPairs() {
-  //   for(var p in horizontalConstraints.LeftRighInts) {
-  //     LayerInfo layerInfo = GetOrCreateLayerInfo(initialLayering[p.Item1]);
+  // FillLeftRightPairs() {
+  //   for (let p in this.horizontalConstraints.LeftRighInts) {
+  //     let layerInfo: LayerInfo = this.GetOrCreateLayerInfo(this.initialLayering[p.Item1]);
   //     layerInfo.leftRight.Insert(p);
   //   }
+
   // }
 
-  // // when we call this function we know that a LayerInfo is needed
-  // LayerInfo GetOrCreateLayerInfo(number layerNumber) {
-  //   LayerInfo layerInfo = layerInfos[layerNumber] ?? (layerInfos[layerNumber] = new LayerInfo());
+  // ///  <summary>
+  // ///  when we call this function we know that a LayerInfo is needed
+  // ///  </summary>
+  // ///  <param name="layerNumber"></param>
+  // ///  <returns></returns>
+  // GetOrCreateLayerInfo(layerNumber: number): LayerInfo {
+  //   let layerInfo: LayerInfo;
+  //   new LayerInfo();
   //   return layerInfo;
   // }
 
-  // void FillBlockRootToBlock() {
-  //   for(var p in horizontalConstraints.BlockRootToBlock) {
-  //     LayerInfo layerInfo = GetOrCreateLayerInfo(initialLayering[p.Key]);
+  // FillBlockRootToBlock() {
+  //   for (let p in this.horizontalConstraints.BlockRootToBlock) {
+  //     let layerInfo: LayerInfo = this.GetOrCreateLayerInfo(this.initialLayering[p.Key]);
   //     layerInfo.neigBlocks[p.Key] = p.Value;
-  //     for(number i in p.Value)
-  //     layerInfo.nodeToBlockRoot[i] = p.Key;
-  //   }
-  // }
+  //     for (let i: number in p.Value) {
+  //       layerInfo.nodeToBlockRoot[i] = p.Key;
   //     }
+
+  //   }
+
+  // }
 }
+

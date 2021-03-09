@@ -8,12 +8,14 @@ import { GeomEdge } from '../../../layout/core/geomEdge'
 import { CurveFactory } from '../../../math/geometry/curveFactory'
 import { Point } from '../../../math/geometry/point'
 import { CancelToken } from '../../../utils/cancelToken'
+import { GeomGraph } from '../../../layout/core/GeomGraph'
+import { GeomObject } from '../../../layout/core/geomObject'
 function createGeometry(g: Graph) {
   for (const n of g.nodes) {
     const gn = new GeomNode(n)
     gn.boundaryCurve = CurveFactory.mkCircle(10, new Point(0, 0))
   }
-  for (const e of g.edges) {
+  for (const e of g.Edges) {
     new GeomEdge(e)
   }
 }
@@ -42,6 +44,6 @@ test('map test', () => {
 xtest('layered layout hookup', () => {
   const g = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(g)
-  const ll = new LayeredLayout(g, new SugiyamaLayoutSettings(), new CancelToken())
+  const ll = new LayeredLayout(GeomObject.getGeom(g) as GeomGraph, new SugiyamaLayoutSettings(), new CancelToken())
   ll.run()
 })

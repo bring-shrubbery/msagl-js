@@ -39,7 +39,7 @@ export class ProperLayeredGraph {
         ),
       )
         .selectMany((e) =>
-          from(e.LayerEdges).where((le) => le.Source != e.Source),
+          from(e.LayerEdges).where((le) => le.Source != e.source),
         )
         .select((le) => le.Source)
         .min()
@@ -57,9 +57,9 @@ export class ProperLayeredGraph {
     for (const e of this.BaseGraph.edges)
       if (e.LayerSpan > 0)
         for (const le of e.LayerEdges) {
-          if (le.Target != e.Target)
+          if (le.Target != e.target)
             this.virtualNodesToInEdges[le.Target - this.firstVirtualNode] = le
-          if (le.Source != e.Source)
+          if (le.Source != e.source)
             this.virtualNodesToOutEdges[le.Source - this.firstVirtualNode] = le
         }
   }
@@ -104,7 +104,7 @@ export class ProperLayeredGraph {
     if (node < this.BaseGraph.NodeCount)
       //original node
       for (const e of this.BaseGraph.inEdges[node]) {
-        if (e.Source != e.Target && e.LayerEdges != null)
+        if (e.source != e.target && e.LayerEdges != null)
           yield ProperLayeredGraph.LastEdge(e)
       }
     else if (node >= this.firstVirtualNode) yield this.InEdgeOfVirtualNode(node)
@@ -122,7 +122,7 @@ export class ProperLayeredGraph {
     if (node < this.BaseGraph.NodeCount)
       //original node
       for (const e of this.BaseGraph.outEdges[node]) {
-        if (e.Source != e.Target && e.LayerEdges != null)
+        if (e.source != e.target && e.LayerEdges != null)
           yield ProperLayeredGraph.FirstEdge(e)
       }
     else if (node >= this.firstVirtualNode)

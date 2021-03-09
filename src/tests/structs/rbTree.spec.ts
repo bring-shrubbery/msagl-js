@@ -1,6 +1,6 @@
-import {RBTree} from './../../structs/RBTree/rbTree'
-import {RbTreeUtils} from './../testUtils/rbTreeUtils'
-import {Assert} from './../../utils/assert'
+import { RBTree } from './../../structs/RBTree/rbTree'
+import { RbTreeUtils } from './../testUtils/rbTreeUtils'
+import { Assert } from './../../utils/assert'
 
 test('check if has correct in-order-traversal', () => {
   const comparer = (a: number, b: number) => a - b
@@ -10,11 +10,11 @@ test('check if has correct in-order-traversal', () => {
   vals.sort(comparer)
   let i = 0
   for (const node of tree.allNodes()) {
-    Assert.assert(node == vals[i], 'nodes not in order')
+    expect(node).toBe(vals[i]) // 'nodes not in order')
     i++
   }
 
-  console.log(tree.toString())
+  //  console.log(tree.toString())
 })
 
 test('check black height(s) are equal', () => {
@@ -22,11 +22,11 @@ test('check black height(s) are equal', () => {
   const vals: number[] = RbTreeUtils.getRandomArray(50, 100)
   const tree: RBTree<number> = RbTreeUtils.buildTreeWithNums(vals, comparer)
   const blackHeight = RbTreeUtils.computeBlackHeight(tree.getRoot())
-  console.log(blackHeight)
-  Assert.assert(
-    blackHeight != -1,
-    'difference in black height of left and right branch of a subtree',
-  )
+  //  console.log(blackHeight)
+  expect(
+    blackHeight != -1).toBe(true)
+  //    'difference in black height of left and right branch of a subtree',
+
 })
 
 test('check removal', () => {
@@ -38,7 +38,7 @@ test('check removal', () => {
   tree.remove(10)
   let i = 1
   for (const node of tree.allNodes()) {
-    if (i == 10) Assert.assert(node == 11, 'node w/ value 10 not removed')
+    if (i == 10) expect(node).toBe(11) // 'node w/ value 10 not removed')
     i++
   }
 })

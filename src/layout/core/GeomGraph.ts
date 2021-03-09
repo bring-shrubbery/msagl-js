@@ -1,16 +1,18 @@
-import {Graph} from '../../structs/graph'
-import {Rectangle} from '../../math/geometry/rectangle'
-import {GeomObject} from './geomObject'
-import {GeomNode} from './geomNode'
-import {GeomEdge} from './geomEdge'
+import { Graph } from '../../structs/graph'
+import { Rectangle } from '../../math/geometry/rectangle'
+import { GeomObject } from './geomObject'
+import { GeomNode } from './geomNode'
+import { GeomEdge } from './geomEdge'
 
 export class GeomGraph extends GeomObject {
+  Margins = 10
+  get edgeCount() { return this.graph.edgeCount }
   *nodes(): IterableIterator<GeomNode> {
     for (const n of this.graph.nodes) yield GeomObject.getGeom(n) as GeomNode
   }
 
   *edges(): IterableIterator<GeomEdge> {
-    for (const n of this.graph.edges) yield GeomObject.getGeom(n) as GeomEdge
+    for (const n of this.graph.Edges) yield GeomObject.getGeom(n) as GeomEdge
   }
 
   boundingBox = Rectangle.mkEmpty()
@@ -19,14 +21,26 @@ export class GeomGraph extends GeomObject {
     super(graph)
   }
 
+  get height() {
+    return this.boundingBox.height
+  }
+
+  get width() {
+    return this.boundingBox.width
+  }
+
+  get nodeCount() {
+    return this.graph.nodeCount
+  }
+
   get graph() {
     return this.attrCont as Graph
   }
-
+  Edges
   updateBoundingBox() {
     this.boundingBox = Rectangle.mkEmpty()
     let padding = 0
-    for (const e of this.graph.edges) {
+    for (const e of this.graph.Edges) {
       const ge = GeomObject.getGeom(e) as GeomEdge
       this.boundingBox.addRec(ge.boundingBox)
       padding = Math.max(padding, ge.lineWidth)

@@ -1,11 +1,11 @@
 import { BasicGraph } from '../../structs/BasicGraph'
 import { IEdge } from './../../structs/iedge'
 class myedge implements IEdge {
-  Source: number
-  Target: number
+  source: number
+  target: number
   constructor(a: number, b: number) {
-    this.Source = a
-    this.Target = b
+    this.source = a
+    this.target = b
   }
 }
 test('bgoe', () => {

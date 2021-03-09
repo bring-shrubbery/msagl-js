@@ -14,22 +14,22 @@ class Routing {
 // An edge with source and target represented as integers,
 // they point to the array of Nodes of the graph
 export class PolyIntEdge implements IIntEdge {
-  Source: number
-  Target: number
+  source: number
+  target: number
   reversed: boolean
   // separation request in the number of layers between the source and the target layers
   separation: number
   weight: number
   CrossingWeight: number
   // If true it is a dummy edge that will not be drawn; serves as a place holder.
-  isVirtualEdge: boolean
+  IsVirtualEdge: boolean
   LayerEdges: LayerEdge[]
   // the original edge
   geomEdge: GeomEdge
 
   constructor(source: number, target: number, geomEdge: GeomEdge) {
-    this.Source = source
-    this.Target = target
+    this.source = source
+    this.target = target
     this.geomEdge = geomEdge
   }
 
@@ -44,9 +44,9 @@ export class PolyIntEdge implements IIntEdge {
 
   // This function changes the edge by swapping source and target.
   reverse() {
-    const t = this.Source
-    this.Source = this.Target
-    this.Target = t
+    const t = this.source
+    this.source = this.target
+    this.target = t
     this.reversed = !this.reversed
   }
 
@@ -54,7 +54,7 @@ export class PolyIntEdge implements IIntEdge {
   edge: GeomEdge
 
   toString(): string {
-    return 'edge(' + this.Source + '->' + this.Target + ')'
+    return 'edge(' + this.source + '->' + this.target + ')'
   }
 
   get curve(): ICurve {
@@ -77,11 +77,11 @@ export class PolyIntEdge implements IIntEdge {
   }
 
   isSelfEdge(): boolean {
-    return this.Source == this.Target
+    return this.source == this.target
   }
 
   reversedClone() {
-    const ret = new PolyIntEdge(this.Target, this.Source, this.edge)
+    const ret = new PolyIntEdge(this.target, this.source, this.edge)
     if (this.LayerEdges != null) {
       const len = this.LayerEdges.length
       ret.LayerEdges = new Array<LayerEdge>(len)
@@ -93,8 +93,8 @@ export class PolyIntEdge implements IIntEdge {
           le.CrossingWeight,
         )
       }
-      ret.LayerEdges[0].Source = this.Target
-      ret.LayerEdges[this.LayerEdges.length - 1].Target = this.Source
+      ret.LayerEdges[0].Source = this.target
+      ret.LayerEdges[this.LayerEdges.length - 1].Target = this.source
     }
     return ret
   }

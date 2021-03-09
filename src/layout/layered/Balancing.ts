@@ -98,8 +98,8 @@ export class Balancing implements Algorithm {
   InitJumpers() {
     const deltas = new Array<number>(this.dag.NodeCount).fill(0)
     for (const ie of this.dag.edges) {
-      deltas[ie.Source] -= ie.weight;
-      deltas[ie.Target] += ie.weight;
+      deltas[ie.source] -= ie.weight;
+      deltas[ie.target] += ie.weight;
     }
 
     this.possibleJumperFeasibleIntervals = new Map<number, IntPair>();
@@ -117,7 +117,7 @@ export class Balancing implements Algorithm {
   }
 
   InsertJumper(upLayer: number, lowLayer: number, jumper: number) {
-    let ji = this.CalcJumpInfo(upLayer, lowLayer, jumper)
+    const ji = this.CalcJumpInfo(upLayer, lowLayer, jumper)
     if (ji != null)
       this.jumpers.add(jumper);
   }
@@ -129,7 +129,7 @@ export class Balancing implements Algorithm {
     jumperLayer: number,
     layerToJumpTo: number
   } {
-    let jumperLayer = this.layering[jumper];
+    const jumperLayer = this.layering[jumper];
     let layerToJumpTo = -1;
     let min = this.vertsCounts[jumperLayer] - 2 * this.nodeCount[jumper];
     // jump makes sense if some layer has less than min vertices
@@ -139,7 +139,7 @@ export class Balancing implements Algorithm {
         layerToJumpTo = i;
       }
 
-    for (const i = jumperLayer - 1; i > lowLayer; i--)
+    for (let i = jumperLayer - 1; i > lowLayer; i--)
       if (this.vertsCounts[i] < min) {
         min = this.vertsCounts[i];
         layerToJumpTo = i;
@@ -152,8 +152,8 @@ export class Balancing implements Algorithm {
   Up(i: number): number {
     let ret = Number.MAX_SAFE_INTEGER
     //minimum of incoming edge sources layeres
-    for (const ie of dag.InEdges(i)) {
-      const r = this.layering[ie.source] - ie.Separation + 1;
+    for (const ie of this.dag.inEdges[i]) {
+      const r = this.layering[ie.source] - ie.separation + 1;
       if (r < ret)
         ret = r;
     }
@@ -168,7 +168,7 @@ export class Balancing implements Algorithm {
     let ret = Number.NEGATIVE_INFINITY
 
     for (const ie of this.dag.outEdges[i]) {
-      const r = this.layering[ie.Target] + ie.separation - 1;
+      const r = this.layering[ie.target] + ie.separation - 1;
       if (r > ret)
         ret = r;
     }

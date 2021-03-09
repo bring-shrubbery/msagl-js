@@ -14,7 +14,7 @@ function visitNodeC(
 ) {
   t[u] = level
   for (const e of g.outEdges[u]) {
-    const v = e.Target
+    const v = e.target
     if (t[v] < level) return true
     visitNodeC(g, v, t, level + 1)
   }
@@ -47,7 +47,7 @@ export class TopologicalSort {
 
     const order: number[] = []
 
-    let en: any
+    let en: IEdge[]
     for (let u = 0; u < graph.NodeCount; u++) {
       if (visited[u]) continue
 

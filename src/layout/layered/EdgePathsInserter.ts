@@ -1,9 +1,7 @@
 
 // This class is used of the case when there are multiple edges, but there is no need to duplicate layers.
 
-import { first } from "lodash";
 import { BasicGraph } from "../../structs/BasicGraph";
-import { IntPair } from "../../utils/IntPair";
 import { GeomNode } from "../core/geomNode";
 import { Database } from "./Database";
 import { LayerArrays } from "./LayerArrays";
@@ -62,13 +60,13 @@ export class EdgePathsInserter {
 
   WidenOriginalLayers() {
     for (let i = 0; i < this.la.Layers.length; i++) {
-      let layer = this.Nla.Layers[i];
+      const layer = this.Nla.Layers[i];
       let offset = 0;
       for (const v of this.la.Layers[i]) {
         const e = this.virtNodesToIntEdges.get(v)
         if (e != null) {
-          const layerOffsetInTheEdge = this.NLayering[e.Source] - this.NLayering[v];
-          const list = this.database.Multiedges.get(e.Source, e.Target);
+          const layerOffsetInTheEdge = this.NLayering[e.source] - this.NLayering[v];
+          const list = this.database.Multiedges.get(e.source, e.target);
 
           for (const ie of list) {
             if (!this.EdgeIsFlat(ie)) {
@@ -91,7 +89,7 @@ export class EdgePathsInserter {
   }
 
   EdgeIsFlat(ie: PolyIntEdge) {
-    return this.la.Y[ie.Source] == this.la.Y[ie.Target];
+    return this.la.Y[ie.source] == this.la.Y[ie.target];
   }
 
 
@@ -100,7 +98,7 @@ export class EdgePathsInserter {
       for (const e of list)
         if (!this.EdgeIsFlat(e))//the edge is not flat
           for (const le of e.LayerEdges)
-            if (le.Target != e.Target)
+            if (le.Target != e.target)
               this.virtNodesToIntEdges[le.Target] = e;
 
   }
@@ -120,7 +118,7 @@ export class EdgePathsInserter {
           } else {
             e.LayerEdges = new LayerEdge[span];
             if (span == 1)
-              e.LayerEdges[0] = new LayerEdge(e.Source, e.Target, e.CrossingWeight);
+              e.LayerEdges[0] = new LayerEdge(e.source, e.target, e.CrossingWeight);
             else {
               for (let i = 0; i < span; i++) {
                 const bVV = { currentVV: currentVV }
@@ -141,13 +139,13 @@ export class EdgePathsInserter {
   static GetTarget(currentVV: number, e: PolyIntEdge, i: number, span: number): number {
     if (i < span - 1)
       return currentVV
-    return e.Target
+    return e.target
   }
 
 
   static GetSource(boxedVV: { currentVV: number }, e: PolyIntEdge, i: number): number {
     if (i == 0)
-      return e.Source
+      return e.source
 
     return boxedVV.currentVV++;
   }
@@ -167,7 +165,7 @@ export class EdgePathsInserter {
         for (const e of list) {
           if (first) {
             first = false;
-            layer = this.la.Y[e.Source];
+            layer = this.la.Y[e.source];
           }
           let cl = layer - 1;
           for (const le of e.LayerEdges)

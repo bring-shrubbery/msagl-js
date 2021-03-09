@@ -26,7 +26,7 @@ export class OrderingMeasure {
   }
 
   CalculateLayerGroupDisbalance() {
-    for (let i = 0; i < this.la.Length; i++)
+    for (let i = 0; i < this.la.length; i++)
       this.layerGroupDisbalance += this.LayerGroupDisbalance(
         this.la[i],
         this.optimalOriginalGroupSize[i],

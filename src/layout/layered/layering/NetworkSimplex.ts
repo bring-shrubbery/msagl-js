@@ -8,6 +8,17 @@ import { Assert } from '../../../utils/assert'
 import { NetworkEdge } from './networkEdge'
 import { Stack } from 'stack-typescript'
 import { randomInt } from '../../../utils/random'
+import { PolyIntEdge } from '../polyIntEdge'
+
+function CreateGraphWithIEEdges(bg: BasicGraphOnEdges<PolyIntEdge>): BasicGraphOnEdges<NetworkEdge> {
+  const ieEdges = new Array<NetworkEdge>();
+
+  for (const e of bg.edges)
+    ieEdges.push(new NetworkEdge(e));
+
+  return (new BasicGraphOnEdges<NetworkEdge>()).mkGraphOnEdgesN(ieEdges, bg.NodeCount);
+}
+
 type VertexInfo = {
   inTree: boolean
   lim: number
@@ -61,8 +72,8 @@ export class NetworkSimplex implements LayerCalculator {
     this.vertices[v].parent = e
   }
 
-  constructor(graph: BasicGraphOnEdges<NetworkEdge>, cancelToken: CancelToken) {
-    this.graph = graph
+  constructor(graph: BasicGraphOnEdges<PolyIntEdge>, cancelToken: CancelToken) {
+    this.graph = CreateGraphWithIEEdges(graph)
 
     this.networkCancelToken = cancelToken
     for (let i = 0; i < this.nodeCount; i++) {

@@ -1,13 +1,13 @@
-import {BasicGraphOnEdges} from './basicGraphOnEdges'
-import {IEdge} from './iedge'
+import { BasicGraphOnEdges } from './basicGraphOnEdges'
+import { IEdge } from './iedge'
 
 export class BasicGraph<
   TNode,
   TEdge extends IEdge
-> extends BasicGraphOnEdges<TEdge> {
+  > extends BasicGraphOnEdges<TEdge> {
   nodes: TNode[]
   constructor(edges: TEdge[], numberOfVerts: number) {
     super()
-    this.setEdges(edges, numberOfVerts)
+    this.SetEdges(edges, numberOfVerts)
   }
 }

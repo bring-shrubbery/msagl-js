@@ -6,13 +6,13 @@
 //           |
 //           |
 //           |BottomAnchor
-import {Point, TriangleOrientation} from './../../math/geometry/point'
-import {Polyline} from './../../math/geometry/polyline'
-import {PolylinePoint} from './../../math/geometry/polylinePoint'
-import {Curve} from './../../math/geometry/curve'
-import {GeomConstants} from './../../math/geometry/geomConstants'
-import {GeomNode} from './../core/geomNode'
-import {Assert} from './../../utils/assert'
+import { Point, TriangleOrientation } from './../../math/geometry/point'
+import { Polyline } from './../../math/geometry/polyline'
+import { PolylinePoint } from './../../math/geometry/polylinePoint'
+import { Curve } from './../../math/geometry/curve'
+import { GeomConstants } from './../../math/geometry/geomConstants'
+import { GeomNode } from './../core/geomNode'
+import { Assert } from './../../utils/assert'
 export class Anchor {
   // ToString
   toString() {
@@ -49,7 +49,6 @@ export class Anchor {
   // An anchor for an edge label with the label to the right of the spline has its height equal to the one of the label
   // Its leftAnchor is a reserved space for the spline and the rightAnchor is equal to the label width.
   labelIsToTheRightOfTheSpline: boolean
-
   // distance for the center of the node to its left boundary
   get leftAnchor() {
     return this.la
@@ -150,7 +149,7 @@ export class Anchor {
   constructor(labelCornersPreserveCoefficient: number) {
     Assert.assert(
       0 <= labelCornersPreserveCoefficient &&
-        labelCornersPreserveCoefficient <= 1,
+      labelCornersPreserveCoefficient <= 1,
     )
     this.labelCornersPreserveCoefficient = labelCornersPreserveCoefficient
   }
@@ -205,11 +204,11 @@ export class Anchor {
   }
   // set to true if the anchor has been introduced for a label
 
-  get hasLabel() {
+  get HasLabel() {
     return this.labelIsToTheLeftOfTheSpline || this.labelIsToTheLeftOfTheSpline
   }
 
-  get labelWidth(): number {
+  get LabelWidth(): number {
     if (this.labelIsToTheLeftOfTheSpline) return this.leftAnchor
     if (this.labelIsToTheRightOfTheSpline) return this.rightAnchor
 
@@ -351,7 +350,7 @@ export class Anchor {
   //}
 
   creatPolygonalBoundaryWithoutPadding(): Polyline {
-    if (this.hasLabel)
+    if (this.HasLabel)
       return this.labelIsToTheLeftOfTheSpline
         ? this.polygonOnLeftLabel()
         : this.polygonOnRightLabel()
@@ -375,7 +374,7 @@ export class Anchor {
 
   polygonOnLeftLabel(): Polyline {
     const t =
-      this.left + (1 - this.labelCornersPreserveCoefficient) * this.labelWidth
+      this.left + (1 - this.labelCornersPreserveCoefficient) * this.LabelWidth
     const poly = Polyline.mkFromPoints([
       new Point(t, this.top),
       this.rightTop,
@@ -389,7 +388,7 @@ export class Anchor {
 
   polygonOnRightLabel() {
     const t =
-      this.right - (1 - this.labelCornersPreserveCoefficient) * this.labelWidth
+      this.right - (1 - this.labelCornersPreserveCoefficient) * this.LabelWidth
     const poly = Polyline.mkFromPoints([
       new Point(t, this.top),
       new Point(this.right, this.y),

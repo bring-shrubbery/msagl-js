@@ -13,10 +13,10 @@ export class NetworkEdge {
   }
 
   get source() {
-    return this.iedge.Source
+    return this.iedge.source
   }
   get target() {
-    return this.iedge.Target
+    return this.iedge.target
   }
 
   get separation() {

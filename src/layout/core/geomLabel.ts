@@ -1,5 +1,5 @@
-import {GeomObject} from './geomObject'
-import {Rectangle} from './../../math/geometry/rectangle'
+import { GeomObject } from './geomObject'
+import { Rectangle } from './../../math/geometry/rectangle'
 export class GeomLabel extends GeomObject {
   boundingBox: Rectangle
   get width() {
@@ -7,5 +7,11 @@ export class GeomLabel extends GeomObject {
   }
   get height() {
     return this.boundingBox.height
+  }
+  get center() {
+    return this.boundingBox.center
+  }
+  set center(value) {
+    this.boundingBox.center = value
   }
 }

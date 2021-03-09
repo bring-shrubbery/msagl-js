@@ -55,7 +55,7 @@ export class HorizontalConstraintsForSugiyama {
     const graph = this.BasicGraphFromLeftRightIntNeibs();
     for (let root = 0; root < graph.NodeCount; root++)
       if (graph.inEdges[root].length == 0 && !this.nodeToBlockRoot.has(root)) {
-        var block = new Array<number>();
+        const block = new Array<number>();
         let current = root;
         for (let outEdges = graph.outEdges[current]; outEdges.length > 0;
           outEdges = graph.outEdges[current]) {
@@ -70,7 +70,7 @@ export class HorizontalConstraintsForSugiyama {
 
   BasicGraphFromLeftRightIntNeibs(): BasicGraphOnEdges<IntPair> {
     return new BasicGraphOnEdges<IntPair>().mkGraphOnEdges(
-      from(this.LeftRightIntNeibs.iter()).select(p => new IntPair(p[0], p[1])))
+      from(this.LeftRightIntNeibs.values()).select(p => new IntPair(p[0], p[1])))
   }
 
   NodeIndex(node: GeomNode): number {
@@ -108,23 +108,24 @@ export class HorizontalConstraintsForSugiyama {
           new IntPair(this.NodeToBlockRootSoft(ip[0]), this.NodeToBlockRootSoft(ip[1]))).where(ip => ip.x != ip.x))
     const feedbackSet = CycleRemoval.getFeedbackSet(
       (new BasicGraphOnEdges<IEdge>()).mkGraphOnEdges(
-        from(this.LeftRighInts.iter())))
+        from(this.LeftRighInts.values())))
     for (const ip of feedbackSet)
-      this.LeftRighInts.remove(new IntPair(ip.Source, ip.Target))
+      this.LeftRighInts.remove(new IntPair(ip.source, ip.target))
   }
 
   MapNodesToToIntegers(yLayers: number[]) {
     this.LeftRightIntNeibs = IntPairSet.mk(
-      from(this.LeftRightIntNeibs.iter())
+      from(this.LeftRightIntNeibs.values())
         .select(p => [this.NodeIndex(p[0]), this.NodeIndex(p[1])])
         .where(t => t[0] != -1 && t[1] != -1)
         .select(t => new IntPair(t[0], t[1])))
 
     //as we follow yLayers there will not be cycles in verticalIntConstraints
     this.VerticalInts = IntPairSet.mk(
-      from(this.upDownVerticalConstraints)
-        .select(p => [this.NodeIndex(p[0]), this.NodeIndex(p[1])])
-        .where(p => p[0] != -1 && p[1] != -1).
-        select(p => new IntPair(p[0], p[1])))
+      from(
+        this.upDownVerticalConstraints
+          .map(p => [this.NodeIndex(p[0]), this.NodeIndex(p[1])])
+          .filter(p => p[0] != -1 && p[1] != -1 && yLayers[p[0]] > yLayers[p[1]])
+          .map(p => new IntPair(p[0], p[1]))))
   }
 }

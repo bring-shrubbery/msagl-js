@@ -102,7 +102,7 @@ export class VerticalConstraintsForSugiyama {
 
   removeCyclesFromGluedConstraints() {
     const graph = new BasicGraphOnEdges<IntPair>().mkGraphOnEdgesN(
-      from(this.gluedUpDownIntConstraints.iter()).toArray(),
+      from(this.gluedUpDownIntConstraints.values()).toArray(),
       this.intGraph.NodeCount,
     )
     const feedbackSet = CycleRemoval.getFeedbackSetWithConstraints(graph, null)
@@ -143,7 +143,7 @@ export class VerticalConstraintsForSugiyama {
   }
 
   gluedIntPairI(p: PolyIntEdge): IntPair {
-    return new IntPair(this.nodeToRepr(p.Source), this.nodeToRepr(p.Target))
+    return new IntPair(this.nodeToRepr(p.source), this.nodeToRepr(p.target))
   }
 
   gluedIntPair(p: IntPair) {
@@ -151,8 +151,8 @@ export class VerticalConstraintsForSugiyama {
   }
 
   gluedIntEdge(intEdge: PolyIntEdge) {
-    const sourceRepr: number = this.nodeToRepr(intEdge.Source)
-    const targetRepr: number = this.nodeToRepr(intEdge.Target)
+    const sourceRepr: number = this.nodeToRepr(intEdge.source)
+    const targetRepr: number = this.nodeToRepr(intEdge.target)
     const ie = new PolyIntEdge(sourceRepr, targetRepr, intEdge.geomEdge)
     ie.separation = intEdge.separation
     ie.weight = 0
@@ -299,9 +299,9 @@ export class VerticalConstraintsForSugiyama {
   }
 
   *unglueEdge(gluedEdge: IEdge): IterableIterator<IEdge> {
-    for (const source of this.unglueNode(gluedEdge.Source))
+    for (const source of this.unglueNode(gluedEdge.source))
       for (const edge of this.intGraph.outEdges[source])
-        if (this.nodeToRepr(edge.Target) == gluedEdge.Target) yield edge
+        if (this.nodeToRepr(edge.target) == gluedEdge.target) yield edge
   }
 
   createGluedGraph(): BasicGraphOnEdges<IntPair> {
@@ -309,7 +309,7 @@ export class VerticalConstraintsForSugiyama {
     this.intGraph.edges.forEach((e) => set.add(this.gluedIntPairI(e)))
 
     return new BasicGraphOnEdges<IntPair>().mkGraphOnEdgesN(
-      from(set.iter()).toArray(),
+      from(set.values()).toArray(),
       this.intGraph.NodeCount,
     )
     //return new BasicGraphOnEdges<IntPair>(new Set<IntPair>(from edge in this.intGraph.Edges select GluedIntPair(edge)), this.intGraph.NodeCount);

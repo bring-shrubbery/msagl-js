@@ -22,8 +22,8 @@ export class Database {
 
   addFeedbackSet(feedbackSet: IEdge[]) {
     for (const e of feedbackSet) {
-      const ip = new IntPair(e.Source, e.Target)
-      const ipr = new IntPair(e.Target, e.Source)
+      const ip = new IntPair(e.source, e.target)
+      const ipr = new IntPair(e.target, e.source)
 
       //we shuffle reversed edges into the other multiedge
       const listToShuffle = this.Multiedges.get(ip.x, ip.y)
@@ -43,9 +43,9 @@ export class Database {
     this.Multiedges = new IntPairMap(n)
   }
   registerOriginalEdgeInMultiedges(edge: PolyIntEdge) {
-    let o = this.Multiedges.get(edge.Source, edge.Target)
+    let o = this.Multiedges.get(edge.source, edge.target)
     if (o == null) {
-      this.Multiedges.set(edge.Source, edge.Target, (o = []))
+      this.Multiedges.set(edge.source, edge.target, (o = []))
     } else {
       console.log(o)
     }
@@ -57,5 +57,17 @@ export class Database {
     for (const kv of this.Multiedges.keyValues()) {
       if (kv[0].x != kv[0].y) yield kv[1][0]
     }
+  }
+
+  GetMultiedge(source: number, target: number) {
+    return this.GetMultiedgeI(new IntPair(source, target));
+  }
+
+
+  GetMultiedgeI(ip: IntPair): Array<PolyIntEdge> {
+    if (this.Multiedges.has(ip.x, ip.y))
+      return this.Multiedges.get(ip.x, ip.y);
+
+    return new Array<PolyIntEdge>();
   }
 }

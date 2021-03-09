@@ -19,10 +19,11 @@ export class NetworkSimplexForGeneralGraph implements LayerCalculator {
   GetLayers(): number[] {
     const comps = ConnectedComponentCalculator.GetComponents(this.graph);
     if (comps.length == 1) {
-      const ns = new NetworkSimplex(this.mkNetworkGraph(this.graph), this.Cancel);
+      const ns = new NetworkSimplex(this.graph, this.Cancel);
       return ns.GetLayers();
     }
-    const mapToComponenents: Map<number, number>[] = this.GetMapsToComponent(comps);
+
+    const mapToComponenents: Map<number, number>[] = GetMapsToComponent(comps);
     const layerings = new Array<number[]>(comps.length);
 
     for (let i = 0; i < comps.length; i++) {
@@ -34,50 +35,40 @@ export class NetworkSimplexForGeneralGraph implements LayerCalculator {
     return this.UniteLayerings(layerings, mapToComponenents);
   }
 
-  mkNetworkGraph(graph: BasicGraphOnEdges<PolyIntEdge>): BasicGraphOnEdges<NetworkEdge> {
-    throw new Error('Method not implemented.');
-  }
 
   ShrunkComponent(dictionary: Map<number, number>): BasicGraph<GeomNode, PolyIntEdge> {
+    const edges: PolyIntEdge[] = []
+    for (const p of dictionary) {
+      const v = p[0]
+      const newEdgeSource = p[1]
+      for (const e of this.graph.outEdges[v]) {
+        const pe = new PolyIntEdge(newEdgeSource, dictionary.get(e.target), e.edge)
+        pe.separation = e.separation
+        pe.weight = e.weight
+        edges.push(pe)
+      }
+    }
     return new BasicGraph<GeomNode, PolyIntEdge>(
-      from p of dictionary
-                let v = p.Key
-                let newEdgeSource = p.Value
-                from e of graph.OutEdges(v)
-                select new PolyIntEdge(newEdgeSource, dictionary[e.Target]) { Separation = e.Separation, Weight = e.Weight },
-      dictionary.Count);
+      edges,
+      dictionary.size);
   }
 
   private UniteLayerings(layerings: number[][], mapToComponenents: Array<Map<number, number>>): number[] {
     const ret = new Array<number>(this.graph.NodeCount)
-    for (number i = 0; i < layerings.Length; i++) {
-      number[] layering = layerings[i];
-      Dictionary < number, number > mapToComp = mapToComponenents[i];
+    for (let i = 0; i < layerings.length; i++) {
+      const layering = layerings[i];
+      const mapToComp = mapToComponenents[i];
       //no optimization at the moment - just map the layers back
-      number[] reverseMap = new number[mapToComp.Count];
+      const reverseMap = new Array<number>(mapToComp.size)
       for (var p of mapToComp)
-        reverseMap[p.Value] = p.Key;
+        reverseMap[p[1]] = p[0]
 
-      for (number j = 0; j < layering.Length; j++)
-      ret[reverseMap[j]] = layering[j];
+      for (let j = 0; j < layering.length; j++)
+        ret[reverseMap[j]] = layering[j];
     }
     return ret;
   }
 
-  static GetMapsToComponent(comps: Array<Array<number>>): Array<Map<number, number>> {
-    Array < Map < number, number >> ret = new Array<Map<number, number>>();
-    for (var comp of comps)
-      ret.Add(MapForComp(comp));
-    return ret;
-  }
-
-  static MapForComp(comp: IEnumerable<number>): Map<number, number> {
-    let i = 0;
-    const map = new Map<number, number>();
-    for (const v of comp)
-      map[v] = i++;
-    return map;
-  }
 
 
   constructor(graph: BasicGraph<GeomNode, PolyIntEdge>, cancelObject: CancelToken) {
@@ -85,5 +76,20 @@ export class NetworkSimplexForGeneralGraph implements LayerCalculator {
     this.Cancel = cancelObject;
   }
 
+}
+
+function GetMapsToComponent(comps: Array<Array<number>>): Array<Map<number, number>> {
+  const ret = new Array<Map<number, number>>();
+  for (var comp of comps)
+    ret.push(MapForComp(comp));
+  return ret;
+}
+
+function MapForComp(comp: number[]): Map<number, number> {
+  let i = 0;
+  const map = new Map<number, number>();
+  for (const v of comp)
+    map[v] = i++;
+  return map;
 }
 

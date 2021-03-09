@@ -29,7 +29,7 @@ export class IntPairSet {
     return r
   }
 
-  *iter(): IterableIterator<IntPair> {
+  *values(): IterableIterator<IntPair> {
     for (let i = 0; i < this.arrayOfSets.length; i++)
       for (const j of this.arrayOfSets[i]) yield new IntPair(i, j)
   }
@@ -38,5 +38,10 @@ export class IntPairSet {
   }
   addNN(x: number, y: number) {
     this.arrayOfSets[x].add(y)
+  }
+
+  clear() {
+    for (const s of this.arrayOfSets)
+      s.clear()
   }
 }

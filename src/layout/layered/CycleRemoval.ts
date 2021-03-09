@@ -60,16 +60,16 @@ export class CycleRemoval {
         for (; i < outEnum.length; i++) {
           const e = outEnum[i]
 
-          if (e.Source == e.Target) continue
+          if (e.source == e.target) continue
 
-          const targetStatus = status[e.Target]
+          const targetStatus = status[e.target]
           if (targetStatus == VertStatus.InStack) {
             feedbackSet.add(e)
           } else if (targetStatus == VertStatus.NotVisited) {
             //have to go deeper
             CycleRemoval.push(stack, status, vertex, i + 1)
-            vertex = e.Target
-            status[e.Target] = VertStatus.Visited
+            vertex = e.target
+            status[e.target] = VertStatus.Visited
             outEnum = graph.outEdges[vertex]
             i = -1
           }

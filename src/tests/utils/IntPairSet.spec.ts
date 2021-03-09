@@ -9,7 +9,7 @@ test('IntPairSet', () => {
   m.addNN(2, 2)
   m.addNN(2, 1)
 
-  const p = Array.from(m.iter())
+  const p = Array.from(m.values())
   expect(p.length).toBe(4)
   expect(p[0].y < 3).toBe(true)
 })
