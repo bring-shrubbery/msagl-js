@@ -40,7 +40,7 @@ export class XLayoutGraph extends BasicGraphOnEdges<PolyIntEdge> {
   ) {
     super()
     this.SetEdges(edges, nov)
-    this.virtualVerticesStart = graph.NodeCount
+    this.virtualVerticesStart = graph.nodeCount
     this.virtualVerticesEnd = layeredGraph.NodeCount - 1
     this.layeredGraph = layeredGraph
     this.layerArrays = layerArrays

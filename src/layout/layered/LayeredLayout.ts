@@ -309,7 +309,7 @@ export class LayeredLayout extends Algorithm {
     let edges = new Array<PolyIntEdge>()
     for (const list of this.database.Multiedges.values())
       edges = edges.concat(list)
-    this.IntGraph.SetEdges(edges, this.IntGraph.NodeCount)
+    this.IntGraph.SetEdges(edges, this.IntGraph.nodeCount)
   }
 
   InsertVirtualEdgesIfNeeded(layerArrays: LayerArrays) {
@@ -703,7 +703,7 @@ export class LayeredLayout extends Algorithm {
   }
 
   GluedDagSkeletonEdges(): PolyIntEdge[] {
-    const ret = new IntPairMap<PolyIntEdge>(this.IntGraph.NodeCount)
+    const ret = new IntPairMap<PolyIntEdge>(this.IntGraph.nodeCount)
     for (const p of this.database.Multiedges.keyValues()) {
       if (p[0].isDiagonal()) continue
       const e = this.verticalConstraints.gluedIntEdge(p[1][0])
@@ -770,7 +770,7 @@ export class LayeredLayout extends Algorithm {
 
   SetGluedEdgesWeights() {
     const gluedPairsToGluedEdge = new IntPairMap<PolyIntEdge>(
-      this.IntGraph.NodeCount,
+      this.IntGraph.nodeCount,
     )
     for (const ie of this.gluedDagSkeletonForLayering.edges)
       gluedPairsToGluedEdge.set(ie.source, ie.target, ie)
@@ -786,7 +786,7 @@ export class LayeredLayout extends Algorithm {
 
   GetNodeCountsOfGluedDag(): number[] {
     if (this.verticalConstraints.isEmpty) {
-      return new Array<number>(this.IntGraph.NodeCount).fill(1)
+      return new Array<number>(this.IntGraph.nodeCount).fill(1)
     }
     return this.verticalConstraints.getGluedNodeCounts()
   }
@@ -1065,9 +1065,9 @@ function GetFlatPairs(
   layering: number[],
   intGraph: BasicGraphOnEdges<PolyIntEdge>,
 ): IEnumerable<IntPair> {
-  const pairs = new IntPairSet(intGraph.NodeCount)
+  const pairs = new IntPairSet(intGraph.nodeCount)
   for (const v of layer) {
-    if (v >= intGraph.NodeCount) continue
+    if (v >= intGraph.nodeCount) continue
     for (const edge of intGraph.outEdges[v])
       if (layering[edge.source] == layering[edge.target])
         pairs.addNN(edge.source, edge.target)

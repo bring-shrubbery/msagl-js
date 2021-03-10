@@ -76,7 +76,7 @@ export class LayerInserter {
   }
   // virtual nodes inside of an edge should be of the form i,i+1, ....
   EditOldLayering() {
-    let curVNode = this.intGraph.NodeCount
+    let curVNode = this.intGraph.nodeCount
 
     for (const list of this.database.RegularMultiedges()) {
       let span = 0
@@ -140,7 +140,7 @@ export class LayerInserter {
   FillUnsortedNewOddLayers() {
     const c = new Array<number>(this.Nla.Layers.length).fill(0)
     for (
-      let i = this.intGraph.NodeCount;
+      let i = this.intGraph.nodeCount;
       i < this.nLayeredGraph.NodeCount;
       i++
     ) {
@@ -162,7 +162,7 @@ export class LayerInserter {
   }
   // Creating buckets for multi edges and allocating the graph.
   CreateFullLayeredGraph() {
-    this.totalNodes = this.intGraph.NodeCount
+    this.totalNodes = this.intGraph.nodeCount
     for (const list of this.database.RegularMultiedges()) {
       let span = 0
       let first = true

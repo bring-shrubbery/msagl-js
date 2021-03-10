@@ -7,13 +7,7 @@ import {PolyIntEdge} from './polyIntEdge'
 import {IntPairSet} from './../../utils/IntPairSet'
 import {from} from 'linq-to-typescript'
 import {IEdge} from '../../structs/iedge'
-export class ConnectedComponentCalculator {
-  static GetComponents(
-    graphOfSameLayers: BasicGraphOnEdges<IEdge>,
-  ): number[][] {
-    throw new Error('Method not implemented.')
-  }
-}
+import {GetConnectedComponents} from './../../math/graphAlgorithms/ConnectedComponentCalculator'
 export class VerticalConstraintsForSugiyama {
   getFeedbackSetExternal(
     intGraph: BasicGraph<GeomNode, PolyIntEdge>,
@@ -103,7 +97,7 @@ export class VerticalConstraintsForSugiyama {
   removeCyclesFromGluedConstraints() {
     const graph = new BasicGraphOnEdges<IntPair>().mkGraphOnEdgesN(
       from(this.gluedUpDownIntConstraints.values()).toArray(),
-      this.intGraph.NodeCount,
+      this.intGraph.nodeCount,
     )
     const feedbackSet = CycleRemoval.getFeedbackSetWithConstraints(graph, null)
     //feedbackSet contains all glued constraints making constraints cyclic
@@ -114,7 +108,7 @@ export class VerticalConstraintsForSugiyama {
 
   addMaxMinConstraintsToGluedConstraints() {
     if (this.maxRepresentative != -1)
-      for (let i = 0; i < this.intGraph.NodeCount; i++) {
+      for (let i = 0; i < this.intGraph.nodeCount; i++) {
         const j = this.nodeToRepr(i)
         if (j != this.maxRepresentative)
           this.gluedUpDownIntConstraints.add(
@@ -123,7 +117,7 @@ export class VerticalConstraintsForSugiyama {
       }
 
     if (this.minRepresentative != -1)
-      for (let i = 0; i < this.intGraph.NodeCount; i++) {
+      for (let i = 0; i < this.intGraph.nodeCount; i++) {
         const j = this.nodeToRepr(i)
         if (j != this.minRepresentative)
           this.gluedUpDownIntConstraints.add(
@@ -166,16 +160,14 @@ export class VerticalConstraintsForSugiyama {
 
   createDictionaryOfSameLayerRepresentatives() {
     const graphOfSameLayers = this.createGraphOfSameLayers()
-    for (const comp of ConnectedComponentCalculator.GetComponents(
-      graphOfSameLayers,
-    ))
+    for (const comp of GetConnectedComponents(graphOfSameLayers))
       this.glueSameLayerNodesOfALayer(comp)
   }
 
   createGraphOfSameLayers(): BasicGraphOnEdges<IntPair> {
     return new BasicGraphOnEdges<IntPair>().mkGraphOnEdgesN(
       this.createEdgesOfSameLayers(),
-      this.intGraph.NodeCount,
+      this.intGraph.nodeCount,
     )
   }
 
@@ -305,12 +297,12 @@ export class VerticalConstraintsForSugiyama {
   }
 
   createGluedGraph(): BasicGraphOnEdges<IntPair> {
-    const set = new IntPairSet(this.intGraph.NodeCount)
+    const set = new IntPairSet(this.intGraph.nodeCount)
     this.intGraph.edges.forEach((e) => set.add(this.gluedIntPairI(e)))
 
     return new BasicGraphOnEdges<IntPair>().mkGraphOnEdgesN(
       from(set.values()).toArray(),
-      this.intGraph.NodeCount,
+      this.intGraph.nodeCount,
     )
     //return new BasicGraphOnEdges<IntPair>(new Set<IntPair>(from edge in this.intGraph.Edges select GluedIntPair(edge)), this.intGraph.NodeCount);
   }

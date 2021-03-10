@@ -4,7 +4,7 @@ import {from, IEnumerable} from 'linq-to-typescript'
 
 export class BasicGraphOnEdges<TEdge extends IEdge> {
   edges: TEdge[]
-  NodeCount = 0
+  nodeCount = 0
   inEdges: TEdge[][]
   outEdges: TEdge[][]
   selfEdges: TEdge[][];
@@ -64,14 +64,14 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
   SetEdges(valEdges: TEdge[], nov: number) {
     this.edges = valEdges
 
-    this.NodeCount = nov
-    const outEdgesCounts = new Array(this.NodeCount).fill(0)
-    const inEdgesCounts = new Array(this.NodeCount).fill(0)
-    const selfEdgesCounts = new Array(this.NodeCount).fill(0)
+    this.nodeCount = nov
+    const outEdgesCounts = new Array(this.nodeCount).fill(0)
+    const inEdgesCounts = new Array(this.nodeCount).fill(0)
+    const selfEdgesCounts = new Array(this.nodeCount).fill(0)
 
-    this.outEdges = new Array<TEdge[]>(this.NodeCount)
-    this.inEdges = new Array<TEdge[]>(this.NodeCount)
-    this.selfEdges = new Array<TEdge[]>(this.NodeCount)
+    this.outEdges = new Array<TEdge[]>(this.nodeCount)
+    this.inEdges = new Array<TEdge[]>(this.nodeCount)
+    this.selfEdges = new Array<TEdge[]>(this.nodeCount)
 
     for (const e of this.edges) {
       if (e.source != e.target) {
@@ -83,7 +83,7 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
     }
 
     //allocate now
-    for (let i = 0; i < this.NodeCount; i++) {
+    for (let i = 0; i < this.nodeCount; i++) {
       this.outEdges[i] = new Array<TEdge>(outEdgesCounts[i])
       outEdgesCounts[i] = 0 //used later for edge insertion
 

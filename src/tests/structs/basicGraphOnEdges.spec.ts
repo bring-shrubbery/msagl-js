@@ -17,7 +17,7 @@ test('bgoe', () => {
     new myedge(2, 3),
   ]
   const bg = new BasicGraphOnEdges().mkGraphOnEdgesArray(edges)
-  expect(bg.NodeCount).toBe(4)
+  expect(bg.nodeCount).toBe(4)
   bg.removeEdge(edges[4])
   expect(bg.inEdgesCount(3)).toBe(0)
   expect(bg.outEdgesCount(2)).toBe(1)

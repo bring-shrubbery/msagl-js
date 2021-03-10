@@ -24,7 +24,7 @@ export class ProperLayeredGraph {
       const edgesGoingDown = from(this.BaseGraph.edges).where(
         (edge) => edge.LayerEdges != null,
       )
-      this.totalNumberOfNodes = intGraph.NodeCount
+      this.totalNumberOfNodes = intGraph.nodeCount
       for (const edge of edgesGoingDown)
         for (const layerEdge of edge.LayerEdges) {
           const m = Math.max(layerEdge.Source, layerEdge.Target) + 1
@@ -44,8 +44,8 @@ export class ProperLayeredGraph {
         .select((le) => le.Source)
         .min()
     } else {
-      this.firstVirtualNode = this.BaseGraph.NodeCount
-      this.totalNumberOfNodes = this.BaseGraph.NodeCount
+      this.firstVirtualNode = this.BaseGraph.nodeCount
+      this.totalNumberOfNodes = this.BaseGraph.nodeCount
     }
 
     this.virtualNodesToInEdges = new Array<LayerEdge>(
@@ -101,7 +101,7 @@ export class ProperLayeredGraph {
 
   // enumerates over edges of a node
   *InEdges(node: number): IterableIterator<LayerEdge> {
-    if (node < this.BaseGraph.NodeCount)
+    if (node < this.BaseGraph.nodeCount)
       //original node
       for (const e of this.BaseGraph.inEdges[node]) {
         if (e.source != e.target && e.LayerEdges != null)
@@ -119,7 +119,7 @@ export class ProperLayeredGraph {
   }
   // enumerates over the node outcoming edges
   *OutEdges(node: number): IterableIterator<LayerEdge> {
-    if (node < this.BaseGraph.NodeCount)
+    if (node < this.BaseGraph.nodeCount)
       //original node
       for (const e of this.BaseGraph.outEdges[node]) {
         if (e.source != e.target && e.LayerEdges != null)
@@ -129,13 +129,13 @@ export class ProperLayeredGraph {
       yield this.OutEdgeOfVirtualNode(node)
   }
   OutDegreeIsMoreThanOne(node: number) {
-    if (node < this.BaseGraph.NodeCount)
+    if (node < this.BaseGraph.nodeCount)
       //original node
       return this.BaseGraph.outEdges[node].length > 1
     else return false
   }
   InDegreeIsMoreThanOne(node: number) {
-    if (node < this.BaseGraph.NodeCount)
+    if (node < this.BaseGraph.nodeCount)
       //original node
       return this.BaseGraph.inEdges[node].length > 1
     else return false
@@ -153,7 +153,7 @@ export class ProperLayeredGraph {
   }
 
   RealInEdgesCount(node: number) {
-    return node < this.BaseGraph.NodeCount
+    return node < this.BaseGraph.nodeCount
       ? this.BaseGraph.inEdges[node].filter((e) => e.LayerEdges != null).length
       : 1
   }
@@ -164,7 +164,7 @@ export class ProperLayeredGraph {
   }
 
   RealOutEdgesCount(node: number) {
-    return node < this.BaseGraph.NodeCount
+    return node < this.BaseGraph.nodeCount
       ? this.BaseGraph.outEdges[node].filter((l) => l.LayerEdges != null).length
       : 1
   }
@@ -175,7 +175,7 @@ export class ProperLayeredGraph {
   }
 
   IsRealNode(node: number) {
-    return node < this.BaseGraph.NodeCount
+    return node < this.BaseGraph.nodeCount
   }
 
   IsVirtualNode(node: number) {
@@ -187,7 +187,7 @@ export class ProperLayeredGraph {
     return new ProperLayeredGraph(
       new BasicGraph<GeomNode, PolyIntEdge>(
         reversedEdges,
-        this.BaseGraph.NodeCount,
+        this.BaseGraph.nodeCount,
       ),
     )
   }

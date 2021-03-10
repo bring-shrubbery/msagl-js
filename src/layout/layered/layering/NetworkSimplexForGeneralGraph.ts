@@ -1,9 +1,10 @@
+import {from} from 'linq-to-typescript'
 import {BasicGraph} from '../../../structs/BasicGraph'
 import {BasicGraphOnEdges} from '../../../structs/basicGraphOnEdges'
 import {CancelToken} from '../../../utils/cancelToken'
 import {GeomNode} from '../../core/geomNode'
 import {PolyIntEdge} from '../polyIntEdge'
-import {ConnectedComponentCalculator} from '../VerticalConstraintsForSugiyama'
+import {GetConnectedComponents} from './../../../math/graphAlgorithms/ConnectedComponentCalculator'
 import {LayerCalculator} from './layerCalculator'
 import {NetworkSimplex} from './NetworkSimplex'
 export class NetworkSimplexForGeneralGraph implements LayerCalculator {
@@ -12,7 +13,7 @@ export class NetworkSimplexForGeneralGraph implements LayerCalculator {
   Cancel: CancelToken
 
   GetLayers(): number[] {
-    const comps = ConnectedComponentCalculator.GetComponents(this.graph)
+    const comps = from(GetConnectedComponents(this.graph)).toArray()
     if (comps.length == 1) {
       const ns = new NetworkSimplex(this.graph, this.Cancel)
       return ns.GetLayers()
@@ -55,7 +56,7 @@ export class NetworkSimplexForGeneralGraph implements LayerCalculator {
     layerings: number[][],
     mapToComponenents: Array<Map<number, number>>,
   ): number[] {
-    const ret = new Array<number>(this.graph.NodeCount)
+    const ret = new Array<number>(this.graph.nodeCount)
     for (let i = 0; i < layerings.length; i++) {
       const layering = layerings[i]
       const mapToComp = mapToComponenents[i]

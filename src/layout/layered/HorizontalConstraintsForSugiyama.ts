@@ -55,7 +55,7 @@ export class HorizontalConstraintsForSugiyama {
 
   CreateMappingOfNeibBlocks() {
     const graph = this.BasicGraphFromLeftRightIntNeibs()
-    for (let root = 0; root < graph.NodeCount; root++)
+    for (let root = 0; root < graph.nodeCount; root++)
       if (graph.inEdges[root].length == 0 && !this.nodeToBlockRoot.has(root)) {
         const block = new Array<number>()
         let current = root

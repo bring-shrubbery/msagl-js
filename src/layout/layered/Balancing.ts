@@ -105,7 +105,7 @@ export class Balancing implements Algorithm {
   }
 
   InitJumpers() {
-    const deltas = new Array<number>(this.dag.NodeCount).fill(0)
+    const deltas = new Array<number>(this.dag.nodeCount).fill(0)
     for (const ie of this.dag.edges) {
       deltas[ie.source] -= ie.weight
       deltas[ie.target] += ie.weight
@@ -113,7 +113,7 @@ export class Balancing implements Algorithm {
 
     this.possibleJumperFeasibleIntervals = new Map<number, IntPair>()
 
-    for (let i = 0; i < this.dag.NodeCount; i++)
+    for (let i = 0; i < this.dag.nodeCount; i++)
       if (deltas[i] == 0) this.CalculateRegionAndInsertJumper(i)
   }
 

@@ -55,7 +55,7 @@ test('layered layout glued graph', () => {
     expect(e.weight).toBe(2)
   }
 })
-xtest('layered layout hookup', () => {
+test('layered layout hookup', () => {
   const g = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(g)
   const ll = new LayeredLayout(

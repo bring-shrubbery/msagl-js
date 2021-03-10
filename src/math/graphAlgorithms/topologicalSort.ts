@@ -39,7 +39,7 @@ export class TopologicalSort {
   // and for any edge e in graph if e.Source=arr[i]
   // e.Target=arr[j], then i is less than j
   static getOrderOnGraph(graph: BasicGraphOnEdges<IEdge>): number[] {
-    const visited = new Array<boolean>(graph.NodeCount).fill(false)
+    const visited = new Array<boolean>(graph.nodeCount).fill(false)
 
     //no recursion! So we have to organize a stack
     const se = new Stack<{edges: IEdge[]; index: number; current_u: number}>()
@@ -47,7 +47,7 @@ export class TopologicalSort {
     const order: number[] = []
 
     let en: IEdge[]
-    for (let u = 0; u < graph.NodeCount; u++) {
+    for (let u = 0; u < graph.nodeCount; u++) {
       if (visited[u]) continue
 
       let cu = u

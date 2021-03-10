@@ -39,11 +39,11 @@ export class CycleRemoval {
 
   static getFeedbackSet(graph: BasicGraphOnEdges<IEdge>): IEdge[] {
     const feedbackSet = new Set<IEdge>()
-    if (graph == null || graph.NodeCount == 0) return Array.from(feedbackSet)
-    const status = new Array<VertStatus>(graph.NodeCount).fill(
+    if (graph == null || graph.nodeCount == 0) return Array.from(feedbackSet)
+    const status = new Array<VertStatus>(graph.nodeCount).fill(
       VertStatus.NotVisited,
     )
-    for (let vertex = 0; vertex < graph.NodeCount; vertex++) {
+    for (let vertex = 0; vertex < graph.nodeCount; vertex++) {
       if (status[vertex] == VertStatus.Visited) continue
 
       Assert.assert(status[vertex] != VertStatus.InStack)

@@ -19,7 +19,7 @@ function CreateGraphWithIEEdges(
 
   return new BasicGraphOnEdges<NetworkEdge>().mkGraphOnEdgesN(
     ieEdges,
-    bg.NodeCount,
+    bg.nodeCount,
   )
 }
 
@@ -80,7 +80,7 @@ export class NetworkSimplex implements LayerCalculator {
     this.graph = CreateGraphWithIEEdges(graph)
 
     this.networkCancelToken = cancelToken
-    for (let i = 0; i < this.nodeCount; i++) {
+    for (let i = 0; i < this.graph.nodeCount; i++) {
       this.vertices.push({
         inTree: false,
         lim: -1,
@@ -98,7 +98,7 @@ export class NetworkSimplex implements LayerCalculator {
 
   shiftLayerToZero() {
     const minLayer = from(this.layers).min((u) => u)
-    for (let i = 0; i < this.graph.NodeCount; i++) this.layers[i] -= minLayer
+    for (let i = 0; i < this.graph.nodeCount; i++) this.layers[i] -= minLayer
   }
 
   vertexInTree(v: number): boolean {
@@ -653,7 +653,7 @@ export class NetworkSimplex implements LayerCalculator {
   }
 
   run() {
-    if (this.graph.edges.length == 0 && this.graph.NodeCount == 0)
+    if (this.graph.edges.length == 0 && this.graph.nodeCount == 0)
       this.layers = []
 
     this.feasibleTree()
