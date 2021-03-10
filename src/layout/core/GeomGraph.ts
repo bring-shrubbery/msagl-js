@@ -38,7 +38,7 @@ export class GeomGraph extends GeomObject {
   get graph() {
     return this.attrCont as Graph
   }
-  Edges
+
   updateBoundingBox() {
     this.boundingBox = Rectangle.mkEmpty()
     let padding = 0

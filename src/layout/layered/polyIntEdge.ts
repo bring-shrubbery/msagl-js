@@ -20,17 +20,27 @@ export class PolyIntEdge implements IIntEdge {
   // separation request in the number of layers between the source and the target layers
   separation: number
   weight: number
-  CrossingWeight: number
+  get CrossingWeight() {
+    return 1
+  }
   // If true it is a dummy edge that will not be drawn; serves as a place holder.
   IsVirtualEdge: boolean
   LayerEdges: LayerEdge[]
   // the original edge
   geomEdge: GeomEdge
 
-  constructor(source: number, target: number, geomEdge: GeomEdge) {
+  constructor(
+    source: number,
+    target: number,
+    geomEdge: GeomEdge,
+    weight = 1,
+    separation = 1,
+  ) {
     this.source = source
     this.target = target
     this.geomEdge = geomEdge
+    this.weight = weight
+    this.separation = separation
   }
 
   hasLabel: boolean

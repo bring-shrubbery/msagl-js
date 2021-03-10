@@ -1,4 +1,4 @@
-import {parseDotGraph} from './../../../utils/dotparser'
+import {parseDotGraph, parseDotString} from './../../../utils/dotparser'
 import {SugiyamaLayoutSettings} from './../../../layout/layered/SugiyamaLayoutSettings'
 
 import {LayeredLayout} from '../../../layout/layered/LayeredLayout'
@@ -18,6 +18,7 @@ function createGeometry(g: Graph) {
   for (const e of g.Edges) {
     new GeomEdge(e)
   }
+  const geomGraph = new GeomGraph(g)
 }
 
 type P = [number, number]
@@ -40,7 +41,20 @@ test('map test', () => {
 
   expect(mi.get(ip1)).toBe(undefined)
 })
-
+test('layered layout glued graph', () => {
+  const graphString = 'digraph G {\n' + 'a -> b\n' + 'a -> b}'
+  const g = parseDotString(graphString)
+  createGeometry(g)
+  const ll = new LayeredLayout(
+    GeomObject.getGeom(g) as GeomGraph,
+    new SugiyamaLayoutSettings(),
+    new CancelToken(),
+  )
+  ll.CreateGluedDagSkeletonForLayering()
+  for (const e of ll.gluedDagSkeletonForLayering.edges) {
+    expect(e.weight).toBe(2)
+  }
+})
 xtest('layered layout hookup', () => {
   const g = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(g)

@@ -6,5 +6,16 @@
         "typescript"
       ],
       "editor.formatOnSave": true,
-      "debug.javascript.unmapMissingSources": true
+    "debug.javascript.unmapMissingSources": true,
+    "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true
+    },
+    "search.exclude": {
+	"**/node_modules": true,
+	"**/bower_components": true,
+	"**/data": true,
+	"**/shared": true,
+},
 }

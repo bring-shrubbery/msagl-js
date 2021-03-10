@@ -43,10 +43,7 @@ export class Database {
     let o = this.Multiedges.get(edge.source, edge.target)
     if (o == null) {
       this.Multiedges.set(edge.source, edge.target, (o = []))
-    } else {
-      console.log(o)
     }
-
     o.push(edge)
   }
 

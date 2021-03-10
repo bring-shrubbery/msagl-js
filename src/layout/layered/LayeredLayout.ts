@@ -77,13 +77,13 @@ export class LayeredLayout extends Algorithm {
 
     const intEdges = new Array<PolyIntEdge>(this.originalGraph.edgeCount)
     let i = 0
-    for (const edge of this.originalGraph.Edges) {
+    for (const edge of this.originalGraph.edges()) {
       Assert.assert(!(edge.source == null || edge.target == null))
 
       const intEdge = new PolyIntEdge(
         this.nodeIdToIndex.get(edge.source.id),
         this.nodeIdToIndex.get(edge.target.id),
-        GeomObject.getGeom(edge) as GeomEdge,
+        edge,
       )
 
       intEdges[i++] = intEdge
@@ -103,8 +103,9 @@ export class LayeredLayout extends Algorithm {
   run() {
     if (this.originalGraph.nodeCount > 0) {
       this.engineLayerArrays = this.calculateLayers()
-
-      if (!this.sugiyamaSettings.layeringOnly) this.RunPostLayering()
+      if (!this.sugiyamaSettings.layeringOnly) {
+        this.RunPostLayering()
+      }
     } else {
       this.originalGraph.boundingBox.setToEmpty()
     }
@@ -125,11 +126,8 @@ export class LayeredLayout extends Algorithm {
   }
   calculateLayers(): LayerArrays {
     this.CreateGluedDagSkeletonForLayering()
-
     const layerArrays = this.CalculateLayerArrays()
-
     this.UpdateNodePositionData()
-
     return layerArrays
   }
 

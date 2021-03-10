@@ -49,10 +49,14 @@ function parseUnderGraph(children: any, graph: Graph) {
   }
 }
 
-export function parseDotGraph(fileName: string): Graph {
-  const ast = parse(readFileSync(fileName, 'utf-8'))
+export function parseDotString(graphStr: string) {
+  const ast = parse(graphStr)
   if (ast == null) return null
   const graph = new Graph()
   parseUnderGraph(ast[0].children, graph)
   return graph
+}
+export function parseDotGraph(fileName: string): Graph {
+  const graphStr = readFileSync(fileName, 'utf-8')
+  return parseDotString(graphStr)
 }
