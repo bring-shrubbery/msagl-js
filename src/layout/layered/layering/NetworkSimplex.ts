@@ -101,6 +101,10 @@ export class NetworkSimplex implements LayerCalculator {
     for (let i = 0; i < this.graph.nodeCount; i++) this.layers[i] -= minLayer
   }
 
+  addVertexToTree(v: number) {
+    this.vertices[v].inTree = true
+  }
+
   vertexInTree(v: number): boolean {
     return this.vertices[v].inTree
   }
@@ -275,7 +279,6 @@ export class NetworkSimplex implements LayerCalculator {
   // Of course, these postorder parameters must also be adjusted when
   // exchanging tree edges, but only for nodes below l.
   initLimLowAndParent() {
-    this.vertices = new Array<VertexInfo>(this.nodeCount)
     this.initLowLimParentAndLeavesOnSubtree(1, 0)
   }
   // initializes lim and low in the subtree
@@ -419,7 +422,7 @@ export class NetworkSimplex implements LayerCalculator {
 
         if (this.layers[e.source] - this.layers[e.target] == e.separation) {
           q.push(e.target)
-          this.vertexInTree[e.target].inTree = true
+          this.addVertexToTree(e.target)
           this.treeVertices.push(e.target)
           e.inTree = true
         }
@@ -430,7 +433,7 @@ export class NetworkSimplex implements LayerCalculator {
 
         if (this.layers[e.source] - this.layers[e.target] == e.separation) {
           q.push(e.source)
-          this.vertexInTree[e.source].inTree = true
+          this.addVertexToTree(e.source)
           this.treeVertices.push(e.source)
           e.inTree = true
         }
