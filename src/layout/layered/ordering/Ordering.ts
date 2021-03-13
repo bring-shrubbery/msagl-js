@@ -81,7 +81,8 @@ function GetCrossingCountFromStripWhenBottomLayerIsShorter(
   layerArrays: LayerArrays,
 ) {
   const edges: LayerEdge[] = EdgesOfStrip(bottomVerts, properLayeredGraph)
-  edges.sort(new EdgeComparerBySource(layerArrays.X).Compare)
+  const comparer = new EdgeComparerBySource(layerArrays.X)
+  edges.sort((a, b) => comparer.Compare(a, b))
   //find first n such that 2^n >=bottomVerts.length
   let n = 1
   while (n < bottomVerts.length) n *= 2
