@@ -51,13 +51,14 @@ function GetCrossingCountFromStripWhenTopLayerIsShorter(
   layerArrays: LayerArrays,
 ) {
   const edges = EdgesOfStrip(bottomVerts, properLayeredGraph)
-  edges.sort(new EdgeComparerByTarget(layerArrays.X).Compare)
+  const comparer = new EdgeComparerByTarget(layerArrays.X)
+  edges.sort((a, b) => comparer.Compare(a, b))
   //find first n such that 2^n >=topVerts.length
   let n = 1
   while (n < topVerts.length) n *= 2
   //init the accumulator tree
 
-  const tree = new Array<number>(2 * n - 1)
+  const tree = new Array<number>(2 * n - 1).fill(0)
 
   n-- // the first bottom node starts from n now
 
@@ -68,13 +69,13 @@ function GetCrossingCountFromStripWhenTopLayerIsShorter(
     tree[index] += ew
     while (index > 0) {
       if (index % 2 != 0) cc += ew * tree[index + 1] //intersect everything accumulated in the right sibling
-      index = (index - 1) / 2
+      index = Math.floor((index - 1) / 2)
       tree[index] += ew
     }
   }
   return cc
 }
-
+// see: Simple and Efficient Bilayer Cross Counting, by Wilhelm Barth, Petra Mutzel
 function GetCrossingCountFromStripWhenBottomLayerIsShorter(
   bottomVerts: number[],
   properLayeredGraph: ProperLayeredGraph,
@@ -88,7 +89,7 @@ function GetCrossingCountFromStripWhenBottomLayerIsShorter(
   while (n < bottomVerts.length) n *= 2
   //init accumulator
 
-  const tree = new Array<number>(2 * n - 1)
+  const tree = new Array<number>(2 * n - 1).fill(0)
 
   n-- // the first bottom node starts from n now
 
@@ -99,7 +100,7 @@ function GetCrossingCountFromStripWhenBottomLayerIsShorter(
     tree[index] += ew
     while (index > 0) {
       if (index % 2 != 0) cc += ew * tree[index + 1] //intersect everything accumulated in the right sibling
-      index = (index - 1) / 2
+      index = Math.floor((index - 1) / 2)
       tree[index] += ew
     }
   }
@@ -129,7 +130,6 @@ export function GetCrossingsTotal(
 
 export class Ordering extends Algorithm {
   // fields
-  balanceVirtAndOrigNodes: boolean
   hasCrossWeights: boolean
 
   layerArrays: LayerArrays
@@ -139,8 +139,6 @@ export class Ordering extends Algorithm {
   measure: OrderingMeasure
 
   nOfLayers: number
-  optimalOriginalGroupSize: number[]
-  optimalVirtualGroupSize: number[]
   properLayeredGraph: ProperLayeredGraph
 
   SugSettings: SugiyamaLayoutSettings
@@ -166,7 +164,6 @@ export class Ordering extends Algorithm {
     tryReverse: boolean,
     layerArraysParam: LayerArrays,
     startOfVirtualNodes: number,
-    balanceVirtualAndOrigNodes: boolean,
     hasCrossWeights: boolean,
     settings: SugiyamaLayoutSettings,
     cancelToken: CancelToken,
@@ -179,7 +176,6 @@ export class Ordering extends Algorithm {
     this.layering = layerArraysParam.Y
     this.nOfLayers = layerArraysParam.Layers.length
     this.layers = layerArraysParam.Layers
-    this.balanceVirtAndOrigNodes = balanceVirtualAndOrigNodes
     this.properLayeredGraph = graphPar
     this.hasCrossWeights = hasCrossWeights
     this.SugSettings = settings
@@ -197,7 +193,6 @@ export class Ordering extends Algorithm {
     graph: ProperLayeredGraph,
     layerArrays: LayerArrays,
     startOfVirtualNodes: number,
-    balanceVirtualAndOriginalNodes: boolean,
     settings: SugiyamaLayoutSettings,
     cancelToken: CancelToken,
   ) {
@@ -213,7 +208,6 @@ export class Ordering extends Algorithm {
       true,
       layerArrays,
       startOfVirtualNodes,
-      balanceVirtualAndOriginalNodes,
       hasCrossWeight,
       settings,
       cancelToken,
@@ -240,7 +234,6 @@ export class Ordering extends Algorithm {
         false,
         secondLayers,
         this.startOfVirtNodes,
-        this.balanceVirtAndOrigNodes,
         this.hasCrossWeights,
         this.SugSettings,
         this.cancelToken,
@@ -272,8 +265,6 @@ export class Ordering extends Algorithm {
       this.layerArraysCopy,
       GetCrossingsTotal(this.properLayeredGraph, this.layerArrays),
       this.startOfVirtNodes,
-      this.optimalOriginalGroupSize,
-      this.optimalVirtualGroupSize,
     )
 
     //Stopwatch sw = Stopwatch.StartNew();
@@ -288,15 +279,12 @@ export class Ordering extends Algorithm {
 
       this.LayerByLayerSweep(up)
 
-      if (!this.balanceVirtAndOrigNodes) this.AdjacentExchange()
-      else this.AdjacentExchangeWithBalancingVirtOrigNodes()
+      this.AdjacentExchange()
 
       const newMeasure = new OrderingMeasure(
         this.layerArrays.Layers,
         GetCrossingsTotal(this.properLayeredGraph, this.layerArrays),
         this.startOfVirtNodes,
-        this.optimalOriginalGroupSize,
-        this.optimalVirtualGroupSize,
       )
 
       if (this.measure < newMeasure) {
@@ -382,7 +370,7 @@ export class Ordering extends Algorithm {
         } else {
           const io = o as number
           const al = []
-          s[m] = al
+          s.set(m, al)
           if (HeadOfTheCoin()) {
             al.push(io)
             al.push(v)
@@ -395,12 +383,10 @@ export class Ordering extends Algorithm {
     }
 
     const senum = s.values()
-    let j = -1
 
     for (i = 0; i < vertices.length; ) {
       if (medianValues[i] != -1) {
-        j++
-        const o = senum[j]
+        const o = senum.next().value
         if (typeof o == 'number') vertices[i++] = o as number
         else {
           const al = o as number[]
@@ -482,32 +468,6 @@ export class Ordering extends Algorithm {
     }
 
     this.X = this.layerArrays.X
-
-    if (this.balanceVirtAndOrigNodes) this.InitOptimalGroupSizes()
-  }
-
-  InitOptimalGroupSizes() {
-    this.optimalOriginalGroupSize = new Array<number>(this.nOfLayers).fill(0)
-    this.optimalVirtualGroupSize = new Array<number>(this.nOfLayers).fill(0)
-
-    for (let i = 0; i < this.nOfLayers; i++)
-      this.InitOptimalGroupSizesForLayer(i)
-  }
-
-  InitOptimalGroupSizesForLayer(i: number) {
-    //count original and virtual nodes
-    let originals = 0
-    for (const j of this.layers[i]) if (j < this.startOfVirtNodes) originals++
-
-    const virtuals = this.layers[i].length - originals
-
-    if (originals < virtuals) {
-      this.optimalOriginalGroupSize[i] = 1
-      this.optimalVirtualGroupSize[i] = Math.floor(virtuals / (originals + 1))
-    } else {
-      this.optimalVirtualGroupSize[i] = 1
-      this.optimalOriginalGroupSize[i] = Math.floor(originals / (virtuals + 1))
-    }
   }
 
   predecessors: number[][]
@@ -529,19 +489,6 @@ export class Ordering extends Algorithm {
   MaxNumberOfAdjacentExchanges = 50
 
   outCrossingCount: Map<number, number>[]
-
-  AdjacentExchangeWithBalancingVirtOrigNodes() {
-    this.InitArrays()
-    let count = 0
-    let progress = true
-    while (progress && count++ < this.MaxNumberOfAdjacentExchanges) {
-      progress = false
-      for (let i = 0; i < this.layers.length; i++)
-        progress = this.AdjExchangeLayerWithBalance(i) || progress
-      for (let i = this.layers.length - 2; i >= 0; i--)
-        progress = this.AdjExchangeLayerWithBalance(i) || progress
-    }
-  }
 
   AdjacentExchange() {
     this.InitArrays()
@@ -634,7 +581,7 @@ export class Ordering extends Algorithm {
         const so = this.sOrder[p]
         const sHasNow = so.size
         this.successors[p][sHasNow] = l //l takes the first available slot in S[p]
-        so[l] = sHasNow
+        so.set(l, sHasNow)
       }
       for (const s of this.properLayeredGraph.Succ(l)) {
         const po = this.pOrder[s]
@@ -691,17 +638,6 @@ export class Ordering extends Algorithm {
     return this.ExchangeWithGainWithNoDisturbance(layer)
   }
 
-  AdjExchangeLayerWithBalance(i: number): boolean {
-    const layer = this.layers[i]
-    const gain = this.ExchangeWithGainWithNoDisturbanceWithBalance(layer)
-
-    if (gain) return true
-
-    this.DisturbLayerWithBalance(layer)
-
-    return this.ExchangeWithGainWithNoDisturbanceWithBalance(layer)
-  }
-
   //in this routine u and v are adjacent, and u is to the left of v before the swap
   Swap(u: number, v: number) {
     const left = this.X[u]
@@ -745,7 +681,7 @@ export class Ordering extends Algorithm {
         const porder = this.pOrder[a]
         //of course porder contains u, let us see if it contains v
         if (porder.has(u)) {
-          const vOffset = porder[v]
+          const vOffset = porder.get(v)
           //swap u and v in the array P[coeff]
           const p = this.predecessors[a]
           p[vOffset - 1] = v
@@ -763,7 +699,7 @@ export class Ordering extends Algorithm {
         const sorder = this.sOrder[a]
         //of course sorder contains u, let us see if it contains v
         if (sorder.has(v)) {
-          const vOffset = sorder[v]
+          const vOffset = sorder.get(v)
           //swap u and v in the array S[coeff]
           const s = this.successors[a]
           s[vOffset - 1] = v
@@ -795,29 +731,12 @@ export class Ordering extends Algorithm {
       this.AdjacentSwapToTheRight(layer, i)
   }
 
-  DisturbLayerWithBalance(layer: number[]) {
-    for (let i = 0; i < layer.length - 1; i++)
-      this.AdjacentSwapToTheRightWithBalance(layer, i)
-  }
-
   ExchangeWithGainWithNoDisturbance(layer: number[]) {
     let wasGain = false
 
     let gain: boolean
     do {
       gain = this.ExchangeWithGain(layer)
-      wasGain = wasGain || gain
-    } while (gain)
-
-    return wasGain
-  }
-
-  ExchangeWithGainWithNoDisturbanceWithBalance(layer: number[]) {
-    let wasGain = false
-
-    let gain: boolean
-    do {
-      gain = this.ExchangeWithGainWithBalance(layer)
       wasGain = wasGain || gain
     } while (gain)
 
@@ -836,18 +755,6 @@ export class Ordering extends Algorithm {
     return false
   }
 
-  ExchangeWithGainWithBalance(layer: number[]) {
-    //find a first pair giving some gain
-    for (let i = 0; i < layer.length - 1; i++)
-      if (this.SwapWithGainWithBalance(layer[i], layer[i + 1])) {
-        this.SwapToTheLeftWithBalance(layer, i)
-        this.SwapToTheRightWithBalance(layer, i + 1)
-        return true
-      }
-
-    return false
-  }
-
   SwapToTheLeft(layer: number[], i: number) {
     for (let j = i - 1; j >= 0; j--) this.AdjacentSwapToTheRight(layer, j)
   }
@@ -855,16 +762,6 @@ export class Ordering extends Algorithm {
   SwapToTheRight(layer: number[], i: number) {
     for (let j = i; j < layer.length - 1; j++)
       this.AdjacentSwapToTheRight(layer, j)
-  }
-
-  SwapToTheLeftWithBalance(layer: number[], i: number) {
-    for (let j = i - 1; j >= 0; j--)
-      this.AdjacentSwapToTheRightWithBalance(layer, j)
-  }
-
-  SwapToTheRightWithBalance(layer: number[], i: number) {
-    for (let j = i; j < layer.length - 1; j++)
-      this.AdjacentSwapToTheRightWithBalance(layer, j)
   }
 
   // swaps i-th element with i+1
@@ -877,26 +774,9 @@ export class Ordering extends Algorithm {
     if (gain > 0 || (gain == 0 && HeadOfTheCoin())) this.Swap(u, v)
   }
 
-  AdjacentSwapToTheRightWithBalance(layer: number[], i: number) {
-    const u = layer[i]
-    const v = layer[i + 1]
-
-    const gain = this.SwapGainWithBalance(u, v)
-
-    if (gain > 0 || (gain == 0 && HeadOfTheCoin())) this.Swap(u, v)
-  }
-
   SwapGain(u: number, v: number) {
     const r = this.CalcPair(u, v)
     return r.cuv - r.cvu
-  }
-
-  SwapGainWithBalance(u: number, v: number) {
-    const r = this.CalcPair(u, v)
-    const gain = r.cuv - r.cvu
-    if (gain != 0 && this.UvAreOfSameKind(u, v)) return gain
-    //maybe we gain something in the group sizes
-    return this.SwapGroupGain(u, v)
   }
 
   UvAreOfSameKind(u: number, v: number) {
@@ -904,34 +784,6 @@ export class Ordering extends Algorithm {
       (u < this.startOfVirtNodes && v < this.startOfVirtNodes) ||
       (u >= this.startOfVirtNodes && v >= this.startOfVirtNodes)
     )
-  }
-
-  SwapGroupGain(u: number, v: number) {
-    const layerIndex = this.layerArrays.Y[u]
-    const layer = this.layers[layerIndex]
-
-    if (this.NeighborsForbidTheSwap(u, v)) return -1
-
-    const uPosition = this.X[u]
-    let uIsSeparator: boolean
-    if (this.IsOriginal(u))
-      uIsSeparator = this.optimalOriginalGroupSize[layerIndex] == 1
-    else uIsSeparator = this.optimalVirtualGroupSize[layerIndex] == 1
-
-    const delta = this.CalcDeltaBetweenGroupsToTheLeftAndToTheRightOfTheSeparator(
-      layer,
-      uIsSeparator ? uPosition : uPosition + 1,
-      uIsSeparator ? u : v,
-    )
-
-    if (uIsSeparator) {
-      if (delta < -1) return 1
-      if (delta == -1) return 0
-      return -1
-    }
-    if (delta > 1) return 1
-    if (delta == 1) return 0
-    return -1
   }
 
   NeighborsForbidTheSwap(u: number, v: number) {
@@ -1002,16 +854,6 @@ export class Ordering extends Algorithm {
   // swaps two vertices only if reduces the number of intersections
   SwapWithGain(u: number, v: number) {
     const gain = this.SwapGain(u, v)
-
-    if (gain > 0) {
-      this.Swap(u, v)
-      return true
-    }
-    return false
-  }
-
-  SwapWithGainWithBalance(u: number, v: number) {
-    const gain = this.SwapGainWithBalance(u, v)
 
     if (gain > 0) {
       this.Swap(u, v)

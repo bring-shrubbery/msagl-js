@@ -1,15 +1,15 @@
 {
   "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-      },
-      "eslint.validate": [
-        "typescript"
-      ],
-      "editor.formatOnSave": true,
-    "debug.javascript.unmapMissingSources": true,
-    "files.watcherExclude": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": [
+    "typescript"
+  ],
+  "editor.formatOnSave": true,
+  "debug.javascript.unmapMissingSources": true,
+  "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
-        "**/node_modules/**": true,    },
-
+    "**/node_modules/**": true,
+  },
 }

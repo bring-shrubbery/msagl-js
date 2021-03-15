@@ -1,37 +1,16 @@
 export class OrderingMeasure {
   numberOfCrossings: number
-  layerGroupDisbalance: number
   la: number[][]
   virtVertexStart: number
-  // for the i-th layer the optimal size of an original group is optimalOriginalGroupSize[i]
-  optimalOriginalGroupSize: number[]
-  // for the i-th layer the optimal size of a virtual group is optimalOriginalGroupSize[i]
-  optimalVirtualGroupSize: number[]
 
   constructor(
     layerArraysPar: number[][],
     numOfCrossings: number,
     virtualVertexStart: number,
-    optimalOriginalGroupSizePar: number[],
-    optimalVirtualGroupSizePar: number[],
   ) {
     this.numberOfCrossings = numOfCrossings
     this.la = layerArraysPar
     this.virtVertexStart = virtualVertexStart
-    this.optimalVirtualGroupSize = optimalVirtualGroupSizePar
-    this.optimalOriginalGroupSize = optimalOriginalGroupSizePar
-
-    if (this.optimalOriginalGroupSize != null)
-      this.CalculateLayerGroupDisbalance()
-  }
-
-  CalculateLayerGroupDisbalance() {
-    for (let i = 0; i < this.la.length; i++)
-      this.layerGroupDisbalance += this.LayerGroupDisbalance(
-        this.la[i],
-        this.optimalOriginalGroupSize[i],
-        this.optimalVirtualGroupSize[i],
-      )
   }
 
   LayerGroupDisbalance(
@@ -77,6 +56,7 @@ export class OrderingMeasure {
     for (let i = 0; i < l.length; ) {
       const r = this.CurrentVirtGroupDelta(i, l, virtGroupOptSize)
       ret += r.ret
+      i = r.i
     }
     return ret
   }
@@ -94,20 +74,14 @@ export class OrderingMeasure {
   }
 
   static less(a: OrderingMeasure, b: OrderingMeasure) {
-    if (a.numberOfCrossings < b.numberOfCrossings) return true
-    if (a.numberOfCrossings > b.numberOfCrossings) return false
-
-    return a.layerGroupDisbalance < b.layerGroupDisbalance
+    return a.numberOfCrossings < b.numberOfCrossings
   }
 
   static greater(a: OrderingMeasure, b: OrderingMeasure) {
-    if (a.numberOfCrossings > b.numberOfCrossings) return true
-    if (a.numberOfCrossings < b.numberOfCrossings) return false
-
-    return a.layerGroupDisbalance > b.layerGroupDisbalance
+    return a.numberOfCrossings > b.numberOfCrossings
   }
 
   IsPerfect() {
-    return this.numberOfCrossings == 0 && this.layerGroupDisbalance == 0
+    return this.numberOfCrossings == 0
   }
 }

@@ -255,7 +255,6 @@ export class LayeredLayout extends Algorithm {
       this.properLayeredGraph,
       layerArrays,
       this.originalGraph.nodeCount,
-      this.sugiyamaSettings.AspectRatio != 0,
       this.sugiyamaSettings,
       this.cancelToken,
     )

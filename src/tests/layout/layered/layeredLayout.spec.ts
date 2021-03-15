@@ -1,6 +1,6 @@
 import {parseDotGraph, parseDotString} from './../../../utils/dotparser'
 import {SugiyamaLayoutSettings} from './../../../layout/layered/SugiyamaLayoutSettings'
-
+import SortedMap = require('collections/sorted-map')
 import {LayeredLayout} from '../../../layout/layered/LayeredLayout'
 import {Graph} from '../../../structs/graph'
 import {GeomNode} from '../../../layout/core/geomNode'
@@ -55,6 +55,22 @@ test('layered layout glued graph', () => {
     expect(e.weight).toBe(2)
   }
 })
+test('sorted map', () => {
+  const m = SortedMap<number, number>()
+  m.set(0, 0)
+  m.set(-1, -1)
+  m.set(2, 2)
+  const a = []
+  for (const [k, v] of m.entries()) {
+    expect(k).toBe(v)
+    a.push(k)
+  }
+  expect(a[0]).toBe(-1)
+  expect(a[1]).toBe(0)
+  expect(a[2]).toBe(2)
+  expect(m.size == 3)
+})
+
 test('layered layout hookup', () => {
   const g = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(g)
@@ -64,4 +80,4 @@ test('layered layout hookup', () => {
     new CancelToken(),
   )
   ll.run()
-})
+}, 50000)
