@@ -117,7 +117,7 @@ export class ConstrainedOrdering {
     multiedges: IntPairMap<Array<PolyIntEdge>>,
   ): boolean {
     return from(multiedges.keyValues()).any(
-      (p) => p[1].length > 2 && layering[p[0].x] == 1 + layering[p[0].y],
+      ([k, v]) => v.length > 2 && layering[k.x] == 1 + layering[k.y],
     )
   }
 

@@ -243,13 +243,11 @@ export class LayerInserter {
     for (let i = 0; i < this.layeredGraph.NodeCount; i++)
       this.NLayering[i] = this.la.Y[i] * 2
 
-    for (const kv of this.database.Multiedges.keyValues()) {
-      const ip = kv[0]
-
+    for (const [ip, v] of this.database.Multiedges.keyValues()) {
       if (ip.x != ip.y && this.la.Y[ip.x] != this.la.Y[ip.y]) {
         //not a self edge and not a flat edge
         const top = this.la.Y[ip.x] * 2
-        for (const e of kv[1]) {
+        for (const e of v) {
           let layer = top - 1
           for (const le of e.LayerEdges)
             if (le.Target != e.target) this.NLayering[le.Target] = layer--

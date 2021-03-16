@@ -10,7 +10,7 @@ import {IEdge} from '../../structs/iedge'
 import {CycleRemoval} from './CycleRemoval'
 import {GeomNode} from '../core/geomNode'
 import {Database} from './Database'
-import {LayerArrays} from './LayerArrays'
+import {LayerArrays, layersAreCorrect} from './LayerArrays'
 import {GeomEdge} from '../core/geomEdge'
 import {GeomGraph} from '../core/GeomGraph'
 import {IntPairMap} from '../../utils/IntPairMap'
@@ -149,9 +149,11 @@ export class LayeredLayout extends Algorithm {
       this.GetNodeCountsOfGluedDag(),
       null,
     )
+
     yLayers = this.ExtendLayeringToUngluedSameLayerVertices(yLayers)
 
     let layerArrays = new LayerArrays(yLayers)
+    Assert.assert(layersAreCorrect(layerArrays))
     if (
       this.HorizontalConstraints == null ||
       this.HorizontalConstraints.IsEmpty
@@ -159,7 +161,6 @@ export class LayeredLayout extends Algorithm {
       layerArrays = this.YLayeringAndOrderingWithoutHorizontalConstraints(
         layerArrays,
       )
-
       return layerArrays
     }
 
@@ -250,7 +251,9 @@ export class LayeredLayout extends Algorithm {
   YLayeringAndOrderingWithoutHorizontalConstraints(
     layerArraysIn: LayerArrays,
   ): LayerArrays {
+    Assert.assert(layersAreCorrect(layerArraysIn))
     const layerArrays = this.CreateProperLayeredGraph(layerArraysIn.Y)
+    Assert.assert(layersAreCorrect(layerArrays))
     Ordering.OrderLayers(
       this.properLayeredGraph,
       layerArrays,
@@ -259,6 +262,7 @@ export class LayeredLayout extends Algorithm {
       this.cancelToken,
     )
     MetroMapOrdering.UpdateLayerArrays1(this.properLayeredGraph, layerArrays)
+    Assert.assert(layersAreCorrect(layerArrays))
     return layerArrays
   }
 
@@ -269,6 +273,7 @@ export class LayeredLayout extends Algorithm {
         this.cancelToken,
       ),
     )
+    Assert.assert(layersAreCorrect(layerArrays))
     if (this.constrainedOrdering != null) return layerArrays
     return this.InsertLayersIfNeeded(layerArrays)
   }
@@ -297,6 +302,7 @@ export class LayeredLayout extends Algorithm {
       )
       this.properLayeredGraph = t.layeredGraph
       layerArrays = t.la
+      Assert.assert(layersAreCorrect(layerArrays))
     }
 
     this.RecreateIntGraphFromDataBase()
@@ -318,15 +324,12 @@ export class LayeredLayout extends Algorithm {
 
     // If there are an even number of multi-edges between two nodes then
     //  add a virtual edge in the multi-edge dict to improve the placement, but only in case when the edge goes down only one layer.
-    for (const kv of this.database.Multiedges.keyValues())
-      if (
-        kv[1].length % 2 == 0 &&
-        layerArrays.Y[kv[0].x] - 1 == layerArrays.Y[kv[0].y]
-      ) {
+    for (const [k, v] of this.database.Multiedges.keyValues())
+      if (v.length % 2 == 0 && layerArrays.Y[k.x] - 1 == layerArrays.Y[k.y]) {
         const e = new GeomEdge(null)
-        const newVirtualEdge = new PolyIntEdge(kv[0].x, kv[0].y, e)
+        const newVirtualEdge = new PolyIntEdge(k.x, k.y, e)
         newVirtualEdge.IsVirtualEdge = true
-        kv[1].splice(kv[1].length / 2, 0, newVirtualEdge)
+        v.splice(v.length / 2, 0, newVirtualEdge)
         this.IntGraph.addEdge(newVirtualEdge)
       }
   }
@@ -348,10 +351,10 @@ export class LayeredLayout extends Algorithm {
 
     if (needToInsertLayers == false && this.constrainedOrdering == null)
       //if we have constrains the multiple edges have been already represented in layers
-      for (const kv of this.database.Multiedges.keyValues())
-        if (kv[1].length > 1) {
+      for (const [k, v] of this.database.Multiedges.keyValues())
+        if (v.length > 1) {
           multipleEdges = true
-          if (layerArrays.Y[kv[0].x] - layerArrays.Y[kv[0].y] == 1) {
+          if (layerArrays.Y[k.x] - layerArrays.Y[k.y] == 1) {
             //there is a multi edge spanning exactly one layer; unfortunately we need to introduce virtual vertices for
             //the edges middle points
             needToInsertLayers = true
@@ -703,9 +706,9 @@ export class LayeredLayout extends Algorithm {
 
   GluedDagSkeletonEdges(): PolyIntEdge[] {
     const ret = new IntPairMap<PolyIntEdge>(this.IntGraph.nodeCount)
-    for (const p of this.database.Multiedges.keyValues()) {
-      if (p[0].isDiagonal()) continue
-      const e = this.verticalConstraints.gluedIntEdge(p[1][0])
+    for (const [k, v] of this.database.Multiedges.keyValues()) {
+      if (k.isDiagonal()) continue
+      const e = this.verticalConstraints.gluedIntEdge(v[0])
       if (e.source != e.target) ret.set(e.source, e.target, e)
     }
 
@@ -774,12 +777,12 @@ export class LayeredLayout extends Algorithm {
     for (const ie of this.gluedDagSkeletonForLayering.edges)
       gluedPairsToGluedEdge.set(ie.source, ie.target, ie)
 
-    for (const t of this.database.Multiedges.keyValues())
-      if (t[0].x != t[0].y) {
-        const gluedPair = this.verticalConstraints.gluedIntPair(t[0])
+    for (const [k, v] of this.database.Multiedges.keyValues())
+      if (k.x != k.y) {
+        const gluedPair = this.verticalConstraints.gluedIntPair(k)
         if (gluedPair.x == gluedPair.y) continue
         const gluedIntEdge = gluedPairsToGluedEdge.get(gluedPair.x, gluedPair.y)
-        for (const ie of t[1]) gluedIntEdge.weight += ie.weight
+        for (const ie of v) gluedIntEdge.weight += ie.weight
       }
   }
 

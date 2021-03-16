@@ -60,6 +60,14 @@ export class NetworkSimplex implements LayerCalculator {
   treeVertices: number[] = []
   vertices: VertexInfo[] = []
   leaves: number[] = []
+
+  get weight(): number {
+    return from(
+      this.graph.edges.map(
+        (e) => e.weight * (this.layers[e.source] - this.layers[e.target]),
+      ),
+    ).sum()
+  }
   get nodeCount() {
     return this.vertices.length
   }
@@ -97,8 +105,8 @@ export class NetworkSimplex implements LayerCalculator {
   }
 
   shiftLayerToZero() {
-    const minLayer = from(this.layers).min((u) => u)
-    for (let i = 0; i < this.graph.nodeCount; i++) this.layers[i] -= minLayer
+    const minLayer = Math.min(...this.layers)
+    for (let i = 0; i < this.layers.length; i++) this.layers[i] -= minLayer
   }
 
   addVertexToTree(v: number) {
@@ -123,7 +131,7 @@ export class NetworkSimplex implements LayerCalculator {
 
   // The function feasibleTree constructs an initial feasible spanning tree.
   feasibleTree() {
-    this.initLayer()
+    this.initLayers()
 
     while (this.tightTree() < this.nodeCount) {
       const e: NetworkEdge = this.getNonTreeEdgeIncidentToTheTreeWithMinimalAmountOfSlack()
@@ -563,8 +571,7 @@ export class NetworkSimplex implements LayerCalculator {
         let cut = 0
         for (const ce of this.incidentEdges(w)) {
           if (ce.inTree == false) {
-            const e0Val = this.edgeSourceTargetVal(ce, cutEdge)
-            if (e0Val != 0) cut += e0Val * ce.weight
+            cut += this.edgeSourceTargetVal(ce, cutEdge) * ce.weight
           } //e0 is a tree edge
           else {
             if (ce == cutEdge) cut += ce.weight
@@ -650,7 +657,7 @@ export class NetworkSimplex implements LayerCalculator {
     }
   }
 
-  initLayer(): number[] {
+  initLayers(): number[] {
     const lp = new LongestPathLayering(this.graph)
     return (this.layers = lp.GetLayers())
   }

@@ -9,8 +9,7 @@ export class Database {
   MultipleMiddles = new Set<number>()
   Multiedges: IntPairMap<PolyIntEdge[]>;
   *RegularMultiedges(): IterableIterator<PolyIntEdge[]> {
-    for (const kv of this.Multiedges.keyValues())
-      if (kv[0].x != kv[0].y) yield kv[1]
+    for (const [k, v] of this.Multiedges.keyValues()) if (k.x != k.y) yield v
   }
 
   *AllIntEdges(): IterableIterator<PolyIntEdge> {
@@ -48,8 +47,8 @@ export class Database {
   }
 
   *SkeletonEdges(): IterableIterator<PolyIntEdge> {
-    for (const kv of this.Multiedges.keyValues()) {
-      if (kv[0].x != kv[0].y) yield kv[1][0]
+    for (const [k, v] of this.Multiedges.keyValues()) {
+      if (k.x != k.y) yield v[0]
     }
   }
 

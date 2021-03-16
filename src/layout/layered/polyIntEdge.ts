@@ -4,6 +4,7 @@ import {GeomEdge} from './../core/geomEdge'
 import {ICurve} from './../../math/geometry/icurve'
 import {LayerEdge} from './LayerEdge'
 import {Anchor} from './anchor'
+import {Assert} from '../../utils/assert'
 
 class Routing {
   static updateLabel(edge: GeomEdge, anchor: Anchor) {
@@ -36,6 +37,7 @@ export class PolyIntEdge implements IIntEdge {
     weight = 1,
     separation = 1,
   ) {
+    Assert.assert(source != target)
     this.source = source
     this.target = target
     this.geomEdge = geomEdge

@@ -79,5 +79,7 @@ test('layered layout hookup', () => {
     new SugiyamaLayoutSettings(),
     new CancelToken(),
   )
+  expect(ll.IntGraph.nodeCount).toBe(47)
+  expect(ll.IntGraph.edges.length).toBe(68)
   ll.run()
-}, 50000)
+})

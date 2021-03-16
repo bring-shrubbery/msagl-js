@@ -7,6 +7,9 @@ export class PointMap<T> {
     if (m == null) this.mapOfMaps.set(x, (m = new Map<number, T>()))
     m.set(y, v)
   }
+  setP(p: Point, v: T) {
+    this.set(p.x, p.y, v)
+  }
 
   delete(x: number, y: number) {
     const m = this.mapOfMaps.get(x)

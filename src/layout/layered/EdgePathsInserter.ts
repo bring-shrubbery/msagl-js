@@ -105,10 +105,9 @@ export class EdgePathsInserter {
 
   private CreateFullLayeredGraph() {
     let currentVV = this.layeredGraph.NodeCount
-    for (const kv of this.database.Multiedges.keyValues()) {
-      if (kv[0].x != kv[0].y) {
+    for (const [k, list] of this.database.Multiedges.keyValues()) {
+      if (k.x != k.y) {
         //not a self edge
-        const list = kv[1]
         let first = true
         let span = 0
         for (const e of list) {
@@ -175,12 +174,11 @@ export class EdgePathsInserter {
     for (let i = 0; i < this.layeredGraph.NodeCount; i++)
       this.NLayering[i] = this.la.Y[i]
 
-    for (const kv of this.database.Multiedges.keyValues()) {
-      if (kv[0].x != kv[0].y && this.la.Y[kv[0].x] != this.la.Y[kv[0].y]) {
+    for (const [k, list] of this.database.Multiedges.keyValues()) {
+      if (k.x != k.y && this.la.Y[k.x] != this.la.Y[k.y]) {
         //not a self edge and not a flat edge
         let layer = 0
         let first = true
-        const list = kv[1]
         for (const e of list) {
           if (first) {
             first = false

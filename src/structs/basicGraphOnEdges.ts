@@ -10,7 +10,8 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
   selfEdges: TEdge[][];
 
   *incidentEdges(v: number): IterableIterator<TEdge> {
-    return from(this.outEdges[v]).concatenate(from(this.inEdges[v]))
+    for (const e of this.outEdges[v]) yield e
+    for (const e of this.inEdges[v]) yield e
   }
 
   mkGraphOnEdges(edges: IEnumerable<TEdge>): BasicGraphOnEdges<TEdge> {

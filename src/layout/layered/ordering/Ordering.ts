@@ -387,7 +387,7 @@ export class Ordering extends Algorithm {
     for (i = 0; i < vertices.length; ) {
       if (medianValues[i] != -1) {
         const o = senum.next().value
-        if (typeof o == 'number') vertices[i++] = o as number
+        if (typeof o === 'number') vertices[i++] = o as number
         else {
           const al = o as number[]
           for (const v of al) {
