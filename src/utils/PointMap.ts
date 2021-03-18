@@ -17,8 +17,7 @@ export class PointMap<T> {
   }
 
   has(x: number, y: number): boolean {
-    const m = this.mapOfMaps.get(x)
-    return m != null && m.has(y)
+    return this.mapOfMaps.has(x) && this.mapOfMaps.get(x).has(y)
   }
   get(x: number, y: number) {
     const m = this.mapOfMaps.get(x)

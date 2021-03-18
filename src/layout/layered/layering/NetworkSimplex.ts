@@ -62,11 +62,9 @@ export class NetworkSimplex implements LayerCalculator {
   leaves: number[] = []
 
   get weight(): number {
-    return from(
-      this.graph.edges.map(
-        (e) => e.weight * (this.layers[e.source] - this.layers[e.target]),
-      ),
-    ).sum()
+    return from(this.graph.edges)
+      .select((e) => e.weight * (this.layers[e.source] - this.layers[e.target]))
+      .sum()
   }
   get nodeCount() {
     return this.vertices.length

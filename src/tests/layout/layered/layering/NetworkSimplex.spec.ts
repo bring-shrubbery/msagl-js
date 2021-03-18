@@ -14,9 +14,7 @@ test('network simplex', () => {
   const f = 5
   const g = 6
   const h = 7
-  const edge = (a: number, b: number) => {
-    return new PolyIntEdge(a, b, null)
-  }
+  const edge = (a: number, b: number) => new PolyIntEdge(a, b, null)
   const edges = [
     edge(a, b),
     edge(b, c),

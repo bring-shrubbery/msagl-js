@@ -97,12 +97,11 @@ export class MetroMapOrdering {
 
   CreateInitialOrdering(): PointMap<Array<number>> {
     const initialOrdering = new PointMap<Array<number>>()
-    for (let i = 0; i < this.layerArrays.Layers.length; i++) {
-      for (let j = 0; j < this.layerArrays.Layers[i].length; j++) {
-        const node = this.layerArrays.Layers[i][j]
+    for (const layer of this.layerArrays.Layers) {
+      for (const node of layer) {
         const p = this.nodePositions.get(node)
         if (!initialOrdering.has(p.x, p.y)) {
-          initialOrdering.set(p.x, p.y, new Array<number>())
+          initialOrdering.set(p.x, p.y, [])
         }
         initialOrdering.get(p.x, p.y).push(node)
       }
@@ -115,23 +114,17 @@ export class MetroMapOrdering {
   ): PointMap<Array<number>> {
     // run through nodes points and build order
     const result = new PointMap<Array<number>>()
-    const reverseOrder = new Map<number, number>()
-    for (let i = 0; i < this.layerArrays.Layers.length; i++) {
-      for (let j = 0; j < this.layerArrays.Layers[i].length; j++) {
-        const node: number = this.layerArrays.Layers[i][j]
+    const inverseOrder = new Map<number, number>()
+    for (const layer of this.layerArrays.Layers) {
+      for (const node of layer) {
         // already processed
         const p = this.nodePositions.get(node)
         if (result.has(p.x, p.y)) {
           continue
         }
 
-        result.setP(
-          this.nodePositions.get(node),
-          this.BuildNodeOrdering(
-            initialOrdering.getP(this.nodePositions.get(node)),
-            reverseOrder,
-          ),
-        )
+        this.BuildNodeOrdering(initialOrdering.getP(p), inverseOrder)
+        result.setP(p, initialOrdering.getP(p))
       }
     }
 
@@ -139,16 +132,13 @@ export class MetroMapOrdering {
   }
 
   BuildNodeOrdering(
-    nodeOrdering: Array<number>,
+    result: Array<number>,
     inverseToOrder: Map<number, number>,
-  ): Array<number> {
-    const result: Array<number> = nodeOrdering
+  ) {
     result.sort(this.Comparison(inverseToOrder))
     for (let i = 0; i < result.length; i++) {
       inverseToOrder.set(result[i], i)
     }
-
-    return result
   }
 
   Comparison(inverseToOrder: Map<number, number>) {
@@ -165,8 +155,8 @@ export class MetroMapOrdering {
       const succPoint2: Point = this.nodePositions.get(succ2)
       const predPoint1: Point = this.nodePositions.get(pred1)
       const predPoint2: Point = this.nodePositions.get(pred2)
-      if (succPoint1 != succPoint2) {
-        if (predPoint1 != predPoint2) {
+      if (!succPoint1.equal(succPoint2)) {
+        if (!predPoint1.equal(predPoint2)) {
           return predPoint1.compareTo(predPoint2)
         }
 
@@ -174,7 +164,7 @@ export class MetroMapOrdering {
       }
 
       if (this.properLayeredGraph.IsVirtualNode(succ1)) {
-        if (predPoint1 != predPoint2) {
+        if (!predPoint1.equal(predPoint2)) {
           return predPoint1.compareTo(predPoint2)
         }
 
@@ -185,14 +175,14 @@ export class MetroMapOrdering {
       }
 
       while (
-        this.nodePositions.get(pred1) == this.nodePositions.get(pred2) &&
+        this.nodePositions.get(pred1).equal(this.nodePositions.get(pred2)) &&
         this.properLayeredGraph.IsVirtualNode(pred1)
       ) {
         pred1 = from(this.properLayeredGraph.Pred(pred1)).first()
         pred2 = from(this.properLayeredGraph.Pred(pred2)).first()
       }
 
-      if (this.nodePositions.get(pred1) == this.nodePositions.get(pred2)) {
+      if (this.nodePositions.get(pred1).equal(this.nodePositions.get(pred2))) {
         return compareTo(node1, node2)
       }
 
@@ -203,21 +193,22 @@ export class MetroMapOrdering {
   }
 
   RestoreLayerArrays(ordering: PointMap<Array<number>>) {
-    for (let i = 0; i < this.layerArrays.Layers.length; i++) {
+    for (const layer of this.layerArrays.Layers) {
       let tec = 0
       let pred = 0
-      const layer = this.layerArrays.Layers[i]
       while (tec < layer.length) {
         while (
           tec < layer.length &&
-          this.nodePositions.get(layer[pred]) ==
-            this.nodePositions.get(layer[tec])
+          this.nodePositions
+            .get(layer[pred])
+            .equal(this.nodePositions.get(layer[tec]))
         ) {
           tec++
         }
 
+        const t = ordering.getP(this.nodePositions.get(layer[pred]))
         for (let j = pred; j < tec; j++) {
-          layer[j] = ordering.getP(this.nodePositions.get(layer[j]))[j - pred]
+          layer[j] = t[j - pred]
         }
 
         pred = tec

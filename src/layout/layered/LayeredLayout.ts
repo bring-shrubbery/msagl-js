@@ -449,12 +449,11 @@ export class LayeredLayout extends Algorithm {
     this.engineLayerArrays = layerArrays
     this.StraightensShortEdges()
 
-    let t: {aspectRatio: number}
-    this.CalculateOriginalGraphBox(t)
+    const aspectRatio = this.CalculateOriginalGraphBox()
 
     if (this.sugiyamaSettings.AspectRatio != 0)
       this.StretchToDesiredAspectRatio(
-        t.aspectRatio,
+        aspectRatio,
         this.sugiyamaSettings.AspectRatio,
       )
 
@@ -509,28 +508,26 @@ export class LayeredLayout extends Algorithm {
     )
   }
 
-  CalculateOriginalGraphBox(t: {aspectRatio: number}) {
-    t.aspectRatio = 0
-    if (this.anchors.length > 0) {
-      const box = new Rectangle(
-        this.anchors[0].left,
-        this.anchors[0].top,
-        this.anchors[0].right,
-        this.anchors[0].bottom,
-      )
-      for (let i = 1; i < this.anchors.length; i++) {
-        const a: Anchor = this.anchors[i]
-        box.add(a.leftTop)
-        box.add(a.rightBottom)
-      }
-
-      t.aspectRatio = box.width / box.height
-      const delta: number = box.leftTop.sub(box.rightBottom).length / 2
-      const del = new Point(delta * -1, delta)
-      box.add(box.leftTop.add(del))
-      box.add(box.rightBottom.sub(del))
-      this.originalGraph.boundingBox = box
+  CalculateOriginalGraphBox(): number {
+    if (this.anchors.length == 0) return 0
+    const box = new Rectangle(
+      this.anchors[0].left,
+      this.anchors[0].top,
+      this.anchors[0].right,
+      this.anchors[0].bottom,
+    )
+    for (let i = 1; i < this.anchors.length; i++) {
+      const a: Anchor = this.anchors[i]
+      box.add(a.leftTop)
+      box.add(a.rightBottom)
     }
+
+    const delta: number = box.leftTop.sub(box.rightBottom).length / 2
+    const del = new Point(delta * -1, delta)
+    box.add(box.leftTop.add(del))
+    box.add(box.rightBottom.sub(del))
+    this.originalGraph.boundingBox = box
+    return box.height != 0 ? box.width / box.height : 0
   }
 
   StraightensShortEdges() {
