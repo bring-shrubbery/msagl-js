@@ -8,6 +8,24 @@ export enum SnapToGridByY {
 }
 
 export class SugiyamaLayoutSettings {
+  // The resulting layout should be at list this wide
+  minimalWidth = 0
+  get MinimalWidth(): number {
+    return this.minimalWidth
+  }
+  set MinimalWidth(value: number) {
+    this.minimalWidth = Math.max(value, 0)
+  }
+
+  minimalHeight = 0
+  // The resulting layout should be at least this tall
+  get MinimalHeight(): number {
+    return this.minimalHeight
+  }
+  set MinimalHeight(value: number) {
+    this.minimalHeight = Math.max(value, 0)
+  }
+
   verticalConstraints = new VerticalConstraintsForSugiyama()
   horizontalConstraints = new HorizontalConstraintsForSugiyama()
   layeringOnly: boolean

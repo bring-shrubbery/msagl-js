@@ -1,7 +1,7 @@
+import {RealNumberSpan} from '../../utils/RealNumberSpan'
 import {BasicGraph} from '../../structs/BasicGraph'
 import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {Assert} from '../../utils/assert'
-import {GeomObject} from '../core/geomObject'
 import {Algorithm} from './../../utils/algorithm'
 import {PolyIntEdge} from './polyIntEdge'
 import {SugiyamaLayoutSettings, SnapToGridByY} from './SugiyamaLayoutSettings'
@@ -33,6 +33,7 @@ import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
 import {XLayoutGraph} from './XLayoutGraph'
 import {Rectangle} from '../../math/geometry/rectangle'
 import {NetworkSimplex} from './layering/NetworkSimplex'
+import {GeomConstants} from '../../math/geometry/geomConstants'
 
 export class LayeredLayout extends Algorithm {
   originalGraph: GeomGraph
@@ -132,9 +133,147 @@ export class LayeredLayout extends Algorithm {
   }
 
   UpdateNodePositionData() {
-    throw new Error('Method not implemented.')
+    this.TryToSatisfyMinWidhtAndMinHeight()
+
+    for (
+      let i = 0;
+      i < this.IntGraph.nodeCount && i < this.database.Anchors.length;
+      i++
+    )
+      this.IntGraph.nodes[i].center = this.database.Anchors[i].origin
+
+    if (this.sugiyamaSettings.GridSizeByX > 0) {
+      for (let i = 0; i < this.originalGraph.nodeCount; i++) {
+        this.SnapLeftSidesOfTheNodeToGrid(i, this.sugiyamaSettings.GridSizeByX)
+      }
+    }
   }
 
+  SnapLeftSidesOfTheNodeToGrid(i: number, gridSize: number) {
+    const node = this.IntGraph.nodes[i]
+    const anchor = this.database.Anchors[i]
+    anchor.leftAnchor -= gridSize / 2
+    anchor.rightAnchor -= gridSize / 2
+    const left = node.boundingBox.left
+    const k = Math.floor(left / gridSize)
+    const delta: number = left - k * gridSize
+    if (Math.abs(delta) < 0.001) {
+      return
+    }
+
+    //  we are free to shift at least gridSize horizontally
+    //  find the minimal shift
+    if (Math.abs(delta) <= gridSize / 2) {
+      node.center = node.center.add(new Point(-delta, 0))
+      //  shifting to the left
+    } else {
+      node.center = node.center.add(new Point(gridSize - delta, 0))
+      //  shifting to the right
+    }
+
+    anchor.x = node.center.x
+  }
+
+  TryToSatisfyMinWidhtAndMinHeight() {
+    this.TryToSatisfyMinWidth()
+    this.TryToSatisfyMinHeight()
+  }
+
+  TryToSatisfyMinWidth() {
+    if (this.sugiyamaSettings.MinimalWidth == 0) {
+      return
+    }
+
+    const w: number = this.GetCurrentWidth()
+    if (w < this.sugiyamaSettings.MinimalWidth) {
+      this.StretchWidth()
+    }
+  }
+
+  StretchWidth() {
+    // calculate the desired span of the anchor centers and the current span of anchor center
+    const desiredSpan = new RealNumberSpan()
+    for (const node of this.originalGraph.nodes()) {
+      desiredSpan.AddValue(node.boundingBox.width / 2)
+      desiredSpan.AddValue(
+        this.sugiyamaSettings.MinimalWidth - node.boundingBox.width / 2,
+      )
+    }
+
+    const currentSpan = new RealNumberSpan()
+    for (const anchor of this.NodeAnchors()) {
+      currentSpan.AddValue(anchor.x)
+    }
+
+    if (currentSpan.length > GeomConstants.distanceEpsilon) {
+      const stretch: number = desiredSpan.length / currentSpan.length
+      if (stretch > 1) {
+        for (const a of this.anchors) {
+          a.x *= stretch
+        }
+      }
+    }
+  }
+
+  TryToSatisfyMinHeight() {
+    if (this.sugiyamaSettings.MinimalHeight == 0) {
+      return
+    }
+
+    const h: number = this.GetCurrentHeight()
+    if (h < this.sugiyamaSettings.MinimalHeight) {
+      this.StretchHeight()
+    }
+  }
+
+  GetCurrentHeight(): number {
+    const span = new RealNumberSpan()
+    for (const anchor of this.NodeAnchors()) {
+      span.AddValue(anchor.top)
+      span.AddValue(anchor.bottom)
+    }
+
+    return span.length
+  }
+
+  StretchHeight() {
+    const desiredSpan = new RealNumberSpan()
+    for (const node of this.originalGraph.nodes()) {
+      desiredSpan.AddValue(node.boundingBox.height / 2)
+      desiredSpan.AddValue(
+        this.sugiyamaSettings.MinimalHeight - node.boundingBox.height / 2,
+      )
+    }
+
+    const currentSpan = new RealNumberSpan()
+    for (const anchor of this.NodeAnchors()) {
+      currentSpan.AddValue(anchor.y)
+    }
+
+    if (currentSpan.length > GeomConstants.distanceEpsilon) {
+      const stretch: number = desiredSpan.length / currentSpan.length
+      if (stretch > 1) {
+        for (const a of this.anchors) {
+          a.y *= stretch
+        }
+      }
+    }
+  }
+
+  *NodeAnchors(): IterableIterator<Anchor> {
+    const n = Math.min(this.IntGraph.nodeCount, this.anchors.length)
+    for (let i = 0; i < n; i++) yield this.anchors[i]
+  }
+
+  GetCurrentWidth(): number {
+    const span = new RealNumberSpan()
+    for (const anchor of this.NodeAnchors()) {
+      span.AddValue(anchor.left)
+      span.AddValue(anchor.right)
+    }
+
+    return span.length
+  }
   ExtendLayeringToUngluedSameLayerVertices(p: number[]): number[] {
     const vc = this.verticalConstraints
     for (let i = 0; i < p.length; i++) p[i] = p[vc.nodeToRepr(i)]
