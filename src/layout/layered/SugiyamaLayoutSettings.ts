@@ -1,5 +1,6 @@
-import {VerticalConstraintsForSugiyama} from './VerticalConstraintsForSugiyama'
-import {HorizontalConstraintsForSugiyama} from './HorizontalConstraintsForSugiyama'
+import { VerticalConstraintsForSugiyama } from './VerticalConstraintsForSugiyama'
+import { HorizontalConstraintsForSugiyama } from './HorizontalConstraintsForSugiyama'
+import { EdgeRoutingSettings } from '../../core/routing/EdgeRoutingSettings'
 
 export enum SnapToGridByY {
   None,
@@ -10,6 +11,7 @@ export enum SnapToGridByY {
 export class SugiyamaLayoutSettings {
   // The resulting layout should be at list this wide
   minimalWidth = 0
+  EdgeRoutingSettings = new EdgeRoutingSettings()
   get MinimalWidth(): number {
     return this.minimalWidth
   }
