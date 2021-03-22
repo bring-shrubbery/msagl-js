@@ -1,7 +1,7 @@
-import {Point} from './point'
-import {Polyline} from './polyline'
-import {GeomConstants} from './geomConstants'
-import {Assert} from './../../utils/assert'
+import { Point } from './point'
+import { Polyline } from './polyline'
+import { GeomConstants } from './geomConstants'
+import { Assert } from './../../utils/assert'
 
 class Size {
   width: number
@@ -173,7 +173,7 @@ export class Rectangle {
   }
 
   // Create rectangle that is the bounding box of the given Rectangles
-  static rectangleOnRectangles(rectangles: [Rectangle]) {
+  static rectangleOnRectangles(rectangles: Rectangle[]) {
     const r = Rectangle.mkEmpty()
     for (const p of rectangles) {
       r.addRec(p)
@@ -232,7 +232,7 @@ export class Rectangle {
   }
 
   // Rectangle area
-  area() {
+  get area() {
     return (this.right_ - this.left_) * (this.top_ - this.bottom_)
   }
 

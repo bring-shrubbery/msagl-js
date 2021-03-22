@@ -7,4 +7,5 @@ test('interval add', () => {
   expect(j.GetInRange(2.1)).toBe(2)
   const k = Interval.mkInterval(i, j)
   expect(k.End).toBe(2)
+  expect(i.Intersects(j)).toBeTruthy()
 })

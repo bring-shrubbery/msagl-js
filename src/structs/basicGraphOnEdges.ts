@@ -1,6 +1,23 @@
-import {IEdge} from './iedge'
-import {Queue} from 'queue-typescript'
-import {from, IEnumerable} from 'linq-to-typescript'
+import { IEdge } from './iedge'
+import { Queue } from 'queue-typescript'
+import { from, IEnumerable } from 'linq-to-typescript'
+export function mkGraphOnEdges<TEdge extends IEdge>(edges: IEnumerable<TEdge>): BasicGraphOnEdges<TEdge> {
+  const n = new BasicGraphOnEdges<TEdge>()
+  n.SetEdges(edges.toArray(), BasicGraphOnEdges.vertexCount(edges))
+  return n
+}
+
+export function mkGraphOnEdgesArray<TEdge extends IEdge>(edges: TEdge[]): BasicGraphOnEdges<TEdge> {
+  const n = new BasicGraphOnEdges<TEdge>()
+  n.SetEdges(edges, BasicGraphOnEdges.vertexCount(from(edges)))
+  return n
+}
+
+export function mkGraphOnEdgesN<TEdge extends IEdge>(edges: TEdge[], numberOfVerts: number) {
+  const n = new BasicGraphOnEdges<TEdge>()
+  n.SetEdges(edges, numberOfVerts)
+  return n
+}
 
 export class BasicGraphOnEdges<TEdge extends IEdge> {
   edges: TEdge[]
@@ -14,23 +31,6 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
     for (const e of this.inEdges[v]) yield e
   }
 
-  mkGraphOnEdges(edges: IEnumerable<TEdge>): BasicGraphOnEdges<TEdge> {
-    const n = new BasicGraphOnEdges<TEdge>()
-    n.SetEdges(edges.toArray(), BasicGraphOnEdges.vertexCount(edges))
-    return n
-  }
-
-  mkGraphOnEdgesArray(edges: TEdge[]): BasicGraphOnEdges<TEdge> {
-    const n = new BasicGraphOnEdges<TEdge>()
-    n.SetEdges(edges, BasicGraphOnEdges.vertexCount(from(edges)))
-    return n
-  }
-
-  mkGraphOnEdgesN(edges: TEdge[], numberOfVerts: number) {
-    const n = new BasicGraphOnEdges<TEdge>()
-    n.SetEdges(edges, numberOfVerts)
-    return n
-  }
 
   static deleteFromArray(arr: any, obj: any) {
     const index = arr.indexOf(obj, 0)
