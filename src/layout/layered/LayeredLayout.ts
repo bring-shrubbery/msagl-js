@@ -672,11 +672,12 @@ export class LayeredLayout extends Algorithm {
     }
 
     const h = this.originalGraph.height * scaleFactor
-    this.originalGraph.boundingBox = new Rectangle(
-      this.originalGraph.boundingBox.left,
-      center + h / 2,
-      this.originalGraph.boundingBox.right,
-      center - h / 2,
+    this.originalGraph.boundingBox = new Rectangle({
+      left: this.originalGraph.boundingBox.left,
+      top: center + h / 2,
+      right: this.originalGraph.boundingBox.right,
+      bottom: center - h / 2
+    }
     )
   }
 
@@ -693,20 +694,23 @@ export class LayeredLayout extends Algorithm {
 
     const w = this.originalGraph.width * scaleFactor
     this.originalGraph.boundingBox = new Rectangle(
-      center - w / 2,
-      this.originalGraph.boundingBox.top,
-      center + w / 2,
-      this.originalGraph.boundingBox.bottom,
+      {
+        left: center - w / 2,
+        top: this.originalGraph.boundingBox.top,
+        right: center + w / 2,
+        bottom: this.originalGraph.boundingBox.bottom
+      }
     )
   }
 
   CalculateOriginalGraphBox(): number {
     if (this.anchors.length == 0) return 0
-    const box = new Rectangle(
-      this.anchors[0].left,
-      this.anchors[0].top,
-      this.anchors[0].right,
-      this.anchors[0].bottom,
+    const box = new Rectangle({
+      left: this.anchors[0].left,
+      top: this.anchors[0].top,
+      right: this.anchors[0].right,
+      bottom: this.anchors[0].bottom
+    }
     )
     for (let i = 1; i < this.anchors.length; i++) {
       const a: Anchor = this.anchors[i]

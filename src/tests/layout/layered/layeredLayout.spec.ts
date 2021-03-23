@@ -1,15 +1,15 @@
-import {parseDotGraph, parseDotString} from './../../../utils/dotparser'
-import {SugiyamaLayoutSettings} from './../../../layout/layered/SugiyamaLayoutSettings'
+import { parseDotGraph, parseDotString } from './../../../utils/dotparser'
+import { SugiyamaLayoutSettings } from './../../../layout/layered/SugiyamaLayoutSettings'
 import SortedMap = require('collections/sorted-map')
-import {LayeredLayout} from '../../../layout/layered/LayeredLayout'
-import {Graph} from '../../../structs/graph'
-import {GeomNode} from '../../../layout/core/geomNode'
-import {GeomEdge} from '../../../layout/core/geomEdge'
-import {CurveFactory} from '../../../math/geometry/curveFactory'
-import {Point} from '../../../math/geometry/point'
-import {CancelToken} from '../../../utils/cancelToken'
-import {GeomGraph} from '../../../layout/core/GeomGraph'
-import {GeomObject} from '../../../layout/core/geomObject'
+import { LayeredLayout } from '../../../layout/layered/LayeredLayout'
+import { Graph } from '../../../structs/graph'
+import { GeomNode } from '../../../layout/core/geomNode'
+import { GeomEdge } from '../../../layout/core/geomEdge'
+import { CurveFactory } from '../../../math/geometry/curveFactory'
+import { Point } from '../../../math/geometry/point'
+import { CancelToken } from '../../../utils/cancelToken'
+import { GeomGraph } from '../../../layout/core/GeomGraph'
+import { GeomObject } from '../../../layout/core/geomObject'
 function createGeometry(g: Graph) {
   for (const n of g.nodes) {
     const gn = new GeomNode(n)
@@ -41,7 +41,7 @@ test('map test', () => {
 
   expect(mi.get(ip1)).toBe(undefined)
 })
-test('layered layout glued graph', () => {
+xtest('layered layout glued graph', () => {
   const graphString = 'digraph G {\n' + 'a -> b\n' + 'a -> b}'
   const g = parseDotString(graphString)
   createGeometry(g)
@@ -71,7 +71,7 @@ test('sorted map', () => {
   expect(m.size == 3)
 })
 
-test('layered layout hookup', () => {
+xtest('layered layout hookup', () => {
   const g = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(g)
   const ll = new LayeredLayout(

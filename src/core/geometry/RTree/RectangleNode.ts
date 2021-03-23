@@ -1,4 +1,4 @@
-import { IEnumerable } from 'linq-to-typescript'
+import { from, IEnumerable } from 'linq-to-typescript'
 import { Stack } from 'stack-typescript'
 import { Point } from '../../../math/geometry/point'
 import { Rectangle } from '../../../math/geometry/rectangle'
@@ -49,7 +49,7 @@ function DivideNodes<TData>(nodes: RectangleNode<TData>[],
   }
 }
 
-function CreateRectangleNodeOnListOfNodes<TData>(nodes: RectangleNode<TData>[]): RectangleNode<TData> {
+export function CreateRectangleNodeOnListOfNodes<TData>(nodes: RectangleNode<TData>[]): RectangleNode<TData> {
   if (nodes.length == 0) return null;
 
   if (nodes.length == 1) return nodes[0];
@@ -129,13 +129,13 @@ export function CreateRectangleNodeOnData<TData>(dataEnumeration: IEnumerable<TD
 }
 
 
-function mkRectangleNodeWithCount<TData>(count: number): RectangleNode<TData> {
+export function mkRectangleNodeWithCount<TData>(count: number): RectangleNode<TData> {
   const r = new RectangleNode<TData>()
   r.Count = count;
   return r
 }
 
-function mkRectangleNode<TData>(data: TData, rect: Rectangle): RectangleNode<TData> {
+export function mkRectangleNode<TData>(data: TData, rect: Rectangle): RectangleNode<TData> {
   const r = new RectangleNode<TData>()
   r.UserData = data;
   r.Rectangle = rect;
@@ -330,13 +330,12 @@ export class RectangleNode<TData> {
   }
 
   // Walk the tree and return the data from all leaves
-  *GetAllLeaves(): IterableIterator<TData> {
-    for (const n of this.GetAllLeafNodes())
-      yield n.UserData
+  GetAllLeaves(): IEnumerable<TData> {
+    return this.GetAllLeafNodes().select(n => n.UserData)
   }
 
-  *GetAllLeafNodes(): IterableIterator<RectangleNode<TData>> {
-    return this.EnumRectangleNodes(true /*leafOnly*/);
+  GetAllLeafNodes(): IEnumerable<RectangleNode<TData>> {
+    return from(this.EnumRectangleNodes(true /*leafOnly*/));
   }
 
   *EnumRectangleNodes(leafOnly: boolean): IterableIterator<RectangleNode<TData>> {

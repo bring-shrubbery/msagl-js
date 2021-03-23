@@ -18,11 +18,11 @@ export class Rectangle {
   top_: number
   bottom_: number
 
-  constructor(left: number, right: number, top: number, bottom: number) {
-    this.left_ = left
-    this.right_ = right
-    this.top_ = top
-    this.bottom_ = bottom
+  constructor(t: { left: number, right: number, top: number, bottom: number }) {
+    this.left_ = t.left
+    this.right_ = t.right
+    this.top_ = t.top
+    this.bottom_ = t.bottom
   }
   // returns true if r intersect this rectangle
   intersects(rectangle: Rectangle): boolean {
@@ -40,7 +40,7 @@ export class Rectangle {
     const r = Math.min(this.right, rectangle.right)
     const b = Math.max(this.bottom, rectangle.bottom)
     const t = Math.min(this.top, rectangle.top)
-    return new Rectangle(l, b, r, t)
+    return new Rectangle({ left: l, bottom: b, right: r, top: t })
   }
 
   // the center of the bounding box
@@ -71,7 +71,7 @@ export class Rectangle {
 
   // creates an empty rectangle
   static mkEmpty() {
-    return new Rectangle(0, -1, 0, -1)
+    return new Rectangle({ left: 0, right: -1, bottom: 0, top: -1 })
   }
 
   get left() {
@@ -136,14 +136,14 @@ export class Rectangle {
 
   // create a box of two points
   static mkPP(point0: Point, point1: Point) {
-    const r = new Rectangle(point0.x, point0.x, point0.y, point0.y)
+    const r = new Rectangle({ left: point0.x, right: point0.x, top: point0.y, bottom: point0.y })
     r.add(point1)
     return r
   }
 
   // create rectangle from a point
-  static rectanglePoint(point: Point) {
-    return new Rectangle(point.x, point.x, point.y, point.y)
+  static rectanglePoint(p: Point) {
+    return new Rectangle({ left: p.x, right: p.x, top: p.y, bottom: p.y })
   }
 
   static rectangleFromLeftBottomAndSize(
@@ -153,18 +153,18 @@ export class Rectangle {
   ) {
     const right = left + sizeF.x
     const top = bottom + sizeF.y
-    return new Rectangle(left, right, top, bottom)
+    return new Rectangle({ left: left, right: right, top: top, bottom: bottom })
   }
 
   // create a box on points (x0,y0), (x1,y1)
   static getRectangleOnCoords(x0: number, y0: number, x1: number, y1: number) {
-    const r = new Rectangle(x0, y0, x1, y1)
+    const r = new Rectangle({ left: x0, bottom: y0, right: x0, top: y0 })
     r.add(new Point(x1, y1))
     return r
   }
 
   // Create rectangle that is the bounding box of the given points
-  static rectangleOnPoints(points: [Point]): Rectangle {
+  static mkOnPoints(points: [Point]): Rectangle {
     const r = Rectangle.mkEmpty()
     for (const p of points) {
       r.add(p)
@@ -216,7 +216,7 @@ export class Rectangle {
 
   // rectangle containing both a and b
   static rectangleOfTwo(a: Rectangle, b: Rectangle) {
-    const r = new Rectangle(a.left_, a.right_, a.top_, a.bottom_)
+    const r = new Rectangle({ left: a.left_, right: a.right_, top: a.top_, bottom: a.bottom_ })
     r.addRec(b)
     return r
   }
@@ -376,7 +376,7 @@ export class Rectangle {
     const h = size.height / 2
     const bottom = center.y - h
     const top = center.y + h
-    return new Rectangle(left, right, top, bottom)
+    return new Rectangle({ left: left, right: right, top: top, bottom: bottom })
   }
 
   // adding a point with a Size

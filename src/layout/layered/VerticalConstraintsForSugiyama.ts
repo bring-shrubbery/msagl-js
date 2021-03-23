@@ -1,5 +1,5 @@
 import { BasicGraph } from '../../structs/BasicGraph'
-import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges'
+import { BasicGraphOnEdges, mkGraphOnEdgesN } from '../../structs/basicGraphOnEdges'
 import { IntPair } from '../../utils/IntPair'
 import { GeomNode } from '../core/geomNode'
 import { CycleRemoval } from './CycleRemoval'
@@ -95,7 +95,7 @@ export class VerticalConstraintsForSugiyama {
   }
 
   removeCyclesFromGluedConstraints() {
-    const graph = new BasicGraphOnEdges<IntPair>().mkGraphOnEdgesN(
+    const graph = mkGraphOnEdgesN<IntPair>(
       from(this.gluedUpDownIntConstraints.values()).toArray(),
       this.intGraph.nodeCount,
     )
@@ -300,7 +300,7 @@ export class VerticalConstraintsForSugiyama {
     const set = new IntPairSet(this.intGraph.nodeCount)
     this.intGraph.edges.forEach((e) => set.add(this.gluedIntPairI(e)))
 
-    return new BasicGraphOnEdges<IntPair>().mkGraphOnEdgesN(
+    return mkGraphOnEdgesN<IntPair>(
       from(set.values()).toArray(),
       this.intGraph.nodeCount,
     )
