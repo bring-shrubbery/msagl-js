@@ -1,7 +1,7 @@
-import {Graph} from './../../structs/graph'
-import {Edge} from './../../structs/edge'
-import {Node} from './../../structs/node'
-import {Rectangle} from './../../math/geometry/rectangle'
+import { Graph } from './../../structs/graph'
+import { Edge } from './../../structs/edge'
+import { Node } from './../../structs/node'
+import { Rectangle } from './../../math/geometry/rectangle'
 test('graph create', () => {
   const g = new Graph()
   expect(g.nodeCount).toBe(0)
@@ -85,7 +85,7 @@ test('graph delete node', () => {
 
 test('graph attr', () => {
   const g = new Graph()
-  const rect = new Rectangle(0, 1, 0, 1)
+  const rect = new Rectangle({ left: 0, right: 1, bottom: 0, top: 1 })
   g.setAttr(0, rect)
   let r = g.getAttr(0) as Rectangle
   expect(r.width).toBe(rect.width)

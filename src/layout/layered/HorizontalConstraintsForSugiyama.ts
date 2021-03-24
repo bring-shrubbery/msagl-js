@@ -1,11 +1,11 @@
-import {from, IEnumerable} from 'linq-to-typescript'
-import {List, get} from 'lodash'
-import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
-import {IEdge} from '../../structs/iedge'
-import {IntPair} from '../../utils/IntPair'
-import {IntPairSet} from '../../utils/IntPairSet'
-import {GeomNode} from '../core/geomNode'
-import {CycleRemoval} from './CycleRemoval'
+import { from, IEnumerable } from 'linq-to-typescript'
+import { List, get } from 'lodash'
+import { BasicGraphOnEdges, mkGraphOnEdges } from '../../structs/basicGraphOnEdges'
+import { IEdge } from '../../structs/iedge'
+import { IntPair } from '../../utils/IntPair'
+import { IntPairSet } from '../../utils/IntPairSet'
+import { GeomNode } from '../core/geomNode'
+import { CycleRemoval } from './CycleRemoval'
 
 function mktuple<T>(a: T, b: T): [T, T] {
   return [a, b]
@@ -73,7 +73,7 @@ export class HorizontalConstraintsForSugiyama {
   }
 
   BasicGraphFromLeftRightIntNeibs(): BasicGraphOnEdges<IntPair> {
-    return new BasicGraphOnEdges<IntPair>().mkGraphOnEdges(
+    return mkGraphOnEdges(
       from(this.LeftRightIntNeibs.values()).select(
         (p) => new IntPair(p[0], p[1]),
       ),
@@ -126,7 +126,7 @@ export class HorizontalConstraintsForSugiyama {
         .where((ip) => ip.x != ip.x),
     )
     const feedbackSet = CycleRemoval.getFeedbackSet(
-      new BasicGraphOnEdges<IEdge>().mkGraphOnEdges(
+      mkGraphOnEdges(
         from(this.LeftRighInts.values()),
       ),
     )
