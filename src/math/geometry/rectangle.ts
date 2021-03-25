@@ -45,7 +45,7 @@ export class Rectangle {
 
   // the center of the bounding box
   get center(): Point {
-    return this.leftTop.add(this.rightBottom).mult(0.5)
+    return this.leftTop.add(this.rightBottom).mul(0.5)
   }
   set center(value: Point) {
     const shift = value.sub(this.center)

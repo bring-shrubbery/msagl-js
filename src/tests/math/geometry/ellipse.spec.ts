@@ -1,15 +1,15 @@
 // import {ICurve} from '../math/geometry/icurve';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {LineSegment} from '../../../math/geometry/lineSegment'
-import {Point} from '../../../math/geometry/point'
-import {DebugCurve} from '../../../math/geometry/debugCurve'
-import {Curve} from '../../../math/geometry/curve'
-import {CurveFactory} from '../../../math/geometry/curveFactory'
-import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
+import { LineSegment } from '../../../math/geometry/lineSegment'
+import { Point } from '../../../math/geometry/point'
+import { DebugCurve } from '../../../math/geometry/debugCurve'
+import { Curve } from '../../../math/geometry/curve'
+import { CurveFactory } from '../../../math/geometry/curveFactory'
+import { SvgDebugWriter } from '../../../math/geometry/svgDebugWriter'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Ellipse} from '../../../math/geometry/ellipse'
-import {GeomConstants} from '../../../math/geometry/geomConstants'
+import { Ellipse } from '../../../math/geometry/ellipse'
+import { GeomConstants } from '../../../math/geometry/geomConstants'
 test('ellipse value test', () => {
   const a = new Point(100, 0)
   const b = new Point(0, 200)
@@ -19,7 +19,7 @@ test('ellipse value test', () => {
   expect(
     Point.close(
       ell.value(t),
-      a.mult(Math.cos(t)).add(b.mult(Math.sin(t))),
+      a.mul(Math.cos(t)).add(b.mul(Math.sin(t))),
       GeomConstants.distanceEpsilon,
     ),
   ).toBeTruthy

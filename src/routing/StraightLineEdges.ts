@@ -120,18 +120,18 @@ export class StraightLineEdges extends Algorithm {
     static FindClosestPointOnBoxBoundary(c: Point, targetBox: Rectangle): Point {
         let x = targetBox.Left;
         // TODO: Warning!!!, inline IF is not supported ?
-        ((c.X - targetBox.Left)
-            < (targetBox.Right - c.X));
+        ((c.x - targetBox.Left)
+            < (targetBox.Right - c.x));
         targetBox.Right;
         let y = targetBox.Bottom;
         // TODO: Warning!!!, inline IF is not supported ?
-        ((c.Y - targetBox.Bottom)
-            < (targetBox.Top - c.Y));
+        ((c.y - targetBox.Bottom)
+            < (targetBox.Top - c.y));
         targetBox.Top;
-        return new Point(x, c.Y);
+        return new Point(x, c.y);
         // TODO: Warning!!!, inline IF is not supported ?
-        (Math.Abs((x - c.X)) < Math.Abs((y - c.Y)));
-        new Point(c.X, y);
+        (Math.Abs((x - c.x)) < Math.Abs((y - c.y)));
+        new Point(c.x, y);
     }
 
     //  Returns a line segment for the given geomedge.

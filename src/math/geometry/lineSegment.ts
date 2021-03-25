@@ -1,10 +1,10 @@
-import {ICurve} from './icurve'
-import {Point} from './point'
-import {Parallelogram} from './parallelogram'
-import {PlaneTransformation} from './planeTransformation'
-import {Rectangle} from './rectangle'
-import {GeomConstants} from './geomConstants'
-import {PN} from './parallelogramNode'
+import { ICurve } from './icurve'
+import { Point } from './point'
+import { Parallelogram } from './parallelogram'
+import { PlaneTransformation } from './planeTransformation'
+import { Rectangle } from './rectangle'
+import { GeomConstants } from './geomConstants'
+import { PN } from './parallelogramNode'
 export class LineSegment implements ICurve {
   start: Point //the line goes from start to end
   end: Point // the line end point
@@ -37,7 +37,7 @@ export class LineSegment implements ICurve {
   }
 
   value(t: number): Point {
-    return this.start.add(this.end.sub(this.start).mult(t))
+    return this.start.add(this.end.sub(this.start).mul(t))
   }
   // Not Implemented: Returns the trimmed curve, wrapping around the end if start is greater than end.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -49,7 +49,7 @@ export class LineSegment implements ICurve {
   // This tree is used in curve intersections routines.
   // <value></value>
   pNodeOverICurve(): PN {
-    const side = this.end.sub(this.start).mult(0.5)
+    const side = this.end.sub(this.start).mul(0.5)
     return {
       parallelogram: Parallelogram.parallelogramByCornerSideSide(
         this.start,
@@ -173,7 +173,7 @@ return xx;
     this.end = this.end.add(delta)
   }
 
-  // Scale (multiply) from origin by x and y
+  // Scale (muliply) from origin by x and y
   scaleFromOrigin(xScale: number, yScale: number) {
     return LineSegment.mkLinePP(
       this.start.scale(xScale, yScale),
@@ -303,7 +303,7 @@ return xx;
     b: Point,
     c: Point,
     d: Point,
-  ): {dist: number; parab: number; parcd: number} {
+  ): { dist: number; parab: number; parcd: number } {
     const u = b.sub(a)
     const v = d.sub(c)
     const w = a.sub(c)
@@ -380,7 +380,7 @@ return xx;
       // get the difference of the two closest points
       //            const dP = w + (parab * u) - (parcd * v),
 
-      dist: w.add(u.mult(parab_).sub(v.mult(parcd_))).length, // return the closest distance
+      dist: w.add(u.mul(parab_).sub(v.mul(parcd_))).length, // return the closest distance
     }
   }
 }

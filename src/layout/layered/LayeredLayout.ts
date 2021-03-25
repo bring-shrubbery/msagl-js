@@ -193,7 +193,7 @@ export class LayeredLayout extends Algorithm {
       i < this.IntGraph.nodeCount && i < this.database.Anchors.length;
       i++
     )
-      this.IntGraph.nodes[i].center = this.database.Anchors[i].origin
+      this.IntGraph.nodes[i].center = this.database.Anchors[i].Origin
 
     if (this.sugiyamaSettings.GridSizeByX > 0) {
       for (let i = 0; i < this.originalGraph.nodeCount; i++) {
@@ -592,13 +592,13 @@ export class LayeredLayout extends Algorithm {
         const sp = this.GetSuccessorAndPredecessor(i)
         if (!TryToPutLabelOutsideOfAngle(a, sp.predecessor, sp.successor)) {
           const sumNow =
-            sp.predecessor.origin.sub(a.origin).length +
-            sp.successor.origin.sub(a.origin).length
+            sp.predecessor.Origin.sub(a.Origin).length +
+            sp.successor.Origin.sub(a.Origin).length
           const nx = a.right - a.leftAnchor //new potential anchor center
           const xy = new Point(nx, a.y)
           const sumWouldBe =
-            sp.predecessor.origin.sub(xy).length +
-            sp.successor.origin.sub(xy).length
+            sp.predecessor.Origin.sub(xy).length +
+            sp.successor.Origin.sub(xy).length
           if (sumWouldBe < sumNow)
             //we need to swap
             PutLabelToTheLeft(a)
@@ -1215,9 +1215,9 @@ function TryToPutLabelOutsideOfAngle(
   if (a.labelIsToTheRightOfTheSpline) {
     if (
       Point.getTriangleOrientation(
-        predecessor.origin,
-        a.origin,
-        successor.origin,
+        predecessor.Origin,
+        a.Origin,
+        successor.Origin,
       ) == TriangleOrientation.Clockwise
     )
       return true
@@ -1228,9 +1228,9 @@ function TryToPutLabelOutsideOfAngle(
     PutLabelToTheLeft(a)
     if (
       Point.getTriangleOrientation(
-        predecessor.origin,
-        a.origin,
-        successor.origin,
+        predecessor.Origin,
+        a.Origin,
+        successor.Origin,
       ) == TriangleOrientation.Counterclockwise
     )
       return true

@@ -1,9 +1,9 @@
 // import {ICurve} from '../../../math/geometry/icurve';
-import {GeomConstants} from '../../../math/geometry/geomConstants'
-import {LineSegment} from '../../../math/geometry/lineSegment'
-import {Point} from '../../../math/geometry/point'
-import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
-import {DebugCurve} from '../../../math/geometry/debugCurve'
+import { GeomConstants } from '../../../math/geometry/geomConstants'
+import { LineSegment } from '../../../math/geometry/lineSegment'
+import { Point } from '../../../math/geometry/point'
+import { SvgDebugWriter } from '../../../math/geometry/svgDebugWriter'
+import { DebugCurve } from '../../../math/geometry/debugCurve'
 
 test('lineSegment basic case', () => {
   const a = new LineSegment(0, 0, 1, 1)
@@ -22,7 +22,7 @@ test('lineSegment basic case', () => {
   expect(
     Point.close(
       a.value(t),
-      a.start.add(a.end.sub(a.start).mult(t)),
+      a.start.add(a.end.sub(a.start).mul(t)),
       GeomConstants.distanceEpsilon,
     ),
   ).toBe(true)
@@ -89,9 +89,9 @@ function getUniformMd(a: Point, b: Point, c: Point, d: Point): number {
   const cdDel = d.sub(c).div(n)
   let dist = b.sub(c).length
   for (let i = 0; i <= n; i++) {
-    const p = a.add(abDel.mult(i))
+    const p = a.add(abDel.mul(i))
     for (let j = 0; j <= n; j++) {
-      const q = c.add(cdDel.mult(j))
+      const q = c.add(cdDel.mul(j))
       const ndist = p.sub(q).length
       if (dist > ndist) dist = ndist
     }

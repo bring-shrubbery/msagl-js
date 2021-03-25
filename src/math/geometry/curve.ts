@@ -446,7 +446,7 @@ export class Curve implements ICurve {
 
     const perp = lineDir.rotate90Ccw().div(segLength)
     const segProjection = lineSeg.start.sub(ellipse.center).dot(perp)
-    const closestPointOnLine = ellipse.center.add(perp.mult(segProjection))
+    const closestPointOnLine = ellipse.center.add(perp.mul(segProjection))
 
     const rad = ellipse.aAxis.length
     const absSegProj = Math.abs(segProjection)
@@ -464,7 +464,7 @@ export class Curve implements ICurve {
     } else {
       Assert.assert(rad > absSegProj)
       const otherLeg = Math.sqrt(rad * rad - segProjection * segProjection)
-      const d = lineDir.mult(otherLeg)
+      const d = lineDir.mul(otherLeg)
       Curve.tryToAddPointToLineCircleCrossing(
         lineSeg,
         ellipse,
@@ -1307,7 +1307,7 @@ export class Curve implements ICurve {
     if (sol == undefined) return
     let aSol = sol.x
     let bSol = sol.y
-    const x = aStart.add(u.mult(aSol))
+    const x = aStart.add(u.mul(aSol))
 
     if (aSol < amin - GeomConstants.tolerance) return
 
@@ -1860,12 +1860,12 @@ export class Curve implements ICurve {
   ): BezierSeg {
     const s = Point.mkPoint(kPrev, a.point, 1 - kPrev, b.point)
     const e = Point.mkPoint(kNext, c.point, 1 - kNext, b.point)
-    const t = b.point.mult(2.0 / 3.0)
+    const t = b.point.mul(2.0 / 3.0)
     return new BezierSeg(s, s.div(3.0).add(t), t.add(e.div(3.0)), e)
   }
 
   static createBezierSegN(a: Point, b: Point, perp: Point, i: number) {
-    const d = perp.mult(i)
+    const d = perp.mul(i)
     return new BezierSeg(a, a.add(d), b.add(d), b)
   }
 
@@ -1980,7 +1980,7 @@ export class Curve implements ICurve {
     for (let i = 0; i < 4; i++) {
       const t = a + (i * Math.PI) / 2 // parameter
       const p = ellipse[t] //point on the ellipse
-      const tan = ellipse.derivative(t).normalize().mult(l) //make it long enough
+      const tan = ellipse.derivative(t).normalize().mul(l) //make it long enough
 
       const ls = LineSegment.mkLinePP(p.sub(tan), p.add(tan))
       for (const x of Curve.getAllIntersections(rect, ls, true)) xs.push(x)

@@ -1,14 +1,14 @@
-﻿import {Point} from './../../math/geometry/point'
-import {IntersectionInfo} from './../../math/geometry/intersectionInfo'
-import {GeomConstants} from './../../math/geometry/geomConstants'
-import {Curve} from './../../math/geometry/curve'
-import {ICurve} from './../../math/geometry/icurve'
-import {Ellipse} from './../../math/geometry/ellipse'
-import {LineSegment} from './../../math/geometry/lineSegment'
-import {EdgeGeometry} from './edgeGeometry'
-import {Assert} from './../../utils/assert'
-import {GeomEdge} from './geomEdge'
-import {from} from 'linq-to-typescript'
+﻿import { Point } from './../../math/geometry/point'
+import { IntersectionInfo } from './../../math/geometry/intersectionInfo'
+import { GeomConstants } from './../../math/geometry/geomConstants'
+import { Curve } from './../../math/geometry/curve'
+import { ICurve } from './../../math/geometry/icurve'
+import { Ellipse } from './../../math/geometry/ellipse'
+import { LineSegment } from './../../math/geometry/lineSegment'
+import { EdgeGeometry } from './edgeGeometry'
+import { Assert } from './../../utils/assert'
+import { GeomEdge } from './geomEdge'
+import { from } from 'linq-to-typescript'
 export class Arrowhead {
   static defaultArrowheadLength = 10
   length = Arrowhead.defaultArrowheadLength
@@ -202,10 +202,10 @@ export class Arrowhead {
     while (
       ((edgeGeometry.sourceArrowhead != null &&
         edgeGeometry.sourceArrowhead.length >
-          GeomConstants.intersectionEpsilon) ||
+        GeomConstants.intersectionEpsilon) ||
         (edgeGeometry.targetArrowhead != null &&
           edgeGeometry.targetArrowhead.length >
-            GeomConstants.intersectionEpsilon)) &&
+          GeomConstants.intersectionEpsilon)) &&
       !success
     ) {
       success = Arrowhead.calculateArrowheads(edgeGeometry)
@@ -260,7 +260,7 @@ export class Arrowhead {
     if (edge.edgeGeometry.targetArrowhead != null) {
       maxArrowLength += edge.edgeGeometry.targetArrowhead.length
     }
-    perp = perp.normalize().mult(1.5 * maxArrowLength)
+    perp = perp.normalize().mul(1.5 * maxArrowLength)
     const stop = 10000
     let i = 1
     do {
@@ -295,12 +295,12 @@ export class Arrowhead {
     const targetArrow = edge.edgeGeometry.targetArrowhead
     if (targetArrow != null) {
       targetArrow.tipPosition = b
-      lineEnd = b.sub(ab.mult(targetArrow.length))
+      lineEnd = b.sub(ab.mul(targetArrow.length))
     }
     const sourceArrow = edge.edgeGeometry.sourceArrowhead
     if (sourceArrow != null) {
       sourceArrow.tipPosition = a
-      lineStart = a.add(ab.mult(sourceArrow.length))
+      lineStart = a.add(ab.mul(sourceArrow.length))
     }
     edge.edgeGeometry.curve = LineSegment.mkLinePP(lineStart, lineEnd)
   }

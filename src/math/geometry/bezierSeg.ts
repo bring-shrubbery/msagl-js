@@ -1,8 +1,8 @@
 // Cubic Bezier Segment
-import {ICurve} from './icurve'
-import {LineSegment} from './lineSegment'
-import {Curve} from './curve'
-import {Rectangle} from './rectangle'
+import { ICurve } from './icurve'
+import { LineSegment } from './lineSegment'
+import { Curve } from './curve'
+import { Rectangle } from './rectangle'
 import {
   PN,
   PNInternal,
@@ -10,12 +10,12 @@ import {
   createPNLeaf,
   ParallelogramNode,
 } from './parallelogramNode'
-import {Point} from './point'
-import {Parallelogram} from './parallelogram'
-import {GeomConstants} from './geomConstants'
-import {PlaneTransformation} from './planeTransformation'
-import {ClosestPointOnCurve} from './closestPointOnCurve'
-import {Assert} from './../../utils/assert'
+import { Point } from './point'
+import { Parallelogram } from './parallelogram'
+import { GeomConstants } from './geomConstants'
+import { PlaneTransformation } from './planeTransformation'
+import { ClosestPointOnCurve } from './closestPointOnCurve'
+import { Assert } from './../../utils/assert'
 export class BezierSeg implements ICurve {
   leftDerivative(t: number) {
     return this.derivative(t)
@@ -54,8 +54,8 @@ export class BezierSeg implements ICurve {
     const t3 = t2 * t
     //    return l * t3 + e * t2 + c * t + b[0];
     return this.l
-      .mult(t3)
-      .add(this.e.mult(t2).add(this.c.mult(t)).add(this.b[0]))
+      .mul(t3)
+      .add(this.e.mul(t2).add(this.c.mul(t)).add(this.b[0]))
   }
 
   static adjustParamTo01(u: number): number {
@@ -107,8 +107,8 @@ export class BezierSeg implements ICurve {
   // first derivative
   derivative(t: number) {
     return this.l
-      .mult(3 * t * t)
-      .add(this.e.mult(2 * t))
+      .mul(3 * t * t)
+      .add(this.e.mul(2 * t))
       .add(this.c)
   }
   // second derivative
@@ -118,7 +118,7 @@ export class BezierSeg implements ICurve {
 
   // third derivative
   thirdDerivative(t: number) {
-    return this.l.mult(6)
+    return this.l.mul(6)
   }
   // the constructor
   constructor(b0: Point, b1: Point, b2: Point, b3: Point) {
@@ -126,8 +126,8 @@ export class BezierSeg implements ICurve {
     this.b[1] = b1
     this.b[2] = b2
     this.b[3] = b3
-    this.c = this.b[1].sub(this.b[0]).mult(3)
-    this.e = this.b[2].sub(this.b[1]).mult(3).sub(this.c)
+    this.c = this.b[1].sub(this.b[0]).mul(3)
+    this.e = this.b[2].sub(this.b[1]).mul(3).sub(this.c)
     this.l = this.b[3].sub(this.b[0]).sub(this.c).sub(this.e)
   }
 
@@ -151,8 +151,8 @@ export class BezierSeg implements ICurve {
     this.b[1] = this.b[1].add(delta)
     this.b[2] = this.b[2].add(delta)
     this.b[3] = this.b[3].add(delta)
-    this.c = this.b[1].sub(this.b[0]).mult(3)
-    this.e = this.b[2].sub(this.b[1]).mult(3).sub(this.c)
+    this.c = this.b[1].sub(this.b[0]).mul(3)
+    this.e = this.b[2].sub(this.b[1]).mul(3).sub(this.c)
     this.l = this.b[3].sub(this.b[0]).sub(this.c).sub(this.e)
     this.pBoxNode = null
   }

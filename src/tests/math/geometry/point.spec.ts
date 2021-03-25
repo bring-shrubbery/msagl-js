@@ -1,7 +1,7 @@
-import {Point} from './../../../math/geometry/point'
-import {PlaneTransformation} from './../../../math/geometry/planeTransformation'
-import {VertexId, Parallelogram} from './../../../math/geometry/parallelogram'
-import {GeomConstants} from './../../../math/geometry/geomConstants'
+import { Point } from './../../../math/geometry/point'
+import { PlaneTransformation } from './../../../math/geometry/planeTransformation'
+import { VertexId, Parallelogram } from './../../../math/geometry/parallelogram'
+import { GeomConstants } from './../../../math/geometry/geomConstants'
 
 test('angle test', () => {
   const eps = 0.00001
@@ -68,7 +68,7 @@ test('point test', () => {
   expect(resultPoint.x).toBe(a - c)
   expect(resultPoint.y).toBe(b - d)
 
-  resultPoint = p1.mult(2)
+  resultPoint = p1.mul(2)
   expect(resultPoint.x).toBe(a * 2)
   expect(resultPoint.y).toBe(b * 2)
 })
@@ -108,7 +108,7 @@ test('parallelogram contains test', () => {
     new Point(1, 0),
     new Point(0, 1),
   )
-  const pOut = par.vertex(VertexId.otherCorner).mult(1.1)
+  const pOut = par.vertex(VertexId.otherCorner).mul(1.1)
   expect(par.contains(pOut)).toBe(false)
 
   const par0 = Parallelogram.parallelogramByCornerSideSide(

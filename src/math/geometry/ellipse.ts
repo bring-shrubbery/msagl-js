@@ -1,11 +1,11 @@
-import {ICurve} from './icurve'
-import {Curve} from './curve'
-import {Rectangle} from './rectangle'
-import {PN, ParallelogramNode} from './parallelogramNode'
-import {Point} from './point'
-import {GeomConstants} from './geomConstants'
-import {PlaneTransformation} from './planeTransformation'
-import {ClosestPointOnCurve} from './closestPointOnCurve'
+import { ICurve } from './icurve'
+import { Curve } from './curve'
+import { Rectangle } from './rectangle'
+import { PN, ParallelogramNode } from './parallelogramNode'
+import { Point } from './point'
+import { GeomConstants } from './geomConstants'
+import { PlaneTransformation } from './planeTransformation'
+import { ClosestPointOnCurve } from './closestPointOnCurve'
 export class Ellipse implements ICurve {
   box: Rectangle
 
@@ -22,14 +22,14 @@ export class Ellipse implements ICurve {
     const d = dir.sub(this.center)
     const angle = Point.angle(this.aAxis, d)
     const s = this.aAxis
-      .mult(Math.cos(angle))
-      .add(this.bAxis.mult(Math.sin(angle)))
+      .mul(Math.cos(angle))
+      .add(this.bAxis.mul(Math.sin(angle)))
     if (s.length < d.length) {
       const al = this.aAxis.length
       const bl = this.bAxis.length
       return Ellipse.mkEllipsePPP(
-        this.aAxis.normalize().mult(al + offset),
-        this.bAxis.normalize().mult(bl + offset),
+        this.aAxis.normalize().mul(al + offset),
+        this.bAxis.normalize().mul(bl + offset),
         this.center,
       )
     }
@@ -37,8 +37,8 @@ export class Ellipse implements ICurve {
       const al = this.aAxis.length
       const bl = this.bAxis.length
       return Ellipse.mkEllipsePPP(
-        this.aAxis.normalize().mult(al - offset),
-        this.bAxis.normalize().mult(bl - offset),
+        this.aAxis.normalize().mul(al - offset),
+        this.bAxis.normalize().mul(bl - offset),
         this.center,
       )
     }
@@ -204,8 +204,8 @@ export class Ellipse implements ICurve {
     return new Ellipse(
       this.parStart,
       this.parEnd,
-      this.aAxis.mult(xScale),
-      this.bAxis.mult(yScale),
+      this.aAxis.mul(xScale),
+      this.bAxis.mul(yScale),
       this.center.scale(xScale, yScale),
     )
   }

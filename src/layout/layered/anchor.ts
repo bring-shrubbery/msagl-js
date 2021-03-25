@@ -6,14 +6,19 @@
 //           |
 //           |
 //           |BottomAnchor
-import {Point, TriangleOrientation} from './../../math/geometry/point'
-import {Polyline} from './../../math/geometry/polyline'
-import {PolylinePoint} from './../../math/geometry/polylinePoint'
-import {Curve} from './../../math/geometry/curve'
-import {GeomConstants} from './../../math/geometry/geomConstants'
-import {GeomNode} from './../core/geomNode'
-import {Assert} from './../../utils/assert'
+import { Point, TriangleOrientation } from './../../math/geometry/point'
+import { Polyline } from './../../math/geometry/polyline'
+import { PolylinePoint } from './../../math/geometry/polylinePoint'
+import { Curve } from './../../math/geometry/curve'
+import { GeomConstants } from './../../math/geometry/geomConstants'
+import { GeomNode } from './../core/geomNode'
+import { Assert } from './../../utils/assert'
 export class Anchor {
+  labelToTheRightOfAnchorCenter: boolean
+  labelToTheLeftOfAnchorCenter: boolean
+  get representsLabel(): boolean { return this.labelToTheRightOfAnchorCenter || this.labelToTheLeftOfAnchorCenter; }
+
+
   // ToString
   toString() {
     return (
@@ -149,7 +154,7 @@ export class Anchor {
   constructor(labelCornersPreserveCoefficient: number) {
     Assert.assert(
       0 <= labelCornersPreserveCoefficient &&
-        labelCornersPreserveCoefficient <= 1,
+      labelCornersPreserveCoefficient <= 1,
     )
     this.labelCornersPreserveCoefficient = labelCornersPreserveCoefficient
   }
@@ -191,7 +196,7 @@ export class Anchor {
   }
 
   // Center of the node
-  get origin() {
+  get Origin() {
     return new Point(this.x, this.y)
   }
 
@@ -293,21 +298,21 @@ export class Anchor {
     const l = uv.normalize().add(v.sub(w).normalize())
     if (l.length < GeomConstants.intersectionEpsilon) {
       return {
-        a: v.add(uvPerp.mult(padding)),
+        a: v.add(uvPerp.mul(padding)),
         b: null,
         numberOfPoints: 1,
       }
     }
 
-    const d = l.normalize().mult(padding)
+    const d = l.normalize().mul(padding)
     const dp = d.rotate(Math.PI / 2)
 
     //look for a in the form d+x*dp + v
     //we need to have:  padding = (d+x*dp)*uvPerp
     const xp = (padding - d.dot(uvPerp)) / dp.dot(uvPerp)
     return {
-      a: d.add(dp.mult(xp)).add(v),
-      b: d.sub(dp.mult(xp)).add(v),
+      a: d.add(dp.mul(xp)).add(v),
+      b: d.sub(dp.mul(xp)).add(v),
       numberOfPoints: 2, //number of points to add
     }
   }

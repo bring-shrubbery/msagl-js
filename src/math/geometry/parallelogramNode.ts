@@ -1,15 +1,15 @@
-﻿import {ICurve} from './icurve'
-import {Point} from './point'
-import {LineSegment} from './lineSegment'
-import {Parallelogram} from './parallelogram'
-import {GeomConstants} from './geomConstants'
-import {Assert} from './../../utils/assert'
-import {LinearSystem2} from './linearSystem'
-import {SvgDebugWriter} from './svgDebugWriter'
-import {allVerticesOfParall} from './parallelogram'
-import {Polyline} from './polyline'
-import {DebugCurve} from './debugCurve'
-import {CurveFactory} from './curveFactory'
+﻿import { ICurve } from './icurve'
+import { Point } from './point'
+import { LineSegment } from './lineSegment'
+import { Parallelogram } from './parallelogram'
+import { GeomConstants } from './geomConstants'
+import { Assert } from './../../utils/assert'
+import { LinearSystem2 } from './linearSystem'
+import { SvgDebugWriter } from './svgDebugWriter'
+import { allVerticesOfParall } from './parallelogram'
+import { Polyline } from './polyline'
+import { DebugCurve } from './debugCurve'
+import { CurveFactory } from './curveFactory'
 // Serves to hold a Parallelogram and a ICurve,
 // and is used in curve intersections routines.
 // The node can be a top of the hierarchy if its sons are non-nulls.
@@ -57,7 +57,7 @@ export class ParallelogramNode {
     if (l.length < GeomConstants.intersectionEpsilon)
       return p.sub(s.add(e).div(2)).length
     let perp = new Point(-l.y, l.x)
-    perp = perp.mult(1 / perp.length)
+    perp = perp.mul(1 / perp.length)
     return Math.abs(p.sub(s).dot(perp))
   }
 
@@ -90,7 +90,7 @@ export class ParallelogramNode {
 
     const x = numeratorTiny ? 0 : numerator / denumerator
 
-    tan1 = tan1.mult(x)
+    tan1 = tan1.mul(x)
 
     return Parallelogram.parallelogramByCornerSideSide(
       corner,
@@ -119,10 +119,10 @@ export class ParallelogramNode {
 
     if (
       ParallelogramNode.distToSegm(middle, s, e) <=
-        GeomConstants.intersectionEpsilon &&
+      GeomConstants.intersectionEpsilon &&
       w.dot(w) <
-        GeomConstants.lineSegmentThreshold *
-          GeomConstants.lineSegmentThreshold &&
+      GeomConstants.lineSegmentThreshold *
+      GeomConstants.lineSegmentThreshold &&
       end - start < GeomConstants.lineSegmentThreshold
     ) {
       const ls = LineSegment.mkLinePP(s, e)
@@ -179,7 +179,7 @@ export class ParallelogramNode {
       parallelogram: null,
       seg: ell,
       leafBoxesOffset: 1,
-      node: {children: []},
+      node: { children: [] },
     }
 
     const intNode: PNInternal = pBNode.node as PNInternal

@@ -1,5 +1,5 @@
-import {LinearSystem2} from './linearSystem'
-import {GeomConstants} from './geomConstants'
+import { LinearSystem2 } from './linearSystem'
+import { GeomConstants } from './geomConstants'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,
@@ -84,7 +84,7 @@ export class Point {
   sub(a: Point) {
     return new Point(this.x - a.x, this.y - a.y)
   }
-  mult(c: number) {
+  mul(c: number) {
     return new Point(this.x * c, this.y * c)
   }
   div(c: number) {
@@ -116,7 +116,7 @@ export class Point {
       ret.y > -eps &&
       ret.y < 1.0 + eps
     ) {
-      return a.add(ba.mult(ret.x))
+      return a.add(ba.mul(ret.x))
     } else {
       return
     }
@@ -170,11 +170,11 @@ export class Point {
   }
 
   static mkPoint(x: number, a: Point, y: number, b: Point) {
-    return a.mult(x).add(b.mult(y))
+    return a.mul(x).add(b.mul(y))
   }
 
   static convSum(x: number, a: Point, b: Point) {
-    return a.add(b.sub(a).mult(x))
+    return a.add(b.sub(a).mul(x))
   }
 
   /// The angle you need to turn "side0" counterclockwise to make it collinear with "side1"
@@ -220,4 +220,19 @@ export class Point {
       return TriangleOrientation.Clockwise
     return TriangleOrientation.Collinear
   }
+
+  static ClosestPointAtLineSegment(point: Point, segmentStart: Point, segmentEnd: Point): Point {
+    const bc = segmentEnd.sub(segmentStart);
+    const ba = point.sub(segmentStart)
+    const c1 = bc.dot(ba)
+    const c2 = bc.dot(bc)
+    if (c1 <= 0.0 + GeomConstants.tolerance)
+      return segmentStart;
+
+    if (c2 <= c1 + GeomConstants.tolerance)
+      return segmentEnd;
+
+    return segmentStart.add(bc.mul(c1 / c2));
+  }
+
 }

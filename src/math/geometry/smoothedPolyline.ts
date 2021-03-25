@@ -1,9 +1,9 @@
-import {CornerSite} from './cornerSite'
-import {Point} from './../../math/geometry/point'
-import {LineSegment} from './../../math/geometry/lineSegment'
-import {Curve} from './../../math/geometry/curve'
-import {BezierSeg} from './../../math/geometry/bezierSeg'
-import {Assert} from './../../utils/assert'
+import { CornerSite } from './cornerSite'
+import { Point } from './../../math/geometry/point'
+import { LineSegment } from './../../math/geometry/lineSegment'
+import { Curve } from './../../math/geometry/curve'
+import { BezierSeg } from './../../math/geometry/bezierSeg'
+import { Assert } from './../../utils/assert'
 export class SmoothedPolyline {
   // creates the polyline from corner points
   static mkFromPoints(points: Point[]) {
@@ -120,18 +120,18 @@ export class SmoothedPolyline {
     const a = b.prev
     const c = b.next
     //    s = kPrev*a.Point + (1 - kPrev)*b.Point;
-    const s = a.point.mult(kPrev).add(b.point.mult(1 - kPrev))
+    const s = a.point.mul(kPrev).add(b.point.mul(1 - kPrev))
     //    const e = kNext * c.point + (1 - kNext) * b.point;
-    const e = c.point.mult(kNext).add(b.point.mult(1 - kNext))
+    const e = c.point.mul(kNext).add(b.point.mul(1 - kNext))
     //   u = s*b.PreviousTangentCoefficient + (1 - b.PreviousTangentCoefficient)*b.Point;
 
     const u = s
-      .mult(b.previousTangentCoefficient)
-      .add(b.point.mult(1 - b.previousTangentCoefficient))
+      .mul(b.previousTangentCoefficient)
+      .add(b.point.mul(1 - b.previousTangentCoefficient))
     //const v = e * b.nextTangentCoefficient + (1 - b.nextTangentCoefficient) * b.point;
     const v = e
-      .mult(b.nextTangentCoefficient)
-      .add(b.point.mult(1 - b.nextTangentCoefficient))
+      .mul(b.nextTangentCoefficient)
+      .add(b.point.mul(1 - b.nextTangentCoefficient))
     return BezierSeg.mkBezier([s, u, v, e])
   }
 }

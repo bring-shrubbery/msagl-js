@@ -1,4 +1,4 @@
-import {Point} from './point'
+import { Point } from './point'
 export class CornerSite {
   // the coeffiecient used to calculate the first and the second control points of the
   // Bezier segment for the fillet at the site
