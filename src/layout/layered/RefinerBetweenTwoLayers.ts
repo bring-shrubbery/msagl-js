@@ -1,0 +1,442 @@
+import { from, IEnumerable, InvalidOperationException } from "linq-to-typescript";
+import { CornerSite } from "../../math/geometry/cornerSite";
+import { GeomConstants } from "../../math/geometry/geomConstants";
+import { Point } from "../../math/geometry/point";
+import { randomInt } from "../../utils/random";
+import { GeomGraph } from "../core/GeomGraph";
+import { Anchor } from "./anchor";
+import { LayerArrays } from "./LayerArrays";
+import { LayerEdge } from "./LayerEdge";
+import { NodeKind } from "./NodeKind";
+import { ProperLayeredGraph } from "./ProperLayeredGraph";
+
+type Points = () => IEnumerable<Point>
+
+class RefinerBetweenTwoLayers {
+
+
+
+  topNode: number;
+
+  bottomNode: number;
+
+  topSite: CornerSite;
+
+  bottomSite: CornerSite;
+
+  currentTopSite: CornerSite;
+
+  currentBottomSite: CornerSite;
+
+  layerArrays: LayerArrays;
+
+  layeredGraph: ProperLayeredGraph;
+
+  originalGraph: GeomGraph;
+
+  topCorners: Points;
+
+  bottomCorners: Points;
+
+  anchors: Anchor[];
+
+  layerSeparation: number;
+
+  constructor(topNodeP: number, bottomNodeP: number, topSiteP: CornerSite, layerArraysP: LayerArrays, layeredGraphP: ProperLayeredGraph, originalGraphP: GeomGraph, anchorsP: Anchor[], layerSeparation: number) {
+    this.topNode = topNodeP;
+    this.bottomNode = bottomNodeP;
+    this.topSite = topSiteP;
+    this.bottomSite = topSiteP.next;
+    this.currentTopSite = topSiteP;
+    this.currentBottomSite = topSiteP.next;
+    this.layerArrays = layerArraysP;
+    this.layeredGraph = layeredGraphP;
+    this.originalGraph = originalGraphP;
+    this.anchors = anchorsP;
+    this.layerSeparation = layerSeparation;
+  }
+
+  static Refine(topNodeP: number, bottomNode: number, topSiteP: CornerSite, anchors: Anchor[], layerArraysP: LayerArrays, layeredGraph: ProperLayeredGraph, originalGraph: GeomGraph, layerSeparation: number) {
+    let refiner: RefinerBetweenTwoLayers = new RefinerBetweenTwoLayers(topNodeP, bottomNode, topSiteP, layerArraysP, layeredGraph, originalGraph, anchors, layerSeparation);
+    refiner.Refine();
+  }
+
+  Refine() {
+    this.Init();
+    while (this.InsertSites()) {
+    }
+  }
+
+  private FixCorner(start: Point, corner: Point, end: Point): Point {
+    if (start.equal(corner)) {
+      return corner;
+    }
+
+    const a: Point = Point.ClosestPointAtLineSegment(corner, start, end);
+    let offsetInTheChannel: Point = corner.sub(a);
+    const y = Math.abs(offsetInTheChannel.y);
+    const sep = (this.layerSeparation / 2);
+    if (y > sep) {
+      offsetInTheChannel = offsetInTheChannel.mul(sep / (y * 2));
+    }
+
+    return offsetInTheChannel.add(corner);
+  }
+
+  private InsertSites(): boolean {
+    if (randomInt(2) == 0) {
+      return this.CalculateNewTopSite() || this.CalculateNewBottomSite()
+    }
+    else {
+      return (this.CalculateNewBottomSite() || this.CalculateNewTopSite());
+    }
+
+  }
+
+  ///  <summary>
+  ///  circimvating from the side
+  ///  </summary>
+  ///  <returns></returns>
+  CalculateNewBottomSite(): boolean {
+    const mainSeg = this.currentBottomSite.point.sub(this.currentTopSite.point)
+    let cotan: number = RefinerBetweenTwoLayers.AbsCotan(mainSeg);
+    let vOfNewSite: Point
+    // to silence the compiler
+    let someBottomCorners: boolean
+    for (let p of this.bottomCorners()) {
+      let cornerCotan: number = RefinerBetweenTwoLayers.AbsCotan(p.sub(this.currentBottomSite.point))
+      if ((cornerCotan < cotan)) {
+        cotan = cornerCotan;
+        vOfNewSite = p;
+        someBottomCorners = true;
+      }
+
+    }
+
+    if (!someBottomCorners) {
+      return false;
+    }
+
+    if (!Point.closeD(cotan, RefinerBetweenTwoLayers.AbsCotan(mainSeg))) {
+      this.currentBottomSite =
+        CornerSite.mkSiteSPS(this.currentTopSite,
+          this.FixCorner(this.currentTopSite.point, vOfNewSite, this.currentBottomSite.point),
+          this.currentBottomSite);
+      // consider a different FixCorner
+      return true;
+    }
+
+    return false;
+    // no progress
+  }
+
+  private static AbsCotan(mainSeg: Point): number {
+    return Math.abs((mainSeg.x / mainSeg.y));
+  }
+
+  private CalculateNewTopSite(): boolean {
+    const mainSeg: Point = this.currentBottomSite.point.sub(this.currentTopSite.point)
+    let cotan: number = RefinerBetweenTwoLayers.AbsCotan(mainSeg);
+    let vOfNewSite: Point
+    let someTopCorners: boolean
+    for (let p of this.topCorners()) {
+      let cornerCotan: number = RefinerBetweenTwoLayers.AbsCotan(p.sub(this.currentTopSite.point));
+      if ((cornerCotan < cotan)) {
+        cotan = cornerCotan;
+        vOfNewSite = p;
+        someTopCorners = true;
+      }
+
+    }
+
+    if (!someTopCorners) {
+      return false;
+    }
+
+    if (!Point.closeD(cotan, RefinerBetweenTwoLayers.AbsCotan(mainSeg))) {
+      this.currentTopSite = CornerSite.mkSiteSPS(this.currentTopSite, this.FixCorner(this.currentTopSite.point, vOfNewSite, this.currentBottomSite.point), this.currentBottomSite);
+      // consider a different FixCorner
+      return true;
+    }
+
+    return false;
+    // no progress
+  }
+
+  // private CornerSite AvoidBottomLayer() {
+  //     Point corner;
+  //     if (StickingCornerFromTheBottomLayer(out corner)) {
+  //         corner = FixCorner(this.currentTopSite.v, corner, this.currentBottomSite.v);
+  //         return new CornerSite(this.currentTopSite, corner, this.currentBottomSite);
+  //     } else
+  //         return null;
+  // }
+  // private CornerSite AvoidTopLayer() {
+  //     Point corner;
+  //     if (StickingCornerFromTheTopLayer(out corner)) {
+  //         corner = FixCorner(this.currentTopSite.v, corner, this.currentBottomSite.v);
+  //         return new CornerSite(this.currentTopSite, corner, this.currentBottomSite);
+  //     } else
+  //         return null;
+  // }
+  // private bool StickingCornerFromTheTopLayer(out Point corner) {
+  //     corner = this.currentBottomSite.v;
+  //     foreach (Point l in this.topCorners()) {
+  //         Point p = l;
+  //         if (this.counterClockwise(ref currentTopSite.v, ref p, ref corner)) 
+  //             corner = p;
+  //     }
+  //     return corner != this.currentBottomSite.v;
+  // }
+  // private bool StickingCornerFromTheBottomLayer(out Point corner) {
+  //     corner = this.currentTopSite.v;
+  //     foreach (Point l in this.bottomCorners()) {
+  //         Point p = l;
+  //         if (this.counterClockwise(ref currentBottomSite.v, ref p, ref corner))
+  //             corner = p;
+  //     }
+  //     return corner != this.currentTopSite.v;
+  // }
+  private Init() {
+    if (this.IsTopToTheLeftOfBottom()) {
+      this.topCorners = () => from(this.CornersToTheRightOfTop())
+      this.bottomCorners = () => from(this.CornersToTheLeftOfBottom())
+    }
+    else {
+      this.topCorners = () => from(this.CornersToTheLeftOfTop())
+      this.bottomCorners = () => from(this.CornersToTheRightOfBottom())
+    }
+
+  }
+
+  private IsTopToTheLeftOfBottom(): boolean {
+    return (this.topSite.point.x < this.topSite.next.point.x);
+  }
+
+  * NodeCorners(node: number): IterableIterator<Point> {
+    for (let p of this.NodeAnchor(node).polygonalBoundary.points()) {
+      yield p;
+    }
+  }
+
+  NodeAnchor(node: number): Anchor {
+    return this.anchors[node];
+  }
+
+  * CornersToTheLeftOfBottom(): IterableIterator<Point> {
+    let bottomPosition: number = this.layerArrays.X[this.bottomNode];
+    let leftMost: number = this.currentTopSite.point.x;
+    let rightMost: number = this.currentBottomSite.point.x;
+    for (let node of this.LeftFromTheNode(this.NodeLayer(this.bottomNode), bottomPosition, NodeKind.Bottom, leftMost, rightMost)) {
+      for (let p of this.NodeCorners(node)) {
+        if (((p.y > this.currentBottomSite.point.y)
+          && RefinerBetweenTwoLayers.PossibleCorner(leftMost, rightMost, p))) {
+          yield p;
+        }
+
+      }
+
+    }
+  }
+
+  * CornersToTheLeftOfTop(): IterableIterator<Point> {
+    let topPosition: number = this.layerArrays.X[this.topNode];
+    let leftMost: number = this.currentBottomSite.point.x;
+    let rightMost: number = this.currentTopSite.point.x;
+    for (let node of this.LeftFromTheNode(this.NodeLayer(this.topNode), topPosition, NodeKind.Top, leftMost, rightMost)) {
+      for (let p of this.NodeCorners(node)) {
+        if (((p.y < this.currentTopSite.point.y)
+          && RefinerBetweenTwoLayers.PossibleCorner(leftMost, rightMost, p))) {
+          yield p;
+        }
+
+      }
+
+    }
+
+  }
+
+  *CornersToTheRightOfBottom(): IterableIterator<Point> {
+    let bottomPosition: number = this.layerArrays.X[this.bottomNode];
+    let leftMost: number = this.currentBottomSite.point.x;
+    let rightMost: number = this.currentTopSite.point.x;
+    for (let node of this.RightFromTheNode(this.NodeLayer(this.bottomNode), bottomPosition, NodeKind.Bottom, leftMost, rightMost)) {
+      for (let p of this.NodeCorners(node)) {
+        if (((p.y > this.currentBottomSite.point.y)
+          && RefinerBetweenTwoLayers.PossibleCorner(leftMost, rightMost, p))) {
+          yield p;
+        }
+
+      }
+
+    }
+
+  }
+
+  * CornersToTheRightOfTop(): IterableIterator<Point> {
+    let topPosition: number = this.layerArrays.X[this.topNode];
+    let leftMost: number = this.currentTopSite.point.x;
+    let rightMost: number = this.currentBottomSite.point.x;
+    for (let node of this.RightFromTheNode(this.NodeLayer(this.topNode), topPosition, NodeKind.Top, leftMost, rightMost)) {
+      for (let p of this.NodeCorners(node)) {
+        if (((p.y < this.currentTopSite.point.y)
+          && RefinerBetweenTwoLayers.PossibleCorner(leftMost, rightMost, p))) {
+          yield p;
+        }
+
+      }
+
+    }
+
+
+  }
+
+  private static PossibleCorner(leftMost: number, rightMost: number, p: Point): boolean {
+    return ((p.x > leftMost)
+      && (p.x < rightMost));
+  }
+
+  private NodeLayer(j: number): number[] {
+    return this.layerArrays.Layers[this.layerArrays.Y[j]];
+  }
+
+  // private static bool CounterClockwise(ref Point topPoint, ref Point cornerPoint, ref Point p) {
+  //     return Point.GetTriangleOrientation(topPoint, cornerPoint, p) == TriangleOrientation.Counterclockwise;
+  // }
+  // private static bool Clockwise(ref Point topPoint, ref Point cornerPoint, ref Point p) {
+  //     return Point.GetTriangleOrientation(topPoint, cornerPoint, p) == TriangleOrientation.Clockwise;
+  // }
+  IsLabel(u: number): boolean {
+    return this.anchors[u].representsLabel;
+  }
+
+  private NodeUCanBeCrossedByNodeV(u: number, v: number): boolean {
+    if ((this.IsLabel(u) || this.IsLabel(v))) {
+      return false;
+    }
+
+    if ((this.IsVirtualVertex(u)
+      && (this.IsVirtualVertex(v) && this.AdjacentEdgesIntersect(u, v)))) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private AdjacentEdgesIntersect(u: number, v: number): boolean {
+    return (this.Intersect(this.IncomingEdge(u), this.IncomingEdge(v)) || this.Intersect(this.OutcomingEdge(u), this.OutcomingEdge(v)));
+  }
+
+  private Intersect(e: LayerEdge, m: LayerEdge): boolean {
+    return (((this.layerArrays.X[e.Source] - this.layerArrays.X[m.Source])
+      * (this.layerArrays.X[e.Target] - this.layerArrays.X[m.Target]))
+      < 0);
+  }
+
+  private IncomingEdge(u: number): LayerEdge {
+    for (let le of this.layeredGraph.InEdges(u)) {
+      return le;
+    }
+
+    throw new Error();
+  }
+
+  // here u is a virtual vertex
+  private OutcomingEdge(u: number): LayerEdge {
+    for (let le of this.layeredGraph.OutEdges(u)) {
+      return le;
+    }
+
+    throw new Error();
+  }
+
+  IsVirtualVertex(v: number): boolean {
+    return (v >= this.originalGraph.nodeCount);
+  }
+
+  *RightFromTheNode(layer: number[], vPosition: number, nodeKind: NodeKind, leftMostX: number, rightMostX: number): IterableIterator<number> {
+    let b: number = 0;
+    let t: number = 0;
+    if ((nodeKind == NodeKind.Bottom)) {
+      b = Number.MAX_VALUE
+    }
+
+    // we don't have bottom boundaries here since they will be cut off
+    if ((nodeKind == NodeKind.Top)) {
+      t = Number.MAX_VALUE
+    }
+
+    // we don't have top boundaries here since they will be cut off
+    let v: number = layer[vPosition];
+    for (let i = (vPosition + 1); (i < layer.length); i++) {
+      let u: number = layer[i];
+      if (this.NodeUCanBeCrossedByNodeV(u, v)) {
+        continue
+      }
+
+      let anchor: Anchor = this.anchors[u];
+      if (anchor.left >= rightMostX) {
+        break;
+      }
+
+      if ((anchor.right > leftMostX)) {
+        if (anchor.topAnchor
+          > t + GeomConstants.distanceEpsilon) {
+          t = anchor.topAnchor;
+          yield u;
+        }
+        else if ((anchor.bottomAnchor
+          > (b + GeomConstants.distanceEpsilon))) {
+          b = anchor.bottomAnchor;
+          yield u;
+        }
+
+      }
+
+    }
+
+  }
+
+  *LeftFromTheNode(layer: number[], vPosition: number, nodeKind: NodeKind, leftMostX: number, rightMostX: number): IterableIterator<number> {
+    let b: number = 0;
+    let t: number = 0;
+    if ((nodeKind == NodeKind.Bottom)) {
+      b = Number.MAX_VALUE
+    }
+
+    // we don't have bottom boundaries here since they will be cut off
+    if ((nodeKind == NodeKind.Top)) {
+      t = Number.MAX_VALUE
+    }
+
+    // we don't have top boundaries here since they will be cut off
+    let v: number = layer[vPosition];
+    for (let i: number = (vPosition - 1); (i > -1); i--) {
+      let u: number = layer[i];
+      if (this.NodeUCanBeCrossedByNodeV(u, v)) {
+        continue
+      }
+
+      let anchor: Anchor = this.anchors[u];
+      if ((anchor.right <= leftMostX)) {
+        break;
+      }
+
+      if ((anchor.left < rightMostX)) {
+        if ((anchor.topAnchor
+          > (t + GeomConstants.distanceEpsilon))) {
+          t = anchor.topAnchor;
+          yield u;
+        }
+        else if ((anchor.bottomAnchor
+          > (b + GeomConstants.distanceEpsilon))) {
+          b = anchor.bottomAnchor;
+          yield u;
+        }
+
+      }
+
+    }
+
+  }
+}
