@@ -1,9 +1,9 @@
-import {Ellipse} from './ellipse'
-import {Curve} from './curve'
-import {Point} from './point'
-import {LineSegment} from './lineSegment'
-import {PlaneTransformation} from './planeTransformation'
-import {ICurve} from './icurve'
+import { Ellipse } from './ellipse'
+import { Curve } from './curve'
+import { Point } from './point'
+import { LineSegment } from './lineSegment'
+import { PlaneTransformation } from './planeTransformation'
+import { ICurve } from './icurve'
 type RoundedRectRadii = {
   radX: number
   radY: number

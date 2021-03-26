@@ -1,7 +1,7 @@
-import {Point} from '../../../math/geometry/point'
-import {BezierSeg} from '../../../math/geometry/bezierSeg'
-import {DebugCurve} from '../../../math/geometry/debugCurve'
-import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
+import { Point } from '../../../math/geometry/point'
+import { BezierSeg } from '../../../math/geometry/bezierSeg'
+import { DebugCurve } from '../../../math/geometry/debugCurve'
+import { SvgDebugWriter } from '../../../math/geometry/svgDebugWriter'
 describe('bezier', () => {
   test('bezier control points', () => {
     const b = [
@@ -38,7 +38,7 @@ describe('bezier', () => {
     const val_t_plus_dx = bezSeg.value(t + dx)
     const approx_val_at_t_plus_dx = bezSeg
       .value(t)
-      .add(bezSeg.derivative(t).mult(dx))
+      .add(bezSeg.derivative(t).mul(dx))
     expect(approx_val_at_t_plus_dx.sub(val_t_plus_dx).length < dx).toBe(true)
   })
 

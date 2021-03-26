@@ -1,4 +1,4 @@
-import {Point} from '../math/geometry/point'
+import { Point } from '../math/geometry/point'
 
 export class PointMap<T> {
   mapOfMaps: Map<number, Map<number, T>>

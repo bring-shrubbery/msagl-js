@@ -173,7 +173,7 @@ return xx;
     this.end = this.end.add(delta)
   }
 
-  // Scale (muliply) from origin by x and y
+  // Scale (multiply) from origin by x and y
   scaleFromOrigin(xScale: number, yScale: number) {
     return LineSegment.mkLinePP(
       this.start.scale(xScale, yScale),

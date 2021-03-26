@@ -6,7 +6,7 @@ import { ICurve } from "../../math/geometry/icurve";
 import { IntersectionInfo } from "../../math/geometry/intersectionInfo";
 import { LineSegment } from "../../math/geometry/lineSegment";
 import { Parallelogram } from "../../math/geometry/parallelogram";
-import { ParallelogramNode, PN } from "../../math/geometry/parallelogramNode";
+import { PN, PNInternal } from "../../math/geometry/parallelogramNode";
 import { Point, TriangleOrientation } from "../../math/geometry/point";
 import { Polyline } from "../../math/geometry/polyline";
 import { SmoothedPolyline } from "../../math/geometry/smoothedPolyline";
@@ -19,6 +19,10 @@ import { PolyIntEdge } from "./polyIntEdge";
 import { ProperLayeredGraph } from "./ProperLayeredGraph";
 import { SugiyamaLayoutSettings } from "./SugiyamaLayoutSettings";
 import { HierarchyCalculator } from "./HierarchyCalculator";
+import { BezierSeg } from "../../math/geometry/bezierSeg";
+import { Routing } from "./routing";
+import { NodeKind } from './NodeKind'
+import { Assert } from "../../utils/assert";
 class SmoothedPolylineCalculator {
 
   headSite: CornerSite;
@@ -30,17 +34,17 @@ class SmoothedPolylineCalculator {
 
   originalGraph: GeomGraph;
 
-  rightHierarchy: ParallelogramNode;
+  rightHierarchy: PN;
 
-  leftHierarchy: ParallelogramNode;
+  leftHierarchy: PN;
 
-  thinRightHierarchy: ParallelogramNode;
+  thinRightHierarchy: PN;
 
-  thinLeftHierarchy: ParallelogramNode;
+  thinLeftHierarchy: PN;
 
-  thinRightNodes: Array<ParallelogramNode> = new Array<ParallelogramNode>();
+  thinRightNodes = new Array<PN>();
 
-  thinLefttNodes: Array<ParallelogramNode> = new Array<ParallelogramNode>();
+  thinLefttNodes = new Array<PN>();
 
   database: Database;
 
@@ -67,43 +71,44 @@ class SmoothedPolylineCalculator {
 
   private BuildRightHierarchy(): PN {
     const boundaryAnchorsCurves: Array<Polyline> = this.FindRightBoundaryAnchorCurves();
-    const l = new Array<ParallelogramNode>();
+    const l = new Array<PN>();
     for (const c of boundaryAnchorsCurves) {
-      l.push(c.pNodeOverICurve);
+      l.push(c.pNodeOverICurve());
     }
 
-    this.thinRightHierarchy = HierarchyCalculator.Calculate(this.thinRightNodes, this.settings.GroupSplit);
-    return HierarchyCalculator.Calculate(l, this.settings.GroupSplit);
+    this.thinRightHierarchy = HierarchyCalculator.Calculate(this.thinRightNodes);
+    return HierarchyCalculator.Calculate(l);
   }
 
-  private BuildLeftHierarchy(): ParallelogramNode {
+  private BuildLeftHierarchy(): PN {
     const boundaryAnchorCurves: Array<Polyline> = this.FindLeftBoundaryAnchorCurves();
-    const l: Array<ParallelogramNode> = new Array<ParallelogramNode>();
-    for (const a: Polyline in boundaryAnchorCurves) {
-      l.Add(a.ParallelogramNodeOverICurve);
+    const l = new Array<PN>();
+    for (const a of boundaryAnchorCurves) {
+      l.push(a.pNodeOverICurve());
     }
 
-    this.thinLeftHierarchy = HierarchyCalculator.Calculate(this.thinLefttNodes, this.settings.GroupSplit);
-    return HierarchyCalculator.Calculate(l, this.settings.GroupSplit);
+    this.thinLeftHierarchy = HierarchyCalculator.Calculate(this.thinLefttNodes);
+    return HierarchyCalculator.Calculate(l);
   }
 
   FindRightBoundaryAnchorCurves(): Array<Polyline> {
     const ret: Array<Polyline> = new Array<Polyline>();
-    const uOffset: number = 0;
-    for (const u: number in this.edgePath) {
-      const rightMostAnchor: Anchor = null;
-      for (const v: number in this.LeftBoundaryNodesOfANode(u, Routing.GetNodeKind(uOffset, this.edgePath))) {
+    let uOffset: number = 0;
+    for (const u of this.edgePath.nodes()) {
+      let rightMostAnchor: Anchor = null;
+      for (const v of this.LeftBoundaryNodesOfANode(u, Routing.GetNodeKind(uOffset, this.edgePath))) {
         const a: Anchor = this.anchors[v];
         if (((rightMostAnchor == null)
-          || (rightMostAnchor.Origin.X < a.Origin.X))) {
+          || (rightMostAnchor.Origin.x < a.Origin.x))) {
           rightMostAnchor = a;
         }
 
-        ret.Add(a.PolygonalBoundary);
+        ret.push(a.polygonalBoundary);
       }
 
       if ((rightMostAnchor != null)) {
-        this.thinRightNodes.Add((new LineSegment(rightMostAnchor.Origin, this.originalGraph.Left, rightMostAnchor.Y) + ParallelogramNodeOverICurve));
+        this.thinRightNodes.push(
+          LineSegment.mkLinePXY(rightMostAnchor.Origin, this.originalGraph.left, rightMostAnchor.y).pNodeOverICurve())
       }
 
       uOffset++;
@@ -112,34 +117,34 @@ class SmoothedPolylineCalculator {
     // if (Routing.db) {
     //     var l = new Array<DebugCurve>();
     //        l.AddRange(db.Anchors.Select(a=>new DebugCurve(100,1,"red", a.PolygonalBoundary)));
-    //     l.AddRange(thinRightNodes.Select(n=>n.Parallelogram).Select(p=>new Polyline(p.Vertex(VertexId.Corner), p.Vertex(VertexId.VertexA),
+    //     l.AddRange(thinRightNodes.Select(n=>n.parallelogram).Select(p=>new Polyline(p.Vertex(VertexId.Corner), p.Vertex(VertexId.VertexA),
     //         p.Vertex(VertexId.OtherCorner), p.Vertex(VertexId.VertexB))).Select(c=>new DebugCurve(100,3,"brown", c)));
     //     foreach (var le in this.edgePath.LayerEdges)
-    //         l.Add(new DebugCurve(100, 1, "blue", new LineSegment(db.anchors[le.Source].Origin, db.anchors[le.Target].Origin)));
+    //         l. push(new DebugCurve(100, 1, "blue", new LineSegment(db.anchors[le.Source].Origin, db.anchors[le.Target].Origin)));
     //    LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(l);
-    //     // Database(db, thinRightNodes.Select(p=>new Polyline(p.Parallelogram.Vertex(VertexId.Corner), p.Parallelogram.Vertex(VertexId.VertexA),
-    //         //p.Parallelogram.Vertex(VertexId.OtherCorner), p.Parallelogram.Vertex(VertexId.VertexB)){Closed=true}).ToArray());
+    //     // Database(db, thinRightNodes.Select(p=>new Polyline(p.parallelogram.Vertex(VertexId.Corner), p.parallelogram.Vertex(VertexId.VertexA),
+    //         //p.parallelogram.Vertex(VertexId.OtherCorner), p.parallelogram.Vertex(VertexId.VertexB)){Closed=true}).ToArray());
     // }
     return ret;
   }
 
   private FindLeftBoundaryAnchorCurves(): Array<Polyline> {
     const ret: Array<Polyline> = new Array<Polyline>();
-    const uOffset: number = 0;
-    for (const u: number in this.edgePath) {
-      const leftMost: number = -1;
-      for (const v: number in this.RightBoundaryNodesOfANode(u, Routing.GetNodeKind(uOffset, this.edgePath))) {
+    let uOffset: number = 0;
+    for (const u of this.edgePath.nodes()) {
+      let leftMost: number = -1;
+      for (const v of this.RightBoundaryNodesOfANode(u, Routing.GetNodeKind(uOffset, this.edgePath))) {
         if (((leftMost == -1)
           || (this.layerArrays.X[v] < this.layerArrays.X[leftMost]))) {
           leftMost = v;
         }
 
-        ret.Add(this.anchors[v].PolygonalBoundary);
+        ret.push(this.anchors[v].polygonalBoundary);
       }
 
       if ((leftMost != -1)) {
         const a: Anchor = this.anchors[leftMost];
-        this.thinLefttNodes.Add((new LineSegment(a.Origin, this.originalGraph.Right, a.Origin.Y) + ParallelogramNodeOverICurve));
+        this.thinLefttNodes.push(LineSegment.mkLinePXY(a.Origin, this.originalGraph.right, a.Origin.y).pNodeOverICurve());
       }
 
       uOffset++;
@@ -148,54 +153,49 @@ class SmoothedPolylineCalculator {
     return ret;
   }
 
-  FillRightTopAndBottomVerts(layer: number[], vPosition: number, nodeKind: NodeKind): IEnumerable<number> {
-    const b: number = 0;
-    const t: number = 0;
-    if ((nodeKind == NodeKind.Bottom)) {
-      b = Single.MaxValue;
+  *FillRightTopAndBottomVerts(layer: number[], vPosition: number, nodeKind: NodeKind): IterableIterator<number> {
+    let b = 0;
+    let t = 0;
+    if (nodeKind == NodeKind.Bottom) {
+      b = Number.MAX_VALUE
       // we don't have bottom boundaries here since they will be cut off
     }
-    else if ((nodeKind == NodeKind.Top)) {
-      t = Single.MaxValue;
+    else if (nodeKind == NodeKind.Top) {
+      t = Number.MAX_VALUE
       // we don't have top boundaries here since they will be cut off
     }
 
     const v: number = layer[vPosition];
-    for (const i: number = (vPosition + 1); (i < layer.Length); i++) {
+    for (let i = vPosition + 1; i < layer.length; i++) {
       const u: number = layer[i];
       const anchor: Anchor = this.anchors[u];
-      if ((anchor.TopAnchor > t)) {
+      if ((anchor.topAnchor > t)) {
         if (!this.NodeUCanBeCrossedByNodeV(u, v)) {
-          t = anchor.TopAnchor;
-          if ((anchor.BottomAnchor > b)) {
-            b = anchor.BottomAnchor;
+          t = anchor.topAnchor;
+          if ((anchor.bottomAnchor > b)) {
+            b = anchor.bottomAnchor;
           }
 
-          yield;
-          return u;
+          yield u
         }
 
       }
-      else if ((anchor.BottomAnchor > b)) {
+      else if ((anchor.bottomAnchor > b)) {
         if (!this.NodeUCanBeCrossedByNodeV(u, v)) {
-          b = anchor.BottomAnchor;
-          if ((anchor.TopAnchor > t)) {
-            t = anchor.TopAnchor;
+          b = anchor.bottomAnchor;
+          if ((anchor.topAnchor > t)) {
+            t = anchor.topAnchor;
           }
 
-          yield;
-          return u;
+          yield u
         }
-
       }
-
     }
-
   }
 
   * FillLeftTopAndBottomVerts(layer: number[], vPosition: number, nodeKind: NodeKind): IterableIterator<number> {
-    const b: number = 0;
-    const t: number = 0;
+    let b: number = 0;
+    let t: number = 0;
     if ((nodeKind == NodeKind.Top)) {
       t = Number.MAX_VALUE
     }
@@ -207,23 +207,23 @@ class SmoothedPolylineCalculator {
 
     // there are no bottom vertices - they are cut down by the top boundaryCurve curve
     const v: number = layer[vPosition];
-    for (const i: number = (vPosition - 1); (i >= 0); i--) {
+    for (let i = vPosition - 1; i >= 0; i--) {
       const u: number = layer[i];
       const anchor: Anchor = this.anchors[u];
-      if ((anchor.TopAnchor
+      if ((anchor.topAnchor
         > (t + GeomConstants.distanceEpsilon))) {
         if (!this.NodeUCanBeCrossedByNodeV(u, v)) {
-          t = anchor.TopAnchor;
-          b = Math.max(b, anchor.BottomAnchor);
+          t = anchor.topAnchor;
+          b = Math.max(b, anchor.bottomAnchor);
           yield u;
         }
 
       }
-      else if ((anchor.BottomAnchor
+      else if ((anchor.bottomAnchor
         > (b + GeomConstants.distanceEpsilon))) {
         if (!this.NodeUCanBeCrossedByNodeV(u, v)) {
-          t = Math.max(t, anchor.TopAnchor);
-          b = anchor.BottomAnchor;
+          t = Math.max(t, anchor.topAnchor);
+          b = anchor.bottomAnchor;
           yield u;
         }
 
@@ -238,7 +238,7 @@ class SmoothedPolylineCalculator {
   }
 
   IsLabel(u: number): boolean {
-    return this.anchors[u].RepresentsLabel;
+    return this.anchors[u].representsLabel;
   }
 
   private NodeUCanBeCrossedByNodeV(u: number, v: number): boolean {
@@ -267,8 +267,8 @@ class SmoothedPolylineCalculator {
   }
 
   private UVAreMiddlesOfTheSameMultiEdge(u: number, v: number): boolean {
-    if ((this.database.MultipleMiddles.Contains(u)
-      && (this.database.MultipleMiddles.Contains(v)
+    if ((this.database.MultipleMiddles.has(u)
+      && (this.database.MultipleMiddles.has(v)
         && (this.SourceOfTheOriginalEdgeContainingAVirtualNode(u) == this.SourceOfTheOriginalEdgeContainingAVirtualNode(v))))) {
       return true;
     }
@@ -347,7 +347,7 @@ class SmoothedPolylineCalculator {
     return this.layeredGraph.OutEdgeOfVirtualNode(u);
   }
 
-  private RightBoundaryNodesOfANode(i: number, nodeKind: NodeKind): IEnumerable<number> {
+  private RightBoundaryNodesOfANode(i: number, nodeKind: NodeKind): IterableIterator<number> {
     return this.FillRightTopAndBottomVerts(this.NodeLayer(i), this.layerArrays.X[i], nodeKind);
   }
 
@@ -355,7 +355,7 @@ class SmoothedPolylineCalculator {
     return this.layerArrays.Layers[this.layerArrays.Y[i]];
   }
 
-  private LeftBoundaryNodesOfANode(i: number, nodeKind: NodeKind): IEnumerable<number> {
+  private LeftBoundaryNodesOfANode(i: number, nodeKind: NodeKind): IterableIterator<number> {
     return this.FillLeftTopAndBottomVerts(this.NodeLayer(i), this.layerArrays.X[i], nodeKind);
   }
 
@@ -368,23 +368,23 @@ class SmoothedPolylineCalculator {
   //  bool debug { get { return calls == 5;} }
   Poly(): Curve {
     const c: Curve = new Curve();
-    for (const s: CornerSite = this.headSite; (s.Next != null); s = s.Next) {
-      c.AddSegment(new CubicBezierSegment(s.Point, ((2
-        * (s.Point / 3))
-        + (s.Next.Point / 3)), ((s.Point / 3) + (2
-          * (s.Next.Point / 3))), s.Next.Point));
+    for (let s = this.headSite; s.next != null; s = s.next) {
+      c.addSegment(new BezierSeg(s.point,
+        Point.convSum(1 / 3, s.point, s.next.point),
+        Point.convSum(2 / 3, s.point, s.next.point),
+        s.next.point));
     }
 
     return c;
   }
 
-  private /* internal */ get GetPolyline(): SmoothedPolyline {
-    System.Diagnostics.Debug.Assert((this.headSite != null));
+  get GetPolyline(): SmoothedPolyline {
+    Assert.assert((this.headSite != null));
     return new SmoothedPolyline(this.headSite);
   }
 
   LineSegIntersectBound(a: Point, b: Point): boolean {
-    const l = new LineSegment(a, b);
+    const l = LineSegment.mkLinePP(a, b);
     return (SmoothedPolylineCalculator.CurveIntersectsHierarchy(l, this.leftHierarchy)
       || (SmoothedPolylineCalculator.CurveIntersectsHierarchy(l, this.thinLeftHierarchy)
         || (SmoothedPolylineCalculator.CurveIntersectsHierarchy(l, this.rightHierarchy) || SmoothedPolylineCalculator.CurveIntersectsHierarchy(l, this.thinRightHierarchy))));
@@ -399,33 +399,33 @@ class SmoothedPolylineCalculator {
   }
 
   private TryToRemoveInflectionEdge(/* ref */s: CornerSite): boolean {
-    if ((s.Next.Next == null)) {
+    if (s.next.next == null) {
       return false;
     }
 
-    if ((s.Previous == null)) {
+    if ((s.prev == null)) {
       return false;
     }
 
-    if ((s.Turn < 0)) {
+    if ((s.turn < 0)) {
       // left turn at s
-      if ((!this.SegIntersectRightBound(s, s.Next.Next)
-        && !this.SegIntersectLeftBound(s, s.Next.Next))) {
-        const n: CornerSite = s.Next.Next;
-        s.Next = n;
+      if ((!this.SegIntersectRightBound(s, s.next.next)
+        && !this.SegIntersectLeftBound(s, s.next.next))) {
+        const n: CornerSite = s.next.next;
+        s.next = n;
         // forget about s.next
-        n.Previous = s;
+        n.prev = s;
         s = n;
         return true;
       }
 
-      if ((!this.SegIntersectLeftBound(s.Previous, s.Next)
-        && !this.SegIntersectRightBound(s.Previous, s.Next))) {
-        const a: CornerSite = s.Previous;
+      if ((!this.SegIntersectLeftBound(s.prev, s.next)
+        && !this.SegIntersectRightBound(s.prev, s.next))) {
+        const a: CornerSite = s.prev;
         // forget s
-        const b: CornerSite = s.Next;
-        a.Next = b;
-        b.Previous = a;
+        const b: CornerSite = s.next;
+        a.next = b;
+        b.prev = a;
         s = b;
         return true;
       }
@@ -433,23 +433,23 @@ class SmoothedPolylineCalculator {
     }
     else {
       // right turn at s
-      if ((!this.SegIntersectLeftBound(s, s.Next.Next)
-        && !this.SegIntersectRightBound(s, s.Next.Next))) {
-        const n: CornerSite = s.Next.Next;
-        s.Next = n;
+      if ((!this.SegIntersectLeftBound(s, s.next.next)
+        && !this.SegIntersectRightBound(s, s.next.next))) {
+        const n: CornerSite = s.next.next;
+        s.next = n;
         // forget about s.next
-        n.Previous = s;
+        n.prev = s;
         s = n;
         return true;
       }
 
-      if ((!this.SegIntersectRightBound(s.Previous, s.Next)
-        && this.SegIntersectLeftBound(s.Previous, s.Next))) {
-        const a: CornerSite = s.Previous;
+      if ((!this.SegIntersectRightBound(s.prev, s.next)
+        && this.SegIntersectLeftBound(s.prev, s.next))) {
+        const a: CornerSite = s.prev;
         // forget s
-        const b: CornerSite = s.Next;
-        a.Next = b;
-        b.Previous = a;
+        const b: CornerSite = s.next;
+        a.next = b;
+        b.prev = a;
         s = b;
         return true;
       }
@@ -459,44 +459,45 @@ class SmoothedPolylineCalculator {
     return false;
   }
 
-  static SegIntersectsBound(a: CornerSite, b: CornerSite, hierarchy: ParallelogramNode): boolean {
-    return SmoothedPolylineCalculator.CurveIntersectsHierarchy(new LineSegment(a.Point, b.Point), hierarchy);
+  static SegIntersectsBound(a: CornerSite, b: CornerSite, hierarchy: PN): boolean {
+    return SmoothedPolylineCalculator.CurveIntersectsHierarchy(LineSegment.mkLinePP(a.point, b.point), hierarchy);
   }
 
-  private static CurveIntersectsHierarchy(lineSeg: LineSegment, hierarchy: ParallelogramNode): boolean {
+  private static CurveIntersectsHierarchy(lineSeg: LineSegment, hierarchy: PN): boolean {
     if ((hierarchy == null)) {
       return false;
     }
 
-    if (!Parallelogram.Intersect(lineSeg.ParallelogramNodeOverICurve.Parallelogram, hierarchy.Parallelogram)) {
+    if (!Parallelogram.intersect(lineSeg.pNodeOverICurve().parallelogram, hierarchy.parallelogram)) {
       return false;
     }
 
-    const n: ParallelogramBinaryTreeNode = (<ParallelogramBinaryTreeNode>(hierarchy));
+    const n = hierarchy.node as PNInternal
     if ((n != null)) {
-      return (SmoothedPolylineCalculator.CurveIntersectsHierarchy(lineSeg, n.LeftSon) || SmoothedPolylineCalculator.CurveIntersectsHierarchy(lineSeg, n.RightSon));
+      return (SmoothedPolylineCalculator.CurveIntersectsHierarchy(lineSeg, n.children[0]) ||
+        SmoothedPolylineCalculator.CurveIntersectsHierarchy(lineSeg, n.children[1]));
     }
 
-    return (Curve.CurveCurveIntersectionOne(lineSeg, (<ParallelogramNodeOverICurve>(hierarchy)).Seg, false) != null);
+    return (Curve.intersectionOne(lineSeg, hierarchy.seg, false) != null);
   }
 
   static Flat(i: CornerSite): boolean {
-    return (Point.GetTriangleOrientation(i.Previous.Point, i.Point, i.Next.Point) == TriangleOrientation.Collinear);
+    return (Point.getTriangleOrientation(i.prev.point, i.point, i.next.point) == TriangleOrientation.Collinear);
   }
 
-  private /* internal */ Reverse(): SmoothedPolylineCalculator {
+  Reverse(): SmoothedPolylineCalculator {
     const ret: SmoothedPolylineCalculator = new SmoothedPolylineCalculator(this.edgePath, this.anchors, this.originalGraph, this.settings, this.layerArrays, this.layeredGraph, this.database);
-    const site: CornerSite = this.headSite;
-    const v: CornerSite = null;
+    let site: CornerSite = this.headSite;
+    let v: CornerSite = null;
     while ((site != null)) {
-      ret.headSite = site.Clone();
-      ret.headSite.Next = v;
+      ret.headSite = site.clone();
+      ret.headSite.next = v;
       if ((v != null)) {
-        v.Previous = ret.headSite;
+        v.prev = ret.headSite;
       }
 
       v = ret.headSite;
-      site = site.Next;
+      site = site.next;
     }
 
     return ret;
@@ -504,10 +505,10 @@ class SmoothedPolylineCalculator {
 
   private CreateRefinedPolyline(optimizeShortEdges: boolean) {
     this.CreateInitialListOfSites();
-    const topSite: CornerSite = this.headSite;
-    const bottomSite: CornerSite;
+    let topSite: CornerSite = this.headSite;
+    let bottomSite: CornerSite;
     for (const i: number = 0; (i < this.edgePath.Count); i++) {
-      bottomSite = topSite.Next;
+      bottomSite = topSite.next;
       this.RefineBeetweenNeighborLayers(topSite, this.EdgePathNode(i), this.EdgePathNode((i + 1)));
       topSite = bottomSite;
     }
@@ -516,7 +517,6 @@ class SmoothedPolylineCalculator {
     if (optimizeShortEdges) {
       this.OptimizeShortPath();
     }
-
   }
 
   private RefineBeetweenNeighborLayers(topSite: CornerSite, topNode: number, bottomNode: number) {
@@ -533,8 +533,8 @@ class SmoothedPolylineCalculator {
 
   get TailSite(): CornerSite {
     const s: CornerSite = this.headSite;
-    while ((s.Next != null)) {
-      s = s.Next;
+    while ((s.next != null)) {
+      s = s.next;
     }
 
     return s;
@@ -557,7 +557,7 @@ class SmoothedPolylineCalculator {
       return;
     }
 
-    const ratio: number = ((a.Y - b.Y)
+    const ratio: number = ((a.y - b.y)
       / (a.Bottom - b.Top));
     const xc: number = (0.5
       * (ax + bx));
@@ -570,15 +570,15 @@ class SmoothedPolylineCalculator {
     bx = (xc
       - (ratio
         * (half * sign)));
-    this.headSite.Point = new Point(ax, a.Y);
-    const ms = this.headSite.Next;
-    const mY: number = ms.Point.Y;
-    ms.Point = new Point(this.MiddlePos(ax, bx, a, b, mY), mY);
-    ms.Next.Point = new Point(bx, b.Y);
+    this.headSite.point = new Point(ax, a.y);
+    const ms = this.headSite.next;
+    const mY: number = ms.point.y;
+    ms.point = new Point(this.MiddlePos(ax, bx, a, b, mY), mY);
+    ms.next.point = new Point(bx, b.y);
     const ma: Anchor = this.anchors[this.EdgePathNode(1)];
-    ma.X = ms.Point.X;
-    // show(new DebugCurve(200, 3, "yellow", new LineSegment(ax, a.Y, ms.Point.X, ms.Point.Y)),
-    //     new DebugCurve(200, 3, "green", new LineSegment(bx, b.Y, ms.Point.X, ms.Point.Y)));
+    ma.X = ms.point.x;
+    // show(new DebugCurve(200, 3, "yellow", new LineSegment(ax, a.y, ms.Point.X, ms.Point.y)),
+    //     new DebugCurve(200, 3, "green", new LineSegment(bx, b.y, ms.Point.X, ms.Point.y)));
   }
 
   OptimizeForTwoSites() {
@@ -598,7 +598,7 @@ class SmoothedPolylineCalculator {
       return;
     }
 
-    const ratio: number = ((a.Y - b.Y)
+    const ratio: number = ((a.y - b.y)
       / (a.Bottom - b.Top));
     const xc: number = (0.5
       * (ax + bx));
@@ -611,8 +611,8 @@ class SmoothedPolylineCalculator {
     bx = (xc
       - (ratio
         * (half * sign)));
-    this.headSite.Point = new Point(ax, a.Y);
-    this.headSite.Next.Point = new Point(bx, b.Y);
+    this.headSite.point = new Point(ax, a.y);
+    this.headSite.next.point = new Point(bx, b.y);
   }
 
   private FindLegalPositions(a: Anchor, b: Anchor, /* ref */ax: number, /* ref */bx: number, /* out */sign: number): boolean {
@@ -643,13 +643,13 @@ class SmoothedPolylineCalculator {
     const overlapMin: number;
     if ((ax < bx)) {
       sign = 1;
-      overlapMin = Math.max(ax, b.Left);
-      overlapMax = Math.Min(a.Right, bx);
+      overlapMin = Math.max(ax, b.left);
+      overlapMax = Math.Min(a.right, bx);
     }
     else {
       sign = -1;
-      overlapMin = Math.max(a.Left, bx);
-      overlapMax = Math.Min(b.Right, ax);
+      overlapMin = Math.max(a.left, bx);
+      overlapMax = Math.Min(b.right, ax);
 
     }
 
@@ -665,12 +665,12 @@ class SmoothedPolylineCalculator {
       }
 
       if ((sign == 1)) {
-        ax = (a.Right - (0.1 * a.RightAnchor));
-        bx = b.Left;
+        ax = (a.right - (0.1 * a.RightAnchor));
+        bx = b.left;
       }
       else {
-        ax = (a.Left + (0.1 * a.LeftAnchor));
-        bx = b.Right;
+        ax = (a.left + (0.1 * a.LeftAnchor));
+        bx = b.right;
       }
 
     }
@@ -679,7 +679,7 @@ class SmoothedPolylineCalculator {
   }
 
   private OriginToOriginSegCrossesAnchorSide(a: Anchor, b: Anchor): boolean {
-    Debug.Assert((a.Y > b.Y));
+    Debug.Assert((a.y > b.y));
     const seg = new LineSegment(a.Origin, b.Origin);
     return ((((a.X < b.X)
       && Curve.CurvesIntersect(seg, new LineSegment(a.RightBottom, a.RightTop)))
@@ -695,8 +695,8 @@ class SmoothedPolylineCalculator {
     }
 
     if (((this.edgePath.Count == 2)
-      && ((this.headSite.Next.Next != null)
-        && ((this.headSite.Next.Next.Next == null)
+      && ((this.headSite.next.next != null)
+        && ((this.headSite.next.next.next == null)
           && (this.anchors[this.EdgePathNode(1)].Node == null))))) {
       this.OptimizeForThreeSites();
     }
@@ -715,7 +715,7 @@ class SmoothedPolylineCalculator {
     }
 
     const mAnchor: Anchor = this.anchors[middleNodeIndex];
-    const mx: number = this.MiddlePos(sax, sbx, a, b, mAnchor.Y);
+    const mx: number = this.MiddlePos(sax, sbx, a, b, mAnchor.y);
     if (!this.MiddleAnchorLegal(mx, middleNodeIndex, mAnchor)) {
       return false;
     }
@@ -729,8 +729,8 @@ class SmoothedPolylineCalculator {
     const shift: number = (mx - mAnchor.X);
     if ((pos > 0)) {
       const l: Anchor = this.anchors[mLayer[(pos - 1)]];
-      if ((l.Right
-        > (shift + mAnchor.Left))) {
+      if ((l.right
+        > (shift + mAnchor.left))) {
         return false;
       }
 
@@ -739,8 +739,8 @@ class SmoothedPolylineCalculator {
     if ((pos
       < (mLayer.Length - 1))) {
       const r: Anchor = this.anchors[mLayer[(pos + 1)]];
-      if ((r.Left
-        < (shift + mAnchor.Right))) {
+      if ((r.left
+        < (shift + mAnchor.right))) {
         return false;
       }
 
@@ -750,8 +750,8 @@ class SmoothedPolylineCalculator {
   }
 
   private MiddlePos(sax: number, sbx: number, a: Anchor, b: Anchor, mY: number): number {
-    const u: number = (a.Y - mY);
-    const l: number = (mY - b.Y);
+    const u: number = (a.y - mY);
+    const l: number = (mY - b.y);
     Debug.Assert(((u >= 0)
       && (l >= 0)));
     return (((sax * u)
@@ -768,7 +768,7 @@ class SmoothedPolylineCalculator {
     while (progress) {
       progress = false;
       for (const s: CornerSite = this.headSite; ((s != null)
-        && (s.Next != null)); s = s.Next) {
+        && (s.next != null)); s = s.next) {
         progress = (this.TryToRemoveInflectionEdge(/* ref */s) || progress);
       }
 
@@ -779,8 +779,8 @@ class SmoothedPolylineCalculator {
   private TurningAlwaySameDirection(): boolean {
     const sign: number = 0;
     // undecided
-    for (const s: CornerSite = this.headSite.Next; ((s != null)
-      && (s.Next != null)); s = s.Next) {
+    for (const s: CornerSite = this.headSite.next; ((s != null)
+      && (s.next != null)); s = s.next) {
       const nsign: number = s.Turn;
       if ((sign == 0)) {
         // try to set the sign
@@ -832,7 +832,7 @@ class SmoothedPolylineCalculator {
       curve = this.ExtendCurveToEndpoints(curve);
     }
     else {
-      curve.AddSegment(new LineSegment(this.headSite.Point, this.TailSite.Point));
+      curve.AddSegment(new LineSegment(this.headSite.point, this.TailSite.point));
     }
 
     return curve;
@@ -847,13 +847,13 @@ class SmoothedPolylineCalculator {
 
   private RemoveVerticesWithNoTurnsOnePass(): boolean {
     const ret: boolean = false;
-    for (const s: CornerSite = this.headSite; ((s.Next != null)
-      && (s.Next.Next != null)); s = s.Next) {
-      if (SmoothedPolylineCalculator.Flat(s.Next)) {
+    for (const s: CornerSite = this.headSite; ((s.next != null)
+      && (s.next.next != null)); s = s.next) {
+      if (SmoothedPolylineCalculator.Flat(s.next)) {
         ret = true;
-        s.Next = s.Next.Next;
+        s.next = s.next.next;
         // crossing out s.next
-        s.Next.Previous = s;
+        s.next.prev = s;
       }
 
     }
@@ -862,14 +862,14 @@ class SmoothedPolylineCalculator {
   }
 
   private ExtendCurveToEndpoints(curve: Curve): Curve {
-    const p: Point = this.headSite.Point;
+    const p: Point = this.headSite.point;
     if (!ApproximateComparer.Close(p, curve.Start)) {
       const nc: Curve = new Curve();
       nc.AddSegs(new LineSegment(p, curve.Start), curve);
       curve = nc;
     }
 
-    p = this.TailSite.Point;
+    p = this.TailSite.point;
     if (!ApproximateComparer.Close(p, curve.End)) {
       curve.AddSegment(new LineSegment(curve.End, p));
     }
@@ -884,8 +884,8 @@ class SmoothedPolylineCalculator {
       this.AddSmoothedCorner(a, b, c, curve);
       a = b;
       b = c;
-      if ((b.Next != null)) {
-        c = b.Next;
+      if ((b.next != null)) {
+        c = b.next;
       }
       else {
         break;
@@ -943,18 +943,18 @@ class SmoothedPolylineCalculator {
 
   }
 
-  private BezierSegIntersectsTree(seg: CubicBezierSegment, tree: ParallelogramNode): boolean {
+  private BezierSegIntersectsTree(seg: BezierSeg, tree: PN): boolean {
     if ((tree == null)) {
       return false;
     }
 
-    if (Parallelogram.Intersect(seg.ParallelogramNodeOverICurve.Parallelogram, tree.Parallelogram)) {
-      const n: ParallelogramBinaryTreeNode = (<ParallelogramBinaryTreeNode>(tree));
+    if (Parallelogram.intersect(seg.pNodeOverICurve().parallelogram, tree.parallelogram)) {
+      const n = tree;
       if ((n != null)) {
-        return (this.BezierSegIntersectsTree(seg, n.LeftSon) || this.BezierSegIntersectsTree(seg, n.RightSon));
+        return (this.BezierSegIntersectsTree(seg, (n.node as PNInternal).children[0]) || this.BezierSegIntersectsTree(seg, (n.node as PNInternal).children[1]));
       }
       else {
-        return this.BezierSegIntersectsBoundary(seg, (<ParallelogramNodeOverICurve>(tree)).Seg);
+        return this.BezierSegIntersectsBoundary(seg, (<pNodeOverICurve() > (tree)).Seg);
       }
 
     }
@@ -965,7 +965,7 @@ class SmoothedPolylineCalculator {
   }
 
   static BezierSegIntersectsBoundary(seg: CubicBezierSegment, curve: ICurve): boolean {
-    for (const x: IntersectionInfo in Curve.GetAllIntersections(seg, curve, false)) {
+    for (const x of Curve.GetAllIntersections(seg, curve, false)) {
       const c: Curve = (<Curve>(curve));
       if ((c != null)) {
         if (Curve.RealCutWithClosedCurve(x, c, false)) {
