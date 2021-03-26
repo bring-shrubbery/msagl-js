@@ -39,6 +39,7 @@ import { EdgeRoutingMode } from '../../core/routing/EdgeRoutingMode'
 import { EdgeRoutingSettings } from '../../core/routing/EdgeRoutingSettings'
 import { SplineRouter } from '../../routing/SplineRouter'
 import { StraightLineEdges } from '../../routing/StraightLineEdges'
+import { Routing } from './routing'
 
 export class LayeredLayout extends Algorithm {
   originalGraph: GeomGraph
@@ -331,6 +332,11 @@ export class LayeredLayout extends Algorithm {
     const vc = this.verticalConstraints
     for (let i = 0; i < p.length; i++) p[i] = p[vc.nodeToRepr(i)]
     return p
+  }
+  CalculateEdgeSplines() {
+    const routing = new Routing(this.sugiyamaSettings, this.originalGraph, this.database, this.engineLayerArrays, this.properLayeredGraph,
+      this.IntGraph);
+    routing.run();
   }
 
   YLayeringAndOrdering(layering: LayerCalculator): LayerArrays {
