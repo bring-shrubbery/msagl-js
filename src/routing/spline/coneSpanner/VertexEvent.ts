@@ -1,20 +1,22 @@
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Core.Geometry.Curves;
+import { Point } from "../../../math/geometry/point";
+import { Polyline } from "../../../math/geometry/polyline";
+import { PolylinePoint } from "../../../math/geometry/polylinePoint";
+import { SweepEvent } from "./SweepEvent";
 
-namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
-    abstract internal class VertexEvent: SweepEvent {
-        PolylinePoint vertex;
+export class VertexEvent extends SweepEvent {
 
-        internal PolylinePoint Vertex {
-            get { return vertex; }
-            set { vertex = value; }
-        }
+    Vertex: PolylinePoint;
 
-        internal override Point Site {
-            get { return vertex.Point; }
-        }
+    get Site(): Point {
+        return this.Vertex.point;
+    }
 
-        internal VertexEvent(PolylinePoint p) { vertex = p; }
-        internal Polyline Polyline { get { return vertex.Polyline; } }
+    constructor(p: PolylinePoint) {
+        super()
+        this.Vertex = p;
+    }
+
+    get Polyline(): Polyline {
+        return this.Vertex.polyline;
     }
 }

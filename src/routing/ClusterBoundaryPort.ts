@@ -15,17 +15,8 @@ export class ClusterBoundaryPort extends RelativeFloatingPort {
         this.loosePolyline = value;
     }
 
-    public constructor(curveDelegate: () => ICurve, centerDelegate: () => Point, locationOffset: Point) {
+    public constructor(curveDelegate: () => ICurve, centerDelegate: () => Point, locationOffset: Point = new Point(0, 0)) {
         super(curveDelegate, centerDelegate, locationOffset)
     }
 
-    // <summary>
-    // constructor 
-    // </summary>
-    // <param name="curveDelegate"></param>
-    // <param name="centerDelegate"></param>
-    public constructor(curveDelegate: Func<ICurve>, centerDelegate: Func<Point>):
-        base(curveDelegate, centerDelegate) {
-
-        }
 }

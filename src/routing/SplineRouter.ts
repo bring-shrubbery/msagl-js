@@ -46,68 +46,75 @@ function insertRange<T>(collection: Set<T>, elems: IEnumerable<T>) {
 
 export class SplineRouter extends Algorithm {
 
-    //  setting this to true forces the calculation to go on even when node overlaps are present
-    //
-    continueOnOverlaps: boolean = true;
-    bundlingSettings: any;
+    OverlapsDetected: boolean
+
+    get AdjustedLoosePadding() {
+        return this.BundlingSettings == null ? this.LoosePadding : this.LoosePadding * this.BundleRouter.SuperLoosePaddingCoefficient;
+    }
+}
+
+//  setting this to true forces the calculation to go on even when node overlaps are present
+//
+continueOnOverlaps: boolean = true;
+bundlingSettings: any;
 
     public get ContinueOnOverlaps(): boolean {
-        return this.continueOnOverlaps;
-    }
+    return this.continueOnOverlaps;
+}
     public set ContinueOnOverlaps(value: boolean) {
-        this.continueOnOverlaps = value;
-    }
+    this.continueOnOverlaps = value;
+}
 
-    rootShapes: Shape[];
+rootShapes: Shape[];
 
-    get edgeGeometriesEnumeration() {
-        return this._edges.map(e => e.edgeGeometry)
+get edgeGeometriesEnumeration() {
+    return this._edges.map(e => e.edgeGeometry)
 
-    }
+}
 
-    coneAngle: number;
+coneAngle: number;
 
-    tightPadding: number;
+tightPadding: number;
 
-    LoosePadding: number
+LoosePadding: number
 
-    rootWasCreated: boolean;
+rootWasCreated: boolean;
 
-    root: Shape;
+root: Shape;
 
-    visGraph: VisibilityGraph;
+visGraph: VisibilityGraph;
 
-    ancestorSets: Map<Shape, Set<Shape>>;
+ancestorSets: Map<Shape, Set<Shape>>;
 
-    shapesToTightLooseCouples: Map<Shape, TightLooseCouple> = new Map<Shape, TightLooseCouple>();
+shapesToTightLooseCouples: Map < Shape, TightLooseCouple > = new Map<Shape, TightLooseCouple>();
 
-    portsToShapes: Map<Port, Shape>;
+portsToShapes: Map<Port, Shape>;
 
-    portsToEnterableShapes: Map<Port, Set<Shape>>;
+portsToEnterableShapes: Map<Port, Set<Shape>>;
 
-    portRTree: RTree<Point>;
+portRTree: RTree<Point>;
 
-    portLocationsToLoosePolylines = new PointMap<Polyline>();
+portLocationsToLoosePolylines = new PointMap<Polyline>();
 
-    looseRoot: Shape;
+looseRoot: Shape;
 
-    get BundlingSettings(): BundlingSettings {
-        return this.bundlingSettings;
-    }
-    set BundlingSettings(value: BundlingSettings) {
-    }
+get BundlingSettings(): BundlingSettings {
+    return this.bundlingSettings;
+}
+set BundlingSettings(value: BundlingSettings) {
+}
 
-    enterableLoose: Map<EdgeGeometry, Set<Polyline>>;
+enterableLoose: Map<EdgeGeometry, Set<Polyline>>;
 
-    enterableTight: Map<EdgeGeometry, Set<Polyline>>;
+enterableTight: Map<EdgeGeometry, Set<Polyline>>;
 
-    geometryGraph: GeomGraph;
+geometryGraph: GeomGraph;
 
-    multiEdgesSeparation: number = 5;
+multiEdgesSeparation: number = 5;
 
-    routeMultiEdgesAsBundles: boolean = true;
+routeMultiEdgesAsBundles: boolean = true;
 
-    UseEdgeLengthMultiplier: boolean;
+UseEdgeLengthMultiplier: boolean;
 
     //  if set to true the algorithm will try to shortcut a shortest polyline inner points
     public UsePolylineEndShortcutting: boolean = true;
@@ -115,159 +122,159 @@ export class SplineRouter extends Algorithm {
     //  if set to true the algorithm will try to shortcut a shortest polyline start and end
     public UseInnerPolylingShortcutting: boolean = true;
 
-    AllowedShootingStraightLines: boolean = true;
+AllowedShootingStraightLines: boolean = true;
 
-    get MultiEdgesSeparation(): number {
-        return this.multiEdgesSeparation;
-    }
-    set MultiEdgesSeparation(value: number) {
-        this.multiEdgesSeparation = value;
-    }
+get MultiEdgesSeparation(): number {
+    return this.multiEdgesSeparation;
+}
+set MultiEdgesSeparation(value: number) {
+    this.multiEdgesSeparation = value;
+}
 
     //  Creates a spline group router for the given graph.
     static constructor3_(graph: GeomGraph, edgeRoutingSettings: EdgeRoutingSettings) {
-        return SplineRouter.constructor5(graph, edgeRoutingSettings.Padding, edgeRoutingSettings.PolylinePadding, edgeRoutingSettings.ConeAngle,
-            edgeRoutingSettings.BundlingSettings)
-    }
+    return SplineRouter.constructor5(graph, edgeRoutingSettings.Padding, edgeRoutingSettings.PolylinePadding, edgeRoutingSettings.ConeAngle,
+        edgeRoutingSettings.BundlingSettings)
+}
 
     //  Creates a spline group router for the given graph.
     static constructor4(graph: GeomGraph, tightTightPadding: number, loosePadding: number, coneAngle: number) {
-        return SplineRouter.constructor6(graph, graph.edges, tightTightPadding, loosePadding, coneAngle, null)
-    }
+    return SplineRouter.constructor6(graph, graph.edges, tightTightPadding, loosePadding, coneAngle, null)
+}
 
     //  Creates a spline group router for the given graph
     static constructor5(graph: GeomGraph, tightTightPadding: number, loosePadding: number, coneAngle: number,
-        bundlingSettings: BundlingSettings) {
-        return SplineRouter.constructor6(graph, graph.edges, tightTightPadding, loosePadding, coneAngle, bundlingSettings)
-    }
+    bundlingSettings: BundlingSettings) {
+    return SplineRouter.constructor6(graph, graph.edges, tightTightPadding, loosePadding, coneAngle, bundlingSettings)
+}
 
     //  Creates a spline group router for the given graph.
     static constructor6(graph: GeomGraph,
-        edges: () => IterableIterator<GeomEdge>,
-        tightPadding: number, loosePadding: number,
-        coneAngle: number,
-        bundlingSettings: BundlingSettings) {
-        const sp = new SplineRouter(new CancelToken()) // todo : provide cancel token
-        sp._edges = [...edges()]
-        sp.BundlingSettings = bundlingSettings;
-        sp.geometryGraph = graph;
-        sp.LoosePadding = loosePadding;
-        sp.tightPadding = tightPadding;
-        const obstacles: IEnumerable<Shape> = ShapeCreator.GetShapes(sp.geometryGraph);
-        sp.Initialize(obstacles, coneAngle);
-        return sp
-    }
+    edges: () => IterableIterator < GeomEdge >,
+    tightPadding: number, loosePadding: number,
+    coneAngle: number,
+    bundlingSettings: BundlingSettings) {
+    const sp = new SplineRouter(new CancelToken()) // todo : provide cancel token
+    sp._edges = [...edges()]
+    sp.BundlingSettings = bundlingSettings;
+    sp.geometryGraph = graph;
+    sp.LoosePadding = loosePadding;
+    sp.tightPadding = tightPadding;
+    const obstacles: IEnumerable<Shape> = ShapeCreator.GetShapes(sp.geometryGraph);
+    sp.Initialize(obstacles, coneAngle);
+    return sp
+}
 
-    _edges: GeomEdge[]
+_edges: GeomEdge[]
 
     //
-    static constructor_(graph: GeomGraph, tightPadding: number, loosePadding: number, coneAngle: number, inParentEdges: List<Edge>, outParentEdges: List<Edge>) {
-        Assert.assert(graph.CheckClusterConsistency());
-        const sp = new SplineRouter(new CancelToken()) // todo provide cancel token
+    static constructor_(graph: GeomGraph, tightPadding: number, loosePadding: number, coneAngle: number, inParentEdges: List < Edge >, outParentEdges: List<Edge>) {
+    Assert.assert(graph.CheckClusterConsistency());
+    const sp = new SplineRouter(new CancelToken()) // todo provide cancel token
         sp.geometryGraph = graph;
-        sp.LoosePadding = loosePadding;
-        sp.tightPadding = tightPadding;
-        const obstacles: IEnumerable<Shape> = ShapeCreatorForRoutingToParents.GetShapes(inParentEdges, outParentEdges);
-        sp.Initialize(obstacles, coneAngle);
+    sp.LoosePadding = loosePadding;
+    sp.tightPadding = tightPadding;
+    const obstacles: IEnumerable<Shape> = ShapeCreatorForRoutingToParents.GetShapes(inParentEdges, outParentEdges);
+    sp.Initialize(obstacles, coneAngle);
+}
+
+    Initialize(obstacles: IEnumerable < Shape >,
+    coneAngleValue: number) {
+    this.rootShapes = obstacles.where(s => s.Parents == null || !(from(s.Parents()).any())).toArray();
+    this.coneAngle = coneAngleValue;
+    if(this.coneAngle == 0)
+this.coneAngle = Math.PI / 6;
     }
 
-    Initialize(obstacles: IEnumerable<Shape>,
-        coneAngleValue: number) {
-        this.rootShapes = obstacles.where(s => s.Parents == null || !(from(s.Parents()).any())).toArray();
-        this.coneAngle = coneAngleValue;
-        if (this.coneAngle == 0)
-            this.coneAngle = Math.PI / 6;
+obstacles: IEnumerable<Shape>;
+
+number: IEnumerable<Shape>;
+
+
+RouteOnRoot() {
+    this.CalculatePortsToShapes();
+    this.CalculatePortsToEnterableShapes();
+    this.CalculateShapeToBoundaries(root);
+    if ((this.OverlapsDetected
+        && !this.ContinueOnOverlaps)) {
+        return;
     }
 
-    obstacles: IEnumerable<Shape>;
+    this.BindLooseShapes();
+    this.SetLoosePolylinesForAnywherePorts();
+    this.CalculateVisibilityGraph();
+    this.RouteOnVisGraph();
+}
 
-    number: IEnumerable<Shape>;
-
-
-    RouteOnRoot() {
-        this.CalculatePortsToShapes();
-        this.CalculatePortsToEnterableShapes();
-        this.CalculateShapeToBoundaries(root);
-        if ((this.OverlapsDetected
-            && !this.ContinueOnOverlaps)) {
-            return;
+CalculatePortsToEnterableShapes() {
+    this.portsToEnterableShapes = new Map<Port, Set<Shape>>();
+    for (const [port, shape] of this.portsToShapes) {
+        const setOfShapes = new Set<Shape>();
+        if (!this.EdgesAttachedToPortAvoidTheNode(port)) {
+            setOfShapes.add(shape);
         }
 
-        this.BindLooseShapes();
-        this.SetLoosePolylinesForAnywherePorts();
-        this.CalculateVisibilityGraph();
-        this.RouteOnVisGraph();
+        this.portsToEnterableShapes.set(port, setOfShapes)
     }
 
-    CalculatePortsToEnterableShapes() {
-        this.portsToEnterableShapes = new Map<Port, Set<Shape>>();
-        for (const [port, shape] of this.portsToShapes) {
-            const setOfShapes = new Set<Shape>();
-            if (!this.EdgesAttachedToPortAvoidTheNode(port)) {
-                setOfShapes.add(shape);
+    for (const rootShape of this.rootShapes) {
+        for (const sh of rootShape.Descendants()) {
+            for (const port of sh.Ports) {
+                const enterableSet = this.portsToEnterableShapes.get(port);
+                insertRange(enterableSet,
+                    from(sh.Ancestors()).where((s) => s.BoundaryCurve != null)
+                )
             }
 
-            this.portsToEnterableShapes.set(port, setOfShapes)
         }
 
-        for (const rootShape of this.rootShapes) {
-            for (const sh of rootShape.Descendants()) {
-                for (const port of sh.Ports) {
-                    const enterableSet = this.portsToEnterableShapes.get(port);
-                    insertRange(enterableSet,
-                        from(sh.Ancestors()).where((s) => s.BoundaryCurve != null)
-                    )
-                }
-
-            }
-
-        }
     }
+}
 
 
-    SetLoosePolylinesForAnywherePorts() {
-        for (const [shape, val] of this.shapesToTightLooseCouples) {
-            for (const port of shape.Ports) {
-                if (port.hasOwnProperty('LoosePolyline')) {
-                    (port as ClusterBoundaryPort).LoosePolyline = <Polyline>val.LooseShape.BoundaryCurve
-                }
+SetLoosePolylinesForAnywherePorts() {
+    for (const [shape, val] of this.shapesToTightLooseCouples) {
+        for (const port of shape.Ports) {
+            if (port.hasOwnProperty('LoosePolyline')) {
+                (port as ClusterBoundaryPort).LoosePolyline = <Polyline>val.LooseShape.BoundaryCurve
             }
         }
     }
+}
 
 
-    BindLooseShapes() {
-        this.looseRoot = new Shape();
-        for (const shape of this.root.Children()) {
-            const looseShape = this.shapesToTightLooseCouples.get(shape).LooseShape;
-            this.BindLooseShapesUnderShape(shape);
-            this.looseRoot.AddChild(looseShape);
-        }
-
+BindLooseShapes() {
+    this.looseRoot = new Shape();
+    for (const shape of this.root.Children()) {
+        const looseShape = this.shapesToTightLooseCouples.get(shape).LooseShape;
+        this.BindLooseShapesUnderShape(shape);
+        this.looseRoot.AddChild(looseShape);
     }
 
-    BindLooseShapesUnderShape(shape: Shape) {
-        const loose = this.shapesToTightLooseCouples.get(shape).LooseShape;
-        for (const child of shape.Children()) {
-            let childLooseShape = this.shapesToTightLooseCouples.get(child).LooseShape;
-            loose.AddChild(childLooseShape);
-            this.BindLooseShapesUnderShape(child);
-        }
-    }
-    CalculateShapeToBoundaries(shape: Shape) {
-        if (!from(shape.Children()).any()) {
-            return;
-        }
+}
 
-        for (const child of shape.Children()) {
-            this.CalculateShapeToBoundaries(child);
-        }
-
-        const obstacleCalculator = new ShapeObstacleCalculator(shape, this.tightPadding, this.AdjustedLoosePadding,
-            this.shapesToTightLooseCouples);
-        obstacleCalculator.Calculate();
-        this.OverlapsDetected ||= this.obstacleCalculator.OverlapsDetected
+BindLooseShapesUnderShape(shape: Shape) {
+    const loose = this.shapesToTightLooseCouples.get(shape).LooseShape;
+    for (const child of shape.Children()) {
+        let childLooseShape = this.shapesToTightLooseCouples.get(child).LooseShape;
+        loose.AddChild(childLooseShape);
+        this.BindLooseShapesUnderShape(child);
     }
+}
+CalculateShapeToBoundaries(shape: Shape) {
+    if (!from(shape.Children()).any()) {
+        return;
+    }
+
+    for (const child of shape.Children()) {
+        this.CalculateShapeToBoundaries(child);
+    }
+
+    const obstacleCalculator = new ShapeObstacleCalculator(shape, this.tightPadding, this.AdjustedLoosePadding,
+        this.shapesToTightLooseCouples)
+    obstacleCalculator.Calculate();
+    this.OverlapsDetected ||= this.obstacleCalculator.OverlapsDetected
+}
 
 //                 UnknownRouteOnVisGraph();
 //                 {

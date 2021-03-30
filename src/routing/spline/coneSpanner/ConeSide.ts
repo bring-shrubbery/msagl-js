@@ -1,13 +1,16 @@
-using Microsoft.Msagl.Core.Geometry;
+import { Point } from "../../../math/geometry/point";
+import { Cone } from "./Cone";
 
-namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
-    /// <summary>
-    /// represents a cone side
-    /// </summary>
-    internal abstract class ConeSide {
-        internal abstract Point Start { get; }
-        internal abstract Point Direction { get; }
-        protected internal Cone Cone { get; set; }
-        internal bool Removed { get; set; }
-    }
+export abstract class ConeSide {
+
+    abstract get Start(): Point
+
+    abstract get Direction(): Point
+
+    abstract get Cone(): Cone
+    abstract set Cone(value: Cone)
+
+    abstract get Removed(): boolean
+    abstract set Removed(value: boolean)
 }
+

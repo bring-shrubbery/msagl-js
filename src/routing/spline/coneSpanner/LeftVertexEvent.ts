@@ -1,7 +1,8 @@
-using Microsoft.Msagl.Core.Geometry.Curves;
+import { PolylinePoint } from "../../../math/geometry/polylinePoint"
+import { VertexEvent } from "./VertexEvent"
 
-namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
-    internal class LeftVertexEvent: VertexEvent {
-        internal LeftVertexEvent(PolylinePoint p) : base(p) { }
+export class LeftVertexEvent extends VertexEvent {
+    constructor(p: PolylinePoint) {
+        super(p)
     }
 }

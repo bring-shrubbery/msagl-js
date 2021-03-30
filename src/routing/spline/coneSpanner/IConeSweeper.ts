@@ -1,10 +1,12 @@
-using Microsoft.Msagl.Core.Geometry;
+import { Point } from "../../../math/geometry/point";
 
-namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
-    internal interface IConeSweeper {
-        Point ConeRightSideDirection { get; set; }
-        Point ConeLeftSideDirection { get; set; }
-        Point SweepDirection { get; set; }
-        double Z { get; set; }
-    }
+interface IConeSweeper {
+
+    ConeRightSideDirection: Point;
+
+    ConeLeftSideDirection: Point;
+
+    SweepDirection: Point;
+
+    Z: number;
 }
