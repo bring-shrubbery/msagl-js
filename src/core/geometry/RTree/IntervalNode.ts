@@ -3,7 +3,7 @@
 export class IntervalNode<TData> {
   // 
   toString() {
-    return this.IsLeaf ? (Count + " " + UserData) : this.Count
+    return this.IsLeaf ? (this.Count + " " + UserData) : this.Count
   }
   // 
   Count: number
@@ -24,9 +24,6 @@ export class IntervalNode<TData> {
     return this
   }
 
-  // This field provides direct  access to the value type Interval, which RTree and other callers
-  // modify directly with .Add(); the auto-property returns a temporary value-by-copy that is immediately discarded.
-  // ReSharper disable InconsistentNaming
   interval: Interval;
   // ReSharper restore InconsistentNaming
 
@@ -72,7 +69,7 @@ bool IsLeaf
 
 bool IsLeftChild {
   get {
-    Debug.Assert(Parent != null);
+    Assert.assert(Parent != null);
     return Equals(Parent.Left);
   }
 }

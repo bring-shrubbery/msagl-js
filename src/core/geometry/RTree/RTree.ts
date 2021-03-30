@@ -31,7 +31,7 @@ function UpdateParent<TData>(parent: RectangleNode<TData>) {
 function RebuildUnderNodeWithoutLeaf<TData>(nodeForRebuild: RectangleNode<TData>, leaf: RectangleNode<TData>) {
   Assert.assert(leaf.IsLeaf);
   Assert.assert(!nodeForRebuild.IsLeaf);
-  var newNode = CreateRectangleNodeOnEnumeration<TData>(
+  const newNode = CreateRectangleNodeOnEnumeration<TData>(
     nodeForRebuild.GetAllLeafNodes().where(n => n != leaf))
   nodeForRebuild.Count = newNode.Count;
   nodeForRebuild.Left = newNode.Left;
@@ -69,9 +69,9 @@ function NumberOfIntersectedIsLessThanBoundOnNode<TData>(node: RectangleNode<TDa
 
 export class RTree<TData> {
   _rootNode: RectangleNode<TData>;
-  /// <summary>
-  /// Removes everything from the tree
-  /// </summary>
+  // <summary>
+  // Removes everything from the tree
+  // </summary>
   Clear() {
     this.RootNode = null;
   }
@@ -144,9 +144,9 @@ export class RTree<TData> {
       else {
         // decide basing on the boxes
         leftBox = Rectangle.rectangleOnRectangles([existingNode.Left.Rectangle, newNode.Rectangle]);
-        let delLeft = (leftBox.area - existingNode.Left.Rectangle.area);
+        const delLeft = (leftBox.area - existingNode.Left.Rectangle.area);
         rightBox = Rectangle.rectangleOnRectangles([existingNode.Right.Rectangle, newNode.Rectangle]);
-        let delRight = (rightBox.area - existingNode.Right.Rectangle.area);
+        const delRight = (rightBox.area - existingNode.Right.Rectangle.area);
         if ((delLeft < delRight)) {
           this.AddNodeToTreeRecursive(newNode, existingNode.Left);
           existingNode.Left.Rectangle = leftBox;
@@ -183,7 +183,7 @@ export class RTree<TData> {
       return
     }
 
-    let ret: RectangleNode<TData> = this._rootNode.FirstIntersectedNode(queryRegion);
+    const ret: RectangleNode<TData> = this._rootNode.FirstIntersectedNode(queryRegion);
     if (ret == null) {
       return
     }
@@ -215,7 +215,7 @@ export class RTree<TData> {
   public Remove(rectangle: Rectangle, userData: TData): TData {
     if (this._rootNode == null) { return; }
 
-    let ret = from(this._rootNode.GetLeafRectangleNodesIntersectingRectangle(rectangle)).firstOrDefault(node => node.UserData == userData);
+    const ret = from(this._rootNode.GetLeafRectangleNodesIntersectingRectangle(rectangle)).firstOrDefault(node => node.UserData == userData);
     if (ret == null) {
       return;
     }
@@ -247,7 +247,7 @@ export class RTree<TData> {
         UpdateParent(parent);
       }
     }
-    //   Debug.Assert(TreeIsCorrect(RootNode));
+    //   Assert.assert(TreeIsCorrect(RootNode));
   }
 
   UnbalancedNode(node: RectangleNode<TData>): RectangleNode<TData> {

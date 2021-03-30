@@ -1,41 +1,46 @@
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Core.Geometry.Curves;
-using Microsoft.Msagl.Routing.Visibility;
+import { Point } from "../../../math/geometry/point";
+import { Polyline } from "../../../math/geometry/polyline";
+import { PolylinePoint } from "../../../math/geometry/polylinePoint";
+import { SegmentBase } from "../../visibility/SegmentBase";
 
-namespace Microsoft.Msagl.Routing.Spline.ConeSpanner
-{
-    internal abstract class ObstacleSide : SegmentBase
-    {
-        internal PolylinePoint StartVertex { get; private set; }
-        internal ObstacleSide(PolylinePoint startVertex)
-        {
-            StartVertex = startVertex;
-        }
+export abstract class ObstacleSide extends SegmentBase {
 
-        internal abstract PolylinePoint EndVertex { get; }
+    StartVertex: PolylinePoint
 
-        internal Polyline Polyline { get { return StartVertex.Polyline; } }
-
-        internal override Point Start
-        {
-            get { return StartVertex.Point; }
-        }
-
-        internal override Point End
-        {
-            get { return EndVertex.Point; }
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() {
-            string typeString = this.GetType().ToString();
-            int lastDotLoc = typeString.LastIndexOf('.');
-            if (lastDotLoc >= 0) {
-                typeString = typeString.Substring(lastDotLoc + 1);
-            }
-            return typeString + " [" + this.Start.ToString() + " -> " + this.End.ToString() + "]";
-        }
+    Init(sv: PolylinePoint) {
+        this.StartVertex = sv
     }
+
+    constructor(startVertex: PolylinePoint) {
+        super()
+        this.Init(startVertex)
+    }
+
+    abstract get EndVertex(): PolylinePoint
+    get Polyline(): Polyline {
+        return this.StartVertex.polyline;
+    }
+
+    get Start(): Point {
+        return this.StartVertex.point;
+    }
+
+    get End(): Point {
+        return this.EndVertex.point;
+    }
+
+    // //  <summary>
+    // //  </summary>
+    // //  <returns></returns>
+    // public /* override */ ToString(): string {
+    //     let typeString: string = this.GetType().ToString();
+    //     let lastDotLoc: number = typeString.LastIndexOf('.');
+    //     if ((lastDotLoc >= 0)) {
+    //         typeString = typeString.Substring((lastDotLoc + 1));
+    //     }
+
+    //     return (typeString + (" ["
+    //         + (this.Start.ToString() + (" -> "
+    //             + (this.End.ToString() + "]")))));
+    // }
 }

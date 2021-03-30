@@ -2,7 +2,7 @@ import { InvalidOperationException } from "linq-to-typescript";
 import { Polyline } from "../math/geometry/polyline";
 import { Shape } from "./Shape";
 
-///  an utility class to keep different polylines created around a shape
+//  an utility class to keep different polylines created around a shape
 export class TightLooseCouple {
 
     TightPolyline: Polyline

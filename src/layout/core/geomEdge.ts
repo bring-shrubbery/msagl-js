@@ -1,11 +1,11 @@
-import {GeomNode} from './geomNode'
-import {EdgeGeometry} from './edgeGeometry'
-import {Edge} from './../../structs/edge'
-import {GeomObject} from './geomObject'
-import {Rectangle} from './../../math/geometry/rectangle'
-import {ICurve} from './../../math/geometry/icurve'
-import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
-import {GeomLabel} from './geomLabel'
+import { GeomNode } from './geomNode'
+import { EdgeGeometry } from './edgeGeometry'
+import { Edge } from './../../structs/edge'
+import { GeomObject } from './geomObject'
+import { Rectangle } from './../../math/geometry/rectangle'
+import { ICurve } from './../../math/geometry/icurve'
+import { SmoothedPolyline } from './../../math/geometry/smoothedPolyline'
+import { GeomLabel } from './geomLabel'
 
 export class GeomEdge extends GeomObject {
   underlyingPolyline: SmoothedPolyline
@@ -54,9 +54,9 @@ export class GeomEdge extends GeomObject {
   toString() {
     return this.source.toString() + '->' + this.target
   }
-  /// <summary>
-  /// The bounding box of the edge curve
-  /// </summary>
+  // <summary>
+  // The bounding box of the edge curve
+  // </summary>
   /*
     public override Rectangle BoundingBox {
     get {
@@ -89,9 +89,9 @@ export class GeomEdge extends GeomObject {
   */
 
   /*
-          /// <summary>
-          /// the polyline of the untrimmed spline
-          /// </summary>
+          // <summary>
+          // the polyline of the untrimmed spline
+          // </summary>
           public SmoothedPolyline UnderlyingPolyline {
     get { return edgeGeometry.SmoothedPolyline; }
     set { edgeGeometry.SmoothedPolyline = value; }
@@ -107,10 +107,10 @@ export class GeomEdge extends GeomObject {
   }
 
   /*  
-    /// <summary>
-    /// Transform the curve, arrowheads and label according to the given matrix
-    /// </summary>
-    /// <param name="matrix">affine transform matrix</param>
+    // <summary>
+    // Transform the curve, arrowheads and label according to the given matrix
+    // </summary>
+    // <param name="matrix">affine transform matrix</param>
     internal void Transform(PlaneTransformation matrix)
     {
       if (Curve == null)
@@ -133,10 +133,10 @@ export class GeomEdge extends GeomObject {
         Label.Center = matrix * LabelBBox.Center;
     }
     
-            /// <summary>
-            /// Translate the edge curve arrowheads and label by the specified delta
-            /// </summary>
-            /// <param name="delta">amount to shift geometry</param>
+            // <summary>
+            // Translate the edge curve arrowheads and label by the specified delta
+            // </summary>
+            // <param name="delta">amount to shift geometry</param>
             public void Translate(Point delta)
     {
       if (this.this.edgeGeometry != null) {
@@ -148,9 +148,9 @@ export class GeomEdge extends GeomObject {
       }
     }
     
-                    /// <summary>
-                    /// transforms relative to given rectangles
-                    /// </summary>
+                    // <summary>
+                    // transforms relative to given rectangles
+                    // </summary>
                     public void TransformRelativeTo(Rectangle oldBounds, Rectangle newBounds)
     {
       if (this.edgeGeometry != null) {
@@ -166,9 +166,9 @@ export class GeomEdge extends GeomObject {
       }
     }
     
-            /// <summary>
-            /// Checks if an arrowhead is needed at the source
-            /// </summary>
+            // <summary>
+            // Checks if an arrowhead is needed at the source
+            // </summary>
             public bool ArrowheadAtSource
     {
       get
@@ -177,9 +177,9 @@ export class GeomEdge extends GeomObject {
       }
     }
     
-            /// <summary>
-            /// Checks if an arrowhead is needed at the target
-            /// </summary>
+            // <summary>
+            // Checks if an arrowhead is needed at the target
+            // </summary>
             public bool ArrowheadAtTarget
     {
       get
@@ -188,13 +188,13 @@ export class GeomEdge extends GeomObject {
       }
     }
     
-            /// <summary>
-            /// Routes a self edge inside the given "howMuchToStickOut" parameter
-            /// </summary>
-            /// <param name="boundaryCurve"></param>
-            /// <param name="howMuchToStickOut"></param>
-            /// <param name="smoothedPolyline"> the underlying polyline used later for editing</param>
-            /// <returns></returns>
+            // <summary>
+            // Routes a self edge inside the given "howMuchToStickOut" parameter
+            // </summary>
+            // <param name="boundaryCurve"></param>
+            // <param name="howMuchToStickOut"></param>
+            // <param name="smoothedPolyline"> the underlying polyline used later for editing</param>
+            // <returns></returns>
             static internal ICurve RouteSelfEdge(ICurve boundaryCurve, double howMuchToStickOut, out SmoothedPolyline smoothedPolyline)
     {
       //we just need to find the box of the corresponding node
@@ -212,18 +212,18 @@ export class GeomEdge extends GeomObject {
       return smoothedPolyline.CreateCurve();
     }
     
-            /// <summary>
-            ///
-            /// </summary>
-            /// <param name="newValue"></param>
+            // <summary>
+            //
+            // </summary>
+            // <param name="newValue"></param>
             public override void RaiseLayoutChangeEvent(object newValue) {
       edgeGeometry.RaiseLayoutChangeEvent(newValue);
     }
     
     
-            /// <summary>
-            ///
-            /// </summary>
+            // <summary>
+            //
+            // </summary>
             public override event EventHandler < LayoutChangeEventArgs > BeforeLayoutChangeEvent {
       add { edgeGeometry.LayoutChangeEvent += value; }
       remove { edgeGeometry.LayoutChangeEvent -= value; }

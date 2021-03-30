@@ -8,7 +8,7 @@ export class CornerSite {
   nextBezierCoefficient = 0.5
 
   // the coefficient tells how tight the segment fits to the segment after the site; the formula is kNext * c + (1 - kNext) * b
-  /// </summary>
+  // </summary>
   previousTangentCoefficient: number = 1.0 / 3
 
   nextTangentCoefficient: number = 1.0 / 3
@@ -30,9 +30,9 @@ export class CornerSite {
     previousSite.next = s
     return s
   }
-  /// <param name="previousSite"></param>
-  /// <param name="sitePoint"></param>
-  /// <param name="nextSite"></param>
+  // <param name="previousSite"></param>
+  // <param name="sitePoint"></param>
+  // <param name="nextSite"></param>
   static mkSiteSPS(
     previousSite: CornerSite,
     sitePoint: Point,

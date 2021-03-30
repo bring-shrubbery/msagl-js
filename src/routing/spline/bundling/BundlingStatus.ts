@@ -1,15 +1,15 @@
 ﻿namespace Microsoft.Msagl.Routing.Spline.Bundling {
-    ///<summary>
-    ///</summary>
+    //<summary>
+    //</summary>
     public enum BundlingStatus {
-        ///<summary>
-        ///</summary>
+        //<summary>
+        //</summary>
         Success,
-        ///<summary>
-        ///</summary>
+        //<summary>
+        //</summary>
         Overlaps,
-        ///<summary>
-        ///</summary>
+        //<summary>
+        //</summary>
         EdgeSeparationIsTooLarge
     }
 }

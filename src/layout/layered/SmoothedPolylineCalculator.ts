@@ -54,9 +54,9 @@ class SmoothedPolylineCalculator {
 
   settings: SugiyamaLayoutSettings;
 
-  ///  <summary>
-  ///  Creates a smoothed polyline
-  ///  </summary>
+  //  <summary>
+  //  Creates a smoothed polyline
+  //  </summary>
   private /* internal */ constructor(edgePathPar: PolyIntEdge, anchorsP: Anchor[], origGraph: GeomGraph, settings: SugiyamaLayoutSettings, la: LayerArrays, layerGraph: ProperLayeredGraph, databaseP: Database) {
     this.database = databaseP;
     this.edgePath = edgePathPar;
@@ -541,7 +541,7 @@ class SmoothedPolylineCalculator {
   }
 
   OptimizeForThreeSites() {
-    Debug.Assert((this.edgePath.LayerEdges.Count == 2));
+    Assert.assert((this.edgePath.LayerEdges.Count == 2));
     const top: number = this.EdgePathNode(0);
     const bottom: number = this.EdgePathNode(2);
     const a: Anchor = this.anchors[top];
@@ -582,7 +582,7 @@ class SmoothedPolylineCalculator {
   }
 
   OptimizeForTwoSites() {
-    Debug.Assert((this.edgePath.LayerEdges.Count == 1));
+    Assert.assert((this.edgePath.LayerEdges.Count == 1));
     const top: number = this.EdgePathNode(0);
     const bottom: number = this.EdgePathNode(1);
     const a: Anchor = this.anchors[top];
@@ -679,7 +679,7 @@ class SmoothedPolylineCalculator {
   }
 
   private OriginToOriginSegCrossesAnchorSide(a: Anchor, b: Anchor): boolean {
-    Debug.Assert((a.y > b.y));
+    Assert.assert((a.y > b.y));
     const seg = new LineSegment(a.Origin, b.Origin);
     return ((((a.X < b.X)
       && Curve.CurvesIntersect(seg, new LineSegment(a.RightBottom, a.RightTop)))
@@ -752,7 +752,7 @@ class SmoothedPolylineCalculator {
   private MiddlePos(sax: number, sbx: number, a: Anchor, b: Anchor, mY: number): number {
     const u: number = (a.y - mY);
     const l: number = (mY - b.y);
-    Debug.Assert(((u >= 0)
+    Assert.assert(((u >= 0)
       && (l >= 0)));
     return (((sax * u)
       + (sbx * l))

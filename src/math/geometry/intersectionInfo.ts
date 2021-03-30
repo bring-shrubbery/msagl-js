@@ -1,8 +1,8 @@
-import {Point} from './point'
-import {ICurve} from './icurve'
-import {GeomConstants} from './geomConstants'
-import {Assert} from './../../utils/assert'
-import {String} from 'typescript-string-operations'
+import { Point } from './point'
+import { ICurve } from './icurve'
+import { GeomConstants } from './geomConstants'
+import { Assert } from './../../utils/assert'
+import { String } from 'typescript-string-operations'
 
 // Contains the result of the intersection of two ICurves.
 export class IntersectionInfo {
@@ -16,7 +16,7 @@ export class IntersectionInfo {
 
   seg0: ICurve
   seg1: ICurve
-  /// the constructor
+  // the constructor
   constructor(pr0: number, pr1: number, x: Point, s0: ICurve, s1: ICurve) {
     this.par0 = pr0
     this.par1 = pr1

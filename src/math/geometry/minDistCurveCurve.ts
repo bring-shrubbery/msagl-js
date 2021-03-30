@@ -1,7 +1,7 @@
-import {ICurve} from './icurve'
-import {Point} from './point'
-import {LineSegment} from './lineSegment'
-import {GeomConstants} from './geomConstants'
+import { ICurve } from './icurve'
+import { Point } from './point'
+import { LineSegment } from './lineSegment'
+import { GeomConstants } from './geomConstants'
 // For curves A(s) and B(t), when we have some evidence that
 // there is at most one intersection point, and we have a guess for the parameters (s0, t0),
 // we try to bring to (0,0) vector F(s,t) = A(s) - B(t).  To minimize the length of F(s,t)
@@ -49,14 +49,14 @@ export class MinDistCurveCurve {
     this.bdd = this.curveB.secondDerivative(this.ti)
   }
 
-  /// curveAPar">first curve</param>
-  /// curveBPar">second curve</param>
-  /// lowBound0">the first curve minimal parameter</param>
-  /// upperBound0">the first curve maximal parameter</param>
-  /// lowBound1">the second curve minimal parameter</param>
-  /// upperBound1">the first curve maximal parameter</param>
-  /// guess0"></param>
-  /// guess1"></param>
+  // curveAPar">first curve</param>
+  // curveBPar">second curve</param>
+  // lowBound0">the first curve minimal parameter</param>
+  // upperBound0">the first curve maximal parameter</param>
+  // lowBound1">the second curve minimal parameter</param>
+  // upperBound1">the first curve maximal parameter</param>
+  // guess0"></param>
+  // guess1"></param>
   constructor(
     curveA: ICurve,
     curveB: ICurve,
@@ -131,7 +131,7 @@ export class MinDistCurveCurve {
       if (
         Math.abs(del) < GeomConstants.distanceEpsilon ||
         this.delta(this.Fss(), this.Fst(), this.Fst(), this.Ftt()) <
-          GeomConstants.tolerance
+        GeomConstants.tolerance
       ) {
         this.success = true
         this.parallelLineSegLineSegMinDist()

@@ -74,7 +74,7 @@ export class ShapeCreator {
   //  <param name="node"></param>
   //  <returns>Shape obstacle for the node with simple port</returns>
   static CreateShapeWithCenterPort(node: Node): Shape {
-    //  Debug.Assert(ApproximateComparer.Close(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
+    //  Assert.assert(ApproximateComparer.Close(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
     let shape = new RelativeShape(() => { }, node.BoundaryCurve);
     let port = new RelativeFloatingPort(() => { }, node.BoundaryCurve, () => { }, node.Center);
     shape.Ports.Insert(port);
@@ -99,8 +99,8 @@ export class ShapeCreator {
   //  <param name="node"></param>
   //  <returns>Shape obstacle for the node with simple port</returns>
   static CreateShapeWithClusterBoundaryPort(node: Node): Shape {
-    //  Debug.Assert(ApproximateComparer.Close(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
-    Debug.Assert((node instanceof Cluster));
+    //  Assert.assert(ApproximateComparer.Close(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
+    Assert.assert((node instanceof Cluster));
     let shape = new RelativeShape(() => { }, node.BoundaryCurve);
     let port = new ClusterBoundaryPort(() => { }, node.BoundaryCurve, () => { }, node.Center);
     shape.Ports.Insert(port);

@@ -1,6 +1,6 @@
-﻿/// <summary>
-/// written in assumption of a single parent
-/// </summary>
+﻿// <summary>
+// written in assumption of a single parent
+// </summary>
 export class ShapeCreatorForRoutingToParents {
   static GetShapes(inParentEdges: IEnumerable<Edge>, outParentEdges: List<Edge>): IEnumerable<Shape> {
     let nodesToShapes = new Dictionary<Node, Shape>();

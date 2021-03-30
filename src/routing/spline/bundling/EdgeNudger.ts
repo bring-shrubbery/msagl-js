@@ -12,17 +12,17 @@ using Microsoft.Msagl.Core.Routing;
 using Microsoft.Msagl.DebugHelpers;
 
 namespace Microsoft.Msagl.Routing.Spline.Bundling {
-    /// <summary>
-    /// this class nudges the edges
-    /// </summary>
+    // <summary>
+    // this class nudges the edges
+    // </summary>
     internal class EdgeNudger : AlgorithmBase {
         readonly BundlingSettings bundlingSettings;
         readonly MetroGraphData metroGraphData;
         IMetroMapOrderingAlgorithm metroOrdering;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
+        // <summary>
+        // Constructor
+        // </summary>
         internal EdgeNudger(MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
             this.metroGraphData = metroGraphData;
             this.bundlingSettings = bundlingSettings;
@@ -44,9 +44,9 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
             new HubRadiiCalculator(metroGraphData, bundlingSettings).CreateNodeRadii();
         }
 
-        /// <summary>
-        /// bundle-map ordering
-        /// </summary>
+        // <summary>
+        // bundle-map ordering
+        // </summary>
         void CreateMetroOrdering() {
             if (bundlingSettings.UseGreedyMetrolineOrdering)
                 metroOrdering = new GeneralMetroMapOrdering(metroGraphData.Metrolines);
@@ -70,9 +70,9 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
         }
 
         void CreateCurves() {
-            Debug.Assert(metroGraphData.Metrolines.Count == metroGraphData.Edges.Length);
+            Assert.assert(metroGraphData.Metrolines.Count == metroGraphData.Edges.Length);
             for (int i = 0; i < metroGraphData.Metrolines.Count; i++)
-                CreateCurveLine(metroGraphData.Metrolines[i], metroGraphData.Edges[i]);
+            CreateCurveLine(metroGraphData.Metrolines[i], metroGraphData.Edges[i]);
         }
 
         void CreateCurveLine(Metroline line, EdgeGeometry edge) {
@@ -80,7 +80,7 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
             Point start = FindCurveStart(metroGraphData, metroOrdering, line);
             Point currentEnd = start;
             var hubSegsOfLine = HubSegsOfLine(metroGraphData, metroOrdering, line);
-            foreach (var seg in hubSegsOfLine) {
+            foreach(var seg in hubSegsOfLine) {
                 if (seg == null) continue;
                 c.AddSegment(new LineSegment(currentEnd, seg.Start));
                 c.AddSegment(seg);
@@ -110,16 +110,16 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
             return bb.Points[index];
         }
 
-        internal static SmoothedPolyline BuildUnderlyingPolyline(Point start, Point end, IEnumerable<ICurve> cubicSegsOfLine) {
+        internal static SmoothedPolyline BuildUnderlyingPolyline(Point start, Point end, IEnumerable < ICurve > cubicSegsOfLine) {
             return null;
             /*SmoothedPolyline sp = GetVanilaSmoothedPolyline(cubicSegsOfLine, start, end);
             FleshOutSites(sp.HeadSite, cubicSegsOfLine);
             return sp;*/
         }
 
-        static IEnumerable<ICurve> HubSegsOfLine(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroOrdering, Metroline line) {
+        static IEnumerable < ICurve > HubSegsOfLine(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroOrdering, Metroline line) {
             for (PolylinePoint i = line.Polyline.StartPoint.Next; i.Next != null; i = i.Next)
-                yield return SegOnLineVertex(metroGraphData, metroOrdering, line, i);
+            yield return SegOnLineVertex(metroGraphData, metroOrdering, line, i);
         }
 
         static ICurve SegOnLineVertex(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroOrdering, Metroline line, PolylinePoint i) {
@@ -138,8 +138,8 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
         }
 
         void CreateSegmentsInsideHubs() {
-            foreach (var metroline in metroGraphData.Metrolines)
-                CreateOrientedSegsOnLine(metroline);
+            foreach(var metroline in metroGraphData.Metrolines)
+            CreateOrientedSegsOnLine(metroline);
 
             if (bundlingSettings.UseCubicBezierSegmentsInsideOfHubs)
                 FanBezierSegs();
@@ -147,7 +147,7 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
 
         void CreateOrientedSegsOnLine(Metroline line) {
             for (PolylinePoint polyPoint = line.Polyline.StartPoint.Next; polyPoint.Next != null; polyPoint = polyPoint.Next)
-                CreateOrientedSegsOnLineVertex(line, polyPoint);
+            CreateOrientedSegsOnLineVertex(line, polyPoint);
         }
 
         void CreateOrientedSegsOnLineVertex(Metroline line, PolylinePoint polyPoint) {
@@ -173,41 +173,41 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
         static internal void ShowHubs(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroMapOrdering, Station station) {
             var ttt = GetAllDebugCurves(metroMapOrdering, metroGraphData);
             if (station != null)
-                ttt = ttt.Concat(new[] { new DebugCurve(255, 3, "pink", CurveFactory.CreateDiamond(20, 20, station.Position)) });
+                ttt = ttt.Concat(new [] { new DebugCurve(255, 3, "pink", CurveFactory.CreateDiamond(20, 20, station.Position)) });
             LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(ttt);
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        static internal IEnumerable<DebugCurve> GetAllDebugCurves(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
+        static internal IEnumerable < DebugCurve > GetAllDebugCurves(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
             return GraphNodes(metroGraphData).Concat(VertexDebugCurves(metroMapOrdering, metroGraphData)).Concat(DebugEdges(metroGraphData));
         }
 
-        static IEnumerable<DebugCurve> DebugEdges(MetroGraphData metroGraphData1) {
+        static IEnumerable < DebugCurve > DebugEdges(MetroGraphData metroGraphData1) {
             return metroGraphData1.Edges.Select(e => new DebugCurve(40, 0.1, "gray", e.Curve));
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        static IEnumerable<DebugCurve> VertexDebugCurves(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
+        static IEnumerable < DebugCurve > VertexDebugCurves(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
             return DebugCircles(metroGraphData).Concat(DebugHubBases(metroGraphData)).
                 Concat(DebugSegs(metroGraphData, metroMapOrdering)).
                 Concat(BetweenHubs(metroMapOrdering, metroGraphData));
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        static IEnumerable<DebugCurve> BetweenHubs(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
-            foreach (Metroline ml in metroGraphData.Metrolines) {
-                List<Tuple<Point, Point>> segs = GetInterestingSegs(metroGraphData, metroMapOrdering, ml);
+        static IEnumerable < DebugCurve > BetweenHubs(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
+            foreach(Metroline ml in metroGraphData.Metrolines) {
+                List < Tuple < Point, Point >> segs = GetInterestingSegs(metroGraphData, metroMapOrdering, ml);
                 string color = GetMonotoneColor(ml.Polyline.Start, ml.Polyline.End, segs);
-                foreach (var seg in segs)
-                    yield return new DebugCurve(100, ml.Width, color, new LineSegment(seg.Item1, seg.Item2));
+                foreach(var seg in segs)
+                yield return new DebugCurve(100, ml.Width, color, new LineSegment(seg.Item1, seg.Item2));
             }
         }
 
-        static List<Tuple<Point, Point>> GetInterestingSegs(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroMapOrdering, Metroline line) {
+        static List < Tuple < Point, Point >> GetInterestingSegs(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroMapOrdering, Metroline line) {
             var ret = new List<Tuple<Point, Point>>();
             Point start = FindCurveStart(metroGraphData, metroMapOrdering, line);
             var cubicSegs = HubSegsOfLine(metroGraphData, metroMapOrdering, line);
-            foreach (var seg in cubicSegs) {
+            foreach(var seg in cubicSegs) {
                 if (seg == null) continue;
                 ret.Add(new Tuple<Point, Point>(start, seg.Start));
                 start = seg.End;
@@ -217,7 +217,7 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
             return ret;
         }
 
-        static string GetMonotoneColor(Point start, Point end, List<Tuple<Point, Point>> segs) {
+        static string GetMonotoneColor(Point start, Point end, List < Tuple < Point, Point >> segs) {
             return "green";
             //            Point dir = end - start;
             //            bool monotone = segs.All(seg => (seg.Second - seg.First)*dir >= 0);
@@ -225,12 +225,12 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        static IEnumerable<DebugCurve> DebugHubBases(MetroGraphData metroGraphData) {
-            List<DebugCurve> dc = new List<DebugCurve>();
-            foreach (var s in metroGraphData.Stations)
-                foreach (var h in s.BundleBases.Values) {
-                    dc.Add(new DebugCurve(100, 1, "red", new LineSegment(h.LeftPoint, h.RightPoint)));
-                }
+        static IEnumerable < DebugCurve > DebugHubBases(MetroGraphData metroGraphData) {
+            List < DebugCurve > dc = new List<DebugCurve>();
+            foreach(var s in metroGraphData.Stations)
+            foreach(var h in s.BundleBases.Values) {
+                dc.Add(new DebugCurve(100, 1, "red", new LineSegment(h.LeftPoint, h.RightPoint)));
+            }
 
             return dc;
             //return
@@ -239,19 +239,19 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        static IEnumerable<DebugCurve> DebugCircles(MetroGraphData metroGraphData) {
+        static IEnumerable < DebugCurve > DebugCircles(MetroGraphData metroGraphData) {
             return
-                metroGraphData.Stations.Select(
-                    station => new DebugCurve(100, 0.1, "blue", CurveFactory.CreateCircle(station.Radius, station.Position)));
+            metroGraphData.Stations.Select(
+                station => new DebugCurve(100, 0.1, "blue", CurveFactory.CreateCircle(station.Radius, station.Position)));
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        static IEnumerable<DebugCurve> DebugSegs(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroMapOrdering) {
+        static IEnumerable < DebugCurve > DebugSegs(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroMapOrdering) {
 
             var ls = new List<ICurve>();
-            foreach (var s in metroGraphData.VirtualNodes()) {
-                foreach (var b in s.BundleBases.Values) {
-                    foreach (var h in b.OrientedHubSegments) {
+            foreach(var s in metroGraphData.VirtualNodes()) {
+                foreach(var b in s.BundleBases.Values) {
+                    foreach(var h in b.OrientedHubSegments) {
                         if (h == null) continue;
                         if (h.Segment == null) {
                             var uBase = h.Other.BundleBase;
@@ -270,7 +270,7 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        static IEnumerable<DebugCurve> GraphNodes(MetroGraphData metroGraphData) {
+        static IEnumerable < DebugCurve > GraphNodes(MetroGraphData metroGraphData) {
             var nodes =
                 new Set<ICurve>(
                     metroGraphData.Edges.Select(e => e.SourcePort.Curve).Concat(
@@ -282,18 +282,18 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
         #endregion
 
         #region BiArcs
-        /// <summary>
-        /// Following "Biarc approximation of NURBS curves", Les A. Piegl, and Wayne Tiller. The paper has a bug in V, where they write that v=p0+p4, it is p0-p4.
-        /// Also I treat special cases differently.
-        /// </summary>
-        /// <param name="p0"></param>
-        /// <param name="ts"></param>
-        /// <param name="p4"></param>
-        /// <param name="te"></param>
-        /// <returns></returns>
+        // <summary>
+        // Following "Biarc approximation of NURBS curves", Les A. Piegl, and Wayne Tiller. The paper has a bug in V, where they write that v=p0+p4, it is p0-p4.
+        // Also I treat special cases differently.
+        // </summary>
+        // <param name="p0"></param>
+        // <param name="ts"></param>
+        // <param name="p4"></param>
+        // <param name="te"></param>
+        // <returns></returns>
         internal static ICurve BiArc(Point p0, Point ts, Point p4, Point te) {
-            Debug.Assert(ApproximateComparer.Close(ts.LengthSquared, 1));
-            Debug.Assert(ApproximateComparer.Close(te.LengthSquared, 1));
+            Assert.assert(ApproximateComparer.Close(ts.LengthSquared, 1));
+            Assert.assert(ApproximateComparer.Close(te.LengthSquared, 1));
             var v = p0 - p4;
             if (v.Length < ApproximateComparer.DistanceEpsilon)
                 return null;
@@ -316,7 +316,7 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
             }
             else {
                 var d = b * b - 4 * a * c;
-                Debug.Assert(d >= -ApproximateComparer.Tolerance);
+                Assert.assert(d >= -ApproximateComparer.Tolerance);
                 if (d < 0)
                     d = 0;
                 d = Math.Sqrt(d);
@@ -349,13 +349,13 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
             return curve;
         }
 
-        /// <summary>
-        /// returns the arc that a,b,c touches
-        /// </summary>
-        /// <param name="a">belongs to the arc, the tangent point of ba</param>
-        /// <param name="b">ba, and bc are tangents to the arc</param>
-        /// <param name="c">belongs to the arc, the tangent point of bc</param>
-        /// <returns></returns>
+        // <summary>
+        // returns the arc that a,b,c touches
+        // </summary>
+        // <param name="a">belongs to the arc, the tangent point of ba</param>
+        // <param name="b">ba, and bc are tangents to the arc</param>
+        // <param name="c">belongs to the arc, the tangent point of bc</param>
+        // <returns></returns>
         internal static ICurve ArcOn(Point a, Point b, Point c) {
             Point center;
             if (Math.Abs(Point.SignedDoubledTriangleArea(a, b, c)) < 0.0001 || !FindArcCenter(a, b, c, out center))
@@ -393,7 +393,7 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
 
             delac = cAngle - aAngle;
 
-            Debug.Assert(delac <= Math.PI);
+            Assert.assert(delac <= Math.PI);
 
             return new Ellipse(aAngle, cAngle, new Point(-radius, 0), new Point(0, radius), center);
         }
@@ -419,22 +419,22 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
             int steps = 0;
             while (progress && steps++ < maxSteps) {
                 progress = false;
-                foreach (Station s in metroGraphData.Stations)
-                    foreach (var segmentHub in s.BundleBases.Values)
-                        progress |= FanEdgesOfHubSegment(segmentHub);
+                foreach(Station s in metroGraphData.Stations)
+                foreach(var segmentHub in s.BundleBases.Values)
+                progress |= FanEdgesOfHubSegment(segmentHub);
             }
         }
 
         bool FanEdgesOfHubSegment(BundleBase bundleHub) {
             bool ret = false;
             for (int i = 0; i < bundleHub.Count - 1; i++)
-                ret |= FanCouple(bundleHub, i, bundleHub.CurveCenter, bundleHub.Curve.BoundingBox.Diagonal / 2);
+            ret |= FanCouple(bundleHub, i, bundleHub.CurveCenter, bundleHub.Curve.BoundingBox.Diagonal / 2);
             return ret;
         }
 
-        /// <summary>
-        /// fans the couple i,i+1
-        /// </summary>
+        // <summary>
+        // fans the couple i,i+1
+        // </summary>
         bool FanCouple(BundleBase bundleHub, int i, Point center, double radius) {
             OrientedHubSegment lSeg = bundleHub.OrientedHubSegments[i];
             OrientedHubSegment rSeg = bundleHub.OrientedHubSegments[i + 1];
@@ -456,23 +456,23 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
             var del0 = lSeg.Start - rSeg.Start;
             var del1 = lSeg.End - rSeg.End;
            var desiredDelta = Math.Min(del0, del1);
-			var leftMiddle = lSeg[0.5];
-			var rightMiddle = rSeg[0.5];
-			if ((leftMiddle - rightMiddle).Length >= desiredDelta - ApproximateComparer.DistanceEpsilon)
-				return false;
-			var leftMiddleToCenter = (leftMiddle - BundleHub.Vertex).Length;
-			var rightMiddleToCenter = (rightMiddle - BundleHub.Vertex).Length;
-			if (leftMiddleToCenter > rightMiddleToCenter) {
-				if (MoveSegToDesiredDistance(rightMiddle, lSeg, desiredDelta))
-					return true;
-			} else if (MoveSegToDesiredDistance(leftMiddle, rSeg, desiredDelta))
-				return true;
+            var leftMiddle = lSeg[0.5];
+            var rightMiddle = rSeg[0.5];
+            if ((leftMiddle - rightMiddle).Length >= desiredDelta - ApproximateComparer.DistanceEpsilon)
+                return false;
+            var leftMiddleToCenter = (leftMiddle - BundleHub.Vertex).Length;
+            var rightMiddleToCenter = (rightMiddle - BundleHub.Vertex).Length;
+            if (leftMiddleToCenter > rightMiddleToCenter) {
+                if (MoveSegToDesiredDistance(rightMiddle, lSeg, desiredDelta))
+                    return true;
+            } else if (MoveSegToDesiredDistance(leftMiddle, rSeg, desiredDelta))
+                return true;
 
-			return false;*/
+            return false;*/
         }
 
         bool AdjustLongerSeg(OrientedHubSegment longerSeg, OrientedHubSegment shorterSeg, Point center,
-                                    double radius) {
+            double radius) {
             Point del0 = longerSeg[0] - shorterSeg[0];
             Point del1 = longerSeg[1] - shorterSeg[1];
             double minDelLength = Math.Min(del0.Length, del1.Length);
@@ -486,7 +486,7 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
         const double SqueezeBound = 0.2;
 
         bool FitLonger(OrientedHubSegment longerOrientedSeg, Point del0, Point del1, Point midPointOfShorter,
-                              double minDelLength, double maxDel, Point center, double radius) {
+            double minDelLength, double maxDel, Point center, double radius) {
             CubicBezierSegment seg = (CubicBezierSegment)longerOrientedSeg.Segment;
             Point start = seg.Start;
             Point end = seg.End;
@@ -511,7 +511,7 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
                     seg = new CubicBezierSegment(start, p1, p2, end);
                 }
                 else {
-                    Debug.Assert(r == 1);
+                    Assert.assert(r == 1);
                     //pull the control points higher
                     Point p1 = (seg.B(1) + highP1) / 2;
                     Point p2 = (seg.B(2) + highP2) / 2;
@@ -539,18 +539,18 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
                 highP = closestPointOnLine + maxOffset * offsetNow / offsetLen;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="longerSeg"></param>
-        /// <param name="del0"></param>
-        /// <param name="del1"></param>
-        /// <param name="midPointOfShorter"></param>
-        /// <param name="minDelLength"></param>
-        /// <param name="maxDelLen"></param>
-        /// <returns> 1 - need to stretch, -1 - need to squeze, 0 - OK </returns>
+        // <summary>
+        // 
+        // </summary>
+        // <param name="longerSeg"></param>
+        // <param name="del0"></param>
+        // <param name="del1"></param>
+        // <param name="midPointOfShorter"></param>
+        // <param name="minDelLength"></param>
+        // <param name="maxDelLen"></param>
+        // <returns> 1 - need to stretch, -1 - need to squeze, 0 - OK </returns>
         int NicelyAligned(CubicBezierSegment longerSeg, Point del0, Point del1, Point midPointOfShorter,
-                                 double minDelLength, double maxDelLen) {
+            double minDelLength, double maxDelLen) {
             const double eps = 0.001;
             Point midDel = longerSeg[0.5] - midPointOfShorter;
             double midDelLen = midDel.Length;

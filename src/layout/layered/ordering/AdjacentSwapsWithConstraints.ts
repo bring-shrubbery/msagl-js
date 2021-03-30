@@ -1,9 +1,9 @@
-import {LayerArrays} from '../LayerArrays'
-import {ProperLayeredGraph} from '../ProperLayeredGraph'
-import {ConstrainedOrdering} from './ConstrainedOrdering'
-import {LayerInfo} from './LayerInfo'
-import {Assert} from './../../../utils/assert'
-import {randomInt} from '../../../utils/random'
+import { LayerArrays } from '../LayerArrays'
+import { ProperLayeredGraph } from '../ProperLayeredGraph'
+import { ConstrainedOrdering } from './ConstrainedOrdering'
+import { LayerInfo } from './LayerInfo'
+import { Assert } from './../../../utils/assert'
+import { randomInt } from '../../../utils/random'
 export class AdjacentSwapsWithConstraints {
   static maxNumberOfAdjacentExchanges = 50
 
@@ -23,24 +23,24 @@ export class AdjacentSwapsWithConstraints {
 
   outCrossingCount: Map<number, number>[]
 
-  ///  for each vertex v let P[v] be the array of predeccessors of v
+  //  for each vertex v let P[v] be the array of predeccessors of v
   P: number[][]
 
-  ///  <summary>
-  ///  The array contains a dictionary per vertex
-  ///  The value POrder[v][u] gives the offset of u in the array P[v]
-  ///  </summary>
+  //  <summary>
+  //  The array contains a dictionary per vertex
+  //  The value POrder[v][u] gives the offset of u in the array P[v]
+  //  </summary>
   POrder: Map<number, number>[]
 
-  ///  <summary>
-  ///  for each vertex v let S[v] be the array of successors of v
-  ///  </summary>
+  //  <summary>
+  //  for each vertex v let S[v] be the array of successors of v
+  //  </summary>
   S: number[][]
 
-  ///  <summary>
-  ///  The array contains a dictionary per vertex
-  ///  The value SOrder[v][u] gives the offset of u in the array S[v]
-  ///  </summary>
+  //  <summary>
+  //  The array contains a dictionary per vertex
+  //  The value SOrder[v][u] gives the offset of u in the array S[v]
+  //  </summary>
   SOrder: Map<number, number>[]
 
   private /* internal */ constructor(
@@ -57,9 +57,9 @@ export class AdjacentSwapsWithConstraints {
     this.layerInfos = layerInfos
   }
 
-  ///  Gets or sets the number of of passes over all layers to run
-  ///  adjacent exchanges, where every pass goes
-  ///  all way up to the top layer and down to the lowest layer
+  //  Gets or sets the number of of passes over all layers to run
+  //  adjacent exchanges, where every pass goes
+  //  all way up to the top layer and down to the lowest layer
   static get MaxNumberOfAdjacentExchanges(): number {
     return AdjacentSwapsWithConstraints.maxNumberOfAdjacentExchanges
   }
@@ -105,13 +105,13 @@ export class AdjacentSwapsWithConstraints {
     return this.properLayeredGraph.IsVirtualNode(v)
   }
 
-  /// // <summary>
-  /// // swaps two vertices only if reduces the number of intersections
-  /// // </summary>
-  /// // <param name="layer">the layer to work on</param>
-  /// // <param name="u">left vertex</param>
-  /// // <param name="v">right vertex</param>
-  /// // <returns></returns>
+  // // <summary>
+  // // swaps two vertices only if reduces the number of intersections
+  // // </summary>
+  // // <param name="layer">the layer to work on</param>
+  // // <param name="u">left vertex</param>
+  // // <param name="v">right vertex</param>
+  // // <returns></returns>
   SwapWithGain(u: number, v: number): boolean {
     const gain: number = this.SwapGain(u, v)
     if (gain > 0) {
@@ -127,19 +127,19 @@ export class AdjacentSwapsWithConstraints {
       return -1
     }
 
-    let t: {cuv: number; cvu: number}
+    let t: { cuv: number; cvu: number }
     this.CalcPair(u, v, t)
     return t.cuv - t.cvu
   }
 
-  ///  <summary>
-  ///  calculates the number of intersections between edges adjacent to u and v
-  ///  </summary>
-  ///  <param name="u">a vertex</param>
-  ///  <param name="v">a vertex</param>
-  ///  <param name="cuv">the result when u is to the left of v</param>
-  ///  <param name="cvu">the result when v is to the left of u</param>
-  CalcPair(u: number, v: number, t: {cuv: number; cvu: number}) {
+  //  <summary>
+  //  calculates the number of intersections between edges adjacent to u and v
+  //  </summary>
+  //  <param name="u">a vertex</param>
+  //  <param name="v">a vertex</param>
+  //  <param name="cuv">the result when u is to the left of v</param>
+  //  <param name="cvu">the result when v is to the left of u</param>
+  CalcPair(u: number, v: number, t: { cuv: number; cvu: number }) {
     const pv = this.P[v]
     const su = this.S[u]
     const sv = this.S[v]
@@ -179,13 +179,13 @@ export class AdjacentSwapsWithConstraints {
     return ret
   }
 
-  ///  every inversion between unbs and vnbs gives an intersecton
+  //  every inversion between unbs and vnbs gives an intersecton
 
-  ///  <param name="unbs">neighbors of u but only from one layer</param>
-  ///  <param name="vnbs">neighbors of v from the same layers</param>
-  ///  <returns>number of intersections when u is to the left of v</returns>
-  ///  <param name="uCrossingCounts"></param>
-  ///  <param name="vCrossingCount"></param>
+  //  <param name="unbs">neighbors of u but only from one layer</param>
+  //  <param name="vnbs">neighbors of v from the same layers</param>
+  //  <returns>number of intersections when u is to the left of v</returns>
+  //  <param name="uCrossingCounts"></param>
+  //  <param name="vCrossingCount"></param>
   CountOnArrays_(
     unbs: Array<number>,
     vnbs: Array<number>,
@@ -307,9 +307,9 @@ export class AdjacentSwapsWithConstraints {
     return true
   }
 
-  ///  <summary>
-  ///  Is called just after median layer swap is done
-  ///  </summary>
+  //  <summary>
+  //  Is called just after median layer swap is done
+  //  </summary>
   InitArrays() {
     if (this.S == null) {
       this.AllocArrays()
@@ -422,12 +422,12 @@ export class AdjacentSwapsWithConstraints {
     }
   }
 
-  ///  <summary>
-  ///  swaps i-th element with i+1
-  ///  </summary>
-  ///  <param name="layer">the layer to work on</param>
-  ///  <param name="i">the position to start</param>
-  ///  <returns></returns>
+  //  <summary>
+  //  swaps i-th element with i+1
+  //  </summary>
+  //  <param name="layer">the layer to work on</param>
+  //  <param name="i">the position to start</param>
+  //  <returns></returns>
   AdjacentSwapToTheRight(layer: number[], i: number) {
     const v: number = layer[i + 1]
     const u: number = layer[i]
@@ -438,12 +438,12 @@ export class AdjacentSwapsWithConstraints {
     }
   }
 
-  ///  <summary>
-  ///  Sweep layer from left to right and fill S,P arrays as we go.
-  ///  The arrays P and S will be sorted according to X. Note that we will not keep them sorted
-  ///  as we doing adjacent swaps. Initial sorting only needed to calculate initial clr,crl values.
-  ///  </summary>
-  ///  <param name="layer"></param>
+  //  <summary>
+  //  Sweep layer from left to right and fill S,P arrays as we go.
+  //  The arrays P and S will be sorted according to X. Note that we will not keep them sorted
+  //  as we doing adjacent swaps. Initial sorting only needed to calculate initial clr,crl values.
+  //  </summary>
+  //  <param name="layer"></param>
   InitPSArraysForLayer(layer: number[]) {
     for (const l of layer) {
       for (const p of this.properLayeredGraph.Pred(l)) {

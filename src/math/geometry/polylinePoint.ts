@@ -1,11 +1,15 @@
-import {Point} from './point'
-import {Polyline} from './polyline'
+import { Point } from './point'
+import { Polyline } from './polyline'
 
 export class PolylinePoint {
   point: Point
   next: PolylinePoint
   prev: PolylinePoint
   polyline: Polyline
+
+  get nextOnPolyline(): PolylinePoint {
+    return this.polyline.next(this);
+  }
 
   //
   getNext(): PolylinePoint {

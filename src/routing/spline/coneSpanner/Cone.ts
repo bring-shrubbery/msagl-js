@@ -1,4 +1,5 @@
 import { Point } from "../../../math/geometry/point";
+import { ConeSide } from "./ConeSide";
 import { IConeSweeper } from "./IConeSweeper";
 
 export class Cone {

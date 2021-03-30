@@ -1,17 +1,17 @@
-import {IEnumerable, from} from 'linq-to-typescript'
-import {BasicGraph} from '../../../structs/BasicGraph'
-import {IntPairMap} from '../../../utils/IntPairMap'
-import {GeomGraph} from '../../core/GeomGraph'
-import {GeomNode} from '../../core/geomNode'
-import {Database} from '../Database'
-import {HorizontalConstraintsForSugiyama} from '../HorizontalConstraintsForSugiyama'
-import {LayerArrays} from '../LayerArrays'
-import {PolyIntEdge} from '../polyIntEdge'
-import {ProperLayeredGraph} from '../ProperLayeredGraph'
-import {SugiyamaLayoutSettings} from '../SugiyamaLayoutSettings'
-import {AdjacentSwapsWithConstraints} from './AdjacentSwapsWithConstraints'
-import {LayerInfo} from './LayerInfo'
-import {GetCrossingsTotal, Ordering} from './Ordering'
+import { IEnumerable, from } from 'linq-to-typescript'
+import { BasicGraph } from '../../../structs/BasicGraph'
+import { IntPairMap } from '../../../utils/IntPairMap'
+import { GeomGraph } from '../../core/GeomGraph'
+import { GeomNode } from '../../core/geomNode'
+import { Database } from '../Database'
+import { HorizontalConstraintsForSugiyama } from '../HorizontalConstraintsForSugiyama'
+import { LayerArrays } from '../LayerArrays'
+import { PolyIntEdge } from '../polyIntEdge'
+import { ProperLayeredGraph } from '../ProperLayeredGraph'
+import { SugiyamaLayoutSettings } from '../SugiyamaLayoutSettings'
+import { AdjacentSwapsWithConstraints } from './AdjacentSwapsWithConstraints'
+import { LayerInfo } from './LayerInfo'
+import { GetCrossingsTotal, Ordering } from './Ordering'
 
 export class ConstrainedOrdering {
   geometryGraph: GeomGraph
@@ -372,10 +372,10 @@ export class ConstrainedOrdering {
   //   return key;
   // }
 
-  // ///  <summary>
-  // ///  These blocks are connected components in the vertical constraints. They don't necesserely span consequent layers.
-  // ///  </summary>
-  // ///  <returns></returns>
+  // //  <summary>
+  // //  These blocks are connected components in the vertical constraints. They don't necesserely span consequent layers.
+  // //  </summary>
+  // //  <returns></returns>
   // CreateVerticalComponents(): Dictionary<number, number> {
   //   let vertGraph = new BasicGraphOnEdges<PolyIntEdge>(from, pair, in, this.horizontalConstraints.VerticalInts, select, new PolyIntEdge(pair.Item1, pair.Item2));
   //   let verticalComponents = ConnectedComponentCalculator.GetComponents(vertGraph);
@@ -638,7 +638,7 @@ export class ConstrainedOrdering {
   //   let target: number = ie.Target;
   //   let span: number = LayeredLayoutEngine.EdgeSpan(this.initialLayering, ie);
   //   ie.LayerEdges = new Array(span);
-  //   Debug.Assert((span > 0));
+  //   Assert.assert((span > 0));
   //   if ((span == 1)) {
   //     ie.LayerEdges[0] = new LayerEdge(ie.Source, ie.Target, ie.CrossingWeight);
   //   }
@@ -696,11 +696,11 @@ export class ConstrainedOrdering {
 
   // }
 
-  // ///  <summary>
-  // ///  when we call this function we know that a LayerInfo is needed
-  // ///  </summary>
-  // ///  <param name="layerNumber"></param>
-  // ///  <returns></returns>
+  // //  <summary>
+  // //  when we call this function we know that a LayerInfo is needed
+  // //  </summary>
+  // //  <param name="layerNumber"></param>
+  // //  <returns></returns>
   // GetOrCreateLayerInfo(layerNumber: number): LayerInfo {
   //   let layerInfo: LayerInfo;
   //   new LayerInfo();

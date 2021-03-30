@@ -1,52 +1,53 @@
-﻿using System;
-using Microsoft.Msagl.Core.DataStructures;
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Routing.Visibility;
-using System.Diagnostics;
+﻿import { Point } from "../../../math/geometry/point";
+import { Assert } from "../../../utils/assert";
+import { CdtEdge } from "../../ConstrainedDelaunayTriangulation/CdtEdge";
+import { VisibilityEdge } from "../../visibility/VisibilityEdge";
+import { SdVertex } from "./SdVertex";
 
-namespace Microsoft.Msagl.Routing.Spline.Bundling {
-    [DebuggerDisplay("({SourcePoint.X},{SourcePoint.Y})->({TargetPoint.X},{TargetPoint.Y})")]
-    internal class SdBoneEdge {
-        internal readonly VisibilityEdge VisibilityEdge;
-        internal readonly SdVertex Source;
-        internal readonly SdVertex Target;
-        int numberOfPassedPaths;
+//     [DebuggerDisplay("({SourcePoint.X},{SourcePoint.Y})->({TargetPoint.X},{TargetPoint.Y})")]
+export class SdBoneEdge {
 
-        internal SdBoneEdge(VisibilityEdge visibilityEdge, SdVertex source, SdVertex target) {
-            VisibilityEdge = visibilityEdge;
-            Source = source;
-            Target = target;
-        }
+    VisibilityEdge: VisibilityEdge;
 
-        internal Point TargetPoint {
-            get { return Target.Point; }
-        }
+    Source: SdVertex;
 
-        internal Point SourcePoint {
-            get { return Source.Point; }
-        }
+    Target: SdVertex;
 
-        internal bool IsOccupied {
-            get { return numberOfPassedPaths > 0; }
-        }
+    numberOfPassedPaths: number;
 
-        internal Set<CdtEdge> CrossedCdtEdges { get; set; }
+    constructor(visibilityEdge: VisibilityEdge, source: SdVertex, target: SdVertex) {
+        this.VisibilityEdge = visibilityEdge;
+        this.Source = source;
+        this.Target = target;
+    }
 
-        internal bool IsPassable {
-            get {
-                return Target.IsTargetOfRouting || Source.IsSourceOfRouting ||
-                       VisibilityEdge.IsPassable == null ||
-                       VisibilityEdge.IsPassable();
-            }
-        }
+    get TargetPoint(): Point {
+        return this.Target.Point;
+    }
 
-        internal void AddOccupiedEdge() {
-            numberOfPassedPaths++;
-        }
+    get SourcePoint(): Point {
+        return this.Source.Point;
+    }
 
-        internal void RemoveOccupiedEdge() {
-            numberOfPassedPaths--;
-            Debug.Assert(numberOfPassedPaths >= 0);
-        }
+    get IsOccupied(): boolean {
+        return (this.numberOfPassedPaths > 0);
+    }
+
+    CrossedCdtEdges: Set<CdtEdge>
+
+    get IsPassable(): boolean {
+        return (this.Target.IsTargetOfRouting
+            || (this.Source.IsSourceOfRouting
+                || ((this.VisibilityEdge.IsPassable == null)
+                    || this.VisibilityEdge.IsPassable())));
+    }
+
+    AddOccupiedEdge() {
+        this.numberOfPassedPaths++;
+    }
+
+    RemoveOccupiedEdge() {
+        this.numberOfPassedPaths--;
+        Assert.assert((this.numberOfPassedPaths >= 0));
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 
 namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
-    /// <summary>
-    /// 
-    /// </summary>
+    // <summary>
+    // 
+    // </summary>
     internal class PerimeterEdge {
         internal CdtSite Start;
         internal CdtSite End;
@@ -11,7 +11,7 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
         internal CdtEdge Edge;
 
         internal PerimeterEdge(CdtEdge edge) {
-            Debug.Assert(edge.CcwTriangle==null || edge.CwTriangle==null);
+            Assert.assert(edge.CcwTriangle == null || edge.CwTriangle == null);
             Edge = edge;
         }
     }

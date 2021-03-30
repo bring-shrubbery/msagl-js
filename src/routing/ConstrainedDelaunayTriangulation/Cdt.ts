@@ -13,37 +13,37 @@ using Microsoft.Msagl.Core.Geometry.Curves;
 using SymmetricSegment = Microsoft.Msagl.Core.DataStructures.SymmetricTuple<Microsoft.Msagl.Core.Geometry.Point>;
 
 namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
-    ///<summary>
-    ///triangulates the space between point, line segment and polygons in the Delaunay fashion
-    ///</summary>
+    //<summary>
+    //triangulates the space between point, line segment and polygons in the Delaunay fashion
+    //</summary>
     public class Cdt : AlgorithmBase {
-         readonly IEnumerable<Tuple<Point, object>> isolatedSitesWithObject; 
-        readonly IEnumerable<Point> isolatedSites;
-        readonly IEnumerable<Polyline> obstacles;
-        readonly List<SymmetricSegment> isolatedSegments;
+         readonly IEnumerable < Tuple < Point, object >> isolatedSitesWithObject; 
+        readonly IEnumerable < Point > isolatedSites;
+        readonly IEnumerable < Polyline > obstacles;
+        readonly List < SymmetricSegment > isolatedSegments;
         CdtSite P1;
         CdtSite P2;
         CdtSweeper sweeper;
-        internal readonly Dictionary<Point, CdtSite> PointsToSites = new Dictionary<Point, CdtSite>();
-        List<CdtSite> allInputSites;
+        internal readonly Dictionary < Point, CdtSite > PointsToSites = new Dictionary<Point, CdtSite>();
+        List < CdtSite > allInputSites;
 
-        ///<summary>
-        ///constructor
-        ///</summary>
-        ///<param name="isolatedSites"></param>
-        ///<param name="obstacles"></param>
-        ///<param name="isolatedSegments"></param>
-        public Cdt(IEnumerable<Point> isolatedSites, IEnumerable<Polyline> obstacles, List<SymmetricSegment> isolatedSegments) {
+        //<summary>
+        //constructor
+        //</summary>
+        //<param name="isolatedSites"></param>
+        //<param name="obstacles"></param>
+        //<param name="isolatedSegments"></param>
+        public Cdt(IEnumerable < Point > isolatedSites, IEnumerable < Polyline > obstacles, List < SymmetricSegment > isolatedSegments) {
             this.isolatedSites = isolatedSites;
             this.obstacles = obstacles;
             this.isolatedSegments = isolatedSegments;
         }
 
-        /// <summary>
-        /// constructor
-        /// </summary>
-        /// <param name="isolatedSites"></param>
-        public Cdt(IEnumerable<Tuple<Point, object>> isolatedSites) {
+        // <summary>
+        // constructor
+        // </summary>
+        // <param name="isolatedSites"></param>
+        public Cdt(IEnumerable < Tuple < Point, object >> isolatedSites) {
             isolatedSitesWithObject = isolatedSites;
         }
 
@@ -51,20 +51,20 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
             //for now suppose that the data is correct: no isolatedSites coincide with obstacles or isolatedSegments, obstacles are mutually disjoint, etc
 
             if (isolatedSitesWithObject != null)
-                foreach (var tuple in isolatedSitesWithObject)
-                    AddSite(tuple.Item1, tuple.Item2);
+                foreach(var tuple in isolatedSitesWithObject)
+            AddSite(tuple.Item1, tuple.Item2);
 
             if (isolatedSites != null)
-                foreach (var isolatedSite in isolatedSites)
-                    AddSite(isolatedSite, null);
+                foreach(var isolatedSite in isolatedSites)
+            AddSite(isolatedSite, null);
 
             if (obstacles != null)
-                foreach (var poly in obstacles)
-                    AddPolylineToAllInputSites(poly);
+                foreach(var poly in obstacles)
+            AddPolylineToAllInputSites(poly);
 
             if (isolatedSegments != null)
-                foreach (var isolatedSegment in isolatedSegments)
-                    AddConstrainedEdge(isolatedSegment.A, isolatedSegment.B, null);
+                foreach(var isolatedSegment in isolatedSegments)
+            AddConstrainedEdge(isolatedSegment.A, isolatedSegment.B, null);
 
             AddP1AndP2();
 
@@ -83,8 +83,8 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
 
         void AddP1AndP2() {
             var box = Rectangle.CreateAnEmptyBox();
-            foreach (var site in PointsToSites.Keys)
-                box.Add(site);
+            foreach(var site in PointsToSites.Keys)
+            box.Add(site);
 
             var delx = box.Width / 3;
             var dely = box.Height / 3;
@@ -102,7 +102,7 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
 
         void AddConstrainedEdge(Point a, Point b, Polyline poly) {
             var ab = Above(a, b);
-            Debug.Assert(ab != 0);
+            Assert.assert(ab != 0);
             CdtSite upperPoint;
             CdtSite lowerPoint;
             if (ab > 0) {//a is above b
@@ -110,7 +110,7 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
                 lowerPoint = AddSite(b, poly);
             }
             else {
-                Debug.Assert(ab < 0);
+                Assert.assert(ab < 0);
                 upperPoint = AddSite(b, poly);
                 lowerPoint = AddSite(a, poly);
             }
@@ -135,21 +135,21 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
         }
 
         static CdtEdge CreateEdgeOnOrderedCouple(CdtSite upperPoint, CdtSite lowerPoint) {
-            Debug.Assert(Above(upperPoint.Point, lowerPoint.Point) == 1);
+            Assert.assert(Above(upperPoint.Point, lowerPoint.Point) == 1);
             return new CdtEdge(upperPoint, lowerPoint);
         }
 
 
-        ///<summary>
-        ///</summary>
-        ///<returns></returns>
-        public Set<CdtTriangle> GetTriangles() {
+        //<summary>
+        //</summary>
+        //<returns></returns>
+        public Set < CdtTriangle > GetTriangles() {
             return sweeper.Triangles;
         }
 
-        /// <summary>
-        /// Executes the actual algorithm.
-        /// </summary>
+        // <summary>
+        // Executes the actual algorithm.
+        // </summary>
         protected override void RunInternal() {
             Initialization();
             SweepAndFinalize();
@@ -170,12 +170,12 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
         static int OnComparison(CdtSite a, CdtSite b) {
             return Above(a.Point, b.Point);
         }
-        /// <summary>
-        /// compare first y then -x coordinates
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns>1 if a is above b, 0 if points are the same and -1 if a is below b</returns>
+        // <summary>
+        // compare first y then -x coordinates
+        // </summary>
+        // <param name="a"></param>
+        // <param name="b"></param>
+        // <returns>1 if a is above b, 0 if points are the same and -1 if a is below b</returns>
         static public int Above(Point a, Point b) {
             var del = a.Y - b.Y;
             if (del > 0)
@@ -186,12 +186,12 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
             return del > 0 ? -1 : (del < 0 ? 1 : 0); //for a horizontal edge the point with the smaller X is the upper point
         }
 
-        /// <summary>
-        /// compare first y then -x coordinates
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns>1 if a is above b, 0 if points are the same and -1 if a is below b</returns>
+        // <summary>
+        // compare first y then -x coordinates
+        // </summary>
+        // <param name="a"></param>
+        // <param name="b"></param>
+        // <returns>1 if a is above b, 0 if points are the same and -1 if a is below b</returns>
         static internal int Above(CdtSite a, CdtSite b) {
             var del = a.Point.Y - b.Point.Y;
             if (del > 0)
@@ -203,30 +203,30 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
         }
 
         internal void RestoreEdgeCapacities() {
-            foreach (var site in allInputSites)
-                foreach (var e in site.Edges)
-                    if (!e.Constrained) //do not care of constrained edges
-                        e.ResidualCapacity = e.Capacity;
+            foreach(var site in allInputSites)
+            foreach(var e in site.Edges)
+            if (!e.Constrained) //do not care of constrained edges
+                e.ResidualCapacity = e.Capacity;
         }
 
-        ///<summary>
-        ///</summary>
+        //<summary>
+        //</summary>
         public void SetInEdges() {
-            foreach (var site in PointsToSites.Values) {
+            foreach(var site in PointsToSites.Values) {
                 var edges = site.Edges;
                 for (int i = edges.Count - 1; i >= 0; i--) {
                     var e = edges[i];
                     var oSite = e.lowerSite;
-                    Debug.Assert(oSite != site);
+                    Assert.assert(oSite != site);
                     oSite.AddInEdge(e);
                 }
             }
         }
 
-        ///<summary>
-        ///</summary>
-        ///<param name="point"></param>
-        ///<returns></returns>
+        //<summary>
+        //</summary>
+        //<param name="point"></param>
+        //<returns></returns>
         public CdtSite FindSite(Point point) {
             return PointsToSites[point];
         }
@@ -241,9 +241,9 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
             return true;
         }
 
-        RectangleNode<CdtTriangle> cdtTree = null;
+        RectangleNode < CdtTriangle > cdtTree = null;
 
-        internal RectangleNode<CdtTriangle> GetCdtTree() {
+        internal RectangleNode < CdtTriangle > GetCdtTree() {
             if (cdtTree == null) {
                 cdtTree = RectangleNode<CdtTriangle>.CreateRectangleNodeOnEnumeration(GetTriangles().Select(t => new RectangleNode<CdtTriangle>(t, t.BoundingBox())));
             }

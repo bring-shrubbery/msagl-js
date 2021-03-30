@@ -22,7 +22,7 @@ export class Arrowhead {
     r.tipPosition = this.tipPosition
     return r
   }
-  /// the edgeGeometry.Curve is trimmed already by the node boundaries</param>
+  // the edgeGeometry.Curve is trimmed already by the node boundaries</param>
   private static calculateArrowheads(edgeGeometry: EdgeGeometry): boolean {
     if (
       edgeGeometry.sourceArrowhead == null &&
@@ -71,7 +71,7 @@ export class Arrowhead {
   // we need to pass arrowhead length here since the original length mibh
   static findTrimEndForArrowheadAtTarget(edgeGeometry: EdgeGeometry): number {
     const eps = GeomConstants.distanceEpsilon * GeomConstants.distanceEpsilon
-    //Debug.Assert((edgeGeometry.Curve.End - edgeGeometry.Curve.Start).LengthSquared > eps);
+    //Assert.assert((edgeGeometry.Curve.End - edgeGeometry.Curve.Start).LengthSquared > eps);
     let p = edgeGeometry.curve.parEnd
     if (
       edgeGeometry.targetArrowhead == null ||
@@ -235,10 +235,10 @@ export class Arrowhead {
     return success
   }
 
-  /// <summary>
-  /// Creates a spline between two nodes big enough to draw arrowheads
-  /// </summary>
-  /// <param name="edge"></param>
+  // <summary>
+  // Creates a spline between two nodes big enough to draw arrowheads
+  // </summary>
+  // <param name="edge"></param>
   static createBigEnoughSpline(edge: GeomEdge) {
     const a = edge.source.center
     let b = edge.target.center

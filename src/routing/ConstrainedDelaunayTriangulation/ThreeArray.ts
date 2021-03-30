@@ -1,104 +1,94 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿
+export class ThreeArray<T> {
 
-namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
-    ///<summary>
-    /// an efficient class to simulate a three element array
-    ///</summary>
-    ///<typeparam name="T"></typeparam>
-#if TEST_MSAGL
-    [Serializable]
-#endif
+    item0: T;
 
-    public class ThreeArray<T>:IEnumerable<T> {
-        T item0;
-        T item1;
-        T item2;
+    item1: T;
 
-        internal bool Contains(T t) {
-            return t.Equals(item0) || t.Equals(item1) || t.Equals(item2);
-        }
+    item2: T;
 
-        internal int Index(T t) {
-            if(t.Equals(item0))
-                return 0;
-            if (t.Equals(item1))
-                return 1;
-            if (t.Equals(item2))
-                return 2;
-            return -1;
-        }
-
-        ///<summary>
-        ///</summary>
-        ///<param name="item0"></param>
-        ///<param name="item1"></param>
-        ///<param name="item2"></param>
-        public ThreeArray(T item0, T item1, T item2) {
-            this.item0 = item0;
-            this.item1 = item1;
-            this.item2 = item2;
-        }
-
-        ///<summary>
-        ///</summary>
-        public ThreeArray() {}
-
-        ///<summary>
-        ///</summary>
-        ///<param name="i"></param>
-        ///<exception cref="InvalidOperationException"></exception>
-        public T this[int i] {
-            get {
-                switch (i) {
-                    case 0:
-                    case 3:
-                    case -3: return item0;
-                    case 1:
-                    case 4:
-                    case -2: return item1;
-                    case 2:
-                    case 5: 
-                    case -1: return item2;
-                    default: throw new InvalidOperationException();
-                }
-            }
-            set {
-                switch (i) {
-                    case 0:
-                    case 3:
-                    case -3:item0 = value;break;
-                    case 1:
-                    case 4:
-                    case -2:item1 = value;break;
-                    case 2:
-                    case 5:
-                    case -1:item2 = value;break;
-
-                    default:
-                        throw new InvalidOperationException();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
-        /// </returns>
-        /// <filterpriority>1</filterpriority>
-        public IEnumerator<T> GetEnumerator() {
-            yield return item0;
-            yield return item1;
-            yield return item2;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() {
-            yield return item0;
-            yield return item1;
-            yield return item2;
-        }
+    has(t: T): boolean {
+        return t == this.item0
+            || t == this.item1 || t == this.item2
     }
+
+    index(t: T): number {
+        if (t == this.item0) {
+            return 0;
+        }
+
+        if (t == this.item1) {
+            return 1;
+        }
+
+        if (t == this.item2) {
+            return 2;
+        }
+
+        return -1;
+    }
+
+
+
+    public getItem(i: number): T {
+        switch (i) {
+            case 0:
+            case 3:
+            case -3:
+                return this.item0;
+                break;
+            case 1:
+            case 4:
+            case -2:
+                return this.item1;
+                break;
+            case 2:
+            case 5:
+            case -1:
+                return this.item2;
+                break;
+            default:
+                throw new Error();
+                break;
+        }
+
+    }
+    public setItem(value: T, i: number) {
+        switch (i) {
+            case 0:
+            case 3:
+            case -3:
+                this.item0 = value;
+                break;
+            case 1:
+            case 4:
+            case -2:
+                this.item1 = value;
+                break;
+            case 2:
+            case 5:
+            case -1:
+                this.item2 = value;
+                break;
+            default:
+                throw new Error();
+                break;
+        }
+
+    }
+
+    //  Returns an enumerator that iterates through the collection.
+    public *GetEnumerator(): IterableIterator<T> {
+        yield this.item0;
+        yield this.item1;
+        yield this.item2;
+    }
+
+}
+export function constructor<T>(item0: T, item1: T, item2: T) {
+    const r = new ThreeArray()
+    r.item0 = item0;
+    r.item1 = item1;
+    r.item2 = item2;
+    return r
 }

@@ -5,7 +5,7 @@ using Microsoft.Msagl.Core.Geometry;
 using Microsoft.Msagl.Core;
 
 namespace Microsoft.Msagl.Routing.Visibility {
-    internal class ObstacleSideComparer : IComparer<SegmentBase> {
+    internal class ObstacleSideComparer : IComparer < SegmentBase > {
 
         readonly LineSweeperBase lineSweeper;
 
@@ -14,9 +14,9 @@ namespace Microsoft.Msagl.Routing.Visibility {
             this.lineSweeper = lineSweeper;
         }
 
-        /// <summary>
-        /// the intersection of the sweepline and the active segment
-        /// </summary>
+        // <summary>
+        // the intersection of the sweepline and the active segment
+        // </summary>
         Point x;
 
 
@@ -35,15 +35,15 @@ namespace Microsoft.Msagl.Routing.Visibility {
 
 
         internal void SetOperand(SegmentBase side) {
-            x = IntersectionOfSideAndSweepLine(side);
-        }
-
-        internal Point IntersectionOfSideAndSweepLine(SegmentBase obstacleSide) {
-            var den = obstacleSide.Direction * lineSweeper.SweepDirection;
-            Debug.Assert(Math.Abs(den) > ApproximateComparer.DistanceEpsilon);
-            var t = (lineSweeper.Z - obstacleSide.Start * lineSweeper.SweepDirection) / den;
-            return obstacleSide.Start + t * obstacleSide.Direction;
-        }
-
+        x = IntersectionOfSideAndSweepLine(side);
     }
+
+    internal Point IntersectionOfSideAndSweepLine(SegmentBase obstacleSide) {
+        var den = obstacleSide.Direction * lineSweeper.SweepDirection;
+        Assert.assert(Math.Abs(den) > ApproximateComparer.DistanceEpsilon);
+        var t = (lineSweeper.Z - obstacleSide.Start * lineSweeper.SweepDirection) / den;
+        return obstacleSide.Start + t * obstacleSide.Direction;
+    }
+
+}
 }

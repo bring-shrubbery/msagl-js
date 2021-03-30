@@ -3,7 +3,7 @@ import { Assert } from './../../utils/assert'
 import { String } from 'typescript-string-operations'
 import { RBTree } from './../../structs/RBTree/rbTree'
 import { VisibilityEdge } from './VisibilityEdge'
-class VisibilityVertex {
+export class VisibilityVertex {
 
   Point: Point;
 
@@ -21,7 +21,7 @@ class VisibilityVertex {
 
   _outEdges: RBTree<VisibilityEdge>;
 
-  ///  this collection is sorted by the target point, in the lexicographical order
+  //  this collection is sorted by the target point, in the lexicographical order
   get OutEdges(): RBTree<VisibilityEdge> {
     return this._outEdges;
   }
@@ -30,7 +30,7 @@ class VisibilityVertex {
     return (this.InEdges.Count + this.OutEdges.Count);
   }
 
-  ///  needed for shortest path calculations
+  //  needed for shortest path calculations
   get Distance(): number {
   }
   set Distance(value: number) {
@@ -59,11 +59,11 @@ class VisibilityVertex {
     return this.Point.ToString();
   }
 
-  ///  These iterate from the end of the list because List.Remove is linear in
-  ///  the number of items, so callers have been optimized where possible to
-  ///  remove only the last or next-to-last edges (but in some cases such as
-  ///  rectilinear, this optimization isn't always possible).
-  ///  <param name="edge"></param>
+  //  These iterate from the end of the list because List.Remove is linear in
+  //  the number of items, so callers have been optimized where possible to
+  //  remove only the last or next-to-last edges (but in some cases such as
+  //  rectilinear, this optimization isn't always possible).
+  //  <param name="edge"></param>
   RemoveOutEdge(edge: VisibilityEdge) {
     this.OutEdges.Remove(edge);
   }
@@ -79,10 +79,10 @@ class VisibilityVertex {
 
   }
 
-  ///  avoiding using delegates in calling RBTree.FindFirst because of the memory allocations
-  ///  <param name="tree"></param>
-  ///  <param name="targetPoint"></param>
-  ///  <returns></returns>
+  //  avoiding using delegates in calling RBTree.FindFirst because of the memory allocations
+  //  <param name="tree"></param>
+  //  <param name="targetPoint"></param>
+  //  <returns></returns>
   static FindFirst(tree: RBTree<VisibilityEdge>, targetPoint: Point): RBNode<VisibilityEdge> {
     return VisibilityVertex.FindFirst(tree.Root, tree, targetPoint);
   }

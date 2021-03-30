@@ -1,6 +1,6 @@
 import { Point } from "../../../math/geometry/point";
 
-interface IConeSweeper {
+export interface IConeSweeper {
 
     ConeRightSideDirection: Point;
 

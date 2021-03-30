@@ -1,6 +1,6 @@
-import {ICurve} from './../../math/geometry/icurve'
-import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
-import {Arrowhead} from './arrowhead'
+import { ICurve } from './../../math/geometry/icurve'
+import { SmoothedPolyline } from './../../math/geometry/smoothedPolyline'
+import { Arrowhead } from './arrowhead'
 export class EdgeGeometry {
   curve: ICurve
   smoothedPolyline: SmoothedPolyline
@@ -17,10 +17,10 @@ export class EdgeGeometry {
   }
 
   /* 
-   /// <summary>
-   ///     Translate all the geometries with absolute positions by the specified delta
-   /// </summary>
-   /// <param name="delta">vector by which to translate</param>
+   // <summary>
+   //     Translate all the geometries with absolute positions by the specified delta
+   // </summary>
+   // <param name="delta">vector by which to translate</param>
    public void Translate(Point delta) {
      if (delta.X == 0 && delta.Y == 0) return;
      RaiseLayoutChangeEvent(delta);
@@ -50,14 +50,14 @@ export class EdgeGeometry {
  }
  
  
-         /// <summary>
-         /// </summary>
+         // <summary>
+         // </summary>
          public event EventHandler < LayoutChangeEventArgs > LayoutChangeEvent;
  
  
-         /// <summary>
-         /// </summary>
-         /// <param name="newValue"></param>
+         // <summary>
+         // </summary>
+         // <param name="newValue"></param>
          public void RaiseLayoutChangeEvent(object newValue) {
    if (LayoutChangeEvent != null)
      LayoutChangeEvent(this, new LayoutChangeEventArgs{ DataAfterChange = newValue });

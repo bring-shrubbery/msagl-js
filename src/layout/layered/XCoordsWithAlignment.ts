@@ -2,15 +2,15 @@
 // "Fast and Simple Horizontal Coordinate Assignment" of Ulrik Brandes and Boris K�opf
 //  The paper has two serious bugs that this code resolves.
 
-import {TopologicalSort} from '../../math/graphAlgorithms/topologicalSort'
-import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
-import {IntPair} from '../../utils/IntPair'
-import {IntPairSet} from '../../utils/IntPairSet'
-import {Anchor} from './anchor'
-import {LayerArrays} from './LayerArrays'
-import {LayerEdge} from './LayerEdge'
-import {PolyIntEdge} from './polyIntEdge'
-import {ProperLayeredGraph} from './ProperLayeredGraph'
+import { TopologicalSort } from '../../math/graphAlgorithms/topologicalSort'
+import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges'
+import { IntPair } from '../../utils/IntPair'
+import { IntPairSet } from '../../utils/IntPairSet'
+import { Anchor } from './anchor'
+import { LayerArrays } from './LayerArrays'
+import { LayerEdge } from './LayerEdge'
+import { PolyIntEdge } from './polyIntEdge'
+import { ProperLayeredGraph } from './ProperLayeredGraph'
 
 type MedianType = number | IntPair
 
@@ -44,21 +44,21 @@ export class XCoordsWithAlignment {
 
   // We pretend, when calculating the alignment, that we traverse layers from left to right and from bottom to top.
   // The actual directions are defined by variables "LR" and "BT".
-  ///  from left to right
+  //  from left to right
   LR: boolean
 
-  ///  from bottom to top
+  //  from bottom to top
   BT: boolean
 
   get EnumRightUp(): number {
     return (this.LR ? 0 : 1) + 2 * (this.BT ? 0 : 1)
   }
 
-  ///  <summary>
-  ///  Returns true if v is a virtual vertex
-  ///  </summary>
-  ///  <param name="v"></param>
-  ///  <returns></returns>
+  //  <summary>
+  //  Returns true if v is a virtual vertex
+  //  </summary>
+  //  <param name="v"></param>
+  //  <returns></returns>
   IsVirtual(v: number): boolean {
     return v >= this.nOfOriginalVertices
   }
@@ -186,7 +186,7 @@ export class XCoordsWithAlignment {
     const b: number[] = new Array(4)
     let leastWidth = Number.MAX_VALUE
     for (let i = 0; i < 4; i++) {
-      let t: {a: number; b: number}
+      let t: { a: number; b: number }
       this.AssignmentBounds(i, t)
       a[i] = t.a
       b[i] = t.b
@@ -230,7 +230,7 @@ export class XCoordsWithAlignment {
     return i == 0 || i == 2
   }
 
-  AssignmentBounds(i: number, t: {a: number; b: number}) {
+  AssignmentBounds(i: number, t: { a: number; b: number }) {
     if (this.nOfVertices == 0) {
       t.a = 0
       t.b = 0
@@ -274,17 +274,17 @@ export class XCoordsWithAlignment {
     this.BT = true
   }
 
-  ///  The code is written as if we go left up, but in fact the settings define the directions.
-  ///
-  ///  We need to create a subgraph for alignment:
-  ///  where no edge segments intersect, and every vertex has
-  ///  at most one incoming and at most one outcoming edge.
-  ///  This function marks edges to resolve conflicts with only one inner segment.
-  ///  An inner segment is a segment between two dummy nodes.
-  ///  We mark edges that later will not participate in the alignment.
-  ///  Inner segments are preferred to other ones. So, in a conflict with one inner and one
-  ///  non-inner edges we leave the inner edge to participate in the alignment.
-  ///  At the moment we mark as not participating both of the two intersecting inner segments
+  //  The code is written as if we go left up, but in fact the settings define the directions.
+  //
+  //  We need to create a subgraph for alignment:
+  //  where no edge segments intersect, and every vertex has
+  //  at most one incoming and at most one outcoming edge.
+  //  This function marks edges to resolve conflicts with only one inner segment.
+  //  An inner segment is a segment between two dummy nodes.
+  //  We mark edges that later will not participate in the alignment.
+  //  Inner segments are preferred to other ones. So, in a conflict with one inner and one
+  //  non-inner edges we leave the inner edge to participate in the alignment.
+  //  At the moment we mark as not participating both of the two intersecting inner segments
   ConflictElimination() {
     this.RemoveMarksFromEdges()
     this.MarkConflictingEdges()
@@ -329,22 +329,22 @@ export class XCoordsWithAlignment {
     }
   }
 
-  ///  parameterized next upper
+  //  parameterized next upper
   NextUpper(i: number): number {
     return this.BT ? i + 1 : i - 1
   }
 
-  ///  parameterized next lower
+  //  parameterized next lower
   NextLower(i: number): number {
     return this.BT ? i - 1 : i + 1
   }
 
-  ///  parameterize highest of two numbers
+  //  parameterize highest of two numbers
   UpperOf(i: number, j: number): number {
     return this.BT ? Math.max(i, j) : Math.min(i, j)
   }
 
-  ///  parameterized lowest of a pair
+  //  parameterized lowest of a pair
   LowerOf(i: number, j: number): number {
     return this.BT ? Math.min(i, j) : Math.max(i, j)
   }
@@ -364,36 +364,36 @@ export class XCoordsWithAlignment {
     return this.LR ? Math.max(pos0, pos1) : Math.min(pos0, pos1)
   }
 
-  ///  Return true if i is to the left or equal to pos in a "parameterized" fasion
+  //  Return true if i is to the left or equal to pos in a "parameterized" fasion
 
   IsNotRightFrom(i: number, pos: number): boolean {
     return this.LR ? i <= pos : pos <= i
   }
 
-  ///  <summary>
-  ///  Parameterized left relation
-  ///  </summary>
-  ///  <param name="i"></param>
-  ///  <param name="j"></param>
-  ///  <returns></returns>
+  //  <summary>
+  //  Parameterized left relation
+  //  </summary>
+  //  <param name="i"></param>
+  //  <param name="j"></param>
+  //  <returns></returns>
   IsLeftFrom(i: number, j: number): boolean {
     return this.LR ? i < j : j < i
   }
 
-  ///  parameterized next right
+  //  parameterized next right
   NextRight(i: number): number {
     return this.LR ? i + 1 : i - 1
   }
 
-  ///  parameterized next left
+  //  parameterized next left
   NextLeft(i: number): number {
     return this.LR ? i - 1 : i + 1
   }
 
-  /// // <summary>
-  /// // Eliminates conflicts with at least one inner edge inside of one layer
-  /// // </summary>
-  /// // <param name="i"></param>
+  // // <summary>
+  // // Eliminates conflicts with at least one inner edge inside of one layer
+  // // </summary>
+  // // <param name="i"></param>
   ConflictsWithAtLeastOneInnerEdgeForALayer(layerIndex: number) {
     if (layerIndex >= 0 && layerIndex < this.la.Layers.length) {
       const lowerLayer: number[] = this.la.Layers[layerIndex]
@@ -495,14 +495,14 @@ export class XCoordsWithAlignment {
     return this.BT ? this.graph.InEdges(v) : this.graph.OutEdges(v)
   }
 
-  /// // <summary>
-  /// // This function marks conflicting edges with targets positioned between innerEdge and newInnerEdge targets.
-  /// // </summary>
-  /// // <param name="lowerLayer"></param>
-  /// // <param name="innerEdge"></param>
-  /// // <param name="newInnerEdge"></param>
-  /// // <param name="posInnerEdgeTarget"></param>
-  /// // <param name="posNewInnerEdgeTarget"></param>
+  // // <summary>
+  // // This function marks conflicting edges with targets positioned between innerEdge and newInnerEdge targets.
+  // // </summary>
+  // // <param name="lowerLayer"></param>
+  // // <param name="innerEdge"></param>
+  // // <param name="newInnerEdge"></param>
+  // // <param name="posInnerEdgeTarget"></param>
+  // // <param name="posNewInnerEdgeTarget"></param>
   MarkEdgesBetweenInnerAndNewInnerEdges(
     lowerLayer: number[],
     innerEdge: LayerEdge,
@@ -527,14 +527,14 @@ export class XCoordsWithAlignment {
     }
   }
 
-  /// // <summary>
-  /// // Returns the inner non-conflicting edge incoming into i-th position
-  /// // of the layer or null if there is no such edge
-  /// // </summary>
-  /// // <param name="layer"></param>
-  /// // <param name="innerEdge"></param>
-  /// // <param name="i"></param>
-  /// // <returns></returns>
+  // // <summary>
+  // // Returns the inner non-conflicting edge incoming into i-th position
+  // // of the layer or null if there is no such edge
+  // // </summary>
+  // // <param name="layer"></param>
+  // // <param name="innerEdge"></param>
+  // // <param name="i"></param>
+  // // <returns></returns>
   private AlignmentToTheRightOfInner(
     lowLayer: number[],
     i: number,
@@ -587,13 +587,13 @@ export class XCoordsWithAlignment {
     this.markedEdges.clear()
   }
 
-  /// // <summary>
-  /// // private constructor
-  /// // </summary>
-  /// // <param name="layerArrays"></param>
-  /// // <param name="anchs"></param>
-  /// // <param name="layeredGraph"></param>
-  /// // <param name="nOfOriginalVs"></param>
+  // // <summary>
+  // // private constructor
+  // // </summary>
+  // // <param name="layerArrays"></param>
+  // // <param name="anchs"></param>
+  // // <param name="layeredGraph"></param>
+  // // <param name="nOfOriginalVs"></param>
   constructor(
     layerArrays: LayerArrays,
     layeredGraph: ProperLayeredGraph,
@@ -615,9 +615,9 @@ export class XCoordsWithAlignment {
     this.nodeSep = ns
   }
 
-  ///  <summary>
-  /// Calculate the alignment based on the marked edges and greedily resolving the remaining conflicts on the fly, without marking
-  ///  </summary>
+  //  <summary>
+  // Calculate the alignment based on the marked edges and greedily resolving the remaining conflicts on the fly, without marking
+  //  </summary>
   Align() {
     this.CreateBlocks()
     this.AssignCoordinatesByLongestPath()
@@ -632,8 +632,8 @@ export class XCoordsWithAlignment {
       if (v == this.root[v]) {
         let w: number = v
         // w will be running over the block
-        for (; w != v; ) {
-          let rn: {neighbor: number}
+        for (; w != v;) {
+          let rn: { neighbor: number }
           if (this.TryToGetRightNeighbor(w, rn)) {
             edges.push(new PolyIntEdge(v, this.root[rn.neighbor], null))
           }
@@ -656,8 +656,8 @@ export class XCoordsWithAlignment {
         let vIsLeftMost = true
         let w: number = v
         // w is running over the block
-        for (; w != v; ) {
-          let wLn: {neighbor: number}
+        for (; w != v;) {
+          let wLn: { neighbor: number }
           if (this.TryToGetLeftNeighbor(w, wLn)) {
             if (vIsLeftMost) {
               vx =
@@ -668,7 +668,7 @@ export class XCoordsWithAlignment {
               vx = this.RightMost(
                 vx,
                 this.x[this.root[wLn.neighbor]] +
-                  this.DeltaBetweenVertices(wLn.neighbor, w),
+                this.DeltaBetweenVertices(wLn.neighbor, w),
               )
             }
           }
@@ -689,13 +689,13 @@ export class XCoordsWithAlignment {
             XCoordsWithAlignment.infinity,
           )
           const xl: number = xLeftMost
-          for (; w != v; ) {
-            let wRn: {neighbor: number}
+          for (; w != v;) {
+            let wRn: { neighbor: number }
             if (this.TryToGetRightNeighbor(w, wRn)) {
               xLeftMost = this.LeftMost(
                 xLeftMost,
                 this.x[this.root[wRn.neighbor]] -
-                  this.DeltaBetweenVertices(w, wRn.neighbor),
+                this.DeltaBetweenVertices(w, wRn.neighbor),
               )
             }
 
@@ -715,8 +715,8 @@ export class XCoordsWithAlignment {
     }
   }
 
-  ///  returns true is u has a right neighbor on its layer
-  TryToGetRightNeighbor(u: number, t: {neighbor: number}): boolean {
+  //  returns true is u has a right neighbor on its layer
+  TryToGetRightNeighbor(u: number, t: { neighbor: number }): boolean {
     const neighborPos: number = this.NextRight(this.Pos(u))
     const layer: number[] = this.la.Layers[this.la.Y[u]]
     if (neighborPos >= 0 && neighborPos < layer.length) {
@@ -728,8 +728,8 @@ export class XCoordsWithAlignment {
     }
   }
 
-  ///  returns true is u has a right neighbor on its layer
-  TryToGetLeftNeighbor(u: number, t: {neighbor: number}): boolean {
+  //  returns true is u has a right neighbor on its layer
+  TryToGetLeftNeighbor(u: number, t: { neighbor: number }): boolean {
     const neighborPos: number = this.NextLeft(this.Pos(u))
     const layer: number[] = this.la.Layers[this.la.Y[u]]
     if (neighborPos >= 0 && neighborPos < layer.length) {
@@ -741,12 +741,12 @@ export class XCoordsWithAlignment {
     }
   }
 
-  ///  <summary>
-  ///  Organizes the vertices into blocks. A block is a maximal path in the alignment subgraph.
-  ///  The alignment is defined by array align. Every vertex is connected to the top vertex of
-  ///  the block by using root array. The alignment is cyclic. If we start from a root vertex v and
-  ///  apply align then we return to v at some point.
-  ///  </summary>
+  //  <summary>
+  //  Organizes the vertices into blocks. A block is a maximal path in the alignment subgraph.
+  //  The alignment is defined by array align. Every vertex is connected to the top vertex of
+  //  the block by using root array. The alignment is cyclic. If we start from a root vertex v and
+  //  apply align then we return to v at some point.
+  //  </summary>
   CreateBlocks() {
     for (let v = 0; v < this.nOfVertices; v++) {
       this.root[v] = this.align[v] = v
@@ -800,19 +800,19 @@ export class XCoordsWithAlignment {
     this.markedEdges.addNN(ie.Source, ie.Target)
   }
 
-  ///  <summary>
-  ///  Assigning xcoords starting from roots
-  ///  </summary>
+  //  <summary>
+  //  Assigning xcoords starting from roots
+  //  </summary>
   /* const */
   static infinity: number = Number.MAX_VALUE
 
-  ///  <summary>
-  ///  Calculates the minimum separation between two neighboring vertices: if u is to the left of v on the same layer return positive
-  ///  number, otherwise negative.
-  ///  </summary>
-  ///  <param name="u"></param>
-  ///  <param name="v"></param>
-  ///  <returns></returns>
+  //  <summary>
+  //  Calculates the minimum separation between two neighboring vertices: if u is to the left of v on the same layer return positive
+  //  number, otherwise negative.
+  //  </summary>
+  //  <param name="u"></param>
+  //  <param name="v"></param>
+  //  <returns></returns>
   DeltaBetweenVertices(u: number, v: number): number {
     let sign = 1
     if (this.Pos(u) > this.Pos(v)) {

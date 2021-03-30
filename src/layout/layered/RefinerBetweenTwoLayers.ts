@@ -93,10 +93,10 @@ class RefinerBetweenTwoLayers {
 
   }
 
-  ///  <summary>
-  ///  circimvating from the side
-  ///  </summary>
-  ///  <returns></returns>
+  //  <summary>
+  //  circimvating from the side
+  //  </summary>
+  //  <returns></returns>
   CalculateNewBottomSite(): boolean {
     const mainSeg = this.currentBottomSite.point.sub(this.currentTopSite.point)
     let cotan: number = RefinerBetweenTwoLayers.AbsCotan(mainSeg);

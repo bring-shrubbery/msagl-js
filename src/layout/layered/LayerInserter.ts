@@ -1,11 +1,11 @@
-import {BasicGraph} from '../../structs/BasicGraph'
-import {GeomNode} from '../core/geomNode'
-import {Database} from './Database'
-import {EdgePathsInserter} from './EdgePathsInserter'
-import {LayerArrays} from './LayerArrays'
-import {LayerEdge} from './LayerEdge'
-import {PolyIntEdge} from './polyIntEdge'
-import {ProperLayeredGraph} from './ProperLayeredGraph'
+import { BasicGraph } from '../../structs/BasicGraph'
+import { GeomNode } from '../core/geomNode'
+import { Database } from './Database'
+import { EdgePathsInserter } from './EdgePathsInserter'
+import { LayerArrays } from './LayerArrays'
+import { LayerEdge } from './LayerEdge'
+import { PolyIntEdge } from './polyIntEdge'
+import { ProperLayeredGraph } from './ProperLayeredGraph'
 
 // Preparing the graph for x-coordinate calculation by inserting dummy nodes into the layers
 export class LayerInserter {
@@ -38,13 +38,13 @@ export class LayerInserter {
     this.intGraph = intGraphP
   }
 
-  //// the entry point of the class
+  /// the entry point of the class
   static InsertLayers(
     layeredGraph: ProperLayeredGraph,
     la: LayerArrays,
     db: Database,
     intGraphP: BasicGraph<GeomNode, PolyIntEdge>,
-  ): {layeredGraph: ProperLayeredGraph; la: LayerArrays} {
+  ): { layeredGraph: ProperLayeredGraph; la: LayerArrays } {
     const li = new LayerInserter(layeredGraph, la, db, intGraphP)
     li.InsertLayers()
 
@@ -174,7 +174,7 @@ export class LayerInserter {
         if (span > 0) {
           e.LayerEdges = new LayerEdge[span]()
           for (let i = 0; i < span; i++) {
-            const bT = {currentVV: this.totalNodes}
+            const bT = { currentVV: this.totalNodes }
             const source = EdgePathsInserter.GetSource(bT, e, i)
             this.totalNodes = bT.currentVV
             const target = EdgePathsInserter.GetTarget(
@@ -268,8 +268,8 @@ export class LayerInserter {
     this.Nla = new LayerArrays(this.NLayering)
     this.Nla.Layers = newLayers
   }
-  //// mark the vertex as one representing a label
-  //// or a middle of a multi edge
+  /// mark the vertex as one representing a label
+  /// or a middle of a multi edge
   static RegisterDontStepOnVertex(db: Database, parent: PolyIntEdge) {
     if (db.Multiedges.get(parent.source, parent.target).length > 1) {
       const e = parent.LayerEdges[parent.LayerEdges.length / 2]

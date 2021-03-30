@@ -155,7 +155,7 @@ export class Point {
     return new Point(this.x, this.y)
   }
 
-  /// returns this rotated by the angle counterclockwise; does not change "this" value
+  // returns this rotated by the angle counterclockwise; does not change "this" value
   rotate(angle: number): Point {
     const c = Math.cos(angle)
     const s = Math.sin(angle)
@@ -177,7 +177,7 @@ export class Point {
     return a.add(b.sub(a).mul(x))
   }
 
-  /// The angle you need to turn "side0" counterclockwise to make it collinear with "side1"
+  // The angle you need to turn "side0" counterclockwise to make it collinear with "side1"
   static angle(side0: Point, side1: Point): number {
     const ax = side0.x
     const ay = side0.y

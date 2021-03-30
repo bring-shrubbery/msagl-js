@@ -39,7 +39,7 @@ namespace Microsoft.Msagl.Routing.Spline.Bundling {
 
         /*
                 IEnumerable<CdtEdge> GetCdtEdgesCrossedBySegmentStartingFromSiteAtStart(CdtSiteFeature f, PolylinePoint pp, out CdtFeature nextFeature) {
-                    Debug.Assert(f.Prev == null);
+                    Assert.assert(f.Prev == null);
                     var ret = new List<CdtEdge>();
                     var site = f.Site;
                     foreach (var t in site.Triangles) {

@@ -1,5 +1,5 @@
-﻿///  The class calculates obstacles under the shape.
-///  We assume that the boundaries are not set for the shape children yet
+﻿//  The class calculates obstacles under the shape.
+//  We assume that the boundaries are not set for the shape children yet
 
 import { IEnumerable } from "linq-to-typescript";
 import { Dictionary } from "lodash";
@@ -9,7 +9,7 @@ import { Polyline } from "../math/geometry/polyline";
 import { Shape } from "./Shape";
 import { TightLooseCouple } from "./TightLooseCouple";
 
-///  </summary>
+//  </summary>
 export class ShapeObstacleCalculator {
 
     tightHierarchy: RectangleNode<Polyline>;
@@ -78,12 +78,12 @@ export class ShapeObstacleCalculator {
         #endif
     }
 
-    ///  <summary>
-    ///  this test is valid in our situation were the tight polylines are disjoint and the shape can cross only one of them
-    ///  </summary>
-    ///  <param name="shape"></param>
-    ///  <param name="tightPolyline"></param>
-    ///  <returns></returns>
+    //  <summary>
+    //  this test is valid in our situation were the tight polylines are disjoint and the shape can cross only one of them
+    //  </summary>
+    //  <param name="shape"></param>
+    //  <param name="tightPolyline"></param>
+    //  <returns></returns>
     static ShapeIsInsideOfPoly(shape: Shape, tightPolyline: Polyline): boolean {
         return (Curve.PointRelativeToCurveLocation(shape.BoundaryCurve.Start, tightPolyline) == PointLocation.Inside);
     }

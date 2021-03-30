@@ -28,7 +28,7 @@ export class VisibilityGraph {
   }
 
   private /* internal */ SetPreviousEdge(v: VisibilityVertex, e: VisibilityEdge) {
-    Debug.Assert(((v == e.Source)
+    Assert.assert(((v == e.Source)
       || (v == e.Target)));
     this._prevEdgesDictionary[v] = e;
   }
@@ -126,7 +126,7 @@ export class VisibilityGraph {
 
   @SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")
   private /* internal */ static CheckThatPolylineIsConvex(polyline: Polyline) {
-    Debug.Assert(polyline.Closed, "Polyline is not closed");
+    Assert.assert(polyline.Closed, "Polyline is not closed");
     let a: PolylinePoint = polyline.StartPoint;
     let b: PolylinePoint = a.Next;
     let c: PolylinePoint = b.Next;
@@ -195,7 +195,7 @@ export class VisibilityGraph {
   }
 
   private /* internal */ AddVertex(vertex: VisibilityVertex) {
-    Debug.Assert(!this.PointToVertexMap.ContainsKey(vertex.Point), "A vertex already exists at this location");
+    Assert.assert(!this.PointToVertexMap.ContainsKey(vertex.Point), "A vertex already exists at this location");
     this.PointToVertexMap[vertex.Point] = vertex;
   }
 
@@ -210,7 +210,7 @@ export class VisibilityGraph {
     }
 
     if ((source == target)) {
-      Debug.Assert(false, "Self-edges are not allowed");
+      Assert.assert(false, "Self-edges are not allowed");
       throw new InvalidOperationException("Self-edges are not allowed");
     }
 
@@ -225,7 +225,7 @@ export class VisibilityGraph {
   }
 
   private /* internal */ static AddEdge(edge: VisibilityEdge) {
-    Debug.Assert((edge.Source != edge.Target));
+    Assert.assert((edge.Source != edge.Target));
     edge.Source.OutEdges.Insert(edge);
     edge.Target.InEdges.Add(edge);
   }
@@ -307,7 +307,7 @@ export class VisibilityGraph {
   }
 
   private /* internal */ RemoveVertex(vertex: VisibilityVertex) {
-    //  Debug.Assert(PointToVertexMap.ContainsKey(vertex.Point), "Cannot find vertex in PointToVertexMap");
+    //  Assert.assert(PointToVertexMap.ContainsKey(vertex.Point), "Cannot find vertex in PointToVertexMap");
     for (let edge in vertex.OutEdges) {
       edge.Target.RemoveInEdge(edge);
     }

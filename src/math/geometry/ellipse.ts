@@ -82,9 +82,9 @@ export class Ellipse implements ICurve {
 
   // Trims the curve
   trim(start: number, end: number): ICurve {
-    // Debug.Assert(start <= end);
-    // Debug.Assert(start >= ParStart - ApproximateComparer.Tolerance);
-    // Debug.Assert(end <= ParEnd + ApproximateComparer.Tolerance);
+    // Assert.assert(start <= end);
+    // Assert.assert(start >= ParStart - ApproximateComparer.Tolerance);
+    // Assert.assert(end <= ParEnd + ApproximateComparer.Tolerance);
     return new Ellipse(
       Math.max(start, this.parStart),
       Math.min(end, this.parEnd),

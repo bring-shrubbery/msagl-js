@@ -1,6 +1,6 @@
-///  Following "Improving Layered Graph Layouts with Edge Bundling" and
-///  "Two polynomial time algorithms for the bundle-Line crossing minimization problem"
-///  Postprocessing minimizing crossings step that works on the layered graph
+//  Following "Improving Layered Graph Layouts with Edge Bundling" and
+//  "Two polynomial time algorithms for the bundle-Line crossing minimization problem"
+//  Postprocessing minimizing crossings step that works on the layered graph
 
 import { from } from 'linq-to-typescript'
 import { Point, compareTo } from '../../../math/geometry/point'
@@ -24,9 +24,9 @@ export class MetroMapOrdering {
     this.nodePositions = nodePositions
   }
 
-  ///  <summary>
-  ///  Reorder only points having identical nodePositions
-  ///  </summary>
+  //  <summary>
+  //  Reorder only points having identical nodePositions
+  //  </summary>
   static UpdateLayerArrays0(
     properLayeredGraph: ProperLayeredGraph,
     layerArrays: LayerArrays,
@@ -39,9 +39,9 @@ export class MetroMapOrdering {
     ).UpdateLayerArrays()
   }
 
-  ///  <summary>
-  ///  Reorder virtual nodes between the same pair of real nodes
-  ///  </summary>
+  //  <summary>
+  //  Reorder virtual nodes between the same pair of real nodes
+  //  </summary>
   static UpdateLayerArrays1(
     properLayeredGraph: ProperLayeredGraph,
     layerArrays: LayerArrays,

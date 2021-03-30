@@ -1,48 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation;
-using Microsoft.Msagl.Routing.Visibility;
+﻿import { VisibilityVertex } from "../../visibility/VisibilityVertex";
 
-namespace Microsoft.Msagl.Routing.Spline.Bundling {
-    internal class SdVertex {
-        internal VisibilityVertex VisibilityVertex;
-        internal List<SdBoneEdge> InBoneEdges = new List<SdBoneEdge>();
-        internal List<SdBoneEdge> OutBoneEdges = new List<SdBoneEdge>();
+export class SdVertex {
 
-        internal SdVertex Prev {
-            get {
-                if (PrevEdge == null) return null;
-                return PrevEdge.Source == this ? PrevEdge.Target : PrevEdge.Source;
-            }
+    VisibilityVertex: VisibilityVertex;
+
+    InBoneEdges: Array<SdBoneEdge> = new Array<SdBoneEdge>();
+
+    OutBoneEdges: Array<SdBoneEdge> = new Array<SdBoneEdge>();
+
+    get Prev(): SdVertex {
+        if ((PrevEdge == null)) {
+            return null;
         }
 
-        internal SdBoneEdge PrevEdge { get; set; }
+        return PrevEdge.Target;
+        // TODO: Warning!!!, inline IF is not supported ?
+        (PrevEdge.Source == this);
+        PrevEdge.Source;
+    }
 
-        internal SdVertex(VisibilityVertex visibilityVertex) {
-            VisibilityVertex = visibilityVertex;
+    PrevEdge: SdBoneEdge
+
+    constructor(visibilityVertex: VisibilityVertex) {
+        this.VisibilityVertex = visibilityVertex;
+    }
+
+    Triangle: CdtTriangle;
+
+    get IsSourceOfRouting(): boolean {
+    }
+    set IsSourceOfRouting(value: boolean) {
+    }
+
+    get IsTargetOfRouting(): boolean {
+    }
+    set IsTargetOfRouting(value: boolean) {
+    }
+
+    get Point(): Point {
+        return this.VisibilityVertex.Point;
+    }
+
+    cost: number;
+
+    get Cost(): number {
+        if (this.IsSourceOfRouting) {
+            return this.cost;
         }
 
-        internal CdtTriangle Triangle;
+        return double.PositiveInfinity;
+        // TODO: Warning!!!, inline IF is not supported ?
+        (this.Prev == null);
+        this.cost;
+    }
+    set Cost(value: number) {
+        this.cost = value;
+    }
 
-        internal bool IsSourceOfRouting { get; set; }
-
-        internal bool IsTargetOfRouting { get; set; }
-
-        internal Point Point { get { return VisibilityVertex.Point; } }
-
-        double cost;
-
-        internal double Cost {
-            get {
-                if (IsSourceOfRouting) return cost;
-                return Prev == null ? double.PositiveInfinity : cost;
-            }
-            set { cost = value; }
-        }
-
-        public void SetPreviousToNull() {
-            PrevEdge = null;
-        }
+    public SetPreviousToNull() {
+        this.PrevEdge = null;
     }
 }

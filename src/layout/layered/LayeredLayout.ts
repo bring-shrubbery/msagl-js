@@ -378,8 +378,8 @@ export class LayeredLayout extends Algorithm {
     // return this.constrainedOrdering.LayerArrays
   }
 
-  /// Creating a proper layered graph, a graph where each
-  /// edge goes only one layer down from the i+1-th layer to the i-th layer.
+  // Creating a proper layered graph, a graph where each
+  // edge goes only one layer down from the i+1-th layer to the i-th layer.
 
   CreateProperLayeredGraph(layering: number[]): LayerArrays {
     const n = layering.length
@@ -837,19 +837,19 @@ export class LayeredLayout extends Algorithm {
       this.anchors[i].x = xLayers[i]
   }
 
-  /// // <summary>
-  /// // A quote from Gansner93.
-  /// // The method involves constructing an auxiliary graph as illustrated in figure 4-2.
-  /// // This transformation is the graphical analogue of the algebraic
-  /// // transformation mentioned above for removing the absolute values
-  /// // from the optimization problem. The nodes of the auxiliary graph G^ are the nodes of
-  /// // the original graph G plus, for every edge e in G, there is a new node ne.
-  /// // There are two kinds of edges in G^. One edge class encodes the
-  /// // cost of the original edges. Every edge e = (u,v) in G is replaced by two edges (ne ,u)
-  /// // and (ne, v) with d = 0 and w = w(e)W(e). The other class of edges separates nodes in the same layer.
-  /// // If v is the left neighbor of w, then G^ has an edge f = e(v,w) with d( f ) = r(v,w) and
-  /// // w( f ) = 0. This edge forces the nodes to be sufficiently
-  /// // separated but does not affect the cost of the layout.
+  // // <summary>
+  // // A quote from Gansner93.
+  // // The method involves constructing an auxiliary graph as illustrated in figure 4-2.
+  // // This transformation is the graphical analogue of the algebraic
+  // // transformation mentioned above for removing the absolute values
+  // // from the optimization problem. The nodes of the auxiliary graph G^ are the nodes of
+  // // the original graph G plus, for every edge e in G, there is a new node ne.
+  // // There are two kinds of edges in G^. One edge class encodes the
+  // // cost of the original edges. Every edge e = (u,v) in G is replaced by two edges (ne ,u)
+  // // and (ne, v) with d = 0 and w = w(e)W(e). The other class of edges separates nodes in the same layer.
+  // // If v is the left neighbor of w, then G^ has an edge f = e(v,w) with d( f ) = r(v,w) and
+  // // w( f ) = 0. This edge forces the nodes to be sufficiently
+  // // separated but does not affect the cost of the layout.
   CreateXLayoutGraph(layerArrays: LayerArrays): XLayoutGraph {
     let nOfVerts: number = this.properLayeredGraph.NodeCount
     // create edges of XLayoutGraph
