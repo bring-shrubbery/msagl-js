@@ -1,76 +1,49 @@
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using Microsoft.Msagl.Core.Geometry;
+import { Point } from './../../math/geometry/point'
+import { Assert } from './../../utils/assert'
+import { String } from 'typescript-string-operations'
+//  an edge connecting two VisibilityVertices
+export class VisibilityEdge {
 
-namespace Microsoft.Msagl.Routing.Visibility {
-    /// <summary>
-    /// an edge connecting two VisibilityVertices
-    /// </summary>
-    [DebuggerDisplay("({Source.Point.X} {Source.Point.Y})->({Target.Point.X} {Target.Point.Y}) ({Weight})")]
-    public class VisibilityEdge {
-        internal double LengthMultiplier = 1;
+  LengthMultiplier = 1;
 
-        internal VisibilityEdge() { }
+  constructor(source: VisibilityVertex, target: VisibilityVertex, weight: number = 1) {
+    Assert.assert((source.Point != target.Point), "Self-edges are not allowed");
+    this.Source = source;
+    this.Target = target;
+    this.Weight = weight;
+  }
 
-        internal VisibilityEdge(VisibilityVertex source, VisibilityVertex target, double weight) {
-            Debug.Assert(source.Point != target.Point, "Self-edges are not allowed");
-            Source = source;
-            Target = target;
-            Weight = weight;
-        }
+  Weight: number
+  static DefaultWeight = 1;
 
-        internal VisibilityEdge(VisibilityVertex source, VisibilityVertex target) : this (source, target, 1.0) {}
+  IsPassable: () => boolean
 
-        internal double Weight { get; private set; }
+  //  edge source point
+  public get SourcePoint(): Point {
+    return this.Source.Point;
+  }
 
-        internal const double DefaultWeight = 1.0;
+  //  edge target point
+  public get TargetPoint(): Point {
+    return this.Target.Point;
+  }
 
-        /// <summary>
-        ///returns true if and only if the edge can be passed
-        /// </summary>
-        internal Func<bool> IsPassable { get; set; }
+  Source: VisibilityVertex
+  Target: VisibilityVertex
 
-    
-        /// <summary>
-        /// edge source point
-        /// </summary>
-        public Point SourcePoint {
-            get { return Source.Point; }
-        }
-        /// <summary>
-        /// edge target point
-        /// </summary>
-        public Point TargetPoint {
-            get { return Target.Point; }
-        }
+  get Length(): number {
+    return this.SourcePoint.sub(this.TargetPoint).length * this.LengthMultiplier
+  }
 
+  toString(): string {
+    return String.Format("{0}->{1} ({2})", this.Source, this.Target, this.Weight);
+  }
 
-        internal VisibilityVertex Source { get; set; }
+  ReversedClone(): VisibilityEdge {
+    return new VisibilityEdge(this.Target, this.Source);
+  }
 
-        internal VisibilityVertex Target { get; set; }
-
-        internal double Length {
-            get { return (SourcePoint-TargetPoint).Length*LengthMultiplier; }
-        }
-
-      
-
-
-        /// <summary>
-        /// Rounded representation; DebuggerDisplay shows the unrounded form.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString() {
-            return String.Format(CultureInfo.InvariantCulture, "{0}->{1} ({2})", Source, Target, Weight.ToString("0.0###", CultureInfo.InvariantCulture));
-        }
-
-        internal VisibilityEdge ReversedClone() {
-            return new VisibilityEdge(Target, Source);
-        }
-
-        internal VisibilityEdge Clone() {
-            return new VisibilityEdge(Source, Target);
-        }
-    }
+  Clone(): VisibilityEdge {
+    return new VisibilityEdge(this.Source, this.Target);
+  }
 }

@@ -1,10 +1,13 @@
-import {Graph} from '../../structs/graph'
-import {Rectangle} from '../../math/geometry/rectangle'
-import {GeomObject} from './geomObject'
-import {GeomNode} from './geomNode'
-import {GeomEdge} from './geomEdge'
+import { Graph } from '../../structs/graph'
+import { Rectangle } from '../../math/geometry/rectangle'
+import { GeomObject } from './geomObject'
+import { GeomNode } from './geomNode'
+import { GeomEdge } from './geomEdge'
 
 export class GeomGraph extends GeomObject {
+  CheckClusterConsistency(): boolean {
+    throw new Error('Method not implemented.')
+  }
   Margins = 10
   get edgeCount() {
     return this.graph.edgeCount

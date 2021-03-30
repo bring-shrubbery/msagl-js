@@ -1,34 +1,31 @@
-﻿using System;
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Core.Geometry.Curves;
-using Microsoft.Msagl.Core.Layout;
+﻿import { RelativeFloatingPort } from "../core/layout/RelativeFloatingPort";
+import { ICurve } from "../math/geometry/icurve";
+import { Point } from "../math/geometry/point";
+import { Polyline } from "../math/geometry/polyline";
 
-namespace Microsoft.Msagl.Routing {
-    ///<summary>
-    ///this is a port for routing from a cluster
-    ///</summary>
-    public class ClusterBoundaryPort : RelativeFloatingPort {
-        Polyline loosePolyline;
-        internal Polyline LoosePolyline {
-            get { return loosePolyline; }
-            set { loosePolyline = value; }
-        }
+// this is a port for routing from a cluster
+export class ClusterBoundaryPort extends RelativeFloatingPort {
 
-        ///<summary>
-        ///constructor
-        ///</summary>
-        ///<param name="curveDelegate"></param>
-        ///<param name="centerDelegate"></param>
-        ///<param name="locationOffset"></param>
-        public ClusterBoundaryPort(Func<ICurve> curveDelegate, Func<Point> centerDelegate, Point locationOffset)
-            : base(curveDelegate, centerDelegate, locationOffset) { }
+    loosePolyline: Polyline;
 
-        ///<summary>
-        ///constructor 
-        ///</summary>
-        ///<param name="curveDelegate"></param>
-        ///<param name="centerDelegate"></param>
-        public ClusterBoundaryPort(Func<ICurve> curveDelegate, Func<Point> centerDelegate)
-            : base(curveDelegate, centerDelegate) { }
+    get LoosePolyline(): Polyline {
+        return this.loosePolyline;
     }
+    set LoosePolyline(value: Polyline) {
+        this.loosePolyline = value;
+    }
+
+    public constructor(curveDelegate: () => ICurve, centerDelegate: () => Point, locationOffset: Point) {
+        super(curveDelegate, centerDelegate, locationOffset)
+    }
+
+    // <summary>
+    // constructor 
+    // </summary>
+    // <param name="curveDelegate"></param>
+    // <param name="centerDelegate"></param>
+    public constructor(curveDelegate: Func<ICurve>, centerDelegate: Func<Point>):
+        base(curveDelegate, centerDelegate) {
+
+        }
 }

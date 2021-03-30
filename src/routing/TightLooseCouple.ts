@@ -1,54 +1,55 @@
-﻿using System;
-using Microsoft.Msagl.Core.Geometry.Curves;
+import { InvalidOperationException } from "linq-to-typescript";
+import { Polyline } from "../math/geometry/polyline";
+import { Shape } from "./Shape";
 
-namespace Microsoft.Msagl.Routing
-{
-    /// <summary>
-    /// an utility class to keep different polylines created around a shape
-    /// </summary>
-    internal class TightLooseCouple
-    {
-        internal Polyline TightPolyline { get; set; }
-        internal Shape LooseShape { get; set; }
+///  an utility class to keep different polylines created around a shape
+export class TightLooseCouple {
 
-        internal TightLooseCouple(){}
+    TightPolyline: Polyline
 
-        public TightLooseCouple(Polyline tightPolyline, Shape looseShape, double distance)
-        {
-            TightPolyline = tightPolyline;
-            LooseShape = looseShape;
-            Distance=distance;
-        }
-        /// <summary>
-        /// the loose polyline has been created with this distance
-        /// </summary>
-        internal double Distance { get; set; }
+    LooseShape: Shape
 
-        /// <summary>
-        /// compare just by TightPolyline
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {  
-            if(TightPolyline==null)
-                throw new InvalidOperationException();
-            return TightPolyline.GetHashCode();
+    public constructor(tightPolyline: Polyline, looseShape: Shape, distance: number) {
+        this.TightPolyline = tightPolyline;
+        this.LooseShape = looseShape;
+        this.Distance = distance;
+    }
+
+    //  the loose polyline has been created with this distance
+    get Distance(): number {
+    }
+    set Distance(value: number) {
+    }
+
+    //  compare just by TightPolyline
+    //  <returns></returns>
+    public /* override */ GetHashCode(): number {
+        if ((this.TightPolyline == null)) {
+            throw new InvalidOperationException();
         }
-        /// <summary>
-        /// compare just by TightPolyline
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public override bool Equals(object obj)
-        {
-            var couple = obj as TightLooseCouple;
-            if(couple==null)
-                return false;
-            return TightPolyline == couple.TightPolyline;
+
+        return this.TightPolyline.GetHashCode();
+    }
+
+    //  compare just by TightPolyline
+    //  <param name="obj"></param>
+    //  <returns></returns>
+    public /* override */ Equals(obj: Object): boolean {
+        let couple = (<TightLooseCouple>(obj));
+        if ((couple == null)) {
+            return false;
         }
-        public override string ToString()
-        {
-            return (TightPolyline == null ? "null" : TightPolyline.ToString().Substring(0,5)) + "," + (LooseShape == null ? "null" : LooseShape.ToString().Substring(0,5));
-        }
+
+        return (this.TightPolyline == couple.TightPolyline);
+    }
+
+    public /* override */ ToString(): string {
+        return ("null" + ("," + "null"));
+        // TODO: Warning!!!, inline IF is not supported ?
+        (this.TightPolyline == null);
+        this.TightPolyline.ToString().Substring(0, 5);
+        // TODO: Warning!!!, inline IF is not supported ?
+        (this.LooseShape == null);
+        this.LooseShape.ToString().Substring(0, 5);
     }
 }

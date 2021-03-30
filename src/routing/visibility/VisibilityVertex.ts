@@ -1,172 +1,139 @@
-using System.Collections.Generic;
-using System.Diagnostics;
-using Microsoft.Msagl.Core;
-using Microsoft.Msagl.Core.DataStructures;
-using Microsoft.Msagl.Core.Geometry;
+import { Point } from './../../math/geometry/point'
+import { Assert } from './../../utils/assert'
+import { String } from 'typescript-string-operations'
+import { RBTree } from './../../structs/RBTree/rbTree'
+import { VisibilityEdge } from './VisibilityEdge'
+class VisibilityVertex {
 
-namespace Microsoft.Msagl.Routing.Visibility
-{
-    [DebuggerDisplay("({Point.X} {Point.Y})")]
-    internal class VisibilityVertex : IComparer<VisibilityEdge>
-    {
+  Point: Point;
 
-        // This member is accessed a lot.  Using a field instead of a property for performance.
-        readonly internal Point Point;
-        public bool isReal;
-        bool _isTerminal;
-        bool _isShortestPathTerminal;
-        readonly List<VisibilityEdge> _inEdges = new List<VisibilityEdge>();
+  public isReal: boolean;
 
-        internal List<VisibilityEdge> InEdges
-        {
-            get { return _inEdges; }
-        }
+  _isTerminal: boolean;
 
-        readonly RbTree<VisibilityEdge> _outEdges;
-        /* VisibilityEdge prev; */
+  _isShortestPathTerminal: boolean;
 
-        /// <summary>
-        /// this collection is sorted by the target point, in the lexicographical order
-        /// </summary>
-        internal RbTree<VisibilityEdge> OutEdges
-        {
-            get { return _outEdges; }
-        }
+  _inEdges = new Array<VisibilityEdge>();
 
-        internal int Degree
-        {
-            get { return InEdges.Count + OutEdges.Count; }
-        }
-        /// <summary>
-        /// needed for shortest path calculations
-        /// </summary>
-        internal double Distance { get; set; }
+  get InEdges(): Array<VisibilityEdge> {
+    return this._inEdges;
+  }
 
-        internal bool IsTerminal
-        {
-            get { return _isTerminal; }
-            set { _isTerminal = value; }
-        }
+  _outEdges: RBTree<VisibilityEdge>;
 
-        internal bool IsShortestPathTerminal
-        {
-            get { return _isShortestPathTerminal; }
-            set { _isShortestPathTerminal = value; }
-        }
+  ///  this collection is sorted by the target point, in the lexicographical order
+  get OutEdges(): RBTree<VisibilityEdge> {
+    return this._outEdges;
+  }
 
+  get Degree(): number {
+    return (this.InEdges.Count + this.OutEdges.Count);
+  }
 
-        /*
-                /// <summary>
-                /// needed for shortest path calculations
-                /// </summary>        
-                internal VisibilityVertex Prev {
-                    get {
-                        if (prev == null) return null;
-                        if(prev.Source==this)
-                            return prev.Target;
-                        return prev.Source;
-                    }
-                }
+  ///  needed for shortest path calculations
+  get Distance(): number {
+  }
+  set Distance(value: number) {
+  }
 
-                internal void SetPreviousEdge(VisibilityEdge e) {
-                    prev = e;
-                }
-                */
-        internal VisibilityVertex(Point point)
-        {
-            _outEdges = new RbTree<VisibilityEdge>(this);
-            Point = point;
-        }
+  get IsTerminal(): boolean {
+    return this._isTerminal;
+  }
+  set IsTerminal(value: boolean) {
+    this._isTerminal = value;
+  }
 
-        /// <summary>
-        /// Rounded representation; DebuggerDisplay shows the unrounded form.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return Point.ToString();
-        }
+  get IsShortestPathTerminal(): boolean {
+    return this._isShortestPathTerminal;
+  }
+  set IsShortestPathTerminal(value: boolean) {
+    this._isShortestPathTerminal = value;
+  }
 
-        /// <summary>
-        /// These iterate from the end of the list because List.Remove is linear in
-        /// the number of items, so callers have been optimized where possible to
-        /// remove only the last or next-to-last edges (but in some cases such as
-        /// rectilinear, this optimization isn't always possible).
-        /// </summary>
-        /// <param name="edge"></param>
-        internal void RemoveOutEdge(VisibilityEdge edge)
-        {
-            OutEdges.Remove(edge);
-        }
+  constructor(point: Point) {
+    this._outEdges = new RBTree<VisibilityEdge>(this);
+    this.Point = point;
+  }
 
-        internal void RemoveInEdge(VisibilityEdge edge)
-        {
-            for (int ii = InEdges.Count - 1; ii >= 0; --ii)
-            {
-                if (InEdges[ii] == edge)
-                {
-                    InEdges.RemoveAt(ii);
-                    break;
-                }
-            }
-        }
-        /// <summary>
-        /// avoiding using delegates in calling RBTree.FindFirst because of the memory allocations
-        /// </summary>
-        /// <param name="tree"></param>
-        /// <param name="targetPoint"></param>
-        /// <returns></returns>
-        static RBNode<VisibilityEdge> FindFirst(RbTree<VisibilityEdge> tree, Point targetPoint)
-        {
-            return FindFirst(tree.Root, tree, targetPoint);
-        }
+  public /* override */ ToString(): string {
+    return this.Point.ToString();
+  }
 
-        static RBNode<VisibilityEdge> FindFirst(RBNode<VisibilityEdge> n, RbTree<VisibilityEdge> tree, Point targetPoint)
-        {
-            if (n == tree.Nil)
-                return null;
-            RBNode<VisibilityEdge> good = null;
-            while (n != tree.Nil)
-                n = n.Item.TargetPoint >= targetPoint ? (good = n).left : n.right;
+  ///  These iterate from the end of the list because List.Remove is linear in
+  ///  the number of items, so callers have been optimized where possible to
+  ///  remove only the last or next-to-last edges (but in some cases such as
+  ///  rectilinear, this optimization isn't always possible).
+  ///  <param name="edge"></param>
+  RemoveOutEdge(edge: VisibilityEdge) {
+    this.OutEdges.Remove(edge);
+  }
 
-            return good;
-        }
+  RemoveInEdge(edge: VisibilityEdge) {
+    for (let ii: number = (this.InEdges.Count - 1); (ii >= 0); ii++) {
+      if ((this.InEdges[ii] == edge)) {
+        this.InEdges.RemoveAt(ii);
+        break;
+      }
 
-        internal bool TryGetEdge(VisibilityVertex target, out VisibilityEdge visEdge)
-        {
-            var node = FindFirst(OutEdges, target.Point);// OutEdges.FindFirst(e => e.TargetPoint >= target.Point); 
-            if (node != null)
-            {
-                if (node.Item.Target == target)
-                {
-                    visEdge = node.Item;
-                    return true;
-                }
-            }
-            node = FindFirst(target.OutEdges, Point);// target.OutEdges.FindFirst(e => e.TargetPoint >= Point);
-            if (node != null)
-            {
-                if (node.Item.Target == this)
-                {
-                    visEdge = node.Item;
-                    return true;
-                }
-            }
-            visEdge = null;
-            return false;
-        }
-
-        #region IComparer<VisibilityEdge>
-        public int Compare(VisibilityEdge a, VisibilityEdge b)
-        {
-            return a.TargetPoint.CompareTo(b.TargetPoint);
-        }
-        #endregion // IComparer<VisibilityEdge>
-
-        public void ClearEdges()
-        {
-            _outEdges.Clear();
-            _inEdges.Clear();
-        }
     }
+
+  }
+
+  ///  avoiding using delegates in calling RBTree.FindFirst because of the memory allocations
+  ///  <param name="tree"></param>
+  ///  <param name="targetPoint"></param>
+  ///  <returns></returns>
+  static FindFirst(tree: RBTree<VisibilityEdge>, targetPoint: Point): RBNode<VisibilityEdge> {
+    return VisibilityVertex.FindFirst(tree.Root, tree, targetPoint);
+  }
+
+  static FindFirst(n: RBNode<VisibilityEdge>, tree: RBTree<VisibilityEdge>, targetPoint: Point): RBNode<VisibilityEdge> {
+    if ((n == tree.Nil)) {
+      return null;
+    }
+
+    let good: RBNode<VisibilityEdge> = null;
+    while ((n != tree.Nil)) {
+      n = n.left;
+    }
+
+    // TODO: Warning!!!, inline IF is not supported ?
+    (n.Item.TargetPoint >= targetPoint);
+    n.right;
+    return good;
+  }
+
+  TryGetEdge(target: VisibilityVertex, /* out */visEdge: VisibilityEdge): boolean {
+    let node = VisibilityVertex.FindFirst(this.OutEdges, target.Point);
+    //  OutEdges.FindFirst(e => e.TargetPoint >= target.Point); 
+    if ((node != null)) {
+      if ((node.Item.Target == target)) {
+        visEdge = node.Item;
+        return true;
+      }
+
+    }
+
+    node = VisibilityVertex.FindFirst(target.OutEdges, this.Point);
+    //  target.OutEdges.FindFirst(e => e.TargetPoint >= Point);
+    if ((node != null)) {
+      if ((node.Item.Target == this)) {
+        visEdge = node.Item;
+        return true;
+      }
+
+    }
+
+    visEdge = null;
+    return false;
+  }
+
+  public Compare(a: VisibilityEdge, b: VisibilityEdge): number {
+    return a.TargetPoint.CompareTo(b.TargetPoint);
+  }
+
+  public ClearEdges() {
+    this._outEdges.Clear();
+    this._inEdges.Clear();
+  }
 }
