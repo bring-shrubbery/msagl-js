@@ -1,11 +1,11 @@
-import { ICurve } from './icurve'
-import { Curve } from './curve'
-import { Rectangle } from './rectangle'
-import { PN, ParallelogramNode } from './parallelogramNode'
-import { Point } from './point'
-import { GeomConstants } from './geomConstants'
-import { PlaneTransformation } from './planeTransformation'
-import { ClosestPointOnCurve } from './closestPointOnCurve'
+import {ICurve} from './icurve'
+import {Curve} from './curve'
+import {Rectangle} from './rectangle'
+import {PN, ParallelogramNode} from './parallelogramNode'
+import {Point} from './point'
+import {GeomConstants} from './geomConstants'
+import {PlaneTransformation} from './planeTransformation'
+import {ClosestPointOnCurve} from './closestPointOnCurve'
 export class Ellipse implements ICurve {
   box: Rectangle
 

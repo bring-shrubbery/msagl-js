@@ -2,15 +2,15 @@
 // "Fast and Simple Horizontal Coordinate Assignment" of Ulrik Brandes and Boris K�opf
 //  The paper has two serious bugs that this code resolves.
 
-import { TopologicalSort } from '../../math/graphAlgorithms/topologicalSort'
-import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges'
-import { IntPair } from '../../utils/IntPair'
-import { IntPairSet } from '../../utils/IntPairSet'
-import { Anchor } from './anchor'
-import { LayerArrays } from './LayerArrays'
-import { LayerEdge } from './LayerEdge'
-import { PolyIntEdge } from './polyIntEdge'
-import { ProperLayeredGraph } from './ProperLayeredGraph'
+import {TopologicalSort} from '../../math/graphAlgorithms/topologicalSort'
+import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
+import {IntPair} from '../../utils/IntPair'
+import {IntPairSet} from '../../utils/IntPairSet'
+import {Anchor} from './anchor'
+import {LayerArrays} from './LayerArrays'
+import {LayerEdge} from './LayerEdge'
+import {PolyIntEdge} from './polyIntEdge'
+import {ProperLayeredGraph} from './ProperLayeredGraph'
 
 type MedianType = number | IntPair
 
@@ -186,7 +186,7 @@ export class XCoordsWithAlignment {
     const b: number[] = new Array(4)
     let leastWidth = Number.MAX_VALUE
     for (let i = 0; i < 4; i++) {
-      let t: { a: number; b: number }
+      let t: {a: number; b: number}
       this.AssignmentBounds(i, t)
       a[i] = t.a
       b[i] = t.b
@@ -230,7 +230,7 @@ export class XCoordsWithAlignment {
     return i == 0 || i == 2
   }
 
-  AssignmentBounds(i: number, t: { a: number; b: number }) {
+  AssignmentBounds(i: number, t: {a: number; b: number}) {
     if (this.nOfVertices == 0) {
       t.a = 0
       t.b = 0
@@ -632,8 +632,8 @@ export class XCoordsWithAlignment {
       if (v == this.root[v]) {
         let w: number = v
         // w will be running over the block
-        for (; w != v;) {
-          let rn: { neighbor: number }
+        for (; w != v; ) {
+          let rn: {neighbor: number}
           if (this.TryToGetRightNeighbor(w, rn)) {
             edges.push(new PolyIntEdge(v, this.root[rn.neighbor], null))
           }
@@ -656,8 +656,8 @@ export class XCoordsWithAlignment {
         let vIsLeftMost = true
         let w: number = v
         // w is running over the block
-        for (; w != v;) {
-          let wLn: { neighbor: number }
+        for (; w != v; ) {
+          let wLn: {neighbor: number}
           if (this.TryToGetLeftNeighbor(w, wLn)) {
             if (vIsLeftMost) {
               vx =
@@ -668,7 +668,7 @@ export class XCoordsWithAlignment {
               vx = this.RightMost(
                 vx,
                 this.x[this.root[wLn.neighbor]] +
-                this.DeltaBetweenVertices(wLn.neighbor, w),
+                  this.DeltaBetweenVertices(wLn.neighbor, w),
               )
             }
           }
@@ -689,13 +689,13 @@ export class XCoordsWithAlignment {
             XCoordsWithAlignment.infinity,
           )
           const xl: number = xLeftMost
-          for (; w != v;) {
-            let wRn: { neighbor: number }
+          for (; w != v; ) {
+            let wRn: {neighbor: number}
             if (this.TryToGetRightNeighbor(w, wRn)) {
               xLeftMost = this.LeftMost(
                 xLeftMost,
                 this.x[this.root[wRn.neighbor]] -
-                this.DeltaBetweenVertices(w, wRn.neighbor),
+                  this.DeltaBetweenVertices(w, wRn.neighbor),
               )
             }
 
@@ -716,7 +716,7 @@ export class XCoordsWithAlignment {
   }
 
   //  returns true is u has a right neighbor on its layer
-  TryToGetRightNeighbor(u: number, t: { neighbor: number }): boolean {
+  TryToGetRightNeighbor(u: number, t: {neighbor: number}): boolean {
     const neighborPos: number = this.NextRight(this.Pos(u))
     const layer: number[] = this.la.Layers[this.la.Y[u]]
     if (neighborPos >= 0 && neighborPos < layer.length) {
@@ -729,7 +729,7 @@ export class XCoordsWithAlignment {
   }
 
   //  returns true is u has a right neighbor on its layer
-  TryToGetLeftNeighbor(u: number, t: { neighbor: number }): boolean {
+  TryToGetLeftNeighbor(u: number, t: {neighbor: number}): boolean {
     const neighborPos: number = this.NextLeft(this.Pos(u))
     const layer: number[] = this.la.Layers[this.la.Y[u]]
     if (neighborPos >= 0 && neighborPos < layer.length) {

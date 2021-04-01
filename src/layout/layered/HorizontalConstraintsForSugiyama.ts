@@ -1,11 +1,11 @@
-import { from, IEnumerable } from 'linq-to-typescript'
-import { List, get } from 'lodash'
-import { BasicGraphOnEdges, mkGraphOnEdges } from '../../structs/basicGraphOnEdges'
-import { IEdge } from '../../structs/iedge'
-import { IntPair } from '../../utils/IntPair'
-import { IntPairSet } from '../../utils/IntPairSet'
-import { GeomNode } from '../core/geomNode'
-import { CycleRemoval } from './CycleRemoval'
+import {
+  BasicGraphOnEdges,
+  mkGraphOnEdges,
+} from '../../structs/basicGraphOnEdges'
+import {IntPair} from '../../utils/IntPair'
+import {IntPairSet} from '../../utils/IntPairSet'
+import {GeomNode} from '../core/geomNode'
+import {CycleRemoval} from './CycleRemoval'
 
 function mktuple<T>(a: T, b: T): [T, T] {
   return [a, b]
@@ -126,9 +126,7 @@ export class HorizontalConstraintsForSugiyama {
         .where((ip) => ip.x != ip.x),
     )
     const feedbackSet = CycleRemoval.getFeedbackSet(
-      mkGraphOnEdges(
-        from(this.LeftRighInts.values()),
-      ),
+      mkGraphOnEdges(from(this.LeftRighInts.values())),
     )
     for (const ip of feedbackSet)
       this.LeftRighInts.remove(new IntPair(ip.source, ip.target))

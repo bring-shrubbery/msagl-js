@@ -1,11 +1,11 @@
 // balances the layers by moving vertices with
 
-import { from } from 'linq-to-typescript'
-import { Algorithm } from '../../utils/algorithm'
-import { CancelToken } from '../../utils/cancelToken'
-import { IntPair } from '../../utils/IntPair'
-import { BasicGraphOnEdges as Graph } from '../../structs/basicGraphOnEdges'
-import { PolyIntEdge } from './polyIntEdge'
+import {from} from 'linq-to-typescript'
+import {Algorithm} from '../../utils/algorithm'
+import {CancelToken} from '../../utils/cancelToken'
+import {IntPair} from '../../utils/IntPair'
+import {BasicGraphOnEdges as Graph} from '../../structs/basicGraphOnEdges'
+import {PolyIntEdge} from './polyIntEdge'
 
 // balances the layers by moving vertices with
 // the same number of input-output edges to feasible layers with fewer nodes
@@ -154,7 +154,7 @@ export class Balancing implements Algorithm {
         layerToJumpTo = i
       }
     if (layerToJumpTo == -1) return
-    return { jumperLayer: jumperLayer, layerToJumpTo: layerToJumpTo }
+    return {jumperLayer: jumperLayer, layerToJumpTo: layerToJumpTo}
   }
   // Up returns the first infeasible layer up from i that i cannot jump to
   Up(i: number): number {

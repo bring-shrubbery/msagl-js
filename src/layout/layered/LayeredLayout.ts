@@ -1,45 +1,45 @@
-import { RealNumberSpan } from '../../utils/RealNumberSpan'
-import { BasicGraph } from '../../structs/BasicGraph'
-import { Point, TriangleOrientation } from '../../math/geometry/point'
-import { Assert } from '../../utils/assert'
-import { Algorithm } from './../../utils/algorithm'
-import { PolyIntEdge } from './polyIntEdge'
-import { SugiyamaLayoutSettings, SnapToGridByY } from './SugiyamaLayoutSettings'
-import { from, IEnumerable } from 'linq-to-typescript'
-import { IEdge } from '../../structs/iedge'
-import { CycleRemoval } from './CycleRemoval'
-import { GeomNode } from '../core/geomNode'
-import { Database } from './Database'
-import { LayerArrays, layersAreCorrect } from './LayerArrays'
-import { GeomEdge } from '../core/geomEdge'
-import { GeomGraph } from '../core/GeomGraph'
-import { IntPairMap } from '../../utils/IntPairMap'
-import { IntPairSet } from '../../utils/IntPairSet'
-import { IntPair } from '../../utils/IntPair'
-import { CancelToken } from '../../utils/cancelToken'
-import { Balancing } from './Balancing'
-import { LayerCalculator } from './layering/layerCalculator'
-import { ConstrainedOrdering } from './ordering/ConstrainedOrdering'
-import { ProperLayeredGraph } from './ProperLayeredGraph'
-import { LayerEdge } from './LayerEdge'
-import { EdgePathsInserter } from './EdgePathsInserter'
-import { LayerInserter } from './LayerInserter'
-import { Ordering } from './ordering/Ordering'
-import { MetroMapOrdering } from './ordering/MetroMapOrdering'
-import { NetworkSimplexForGeneralGraph } from './layering/NetworkSimplexForGeneralGraph'
-import { Anchor } from './anchor'
-import { XCoordsWithAlignment } from './XCoordsWithAlignment'
-import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges'
-import { XLayoutGraph } from './XLayoutGraph'
-import { Rectangle } from '../../math/geometry/rectangle'
-import { NetworkSimplex } from './layering/NetworkSimplex'
-import { GeomConstants } from '../../math/geometry/geomConstants'
-import { BundlingSettings } from '../../core/routing/BundlingSettings'
-import { EdgeRoutingMode } from '../../core/routing/EdgeRoutingMode'
-import { EdgeRoutingSettings } from '../../core/routing/EdgeRoutingSettings'
-import { SplineRouter } from '../../routing/SplineRouter'
-import { StraightLineEdges } from '../../routing/StraightLineEdges'
-import { Routing } from './routing'
+import {RealNumberSpan} from '../../utils/RealNumberSpan'
+import {BasicGraph} from '../../structs/BasicGraph'
+import {Point, TriangleOrientation} from '../../math/geometry/point'
+import {Assert} from '../../utils/assert'
+import {Algorithm} from './../../utils/algorithm'
+import {PolyIntEdge} from './polyIntEdge'
+import {SugiyamaLayoutSettings, SnapToGridByY} from './SugiyamaLayoutSettings'
+import {from, IEnumerable} from 'linq-to-typescript'
+import {IEdge} from '../../structs/iedge'
+import {CycleRemoval} from './CycleRemoval'
+import {GeomNode} from '../core/geomNode'
+import {Database} from './Database'
+import {LayerArrays, layersAreCorrect} from './LayerArrays'
+import {GeomEdge} from '../core/geomEdge'
+import {GeomGraph} from '../core/GeomGraph'
+import {IntPairMap} from '../../utils/IntPairMap'
+import {IntPairSet} from '../../utils/IntPairSet'
+import {IntPair} from '../../utils/IntPair'
+import {CancelToken} from '../../utils/cancelToken'
+import {Balancing} from './Balancing'
+import {LayerCalculator} from './layering/layerCalculator'
+import {ConstrainedOrdering} from './ordering/ConstrainedOrdering'
+import {ProperLayeredGraph} from './ProperLayeredGraph'
+import {LayerEdge} from './LayerEdge'
+import {EdgePathsInserter} from './EdgePathsInserter'
+import {LayerInserter} from './LayerInserter'
+import {Ordering} from './ordering/Ordering'
+import {MetroMapOrdering} from './ordering/MetroMapOrdering'
+import {NetworkSimplexForGeneralGraph} from './layering/NetworkSimplexForGeneralGraph'
+import {Anchor} from './anchor'
+import {XCoordsWithAlignment} from './XCoordsWithAlignment'
+import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
+import {XLayoutGraph} from './XLayoutGraph'
+import {Rectangle} from '../../math/geometry/rectangle'
+import {NetworkSimplex} from './layering/NetworkSimplex'
+import {GeomConstants} from '../../math/geometry/geomConstants'
+import {BundlingSettings} from '../../core/routing/BundlingSettings'
+import {EdgeRoutingMode} from '../../core/routing/EdgeRoutingMode'
+import {EdgeRoutingSettings} from '../../core/routing/EdgeRoutingSettings'
+import {SplineRouter} from '../../routing/SplineRouter'
+import {StraightLineEdges} from '../../routing/StraightLineEdges'
+import {Routing} from './routing'
 
 export class LayeredLayout extends Algorithm {
   originalGraph: GeomGraph
@@ -119,63 +119,86 @@ export class LayeredLayout extends Algorithm {
   }
 
   RunPostLayering() {
-    const routingSettings: EdgeRoutingSettings = this.sugiyamaSettings.EdgeRoutingSettings;
-    const mode = this.constrainedOrdering != null ? EdgeRoutingMode.Spline : routingSettings.EdgeRoutingMode;
+    const routingSettings: EdgeRoutingSettings = this.sugiyamaSettings
+      .EdgeRoutingSettings
+    const mode =
+      this.constrainedOrdering != null
+        ? EdgeRoutingMode.Spline
+        : routingSettings.EdgeRoutingMode
 
     switch (mode) {
       case EdgeRoutingMode.SugiyamaSplines:
-        this.CalculateEdgeSplines();
-        break;
+        this.CalculateEdgeSplines()
+        break
       case EdgeRoutingMode.StraightLine:
-        StraightLineEdges.SetStraightLineEdgesWithUnderlyingPolylines(this.originalGraph);
-        this.SetLabels();
-        break;
+        StraightLineEdges.SetStraightLineEdgesWithUnderlyingPolylines(
+          this.originalGraph,
+        )
+        this.SetLabels()
+        break
       case EdgeRoutingMode.Spline:
         let padding: number = this.sugiyamaSettings.NodeSeparation / 4
-        let loosePadding: number = SplineRouter.ComputeLooseSplinePadding(sugiyamaSettings.NodeSeparation, padding);
-        const router = new SplineRouter(originalGraph, padding, loosePadding, (Math.PI / 6), null);
-        router.Run();
-        SetLabels();
-        break;
+        let loosePadding: number = SplineRouter.ComputeLooseSplinePadding(
+          sugiyamaSettings.NodeSeparation,
+          padding,
+        )
+        const router = new SplineRouter(
+          originalGraph,
+          padding,
+          loosePadding,
+          Math.PI / 6,
+          null,
+        )
+        router.Run()
+        SetLabels()
+        break
       case EdgeRoutingMode.SplineBundling:
-        const coneAngle: number = routingSettings.ConeAngle;
-        padding = (sugiyamaSettings.NodeSeparation / 20);
-        loosePadding = (SplineRouter.ComputeLooseSplinePadding(sugiyamaSettings.NodeSeparation, padding) * 2);
-        if ((sugiyamaSettings.EdgeRoutingSettings.BundlingSettings == null)) {
-          sugiyamaSettings.EdgeRoutingSettings.BundlingSettings = new BundlingSettings();
+        const coneAngle: number = routingSettings.ConeAngle
+        padding = sugiyamaSettings.NodeSeparation / 20
+        loosePadding =
+          SplineRouter.ComputeLooseSplinePadding(
+            sugiyamaSettings.NodeSeparation,
+            padding,
+          ) * 2
+        if (sugiyamaSettings.EdgeRoutingSettings.BundlingSettings == null) {
+          sugiyamaSettings.EdgeRoutingSettings.BundlingSettings = new BundlingSettings()
         }
 
-        const br = new SplineRouter(this.originalGraph, padding, loosePadding, coneAngle, sugiyamaSettings.EdgeRoutingSettings.BundlingSettings);
-        br.run();
-        SetLabels();
-        break;
+        const br = new SplineRouter(
+          this.originalGraph,
+          padding,
+          loosePadding,
+          coneAngle,
+          sugiyamaSettings.EdgeRoutingSettings.BundlingSettings,
+        )
+        br.run()
+        SetLabels()
+        break
       case EdgeRoutingMode.Rectilinear:
       case EdgeRoutingMode.RectilinearToCenter:
-        throw new Error("Not implemented yet")
+        throw new Error('Not implemented yet')
 
-        break;
+        break
       default:
-        throw new Error("Unexpected mode " + mode)
-
+        throw new Error('Unexpected mode ' + mode)
     }
 
-    this.originalGraph.boundingBox = this.originalGraph.pumpTheBoxToTheGraphWithMargins();
+    this.originalGraph.boundingBox = this.originalGraph.pumpTheBoxToTheGraphWithMargins()
   }
 
   SetLabels() {
-    const edgeLabeller = new EdgeLabelPlacement(originalGraph);
-    edgeLabeller.run();
+    const edgeLabeller = new EdgeLabelPlacement(originalGraph)
+    edgeLabeller.run()
   }
-
 
   cycleRemoval() {
     const verticalConstraints = this.sugiyamaSettings.verticalConstraints
     const feedbackSet: IEdge[] = verticalConstraints.isEmpty
       ? CycleRemoval.getFeedbackSet(this.IntGraph)
       : verticalConstraints.getFeedbackSetExternal(
-        this.IntGraph,
-        this.nodeIdToIndex,
-      )
+          this.IntGraph,
+          this.nodeIdToIndex,
+        )
 
     this.database.addFeedbackSet(feedbackSet)
   }
@@ -314,7 +337,7 @@ export class LayeredLayout extends Algorithm {
     }
   }
 
-  * NodeAnchors(): IterableIterator<Anchor> {
+  *NodeAnchors(): IterableIterator<Anchor> {
     const n = Math.min(this.IntGraph.nodeCount, this.anchors.length)
     for (let i = 0; i < n; i++) yield this.anchors[i]
   }
@@ -334,9 +357,15 @@ export class LayeredLayout extends Algorithm {
     return p
   }
   CalculateEdgeSplines() {
-    const routing = new Routing(this.sugiyamaSettings, this.originalGraph, this.database, this.engineLayerArrays, this.properLayeredGraph,
-      this.IntGraph);
-    routing.run();
+    const routing = new Routing(
+      this.sugiyamaSettings,
+      this.originalGraph,
+      this.database,
+      this.engineLayerArrays,
+      this.properLayeredGraph,
+      this.IntGraph,
+    )
+    routing.run()
   }
 
   YLayeringAndOrdering(layering: LayerCalculator): LayerArrays {
@@ -615,7 +644,7 @@ export class LayeredLayout extends Algorithm {
 
   GetSuccessorAndPredecessor(
     i: number,
-  ): { predecessor: Anchor; successor: Anchor } {
+  ): {predecessor: Anchor; successor: Anchor} {
     let predecessor: number
     for (const ie of this.properLayeredGraph.InEdges(i)) predecessor = ie.Source // there will be only one
 
@@ -682,9 +711,8 @@ export class LayeredLayout extends Algorithm {
       left: this.originalGraph.boundingBox.left,
       top: center + h / 2,
       right: this.originalGraph.boundingBox.right,
-      bottom: center - h / 2
-    }
-    )
+      bottom: center - h / 2,
+    })
   }
 
   StretchInXDirection(scaleFactor: number) {
@@ -699,14 +727,12 @@ export class LayeredLayout extends Algorithm {
     }
 
     const w = this.originalGraph.width * scaleFactor
-    this.originalGraph.boundingBox = new Rectangle(
-      {
-        left: center - w / 2,
-        top: this.originalGraph.boundingBox.top,
-        right: center + w / 2,
-        bottom: this.originalGraph.boundingBox.bottom
-      }
-    )
+    this.originalGraph.boundingBox = new Rectangle({
+      left: center - w / 2,
+      top: this.originalGraph.boundingBox.top,
+      right: center + w / 2,
+      bottom: this.originalGraph.boundingBox.bottom,
+    })
   }
 
   CalculateOriginalGraphBox(): number {
@@ -715,9 +741,8 @@ export class LayeredLayout extends Algorithm {
       left: this.anchors[0].left,
       top: this.anchors[0].top,
       right: this.anchors[0].right,
-      bottom: this.anchors[0].bottom
-    }
-    )
+      bottom: this.anchors[0].bottom,
+    })
     for (let i = 1; i < this.anchors.length; i++) {
       const a: Anchor = this.anchors[i]
       box.add(a.leftTop)
@@ -733,7 +758,7 @@ export class LayeredLayout extends Algorithm {
   }
 
   StraightensShortEdges() {
-    for (; this.StraightenEdgePaths();) { }
+    for (; this.StraightenEdgePaths(); ) {}
   }
 
   StraightenEdgePaths() {
@@ -783,8 +808,8 @@ export class LayeredLayout extends Algorithm {
       const uAnchor: Anchor = this.database.Anchors[layer[vPosition - 1]]
       const allowedX: number = Math.max(
         uAnchor.right +
-        (this.sugiyamaSettings.NodeSeparation +
-          this.database.Anchors[v].leftAnchor),
+          (this.sugiyamaSettings.NodeSeparation +
+            this.database.Anchors[v].leftAnchor),
         x,
       )
       if (allowedX < this.database.Anchors[v].x - 1) {
@@ -808,8 +833,8 @@ export class LayeredLayout extends Algorithm {
       const uAnchor: Anchor = this.database.Anchors[layer[vPosition + 1]]
       const allowedX: number = Math.min(
         uAnchor.left -
-        (this.sugiyamaSettings.NodeSeparation -
-          this.database.Anchors[v].rightAnchor),
+          (this.sugiyamaSettings.NodeSeparation -
+            this.database.Anchors[v].rightAnchor),
         x,
       )
       if (allowedX > this.database.Anchors[v].x + 1) {

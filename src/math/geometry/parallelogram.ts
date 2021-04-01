@@ -1,6 +1,6 @@
-import { Point } from './point'
-import { GeomConstants } from './geomConstants'
-import { Assert } from './../../utils/assert'
+import {Point} from './point'
+import {GeomConstants} from './geomConstants'
+import {Assert} from './../../utils/assert'
 
 export enum VertexId {
   Corner,
@@ -254,7 +254,7 @@ export class Parallelogram {
     result.corner = corner
     Assert.assert(
       sideA.length > GeomConstants.intersectionEpsilon &&
-      sideB.length > GeomConstants.intersectionEpsilon,
+        sideB.length > GeomConstants.intersectionEpsilon,
     )
     result.a = sideA
     result.b = sideB

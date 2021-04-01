@@ -1,11 +1,11 @@
-import { GeomNode } from './geomNode'
-import { EdgeGeometry } from './edgeGeometry'
-import { Edge } from './../../structs/edge'
-import { GeomObject } from './geomObject'
-import { Rectangle } from './../../math/geometry/rectangle'
-import { ICurve } from './../../math/geometry/icurve'
-import { SmoothedPolyline } from './../../math/geometry/smoothedPolyline'
-import { GeomLabel } from './geomLabel'
+import {GeomNode} from './geomNode'
+import {EdgeGeometry} from './edgeGeometry'
+import {Edge} from './../../structs/edge'
+import {GeomObject} from './geomObject'
+import {Rectangle} from './../../math/geometry/rectangle'
+import {ICurve} from './../../math/geometry/icurve'
+import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
+import {GeomLabel} from './geomLabel'
 
 export class GeomEdge extends GeomObject {
   underlyingPolyline: SmoothedPolyline

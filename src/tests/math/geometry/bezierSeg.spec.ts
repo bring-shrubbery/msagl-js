@@ -1,7 +1,7 @@
-import { Point } from '../../../math/geometry/point'
-import { BezierSeg } from '../../../math/geometry/bezierSeg'
-import { DebugCurve } from '../../../math/geometry/debugCurve'
-import { SvgDebugWriter } from '../../../math/geometry/svgDebugWriter'
+import {Point} from '../../../math/geometry/point'
+import {BezierSeg} from '../../../math/geometry/bezierSeg'
+import {DebugCurve} from '../../../math/geometry/debugCurve'
+import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
 describe('bezier', () => {
   test('bezier control points', () => {
     const b = [

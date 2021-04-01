@@ -1,5 +1,5 @@
-import { LinearSystem2 } from './linearSystem'
-import { GeomConstants } from './geomConstants'
+import {LinearSystem2} from './linearSystem'
+import {GeomConstants} from './geomConstants'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,
@@ -221,18 +221,19 @@ export class Point {
     return TriangleOrientation.Collinear
   }
 
-  static ClosestPointAtLineSegment(point: Point, segmentStart: Point, segmentEnd: Point): Point {
-    const bc = segmentEnd.sub(segmentStart);
+  static ClosestPointAtLineSegment(
+    point: Point,
+    segmentStart: Point,
+    segmentEnd: Point,
+  ): Point {
+    const bc = segmentEnd.sub(segmentStart)
     const ba = point.sub(segmentStart)
     const c1 = bc.dot(ba)
     const c2 = bc.dot(bc)
-    if (c1 <= 0.0 + GeomConstants.tolerance)
-      return segmentStart;
+    if (c1 <= 0.0 + GeomConstants.tolerance) return segmentStart
 
-    if (c2 <= c1 + GeomConstants.tolerance)
-      return segmentEnd;
+    if (c2 <= c1 + GeomConstants.tolerance) return segmentEnd
 
-    return segmentStart.add(bc.mul(c1 / c2));
+    return segmentStart.add(bc.mul(c1 / c2))
   }
-
 }

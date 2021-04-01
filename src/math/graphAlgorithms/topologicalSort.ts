@@ -1,9 +1,12 @@
-import { IntPair } from './../../utils/IntPair'
-import { BasicGraphOnEdges, mkGraphOnEdgesArray } from './../../structs/basicGraphOnEdges'
-import { Stack } from 'stack-typescript'
+import {IntPair} from './../../utils/IntPair'
+import {
+  BasicGraphOnEdges,
+  mkGraphOnEdgesArray,
+} from './../../structs/basicGraphOnEdges'
+import {Stack} from 'stack-typescript'
 
 // Implements the topological sort
-import { IEdge } from './../../structs/iedge'
+import {IEdge} from './../../structs/iedge'
 
 function visitNodeC(
   g: BasicGraphOnEdges<IEdge>,
@@ -41,7 +44,7 @@ export class TopologicalSort {
     const visited = new Array<boolean>(graph.nodeCount).fill(false)
 
     //no recursion! So we have to organize a stack
-    const se = new Stack<{ edges: IEdge[]; index: number; current_u: number }>()
+    const se = new Stack<{edges: IEdge[]; index: number; current_u: number}>()
 
     const order: number[] = []
 
@@ -59,7 +62,7 @@ export class TopologicalSort {
           const v = en[i].target
           if (!visited[v]) {
             visited[v] = true
-            se.push({ edges: en, index: i + 1, current_u: cu })
+            se.push({edges: en, index: i + 1, current_u: cu})
             cu = v
             en = graph.outEdges[cu]
             i = -1

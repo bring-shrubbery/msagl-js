@@ -1,4 +1,4 @@
-import { Point } from './point'
+import {Point} from './point'
 
 // 2 by 3 matrix of plane affine transformations
 export class PlaneTransformation {
@@ -99,19 +99,19 @@ export class PlaneTransformation {
     if (b != null)
       return new PlaneTransformation(
         this.getElem(0, 0) * b.getElem(0, 0) +
-        this.getElem(0, 1) * b.getElem(1, 0),
+          this.getElem(0, 1) * b.getElem(1, 0),
         this.getElem(0, 0) * b.getElem(0, 1) +
-        this.getElem(0, 1) * b.getElem(1, 1),
+          this.getElem(0, 1) * b.getElem(1, 1),
         this.getElem(0, 0) * b.getElem(0, 2) +
-        this.getElem(0, 1) * b.getElem(1, 2) +
-        this.getElem(0, 2),
+          this.getElem(0, 1) * b.getElem(1, 2) +
+          this.getElem(0, 2),
         this.getElem(1, 0) * b.getElem(0, 0) +
-        this.getElem(1, 1) * b.getElem(1, 0),
+          this.getElem(1, 1) * b.getElem(1, 0),
         this.getElem(1, 0) * b.getElem(0, 1) +
-        this.getElem(1, 1) * b.getElem(1, 1),
+          this.getElem(1, 1) * b.getElem(1, 1),
         this.getElem(1, 0) * b.getElem(0, 2) +
-        this.getElem(1, 1) * b.getElem(1, 2) +
-        this.getElem(1, 2),
+          this.getElem(1, 1) * b.getElem(1, 2) +
+          this.getElem(1, 2),
       )
     return null
   }

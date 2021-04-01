@@ -1,7 +1,10 @@
-import { NetworkSimplex } from '../../../../layout/layered/layering/NetworkSimplex'
-import { PolyIntEdge } from '../../../../layout/layered/polyIntEdge'
-import { BasicGraphOnEdges, mkGraphOnEdgesArray } from '../../../../structs/basicGraphOnEdges'
-import { CancelToken } from '../../../../utils/cancelToken'
+import {NetworkSimplex} from '../../../../layout/layered/layering/NetworkSimplex'
+import {PolyIntEdge} from '../../../../layout/layered/polyIntEdge'
+import {
+  BasicGraphOnEdges,
+  mkGraphOnEdgesArray,
+} from '../../../../structs/basicGraphOnEdges'
+import {CancelToken} from '../../../../utils/cancelToken'
 
 test('network simplex', () => {
   // This is the example from North, Gansnern etc. 1993 paper

@@ -1,6 +1,6 @@
-import { ICurve } from './../../math/geometry/icurve'
-import { SmoothedPolyline } from './../../math/geometry/smoothedPolyline'
-import { Arrowhead } from './arrowhead'
+import {ICurve} from './../../math/geometry/icurve'
+import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
+import {Arrowhead} from './arrowhead'
 export class EdgeGeometry {
   curve: ICurve
   smoothedPolyline: SmoothedPolyline

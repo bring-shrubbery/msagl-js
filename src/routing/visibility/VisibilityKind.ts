@@ -1,5 +1,4 @@
 ﻿export enum VisibilityKind {
-    Regular,
-    Tangent,
+  Regular,
+  Tangent,
 }
-

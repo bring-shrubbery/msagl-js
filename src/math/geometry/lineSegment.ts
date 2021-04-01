@@ -1,10 +1,10 @@
-import { ICurve } from './icurve'
-import { Point } from './point'
-import { Parallelogram } from './parallelogram'
-import { PlaneTransformation } from './planeTransformation'
-import { Rectangle } from './rectangle'
-import { GeomConstants } from './geomConstants'
-import { PN } from './parallelogramNode'
+import {ICurve} from './icurve'
+import {Point} from './point'
+import {Parallelogram} from './parallelogram'
+import {PlaneTransformation} from './planeTransformation'
+import {Rectangle} from './rectangle'
+import {GeomConstants} from './geomConstants'
+import {PN} from './parallelogramNode'
 export class LineSegment implements ICurve {
   start: Point //the line goes from start to end
   end: Point // the line end point
@@ -303,7 +303,7 @@ return xx;
     b: Point,
     c: Point,
     d: Point,
-  ): { dist: number; parab: number; parcd: number } {
+  ): {dist: number; parab: number; parcd: number} {
     const u = b.sub(a)
     const v = d.sub(c)
     const w = a.sub(c)

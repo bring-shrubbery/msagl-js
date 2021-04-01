@@ -1,5 +1,5 @@
-import { Point } from './point'
-import { Polyline } from './polyline'
+import {Point} from './point'
+import {Polyline} from './polyline'
 
 export class PolylinePoint {
   point: Point
@@ -8,7 +8,7 @@ export class PolylinePoint {
   polyline: Polyline
 
   get nextOnPolyline(): PolylinePoint {
-    return this.polyline.next(this);
+    return this.polyline.next(this)
   }
 
   //

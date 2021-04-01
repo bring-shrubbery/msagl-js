@@ -6,18 +6,21 @@
 //           |
 //           |
 //           |BottomAnchor
-import { Point, TriangleOrientation } from './../../math/geometry/point'
-import { Polyline } from './../../math/geometry/polyline'
-import { PolylinePoint } from './../../math/geometry/polylinePoint'
-import { Curve } from './../../math/geometry/curve'
-import { GeomConstants } from './../../math/geometry/geomConstants'
-import { GeomNode } from './../core/geomNode'
-import { Assert } from './../../utils/assert'
+import {Point, TriangleOrientation} from './../../math/geometry/point'
+import {Polyline} from './../../math/geometry/polyline'
+import {PolylinePoint} from './../../math/geometry/polylinePoint'
+import {Curve} from './../../math/geometry/curve'
+import {GeomConstants} from './../../math/geometry/geomConstants'
+import {GeomNode} from './../core/geomNode'
+import {Assert} from './../../utils/assert'
 export class Anchor {
   labelToTheRightOfAnchorCenter: boolean
   labelToTheLeftOfAnchorCenter: boolean
-  get representsLabel(): boolean { return this.labelToTheRightOfAnchorCenter || this.labelToTheLeftOfAnchorCenter; }
-
+  get representsLabel(): boolean {
+    return (
+      this.labelToTheRightOfAnchorCenter || this.labelToTheLeftOfAnchorCenter
+    )
+  }
 
   // ToString
   toString() {
@@ -154,7 +157,7 @@ export class Anchor {
   constructor(labelCornersPreserveCoefficient: number) {
     Assert.assert(
       0 <= labelCornersPreserveCoefficient &&
-      labelCornersPreserveCoefficient <= 1,
+        labelCornersPreserveCoefficient <= 1,
     )
     this.labelCornersPreserveCoefficient = labelCornersPreserveCoefficient
   }

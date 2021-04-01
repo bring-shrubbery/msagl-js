@@ -1,4 +1,4 @@
-import { Point } from './point'
+import {Point} from './point'
 export class CornerSite {
   // the coeffiecient used to calculate the first and the second control points of the
   // Bezier segment for the fillet at the site
@@ -9,9 +9,9 @@ export class CornerSite {
 
   // the coefficient tells how tight the segment fits to the segment after the site; the formula is kNext * c + (1 - kNext) * b
   // </summary>
-  previousTangentCoefficient: number = 1.0 / 3
+  previousTangentCoefficient = 1.0 / 3
 
-  nextTangentCoefficient: number = 1.0 / 3
+  nextTangentCoefficient = 1.0 / 3
   point: Point
 
   prev: CornerSite

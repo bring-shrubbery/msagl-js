@@ -1,6 +1,6 @@
-import { VerticalConstraintsForSugiyama } from './VerticalConstraintsForSugiyama'
-import { HorizontalConstraintsForSugiyama } from './HorizontalConstraintsForSugiyama'
-import { EdgeRoutingSettings } from '../../core/routing/EdgeRoutingSettings'
+import {VerticalConstraintsForSugiyama} from './VerticalConstraintsForSugiyama'
+import {HorizontalConstraintsForSugiyama} from './HorizontalConstraintsForSugiyama'
+import {EdgeRoutingSettings} from '../../core/routing/EdgeRoutingSettings'
 
 export enum SnapToGridByY {
   None,

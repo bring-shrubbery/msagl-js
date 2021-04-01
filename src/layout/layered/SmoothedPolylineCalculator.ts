@@ -1,9 +1,7 @@
-﻿import {IEnumerable} from 'linq-to-typescript'
-import {CornerSite} from '../../math/geometry/cornerSite'
+﻿import {CornerSite} from '../../math/geometry/cornerSite'
 import {Curve} from '../../math/geometry/curve'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {ICurve} from '../../math/geometry/icurve'
-import {IntersectionInfo} from '../../math/geometry/intersectionInfo'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Parallelogram} from '../../math/geometry/parallelogram'
 import {PN, PNInternal} from '../../math/geometry/parallelogramNode'
@@ -23,7 +21,7 @@ import {BezierSeg} from '../../math/geometry/bezierSeg'
 import {Routing} from './routing'
 import {NodeKind} from './NodeKind'
 import {Assert} from '../../utils/assert'
-class SmoothedPolylineCalculator {
+export class SmoothedPolylineCalculator {
   headSite: CornerSite
 
   //  corresponds to the bottom point
@@ -690,7 +688,7 @@ class SmoothedPolylineCalculator {
     }
 
     const ratio: number = (a.y - b.y) / (a.Bottom - b.Top)
-    const xc: number = 0.5 * (ax + bx)
+    const xc = 0.5 * (ax + bx)
     const half: number = sign * ((ax - bx) * 0.5)
     ax = xc + ratio * (half * sign)
     bx = xc - ratio * (half * sign)
@@ -723,7 +721,7 @@ class SmoothedPolylineCalculator {
     }
 
     const ratio: number = (a.y - b.y) / (a.Bottom - b.Top)
-    const xc: number = 0.5 * (ax + bx)
+    const xc = 0.5 * (ax + bx)
     const half: number = sign * ((ax - bx) * 0.5)
     ax = xc + ratio * (half * sign)
     bx = xc - ratio * (half * sign)
@@ -734,61 +732,61 @@ class SmoothedPolylineCalculator {
   private FindLegalPositions(
     a: Anchor,
     b: Anchor,
-    /* ref */ ax: number,
-    /* ref */ bx: number,
-    /* out */ sign: number,
+    t: {
+      ax: number
+      bx: number
+      sign: number
+    },
   ): boolean {
-    if (!this.FindPositions(a, b, /* ref */ ax, /* ref */ bx, /* out */ sign)) {
+    if (!this.FindPositions(a, b, t)) {
       return false
     }
 
-    const count = 10
-    for (;;) {
-      if (this.PositionsAreLegal(ax, bx, sign, a, b, this.EdgePathNode(1))) {
-        return true
-      }
-
-      ax = (ax + a.X) / 2
-      bx = (bx + b.X) / 2
+    if (this.PositionsAreLegal(ax, bx, sign, a, b, this.EdgePathNode(1))) {
+      return true
     }
 
-    10
+    ax = (ax + a.X) / 2
+    bx = (bx + b.X) / 2
+
     return false
   }
 
   private FindPositions(
     a: Anchor,
     b: Anchor,
-    /* ref */ ax: number,
-    /* ref */ bx: number,
-    /* out */ sign: number,
+    t: {
+      ax: number
+      bx: number
+      sign: number
+    },
   ): boolean {
-    const overlapMax: number
-    const overlapMin: number
-    if (ax < bx) {
-      sign = 1
-      overlapMin = Math.max(ax, b.left)
-      overlapMax = Math.Min(a.right, bx)
+    let overlapMax: number
+    let overlapMin: number
+    if (t.ax < t.bx) {
+      t.sign = 1
+      overlapMin = Math.max(t.ax, b.left)
+      overlapMax = Math.min(a.right, t.bx)
     } else {
-      sign = -1
-      overlapMin = Math.max(a.left, bx)
-      overlapMax = Math.Min(b.right, ax)
+      t.sign = -1
+      overlapMin = Math.max(a.left, t.bx)
+      overlapMax = Math.min(b.right, t.ax)
     }
 
     if (overlapMin <= overlapMax) {
-      bx = 0.5 * (overlapMin + overlapMax)
-      ax = 0.5 * (overlapMin + overlapMax)
+      t.bx = 0.5 * (overlapMin + overlapMax)
+      t.ax = 0.5 * (overlapMin + overlapMax)
     } else {
       if (this.OriginToOriginSegCrossesAnchorSide(a, b)) {
         return false
       }
 
-      if (sign == 1) {
-        ax = a.right - 0.1 * a.RightAnchor
-        bx = b.left
+      if (t.sign == 1) {
+        t.ax = a.right - 0.1 * a.RightAnchor
+        t.bx = b.left
       } else {
-        ax = a.left + 0.1 * a.LeftAnchor
-        bx = b.right
+        t.ax = a.left + 0.1 * a.LeftAnchor
+        t.bx = b.right
       }
     }
 

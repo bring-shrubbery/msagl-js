@@ -1,59 +1,58 @@
-import { Point } from "../../../math/geometry/point";
-import { ConeSide } from "./ConeSide";
-import { IConeSweeper } from "./IConeSweeper";
+import {Point} from '../../../math/geometry/point'
+import {ConeSide} from './ConeSide'
+import {IConeSweeper} from './IConeSweeper'
 
 export class Cone {
+  removed: boolean
 
-    removed: boolean;
+  get Removed(): boolean {
+    return this.removed
+  }
+  set Removed(value: boolean) {
+    this.removed = value
+  }
 
-    get Removed(): boolean {
-        return this.removed;
-    }
-    set Removed(value: boolean) {
-        this.removed = value;
-    }
+  apex: Point
 
-    apex: Point;
+  coneSweeper: IConeSweeper
 
-    coneSweeper: IConeSweeper;
+  constructor(apex: Point, coneSweeper: IConeSweeper) {
+    this.apex = this.apex
+    this.coneSweeper = this.coneSweeper
+  }
 
-    constructor(apex: Point, coneSweeper: IConeSweeper) {
-        this.apex = this.apex;
-        this.coneSweeper = this.coneSweeper;
-    }
+  get Apex(): Point {
+    return this.apex
+  }
+  set Apex(value: Point) {
+    this.apex = value
+  }
 
-    get Apex(): Point {
-        return this.apex;
-    }
-    set Apex(value: Point) {
-        this.apex = value;
-    }
+  get RightSideDirection(): Point {
+    return this.coneSweeper.ConeRightSideDirection
+  }
 
-    get RightSideDirection(): Point {
-        return this.coneSweeper.ConeRightSideDirection;
-    }
+  get LeftSideDirection(): Point {
+    return this.coneSweeper.ConeLeftSideDirection
+  }
 
-    get LeftSideDirection(): Point {
-        return this.coneSweeper.ConeLeftSideDirection;
-    }
+  private rightSide: ConeSide
 
-    private rightSide: ConeSide;
+  get RightSide(): ConeSide {
+    return this.rightSide
+  }
+  set RightSide(value: ConeSide) {
+    this.rightSide = value
+    this.rightSide.Cone = this
+  }
 
-    get RightSide(): ConeSide {
-        return this.rightSide;
-    }
-    set RightSide(value: ConeSide) {
-        this.rightSide = value;
-        this.rightSide.Cone = this;
-    }
+  private leftSide: ConeSide
 
-    private leftSide: ConeSide;
-
-    get LeftSide(): ConeSide {
-        return this.leftSide;
-    }
-    set LeftSide(value: ConeSide) {
-        this.leftSide = value;
-        this.leftSide.Cone = this;
-    }
+  get LeftSide(): ConeSide {
+    return this.leftSide
+  }
+  set LeftSide(value: ConeSide) {
+    this.leftSide = value
+    this.leftSide.Cone = this
+  }
 }

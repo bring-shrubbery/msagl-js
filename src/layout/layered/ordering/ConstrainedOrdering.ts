@@ -1,17 +1,17 @@
-import { IEnumerable, from } from 'linq-to-typescript'
-import { BasicGraph } from '../../../structs/BasicGraph'
-import { IntPairMap } from '../../../utils/IntPairMap'
-import { GeomGraph } from '../../core/GeomGraph'
-import { GeomNode } from '../../core/geomNode'
-import { Database } from '../Database'
-import { HorizontalConstraintsForSugiyama } from '../HorizontalConstraintsForSugiyama'
-import { LayerArrays } from '../LayerArrays'
-import { PolyIntEdge } from '../polyIntEdge'
-import { ProperLayeredGraph } from '../ProperLayeredGraph'
-import { SugiyamaLayoutSettings } from '../SugiyamaLayoutSettings'
-import { AdjacentSwapsWithConstraints } from './AdjacentSwapsWithConstraints'
-import { LayerInfo } from './LayerInfo'
-import { GetCrossingsTotal, Ordering } from './Ordering'
+import {IEnumerable, from} from 'linq-to-typescript'
+import {BasicGraph} from '../../../structs/BasicGraph'
+import {IntPairMap} from '../../../utils/IntPairMap'
+import {GeomGraph} from '../../core/GeomGraph'
+import {GeomNode} from '../../core/geomNode'
+import {Database} from '../Database'
+import {HorizontalConstraintsForSugiyama} from '../HorizontalConstraintsForSugiyama'
+import {LayerArrays} from '../LayerArrays'
+import {PolyIntEdge} from '../polyIntEdge'
+import {ProperLayeredGraph} from '../ProperLayeredGraph'
+import {SugiyamaLayoutSettings} from '../SugiyamaLayoutSettings'
+import {AdjacentSwapsWithConstraints} from './AdjacentSwapsWithConstraints'
+import {LayerInfo} from './LayerInfo'
+import {GetCrossingsTotal, Ordering} from './Ordering'
 
 export class ConstrainedOrdering {
   geometryGraph: GeomGraph
@@ -79,7 +79,7 @@ export class ConstrainedOrdering {
     // this.initialLayering = layering;
     // // this has to be changed only to insert layers that are needed
     // if (this.NeedToInsertLayers(layering)) {
-    //   for (let i: number = 0; (i < layering.length); i++) {
+    //   for (let i= 0; (i < layering.length); i++) {
     //     layering[i] = (layering[i] * 2);
     //   }
 
@@ -161,7 +161,7 @@ export class ConstrainedOrdering {
     throw new Error('not implemented')
     // this.CreateInitialOrderInLayers();
     // this.TryPushingOutStrangersFromHorizontalBlocks();
-    // let n: number = 5;
+    // let n= 5;
     // let measure = Number.MAX_SAFE_INTEGER;
     // while (n-- > 0 && this.noGainSteps <= ConstrainedOrdering.MaxNumberOfNoGainSteps) {
     //   this.SetXPositions();
@@ -196,7 +196,7 @@ export class ConstrainedOrdering {
   // }
 
   // SortLayers(solver: ISolverShell) {
-  //   for (let i: number = 0; (i < this.LayerArrays.Layers.length); i++) {
+  //   for (let i= 0; (i < this.LayerArrays.Layers.length); i++) {
   //     this.SortLayerBasedOnSolution(this.LayerArrays.Layers[i], solver);
   //   }
 
@@ -210,7 +210,7 @@ export class ConstrainedOrdering {
   // }
 
   // InitSolverVars(solver: ISolverShell) {
-  //   for (let i: number = 0; (i < this.LayerArrays.Y.length); i++) {
+  //   for (let i= 0; (i < this.LayerArrays.Y.length); i++) {
   //     solver.AddVariableWithIdealPosition(i, 0);
   //   }
 
@@ -239,7 +239,7 @@ export class ConstrainedOrdering {
 
   // PutLayerNodeSeparationsIntoSolver(solver: ISolverShell) {
   //   for (let layer in this.LayerArrays.Layers) {
-  //     for (let i: number = 0; (i
+  //     for (let i= 0; (i
   //       < (layer.length - 1)); i++) {
   //       let l: number = layer[i];
   //       let r: number = layer[(i + 1)];
@@ -275,7 +275,7 @@ export class ConstrainedOrdering {
   //     this.PutVerticalComponentIntoLayers(this.EnumerateVertComponent(componentRootsToComponents, vertCompRoot), runninglayerCounts, alreadyInLayers);
   //   }
 
-  //   for (let i: number = 0; (i < this.ProperLayeredGraph.NodeCount); i++) {
+  //   for (let i= 0; (i < this.ProperLayeredGraph.NodeCount); i++) {
   //     if ((alreadyInLayers[i] == false)) {
   //       this.AddVertToLayers(i, runninglayerCounts, alreadyInLayers);
   //     }
@@ -412,7 +412,7 @@ export class ConstrainedOrdering {
   // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Diagnostics.Debug.Write(System.String)")
   // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledCode")
   // static PrintPositions(positions: number[]) {
-  //   for (let j: number = 0; (j < positions.length); j++) {
+  //   for (let j= 0; (j < positions.length); j++) {
   //     System.Diagnostics.Debug.Write((" " + positions[j]));
   //   }
 
@@ -422,13 +422,13 @@ export class ConstrainedOrdering {
   // SortLayerBasedOnSolution(layer: number[], solver: ISolverShell) {
   //   let length: number = layer.length;
   //   let positions = new Array(length);
-  //   let k: number = 0;
+  //   let k= 0;
   //   for (let v: number in layer) {
   //     positions[k++] = solver.GetVariableResolvedPosition(v);
   //   }
 
   //   Array.Sort(positions, layer);
-  //   let i: number = 0;
+  //   let i= 0;
   //   for (let v: number in layer) {
   //     i++;
   //   }
@@ -436,9 +436,9 @@ export class ConstrainedOrdering {
   //   this.LayerArrays.X[v] = i;
   // }
 
-  //       /* const */ static ConstrainedVarWeight: number = 10000000;
+  //       /* const */ static ConstrainedVarWeight= 10000000;
 
-  //       /* const */ static PositionOverBaricenterWeight: number = 5;
+  //       /* const */ static PositionOverBaricenterWeight= 5;
 
   // static NodeToBlockRootSoftOnLayerInfo(layerInfo: LayerInfo, node: number): number {
   //   let root: number;
@@ -595,7 +595,7 @@ export class ConstrainedOrdering {
   //     if (((ledges != null)
   //       && (ledges.length > 1))) {
   //       let layerIndex: number = (this.initialLayering[edge.Source] - 1);
-  //       for (let i: number = 0; (i
+  //       for (let i= 0; (i
   //         < (ledges.length - 1)); i++) {
   //         // TODO: Warning!!!! NULL EXPRESSION DETECTED...
   //         --;
@@ -644,7 +644,7 @@ export class ConstrainedOrdering {
   //   }
   //   else {
   //     ie.LayerEdges[0] = new LayerEdge(source, this.numberOfNodesOfProperGraph, ie.CrossingWeight);
-  //     for (let i: number = 0; (i
+  //     for (let i= 0; (i
   //       < (span - 2)); i++) {
   //       ie.LayerEdges[(i + 1)] = new LayerEdge(numberOfNodesOfProperGraph++, this.numberOfNodesOfProperGraph, ie.CrossingWeight);
   //     }

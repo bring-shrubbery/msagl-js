@@ -1,7 +1,7 @@
-import { Point } from './../../../math/geometry/point'
-import { PlaneTransformation } from './../../../math/geometry/planeTransformation'
-import { VertexId, Parallelogram } from './../../../math/geometry/parallelogram'
-import { GeomConstants } from './../../../math/geometry/geomConstants'
+import {Point} from './../../../math/geometry/point'
+import {PlaneTransformation} from './../../../math/geometry/planeTransformation'
+import {VertexId, Parallelogram} from './../../../math/geometry/parallelogram'
+import {GeomConstants} from './../../../math/geometry/geomConstants'
 
 test('angle test', () => {
   const eps = 0.00001

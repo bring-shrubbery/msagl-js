@@ -1,138 +1,136 @@
 export class BundlingSettings {
-
   // the default value of CapacityOverflowCoefficient
-  public static DefaultCapacityOverflowCoefficientMultiplier: number = 1000;
+  public static DefaultCapacityOverflowCoefficientMultiplier = 1000
 
-  capacityOverflowCoefficient: number = BundlingSettings.DefaultCapacityOverflowCoefficientMultiplier;
+  capacityOverflowCoefficient: number =
+    BundlingSettings.DefaultCapacityOverflowCoefficientMultiplier
 
-  // this number is muliplied by the overflow penalty cost and by the sum of the LengthImportanceCoefficient 
+  // this number is muliplied by the overflow penalty cost and by the sum of the LengthImportanceCoefficient
   // and InkImportanceCoefficient, and added to the routing price
 
   public get CapacityOverflowCoefficient(): number {
-    return this.capacityOverflowCoefficient;
+    return this.capacityOverflowCoefficient
   }
   public set CapacityOverflowCoefficient(value: number) {
-    this.capacityOverflowCoefficient = value;
+    this.capacityOverflowCoefficient = value
   }
 
   //  the upper bound of the virtual node radius
-  MaxHubRadius = 50;
+  MaxHubRadius = 50
 
   //  the lower bound of the virtual node radius
-  MinHubRadius = 0.1;
-
+  MinHubRadius = 0.1
 
   CreateUnderlyingPolyline = false
 
   // the default path lenght importance coefficient
-  public static DefaultPathLengthImportance: number = 500;
+  public static DefaultPathLengthImportance = 500
 
-  pathLengthImportance: number = BundlingSettings.DefaultPathLengthImportance;
+  pathLengthImportance: number = BundlingSettings.DefaultPathLengthImportance
 
   //  the importance of path lengths coefficient
   public get PathLengthImportance(): number {
-    return this.pathLengthImportance;
+    return this.pathLengthImportance
   }
   public set PathLengthImportance(value: number) {
-    this.pathLengthImportance = value;
+    this.pathLengthImportance = value
   }
-
 
   // the default ink importance
-  public static DefaultInkImportance: number = 0.01;
+  public static DefaultInkImportance = 0.01
 
-  inkImportance: number = BundlingSettings.DefaultInkImportance;
+  inkImportance: number = BundlingSettings.DefaultInkImportance
 
   public get InkImportance(): number {
-    return this.inkImportance;
+    return this.inkImportance
   }
   public set InkImportance(value: number) {
-    this.inkImportance = value;
+    this.inkImportance = value
   }
 
-  edgeSeparation: number = BundlingSettings.DefaultEdgeSeparation;
+  edgeSeparation: number = BundlingSettings.DefaultEdgeSeparation
 
   // default edge separation
-  public static DefaultEdgeSeparation: number = 0.5;
+  public static DefaultEdgeSeparation = 0.5
 
   //  Separation between to neighboring edges within a bundle
   public get EdgeSeparation(): number {
-    return this.edgeSeparation;
+    return this.edgeSeparation
   }
   public set EdgeSeparation(value: number) {
-    this.edgeSeparation = value;
+    this.edgeSeparation = value
   }
 
-  useCubicBezierSegmentsInsideOfHubs: boolean;
+  useCubicBezierSegmentsInsideOfHubs: boolean
 
   // if is set to true will be using Cubic Bezie Segments inside of hubs, otherwise will be using Biarcs
   public get UseCubicBezierSegmentsInsideOfHubs(): boolean {
-    return this.useCubicBezierSegmentsInsideOfHubs;
+    return this.useCubicBezierSegmentsInsideOfHubs
   }
   public set UseCubicBezierSegmentsInsideOfHubs(value: boolean) {
-    this.useCubicBezierSegmentsInsideOfHubs = value;
+    this.useCubicBezierSegmentsInsideOfHubs = value
   }
 
-  useGreedyMetrolineOrdering: boolean = true;
+  useGreedyMetrolineOrdering = true
 
   // if is set to true will be using greedy ordering algorithm, otherwise will be using linear
   public get UseGreedyMetrolineOrdering(): boolean {
-    return this.useGreedyMetrolineOrdering;
+    return this.useGreedyMetrolineOrdering
   }
   public set UseGreedyMetrolineOrdering(value: boolean) {
-    this.useGreedyMetrolineOrdering = value;
+    this.useGreedyMetrolineOrdering = value
   }
 
-  angleThreshold: number = (Math.PI / (180 * 45));
+  angleThreshold: number = Math.PI / (180 * 45)
 
   // 45 degrees;
   // min angle for gluing edges
   public get AngleThreshold(): number {
-    return this.angleThreshold;
+    return this.angleThreshold
   }
   public set AngleThreshold(value: number) {
-    this.angleThreshold = value;
+    this.angleThreshold = value
   }
 
-  hubRepulsionImportance = 100;
+  hubRepulsionImportance = 100
 
   //  the importance of hub repulsion coefficient
   public get HubRepulsionImportance(): number {
-    return this.hubRepulsionImportance;
+    return this.hubRepulsionImportance
   }
   public set HubRepulsionImportance(value: number) {
-    this.hubRepulsionImportance = value;
+    this.hubRepulsionImportance = value
   }
 
-  bundleRepulsionImportance = 100;
+  bundleRepulsionImportance = 100
 
   //  the importance of bundle repulsion coefficient
   public get BundleRepulsionImportance(): number {
-    return this.bundleRepulsionImportance;
+    return this.bundleRepulsionImportance
   }
   public set BundleRepulsionImportance(value: number) {
-    this.bundleRepulsionImportance = value;
+    this.bundleRepulsionImportance = value
   }
 
-  minimalRatioOfGoodCdtEdges: number = 0.9;
+  minimalRatioOfGoodCdtEdges = 0.9
 
   //  minimal ration of cdt edges with satisfied capacity needed to perform bundling
   //  (otherwise bundling will not be executed)
   public get MinimalRatioOfGoodCdtEdges(): number {
-    return this.minimalRatioOfGoodCdtEdges;
+    return this.minimalRatioOfGoodCdtEdges
   }
   public set MinimalRatioOfGoodCdtEdges(value: number) {
-    this.minimalRatioOfGoodCdtEdges = value;
+    this.minimalRatioOfGoodCdtEdges = value
   }
 
-  highestQuality = true;
+  highestQuality = true
 
   //  speed vs quality of the drawing
   public get HighestQuality(): boolean {
-    return this.highestQuality;
+    return this.highestQuality
   }
   public set HighestQuality(value: boolean) {
-    this.highestQuality = value;
+    this.highestQuality = value
   }
 
   //  if is set to true the original spline before the trimming should be kept under the corresponding EdgeGeometry
@@ -143,5 +141,4 @@ export class BundlingSettings {
 
   //  calculates the routes that just follow the visibility graph
   StopAfterShortestPaths = false
-
 }

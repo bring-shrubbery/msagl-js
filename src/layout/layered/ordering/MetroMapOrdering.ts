@@ -2,12 +2,12 @@
 //  "Two polynomial time algorithms for the bundle-Line crossing minimization problem"
 //  Postprocessing minimizing crossings step that works on the layered graph
 
-import { from } from 'linq-to-typescript'
-import { Point, compareTo } from '../../../math/geometry/point'
-import { Assert } from '../../../utils/assert'
-import { PointMap } from '../../../utils/PointMap'
-import { LayerArrays, layersAreCorrect } from '../LayerArrays'
-import { ProperLayeredGraph } from '../ProperLayeredGraph'
+import {from} from 'linq-to-typescript'
+import {Point, compareTo} from '../../../math/geometry/point'
+import {Assert} from '../../../utils/assert'
+import {PointMap} from '../../../utils/PointMap'
+import {LayerArrays, layersAreCorrect} from '../LayerArrays'
+import {ProperLayeredGraph} from '../ProperLayeredGraph'
 
 export class MetroMapOrdering {
   layerArrays: LayerArrays
@@ -145,7 +145,7 @@ export class MetroMapOrdering {
     return (node1: number, node2: number) => {
       Assert.assert(
         this.properLayeredGraph.IsVirtualNode(node1) &&
-        this.properLayeredGraph.IsVirtualNode(node2),
+          this.properLayeredGraph.IsVirtualNode(node2),
       )
       const succ1: number = from(this.properLayeredGraph.Succ(node1)).first()
       const succ2: number = from(this.properLayeredGraph.Succ(node2)).first()

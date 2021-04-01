@@ -1,13 +1,13 @@
-import { ICurve } from './icurve'
-import { PN } from './parallelogramNode'
-import { PlaneTransformation } from './planeTransformation'
-import { Point, TriangleOrientation } from './point'
-import { Rectangle } from './rectangle'
-import { PolylinePoint } from './polylinePoint'
-import { GeomConstants } from './geomConstants'
-import { Assert } from './../../utils/assert'
-import { Parallelogram } from './parallelogram'
-import { LineSegment } from './lineSegment'
+import {ICurve} from './icurve'
+import {PN} from './parallelogramNode'
+import {PlaneTransformation} from './planeTransformation'
+import {Point, TriangleOrientation} from './point'
+import {Rectangle} from './rectangle'
+import {PolylinePoint} from './polylinePoint'
+import {GeomConstants} from './geomConstants'
+import {Assert} from './../../utils/assert'
+import {Parallelogram} from './parallelogram'
+import {LineSegment} from './lineSegment'
 
 type AdjustedPar = {
   a: Point
@@ -290,9 +290,9 @@ export class Polyline implements ICurve {
     throw new Error('Method not implemented.')
   }
   next(a: PolylinePoint): PolylinePoint {
-    return a.next ?? (this.closed ? this.startPoint : null);
+    return a.next ?? (this.closed ? this.startPoint : null)
   }
   prev(a: PolylinePoint): PolylinePoint {
-    return a.prev ?? this.closed ? this.endPoint : null;
+    return a.prev ?? this.closed ? this.endPoint : null
   }
 }

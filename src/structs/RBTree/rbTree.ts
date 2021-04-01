@@ -1,6 +1,6 @@
-import { RBNode } from './rbNode'
-import { RBColor } from './rbColor'
-import { Assert } from './../../utils/assert'
+import {RBNode} from './rbNode'
+import {RBColor} from './rbColor'
+import {Assert} from './../../utils/assert'
 
 //later will extend Iterable<T>
 export class RBTree<T> {

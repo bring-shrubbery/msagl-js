@@ -1,12 +1,11 @@
-import { Point } from "../../../math/geometry/point";
+import {Point} from '../../../math/geometry/point'
 
 export interface IConeSweeper {
+  ConeRightSideDirection: Point
 
-    ConeRightSideDirection: Point;
+  ConeLeftSideDirection: Point
 
-    ConeLeftSideDirection: Point;
+  SweepDirection: Point
 
-    SweepDirection: Point;
-
-    Z: number;
+  Z: number
 }

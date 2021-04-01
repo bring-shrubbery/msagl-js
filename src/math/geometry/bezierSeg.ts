@@ -1,8 +1,8 @@
 // Cubic Bezier Segment
-import { ICurve } from './icurve'
-import { LineSegment } from './lineSegment'
-import { Curve } from './curve'
-import { Rectangle } from './rectangle'
+import {ICurve} from './icurve'
+import {LineSegment} from './lineSegment'
+import {Curve} from './curve'
+import {Rectangle} from './rectangle'
 import {
   PN,
   PNInternal,
@@ -10,12 +10,12 @@ import {
   createPNLeaf,
   ParallelogramNode,
 } from './parallelogramNode'
-import { Point } from './point'
-import { Parallelogram } from './parallelogram'
-import { GeomConstants } from './geomConstants'
-import { PlaneTransformation } from './planeTransformation'
-import { ClosestPointOnCurve } from './closestPointOnCurve'
-import { Assert } from './../../utils/assert'
+import {Point} from './point'
+import {Parallelogram} from './parallelogram'
+import {GeomConstants} from './geomConstants'
+import {PlaneTransformation} from './planeTransformation'
+import {ClosestPointOnCurve} from './closestPointOnCurve'
+import {Assert} from './../../utils/assert'
 export class BezierSeg implements ICurve {
   leftDerivative(t: number) {
     return this.derivative(t)
@@ -53,9 +53,7 @@ export class BezierSeg implements ICurve {
     const t2 = t * t
     const t3 = t2 * t
     //    return l * t3 + e * t2 + c * t + b[0];
-    return this.l
-      .mul(t3)
-      .add(this.e.mul(t2).add(this.c.mul(t)).add(this.b[0]))
+    return this.l.mul(t3).add(this.e.mul(t2).add(this.c.mul(t)).add(this.b[0]))
   }
 
   static adjustParamTo01(u: number): number {
