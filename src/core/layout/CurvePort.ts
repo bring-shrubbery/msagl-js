@@ -1,30 +1,25 @@
+import {ICurve} from '../../math/geometry/icurve'
+import {Port} from './Port'
+export class CurvePort extends Port {
+  parameter: number
 
-// 
-public class CurvePort: Port  {
-  number parameter;
-        // constructor
-        public CurvePort(ICurve curve, number parameter) {
-    this.curve = curve;
-    this.parameter = parameter;
+  static constructor_(curve: ICurve, parameter: number) {
+    const p = new CurvePort()
+    p.curve = curve
+    p.parameter = parameter
+    return p
   }
 
-
-        // empty constructor
-        public CurvePort() { }
-        // 
-        public number Parameter {
-    get { return parameter; }
-    set { parameter = value; }
+  //
+  public get Parameter(): number {
+    return this.parameter
   }
-  ICurve curve;
-  // 
-  override public ICurve Curve {
-    get { return curve; }
-    set { curve = value; }
+  public set Parameter(value: number) {
+    this.parameter = value
   }
 
-  // 
-  get { return Curve[parameter].Clone(); }
+  Curve: ICurve
+  get Location() {
+    return this.Curve.value(this.parameter)
+  }
 }
-}
-

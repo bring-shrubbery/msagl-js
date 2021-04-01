@@ -1,87 +1,95 @@
-import { from, IEnumerable } from 'linq-to-typescript'
-import { Stack } from 'stack-typescript'
-import { Point } from '../../../math/geometry/point'
-import { Rectangle } from '../../../math/geometry/rectangle'
-import { Assert } from '../../../utils/assert'
-import { HitTestBehavior } from './HitTestBehavior'
+import {from, IEnumerable} from 'linq-to-typescript'
+import {Stack} from 'stack-typescript'
+import {Assert} from '../../../utils/assert'
+import {IRectangle} from '../IRectangle'
+import {HitTestBehavior} from './HitTestBehavior'
 
-
-function DivideNodes<TData>(nodes: RectangleNode<TData>[],
+function DivideNodes<T, P>(
+  nodes: RectangleNode<T, P>[],
   seed0: number,
   seed1: number,
-  gr0: RectangleNode<TData>[],
-  gr1: RectangleNode<TData>[],
-  t: { box0: Rectangle, box1: Rectangle }) {
+  gr0: RectangleNode<T, P>[],
+  gr1: RectangleNode<T, P>[],
+  t: {box0: IRectangle<P>; box1: IRectangle<P>},
+) {
   const groupSplitThreshold = 2
   for (let i = 0; i < nodes.length; i++) {
-    if (i == seed0 || i == seed1)
-      continue;
+    if (i == seed0 || i == seed1) continue
 
     // ReSharper disable InconsistentNaming
-    const box0_ = Rectangle.rectangleOnRectangles([t.box0, nodes[i].Rectangle]);
-    const delta0 = box0_.area - t.box0.area;
+    const box0_ = t.box0.add_rect(nodes[i].irect)
+    const delta0 = box0_.area - t.box0.area
 
-    const box1_ = Rectangle.rectangleOnRectangles([t.box1, nodes[i].Rectangle]);
-    const delta1 = box1_.area - t.box1.area;
+    const box1_ = t.box1.add_rect(nodes[i].irect)
+    const delta1 = box1_.area - t.box1.area
     // ReSharper restore InconsistentNaming
 
     //keep the tree roughly balanced
 
     if (gr0.length * groupSplitThreshold < gr1.length) {
-      gr0.push(nodes[i]);
-      t.box0 = box0_;
+      gr0.push(nodes[i])
+      t.box0 = box0_
     } else if (gr1.length * groupSplitThreshold < gr0.length) {
-      gr1.push(nodes[i]);
-      t.box1 = box1_;
+      gr1.push(nodes[i])
+      t.box1 = box1_
     } else if (delta0 < delta1) {
-      gr0.push(nodes[i]);
-      t.box0 = box0_;
+      gr0.push(nodes[i])
+      t.box0 = box0_
     } else if (delta1 < delta0) {
-      gr1.push(nodes[i]);
-      t.box1 = box1_;
+      gr1.push(nodes[i])
+      t.box1 = box1_
     } else if (t.box0.area < t.box1.area) {
-      gr0.push(nodes[i]);
-      t.box0 = box0_;
+      gr0.push(nodes[i])
+      t.box0 = box0_
     } else {
-      gr1.push(nodes[i]);
-      t.box1 = box1_;
+      gr1.push(nodes[i])
+      t.box1 = box1_
     }
   }
 }
 
-export function CreateRectangleNodeOnListOfNodes<TData>(nodes: RectangleNode<TData>[]): RectangleNode<TData> {
-  if (nodes.length == 0) return null;
+export function CreateRectangleNodeOnListOfNodes<T, P>(
+  nodes: RectangleNode<T, P>[],
+): RectangleNode<T, P> {
+  if (nodes.length == 0) return null
 
-  if (nodes.length == 1) return nodes[0];
+  if (nodes.length == 1) return nodes[0]
 
   //Finding the seeds
-  const t = { b0: nodes[0].Rectangle, seed0: 1 }
-  const seed1 = ChooseSeeds(nodes, t);
+  const t = {b0: nodes[0].irect, seed0: 1}
+  const seed1 = ChooseSeeds(nodes, t)
 
   //We have two seeds at hand. Build two groups.
   const gr0 = []
-  const gr1 = [];
+  const gr1 = []
 
-  gr0.push(nodes[t.seed0]);
-  gr1.push(nodes[seed1]);
+  gr0.push(nodes[t.seed0])
+  gr1.push(nodes[seed1])
 
   //divide nodes on two groups
-  const p = { box0: nodes[t.seed0].Rectangle, box1: nodes[seed1].Rectangle }
-  DivideNodes(nodes, t.seed0, seed1, gr0, gr1, p);
-  const ret = mkRectangleNodeWithCount<TData>(nodes.length);
-  ret.Rectangle = Rectangle.rectangleOnRectangles([p.box0, p.box1])
+  const p = {box0: nodes[t.seed0].irect, box1: nodes[seed1].irect}
+  DivideNodes(nodes, t.seed0, seed1, gr0, gr1, p)
+  const ret = mkRectangleNodeWithCount<T, P>(nodes.length)
+  ret.irect = p.box0.add_rect(p.box1)
   ret.Left = CreateRectangleNodeOnListOfNodes(gr0)
   ret.Right = CreateRectangleNodeOnListOfNodes(gr1)
-  return ret;
+  return ret
 }
 
-function ChooseSeeds<TData>(nodes: RectangleNode<TData>[], t: { b0: Rectangle, seed0: number }): number {
-  let area = Rectangle.rectangleOnRectangles([t.b0, nodes[t.seed0].Rectangle]).area;
+function areaoftwo<P>(a: IRectangle<P>, b: IRectangle<P>) {
+  return a.add_rect(b).area
+}
+
+function ChooseSeeds<T, P>(
+  nodes: RectangleNode<T, P>[],
+  t: {b0: IRectangle<P>; seed0: number},
+): number {
+  let area = areaoftwo(t.b0, nodes[t.seed0].irect)
   for (let i = 2; i < nodes.length; i++) {
-    let area0 = Rectangle.rectangleOnRectangles([t.b0, nodes[i].Rectangle]).area;
+    const area0 = areaoftwo<P>(t.b0, nodes[i].irect)
     if (area0 > area) {
-      t.seed0 = i;
-      area = area0;
+      t.seed0 = i
+      area = area0
     }
   }
 
@@ -92,282 +100,299 @@ function ChooseSeeds<TData>(nodes: RectangleNode<TData>[], t: { b0: Rectangle, s
   //init seed1
   for (let i = 0; i < nodes.length; i++) {
     if (i != t.seed0) {
-      seed1 = i;
-      break;
+      seed1 = i
+      break
     }
   }
 
-  area = Rectangle.rectangleOnRectangles([nodes[t.seed0].Rectangle, nodes[seed1].Rectangle]).area;
+  area = nodes[t.seed0].irect.add_rect(nodes[seed1].irect).area
   //Now try to improve the second seed
 
   for (let i = 0; i < nodes.length; i++) {
-    if (i == t.seed0)
-      continue;
-    const area1 = Rectangle.rectangleOnRectangles([nodes[t.seed0].Rectangle, nodes[i].Rectangle]).area;
+    if (i == t.seed0) continue
+    const area1 = nodes[t.seed0].irect.add_rect(nodes[i].irect).area
     if (area1 > area) {
-      seed1 = i;
-      area = area1;
+      seed1 = i
+      area = area1
     }
   }
-  return seed1;
+  return seed1
 }
 
-
 // calculates a tree based on the given nodes
-export function CreateRectangleNodeOnEnumeration<TData>(nodes: IEnumerable<RectangleNode<TData>>): RectangleNode<TData> {
-  if (nodes == null)
-    return null;
-  return CreateRectangleNodeOnListOfNodes(nodes.toArray());
+export function CreateRectangleNodeOnEnumeration<T, P>(
+  nodes: IEnumerable<RectangleNode<T, P>>,
+): RectangleNode<T, P> {
+  if (nodes == null) return null
+  return CreateRectangleNodeOnListOfNodes(nodes.toArray())
 }
 
 //calculates a tree based on the given nodes
-export function CreateRectangleNodeOnData<TData>(dataEnumeration: IEnumerable<TData>, rectangleDelegate: (t: TData) => Rectangle): RectangleNode<TData> {
-  if (dataEnumeration == null || rectangleDelegate == null)
-    return null;
-  var nodeList = dataEnumeration.select(d => mkRectangleNode(d, rectangleDelegate(d))).toArray();
-  return CreateRectangleNodeOnListOfNodes(nodeList);
+export function CreateRectangleNodeOnData<T, P>(
+  dataEnumeration: IEnumerable<T>,
+  rectangleDelegate: (t: T) => IRectangle<P>,
+): RectangleNode<T, P> {
+  if (dataEnumeration == null || rectangleDelegate == null) return null
+  const nodeList = dataEnumeration
+    .select((d) => mkRectangleNode(d, rectangleDelegate(d)))
+    .toArray()
+  return CreateRectangleNodeOnListOfNodes(nodeList)
 }
 
-
-export function mkRectangleNodeWithCount<TData>(count: number): RectangleNode<TData> {
-  const r = new RectangleNode<TData>()
-  r.Count = count;
+export function mkRectangleNodeWithCount<T, P>(
+  count: number,
+): RectangleNode<T, P> {
+  const r = new RectangleNode<T, P>()
+  r.Count = count
   return r
 }
 
-export function mkRectangleNode<TData>(data: TData, rect: Rectangle): RectangleNode<TData> {
-  const r = new RectangleNode<TData>()
-  r.UserData = data;
-  r.Rectangle = rect;
-  r.Count = 1;
+export function mkRectangleNode<T, P>(
+  data: T,
+  rect: IRectangle<P>,
+): RectangleNode<T, P> {
+  const r = new RectangleNode<T, P>()
+  r.UserData = data
+  r.irect = rect
+  r.Count = 1
   return r
 }
 
 // it should be a static function of a class but declaring it such creates an error
-function VisitTreeStatic<TData>(rectangleNode: RectangleNode<TData>, hitTest: (data: TData) => HitTestBehavior, hitRectangle: Rectangle): HitTestBehavior {
-  if (rectangleNode.Rectangle.intersects(hitRectangle)) {
+function VisitTreeStatic<T, P>(
+  rectangleNode: RectangleNode<T, P>,
+  hitTest: (data: T) => HitTestBehavior,
+  hitRectangle: IRectangle<P>,
+): HitTestBehavior {
+  if (rectangleNode.irect.intersects_rect(hitRectangle)) {
     if (hitTest(rectangleNode.UserData) == HitTestBehavior.Continue) {
       if (rectangleNode.Left != null) {
         // If rectangleNode.Left is not null, rectangleNode.Right won't be either.
-        if (VisitTreeStatic(rectangleNode.Left, hitTest, hitRectangle) == HitTestBehavior.Continue &&
-          VisitTreeStatic(rectangleNode.Right, hitTest, hitRectangle) == HitTestBehavior.Continue) {
-          return HitTestBehavior.Continue;
+        if (
+          VisitTreeStatic(rectangleNode.Left, hitTest, hitRectangle) ==
+            HitTestBehavior.Continue &&
+          VisitTreeStatic(rectangleNode.Right, hitTest, hitRectangle) ==
+            HitTestBehavior.Continue
+        ) {
+          return HitTestBehavior.Continue
         }
-        return HitTestBehavior.Stop;
+        return HitTestBehavior.Stop
       }
-      return HitTestBehavior.Continue;
+      return HitTestBehavior.Continue
     }
-    return HitTestBehavior.Stop;
+    return HitTestBehavior.Stop
   }
-  return HitTestBehavior.Continue;
+  return HitTestBehavior.Continue
 }
 
 // Represents a node containing a box and some user data.
 // Is used of curve intersections routines.
-export class RectangleNode<TData> {
-  UserData: TData
+export class RectangleNode<T, P> {
+  UserData: T
   Count: number
-  left: RectangleNode<TData>
-  right: RectangleNode<TData>
-  Rectangle: Rectangle;
-
+  left: RectangleNode<T, P>
+  right: RectangleNode<T, P>
+  irect: IRectangle<P>
 
   toString() {
-    return this.IsLeaf ? this.Count.toString() + " " + this.UserData : this.Count.toString();
+    return this.IsLeaf
+      ? this.Count.toString() + ' ' + this.UserData
+      : this.Count.toString()
   }
 
-  Parent: RectangleNode<TData>
-
-
+  Parent: RectangleNode<T, P>
 
   // false if it is an  node and true if it is a leaf
   get IsLeaf(): boolean {
-    return this.left == null /*&& right==null*/;
+    return this.left == null /*&& right==null*/
   } //if left is a null then right is also a null
 
-  // 
-  get Left() { return this.left; }
+  //
+  get Left() {
+    return this.left
+  }
   set Left(value) {
-    if (this.left != null && this.left.Parent == this)
-      this.left.Parent = null;
-    this.left = value;
-    if (this.left != null)
-      this.left.Parent = this;
+    if (this.left != null && this.left.Parent == this) this.left.Parent = null
+    this.left = value
+    if (this.left != null) this.left.Parent = this
   }
 
-  get Right() { return this.right; }
+  get Right() {
+    return this.right
+  }
   set Right(value) {
     if (this.right != null && this.right.Parent == this)
-      this.right.Parent = null;
-    this.right = value;
-    if (this.right != null)
-      this.right.Parent = this;
+      this.right.Parent = null
+    this.right = value
+    if (this.right != null) this.right.Parent = this
   }
 
-
   get IsLeftChild(): boolean {
-    Assert.assert(this.Parent != null);
+    Assert.assert(this.Parent != null)
     return this == this.Parent.Left
   }
 
-
   // brings the first leaf which rectangle was hit and the delegate is happy with the object
-  FirstHitNodePF(point: Point, hitTestForPointDelegate: (point: Point, data: TData) => HitTestBehavior) {
-    if (this.Rectangle.contains(point)) {
+  FirstHitNodePF(
+    point: P,
+    hitTestForPointDelegate: (point: P, data: T) => HitTestBehavior,
+  ) {
+    if (this.irect.contains_point(point)) {
       if (this.IsLeaf) {
         if (hitTestForPointDelegate != null) {
-          return hitTestForPointDelegate(point, this.UserData) == HitTestBehavior.Stop ? this : null;
+          return hitTestForPointDelegate(point, this.UserData) ==
+            HitTestBehavior.Stop
+            ? this
+            : null
         }
-        return this;
+        return this
       }
-      return this.Left.FirstHitNodePF(point, hitTestForPointDelegate) ??
-        this.Right.FirstHitNodePF(point, hitTestForPointDelegate);
+      return (
+        this.Left.FirstHitNodePF(point, hitTestForPointDelegate) ??
+        this.Right.FirstHitNodePF(point, hitTestForPointDelegate)
+      )
     }
-    return null;
+    return null
   }
-
 
   // brings the first leaf which rectangle was intersected
-  FirstIntersectedNode(r: Rectangle): RectangleNode<TData> {
-    if (r.intersects(this.Rectangle)) {
-      if (this.IsLeaf)
-        return this;
-      return this.Left.FirstIntersectedNode(r) ?? this.Right.FirstIntersectedNode(r);
+  FirstIntersectedNode(r: IRectangle<P>): RectangleNode<T, P> {
+    if (r.intersects_rect(this.irect)) {
+      if (this.IsLeaf) return this
+      return (
+        this.Left.FirstIntersectedNode(r) ?? this.Right.FirstIntersectedNode(r)
+      )
     }
-    return null;
+    return null
   }
-
-
 
   // brings the first leaf which rectangle was hit and the delegate is happy with the object
-  FirstHitNode(point: Point): RectangleNode<TData> {
-    if (this.Rectangle.contains(point)) {
-      if (this.IsLeaf)
-        return this;
-      return this.Left.FirstHitNode(point) ?? this.Right.FirstHitNode(point);
+  FirstHitNode(point: P): RectangleNode<T, P> {
+    if (this.irect.contains_point(point)) {
+      if (this.IsLeaf) return this
+      return this.Left.FirstHitNode(point) ?? this.Right.FirstHitNode(point)
     }
-    return null;
+    return null
   }
 
-
   // returns all leaf nodes for which the rectangle was hit and the delegate is happy with the object
-  * AllHitItems(rectanglePar: Rectangle, hitTestAccept: (data: TData) => boolean): IterableIterator<TData> {
-    var stack = new Stack<RectangleNode<TData>>();
-    stack.push(this);
+  *AllHitItems(
+    rectanglePar: IRectangle<P>,
+    hitTestAccept: (data: T) => boolean,
+  ): IterableIterator<T> {
+    const stack = new Stack<RectangleNode<T, P>>()
+    stack.push(this)
     while (stack.size > 0) {
-      const node = stack.pop();
-      if (node.Rectangle.intersects(rectanglePar)) {
+      const node = stack.pop()
+      if (node.irect.intersects_rect(rectanglePar)) {
         if (node.IsLeaf) {
-          if ((null == hitTestAccept) || hitTestAccept(node.UserData)) {
-            yield node.UserData;
+          if (null == hitTestAccept || hitTestAccept(node.UserData)) {
+            yield node.UserData
           }
-        }
-        else {
-          stack.push(node.left);
-          stack.push(node.right);
+        } else {
+          stack.push(node.left)
+          stack.push(node.right)
         }
       }
     }
   }
 
   // returns all items for which the rectangle contains the point
-  *AllHitItems_(point: Point): IterableIterator<TData> {
-    var stack = new Stack<RectangleNode<TData>>();
-    stack.push(this);
+  *AllHitItems_(point: P): IterableIterator<T> {
+    const stack = new Stack<RectangleNode<T, P>>()
+    stack.push(this)
     while (stack.size > 0) {
-      const node = stack.pop();
-      if (node.Rectangle.contains(point)) {
-        if (node.IsLeaf)
-          yield node.UserData;
+      const node = stack.pop()
+      if (node.irect.contains_point(point)) {
+        if (node.IsLeaf) yield node.UserData
         else {
-          stack.push(node.left);
-          stack.push(node.right);
+          stack.push(node.left)
+          stack.push(node.right)
         }
       }
     }
   }
 
-
   // Returns all leaves whose rectangles intersect hitRectangle (or all leaves before hitTest returns false).
-  VisitTree(hitTest: (data: TData) => HitTestBehavior, hitRectangle: Rectangle) {
-    VisitTreeStatic(this, hitTest, hitRectangle);
+  VisitTree(
+    hitTest: (data: T) => HitTestBehavior,
+    hitRectangle: IRectangle<P>,
+  ) {
+    VisitTreeStatic(this, hitTest, hitRectangle)
   }
 
-
-  // 
-  Clone(): RectangleNode<TData> {
-    var ret = mkRectangleNodeWithCount<TData>(this.Count)
+  //
+  Clone(): RectangleNode<T, P> {
+    const ret = mkRectangleNodeWithCount<T, P>(this.Count)
     ret.UserData = this.UserData
-    ret.Rectangle = this.Rectangle
-    if (this.Left != null)
-      ret.Left = this.Left.Clone();
-    if (this.Right != null)
-      ret.Right = this.Right.Clone();
-    return ret;
+    ret.irect = this.irect
+    if (this.Left != null) ret.Left = this.Left.Clone()
+    if (this.Right != null) ret.Right = this.Right.Clone()
+    return ret
   }
 
   // yields all leaves which rectangles intersect the given one. We suppose that leaves are all nodes having UserData not a null.
-  *GetNodeItemsIntersectingRectangle(rectanglePar: Rectangle) {
-    for (const n of this.GetLeafRectangleNodesIntersectingRectangle(rectanglePar))
+  *GetNodeItemsIntersectingRectangle(rectanglePar: IRectangle<P>) {
+    for (const n of this.GetLeafRectangleNodesIntersectingRectangle(
+      rectanglePar,
+    ))
       yield n.UserData
   }
 
   // yields all leaves whose rectangles intersect the given one. We suppose that leaves are all nodes having UserData not a null.
-  * GetLeafRectangleNodesIntersectingRectangle(rectanglePar: Rectangle): IterableIterator<RectangleNode<TData>> {
-    var stack = new Stack<RectangleNode<TData>>();
-    stack.push(this);
+  *GetLeafRectangleNodesIntersectingRectangle(
+    rectanglePar: IRectangle<P>,
+  ): IterableIterator<RectangleNode<T, P>> {
+    const stack = new Stack<RectangleNode<T, P>>()
+    stack.push(this)
     while (stack.size > 0) {
-      const node = stack.pop();
-      if (node.Rectangle.intersects(rectanglePar)) {
+      const node = stack.pop()
+      if (node.irect.intersects_rect(rectanglePar)) {
         if (node.IsLeaf) {
-          yield node;
+          yield node
         } else {
-          stack.push(node.left);
-          stack.push(node.right);
+          stack.push(node.left)
+          stack.push(node.right)
         }
       }
     }
   }
 
   // Walk the tree and return the data from all leaves
-  GetAllLeaves(): IEnumerable<TData> {
-    return this.GetAllLeafNodes().select(n => n.UserData)
+  GetAllLeaves(): IEnumerable<T> {
+    return this.GetAllLeafNodes().select((n) => n.UserData)
   }
 
-  GetAllLeafNodes(): IEnumerable<RectangleNode<TData>> {
-    return from(this.EnumRectangleNodes(true /*leafOnly*/));
+  GetAllLeafNodes(): IEnumerable<RectangleNode<T, P>> {
+    return from(this.EnumRectangleNodes(true /*leafOnly*/))
   }
 
-  *EnumRectangleNodes(leafOnly: boolean): IterableIterator<RectangleNode<TData>> {
-    var stack = new Stack<RectangleNode<TData>>();
-    stack.push(this);
+  *EnumRectangleNodes(
+    leafOnly: boolean,
+  ): IterableIterator<RectangleNode<T, P>> {
+    const stack = new Stack<RectangleNode<T, P>>()
+    stack.push(this)
     while (stack.size > 0) {
-      var node = stack.pop();
+      const node = stack.pop()
       if (node.IsLeaf || !leafOnly) {
-        yield node;
+        yield node
       }
       if (!node.IsLeaf) {
-        stack.push(node.left);
-        stack.push(node.right);
+        stack.push(node.left)
+        stack.push(node.right)
       }
     }
   }
 
-
-
-
-
-  // 
-
-
+  //
 
   // Walk the tree from node down and apply visitor to all nodes
-  TraverseHierarchy(node: RectangleNode<TData>, visitor: (n: RectangleNode<TData>) => void) {
-    visitor(node);
-    if (node.Left != null)
-      this.TraverseHierarchy(node.Left, visitor);
-    if (node.Right != null)
-      this.TraverseHierarchy(node.Right, visitor);
+  TraverseHierarchy(
+    node: RectangleNode<T, P>,
+    visitor: (n: RectangleNode<T, P>) => void,
+  ) {
+    visitor(node)
+    if (node.Left != null) this.TraverseHierarchy(node.Left, visitor)
+    if (node.Right != null) this.TraverseHierarchy(node.Right, visitor)
   }
 }
-

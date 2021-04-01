@@ -1,7 +1,7 @@
 /*
 Following "Sweep-line algorithm for constrained Delaunay triangulation", by Domiter and Zalik
 */
-
+/*
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +17,7 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
     //triangulates the space between point, line segment and polygons in the Delaunay fashion
     //</summary>
     public class Cdt : AlgorithmBase {
-         readonly IEnumerable < Tuple < Point, object >> isolatedSitesWithObject; 
+         readonly IEnumerable < Tuple < Point, object >> isolatedSitesWithObject;
         readonly IEnumerable < Point > isolatedSites;
         readonly IEnumerable < Polyline > obstacles;
         readonly List < SymmetricSegment > isolatedSegments;
@@ -245,10 +245,11 @@ namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
 
         internal RectangleNode < CdtTriangle > GetCdtTree() {
             if (cdtTree == null) {
-                cdtTree = RectangleNode<CdtTriangle>.CreateRectangleNodeOnEnumeration(GetTriangles().Select(t => new RectangleNode<CdtTriangle>(t, t.BoundingBox())));
+                cdtTree = RectangleNode<CdtTriangle, Point>.CreateRectangleNodeOnEnumeration(GetTriangles().Select(t => new RectangleNode<CdtTriangle, Point>(t, t.BoundingBox())));
             }
 
             return cdtTree;
         }
     }
 }
+*/

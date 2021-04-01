@@ -1,5 +1,5 @@
-import { parseDotGraph, parseDotString } from './../../../utils/dotparser'
-import { SugiyamaLayoutSettings } from './../../../layout/layered/SugiyamaLayoutSettings'
+import { parseDotGraph, parseDotString } from '../../../utils/dotparser'
+import { SugiyamaLayoutSettings } from '../../../layout/layered/SugiyamaLayoutSettings'
 import SortedMap = require('collections/sorted-map')
 import { LayeredLayout } from '../../../layout/layered/LayeredLayout'
 import { Graph } from '../../../structs/graph'

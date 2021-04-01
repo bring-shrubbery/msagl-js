@@ -1,7 +1,7 @@
-import { Point } from './point'
-import { Polyline } from './polyline'
-import { GeomConstants } from './geomConstants'
-import { Assert } from './../../utils/assert'
+import {Point} from './point'
+import {Polyline} from './polyline'
+import {GeomConstants} from './geomConstants'
+import {IRectangle} from '../../core/geometry/IRectangle'
 
 class Size {
   width: number
@@ -12,21 +12,42 @@ class Size {
   }
 }
 
-export class Rectangle {
+export class Rectangle implements IRectangle<Point> {
   left_: number
   right_: number
   top_: number
   bottom_: number
 
-  constructor(t: { left: number, right: number, top: number, bottom: number }) {
+  constructor(t: {left: number; right: number; top: number; bottom: number}) {
     this.left_ = t.left
     this.right_ = t.right
     this.top_ = t.top
     this.bottom_ = t.bottom
   }
+  add_rect(rectangle: IRectangle<Point>): IRectangle<Point> {
+    return this.addRec((rectangle as unknown) as Rectangle)
+  }
+  contains_point(point: Point): boolean {
+    return this.contains(point)
+  }
+  contains_rect(rect: IRectangle<Point>): boolean {
+    return this.containsRect(rect as Rectangle)
+  }
+  intersection_rect(rectangle: IRectangle<Point>): IRectangle<Point> {
+    return this.intersection(rectangle as Rectangle)
+  }
+  intersects_rect(rectangle: IRectangle<Point>): boolean {
+    return this.intersects(rectangle as Rectangle)
+  }
+  unite(b: IRectangle<Point>): IRectangle<Point> {
+    return Rectangle.rectangleOfTwo(this, b as Rectangle)
+  }
+  contains_point_radius(p: Point, radius: number): boolean {
+    return this.containsWithPadding(p, radius)
+  }
   // returns true if r intersect this rectangle
   intersects(rectangle: Rectangle): boolean {
-    return this.IntersectsOnX(rectangle) && this.IntersectsOnY(rectangle)
+    return this.intersectsOnX(rectangle) && this.intersectsOnY(rectangle)
   }
 
   // intersection (possibly empty) of rectangles
@@ -40,7 +61,7 @@ export class Rectangle {
     const r = Math.min(this.right, rectangle.right)
     const b = Math.max(this.bottom, rectangle.bottom)
     const t = Math.min(this.top, rectangle.top)
-    return new Rectangle({ left: l, bottom: b, right: r, top: t })
+    return new Rectangle({left: l, bottom: b, right: r, top: t})
   }
 
   // the center of the bounding box
@@ -53,7 +74,7 @@ export class Rectangle {
     this.rightBottom = this.rightBottom.add(shift)
   }
 
-  IntersectsOnY(r: Rectangle): boolean {
+  intersectsOnY(r: Rectangle): boolean {
     if (r.bottom_ > this.top_ + GeomConstants.distanceEpsilon) return false
 
     if (r.top_ < this.bottom_ - GeomConstants.distanceEpsilon) return false
@@ -61,7 +82,7 @@ export class Rectangle {
     return true
   }
 
-  IntersectsOnX(r: Rectangle): boolean {
+  intersectsOnX(r: Rectangle): boolean {
     if (r.left > this.right_ + GeomConstants.distanceEpsilon) return false
 
     if (r.right < this.left_ - GeomConstants.distanceEpsilon) return false
@@ -71,7 +92,7 @@ export class Rectangle {
 
   // creates an empty rectangle
   static mkEmpty() {
-    return new Rectangle({ left: 0, right: -1, bottom: 0, top: -1 })
+    return new Rectangle({left: 0, right: -1, bottom: 0, top: -1})
   }
 
   get left() {
@@ -136,14 +157,19 @@ export class Rectangle {
 
   // create a box of two points
   static mkPP(point0: Point, point1: Point) {
-    const r = new Rectangle({ left: point0.x, right: point0.x, top: point0.y, bottom: point0.y })
+    const r = new Rectangle({
+      left: point0.x,
+      right: point0.x,
+      top: point0.y,
+      bottom: point0.y,
+    })
     r.add(point1)
     return r
   }
 
   // create rectangle from a point
   static rectanglePoint(p: Point) {
-    return new Rectangle({ left: p.x, right: p.x, top: p.y, bottom: p.y })
+    return new Rectangle({left: p.x, right: p.x, top: p.y, bottom: p.y})
   }
 
   static rectangleFromLeftBottomAndSize(
@@ -153,12 +179,12 @@ export class Rectangle {
   ) {
     const right = left + sizeF.x
     const top = bottom + sizeF.y
-    return new Rectangle({ left: left, right: right, top: top, bottom: bottom })
+    return new Rectangle({left: left, right: right, top: top, bottom: bottom})
   }
 
   // create a box on points (x0,y0), (x1,y1)
   static getRectangleOnCoords(x0: number, y0: number, x1: number, y1: number) {
-    const r = new Rectangle({ left: x0, bottom: y0, right: x0, top: y0 })
+    const r = new Rectangle({left: x0, bottom: y0, right: x0, top: y0})
     r.add(new Point(x1, y1))
     return r
   }
@@ -216,7 +242,12 @@ export class Rectangle {
 
   // rectangle containing both a and b
   static rectangleOfTwo(a: Rectangle, b: Rectangle) {
-    const r = new Rectangle({ left: a.left_, right: a.right_, top: a.top_, bottom: a.bottom_ })
+    const r = new Rectangle({
+      left: a.left_,
+      right: a.right_,
+      top: a.top_,
+      bottom: a.bottom_,
+    })
     r.addRec(b)
     return r
   }
@@ -271,6 +302,7 @@ export class Rectangle {
   addRec(rectangle: Rectangle) {
     this.add(rectangle.leftTop)
     this.add(rectangle.rightBottom)
+    return this
   }
 
   // Return copy of specified rectangle translated by the specified delta
@@ -376,7 +408,7 @@ export class Rectangle {
     const h = size.height / 2
     const bottom = center.y - h
     const top = center.y + h
-    return new Rectangle({ left: left, right: right, top: top, bottom: bottom })
+    return new Rectangle({left: left, right: right, top: top, bottom: bottom})
   }
 
   // adding a point with a Size

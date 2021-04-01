@@ -1,37 +1,37 @@
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Core.Geometry.Curves;
+// using Microsoft.Msagl.Core.Geometry;
+// using Microsoft.Msagl.Core.Geometry.Curves;
 
-namespace Microsoft.Msagl.Routing {
-    internal class RelaxedPolylinePoint  {
-        private PolylinePoint polylinePoint;
+// namespace Microsoft.Msagl.Routing {
+//     internal class RelaxedPolylinePoint  {
+//         private PolylinePoint polylinePoint;
 
-        internal PolylinePoint PolylinePoint {
-            get { return polylinePoint; }
-            set { polylinePoint = value; }
-        }
-        private Point originalPosition;
+//         internal PolylinePoint PolylinePoint {
+//             get { return polylinePoint; }
+//             set { polylinePoint = value; }
+//         }
+//         private Point originalPosition;
 
-        internal Point OriginalPosition {
-            get { return originalPosition; }
-            set { originalPosition = value; }
-        }
-        
-        internal RelaxedPolylinePoint(PolylinePoint polylinePoint, Point originalPosition) {
-            this.PolylinePoint = polylinePoint;
-            this.OriginalPosition = originalPosition;
-        }
+//         internal Point OriginalPosition {
+//             get { return originalPosition; }
+//             set { originalPosition = value; }
+//         }
 
-        RelaxedPolylinePoint next;
+//         internal RelaxedPolylinePoint(PolylinePoint polylinePoint, Point originalPosition) {
+//             this.PolylinePoint = polylinePoint;
+//             this.OriginalPosition = originalPosition;
+//         }
 
-        internal RelaxedPolylinePoint Next {
-            get { return next; }
-            set { next = value; }
-        }
-        RelaxedPolylinePoint prev;
+//         RelaxedPolylinePoint next;
 
-        internal RelaxedPolylinePoint Prev {
-            get { return prev; }
-            set { prev = value; }
-        }
-    }
-}
+//         internal RelaxedPolylinePoint Next {
+//             get { return next; }
+//             set { next = value; }
+//         }
+//         RelaxedPolylinePoint prev;
+
+//         internal RelaxedPolylinePoint Prev {
+//             get { return prev; }
+//             set { prev = value; }
+//         }
+//     }
+// }

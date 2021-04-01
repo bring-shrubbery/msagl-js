@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,7 +29,7 @@ namespace Microsoft.Msagl.Routing {
         public IEnumerable < ICurve > Obstacles { get; private set; }
 
         // <summary>
-        // the minimum angle between a node boundary curve and and an edge 
+        // the minimum angle between a node boundary curve and and an edge
         // curve at the place where the edge curve intersects the node boundary
         // </summary>
         double EnteringAngleBound { get; set; }
@@ -41,14 +42,14 @@ namespace Microsoft.Msagl.Routing {
         }
 
         // <summary>
-        // 
+        //
         // </summary>
         Polyline SourceLoosePolyline { get; set; }
 
         Polyline targetTightPolyline;
 
         // <summary>
-        // 
+        //
         // </summary>
         Polyline TargetTightPolyline {
             get { return targetTightPolyline; }
@@ -62,7 +63,7 @@ namespace Microsoft.Msagl.Routing {
             set { targetLoosePolyline = value; }
         }
 
-        //RectangleNode<Polyline> RootOfTightHierarchy {
+        //RectangleNode<Polyline, Point> RootOfTightHierarchy {
         //    get { return this.obstacleCalculator.RootOfTightHierararchy; }
         //}
 
@@ -157,7 +158,7 @@ namespace Microsoft.Msagl.Routing {
 
 
         // <summary>
-        // 
+        //
         // </summary>
         double OffsetForPolylineRelaxing { get; set; }
 
@@ -167,7 +168,7 @@ namespace Microsoft.Msagl.Routing {
         // <param name="obstacles">the obstacles for routing</param>
         // <param name="padding">obstacles are inflated by this much to find an inner boundary within which edges cannot enter</param>
         // <param name="loosePadding">
-        // obstacles are inflated again by this much to find initial 
+        // obstacles are inflated again by this much to find initial
         // routing but then spline smoothing is allowed to come inside this outer boundary.
         // Loose padding of 0 will give sharp corners (no spline smoothing)</param>
         // <param name="coneSpannerAngle">if this is greater than 0 then a "cone spanner" visibility graph with be
@@ -202,7 +203,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // An empty constructor for calling it from inside of MSAGL
-        // </summary>        
+        // </summary>
         internal InteractiveEdgeRouter() {
             ObstacleCalculator = new InteractiveObstacleCalculator(Obstacles, TightPadding, LoosePadding, false);
         }
@@ -367,7 +368,7 @@ namespace Microsoft.Msagl.Routing {
 
 
         //bool LineIntersectsTightObstacles(Point point, Point x) {
-        //    return LineIntersectsTightObstacles(new LineSegment(point, x));    
+        //    return LineIntersectsTightObstacles(new LineSegment(point, x));
         //}
 
         #endregion
@@ -693,7 +694,7 @@ namespace Microsoft.Msagl.Routing {
         }
 
         // <summary>
-        // is set to true will cache three points defining the corner 
+        // is set to true will cache three points defining the corner
         // to avoid obstacle avoidance calculation
         // </summary>
         public bool CacheCorners {
@@ -711,7 +712,7 @@ namespace Microsoft.Msagl.Routing {
         }
 
         // <summary>
-        // 
+        //
         // </summary>
         // <param name="underlyingPolyline"></param>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Polyline")]
@@ -982,7 +983,7 @@ namespace Microsoft.Msagl.Routing {
             _polyline = GetShortestPolyline(SourceVisibilityVertex, TargetVisibilityVertex);
             Polyline tmp = SourceTightPolyline;
             if (!targetIsInsideOfSourceTightPolyline)
-                //this is done to avoid shorcutting through the source tight polyline             
+                //this is done to avoid shorcutting through the source tight polyline
                 SourceTightPolyline = null;
             TryShortcutPolyline();
             SourceTightPolyline = tmp;
@@ -1418,7 +1419,7 @@ namespace Microsoft.Msagl.Routing {
         }
 
         // <summary>
-        // 
+        //
         // </summary>
         public void Clean() {
             SourcePort = TargetPort = null;
@@ -1458,7 +1459,7 @@ namespace Microsoft.Msagl.Routing {
         }
 
         // <summary>
-        // 
+        //
         // </summary>
         protected override void RunInternal() {
             CalculateWholeTangentVisibilityGraph();
@@ -1497,7 +1498,7 @@ namespace Microsoft.Msagl.Routing {
         [SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
         public ICurve RouteSplineFromPortToPortWhenTheWholeGraphIsReady(Port sourcePortLocal,
             Port targetPortLocal, bool smooth, out SmoothedPolyline smoothedPolyline) {
-            bool reversed = (sourcePortLocal is FloatingPort && targetPortLocal is CurvePort) 
+            bool reversed = (sourcePortLocal is FloatingPort && targetPortLocal is CurvePort)
                 || sourcePortLocal is HookUpAnywhereFromInsidePort;
             if (reversed) {
                 Port tmp = sourcePortLocal;
@@ -1773,4 +1774,4 @@ namespace Microsoft.Msagl.Routing {
             activePolygons.Clear();
         }
     }
-}
+}*/

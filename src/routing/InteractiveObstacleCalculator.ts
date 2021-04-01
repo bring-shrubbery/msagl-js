@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,7 +36,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // Returns true if overlaps are detected in the initial set of TightObstacles.
-        // TightObstacles will then have been repaired by merging each overlapping group 
+        // TightObstacles will then have been repaired by merging each overlapping group
         // of shapes into a single obstacle.
         // </summary>
         public bool OverlapsDetected { get; private set; }
@@ -95,7 +96,7 @@ namespace Microsoft.Msagl.Routing {
     }
 
     // <summary>
-    // 
+    //
     // </summary>
     internal void CreateLooseObstacles() {
         tightPolylinesToLooseDistances = new Dictionary<Polyline, double>();
@@ -110,13 +111,13 @@ namespace Microsoft.Msagl.Routing {
     }
 
 
-    //internal void ShowRectangleNodesHierarchy(RectangleNode<Polyline> node) {
+    //internal void ShowRectangleNodesHierarchy(RectangleNode<Polyline, Point> node) {
     //    List<ICurve> ls = new List<ICurve>();
     //    FillList(ls, node);
     //    SugiyamaLayoutSettings.Show(ls.ToArray());
     //}
 
-    //internal void FillList(List<ICurve> ls, RectangleNode<Polyline> node) {
+    //internal void FillList(List<ICurve> ls, RectangleNode<Polyline, Point> node) {
     //    if (node == null)
     //        return;
     //    if (node.UserData != null)
@@ -139,7 +140,7 @@ namespace Microsoft.Msagl.Routing {
     //  - create tightobstacles
     //  - find overlapping tightobstacles
     //    - replace with convexhull of overlapping
-    //  
+    //
     // Not particularly optimal method O(m * n log n) - where m is number of overlaps, n is number of obstacles:
     //
     // overlapping = 0
@@ -148,7 +149,7 @@ namespace Microsoft.Msagl.Routing {
     //     I = set of all other obstacles which intersect o
     //     if I != 0
     //       overlapping = I + o
-    //       break  
+    //       break
     //   if overlapping != 0
     //     combinedObstacle = new obstacle from convex hull of overlapping
     //     tightObstacles.delete(overlapping)
@@ -278,12 +279,12 @@ namespace Microsoft.Msagl.Routing {
 
     internal static RectangleNode < Polyline > CalculateHierarchy(IEnumerable < Polyline > polylines) {
         var rectNodes = polylines.Select(polyline => CreateRectNodeOfPolyline(polyline)).ToList();
-        return RectangleNode<Polyline>.CreateRectangleNodeOnListOfNodes(rectNodes);
+        return RectangleNode<Polyline, Point>.CreateRectangleNodeOnListOfNodes(rectNodes);
     }
 
 
         static RectangleNode < Polyline > CreateRectNodeOfPolyline(Polyline polyline) {
-        return new RectangleNode<Polyline>(polyline, (polyline as ICurve).BoundingBox);
+        return new RectangleNode<Polyline, Point>(polyline, (polyline as ICurve).BoundingBox);
     }
 
     internal static bool OneCurveLiesInsideOfOther(ICurve polyA, ICurve polyB) {
@@ -338,7 +339,7 @@ namespace Microsoft.Msagl.Routing {
     }
 
         // <summary>
-        // 
+        //
         // </summary>
         // <param name="first"></param>
         // <param name="second"></param>
@@ -386,7 +387,7 @@ namespace Microsoft.Msagl.Routing {
         double xp = (padding - d * uvPerp) / (dp * uvPerp);
         a = d + xp * dp + v;
         b = d - xp * dp + v;
-        return 2; //number of points to add 
+        return 2; //number of points to add
     }
 
         static bool CornerIsNotTooSharp(Point u, Point v, Point w) {
@@ -527,3 +528,4 @@ namespace Microsoft.Msagl.Routing {
     }
 }
 }
+*/
