@@ -161,7 +161,7 @@
 
 //     double H(VisibilityVertex visibilityVertex)
 //     {
-//         return visibilityVertex.Distance + (visibilityVertex.Point - _target.Point).Length * LengthMultiplierForAStar;
+//         return visibilityVertex.Distance + (visibilityVertex.point - _target.point).Length * LengthMultiplierForAStar;
 //     }
 
 //     IEnumerable < VisibilityVertex > CalculatePath(bool shrinkEdgeLength)

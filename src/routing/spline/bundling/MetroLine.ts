@@ -33,7 +33,7 @@
 //     internal void UpdateLengths() {
 //         var l = 0.0;
 //         for (var p = Polyline.startPoint; p.next != null; p = p.next) {
-//             l += (p.next.Point - p.Point).Length;
+//             l += (p.next.point - p.point).Length;
 //         }
 //         Length = l;
 //         IdealLength = (Polyline.End - Polyline.Start).Length;

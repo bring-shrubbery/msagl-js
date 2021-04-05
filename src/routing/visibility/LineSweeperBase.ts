@@ -129,7 +129,7 @@
 //         PolylinePoint pp = poly.startPoint.next;
 
 //         for (; pp != null; pp = pp.next)
-//             if (Less(pp.Point, candidate.Point))
+//             if (Less(pp.point, candidate.point))
 //                 candidate = pp;
 //         return candidate;
 //     }

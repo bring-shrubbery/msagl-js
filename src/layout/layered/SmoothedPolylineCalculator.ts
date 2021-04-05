@@ -699,8 +699,8 @@ export class SmoothedPolylineCalculator {
     ms.next.point = new Point(bx, b.y)
     const ma: Anchor = this.anchors[this.EdgePathNode(1)]
     ma.X = ms.point.x
-    // show(new DebugCurve(200, 3, "yellow", new LineSegment(ax, a.y, ms.Point.X, ms.Point.y)),
-    //     new DebugCurve(200, 3, "green", new LineSegment(bx, b.y, ms.Point.X, ms.Point.y)));
+    // show(new DebugCurve(200, 3, "yellow", new LineSegment(ax, a.y, ms.point.X, ms.point.y)),
+    //     new DebugCurve(200, 3, "green", new LineSegment(bx, b.y, ms.point.X, ms.point.y)));
   }
 
   OptimizeForTwoSites() {

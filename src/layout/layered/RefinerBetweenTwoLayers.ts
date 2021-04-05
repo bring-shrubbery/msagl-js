@@ -360,10 +360,10 @@ export class RefinerBetweenTwoLayers {
   }
 
   // private static bool CounterClockwise(ref Point topPoint, ref Point cornerPoint, ref Point p) {
-  //     return Point.GetTriangleOrientation(topPoint, cornerPoint, p) == TriangleOrientation.Counterclockwise;
+  //     return Point.getTriangleOrientation(topPoint, cornerPoint, p) == TriangleOrientation.Counterclockwise;
   // }
   // private static bool Clockwise(ref Point topPoint, ref Point cornerPoint, ref Point p) {
-  //     return Point.GetTriangleOrientation(topPoint, cornerPoint, p) == TriangleOrientation.Clockwise;
+  //     return Point.getTriangleOrientation(topPoint, cornerPoint, p) == TriangleOrientation.Clockwise;
   // }
   IsLabel(u: number): boolean {
     return this.anchors[u].representsLabel

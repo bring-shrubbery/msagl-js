@@ -41,7 +41,7 @@
 //         }
 
 //         void AddEdgeToFront(CdtEdge e) {
-//             var leftSite=e.upperSite.Point.X<e.lowerSite.Point.X?e.upperSite:e.lowerSite;
+//             var leftSite=e.upperSite.point.X<e.lowerSite.point.X?e.upperSite:e.lowerSite;
 //             front.Insert(new CdtFrontElement(leftSite, e));
 //         }
 
@@ -52,7 +52,7 @@
 
 //         void TriangulatePolygon(int start, int end, List<CdtSite> polygon, CdtSite a, CdtSite b, bool reverseTrangleWhenCompare) {
 // //            if(CdtSweeper.db)
-// //               CdtSweeper.ShowFront(triangles,front, Enumerable.Range(start, end-start+1).Select(i=> new Ellipse(10,10,polygon[i].Point)).ToArray(), new[]{new LineSegment(a.Point,b.Point)});
+// //               CdtSweeper.ShowFront(triangles,front, Enumerable.Range(start, end-start+1).Select(i=> new Ellipse(10,10,polygon[i].point)).ToArray(), new[]{new LineSegment(a.point,b.point)});
 //             var c = polygon[start];
 //             int cIndex = start;
 //             for (int i = start + 1; i <= end; i++) {

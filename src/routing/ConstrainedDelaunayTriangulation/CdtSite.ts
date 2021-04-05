@@ -17,7 +17,7 @@ export class CdtSite {
 
   // <param name="isolatedSite"></param>
   public constructor(isolatedSite: Point) {
-    this.Point = isolatedSite
+    this.point = isolatedSite
   }
 
   AddEdgeToSite(edge: CdtEdge) {

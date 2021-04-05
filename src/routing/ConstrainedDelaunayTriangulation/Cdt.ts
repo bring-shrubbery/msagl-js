@@ -218,7 +218,7 @@ export class Cdt extends Algorithm {
     //  <param name="b"></param>
     //  <returns>1 if a is above b, 0 if points are the same and -1 if a is below b</returns>
     static AboveCC(a: CdtSite, b: CdtSite): number {
-        return Cdt.AbovePP(a.Point, b.Point);
+        return Cdt.AbovePP(a.point, b.point);
     }
 
     RestoreEdgeCapacities() {
@@ -252,8 +252,8 @@ export class Cdt extends Algorithm {
 
     static PointIsInsideOfTriangle(point: Point, t: CdtTriangle): boolean {
         for (let i = 0; (i < 3); i++) {
-            const a = t.Sites[i].Point;
-            const b = t.Sites[(i + 1)].Point;
+            const a = t.Sites[i].point;
+            const b = t.Sites[(i + 1)].point;
             if ((Point.signedDoubledTriangleArea(point, a, b)
                 < (GeomConstants.distanceEpsilon * -1))) {
                 return false;

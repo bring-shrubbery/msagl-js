@@ -269,8 +269,8 @@
 
 //         foreach(var mni of metroGraphData.MetroNodeInfosOfNode(node)) {
 //             var metroline = mni.Metroline;
-//             Point u = mni.PolyPoint.next.Point;
-//             Point v = mni.PolyPoint.Prev.Point;
+//             Point u = mni.PolyPoint.next.point;
+//             Point v = mni.PolyPoint.Prev.point;
 
 //             var p1 = u - node.Position;
 //             var p2 = v - node.Position;

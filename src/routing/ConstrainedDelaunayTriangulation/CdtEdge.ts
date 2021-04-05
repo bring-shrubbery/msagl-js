@@ -32,7 +32,7 @@ export class CdtEdge {
   // <param name="a"></param>
   // <param name="b"></param>
   public constructor(a: CdtSite, b: CdtSite) {
-    const above = Cdt.Above(a.Point, b.Point)
+    const above = Cdt.Above(a.point, b.point)
     if (above == 1) {
       this.upperSite = a
       this.lowerSite = b

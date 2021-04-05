@@ -86,9 +86,9 @@
 //   void SetEdgeGeometryCurve(EdgeGeometry edgeGeometry) {
 //     Polyline poly = new Polyline();
 //     SdVertex curV = EdgesToRouteSources[edgeGeometry];
-//     poly.AddPoint(curV.Point);
+//     poly.AddPoint(curV.point);
 //     foreach(var edge of EdgesToRoutes[edgeGeometry]) {
-//       if (edge.SourcePoint == curV.Point) {
+//       if (edge.SourcePoint == curV.point) {
 //         poly.AddPoint(edge.TargetPoint);
 //         curV = edge.Target;
 //       }
@@ -180,7 +180,7 @@
 //     }
 //     //SplineRouter.ShowVisGraph(this.VisibilityGraph, ObstacleHierarchy.GetAllLeaves(), null, new[] { new LineSegment(
 //     // CurrentEdgeGeometry.SourcePort.Location, CurrentEdgeGeometry.TargetPort.Location)});
-//     throw new InvalidOperationException(); //cannot find a path
+//     throw new Error(); //cannot find a path
 //   }
 
 //   List < SdBoneEdge > RouteOnKnownSourceTargetVertices(Point pathDirection, bool lookingForMonotonePath) {
@@ -233,7 +233,7 @@
 //       if (queueCandidate.IsTargetOfRouting) {
 //         double costToTarget = 0;
 //         if (CurrentEdgeGeometry.TargetPort is ClusterBoundaryPort)
-//         costToTarget = LengthCoefficient * (queueCandidate.Point - CurrentEdgeGeometry.TargetPort.Location).Length;
+//         costToTarget = LengthCoefficient * (queueCandidate.point - CurrentEdgeGeometry.TargetPort.Location).Length;
 
 //         if (newCost + costToTarget < LowestCostToTarget) {
 //           LowestCostToTarget = newCost + costToTarget;
@@ -306,7 +306,7 @@
 //   }
 
 //   double H(SdVertex v) {
-//     return v.Cost + LengthCoefficient * (v.Point - CurrentEdgeGeometry.TargetPort.Location).Length;
+//     return v.Cost + LengthCoefficient * (v.point - CurrentEdgeGeometry.TargetPort.Location).Length;
 //   }
 
 //   double GetEdgeAdditionalCost(SdBoneEdge boneEdge, double previousCost) {
@@ -364,7 +364,7 @@
 //     while (CdtIntersections.FindNextPierced(start, end, ref currentTriangle, ref piercedEdge, ref negativeSign, ref positiveSign));
 //     */
 //     //if(ddd(boneEdge))
-//     //CdtSweeper.ShowFront(Cdt.GetTriangles(),null,new []{new LineSegment(boneEdge.SourcePoint,boneEdge.TargetPoint)}, crossedEdges.Select(e=>new LineSegment(e.upperSite.Point,e.lowerSite.Point)));
+//     //CdtSweeper.ShowFront(Cdt.GetTriangles(),null,new []{new LineSegment(boneEdge.SourcePoint,boneEdge.TargetPoint)}, crossedEdges.Select(e=>new LineSegment(e.upperSite.point,e.lowerSite.point)));
 
 //     return crossedEdges;
 //   }
@@ -485,9 +485,9 @@
 //     var endPoly = e.lowerSite.Owner as Polyline;
 //     if (startPoly != endPoly) {
 //       //e.Capacity = Polygon.Distance(new Polygon(startPoly), new Polygon(endPoly)); //todo: cache this
-//       //e.Capacity = (e.upperSite.Point - e.lowerSite.Point).Length;
-//       double distA = Polygon.Distance(new Polygon(startPoly), e.lowerSite.Point);
-//       double distB = Polygon.Distance(new Polygon(endPoly), e.upperSite.Point);
+//       //e.Capacity = (e.upperSite.point - e.lowerSite.point).Length;
+//       double distA = Polygon.Distance(new Polygon(startPoly), e.lowerSite.point);
+//       double distB = Polygon.Distance(new Polygon(endPoly), e.upperSite.point);
 //       e.Capacity = (distA + distB) / 2;
 //     }
 //     //else - it is a diagonal of an obstacle, do not care
@@ -499,7 +499,7 @@
 //         Cdt.GetTriangles().Select(t => new RectangleNode<CdtTriangle, Point>(t, t.BoundingBox())));
 //     var vertexTree =
 //       RectangleNode<SdVertex, Point>.CreateRectangleNodeOnEnumeration(
-//         vertexArray.Select(v => new RectangleNode<SdVertex, Point>(v, new Rectangle(v.Point))));
+//         vertexArray.Select(v => new RectangleNode<SdVertex, Point>(v, new Rectangle(v.point))));
 
 //     RectangleNodeUtils.CrossRectangleNodes(triangleTree, vertexTree, TryToAssigenTriangleToVertex);
 //     foreach(var v of vertexArray) {
@@ -511,7 +511,7 @@
 //     if (vertex.Triangle != null)
 //       return;
 
-//     if (Cdt.PointIsInsideOfTriangle(vertex.Point, triangle))
+//     if (Cdt.PointIsInsideOfTriangle(vertex.point, triangle))
 //       vertex.Triangle = triangle;
 //   }
 

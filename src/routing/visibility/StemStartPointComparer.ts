@@ -20,8 +20,8 @@
 //         if (j == null)
 //             return 1;
 
-//         Point a = i.Start.Point - pivot;
-//         Point b = j.Start.Point - pivot;
+//         Point a = i.Start.point - pivot;
+//         Point b = j.Start.point - pivot;
 
 //         return CompareVectorsByAngleToXAxis(a, b);
 
@@ -40,7 +40,7 @@
 //             return CompareVectorsPointingToTheSameYHalfPlane(ref a, ref b);
 //         }
 
-//         throw new InvalidOperationException();
+//         throw new Error();
 //     }
 
 //         private static int CompareVectorsPointingToTheSameYHalfPlane(ref Point a, ref Point b) {

@@ -1,12 +1,12 @@
-import {Point} from './../../math/geometry/point'
-import {Assert} from './../../utils/assert'
-import {String} from 'typescript-string-operations'
+import { Point } from './../../math/geometry/point'
+import { Assert } from './../../utils/assert'
+import { String } from 'typescript-string-operations'
 //  an edge connecting two VisibilityVertices
 export class VisibilityEdge {
   LengthMultiplier = 1
 
   constructor(source: VisibilityVertex, target: VisibilityVertex, weight = 1) {
-    Assert.assert(source.Point != target.Point, 'Self-edges are not allowed')
+    Assert.assert(source.point != target.point, 'Self-edges are not allowed')
     this.Source = source
     this.Target = target
     this.Weight = weight
@@ -19,12 +19,12 @@ export class VisibilityEdge {
 
   //  edge source point
   public get SourcePoint(): Point {
-    return this.Source.Point
+    return this.Source.point
   }
 
   //  edge target point
   public get TargetPoint(): Point {
-    return this.Target.Point
+    return this.Target.point
   }
 
   Source: VisibilityVertex

@@ -1,6 +1,6 @@
-import {Point} from './../../math/geometry/point'
-import {RBTree} from './../../structs/RBTree/rbTree'
-import {VisibilityEdge} from './VisibilityEdge'
+import { Point } from './../../math/geometry/point'
+import { RBTree } from './../../structs/RBTree/rbTree'
+import { VisibilityEdge } from './VisibilityEdge'
 export class VisibilityVertex {
   Point: Point
 
@@ -46,11 +46,11 @@ export class VisibilityVertex {
 
   constructor(point: Point) {
     this._outEdges = new RBTree<VisibilityEdge>(this)
-    this.Point = point
+    this.point = point
   }
 
   public /* override */ ToString(): string {
-    return this.Point.ToString()
+    return this.point.ToString()
   }
 
   //  These iterate from the end of the list because List.Remove is linear in
@@ -106,8 +106,8 @@ export class VisibilityVertex {
     target: VisibilityVertex,
     /* out */ visEdge: VisibilityEdge,
   ): boolean {
-    let node = VisibilityVertex.FindFirst(this.OutEdges, target.Point)
-    //  OutEdges.FindFirst(e => e.TargetPoint >= target.Point);
+    let node = VisibilityVertex.FindFirst(this.OutEdges, target.point)
+    //  OutEdges.FindFirst(e => e.TargetPoint >= target.point);
     if (node != null) {
       if (node.Item.Target == target) {
         visEdge = node.Item
@@ -115,7 +115,7 @@ export class VisibilityVertex {
       }
     }
 
-    node = VisibilityVertex.FindFirst(target.OutEdges, this.Point)
+    node = VisibilityVertex.FindFirst(target.OutEdges, this.point)
     //  target.OutEdges.FindFirst(e => e.TargetPoint >= Point);
     if (node != null) {
       if (node.Item.Target == this) {

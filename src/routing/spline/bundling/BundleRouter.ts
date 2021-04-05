@@ -148,7 +148,7 @@ export class BundleRouter extends Algorithm {
           new LineSegment(edge.Curve.Start, edge.Curve.End),
           true,
         )
-          ; (<Polyline>edge.Curve).startPoint.Point = ii.IntersectionPoint
+          ; (<Polyline>edge.Curve).startPoint.point = ii.IntersectionPoint
       }
 
       if (ePort.Curve.BoundingBox.Contains(sPort.Curve.BoundingBox)) {
@@ -157,7 +157,7 @@ export class BundleRouter extends Algorithm {
           new LineSegment(edge.Curve.Start, edge.Curve.End),
           true,
         )
-          ; (<Polyline>edge.Curve).endPoint.Point = ii.IntersectionPoint
+          ; (<Polyline>edge.Curve).endPoint.point = ii.IntersectionPoint
       }
     }
   }
@@ -274,7 +274,7 @@ export class BundleRouter extends Algorithm {
       sh.IsTransparent = false
     }
 
-    return path.Last().Point
+    return path.Last().point
   }
 
   private FigureOutHookLocationForSimpleOtherPort(
@@ -291,7 +291,7 @@ export class BundleRouter extends Algorithm {
     const s = new SingleSourceMultipleTargetsShortestPathOnVisibilityGraph(
       this.VisibilityGraph.FindVertex(otherEdgeEnd),
       poly.PolylinePoints.Select((p) =>
-        this.VisibilityGraph.FindVertex(p.Point),
+        this.VisibilityGraph.FindVertex(p.point),
       ),
       this.VisibilityGraph,
     )
@@ -300,7 +300,7 @@ export class BundleRouter extends Algorithm {
       sh.IsTransparent = false
     }
 
-    return path.Last().Point
+    return path.Last().point
   }
 
   EdgeLooseEnterable: Dictionary<EdgeGeometry, Set<Polyline>>

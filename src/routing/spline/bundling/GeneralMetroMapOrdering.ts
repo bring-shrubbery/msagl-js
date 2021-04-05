@@ -72,7 +72,7 @@
 //                     //initialization
 //                     foreach(var Metroline of Metrolines) {
 //                         for (var p = Metroline.Polyline.startPoint; p.next != null; p = p.next) {
-//                             var e = new PointPair(p.Point, p.next.Point);
+//                             var e = new PointPair(p.point, p.next.point);
 //                             PointPairOrder li;
 //                             if (!bundles.TryGetValue(e, out li))
 //                                 bundles[e] = li = new PointPairOrder();
@@ -116,39 +116,39 @@
 //                     var p1 = polylinePoint1;
 //                     PolylinePoint p00, p11 = null;
 
-//                     while ((p00 = prev0(p0)) != null && (p11 = prev1(p1)) != null && p00.Point == p11.Point) {
-//                         var edge = new PointPair(p00.Point, p0.Point);
+//                     while ((p00 = prev0(p0)) != null && (p11 = prev1(p1)) != null && p00.point == p11.point) {
+//                         var edge = new PointPair(p00.point, p0.point);
 //                         if (bundles[edge].orderFixed) {
-//                             return CompareOnFixedOrder(edge, ml0, ml1, p00.Point != edge.First);
+//                             return CompareOnFixedOrder(edge, ml0, ml1, p00.point != edge.First);
 //                         }
 //                         p0 = p00;
 //                         p1 = p11;
 //                     }
 
 //                     if (p00 != null && p11 != null) {   //we have a backward fork
-//                         var forkBase = p0.Point;
-//                         return IsLeft(next0(p0).Point - forkBase,
-//                             p00.Point - forkBase,
-//                             p11.Point - forkBase);
+//                         var forkBase = p0.point;
+//                         return IsLeft(next0(p0).point - forkBase,
+//                             p00.point - forkBase,
+//                             p11.point - forkBase);
 //                     }
 
 //                     //go forward
 //                     p0 = polylinePoint0;
 //                     p1 = polylinePoint1;
-//                     while ((p00 = next0(p0)) != null && (p11 = next1(p1)) != null && p00.Point == p11.Point) {
-//                         var edge = new PointPair(p00.Point, p0.Point);
+//                     while ((p00 = next0(p0)) != null && (p11 = next1(p1)) != null && p00.point == p11.point) {
+//                         var edge = new PointPair(p00.point, p0.point);
 
 //                         if (bundles[edge].orderFixed)
-//                             return CompareOnFixedOrder(edge, ml0, ml1, p0.Point != edge.First);
+//                             return CompareOnFixedOrder(edge, ml0, ml1, p0.point != edge.First);
 //                         p0 = p00;
 //                         p1 = p11;
 //                     }
 
 //                     if (p00 != null && p11 != null) {//compare forward fork
-//                         var forkBase = p0.Point;
-//                         return -IsLeft(prev0(p0).Point - forkBase,
-//                             p00.Point - forkBase,
-//                             p11.Point - forkBase);
+//                         var forkBase = p0.point;
+//                         return -IsLeft(prev0(p0).point - forkBase,
+//                             p00.point - forkBase,
+//                             p11.point - forkBase);
 //                     }
 
 //                     //these are multiple edges
@@ -168,21 +168,21 @@
 //                     out Func < PolylinePoint, PolylinePoint > prev) {
 
 //                     for (var p = Metroline.Polyline.startPoint; p.next != null; p = p.next) {
-//                         if (p.Point == u && p.next.Point == v) {
+//                         if (p.point == u && p.next.point == v) {
 //                             next = Next;
 //                             prev = Prev;
 //                             polyPoint = p;
 //                             return;
 //                         }
 
-//                         if (p.Point == v && p.next.Point == u) {
+//                         if (p.point == v && p.next.point == u) {
 //                             prev = Next;
 //                             next = Prev;
 //                             polyPoint = p.next;
 //                             return;
 //                         }
 //                     }
-//                     throw new InvalidOperationException();
+//                     throw new Error();
 //                 }
 
 //         static PolylinePoint Next(PolylinePoint p) {

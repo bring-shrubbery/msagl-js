@@ -1,10 +1,10 @@
-﻿import {InvalidOperationException} from 'linq-to-typescript'
-import {Point, TriangleOrientation} from '../../math/geometry/point'
-import {Rectangle} from '../../math/geometry/rectangle'
-import {Assert} from '../../utils/assert'
-import {CdtEdge} from './CdtEdge'
-import {CdtSite} from './CdtSite'
-import {ThreeArray} from './ThreeArray'
+﻿import { Error } from 'linq-to-typescript'
+import { Point, TriangleOrientation } from '../../math/geometry/point'
+import { Rectangle } from '../../math/geometry/rectangle'
+import { Assert } from '../../utils/assert'
+import { CdtEdge } from './CdtEdge'
+import { CdtSite } from './CdtSite'
+import { ThreeArray } from './ThreeArray'
 
 //  a trianlge oriented counterclockwise
 export class CdtTriangle {
@@ -25,9 +25,9 @@ export class CdtTriangle {
     createEdgeDelegate: Func<CdtSite, CdtSite, CdtEdge>,
   ) {
     const orientation = Point.GetTriangleOrientationWithNoEpsilon(
-      a.Point,
-      b.Point,
-      c.Point,
+      a.point,
+      b.point,
+      c.point,
     )
     switch (orientation) {
       case TriangleOrientation.Counterclockwise:
@@ -37,7 +37,7 @@ export class CdtTriangle {
         this.FillCcwTriangle(a, c, b, createEdgeDelegate)
         break
       default:
-        throw new InvalidOperationException()
+        throw new Error()
         break
     }
   }
@@ -48,11 +48,11 @@ export class CdtTriangle {
     createEdgeDelegate: Func<CdtSite, CdtSite, CdtEdge>,
   ) {
     switch (
-      Point.GetTriangleOrientationWithNoEpsilon(
-        edge.upperSite.Point,
-        edge.lowerSite.Point,
-        pi.Point,
-      )
+    Point.GetTriangleOrientationWithNoEpsilon(
+      edge.upperSite.point,
+      edge.lowerSite.point,
+      pi.point,
+    )
     ) {
       case TriangleOrientation.Counterclockwise:
         edge.CcwTriangle = this
@@ -65,7 +65,7 @@ export class CdtTriangle {
         this.Sites[1] = edge.upperSite
         break
       default:
-        throw new InvalidOperationException()
+        throw new Error()
         break
     }
 
@@ -84,7 +84,7 @@ export class CdtTriangle {
     b: CdtEdge,
     createEdgeDelegate: Func<CdtSite, CdtSite, CdtEdge>,
   ) {
-    //  Assert.assert(Point.GetTriangleOrientation(aLeft.Point, aRight.Point, bRight.Point) == TriangleOrientation.Counterclockwise);
+    //  Assert.assert(Point.getTriangleOrientation(aLeft.point, aRight.point, bRight.point) == TriangleOrientation.Counterclockwise);
     this.Sites[0] = aLeft
     this.Sites[1] = aRight
     this.Sites[2] = bRight
@@ -165,10 +165,10 @@ export class CdtTriangle {
 
   BoundingBox(): Rectangle {
     const rect: Rectangle = new Rectangle(
-      this.Sites[0].Point,
-      this.Sites[1].Point,
+      this.Sites[0].point,
+      this.Sites[1].point,
     )
-    rect.Add(this.Sites[2].Point)
+    rect.Add(this.Sites[2].point)
     return rect
   }
 }

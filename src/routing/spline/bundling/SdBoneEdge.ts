@@ -1,8 +1,8 @@
-﻿import {Point} from '../../../math/geometry/point'
-import {Assert} from '../../../utils/assert'
-import {CdtEdge} from '../../ConstrainedDelaunayTriangulation/CdtEdge'
-import {VisibilityEdge} from '../../visibility/VisibilityEdge'
-import {SdVertex} from './SdVertex'
+﻿import { Point } from '../../../math/geometry/point'
+import { Assert } from '../../../utils/assert'
+import { CdtEdge } from '../../ConstrainedDelaunayTriangulation/CdtEdge'
+import { VisibilityEdge } from '../../visibility/VisibilityEdge'
+import { SdVertex } from './SdVertex'
 
 //     [DebuggerDisplay("({SourcePoint.X},{SourcePoint.Y})->({TargetPoint.X},{TargetPoint.Y})")]
 export class SdBoneEdge {
@@ -25,11 +25,11 @@ export class SdBoneEdge {
   }
 
   get TargetPoint(): Point {
-    return this.Target.Point
+    return this.Target.point
   }
 
   get SourcePoint(): Point {
-    return this.Source.Point
+    return this.Source.point
   }
 
   get IsOccupied(): boolean {

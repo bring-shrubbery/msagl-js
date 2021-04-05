@@ -1,4 +1,4 @@
-﻿import {VisibilityVertex} from '../../visibility/VisibilityVertex'
+﻿import { VisibilityVertex } from '../../visibility/VisibilityVertex'
 
 export class SdVertex {
   VisibilityVertex: VisibilityVertex
@@ -26,7 +26,7 @@ export class SdVertex {
   IsTargetOfRouting: boolean
 
   get Point(): Point {
-    return this.VisibilityVertex.Point
+    return this.VisibilityVertex.point
   }
 
   cost: number

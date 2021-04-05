@@ -1,4 +1,4 @@
-import { IEnumerable, InvalidOperationException } from "linq-to-typescript"
+import { IEnumerable, Error, from } from "linq-to-typescript"
 import { Point, TriangleOrientation } from "../../math/geometry/point"
 import { Polyline } from "../../math/geometry/polyline"
 import { PolylinePoint } from "../../math/geometry/polylinePoint"
@@ -21,36 +21,6 @@ class TangentVisibilityGraphCalculator {
 class PointVisibilityCalculator {
   static CalculatePointVisibilityGraph: any
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //  the visibility graph
 export class VisibilityGraph {
   _prevEdgesDictionary: Map<
@@ -168,25 +138,24 @@ export class VisibilityGraph {
     }
   }
 
-  @SuppressMessage('Microsoft.Usage', 'CA2201:DoNotRaiseReservedExceptionTypes')
   static CheckThatPolylineIsConvex(polyline: Polyline) {
-    Assert.assert(polyline.Closed, 'Polyline is not closed')
-    const a: PolylinePoint = polyline.startPoint
-    const b: PolylinePoint = a.next
-    const c: PolylinePoint = b.next
-    const orient: TriangleOrientation = Point.GetTriangleOrientation(
-      a.Point,
-      b.Point,
-      c.Point,
+    Assert.assert(polyline.closed, 'Polyline is not closed')
+    let a: PolylinePoint = polyline.startPoint
+    let b: PolylinePoint = a.next
+    let c: PolylinePoint = b.next
+    let orient: TriangleOrientation = Point.getTriangleOrientation(
+      a.point,
+      b.point,
+      c.point,
     )
     while (c != polyline.endPoint) {
       a = a.next
       b = b.next
       c = c.next
-      const currentOrient = Point.GetTriangleOrientation(
-        a.Point,
-        b.Point,
-        c.Point,
+      const currentOrient = Point.getTriangleOrientation(
+        a.point,
+        b.point,
+        c.point,
       )
       if (currentOrient == TriangleOrientation.Collinear) {
         // TODO: Warning!!! continue If
@@ -195,59 +164,56 @@ export class VisibilityGraph {
       if (orient == TriangleOrientation.Collinear) {
         orient = currentOrient
       } else if (orient != currentOrient) {
-        throw new InvalidOperationException()
+        throw new Error()
       }
     }
 
-    const o = Point.GetTriangleOrientation(
-      polyline.endPoint.Point,
-      polyline.startPoint.Point,
-      polyline.startPoint.next.Point,
+    const o = Point.getTriangleOrientation(
+      polyline.endPoint.point,
+      polyline.startPoint.point,
+      polyline.startPoint.next.point,
     )
     if (o != TriangleOrientation.Collinear && o != orient) {
-      throw new InvalidOperationException()
+      throw new Error()
     }
   }
 
   //  TEST || VERIFY
   //  Enumerate all VisibilityEdges in the VisibilityGraph.
   public get Edges(): IEnumerable<VisibilityEdge> {
-    return PointToVertexMap.Values.SelectMany((vertex) => vertex.OutEdges)
-  }
-
-  get PointToVertexMap(): Map<Point, VisibilityVertex> {
-    return this.pointToVertexMap
+    const fr = from(this.pointToVertexMap.values())
+    return fr.selectMany((vertex) => vertex.OutEdges)
   }
 
   get VertexCount(): number {
-    return this.PointToVertexMap.Count
+    return this.pointToVertexMap.Count
   }
 
   AddVertex(polylinePoint: PolylinePoint): VisibilityVertex {
-    return this.AddVertex(polylinePoint.Point)
+    return this.AddVertex(polylinePoint.point)
   }
 
   AddVertex(point: Point): VisibilityVertex {
     const currentVertex: VisibilityVertex
-    if (this.PointToVertexMap.TryGetValue(point, /* out */ currentVertex)) {
+    if (this.pointToVertexMap.TryGetValue(point, /* out */ currentVertex)) {
       return currentVertex
     }
 
-    const newVertex = VertexFactory(point)
-    this.PointToVertexMap[point] = newVertex
+    const newVertex = this.VertexFactory(point)
+    this.pointToVertexMap[point] = newVertex
     return newVertex
   }
 
   AddVertex(vertex: VisibilityVertex) {
     Assert.assert(
-      !this.PointToVertexMap.ContainsKey(vertex.Point),
+      !this.pointToVertexMap.ContainsKey(vertex.point),
       'A vertex already exists at this location',
     )
-    this.PointToVertexMap[vertex.Point] = vertex
+    this.pointToVertexMap[vertex.point] = vertex
   }
 
   ContainsVertex(point: Point): boolean {
-    return this.PointToVertexMap.ContainsKey(point)
+    return this.pointToVertexMap.ContainsKey(point)
   }
 
   static AddEdge_vv(
@@ -261,7 +227,7 @@ export class VisibilityGraph {
 
     if (source == target) {
       Assert.assert(false, 'Self-edges are not allowed')
-      throw new InvalidOperationException('Self-edges are not allowed')
+      throw new Error('Self-edges are not allowed')
     }
 
     const edge = new VisibilityEdge(source, target)
@@ -271,7 +237,7 @@ export class VisibilityGraph {
   }
 
   AddEdge_PolyPoly(source: PolylinePoint, target: PolylinePoint) {
-    this.addEdge(source.Point, target.Point)
+    this.addEdge(source.point, target.point)
   }
 
   static AddEdge(edge: VisibilityEdge) {
@@ -335,19 +301,19 @@ export class VisibilityGraph {
   }
 
   FindVertex(point: Point): VisibilityVertex {
-    return this.PointToVertexMap.get(point)
+    return this.pointToVertexMap.get(point)
   }
 
   GetVertex(polylinePoint: PolylinePoint): VisibilityVertex {
-    return this.FindVertex(polylinePoint.Point)
+    return this.FindVertex(polylinePoint.point)
   }
 
   Vertices(): IEnumerable<VisibilityVertex> {
-    return this.PointToVertexMap.Values
+    return this.pointToVertexMap.Values
   }
 
   RemoveVertex(vertex: VisibilityVertex) {
-    //  Assert.assert(PointToVertexMap.ContainsKey(vertex.Point), "Cannot find vertex in PointToVertexMap");
+    //  Assert.assert(pointToVertexMap.ContainsKey(vertex.point), "Cannot find vertex in pointToVertexMap");
     for (const edge of vertex.OutEdges) {
       edge.Target.RemoveInEdge(edge)
     }
@@ -356,7 +322,7 @@ export class VisibilityGraph {
       edge.Source.RemoveOutEdge(edge)
     }
 
-    this.PointToVertexMap.Remove(vertex.Point)
+    this.pointToVertexMap.Remove(vertex.point)
   }
 
   RemoveEdge(v1: VisibilityVertex, v2: VisibilityVertex) {
@@ -431,10 +397,10 @@ function* OrientHolesClockwise(
     for (const p = poly.startPoint; ; p = p.next) {
       //  Find the first non-collinear segments and see which direction the triangle is.
       //  If it's consistent with Clockwise, then return the polyline, else return its Reverse.
-      const orientation = Point.GetTriangleOrientation(
-        p.Point,
-        p.next.Point,
-        p.next.next.Point,
+      const orientation = Point.getTriangleOrientation(
+        p.point,
+        p.next.point,
+        p.next.next.point,
       )
       if (orientation != TriangleOrientation.Collinear) {
         yield orientation == TriangleOrientation.Clockwise

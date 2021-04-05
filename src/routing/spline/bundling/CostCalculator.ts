@@ -125,8 +125,8 @@
 //                 var oldLength = e.Metroline.Length;
 //                 var newLength = e.Metroline.Length;
 
-//                 var prev = e.PolyPoint.Prev.Point;
-//                 var next = e.PolyPoint.next.Point;
+//                 var prev = e.PolyPoint.Prev.point;
+//                 var next = e.PolyPoint.next.point;
 
 //                 newLength += (next - newPosition).Length + (prev - newPosition).Length - (next - node.Position).Length - (prev - node.Position).Length;
 

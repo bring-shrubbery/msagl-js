@@ -9,13 +9,13 @@
 //         internal CdtSite RightSite;
 
 //         internal double X {
-//         get { return LeftSite.Point.X; }
+//         get { return LeftSite.point.X; }
 //     }
 
 //     internal CdtFrontElement(CdtSite leftSite, CdtEdge edge) {
-//         Assert.assert(edge.upperSite.Point.X != edge.lowerSite.Point.X &&
-//             edge.upperSite.Point.X < edge.lowerSite.Point.X && leftSite == edge.upperSite ||
-//             edge.upperSite.Point.X > edge.lowerSite.Point.X && leftSite == edge.lowerSite);
+//         Assert.assert(edge.upperSite.point.X != edge.lowerSite.point.X &&
+//             edge.upperSite.point.X < edge.lowerSite.point.X && leftSite == edge.upperSite ||
+//             edge.upperSite.point.X > edge.lowerSite.point.X && leftSite == edge.lowerSite);
 //         RightSite = edge.upperSite == leftSite ? edge.lowerSite : edge.upperSite;
 //         LeftSite = leftSite;
 //         Edge = edge;

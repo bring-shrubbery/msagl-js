@@ -160,9 +160,9 @@
 //     }
 
 //     void CreateOrientedSegsOnLineVertex(Metroline line, PolylinePoint polyPoint) {
-//         Station u = metroGraphData.PointToStations[polyPoint.Prev.Point];
-//         Station v = metroGraphData.PointToStations[polyPoint.Point];
-//         Station w = metroGraphData.PointToStations[polyPoint.next.Point];
+//         Station u = metroGraphData.PointToStations[polyPoint.Prev.point];
+//         Station v = metroGraphData.PointToStations[polyPoint.point];
+//         Station w = metroGraphData.PointToStations[polyPoint.next.point];
 //         BundleBase h0 = v.BundleBases[u];
 //         BundleBase h1 = v.BundleBases[w];
 //         int j0 = metroOrdering.GetLineIndexInOrder(u, v, line);
@@ -201,7 +201,7 @@
 //             }
 //         }
 
-//         throw new InvalidOperationException();
+//         throw new Error();
 //     }
 
 //     void SetRightLeftParamsFeasiblySymmetrically() {
@@ -267,7 +267,7 @@
 //         Assert.assert(!(l2 >= r1) && !(l1 >= r2));
 
 //         double t = RegularCut(l1, r1, l2, r2, rBase.Span, lBase.Span);
-//         TriangleOrientation to = Point.GetTriangleOrientation(lBase.CurveCenter, lBase.OppositeBase.InitialMidPoint, rBase.OppositeBase.InitialMidPoint);
+//         TriangleOrientation to = Point.getTriangleOrientation(lBase.CurveCenter, lBase.OppositeBase.InitialMidPoint, rBase.OppositeBase.InitialMidPoint);
 
 //         if (to == TriangleOrientation.Clockwise) {
 //             r1 = t;

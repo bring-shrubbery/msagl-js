@@ -91,8 +91,8 @@
 //         }
 
 //         static Point FindCurveStart(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroOrdering, Metroline metroline) {
-//             Station u = metroGraphData.PointToStations[metroline.Polyline.startPoint.Point];
-//             Station v = metroGraphData.PointToStations[metroline.Polyline.startPoint.next.Point];
+//             Station u = metroGraphData.PointToStations[metroline.Polyline.startPoint.point];
+//             Station v = metroGraphData.PointToStations[metroline.Polyline.startPoint.next.point];
 
 //             BundleBase bb = u.BundleBases[v];
 //             int index = (!bb.IsParent ? metroOrdering.GetLineIndexInOrder(v, u, metroline) : metroOrdering.GetLineIndexInOrder(u, v, metroline));
@@ -100,8 +100,8 @@
 //         }
 
 //         static Point FindCurveEnd(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroOrdering, Metroline metroline) {
-//             Station u = metroGraphData.PointToStations[metroline.Polyline.endPoint.Prev.Point];
-//             Station v = metroGraphData.PointToStations[metroline.Polyline.endPoint.Point];
+//             Station u = metroGraphData.PointToStations[metroline.Polyline.endPoint.Prev.point];
+//             Station v = metroGraphData.PointToStations[metroline.Polyline.endPoint.point];
 
 //             BundleBase bb = v.BundleBases[u];
 //             int index = (!bb.IsParent ? metroOrdering.GetLineIndexInOrder(u, v, metroline) : metroOrdering.GetLineIndexInOrder(v, u, metroline));
@@ -121,12 +121,12 @@
 //         }
 
 //         static ICurve SegOnLineVertex(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroOrdering, Metroline line, PolylinePoint i) {
-//             Station u = metroGraphData.PointToStations[i.Prev.Point];
-//             Station v = metroGraphData.PointToStations[i.Point];
+//             Station u = metroGraphData.PointToStations[i.Prev.point];
+//             Station v = metroGraphData.PointToStations[i.point];
 //             BundleBase h0 = v.BundleBases[u];
 //             int j0 = metroOrdering.GetLineIndexInOrder(u, v, line);
 //             if (h0.OrientedHubSegments[j0] == null || h0.OrientedHubSegments[j0].Segment == null) {
-//                 var w = metroGraphData.PointToStations[i.next.Point];
+//                 var w = metroGraphData.PointToStations[i.next.point];
 //                 var otherBase = v.BundleBases[w];
 //                 var j1 = metroOrdering.GetLineIndexInOrder(w, v, line);
 //                 return new LineSegment(h0.Points[j0], otherBase.Points[j1]);
@@ -149,9 +149,9 @@
 //         }
 
 //         void CreateOrientedSegsOnLineVertex(Metroline line, PolylinePoint polyPoint) {
-//             Station u = metroGraphData.PointToStations[polyPoint.Prev.Point];
-//             Station v = metroGraphData.PointToStations[polyPoint.Point];
-//             Station w = metroGraphData.PointToStations[polyPoint.next.Point];
+//             Station u = metroGraphData.PointToStations[polyPoint.Prev.point];
+//             Station v = metroGraphData.PointToStations[polyPoint.point];
+//             Station w = metroGraphData.PointToStations[polyPoint.next.point];
 //             BundleBase h0 = v.BundleBases[u];
 //             BundleBase h1 = v.BundleBases[w];
 //             int j0 = metroOrdering.GetLineIndexInOrder(u, v, line);
@@ -440,8 +440,8 @@
 //             Point x;
 //             if (LineSegment.Intersect(lSeg.Segment.Start, lSeg.Segment.End, rSeg.Segment.Start, rSeg.Segment.End, out x))
 //                 return false; //it doesn not make sense to push these segs apart
-//             if (Point.GetTriangleOrientation(lSeg[0], lSeg[0.5], lSeg[1]) !=
-//                 Point.GetTriangleOrientation(rSeg[0], rSeg[0.5], rSeg[1]))
+//             if (Point.getTriangleOrientation(lSeg[0], lSeg[0.5], lSeg[1]) !=
+//                 Point.getTriangleOrientation(rSeg[0], rSeg[0.5], rSeg[1]))
 //                 return false;
 //             double ll = BaseLength(lSeg);
 //             double rl = BaseLength(rSeg);

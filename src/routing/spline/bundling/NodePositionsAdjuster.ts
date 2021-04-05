@@ -216,8 +216,8 @@
 //     PolylinePoint pa = pi.Prev;
 //     PolylinePoint pb = pi.next;
 
-//     newLength -= (pa.Point - i.Position).Length + (pb.Point - i.Position).Length;
-//     newLength += (pa.Point - j.Position).Length + (pb.Point - j.Position).Length;
+//     newLength -= (pa.point - i.Position).Length + (pb.point - i.Position).Length;
+//     newLength += (pa.point - j.Position).Length + (pb.point - j.Position).Length;
 
 //     gain += CostCalculator.PathLengthsError(oldLength, newLength, metroInfo.Metroline.IdealLength,
 //       bundlingSettings);
@@ -281,7 +281,7 @@
 //   foreach(var metroline of metroGraphData.Metrolines) {
 //     polylineLength[metroline] = metroline.Length;
 //     for (var pp = metroline.Polyline.startPoint; pp.next != null; pp = pp.next) {
-//       var segment = new PointPair(pp.Point, pp.next.Point);
+//       var segment = new PointPair(pp.point, pp.next.point);
 //       CollectionUtilities.AddToMap(segsToPolylines, segment, metroline);
 //     }
 //   }
@@ -320,9 +320,9 @@
 
 // bool TryShortcutPolypoint(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines, HashSet < Point > affectedPoints, Set < Polyline > obstaclesAllowedToIntersect) {
 //   if (SeparationShortcutAllowed(pp, segsToPolylines, obstaclesAllowedToIntersect)) {
-//     affectedPoints.Add(pp.Point);
-//     affectedPoints.Add(pp.next.Point);
-//     affectedPoints.Add(pp.next.next.Point);
+//     affectedPoints.Add(pp.point);
+//     affectedPoints.Add(pp.next.point);
+//     affectedPoints.Add(pp.next.next.point);
 //     RemoveShortcuttedPolypoint(pp, segsToPolylines);
 
 //     return true;
@@ -334,9 +334,9 @@
 // // allowed iff line (a,c) is legal and inkgain > 0
 // // </summary>
 // bool SeparationShortcutAllowed(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines, Set < Polyline > obstaclesAllowedToIntersect) {
-//   var a = pp.Point;
-//   var b = pp.next.Point;
-//   var c = pp.next.next.Point;
+//   var a = pp.point;
+//   var b = pp.next.point;
+//   var c = pp.next.next.point;
 //   var aStation = metroGraphData.PointToStations[a];
 //   var bStation = metroGraphData.PointToStations[b];
 //   var cStation = metroGraphData.PointToStations[c];
@@ -402,9 +402,9 @@
 // }
 
 // void RemoveShortcuttedPolypoint(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines) {
-//   var a = pp.Point;
-//   var b = pp.next.Point;
-//   var c = pp.next.next.Point;
+//   var a = pp.point;
+//   var b = pp.next.point;
+//   var c = pp.next.next.point;
 
 //   Set < Metroline > abPolylines, bcPolylines, abcPolylines;
 //   FindPolylines(pp, segsToPolylines, out abPolylines, out bcPolylines, out abcPolylines);
@@ -425,7 +425,7 @@
 
 //   //fixing polylines
 //   foreach(var metroline of abcPolylines) {
-//     RemovePolypoint(metroline.Polyline.PolylinePoints.First(p => p.Point == b));
+//     RemovePolypoint(metroline.Polyline.PolylinePoints.First(p => p.point == b));
 //     CollectionUtilities.RemoveFromMap(segsToPolylines, new PointPair(a, b), metroline);
 //     CollectionUtilities.RemoveFromMap(segsToPolylines, new PointPair(b, c), metroline);
 //     CollectionUtilities.AddToMap(segsToPolylines, new PointPair(a, c), metroline);
@@ -434,9 +434,9 @@
 
 // void FindPolylines(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines,
 //   out Set < Metroline > abPolylines, out Set < Metroline > bcPolylines, out Set < Metroline > abcPolylines) {
-//   Point a = pp.Point;
-//   Point b = pp.next.Point;
-//   Point c = pp.next.next.Point;
+//   Point a = pp.point;
+//   Point b = pp.next.point;
+//   Point c = pp.next.next.point;
 //   abPolylines = segsToPolylines[new PointPair(a, b)];
 //   bcPolylines = segsToPolylines[new PointPair(b, c)];
 //   abcPolylines = abPolylines * bcPolylines;
@@ -631,15 +631,15 @@
 //   var newp = keyValuePair.Value;
 
 //   foreach(var polylinePoint of node.MetroNodeInfos.Select(i => i.PolyPoint)) {
-//     if (polylinePoint.next != null && polylinePoint.next.Point == a.Position)
+//     if (polylinePoint.next != null && polylinePoint.next.point == a.Position)
 //       SplitPolylinePoint(polylinePoint, newp);
-//     else if (polylinePoint.Prev != null && polylinePoint.Prev.Point == a.Position)
+//     else if (polylinePoint.Prev != null && polylinePoint.Prev.point == a.Position)
 //       SplitPolylinePoint(polylinePoint.Prev, newp);
 //   }
 // }
 
 // void SplitPolylinePoint(PolylinePoint node, Point pointToInsert) {
-//   if (node.Point == pointToInsert || node.next.Point == pointToInsert) return;
+//   if (node.point == pointToInsert || node.next.point == pointToInsert) return;
 
 //   var p = new PolylinePoint(pointToInsert) { Polyline = node.Polyline, Next = node.next, Prev = node };
 //   p.next.Prev = p;
@@ -707,13 +707,13 @@
 //       PolylinePoint pp = null;
 //       //TODO: replace the cycle!
 //       foreach(var ppp of metroline.Polyline.PolylinePoints)
-//       if (ppp.Point == a.Position) {
+//       if (ppp.point == a.Position) {
 //         pp = ppp;
 //         break;
 //       }
 
 //       Assert.assert(pp != null);
-//       if (pp.next != null && pp.next.Point == b.Position)
+//       if (pp.next != null && pp.next.point == b.Position)
 //         SplitPolylinePoint(pp, bestPoint);
 //       else
 //         SplitPolylinePoint(pp.Prev, bestPoint);

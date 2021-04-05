@@ -74,24 +74,24 @@
 //                 var poly = (Polyline) s.Owner;
 //                 if (obstaclesToIgnore.Contains(poly)) continue;
 
-//                 PolylinePoint pp = FindPolylinePoint(poly, s.Point);
+//                 PolylinePoint pp = FindPolylinePoint(poly, s.point);
 //                 double par11, par12, par21, par22;
-//                 double d12 = LineSegment.MinDistBetweenLineSegments(pp.Point, pp.NextOnPolyline.Point, start, end,
+//                 double d12 = LineSegment.MinDistBetweenLineSegments(pp.point, pp.NextOnPolyline.point, start, end,
 //                     out par11, out par12);
-//                 double d22 = LineSegment.MinDistBetweenLineSegments(pp.Point, pp.PrevOnPolyline.Point, start, end,
+//                 double d22 = LineSegment.MinDistBetweenLineSegments(pp.point, pp.PrevOnPolyline.point, start, end,
 //                     out par21, out par22);
 //                 Point r1, r2;
 //                 double dist;
 //                 if (d12 < d22) {
 //                     dist = d12;
 //                     if (dist > upperBound) continue;
-//                     r1 = pp.Point + (pp.NextOnPolyline.Point - pp.Point) * par11;
+//                     r1 = pp.point + (pp.NextOnPolyline.point - pp.point) * par11;
 //                     r2 = start + (end - start) * par12;
 //                 }
 //                 else {
 //                     dist = d22;
 //                     if (dist > upperBound) continue;
-//                     r1 = pp.Point + (pp.PrevOnPolyline.Point - pp.Point) * par21;
+//                     r1 = pp.point + (pp.PrevOnPolyline.point - pp.point) * par21;
 //                     r2 = start + (end - start) * par22;
 //                 }
 //                 //if (dist > upperBound) continue;
@@ -158,7 +158,7 @@
 //     internal static PointLocation PointLocationInsideTriangle(Point p, CdtTriangle triangle) {
 //         bool seenBoundary = false;
 //         for (int i = 0; i < 3; i++) {
-//             var area = Point.SignedDoubledTriangleArea(p, triangle.Sites[i].Point, triangle.Sites[i + 1].Point);
+//             var area = Point.SignedDoubledTriangleArea(p, triangle.Sites[i].point, triangle.Sites[i + 1].point);
 //             if (area < -GeomConstants.distanceEpsilon)
 //                 return PointLocation.Outside;
 //             if (area < GeomConstants.distanceEpsilon)
@@ -170,7 +170,7 @@
 
 //         static PolylinePoint FindPolylinePoint(Polyline poly, Point point) {
 //         foreach(var ppp of poly.PolylinePoints)
-//         if (ppp.Point == point)
+//         if (ppp.point == point)
 //             return ppp;
 
 //         throw new NotSupportedException();

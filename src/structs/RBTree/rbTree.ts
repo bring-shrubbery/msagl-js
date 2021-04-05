@@ -2,7 +2,6 @@ import { RBNode } from './rbNode'
 import { RBColor } from './rbColor'
 import { Assert } from './../../utils/assert'
 
-//later will extend Iterable<T>
 export class RBTree<T> {
   readonly comparer: (a: T, b: T) => number
   private count: number
@@ -10,6 +9,9 @@ export class RBTree<T> {
   private root: RBNode<T>
   private nil: RBNode<T>
 
+  [Symbol.iterator](): IterableIterator<T> {
+    return this.allNodes()
+  }
   constructor(comparer: (a: T, b: T) => number) {
     this.comparer = comparer
     this.count = 0
@@ -70,7 +72,7 @@ export class RBTree<T> {
     return this.toNull(x)
   }
 
-  next(x: RBNode<T>): RBNode<T> {
+  nextR(x: RBNode<T>): RBNode<T> {
     if (x.right != this.nil) return this.treeMinimum(x.right)
     let y: RBNode<T> = x.parent
     while (y != this.nil && x == y.right) {
@@ -292,7 +294,7 @@ export class RBTree<T> {
     let c: RBNode<T> = this.treeMinimum()
     while (c != null) {
       yield c.item
-      c = this.next(c)
+      c = this.nextR(c)
     }
     return
   }

@@ -118,10 +118,10 @@
 
 //             foreach(PolylinePoint side of stem.Sides) {
 //                 PolylinePoint source = side;
-//                 if (source.Point.Y < q.Y) {
-//                     if (side.NextOnPolyline.Point.Y >= q.Y) {
-//                         TriangleOrientation orientation = Point.GetTriangleOrientation(q, source.Point,
-//                             side.NextOnPolyline.Point);
+//                 if (source.point.Y < q.Y) {
+//                     if (side.NextOnPolyline.point.Y >= q.Y) {
+//                         TriangleOrientation orientation = Point.getTriangleOrientation(q, source.point,
+//                             side.NextOnPolyline.point);
 //                         if (orientation == TriangleOrientation.Counterclockwise ||
 //                             orientation == TriangleOrientation.Collinear) {
 //                             crosses = true;
@@ -133,9 +133,9 @@
 //                             break;
 //                         }
 //                     }
-//                 } else if (source.Point.Y > q.Y)
+//                 } else if (source.point.Y > q.Y)
 //                     break;
-//                 else if (side.Point.X >= q.X) {
+//                 else if (side.point.X >= q.X) {
 //                     //we have pp.Y==q.Y
 //                     crosses = true;
 //                     //we need to add one or two stems here
@@ -162,11 +162,11 @@
 //     //private Polyline GetPolylineBetweenPolyPointsTest(Polyline hole, PolylinePoint p0, PolylinePoint p1) {
 //     //    Polyline ret = new Polyline();
 //     //    while (p0 != p1) {
-//     //        ret.AddPoint(p0.Point);
+//     //        ret.AddPoint(p0.point);
 //     //        p0 = hole.next(p0);
 //     //    }
 
-//     //    ret.AddPoint(p1.Point);
+//     //    ret.AddPoint(p1.point);
 //     //    return ret;
 //     //}
 
@@ -208,14 +208,14 @@
 //         PolylinePoint outSide = GetOutgoingSide(v);
 
 //         //if (inEdge != null && outEdge != null)
-//         //    SugiyamaLayoutSettings.Show(new LineSegment(inEdge.Start.Point, inEdge.End.Point), new LineSegment(outEdge.Start.Point,
-//         //        outEdge.End.Point), new LineSegment(this.q, v.Point));
+//         //    SugiyamaLayoutSettings.Show(new LineSegment(inEdge.Start.point, inEdge.End.point), new LineSegment(outEdge.Start.point,
+//         //        outEdge.End.point), new LineSegment(this.q, v.point));
 //         //else if (inEdge != null)
-//         //    SugiyamaLayoutSettings.Show(new LineSegment(inEdge.Start.Point, inEdge.End.Point), new LineSegment(this.q, v.Point));
+//         //    SugiyamaLayoutSettings.Show(new LineSegment(inEdge.Start.point, inEdge.End.point), new LineSegment(this.q, v.point));
 //         //else if (outEdge != null)
-//         //    SugiyamaLayoutSettings.Show(new LineSegment(outEdge.Start.Point, outEdge.End.Point), new LineSegment(this.q, v.Point));
+//         //    SugiyamaLayoutSettings.Show(new LineSegment(outEdge.Start.point, outEdge.End.point), new LineSegment(this.q, v.point));
 
-//         activeEdgeComparer.IntersectionOfTheRayAndInsertedEdge = v.Point;
+//         activeEdgeComparer.IntersectionOfTheRayAndInsertedEdge = v.point;
 //         RBNode < PolylinePoint > node;
 //         if (sideNodes.TryGetValue(inSide, out node) && node != null) {
 //             //we have an active edge
@@ -242,7 +242,7 @@
 //                         AddEdge(v);
 //                 }
 //             } else
-//                 throw new InvalidOperationException();
+//                 throw new Error();
 
 //         // CheckActiveSidesAreConsistent();
 //     }
@@ -250,16 +250,16 @@
 //     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //     void AddEdge(PolylinePoint v) {
 //         if (visibilityKind == VisibilityKind.Regular ||
-//             (visibilityKind == VisibilityKind.Tangent && LineTouchesPolygon(QVertex.Point, v))) {
-//             visibilityGraph.addEdge(QVertex.Point, v.Point, ((a, b) => new TollFreeVisibilityEdge(a, b)));
+//             (visibilityKind == VisibilityKind.Tangent && LineTouchesPolygon(QVertex.point, v))) {
+//             visibilityGraph.addEdge(QVertex.point, v.point, ((a, b) => new TollFreeVisibilityEdge(a, b)));
 //         }
 //     }
 
 //     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //         static bool LineTouchesPolygon(Point a, PolylinePoint p) {
-//         Point prev = p.Polyline.Prev(p).Point;
-//         Point next = p.Polyline.next(p).Point;
-//         Point v = p.Point;
+//         Point prev = p.Polyline.Prev(p).point;
+//         Point next = p.Polyline.next(p).point;
+//         Point v = p.point;
 //         return Point.SignedDoubledTriangleArea(a, v, prev) * Point.SignedDoubledTriangleArea(a, v, next) >= 0;
 //     }
 
@@ -273,7 +273,7 @@
 //         l.Add(new LineSegment(pe.SourcePoint, pe.TargetPoint));
 
 //         foreach(PolylinePoint pe of activeSidesTree)
-//         l.Add(new LineSegment(pe.Point, pe.NextOnPolyline.Point));
+//         l.Add(new LineSegment(pe.point, pe.NextOnPolyline.point));
 //         l.Add(new Ellipse(0.1, 0.1, q));
 
 //         LayoutAlgorithmSettings.Show(l.ToArray());
@@ -336,7 +336,7 @@
 
 //     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //     bool HoleSideIsVisibleFromQ(Polyline hole, PolylinePoint b) {
-//         return Point.SignedDoubledTriangleArea(q, b.Point, hole.next(b).Point) >= -ApproximateComparer.SquareOfDistanceEpsilon;
+//         return Point.SignedDoubledTriangleArea(q, b.point, hole.next(b).point) >= -ApproximateComparer.SquareOfDistanceEpsilon;
 //     }
 // }
 // }

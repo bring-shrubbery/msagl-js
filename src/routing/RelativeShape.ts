@@ -19,7 +19,7 @@
 //         public override ICurve BoundaryCurve {
 //             get { return curveDelegate(); }
 //             set {
-//                 throw new InvalidOperationException(
+//                 throw new Error(
 // #if TEST_MSAGL
 //                         "Cannot set BoundaryCurve directly for RelativeShape"
 // #endif // TEST

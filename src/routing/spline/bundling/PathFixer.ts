@@ -38,9 +38,9 @@
 //         var splittingPoints = new Dictionary<PointPair, List<Point>>();
 //         var treeOfVertices = new RTree<Point, P>();
 //         foreach(var vertex of Vertices()) {
-//             var r = new Rectangle(vertex.Point);
+//             var r = new Rectangle(vertex.point);
 //             r.Pad(ApproximateComparer.IntersectionEpsilon);
-//             treeOfVertices.Add(r, vertex.Point);
+//             treeOfVertices.Add(r, vertex.point);
 //         }
 
 //         var treeOfEdges = RectangleNode<PointPair, Point>.CreateRectangleNodeOnData(Edges(), e => new Rectangle(e.First, e.Second));
@@ -92,7 +92,7 @@
 
 //     bool InsertPointsOnPolypoint(PolylinePoint pp, Dictionary < PointPair, List < Point >> splittingPoints, Metroline metroline) {
 //         var pointPair = FlipCollapser.OrderedPair(pp);
-//         var reversed = pp.Point != pointPair.First;
+//         var reversed = pp.point != pointPair.First;
 //         List < Point > list;
 //         if (!splittingPoints.TryGetValue(pointPair, out list))
 //             return false;
@@ -130,19 +130,19 @@
 //         bool progress = false;
 //         Dictionary < Point, PolylinePoint > pointsToPp = new Dictionary<Point, PolylinePoint>();
 //         for (var pp = poly.startPoint; pp != null; pp = pp.next) {
-//             var point = pp.Point;
+//             var point = pp.point;
 //             PolylinePoint previous;
 
 //             if (pointsToPp.TryGetValue(point, out previous)) {//we have a cycle
 //                 for (var px = previous.next; px != pp.next; px = px.next) {
-//                     pointsToPp.Remove(px.Point);
+//                     pointsToPp.Remove(px.point);
 //                 }
 //                 previous.next = pp.next;
 //                 pp.next.Prev = previous;
 //                 progress = true;
 //             }
 //             else
-//                 pointsToPp[pp.Point] = pp;
+//                 pointsToPp[pp.point] = pp;
 //         }
 //         return progress;
 //     }
@@ -174,7 +174,7 @@
 //     bool RemoveUnimportantCrossingsFromPolyline(Polyline polyline) {
 //         bool removed = false;
 //         for (var p = polyline.startPoint.next; p != null && p.next != null; p = p.next)
-//             if (pointsToDelete.Contains(p.Point) && Point.GetTriangleOrientation(p.Prev.Point, p.Point, p.next.Point) == TriangleOrientation.Collinear) {
+//             if (pointsToDelete.Contains(p.point) && Point.getTriangleOrientation(p.Prev.point, p.point, p.next.point) == TriangleOrientation.Collinear) {
 //                 //forget p
 //                 var pp = p.Prev;
 //                 var pn = p.next;

@@ -19,7 +19,7 @@
 //         ValidateArg.IsNotNull(y, "y");
 //         Assert.assert(BelongsToTheDiagonal(PointOnTangentAndInsertedDiagonal, x.Start, x.End));
 //         if (x.Start != y.Start)
-//             switch (Point.GetTriangleOrientation(PointOnTangentAndInsertedDiagonal, y.Start, y.End)) {
+//             switch (Point.getTriangleOrientation(PointOnTangentAndInsertedDiagonal, y.Start, y.End)) {
 //                 case TriangleOrientation.Counterclockwise:
 //                     return -1;
 //                 default:

@@ -68,11 +68,11 @@
 //             PerimeterEdge b;
 //             do {
 //                 b = a.next;
-//                 if (Point.GetTriangleOrientationWithNoEpsilon(a.Start.Point, a.End.Point, b.End.Point) == TriangleOrientation.Counterclockwise) {
+//                 if (Point.GetTriangleOrientationWithNoEpsilon(a.Start.point, a.End.point, b.End.point) == TriangleOrientation.Counterclockwise) {
 //                     a = ShortcutTwoListElements(a);
 //                     while (a.Start != firstSite) {
 //                         var c = a.Prev;
-//                         if (Point.GetTriangleOrientationWithNoEpsilon(c.Start.Point, c.End.Point, a.End.Point) == TriangleOrientation.Counterclockwise) {
+//                         if (Point.GetTriangleOrientationWithNoEpsilon(c.Start.point, c.End.point, a.End.point) == TriangleOrientation.Counterclockwise) {
 //                             a = ShortcutTwoListElements(c);
 //                         } else break;
 //                     }
@@ -86,8 +86,8 @@
 //             var e = firstPerimeterEdge;
 //             do {
 //                 e = e.next;
-//                 if (e.Start.Point.X < pivot.Start.Point.X ||
-//                     e.Start.Point.X == pivot.Start.Point.X && e.Start.Point.Y < pivot.Start.Point.Y)
+//                 if (e.Start.point.X < pivot.Start.point.X ||
+//                     e.Start.point.X == pivot.Start.point.X && e.Start.point.Y < pivot.Start.point.Y)
 //                     pivot = e;
 //             } while (e != firstPerimeterEdge);
 //             return pivot;
@@ -206,14 +206,14 @@
 
 //             if (site.Edges != null)
 //                 foreach(var e of site.Edges)
-//             ls.Add(new DebugCurve(100, 0.001, e.Constrained ? "pink" : "brown", new LineSegment(e.upperSite.Point, e.lowerSite.Point)));
+//             ls.Add(new DebugCurve(100, 0.001, e.Constrained ? "pink" : "brown", new LineSegment(e.upperSite.point, e.lowerSite.point)));
 
-//             ls.Add(new DebugCurve(100, 0.01, "brown", new Ellipse(0.5, 0.5, site.Point)));
+//             ls.Add(new DebugCurve(100, 0.01, "brown", new Ellipse(0.5, 0.5, site.point)));
 
 //             foreach(var t of Triangles) {
 //                 for (int i = 0; i < 3; i++) {
 //                     var e = t.Edges[i];
-//                     ls.Add(new DebugCurve(e.Constrained ? (byte)150: (byte)50, e.Constrained ? 0.002 : 0.001, e.Constrained ? "pink" : "navy", new LineSegment(e.upperSite.Point, e.lowerSite.Point)));
+//                     ls.Add(new DebugCurve(e.Constrained ? (byte)150: (byte)50, e.Constrained ? 0.002 : 0.001, e.Constrained ? "pink" : "navy", new LineSegment(e.upperSite.point, e.lowerSite.point)));
 //                 }
 //             }
 
@@ -222,8 +222,8 @@
 
 //             foreach(var frontElement of front)
 //             ls.Add(new DebugCurve(100, 0.005, "green",
-//                 new LineSegment(frontElement.Edge.upperSite.Point,
-//                     frontElement.Edge.lowerSite.Point)));
+//                 new LineSegment(frontElement.Edge.upperSite.point,
+//                     frontElement.Edge.lowerSite.point)));
 //             LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(ls);
 //         }
 //         void ShowFront() {
@@ -242,8 +242,8 @@
 //             if (cdtFrontElements != null)
 //                 foreach(var frontElement of cdtFrontElements)
 //             ls.Add(new DebugCurve(100, 0.001, "green",
-//                 new LineSegment(frontElement.Edge.upperSite.Point,
-//                     frontElement.Edge.lowerSite.Point)));
+//                 new LineSegment(frontElement.Edge.upperSite.point,
+//                     frontElement.Edge.lowerSite.point)));
 //             foreach(var t of cdtTriangles) {
 //                 for (int i = 0; i < 3; i++) {
 //                     var e = t.Edges[i];
@@ -255,8 +255,8 @@
 
 //       static DebugCurve GetDebugCurveOfCdtEdge(CdtEdge e) {
 //             if (e.CcwTriangle == null || e.CwTriangle == null)
-//                 return new DebugCurve(255, 4, e.Constrained ? "brown" : "blue", new LineSegment(e.upperSite.Point, e.lowerSite.Point));
-//             return new DebugCurve(100, e.Constrained ? 0.002 : 0.001, e.Constrained ? "pink" : "navy", new LineSegment(e.upperSite.Point, e.lowerSite.Point));
+//                 return new DebugCurve(255, 4, e.Constrained ? "brown" : "blue", new LineSegment(e.upperSite.point, e.lowerSite.point));
+//             return new DebugCurve(100, e.Constrained ? 0.002 : 0.001, e.Constrained ? "pink" : "navy", new LineSegment(e.upperSite.point, e.lowerSite.point));
 //         }
 // #endif
 //         //        int count;
@@ -266,7 +266,7 @@
 
 //             ProjectToFront(pi, out hittedFrontElementNode);
 //             CdtSite rightSite;
-//             CdtSite leftSite = hittedFrontElementNode.Item.X + GeomConstants.distanceEpsilon < pi.Point.X
+//             CdtSite leftSite = hittedFrontElementNode.Item.X + GeomConstants.distanceEpsilon < pi.point.X
 //                 ? MiddleCase(pi, hittedFrontElementNode, out rightSite)
 //                 : LeftCase(pi, hittedFrontElementNode, out rightSite);
 //             var piNode = InsertSiteIntoFront(leftSite, pi, rightSite);
@@ -291,9 +291,9 @@
 //                 if (!tsites.Contains(site)) {
 //                     if (!SeparatedByConstrainedEdge(triangle, site) && InCircle(site, tsites[0], tsites[1], tsites[2])) {
 //                         List < ICurve > redCurves=new List<ICurve>();
-//                         redCurves.Add(new Ellipse(2, 2, site.Point));
+//                         redCurves.Add(new Ellipse(2, 2, site.point));
 //                         List < ICurve > blueCurves = new List<ICurve>();
-//                         blueCurves.Add(Circumcircle(tsites[0].Point, tsites[1].Point, tsites[2].Point));
+//                         blueCurves.Add(Circumcircle(tsites[0].point, tsites[1].point, tsites[2].point));
 //                         ShowFront(Triangles, front, redCurves, blueCurves);
 //                     }
 //                 }
@@ -310,21 +310,21 @@
 //         static bool SeparatedByEdge(CdtTriangle triangle, int i, CdtSite site) {
 //             var e = triangle.Edges[i];
 //             var s = triangle.Sites[i + 2];
-//             var a0 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(s.Point, e.upperSite.Point, e.lowerSite.Point));
-//             var a1 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(site.Point, e.upperSite.Point, e.lowerSite.Point));
+//             var a0 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(s.point, e.upperSite.point, e.lowerSite.point));
+//             var a1 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(site.point, e.upperSite.point, e.lowerSite.point));
 //             return a0 * a1 <= 0;
 //         }
 // #endif
 //         CdtSite LeftCase(CdtSite pi, RBNode < CdtFrontElement > hittedFrontElementNode, out CdtSite rightSite) {
 //             //left case
-//             //                if(db)ShowFrontWithSite(pi, new LineSegment(pi.Point, hittedFrontElementNode.Item.Edge.upperSite.Point), new LineSegment(pi.Point, hittedFrontElementNode.Item.Edge.lowerSite.Point));
-//             Assert.assert(ApproximateComparer.Close(pi.Point.X, hittedFrontElementNode.Item.X));
+//             //                if(db)ShowFrontWithSite(pi, new LineSegment(pi.point, hittedFrontElementNode.Item.Edge.upperSite.point), new LineSegment(pi.point, hittedFrontElementNode.Item.Edge.lowerSite.point));
+//             Assert.assert(ApproximateComparer.Close(pi.point.X, hittedFrontElementNode.Item.X));
 //             var hittedFrontElement = hittedFrontElementNode.Item;
 //             InsertAndLegalizeTriangle(pi, hittedFrontElement);
 //             var prevToHitted = front.Previous(hittedFrontElementNode);
 //             var leftSite = prevToHitted.Item.LeftSite;
 //             rightSite = hittedFrontElementNode.Item.RightSite;
-//             //                if(db)ShowFrontWithSite(pi, new LineSegment(pi.Point, leftSite.Point), new LineSegment(pi.Point, prevToHitted.Item.RightSite.Point));
+//             //                if(db)ShowFrontWithSite(pi, new LineSegment(pi.point, leftSite.point), new LineSegment(pi.point, prevToHitted.Item.RightSite.point));
 //             InsertAndLegalizeTriangle(pi, prevToHitted.Item);
 //             front.DeleteNodeInternal(prevToHitted);
 //             var d = front.Remove(hittedFrontElement);
@@ -334,7 +334,7 @@
 
 //         CdtSite MiddleCase(CdtSite pi, RBNode < CdtFrontElement > hittedFrontElementNode, out CdtSite rightSite) {
 //             //            if(db)
-//             //                ShowFrontWithSite(pi, new LineSegment(pi.Point, hittedFrontElementNode.Item.Edge.upperSite.Point), new LineSegment(pi.Point, hittedFrontElementNode.Item.Edge.lowerSite.Point));
+//             //                ShowFrontWithSite(pi, new LineSegment(pi.point, hittedFrontElementNode.Item.Edge.upperSite.point), new LineSegment(pi.point, hittedFrontElementNode.Item.Edge.lowerSite.point));
 //             var leftSite = hittedFrontElementNode.Item.LeftSite;
 //             rightSite = hittedFrontElementNode.Item.RightSite;
 //             InsertAndLegalizeTriangle(pi, hittedFrontElementNode.Item);
@@ -350,7 +350,7 @@
 //                 var prevElement = previousNode.Item;
 //                 var rp = prevElement.LeftSite;
 //                 var r = prevElement.RightSite;
-//                 if ((r.Point - peakSite.Point) * (rp.Point - r.Point) < 0) {
+//                 if ((r.point - peakSite.point) * (rp.point - r.point) < 0) {
 //                     //see figures 9(a) and 9(b) of the paper
 //                     leftLegNode = ShortcutTwoFrontElements(previousNode, leftLegNode);
 //                     previousNode = front.Previous(leftLegNode);
@@ -415,16 +415,16 @@
 //                 var prev = front.Previous(leftLegNode);
 //                 if (prev == null)
 //                     return;
-//                 if (Point.GetTriangleOrientationWithNoEpsilon(prev.Item.LeftSite.Point, leftLegNode.Item.LeftSite.Point, leftLegNode.Item.RightSite.Point) ==
+//                 if (Point.GetTriangleOrientationWithNoEpsilon(prev.Item.LeftSite.point, leftLegNode.Item.LeftSite.point, leftLegNode.Item.RightSite.point) ==
 //                     TriangleOrientation.Counterclockwise) {
 //                     stack.Push(prev.Item.LeftSite);
 //                     ShortcutTwoFrontElements(prev, leftLegNode);
 //                     //      ShowFrontWithSite(site);
 //                 } else {
-//                     if (leftLegNode.Item.LeftSite.Point.Y > leftLegNode.Item.RightSite.Point.Y) {
+//                     if (leftLegNode.Item.LeftSite.point.Y > leftLegNode.Item.RightSite.point.Y) {
 //                         stack.Push(prev.Item.LeftSite);
 //                     } else {
-//                         if (prev.Item.LeftSite.Point.Y <= prev.Item.RightSite.Point.Y)
+//                         if (prev.Item.LeftSite.point.Y <= prev.Item.RightSite.point.Y)
 //                             return;
 //                         stack.Push(prev.Item.LeftSite);
 //                     }
@@ -436,7 +436,7 @@
 //             var edge = frontElement.Edge;
 //             if (frontElement.RightSite != edge.upperSite)
 //                 return false;
-//             var d = edge.lowerSite.Point - edge.upperSite.Point;
+//             var d = edge.lowerSite.point - edge.upperSite.point;
 //             Assert.assert(d.X < 0 && d.Y <= 0);
 //             return d.X >= 0.5 * d.Y;
 //         }
@@ -457,13 +457,13 @@
 
 //         void TriangulateEmptySpaceToTheRight(RBNode < CdtFrontElement > piNode) {
 //             var piSite = piNode.Item.LeftSite;
-//             var piPoint = piSite.Point;
+//             var piPoint = piSite.point;
 //             var piNext = front.next(piNode);
 //             while (piNext != null) {
 //                 var frontElem = piNext.Item;
 //                 var r = frontElem.LeftSite;
 //                 var rp = frontElem.RightSite;
-//                 if ((r.Point - piPoint) * (rp.Point - r.Point) < 0) {
+//                 if ((r.point - piPoint) * (rp.point - r.point) < 0) {
 //                     //see figures 9(a) and 9(b) of the paper
 //                     piNode = ShortcutTwoFrontElements(piNode, piNext);
 //                     piNext = front.next(piNode);
@@ -486,14 +486,14 @@
 //                 var next = front.next(piNode);
 //                 if (next == null)
 //                     return;
-//                 if (Point.GetTriangleOrientationWithNoEpsilon(piNode.Item.LeftSite.Point, piNode.Item.RightSite.Point, next.Item.RightSite.Point) == TriangleOrientation.Counterclockwise) {
+//                 if (Point.GetTriangleOrientationWithNoEpsilon(piNode.Item.LeftSite.point, piNode.Item.RightSite.point, next.Item.RightSite.point) == TriangleOrientation.Counterclockwise) {
 //                     ShortcutTwoFrontElements(piNode, next);
 //                     stack.Push(site);
 //                 } else {
-//                     if (piNode.Item.LeftSite.Point.Y > piNode.Item.RightSite.Point.Y) {
+//                     if (piNode.Item.LeftSite.point.Y > piNode.Item.RightSite.point.Y) {
 //                         stack.Push(piNode.Item.RightSite);
 //                     } else {
-//                         if (next.Item.LeftSite.Point.Y >= next.Item.RightSite.Point.Y)
+//                         if (next.Item.LeftSite.point.Y >= next.Item.RightSite.point.Y)
 //                             return;
 //                         stack.Push(piNode.Item.RightSite);
 //                     }
@@ -505,17 +505,17 @@
 //             var edge = frontElement.Edge;
 //             if (frontElement.LeftSite != edge.upperSite)
 //                 return false;
-//             var d = edge.lowerSite.Point - edge.upperSite.Point;
+//             var d = edge.lowerSite.point - edge.upperSite.point;
 //             Assert.assert(d.X > 0 && d.Y <= 0);
 //             return d.X <= -0.5 * d.Y;
 //         }
 
 //         internal static RBNode < CdtFrontElement > FindNodeInFrontBySite(RbTree < CdtFrontElement > cdtFrontElements, CdtSite piSite) {
-//             return cdtFrontElements.FindLast(x => x.LeftSite.Point.X <= piSite.Point.X);
+//             return cdtFrontElements.FindLast(x => x.LeftSite.point.X <= piSite.point.X);
 //         }
 
 //         void InsertAndLegalizeTriangle(CdtSite pi, CdtFrontElement frontElement) {
-//             if (Point.GetTriangleOrientationWithNoEpsilon(pi.Point, frontElement.LeftSite.Point, frontElement.RightSite.Point) != TriangleOrientation.Collinear) {
+//             if (Point.GetTriangleOrientationWithNoEpsilon(pi.point, frontElement.LeftSite.point, frontElement.RightSite.point) != TriangleOrientation.Collinear) {
 //                 var tr = new CdtTriangle(pi, frontElement.Edge, createEdgeDelegate);
 //                 Triangles.Insert(tr);
 //                 LegalizeEdge(pi, tr.Edges[0]);
@@ -557,12 +557,12 @@
 // #if TEST_MSAGL && TEST_MSAGL
 //         List < DebugCurve > ShowIllegalEdge(CdtEdge edge, CdtSite pi, int i) {
 //             List < DebugCurve > ls = new List<DebugCurve>();
-//             ls.Add(new DebugCurve(new Ellipse(2, 2, pi.Point)));
+//             ls.Add(new DebugCurve(new Ellipse(2, 2, pi.point)));
 //             for (int j = 0; j < 3; j++) {
 //                 var ee = edge.CcwTriangle.Edges[j];
-//                 ls.Add(new DebugCurve(j == i ? "red" : "blue", new LineSegment(ee.upperSite.Point, ee.lowerSite.Point)));
+//                 ls.Add(new DebugCurve(j == i ? "red" : "blue", new LineSegment(ee.upperSite.point, ee.lowerSite.point)));
 //             }
-//             ls.Add(new DebugCurve(100, 1, "black", Circumcircle(edge.CcwTriangle.Sites[0].Point, edge.CcwTriangle.Sites[1].Point, edge.CcwTriangle.Sites[2].Point)));
+//             ls.Add(new DebugCurve(100, 1, "black", Circumcircle(edge.CcwTriangle.Sites[0].point, edge.CcwTriangle.Sites[1].point, edge.CcwTriangle.Sites[2].point)));
 //             LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(ls);
 //             return ls;
 //         }
@@ -582,13 +582,13 @@
 //             //            if (i == -1)
 //             //            {
 //             //                List<DebugCurve> ls = new List<DebugCurve>();
-//             //                ls.Add(new DebugCurve(new Ellipse(2, 2, pi.Point)));
+//             //                ls.Add(new DebugCurve(new Ellipse(2, 2, pi.point)));
 //             //                for (int j = 0; j < 3; j++)
 //             //                {
 //             //                    var ee = edge.CwTriangle.Edges[j];
-//             //                    ls.Add(new DebugCurve(100,1, j == i ? "red" : "blue", new LineSegment(ee.upperSite.Point, ee.lowerSite.Point)));
+//             //                    ls.Add(new DebugCurve(100,1, j == i ? "red" : "blue", new LineSegment(ee.upperSite.point, ee.lowerSite.point)));
 //             //                }
-//             //                ls.Add(new DebugCurve("purple", new LineSegment(edge.upperSite.Point, edge.lowerSite.Point)));
+//             //                ls.Add(new DebugCurve("purple", new LineSegment(edge.upperSite.point, edge.lowerSite.point)));
 //             //
 //             //                LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(ls);
 //             //            }
@@ -604,10 +604,10 @@
 // #if TEST_MSAGL && TEST_MSAGL
 //         void ShowIllegalEdge(CdtEdge edge, int i, CdtSite pi) {
 //             List < DebugCurve > ls=new List<DebugCurve>();
-//             ls.Add(new DebugCurve(new Ellipse(2, 2, pi.Point)));
+//             ls.Add(new DebugCurve(new Ellipse(2, 2, pi.point)));
 //             for (int j = 0; j < 3; j++) {
 //                 var ee = edge.CwTriangle.Edges[j];
-//                 ls.Add(new DebugCurve(j == i ? "red" : "blue", new LineSegment(ee.upperSite.Point, ee.lowerSite.Point)));
+//                 ls.Add(new DebugCurve(j == i ? "red" : "blue", new LineSegment(ee.upperSite.point, ee.lowerSite.point)));
 //             }
 //             LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(ls);
 //         }
@@ -628,18 +628,18 @@
 //         // <param name="c"></param>
 //         // <returns></returns>
 //         public static bool InCircle(CdtSite d, CdtSite a, CdtSite b, CdtSite c) {
-//             Assert.assert(Point.GetTriangleOrientationWithNoEpsilon(a.Point, b.Point, c.Point) == TriangleOrientation.Counterclockwise);
+//             Assert.assert(Point.GetTriangleOrientationWithNoEpsilon(a.point, b.point, c.point) == TriangleOrientation.Counterclockwise);
 //             /*
 //              *  | ax-dx ay-dy (ax-dx)^2+(ay-dy)^2|
 //              *  | bx-dx by-dy (bx-dx)^2+(by-dy)^2|
 //              *  | cx-dx cy-dy (cx-dx)^2+(cy-dy)^2|
 //              */
-//             var axdx = a.Point.X - d.Point.X;
-//             var aydy = a.Point.Y - d.Point.Y;
-//             var bxdx = b.Point.X - d.Point.X;
-//             var bydy = b.Point.Y - d.Point.Y;
-//             var cxdx = c.Point.X - d.Point.X;
-//             var cydy = c.Point.Y - d.Point.Y;
+//             var axdx = a.point.X - d.point.X;
+//             var aydy = a.point.Y - d.point.Y;
+//             var bxdx = b.point.X - d.point.X;
+//             var bydy = b.point.Y - d.point.Y;
+//             var cxdx = c.point.X - d.point.X;
+//             var cydy = c.point.Y - d.point.Y;
 //             var t0 = axdx * axdx + aydy * aydy;
 //             var t1 = bxdx * bxdx + bydy * bydy;
 //             var t2 = cxdx * cxdx + cydy * cydy;
@@ -654,10 +654,10 @@
 //         // <param name="b">the apex</param>
 //         // <param name="c">point on the right side of the cone</param>
 //         static bool InCone(CdtSite pi, CdtSite a, CdtSite b, CdtSite c) {
-//             Assert.assert(Point.GetTriangleOrientationWithNoEpsilon(a.Point, b.Point, c.Point) == TriangleOrientation.Counterclockwise);
+//             Assert.assert(Point.GetTriangleOrientationWithNoEpsilon(a.point, b.point, c.point) == TriangleOrientation.Counterclockwise);
 
-//             return Point.GetTriangleOrientationWithNoEpsilon(a.Point, pi.Point, b.Point) == TriangleOrientation.Clockwise &&
-//                 Point.GetTriangleOrientationWithNoEpsilon(b.Point, pi.Point, c.Point) == TriangleOrientation.Clockwise;
+//             return Point.GetTriangleOrientationWithNoEpsilon(a.point, pi.point, b.point) == TriangleOrientation.Clockwise &&
+//                 Point.GetTriangleOrientationWithNoEpsilon(b.point, pi.point, c.point) == TriangleOrientation.Clockwise;
 //         }
 
 //         static CdtEdge Flip(CdtSite pi, CdtEdge edge) {
@@ -716,23 +716,23 @@
 // #if TEST_MSAGL && TEST_MSAGL
 //         static void ShowFlip(CdtSite pi, CdtTriangle t, CdtTriangle ot) {
 //             List < DebugCurve > ls=new List<DebugCurve>();
-//             ls.Add(new DebugCurve(new Ellipse(2, 2, pi.Point)));
+//             ls.Add(new DebugCurve(new Ellipse(2, 2, pi.point)));
 //             for (int i = 0; i < 3; i++) {
 //                 var e = t.Edges[i];
-//                 ls.Add(new DebugCurve(100, 1, "red", new LineSegment(e.upperSite.Point, e.lowerSite.Point)));
+//                 ls.Add(new DebugCurve(100, 1, "red", new LineSegment(e.upperSite.point, e.lowerSite.point)));
 //             }
 //             for (int i = 0; i < 3; i++)
 //             {
 //                 var e = ot.Edges[i];
-//                 ls.Add(new DebugCurve(100, 1, "blue", new LineSegment(e.upperSite.Point, e.lowerSite.Point)));
+//                 ls.Add(new DebugCurve(100, 1, "blue", new LineSegment(e.upperSite.point, e.lowerSite.point)));
 //             }
-//             ls.Add(new DebugCurve(Circumcircle(t.Sites[0].Point, t.Sites[1].Point, t.Sites[2].Point)));
+//             ls.Add(new DebugCurve(Circumcircle(t.Sites[0].point, t.Sites[1].point, t.Sites[2].point)));
 //             LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(ls);
 //         }
 // #endif
 
 //         static bool CheckTriangle(CdtTriangle t) {
-//             if (Point.GetTriangleOrientationWithNoEpsilon(t.Sites[0].Point, t.Sites[1].Point, t.Sites[2].Point) != TriangleOrientation.Counterclockwise) {
+//             if (Point.GetTriangleOrientationWithNoEpsilon(t.Sites[0].point, t.Sites[1].point, t.Sites[2].point) != TriangleOrientation.Counterclockwise) {
 //                 return false;
 //             }
 //             for (int i = 0; i < 3; i++) {
@@ -752,7 +752,7 @@
 //         }
 
 //         void ProjectToFront(CdtSite site, out RBNode < CdtFrontElement > frontElement) {
-//             frontElement = front.FindLast(s => s.X <= site.Point.X);
+//             frontElement = front.FindLast(s => s.X <= site.point.X);
 //         }
 
 //     }

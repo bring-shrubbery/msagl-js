@@ -38,7 +38,7 @@
 //         var sign0 = GetHyperplaneSign(currentTriangle.Sites[0]);
 //         var sign1 = GetHyperplaneSign(currentTriangle.Sites[1]);
 //         if (sign0 != sign1) {
-//             if (Point.GetTriangleOrientation(end, currentTriangle.Sites[0].Point, currentTriangle.Sites[1].Point) == TriangleOrientation.Clockwise) {
+//             if (Point.getTriangleOrientation(end, currentTriangle.Sites[0].point, currentTriangle.Sites[1].point) == TriangleOrientation.Clockwise) {
 //                 positiveSign = sign0;
 //                 negativeSign = sign1;
 //                 return currentTriangle.Edges[0];
@@ -46,7 +46,7 @@
 //         }
 //         var sign2 = GetHyperplaneSign(currentTriangle.Sites[2]);
 //         if (sign1 != sign2) {
-//             if (Point.GetTriangleOrientation(end, currentTriangle.Sites[1].Point, currentTriangle.Sites[2].Point) == TriangleOrientation.Clockwise) {
+//             if (Point.getTriangleOrientation(end, currentTriangle.Sites[1].point, currentTriangle.Sites[2].point) == TriangleOrientation.Clockwise) {
 //                 positiveSign = sign1;
 //                 negativeSign = sign2;
 //                 return currentTriangle.Edges[1];
@@ -71,12 +71,12 @@
 //            var  l = new List<DebugCurve>();
 //             l.Add(new DebugCurve(0.05, "red", new LineSegment(start, end)));
 //             var piercedEdge = currentTriangle.Edges[2];
-//             l.Add(new DebugCurve(0.05, "blue", new LineSegment(piercedEdge.upperSite.Point, piercedEdge.lowerSite.Point)));
+//             l.Add(new DebugCurve(0.05, "blue", new LineSegment(piercedEdge.upperSite.point, piercedEdge.lowerSite.point)));
 //             l.Add(new DebugCurve(new Ellipse(3, 3, end)));
 
 //             var ii = currentTriangle.Edges.Index(piercedEdge);
 //             for (int j = ii + 1; j <= ii + 2; j++)
-//                 l.Add(new DebugCurve(0.05, "brown", new LineSegment(currentTriangle.Edges[j].upperSite.Point, currentTriangle.Edges[j].lowerSite.Point)));
+//                 l.Add(new DebugCurve(0.05, "brown", new LineSegment(currentTriangle.Edges[j].upperSite.point, currentTriangle.Edges[j].lowerSite.point)));
 //             LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(l);
 //         }*/
 //         Assert.assert(positiveSign > negativeSign);
@@ -86,7 +86,7 @@
 //     internal static PointLocation PointLocationForTriangle(Point p, CdtTriangle triangle) {
 //         bool seenBoundary = false;
 //         for (int i = 0; i < 3; i++) {
-//             var area = Point.SignedDoubledTriangleArea(p, triangle.Sites[i].Point, triangle.Sites[i + 1].Point);
+//             var area = Point.SignedDoubledTriangleArea(p, triangle.Sites[i].point, triangle.Sites[i + 1].point);
 //             if (area < -GeomConstants.distanceEpsilon)
 //                 return PointLocation.Outside;
 //             if (area < GeomConstants.distanceEpsilon)
@@ -102,12 +102,12 @@
 //         if (db) {
 //             l = new List<DebugCurve>();
 //             l.Add(new DebugCurve(0.05, "red", new LineSegment(start, end)));
-//             l.Add(new DebugCurve(0.05, "blue", new LineSegment(piercedEdge.upperSite.Point, piercedEdge.lowerSite.Point)));
+//             l.Add(new DebugCurve(0.05, "blue", new LineSegment(piercedEdge.upperSite.point, piercedEdge.lowerSite.point)));
 //             l.Add(new DebugCurve(new Ellipse(3, 3, end)));
 
 //             var ii = currentTriangle.Edges.Index(piercedEdge);
 //             for (int j = ii + 1; j <= ii + 2; j++)
-//                 l.Add(new DebugCurve(0.05, "brown", new LineSegment(currentTriangle.Edges[j].upperSite.Point, currentTriangle.Edges[j].lowerSite.Point)));
+//                 l.Add(new DebugCurve(0.05, "brown", new LineSegment(currentTriangle.Edges[j].upperSite.point, currentTriangle.Edges[j].lowerSite.point)));
 //         }*/
 //         currentTriangle = currentPiercedEdge.GetOtherTriangle(currentTriangle);
 //         //            ShowDebug(null,currentPiercedEdge,currentTriangle);
@@ -115,7 +115,7 @@
 //              for (int j = 0; j <= 2; j++) {
 //                  var piercedEdge = currentTriangle.Edges[j];
 //                  if (piercedEdge == piercedEdge) continue;
-//                  l.Add(new DebugCurve(0.05, new LineSegment(piercedEdge.upperSite.Point, piercedEdge.lowerSite.Point)));
+//                  l.Add(new DebugCurve(0.05, new LineSegment(piercedEdge.upperSite.point, piercedEdge.lowerSite.point)));
 //              }
 
 //              LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(l.ToArray());
@@ -159,7 +159,7 @@
 //         }
 
 //         currentPiercedEdge =
-//             Point.SignedDoubledTriangleArea(end, currentTriangle.Sites[j].Point, currentTriangle.Sites[j + 1].Point) <
+//             Point.SignedDoubledTriangleArea(end, currentTriangle.Sites[j].point, currentTriangle.Sites[j + 1].point) <
 //                 - GeomConstants.distanceEpsilon
 //                 ? currentTriangle.Edges[j]
 //                 : null;
@@ -171,19 +171,19 @@
 //     //        void ShowDebug(IEnumerable<CdtTriangle> cdtTriangles, CdtEdge cdtEdge, CdtTriangle cdtTriangle) {
 //     //            var l = new List<DebugCurve> { new DebugCurve(10,"red",new LineSegment(start,end)) };
 //     //            if(cdtEdge!=null)
-//     //                l.Add(new DebugCurve(100,3,"navy", new LineSegment(cdtEdge.upperSite.Point,cdtEdge.lowerSite.Point)));
+//     //                l.Add(new DebugCurve(100,3,"navy", new LineSegment(cdtEdge.upperSite.point,cdtEdge.lowerSite.point)));
 //     //            AddTriangleToListOfDebugCurves(l,cdtTriangle,100,2,"brown");
 //     //            LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(l);
 //     //
 //     //        }
 //     //        static void AddTriangleToListOfDebugCurves(List<DebugCurve> debugCurves,CdtTriangle triangle,byte transparency,double width,string color) {
 //     //            foreach(var cdtEdge of triangle.Edges) {
-//     //                debugCurves.Add(new DebugCurve(transparency,width,color,new LineSegment(cdtEdge.upperSite.Point,cdtEdge.lowerSite.Point)));
+//     //                debugCurves.Add(new DebugCurve(transparency,width,color,new LineSegment(cdtEdge.upperSite.point,cdtEdge.lowerSite.point)));
 //     //            }
 //     //        }
 
 //     internal int GetHyperplaneSign(CdtSite cdtSite) {
-//         var area = Point.SignedDoubledTriangleArea(start, cdtSite.Point, end);
+//         var area = Point.SignedDoubledTriangleArea(start, cdtSite.point, end);
 //         if (area > GeomConstants.distanceEpsilon) return 1;
 //         if (area < -GeomConstants.distanceEpsilon) return -1;
 //         return 0;

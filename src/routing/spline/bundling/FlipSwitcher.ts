@@ -47,7 +47,7 @@
 //     }
 
 //     void RegisterPolylinePointInPathsThrough(PolylinePoint pp) {
-//         CollectionUtilities.AddToMap(pathsThroughPoints, pp.Point, pp);
+//         CollectionUtilities.AddToMap(pathsThroughPoints, pp.point, pp);
 //     }
 
 //     void UnregisterPolylinePointInPathsThrough(IEnumerable < PolylinePoint > points) {
@@ -56,7 +56,7 @@
 //     }
 
 //     void UnregisterPolylinePointInPathsThrough(PolylinePoint pp) {
-//         CollectionUtilities.RemoveFromMap(pathsThroughPoints, pp.Point, pp);
+//         CollectionUtilities.RemoveFromMap(pathsThroughPoints, pp.point, pp);
 //     }
 
 //     void SwitchFlips() {
@@ -88,9 +88,9 @@
 //             FillDepartedPolylinePoints(pp, departed);
 
 //             //find returning
-//             foreach(PolylinePoint polyPoint of pathsThroughPoints[pp.Point]) {
+//             foreach(PolylinePoint polyPoint of pathsThroughPoints[pp.point]) {
 //                 if (departed.ContainsKey(polyPoint.Polyline)) {
-//                     if (ProcessFlip(polyline, polyPoint.Polyline, departed[polyPoint.Polyline].Point, pp.Point))
+//                     if (ProcessFlip(polyline, polyPoint.Polyline, departed[polyPoint.Polyline].point, pp.point))
 //                         return polyPoint.Polyline;
 //                     departed.Remove(polyPoint.Polyline);
 //                 }
@@ -101,7 +101,7 @@
 //     }
 
 //     void FillDepartedPolylinePoints(PolylinePoint pp, Dictionary < Polyline, PolylinePoint > departed) {
-//         Point prevPoint = pp.Prev.Point;
+//         Point prevPoint = pp.Prev.point;
 //         foreach(PolylinePoint polyPoint of pathsThroughPoints[prevPoint]) {
 //             if (!IsNeighbor(polyPoint, pp)) {
 //                 Assert.assert(!departed.ContainsKey(polyPoint.Polyline));
@@ -143,8 +143,8 @@
 //         RegisterPolylinePointInPathsThrough(polylineA.PolylinePoints);
 //         RegisterPolylinePointInPathsThrough(polylineB.PolylinePoints);
 
-//         RegisterInterestingPoint(aFirst.Point);
-//         RegisterInterestingPoint(aLast.Point);
+//         RegisterInterestingPoint(aFirst.point);
+//         RegisterInterestingPoint(aLast.point);
 //         numberOfReducedCrossings++;
 
 //         /*dc = new List<DebugCurve>();
@@ -162,8 +162,8 @@
 //         ppFirst = ppLast = null;
 //         forwardOrder = false;
 //         for (PolylinePoint pp = polyline.startPoint; pp != null; pp = pp.next) {
-//             if (pp.Point == first) ppFirst = pp;
-//             if (pp.Point == last) ppLast = pp;
+//             if (pp.point == first) ppFirst = pp;
+//             if (pp.point == last) ppLast = pp;
 //             if (ppFirst != null && ppLast == null) forwardOrder = true;
 //             if (ppFirst == null && ppLast != null) forwardOrder = false;
 //         }
@@ -186,7 +186,7 @@
 //     }
 
 //     int FindRelationOnFirstPoint(PolylinePoint aFirst, PolylinePoint bFirst, bool forwardOrderA, bool forwardOrderB) {
-//         Assert.assert(aFirst.Point == bFirst.Point);
+//         Assert.assert(aFirst.point == bFirst.point);
 
 //         PolylinePoint a0 = aFirst;
 //         PolylinePoint b0 = bFirst;
@@ -199,7 +199,7 @@
 //                 return 0;
 //             }
 
-//             if (prevA.Point != prevB.Point) break;
+//             if (prevA.point != prevB.point) break;
 
 //             aFirst = prevA;
 //             bFirst = prevB;
@@ -209,7 +209,7 @@
 //     }
 
 //     int FindRelationOnLastPoint(PolylinePoint aLast, PolylinePoint bLast, bool forwardOrderA, bool forwardOrderB) {
-//         Assert.assert(aLast.Point == bLast.Point);
+//         Assert.assert(aLast.point == bLast.point);
 
 //         PolylinePoint a0 = aLast;
 //         PolylinePoint b0 = bLast;
@@ -222,13 +222,13 @@
 //                 return 0;
 //             }
 
-//             if (nextA.Point != nextB.Point) break;
+//             if (nextA.point != nextB.point) break;
 
 //             aLast = nextA;
 //             bLast = nextB;
 //         }
 
-//         while (Next(aLast, forwardOrderA).Point == Prev(bLast, forwardOrderB).Point) {
+//         while (Next(aLast, forwardOrderA).point == Prev(bLast, forwardOrderB).point) {
 //             aLast = Next(aLast, forwardOrderA);
 //             bLast = Prev(bLast, forwardOrderB);
 //         }
@@ -244,10 +244,10 @@
 //         PolylinePoint b0n = Next(b0, forwardOrderB);
 //         PolylinePoint b1p = Prev(b1, forwardOrderB);
 
-//         if (a0.Point == a1.Point) {
-//             Point bs = a0.Point;
-//             int left0 = Point.GetOrientationOf3Vectors(a1p.Point - bs, b1p.Point - bs, a0n.Point - bs);
-//             int left1 = Point.GetOrientationOf3Vectors(a1p.Point - bs, b0n.Point - bs, a0n.Point - bs);
+//         if (a0.point == a1.point) {
+//             Point bs = a0.point;
+//             int left0 = Point.GetOrientationOf3Vectors(a1p.point - bs, b1p.point - bs, a0n.point - bs);
+//             int left1 = Point.GetOrientationOf3Vectors(a1p.point - bs, b0n.point - bs, a0n.point - bs);
 //             /*
 //             if (left0 == 0 || left1 ==0) {
 //                 List<DebugCurve> dc = new List<DebugCurve>();
@@ -259,17 +259,17 @@
 
 //                 dc.Add(new DebugCurve("blue", CurveFactory.CreateCircle(3, bs)));
 
-//                 dc.Add(new DebugCurve(100,0.5, "blue", new LineSegment(a0p.Point, bs)));
-//                 dc.Add(new DebugCurve("red", CurveFactory.CreateCircle(5, b0.Point)));
-//                 dc.Add(new DebugCurve("red", CurveFactory.CreateCircle(10, b1.Point)));
+//                 dc.Add(new DebugCurve(100,0.5, "blue", new LineSegment(a0p.point, bs)));
+//                 dc.Add(new DebugCurve("red", CurveFactory.CreateCircle(5, b0.point)));
+//                 dc.Add(new DebugCurve("red", CurveFactory.CreateCircle(10, b1.point)));
 //                 LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(dc);
 //             } */
 //             Assert.assert(left0 != 0 && left1 != 0);
 //             return left0 == left1 ? 1 : 2;
 //         }
 //         else {
-//             int left0 = Point.GetOrientationOf3Vectors(a0p.Point - a0.Point, a0n.Point - a0.Point, b0n.Point - a0.Point);
-//             int left1 = Point.GetOrientationOf3Vectors(a1n.Point - a1.Point, b1p.Point - a1.Point, a1p.Point - a1.Point);
+//             int left0 = Point.GetOrientationOf3Vectors(a0p.point - a0.point, a0n.point - a0.point, b0n.point - a0.point);
+//             int left1 = Point.GetOrientationOf3Vectors(a1n.point - a1.point, b1p.point - a1.point, a1p.point - a1.point);
 //             Assert.assert(left0 != 0 && left1 != 0);
 //             return left0 == left1 ? 1 : 2;
 //         }
@@ -296,7 +296,7 @@
 //     void ChangePolylineSegment(PolylinePoint aFirst, PolylinePoint aLast, bool forwardOrderA, List < PolylinePoint > intermediateBPoints) {
 //         PolylinePoint curA = aFirst;
 //         foreach(PolylinePoint b of intermediateBPoints) {
-//             var newp = new PolylinePoint(b.Point) { Polyline = curA.Polyline };
+//             var newp = new PolylinePoint(b.point) { Polyline = curA.Polyline };
 //             if (forwardOrderA) {
 //                 newp.Prev = curA;
 //                 curA.next = newp;
@@ -326,7 +326,7 @@
 //     }
 
 //     bool IsNeighbor(PolylinePoint a, PolylinePoint b) {
-//         return a.Prev != null && a.Prev.Point == b.Point || a.next != null && a.next.Point == b.Point;
+//         return a.Prev != null && a.Prev.point == b.point || a.next != null && a.next.point == b.point;
 //     }
 
 //     void RegisterInterestingPoint(Point p) {
@@ -358,8 +358,8 @@
 //                 if (pp.next.Prev != pp) return false;
 //             }
 
-//             if (pointsToPP.Contains(pp.Point)) return false;
-//             pointsToPP.Add(pp.Point);
+//             if (pointsToPP.Contains(pp.point)) return false;
+//             pointsToPP.Add(pp.point);
 //         }
 
 //         if (poly.startPoint.Prev != null) return false;

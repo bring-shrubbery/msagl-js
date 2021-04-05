@@ -74,7 +74,7 @@
 //                         RemoveDiagonalFromActiveNodes(t.Diagonal);
 //                 } else {
 //                     if (t.IsLow) {
-//                         this.activeDiagonalComparer.PointOnTangentAndInsertedDiagonal = t.End.Point;
+//                         this.activeDiagonalComparer.PointOnTangentAndInsertedDiagonal = t.End.point;
 //                         this.InsertActiveDiagonal(new Diagonal(t, t.Comp));
 //                         if (t.Diagonal.RbNode == activeDiagonalTree.TreeMinimum())
 //                             AddVisibleEdge(t);
@@ -91,7 +91,7 @@
 //                 //foreach (Polygon p of this.polygons)
 //                 //    cs.Add(p.Polyline);
 
-//                 //cs.Add(new LineSegment(t.Start.Point, t.End.Point));
+//                 //cs.Add(new LineSegment(t.Start.point, t.End.point));
 //                 //SugiyamaLayoutSettings.Show(cs.ToArray);
 // #endif
 //             }
@@ -108,8 +108,8 @@
 //             if (tangents.Count == 0)
 //                 return;
 //             Tangent firstTangent = this.tangents[0];
-//             Point firstTangentStart = firstTangent.Start.Point;
-//             Point firstTangentEnd = firstTangent.End.Point;
+//             Point firstTangentStart = firstTangent.Start.point;
+//             Point firstTangentEnd = firstTangent.End.point;
 
 //             foreach(Diagonal diagonal of diagonals) {
 //                 if (RayIntersectDiagonal(firstTangentStart, firstTangentEnd, diagonal)) {
@@ -161,11 +161,11 @@
 //         static bool RayIntersectDiagonal(Point pivot, Point pointOnRay, Diagonal diagonal) {
 //             Point a = diagonal.Start;
 //             Point b = diagonal.End;
-//             return Point.GetTriangleOrientation(pivot, a, b) == TriangleOrientation.Counterclockwise
+//             return Point.getTriangleOrientation(pivot, a, b) == TriangleOrientation.Counterclockwise
 //                 &&
-//                 Point.GetTriangleOrientation(pivot, pointOnRay, a) != TriangleOrientation.Counterclockwise
+//                 Point.getTriangleOrientation(pivot, pointOnRay, a) != TriangleOrientation.Counterclockwise
 //                 &&
-//                 Point.GetTriangleOrientation(pivot, pointOnRay, b) != TriangleOrientation.Clockwise;
+//                 Point.getTriangleOrientation(pivot, pointOnRay, b) != TriangleOrientation.Clockwise;
 //         }
 
 //         // <summary>
@@ -175,7 +175,7 @@
 //         // <param name="e1"></param>
 //         // <returns></returns>
 //         int TangentComparison(Tangent e0, Tangent e1) {
-//             return StemStartPointComparer.CompareVectorsByAngleToXAxis(e0.End.Point - e0.Start.Point, e1.End.Point - e1.Start.Point);
+//             return StemStartPointComparer.CompareVectorsByAngleToXAxis(e0.End.point - e0.Start.point, e1.End.point - e1.Start.point);
 //         }
 
 //         IEnumerable < Polygon > AllObstacles {

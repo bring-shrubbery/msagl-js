@@ -23,7 +23,7 @@
 // //         internal PolylinePoint EndVertex { get; set; }
 
 // //         internal Point End {
-// //             get { return EndVertex.Point; }
+// //             get { return EndVertex.point; }
 // //         }
 
 // //         internal BrokenConeSide(Point start, PolylinePoint end, ConeSide coneSide) {

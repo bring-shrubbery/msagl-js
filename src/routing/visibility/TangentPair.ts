@@ -211,24 +211,24 @@
 // //     }
 
 // //     void FindClosestFeatures(out int p1, out int p2, out int q1, out int q2, out Point pClosest, out Point qClosest) {
-// //         P.GetTangentPoints(out p2, out p1, Q[0].Point);
+// //         P.GetTangentPoints(out p2, out p1, Q[0].point);
 // //         // LayoutAlgorithmSettings.ShowDebugCurves(new DebugCurve(P.Polyline), new DebugCurve(Q.Polyline), new DebugCurve("red",Ls(p2, 0)), new DebugCurve("blue",Ls(p1, 0)));
 
 // //         if (p2 == p1)
 // //             p2 += P.Count;
-// //         Q.GetTangentPoints(out q1, out q2, P[0].Point);
+// //         Q.GetTangentPoints(out q1, out q2, P[0].point);
 // //         //LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(0, q1), Ls(0, q2));
 // //         if (q2 == q1)
 // //             q1 += Q.Count;
 
-// //         //            LayoutAlgorithmSettings.ShowDebugCurves(new DebugCurve(100,0.1,"black",P.Polyline),new DebugCurve(100,0.1,"black",Q.Polyline),new DebugCurve(100,0.1,"red",new LineSegment(P [p1].Point,Q [q1].Point)),new DebugCurve(100,0.1,"blue",new LineSegment(P [p2].Point,Q [q2].Point)));
+// //         //            LayoutAlgorithmSettings.ShowDebugCurves(new DebugCurve(100,0.1,"black",P.Polyline),new DebugCurve(100,0.1,"black",Q.Polyline),new DebugCurve(100,0.1,"red",new LineSegment(P [p1].point,Q [q1].point)),new DebugCurve(100,0.1,"blue",new LineSegment(P [p2].point,Q [q2].point)));
 
 // //         FindClosestPoints(ref p1, ref p2, ref q2, ref q1, out pClosest, out qClosest);
 // //     }
 
 // //     /*
 // //             ICurve Ls(int p0, int p1) {
-// //                 return new LineSegment(P[p0].Point, Q[p1].Point);
+// //                 return new LineSegment(P[p0].point, Q[p1].point);
 // //             }
 // //     */
 
@@ -238,12 +238,12 @@
 // //             ShrinkChunks(ref p2, ref p1, ref q2, ref q1);
 
 // //         if (p1 == p2) {
-// //             pClosest = P[p2].Point;
+// //             pClosest = P[p2].point;
 // //             if (q1 == q2)
-// //                 qClosest = Q[q1].Point;
+// //                 qClosest = Q[q1].point;
 // //             else {
 // //                 //                    if(debug) LayoutAlgorithmSettings.Show(new LineSegment(P.Pnt(p2), Q.Pnt(q2)), new LineSegment(P.Pnt(p1), Q.Pnt(q1)), P.Polyline, Q.Polyline);
-// //                 qClosest = Point.ClosestPointAtLineSegment(pClosest, Q[q1].Point, Q[q2].Point);
+// //                 qClosest = Point.ClosestPointAtLineSegment(pClosest, Q[q1].point, Q[q2].point);
 // //                 if (ApproximateComparer.Close(qClosest, Q.Pnt(q1)))
 // //                     q2 = q1;
 // //                 else if (ApproximateComparer.Close(qClosest, Q.Pnt(q2)))
@@ -251,8 +251,8 @@
 // //             }
 // //         } else {
 // //             Assert.assert(q1 == q2);
-// //             qClosest = Q[q1].Point;
-// //             pClosest = Point.ClosestPointAtLineSegment(qClosest, P[p1].Point, P[p2].Point);
+// //             qClosest = Q[q1].point;
+// //             pClosest = Point.ClosestPointAtLineSegment(qClosest, P[p1].point, P[p2].point);
 // //             if (ApproximateComparer.Close(pClosest, P.Pnt(p1)))
 // //                 p2 = p1;
 // //             else if (ApproximateComparer.Close(qClosest, P.Pnt(p2)))
@@ -278,8 +278,8 @@
 // //     void ShrinkChunks(ref int p2, ref int p1, ref int q2, ref int q1) {
 // //         int mp = p1 == p2 ? p1 : P.Median(p1, p2);
 // //         int mq = q1 == q2 ? q1 : Q.Median(q2, q1);
-// //         Point mP = P[mp].Point;
-// //         Point mQ = Q[mq].Point;
+// //         Point mP = P[mp].point;
+// //         Point mQ = Q[mq].point;
 
 // //         double a1;
 // //         double a2;
@@ -372,11 +372,11 @@
 
 // //             //System.Diagnostics.Debug.WriteLine("cutting P");
 // //             //                if(debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(p1, q1), Ls(p2, q2), Ls(mp, mq));
-// //             Point mpp = P[mp].Point;
-// //             Point mqp = Q[mq].Point;
-// //             Point mpnp = P[P.next(mp)].Point;
-// //             TriangleOrientation orientation = Point.GetTriangleOrientation(mpp, mqp, Q[0].Point);
-// //             TriangleOrientation nextOrientation = Point.GetTriangleOrientation(mpp, mqp, mpnp);
+// //             Point mpp = P[mp].point;
+// //             Point mqp = Q[mq].point;
+// //             Point mpnp = P[P.next(mp)].point;
+// //             TriangleOrientation orientation = Point.getTriangleOrientation(mpp, mqp, Q[0].point);
+// //             TriangleOrientation nextOrientation = Point.getTriangleOrientation(mpp, mqp, mpnp);
 
 // //             if (orientation == nextOrientation)
 // //                 p1 = P.next(mp);
@@ -388,11 +388,11 @@
 // //             //Find out who is on the same side from [mq,mp] as P[0], the next or the prev. Remember that we found the first chunk from P[0]
 // //             //System.Diagnostics.Debug.WriteLine("cutting Q");
 // //             //                if (debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(p1, q1), Ls(p2, q2), Ls(mp, mq));
-// //             Point mpp = P[mp].Point;
-// //             Point mqp = Q[mq].Point;
-// //             Point mqnp = Q[Q.next(mq)].Point;
-// //             TriangleOrientation orientation = Point.GetTriangleOrientation(mpp, mqp, P[0].Point);
-// //             TriangleOrientation nextOrientation = Point.GetTriangleOrientation(mpp, mqp, mqnp);
+// //             Point mpp = P[mp].point;
+// //             Point mqp = Q[mq].point;
+// //             Point mqnp = Q[Q.next(mq)].point;
+// //             TriangleOrientation orientation = Point.getTriangleOrientation(mpp, mqp, P[0].point);
+// //             TriangleOrientation nextOrientation = Point.getTriangleOrientation(mpp, mqp, mqnp);
 // //             if (orientation == nextOrientation)
 // //                 q2 = Q.next(mq);
 // //             else
@@ -503,7 +503,7 @@
 // //                     if (b1 >= Math.PI / 2) q1 = mq;
 // //                     else if (a2 < b2) {
 // //                         //SugiyamaLayoutSettings.Show(new LineSegment(P.Pnt(p2), Q.Pnt(q2)), new LineSegment(P.Pnt(p1), Q.Pnt(q1)), new LineSegment(P.Pnt(p1), Q.Pnt(mq)), P.Polyline, Q.Polyline);
-// //                         if (Point.CanProject(Q.Pnt(mq), P[p1].Point, P[p2].Point)) q1 = mq;
+// //                         if (Point.CanProject(Q.Pnt(mq), P[p1].point, P[p2].point)) q1 = mq;
 // //                         else p1 = p2;
 // //                     }
 // //                 }
@@ -532,7 +532,7 @@
 // //                 else q1 = mq;
 // //             } else if (b2 >= Math.PI / 2) q2 = mq;
 // //             else if (a1 < b2) {
-// //                 if (Point.CanProject(mQ, P[p1].Point, P[p2].Point)) q2 = mq;
+// //                 if (Point.CanProject(mQ, P[p1].point, P[p2].point)) q2 = mq;
 // //                 else p2 = p1;
 // //             }
 // //         } else {

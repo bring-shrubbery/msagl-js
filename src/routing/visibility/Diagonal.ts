@@ -9,11 +9,11 @@
 //             return String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},{1}", Start, End);
 //         }
 //         internal Point Start {
-//             get { return leftTangent.End.Point; }
+//             get { return leftTangent.End.point; }
 //         }
 
 //         internal Point End {
-//             get { return rightTangent.End.Point; }
+//             get { return rightTangent.End.point; }
 //         }
 
 //         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]

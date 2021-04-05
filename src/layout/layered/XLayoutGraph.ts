@@ -1,12 +1,12 @@
 //  Follows the idea from Gansner etc 93, creating a special graph
 //  for x-coordinates calculation
 
-import {List} from 'lodash'
-import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
-import {Assert} from '../../utils/assert'
-import {LayerArrays} from './LayerArrays'
-import {PolyIntEdge} from './polyIntEdge'
-import {ProperLayeredGraph} from './ProperLayeredGraph'
+import { List } from 'lodash'
+import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges'
+import { Assert } from '../../utils/assert'
+import { LayerArrays } from './LayerArrays'
+import { PolyIntEdge } from './polyIntEdge'
+import { ProperLayeredGraph } from './ProperLayeredGraph'
 
 export class XLayoutGraph extends BasicGraphOnEdges<PolyIntEdge> {
   layeredGraph: ProperLayeredGraph
@@ -66,7 +66,7 @@ export class XLayoutGraph extends BasicGraphOnEdges<PolyIntEdge> {
     let k = 0
     Assert.assert(s >= this.layeredGraph.NodeCount)
     // check the graph on correctness`
-    //     throw new InvalidOperationException();//"XLayout graph is incorrect");
+    //     throw new Error();//"XLayout graph is incorrect");
     // here (s0,t0) is the edge of underlying graph
     let t0 = -1
     let s0 = -1
@@ -92,8 +92,8 @@ export class XLayoutGraph extends BasicGraphOnEdges<PolyIntEdge> {
       k == 0
         ? this.weightMultiplierOfOriginalOriginal
         : k == 1
-        ? this.weightMultOfOneVirtual
-        : this.weightMultiplierOfTwoVirtual
+          ? this.weightMultOfOneVirtual
+          : this.weightMultiplierOfTwoVirtual
     return ret
   }
 

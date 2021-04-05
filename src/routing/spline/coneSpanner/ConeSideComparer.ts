@@ -28,7 +28,7 @@
 //     }
 
 //         static int CompareNotIntersectingSegs(ConeSide a, ConeSide b) {
-//         var signedArea = Point.GetTriangleOrientation(a.Start, b.Start, b.Start + b.Direction);
+//         var signedArea = Point.getTriangleOrientation(a.Start, b.Start, b.Start + b.Direction);
 
 //         switch (signedArea) {
 //             case TriangleOrientation.Counterclockwise:
@@ -41,7 +41,7 @@
 //     }
 
 //     int CompareObstacleSideAndConeSide(ConeSide coneSide) {
-//         var orientation = Point.GetTriangleOrientation(x, coneSide.Start,
+//         var orientation = Point.getTriangleOrientation(x, coneSide.Start,
 //             coneSide.Start + coneSide.Direction);
 //         if (orientation == TriangleOrientation.Counterclockwise)
 //             return -1;
@@ -54,7 +54,7 @@
 //     }
 
 //     int CompareConeSideAndObstacleSide(ConeSide coneSide, BrokenConeSide brokenConeSide) {
-//         var orientation = Point.GetTriangleOrientation(x, brokenConeSide.Start, brokenConeSide.End);
+//         var orientation = Point.getTriangleOrientation(x, brokenConeSide.Start, brokenConeSide.End);
 //         if (orientation == TriangleOrientation.Counterclockwise)
 //             return -1;
 //         if (orientation == TriangleOrientation.Clockwise)
@@ -62,7 +62,7 @@
 
 //         //we have the case where x belongs to the cone side
 
-//         //      lineSweeper.Show(CurveFactory.CreateDiamond(5,5, brokenConeSide.EndVertex.Point));
+//         //      lineSweeper.Show(CurveFactory.CreateDiamond(5,5, brokenConeSide.EndVertex.point));
 
 //         return coneSide is ConeLeftSide ? 1 : -1;
 //     }
@@ -78,7 +78,7 @@
 //         if (aObst.EndVertex == bObst.EndVertex)
 //             return CompareNotIntersectingSegs(aObst.ConeSide, bObst.ConeSide);
 
-//         if (Point.GetTriangleOrientation(x, bObst.Start, bObst.EndVertex.Point) ==
+//         if (Point.getTriangleOrientation(x, bObst.Start, bObst.EndVertex.point) ==
 //             TriangleOrientation.Counterclockwise)
 //             return -1;
 //         return 1;

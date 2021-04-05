@@ -25,7 +25,7 @@
 //         ValidateArg.IsNotNull(y, "y");
 //         Assert.assert(IntersectionPointBelongsToTheInsertedEdge(x));
 
-//         switch(Point.GetTriangleOrientation(IntersectionOfTheRayAndInsertedEdge, y.Point, y.NextOnPolyline.Point)) {
+//         switch(Point.getTriangleOrientation(IntersectionOfTheRayAndInsertedEdge, y.point, y.NextOnPolyline.point)) {
 //                 case TriangleOrientation.Counterclockwise:
 //         return -1;
 //                 default:
@@ -35,8 +35,8 @@
 
 // [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //         private bool IntersectionPointBelongsToTheInsertedEdge(PolylinePoint x) {
-//     Point a = x.Point - IntersectionOfTheRayAndInsertedEdge;
-//     Point b = x.NextOnPolyline.Point - IntersectionOfTheRayAndInsertedEdge;
+//     Point a = x.point - IntersectionOfTheRayAndInsertedEdge;
+//     Point b = x.NextOnPolyline.point - IntersectionOfTheRayAndInsertedEdge;
 //     return Math.Abs(a.X * b.Y - b.X * a.Y) < GeomConstants.distanceEpsilon;
 // }
 
@@ -48,13 +48,13 @@
 //     if (!(-ApproximateComparer.Tolerance <= x && x <= 1 + ApproximateComparer.Tolerance))
 //         throw new Exception();
 //     if (!result)
-//         throw new InvalidOperationException();
+//         throw new Error();
 
 //     return Pivot + y * ray;
 // }
 
 // internal Point IntersectEdgeWithRay(PolylinePoint side, Point ray){
-//     return IntersectEdgeWithRay(side.Point, side.NextOnPolyline.Point, ray);
+//     return IntersectEdgeWithRay(side.point, side.NextOnPolyline.point, ray);
 // }
 
 // [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]

@@ -135,13 +135,13 @@
 
 //         //move curves
 //         foreach(MetroNodeInfo metroNodeInfo of MetroNodeInfosOfNode(node))
-//         metroNodeInfo.PolyPoint.Point = newPosition;
+//         metroNodeInfo.PolyPoint.point = newPosition;
 
 //         //update lengths
 //         foreach(MetroNodeInfo e of MetroNodeInfosOfNode(node)) {
 //             var metroLine = e.Metroline;
-//             var prev = e.PolyPoint.Prev.Point;
-//             var succ = e.PolyPoint.next.Point;
+//             var prev = e.PolyPoint.Prev.point;
+//             var succ = e.PolyPoint.next.point;
 //             metroLine.Length += (succ - newPosition).Length + (prev - newPosition).Length
 //                 - (succ - oldPosition).Length - (prev - oldPosition).Length;
 //         }
@@ -216,8 +216,8 @@
 //         var stack = new Stack<Point>();
 //         var seen = new Set<Point>();
 //         for (var p = polyline.endPoint; p != null; p = p.Prev) {
-//             var v = p.Point;
-//             if (seen.Contains(p.Point)) {
+//             var v = p.point;
+//             if (seen.Contains(p.point)) {
 //                 var pp = p.next;
 //                 do {
 //                     var u = stack.Peek();
@@ -262,15 +262,15 @@
 //     }
 
 //     int RegisterStation(int i, PolylinePoint pp, bool isRealNode) {
-//         if (!PointToStations.ContainsKey(pp.Point)) {
+//         if (!PointToStations.ContainsKey(pp.point)) {
 //             // Filippo Polo: assigning the return value of the assignment operator (i.e. a = b = c) does not work well in Sharpkit.
-//             Station station = new Station(i++, isRealNode, pp.Point);
-//             PointToStations[pp.Point] = station;
+//             Station station = new Station(i++, isRealNode, pp.point);
+//             PointToStations[pp.point] = station;
 //             Stations.Insert(station);
 //         }
 //         else {
 // #if TEST_MSAGL && TEST_MSAGL
-//             var s = PointToStations[pp.Point];
+//             var s = PointToStations[pp.point];
 //             Assert.assert(s.IsRealNode == isRealNode);
 // #endif
 //         }
@@ -308,7 +308,7 @@
 //             Station u = PointToStations[metroline.Polyline.Start];
 //             Station v;
 //             for (var p = metroline.Polyline.startPoint; p.next != null; p = p.next, u = v) {
-//                 v = PointToStations[p.next.Point];
+//                 v = PointToStations[p.next.point];
 //                 CollectionUtilities.AddToMap(neighbors, u, v);
 //                 CollectionUtilities.AddToMap(neighbors, v, u);
 //             }
@@ -358,7 +358,7 @@
 
 //     void InitMetroNodeInfos(Metroline metroline) {
 //         for (var pp = metroline.Polyline.startPoint; pp != null; pp = pp.next) {
-//             Station station = PointToStations[pp.Point];
+//             Station station = PointToStations[pp.point];
 //             station.MetroNodeInfos.Add(new MetroNodeInfo(metroline, station, pp));
 //         }
 //     }
@@ -368,7 +368,7 @@
 //         var metrolineEnterable = EdgeLooseEnterable != null ? EdgeLooseEnterable[regularEdge] : new Set<Polyline>();
 
 //         for (var p = metroline.Polyline.startPoint.next; p != null && p.next != null; p = p.next) {
-//             var v = PointToStations[p.Point];
+//             var v = PointToStations[p.point];
 //             if (v.EnterableLoosePolylines != null)
 //                 v.EnterableLoosePolylines *= metrolineEnterable;
 //             else
@@ -420,7 +420,7 @@
 //         var metrolineEnterable = EdgeTightEnterable != null ? EdgeTightEnterable[regularEdge] : new Set<Polyline>();
 
 //         for (var p = metroline.Polyline.startPoint.next; p != null && p.next != null; p = p.next) {
-//             var v = PointToStations[p.Point];
+//             var v = PointToStations[p.point];
 //             Set < Polyline > nodeEnterable = v.EnterableTightPolylines;
 //             if (nodeEnterable != null)
 //                 v.EnterableTightPolylines = nodeEnterable * metrolineEnterable;
@@ -454,7 +454,7 @@
 //             var u = PointToStations[poly.Start];
 //             Station v;
 //             for (var p = metroLine.Polyline.startPoint; p.next != null; p = p.next, u = v) {
-//                 v = PointToStations[p.next.Point];
+//                 v = PointToStations[p.next.point];
 //                 var info = GetUnorderedIjInfo(u, v);
 //                 info.Count++;
 //                 info.Width += metroLine.Width;

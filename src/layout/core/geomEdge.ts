@@ -120,7 +120,7 @@ export class GeomEdge extends GeomObject {
         for (Site s = UnderlyingPolyline.HeadSite, s0 = UnderlyingPolyline.HeadSite;
           s != null;
       s = s.next, s0 = s0.next)
-      s.Point = matrix * s.Point;
+      s.point = matrix * s.point;
     
       var sourceArrow = edgeGeometry.sourceArrowhead;
       if (sourceArrow != null)

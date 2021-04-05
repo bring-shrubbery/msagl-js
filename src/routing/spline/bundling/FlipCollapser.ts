@@ -29,7 +29,7 @@
 //         //
 //         //            l.AddRange(
 //         //                Cdt.GetTriangles().Select(
-//         //                    t => new DebugCurve(100, 1, "green", new Polyline(t.Sites.Select(v => v.Point)) {Closed = true})));
+//         //                    t => new DebugCurve(100, 1, "green", new Polyline(t.Sites.Select(v => v.point)) {Closed = true})));
 //         //            l.AddRange(new[] {
 //         //                                 new DebugCurve(120, 1, "red", a),
 //         //                                 new DebugCurve(120, 1, "blue", b)
@@ -44,18 +44,18 @@
 //                     var site = f.Site;
 //                     foreach (var t of site.Triangles) {
 //                         var si = t.Sites.Index(site);
-//                         if (Point.PointIsInsideCone(pp.Point, site.Point, t.Sites[si + 1].Point, t.Sites[si + 2].Point)) {
-//                             if (Point.GetTriangleOrientation(pp.Point, t.Sites[si + 1].Point, t.Sites[si + 2].Point) ==
+//                         if (Point.PointIsInsideCone(pp.point, site.point, t.Sites[si + 1].point, t.Sites[si + 2].point)) {
+//                             if (Point.getTriangleOrientation(pp.point, t.Sites[si + 1].point, t.Sites[si + 2].point) ==
 //                                 TriangleOrientation.Collinear) {//pp belongs to the edge [si+1]
 //                                 ret.Add(t.Edges[si + 1]);
-//                                 if (Point.GetTriangleOrientation(site.Point, t.Sites[si + 1].Point, pp.Point) ==
+//                                 if (Point.getTriangleOrientation(site.point, t.Sites[si + 1].point, pp.point) ==
 //                                     TriangleOrientation.Collinear)
 //                                     nextFeature = new CdtSiteFeature(t.Sites[si + 1], f) {Prev = f};
-//                                 else if (Point.GetTriangleOrientation(site.Point, t.Sites[si + 2].Point, pp.Point) ==
+//                                 else if (Point.getTriangleOrientation(site.point, t.Sites[si + 2].point, pp.point) ==
 //                                          TriangleOrientation.Collinear)
 //                                     nextFeature = new CdtSiteFeature(t.Sites[si + 2], f) {Prev = f};
 //                                 else
-//                                     nextFeature = new CdtEdgeFeature(t.Edges[si + 1], pp.Point, f) {Prev = f};
+//                                     nextFeature = new CdtEdgeFeature(t.Edges[si + 1], pp.point, f) {Prev = f};
 //                             }
 //                         }
 //                     }
@@ -77,9 +77,9 @@
 //         //
 //         //            l.AddRange(
 //         //                Cdt.GetTriangles().Select(
-//         //                    t => new DebugCurve(100, 1, "green", new Polyline(t.Sites.Select(v => v.Point)) {Closed = true})));
+//         //                    t => new DebugCurve(100, 1, "green", new Polyline(t.Sites.Select(v => v.point)) {Closed = true})));
 //         //            l.Add(new DebugCurve(150,2,"blue",new Polyline(polyPoints)));
-//         //          l.AddRange(ret.Select(e=>new DebugCurve(200,2,"brown", new LineSegment(e.upperSite.Point,e.lowerSite.Point))));
+//         //          l.AddRange(ret.Select(e=>new DebugCurve(200,2,"brown", new LineSegment(e.upperSite.point,e.lowerSite.point))));
 //         //            LayoutAlgorithmSettings.ShowDebugCurves(l.ToArray());
 //         //
 //                     return ret;
@@ -88,7 +88,7 @@
 
 //         /*
 //                 IEnumerable<CdtEdge> GetCdtEdgesCrossedBySegment(PolylinePoint prevA, PolylinePoint a, PolylinePoint b) {
-//                     var pp = new PointPair(a.Point, b.Point);
+//                     var pp = new PointPair(a.point, b.point);
 //                     IEnumerable<CdtEdge> intersections;
 //                     if (segsToCdtEdges.TryGetValue(pp, out intersections))
 //                         return intersections;
@@ -101,7 +101,7 @@
 //         }
 
 //         static PointPair OrderedPair(PolylinePoint p0, PolylinePoint p1) {
-//             return new PointPair(p0.Point, p1.Point);
+//             return new PointPair(p0.point, p1.point);
 //         }
 //     }
 // }

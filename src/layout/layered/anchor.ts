@@ -6,13 +6,13 @@
 //           |
 //           |
 //           |BottomAnchor
-import {Point, TriangleOrientation} from './../../math/geometry/point'
-import {Polyline} from './../../math/geometry/polyline'
-import {PolylinePoint} from './../../math/geometry/polylinePoint'
-import {Curve} from './../../math/geometry/curve'
-import {GeomConstants} from './../../math/geometry/geomConstants'
-import {GeomNode} from './../core/geomNode'
-import {Assert} from './../../utils/assert'
+import { Point, TriangleOrientation } from './../../math/geometry/point'
+import { Polyline } from './../../math/geometry/polyline'
+import { PolylinePoint } from './../../math/geometry/polylinePoint'
+import { Curve } from './../../math/geometry/curve'
+import { GeomConstants } from './../../math/geometry/geomConstants'
+import { GeomNode } from './../core/geomNode'
+import { Assert } from './../../utils/assert'
 export class Anchor {
   labelToTheRightOfAnchorCenter: boolean
   labelToTheLeftOfAnchorCenter: boolean
@@ -98,7 +98,7 @@ export class Anchor {
 
   set bottomAnchor(value) {
     //if(value<-Curve.DistEps)
-    //throw new InvalidOperationException();//"assigning negative value to a anchor");
+    //throw new Error();//"assigning negative value to a anchor");
     this.ba = Math.max(value, 0)
   }
 
@@ -157,7 +157,7 @@ export class Anchor {
   constructor(labelCornersPreserveCoefficient: number) {
     Assert.assert(
       0 <= labelCornersPreserveCoefficient &&
-        labelCornersPreserveCoefficient <= 1,
+      labelCornersPreserveCoefficient <= 1,
     )
     this.labelCornersPreserveCoefficient = labelCornersPreserveCoefficient
   }

@@ -9,7 +9,7 @@
 //         internal RightObstacleSide(PolylinePoint startVertex)
 //             : base(startVertex)
 //         {
-//             this.end = startVertex.PrevOnPolyline.Point;
+//             this.end = startVertex.PrevOnPolyline.point;
 //         }
 //         internal override Point End
 //         {

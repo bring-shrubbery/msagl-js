@@ -31,7 +31,7 @@ export class EdgeGeometry {
        for (Site s = SmoothedPolyline.HeadSite, s0 = SmoothedPolyline.HeadSite;
          s != null;
      s = s.next, s0 = s0.next)
-     s.Point = s0.Point + delta;
+     s.point = s0.point + delta;
  
      if (SourceArrowhead != null)
        SourceArrowhead.TipPosition += delta;

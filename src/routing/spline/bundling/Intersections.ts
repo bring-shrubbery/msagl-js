@@ -126,8 +126,8 @@
 //         foreach(var p of poly.PolylinePoints) {
 //             //process one edge
 //             var prev = p.PrevOnPolyline;
-//             Point e = prev.Point - p.Point;
-//             double num = Point.CrossProduct(e, start - p.Point);
+//             Point e = prev.point - p.point;
+//             double num = Point.CrossProduct(e, start - p.point);
 //             double den = -Point.CrossProduct(e, segDirection);
 //             if (Math.Abs(den) < ApproximateComparer.Tolerance) { // segment is nearly parallel to this edge
 //                 if (num < 0) return false;
@@ -170,7 +170,7 @@
 //         foreach(var line of metroGraphData.Metrolines) {
 //             var poly = line.Polyline;
 //             foreach(var p of poly.PolylinePoints)
-//             Assert.assert(metroGraphData.PointToStations.ContainsKey(p.Point));
+//             Assert.assert(metroGraphData.PointToStations.ContainsKey(p.point));
 //         }
 
 //         foreach(var station of metroGraphData.Stations) {

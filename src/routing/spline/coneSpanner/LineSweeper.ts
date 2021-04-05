@@ -92,20 +92,20 @@
 
 //         PolylinePoint GetPolylinePointInsideOfConeAndRemoveCones(PolylinePoint p, Cone cone) {
 //             var pn = p.NextOnPolyline;
-//             Point insidePoint = FindInsidePoint(p.Point, pn.Point, cone);
+//             Point insidePoint = FindInsidePoint(p.point, pn.point, cone);
 
-//             if (ApproximateComparer.Close(insidePoint, p.Point)) {
-//                 AddEdgeAndRemoveCone(cone, p.Point);
-//                 AddEdgesAndRemoveRemainingConesByPoint(p.Point);
+//             if (ApproximateComparer.Close(insidePoint, p.point)) {
+//                 AddEdgeAndRemoveCone(cone, p.point);
+//                 AddEdgesAndRemoveRemainingConesByPoint(p.point);
 //                 //we don't move p forward here. In the next iteration we just cross [p,pn] with the new leftmost cone right side
-//             } else if (ApproximateComparer.Close(insidePoint, pn.Point)) {
-//                 AddEdgeAndRemoveCone(cone, pn.Point);
-//                 AddEdgesAndRemoveRemainingConesByPoint(pn.Point);
+//             } else if (ApproximateComparer.Close(insidePoint, pn.point)) {
+//                 AddEdgeAndRemoveCone(cone, pn.point);
+//                 AddEdgesAndRemoveRemainingConesByPoint(pn.point);
 //                 p = pn;
 //             } else {
 //                 p = InsertPointIntoPolylineAfter(BorderPolyline, p, insidePoint);
-//                 AddEdgeAndRemoveCone(cone, p.Point);
-//                 AddEdgesAndRemoveRemainingConesByPoint(p.Point);
+//                 AddEdgeAndRemoveCone(cone, p.point);
+//                 AddEdgesAndRemoveRemainingConesByPoint(p.point);
 //             }
 //             return p;
 //         }
@@ -165,7 +165,7 @@
 //                 p = pn;
 //                 pSign = pnSigh;
 //                 if (p == startPoint)
-//                     throw new InvalidOperationException();
+//                     throw new Error();
 //             } while (true);
 //             /*
 //                         throw new InvalidOleVariantTypeException();
@@ -173,7 +173,7 @@
 //         }
 
 //         static int GetSign(PolylinePoint p, Point a, Point b) {
-//             var d = Point.SignedDoubledTriangleArea(a, b, p.Point);
+//             var d = Point.SignedDoubledTriangleArea(a, b, p.point);
 //             if (d < 0)
 //                 return 1;
 //             return d > 0 ? -1 : 0;
@@ -186,7 +186,7 @@
 //                 new LineSegment(a, b)),
 //                 new DebugCurve(100, 2, "green",
 //                     new LineSegment(
-//                         pn.Point, p.Point)
+//                         pn.point, p.point)
 //                 ));
 //         }
 // #endif
@@ -197,8 +197,8 @@
 //         //            do
 //         //            {
 //         //                var pn = p.NextOnPolyline;
-//         //                Assert.assert(!ApproximateComparer.Close(p.Point, pn.Point));
-//         //                Assert.assert((pn.Point - p.Point)*(pn.NextOnPolyline.Point - pn.Point) > -ApproximateComparer.Tolerance);
+//         //                Assert.assert(!ApproximateComparer.Close(p.point, pn.point));
+//         //                Assert.assert((pn.point - p.point)*(pn.NextOnPolyline.point - pn.point) > -ApproximateComparer.Tolerance);
 //         //                p = pn;
 //         //            } while (p != BorderPolyline.startPoint);
 //         //        }
@@ -213,7 +213,7 @@
 //         IEnumerable < DebugCurve > CreateBoundaryPolyDebugCurves() {
 //             int i = 0;
 //             for (var p = BorderPolyline.startPoint; p != null; p = p.next) {
-//                 yield return new DebugCurve(new Ellipse(1, 1, p.Point), i++);
+//                 yield return new DebugCurve(new Ellipse(1, 1, p.point), i++);
 //             }
 //         }
 // #endif
@@ -245,7 +245,7 @@
 //                 : null;
 //             if (edgesToFix != null)
 //                 foreach(var edge of edgesToFix) {
-//                 var otherPort = (edge.Target == coneApexVert ? edge.Source : edge.Target).Point;
+//                 var otherPort = (edge.Target == coneApexVert ? edge.Source : edge.Target).point;
 //                 VisibilityGraph.RemoveEdge(edge);
 //                 portEdgesGraph.addEdge(otherPort, p);
 //             }
@@ -266,8 +266,8 @@
 //             }
 
 //             Assert.assert(
-//                 !(ApproximateComparer.Close(np.Point, np.PrevOnPolyline.Point) ||
-//                     ApproximateComparer.Close(np.Point, np.NextOnPolyline.Point)));
+//                 !(ApproximateComparer.Close(np.point, np.PrevOnPolyline.point) ||
+//                     ApproximateComparer.Close(np.point, np.NextOnPolyline.point)));
 
 //             borderPolyline.RequireInit();
 //             return np;
@@ -325,7 +325,7 @@
 
 //         void ProcessLeftIntersectionEvent(LeftIntersectionEvent leftIntersectionEvent) {
 //             if (leftIntersectionEvent.coneLeftSide.Removed == false) {
-//                 if (Math.Abs((leftIntersectionEvent.EndVertex.Point - leftIntersectionEvent.Site) * SweepDirection) <
+//                 if (Math.Abs((leftIntersectionEvent.EndVertex.point - leftIntersectionEvent.Site) * SweepDirection) <
 //                     GeomConstants.distanceEpsilon) {
 //                     //the cone is totally covered by a horizontal segment
 //                     RemoveCone(leftIntersectionEvent.coneLeftSide.Cone);
@@ -349,8 +349,8 @@
 //             var coneRightSide = leftSide.Cone.RightSide as ConeRightSide;
 //             if (coneRightSide != null)
 //                 if (
-//                     Point.GetTriangleOrientation(coneRightSide.Start, coneRightSide.Start + coneRightSide.Direction,
-//                         leftSide.EndVertex.Point) == TriangleOrientation.Clockwise)
+//                     Point.getTriangleOrientation(coneRightSide.Start, coneRightSide.Start + coneRightSide.Direction,
+//                         leftSide.EndVertex.point) == TriangleOrientation.Clockwise)
 //                     CreateConeClosureEvent(leftSide, coneRightSide);
 //         }
 
@@ -398,8 +398,8 @@
 //             var coneLeftSide = rightSide.Cone.LeftSide as ConeLeftSide;
 //             if (coneLeftSide != null)
 //                 if (
-//                     Point.GetTriangleOrientation(coneLeftSide.Start, coneLeftSide.Start + coneLeftSide.Direction,
-//                         rightSide.EndVertex.Point) == TriangleOrientation.Counterclockwise)
+//                     Point.getTriangleOrientation(coneLeftSide.Start, coneLeftSide.Start + coneLeftSide.Direction,
+//                         rightSide.EndVertex.point) == TriangleOrientation.Counterclockwise)
 //                     CreateConeClosureEvent(rightSide, coneLeftSide);
 //         }
 
@@ -412,7 +412,7 @@
 
 //         void CloseConesCoveredBySegment(Point leftPoint, Point rightPoint, RbTree < ConeSide > tree) {
 //             var node = tree.FindFirst(
-//                 s => Point.GetTriangleOrientation(s.Start, s.Start + s.Direction, leftPoint) ==
+//                 s => Point.getTriangleOrientation(s.Start, s.Start + s.Direction, leftPoint) ==
 //                     TriangleOrientation.Counterclockwise);
 
 //             Point x;
@@ -460,7 +460,7 @@
 //         static Ellipse EllipseOnPolylinePoint(PolylinePoint pp, double i)
 //         // ReSharper restore UnusedMember.Local
 //         {
-//             return new Ellipse(i, i, pp.Point);
+//             return new Ellipse(i, i, pp.point);
 //         }
 
 //         static ICurve Diamond(Point p) {
@@ -560,20 +560,20 @@
 
 //         void CloseConesAddConeAtRightVertex(VertexEvent rightVertexEvent,
 //             PolylinePoint nextVertex) {
-//             var prevSite = rightVertexEvent.Vertex.NextOnPolyline.Point;
+//             var prevSite = rightVertexEvent.Vertex.NextOnPolyline.point;
 //             var prevZ = prevSite * SweepDirection;
 //             if (ApproximateComparer.Close(prevZ, Z))
-//                 RemoveConesClosedBySegment(prevSite, rightVertexEvent.Vertex.Point);
+//                 RemoveConesClosedBySegment(prevSite, rightVertexEvent.Vertex.point);
 
 //             var site = rightVertexEvent.Site;
 //             var coneLp = site + ConeLeftSideDirection;
 //             var coneRp = site + ConeRightSideDirection;
-//             var nextSite = nextVertex.Point;
+//             var nextSite = nextVertex.point;
 //             //SugiyamaLayoutSettings.Show(new LineSegment(site, coneLP), new LineSegment(site, coneRP), new LineSegment(site, nextSite));
 //             //try to remove the right side
 //             if ((site - prevSite) * SweepDirection > GeomConstants.distanceEpsilon)
 //                 RemoveRightSide(new RightObstacleSide(rightVertexEvent.Vertex.NextOnPolyline));
-//             if ((site - nextVertex.Point) * SweepDirection > GeomConstants.distanceEpsilon)
+//             if ((site - nextVertex.point) * SweepDirection > GeomConstants.distanceEpsilon)
 //                 RemoveLeftSide(new LeftObstacleSide(nextVertex));
 
 //             if (GetZ(nextSite) + GeomConstants.distanceEpsilon < GetZ(rightVertexEvent))
@@ -600,7 +600,7 @@
 //             EnqueueEvent(new RightVertexEvent(nextVertex));
 //             //the obstacle side is inside of the cone
 //             //we need to create an obstacle left side segment instead of the left cone side
-//             var cone = new Cone(rightVertexEvent.Vertex.Point, this);
+//             var cone = new Cone(rightVertexEvent.Vertex.point, this);
 //             var obstacleSideSeg = new BrokenConeSide(cone.Apex, nextVertex, new ConeLeftSide(cone));
 //             cone.LeftSide = obstacleSideSeg;
 //             cone.RightSide = new ConeRightSide(cone);
@@ -608,7 +608,7 @@
 //             LookForIntersectionWithConeRightSide(rnode);
 //             var lnode = InsertToTree(leftConeSides, cone.LeftSide);
 //             FixConeLeftSideIntersections(obstacleSideSeg, lnode);
-//             if ((nextVertex.Point - rightVertexEvent.Site) * SweepDirection > GeomConstants.distanceEpsilon)
+//             if ((nextVertex.point - rightVertexEvent.Site) * SweepDirection > GeomConstants.distanceEpsilon)
 //                 InsertRightSide(new RightObstacleSide(rightVertexEvent.Vertex));
 //         }
 
@@ -620,9 +620,9 @@
 //                 var coneRightSide = node.Item as ConeRightSide;
 //                 if (coneRightSide != null) {
 //                     Point intersection;
-//                     if (Point.IntervalIntersectsRay(obstacleSideStart, obstacleSideVertex.Point,
+//                     if (Point.IntervalIntersectsRay(obstacleSideStart, obstacleSideVertex.point,
 //                         coneRightSide.Start, ConeRightSideDirection, out intersection) &&
-//                         SegmentIsNotHorizontal(intersection, obstacleSideVertex.Point)) {
+//                         SegmentIsNotHorizontal(intersection, obstacleSideVertex.point)) {
 //                         EnqueueEvent(CreateRightIntersectionEvent(coneRightSide, intersection, obstacleSideVertex));
 //                     }
 //                 }
@@ -632,7 +632,7 @@
 //         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
 //         RightIntersectionEvent CreateRightIntersectionEvent(ConeRightSide coneRightSide, Point intersection,
 //             PolylinePoint obstacleSideVertex) {
-//             Assert.assert(Math.Abs((obstacleSideVertex.Point - intersection) * SweepDirection) > 0);
+//             Assert.assert(Math.Abs((obstacleSideVertex.point - intersection) * SweepDirection) > 0);
 //             return new RightIntersectionEvent(coneRightSide,
 //                 intersection, obstacleSideVertex);
 //         }
@@ -650,7 +650,7 @@
 //             var coneLeftSide = node.Item as ConeLeftSide;
 //             if (coneLeftSide == null) return;
 //             Point intersection;
-//             if (Point.IntervalIntersectsRay(obstacleSideStart, obstacleSideVertex.Point, coneLeftSide.Start,
+//             if (Point.IntervalIntersectsRay(obstacleSideStart, obstacleSideVertex.point, coneLeftSide.Start,
 //                 ConeLeftSideDirection, out intersection)) {
 //                 EnqueueEvent(new LeftIntersectionEvent(coneLeftSide, intersection, obstacleSideVertex));
 //             }
@@ -680,12 +680,12 @@
 // #endif
 
 //         static bool PointIsToTheLeftOfSegment(Point p, ConeSide seg) {
-//             return (Point.GetTriangleOrientation(seg.Start, seg.Start + seg.Direction, p) ==
+//             return (Point.getTriangleOrientation(seg.Start, seg.Start + seg.Direction, p) ==
 //                 TriangleOrientation.Counterclockwise);
 //         }
 
 //         static bool PointIsToTheRightOfSegment(Point p, ConeSide seg) {
-//             return (Point.GetTriangleOrientation(seg.Start, seg.Start + seg.Direction, p) ==
+//             return (Point.getTriangleOrientation(seg.Start, seg.Start + seg.Direction, p) ==
 //                 TriangleOrientation.Clockwise);
 //         }
 
@@ -715,19 +715,19 @@
 
 //         void CloseConesAddConeAtLeftVertex(VertexEvent leftVertexEvent, PolylinePoint nextVertex) {
 //             //close segments first
-//             Point prevSite = leftVertexEvent.Vertex.PrevOnPolyline.Point;
+//             Point prevSite = leftVertexEvent.Vertex.PrevOnPolyline.point;
 //             double prevZ = prevSite * SweepDirection;
 //             if (ApproximateComparer.Close(prevZ, Z) && (prevSite - leftVertexEvent.Site) * DirectionPerp > 0) {
 //                 //Show(
 //                 //    new Ellipse(1, 1, prevSite),
-//                 //    CurveFactory.CreateBox(2, 2, leftVertexEvent.Vertex.Point));
-//                 RemoveConesClosedBySegment(leftVertexEvent.Vertex.Point, prevSite);
+//                 //    CurveFactory.CreateBox(2, 2, leftVertexEvent.Vertex.point));
+//                 RemoveConesClosedBySegment(leftVertexEvent.Vertex.point, prevSite);
 //             }
 
 //             var site = leftVertexEvent.Site;
 //             var coneLp = site + ConeLeftSideDirection;
 //             var coneRp = site + ConeRightSideDirection;
-//             var nextSite = nextVertex.Point;
+//             var nextSite = nextVertex.point;
 //             // SugiyamaLayoutSettings.Show(new LineSegment(site, coneLP), new LineSegment(site, coneRP), new LineSegment(site, nextSite));
 
 //             if ((site - prevSite) * SweepDirection > GeomConstants.distanceEpsilon)
@@ -753,19 +753,19 @@
 //                 EnqueueEvent(new LeftVertexEvent(nextVertex));
 //                 //the obstacle side is inside of the cone
 //                 //we need to create an obstacle right side segment instead of the cone side
-//                 var cone = new Cone(leftVertexEvent.Vertex.Point, this);
-//                 var rightSide = new BrokenConeSide(leftVertexEvent.Vertex.Point, nextVertex,
+//                 var cone = new Cone(leftVertexEvent.Vertex.point, this);
+//                 var rightSide = new BrokenConeSide(leftVertexEvent.Vertex.point, nextVertex,
 //                     new ConeRightSide(cone));
 //                 cone.RightSide = rightSide;
 //                 cone.LeftSide = new ConeLeftSide(cone);
 //                 LookForIntersectionWithConeLeftSide(InsertToTree(leftConeSides, cone.LeftSide));
 //                 var rbNode = InsertToTree(rightConeSides, rightSide);
 //                 FixConeRightSideIntersections(rightSide, rbNode);
-//                 if ((nextVertex.Point - leftVertexEvent.Site) * SweepDirection > GeomConstants.distanceEpsilon)
+//                 if ((nextVertex.point - leftVertexEvent.Site) * SweepDirection > GeomConstants.distanceEpsilon)
 //                     InsertLeftSide(new LeftObstacleSide(leftVertexEvent.Vertex));
 //             } else {
 //                 EnqueueEvent(new LeftVertexEvent(nextVertex));
-//                 if ((nextVertex.Point - leftVertexEvent.Site) * SweepDirection > GeomConstants.distanceEpsilon) {
+//                 if ((nextVertex.point - leftVertexEvent.Site) * SweepDirection > GeomConstants.distanceEpsilon) {
 //                     //if( angle >- Pi/2
 //                     // Assert.assert(angle > -Math.PI / 2);
 //                     LookForIntersectionOfObstacleSideAndRightConeSide(leftVertexEvent.Site, nextVertex);
@@ -1090,12 +1090,12 @@
 // #endif
 
 //         static bool VertexIsToTheLeftOfSegment(SweepEvent vertexEvent, ConeSide seg) {
-//             return (Point.GetTriangleOrientation(seg.Start, seg.Start + seg.Direction,
+//             return (Point.getTriangleOrientation(seg.Start, seg.Start + seg.Direction,
 //                 vertexEvent.Site) == TriangleOrientation.Counterclockwise);
 //         }
 
 //         static bool VertexIsToTheRightOfSegment(SweepEvent vertexEvent, ConeSide seg) {
-//             return (Point.GetTriangleOrientation(seg.Start, seg.Start + seg.Direction,
+//             return (Point.getTriangleOrientation(seg.Start, seg.Start + seg.Direction,
 //                 vertexEvent.Site) == TriangleOrientation.Clockwise);
 //         }
 
@@ -1106,7 +1106,7 @@
 //         }
 
 //         void EnqueueEvent(RightVertexEvent vertexEvent) {
-//             if (SweepDirection * (vertexEvent.Site - vertexEvent.Vertex.PrevOnPolyline.Point) > ApproximateComparer.Tolerance)
+//             if (SweepDirection * (vertexEvent.Site - vertexEvent.Vertex.PrevOnPolyline.point) > ApproximateComparer.Tolerance)
 //                 return;//otherwise we enqueue the vertex twice; once as a LeftVertexEvent and once as a RightVertexEvent
 //             base.EnqueueEvent(vertexEvent);
 //         }

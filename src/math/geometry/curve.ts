@@ -274,7 +274,7 @@ export class Curve implements ICurve {
     //                if (CurvesAreCloseAtParams(curve0, curve1, mc0, mc1)) {
     //                    number c1E = curve1.parEnd;
     //                    CurvesAreCloseAtParams(curve0, curve1, c0E, c1E);
-    //                    throw new InvalidOperationException();
+    //                    throw new Error();
     //                }
     //            }
     //recurse down to find all PBLeaf pairs which intesect and try to cross their segments
@@ -305,7 +305,7 @@ export class Curve implements ICurve {
     //                    var mc0 = 0.5*(curve0.parStart + curve0.parEnd);
     //                    var mc1 = 0.5*(curve1.parStart + curve1.parEnd);
     //                    if (CurvesAreCloseAtParams(curve0, curve1, mc0, mc1))
-    //                        throw new InvalidOperationException();
+    //                        throw new Error();
     //                }
     //            }
 
@@ -1418,7 +1418,7 @@ export class Curve implements ICurve {
     }
     
     if (exitSeg == null)
-    throw new InvalidOperationException(); //"exitSeg==null");
+    throw new Error(); //"exitSeg==null");
     
     Point tsn = ts.Rotate((Math.PI/2));
     

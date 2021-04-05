@@ -72,7 +72,7 @@ export class Polygon
 //     //}
 
 //     internal Point Pnt(int i) {
-//         return this[i].Point;
+//         return this[i].point;
 //     }
 
 //         public override string ToString() {
@@ -104,7 +104,7 @@ export class Polygon
 //     // <returns></returns>
 //     internal int FindTheFurthestVertexFromBisector(int p1, int p2, Point bisectorPivot, Point bisectorRay) {
 //         Point directionToTheHill = bisectorRay.Rotate(Math.PI / 2);
-//         if ((polyline.startPoint.Point - bisectorPivot) * directionToTheHill < 0)
+//         if ((polyline.startPoint.point - bisectorPivot) * directionToTheHill < 0)
 //             directionToTheHill = -directionToTheHill;
 //         if (p1 == p2)
 //             p2 = Next(p1);
@@ -180,7 +180,7 @@ export class Polygon
 //     {
 //         var poly = a.Polyline;
 //         for (var p = poly.startPoint; p.next != null && p.next.next != null; p = p.next)
-//             if (Point.GetTriangleOrientation(p.Point, p.next.Point, p.next.next.Point) ==
+//             if (Point.getTriangleOrientation(p.point, p.next.point, p.next.next.point) ==
 //                 TriangleOrientation.Collinear)
 //                 return false;
 //         return true;
@@ -194,7 +194,7 @@ export class Polygon
 //         double res = double.PositiveInfinity;
 //         for (int i = 0; i < poly.Count; i++) {
 //             double par;
-//             double dist = Point.DistToLineSegment(b, poly.points[i].Point, poly.points[(i + 1) % poly.Count].Point, out par);
+//             double dist = Point.DistToLineSegment(b, poly.points[i].point, poly.points[(i + 1) % poly.Count].point, out par);
 //             res = Math.Min(res, dist);
 //         }
 //         return res;

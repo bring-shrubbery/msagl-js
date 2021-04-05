@@ -1,6 +1,6 @@
-import {InvalidOperationException} from 'linq-to-typescript'
-import {Polyline} from '../math/geometry/polyline'
-import {Shape} from './Shape'
+import { Error } from 'linq-to-typescript'
+import { Polyline } from '../math/geometry/polyline'
+import { Shape } from './Shape'
 
 //  an utility class to keep different polylines created around a shape
 export class TightLooseCouple {
@@ -24,7 +24,7 @@ export class TightLooseCouple {
   //  <returns></returns>
   public /* override */ GetHashCode(): number {
     if (this.TightPolyline == null) {
-      throw new InvalidOperationException()
+      throw new Error()
     }
 
     return this.TightPolyline.GetHashCode()

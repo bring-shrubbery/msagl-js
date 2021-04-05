@@ -20,7 +20,7 @@
 
 //         public int Compare(SegmentBase a, SegmentBase b) {
 //             ValidateArg.IsNotNull(b, "b");
-//             var orient = Point.GetTriangleOrientation(b.Start, b.End, x);
+//             var orient = Point.getTriangleOrientation(b.Start, b.End, x);
 //             switch (orient) {
 //                 case TriangleOrientation.Collinear:
 //                     return 0;

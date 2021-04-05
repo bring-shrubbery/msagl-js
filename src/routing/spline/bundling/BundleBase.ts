@@ -208,11 +208,11 @@
 //         Point curMidPoint = MidPoint;
 
 //         //check Prev
-//         if (Point.GetTriangleOrientation(CurveCenter, Prev.MidPoint, curMidPoint) != Point.GetTriangleOrientation(CurveCenter, Prev.MidPoint, newMidPoint))
+//         if (Point.getTriangleOrientation(CurveCenter, Prev.MidPoint, curMidPoint) != Point.getTriangleOrientation(CurveCenter, Prev.MidPoint, newMidPoint))
 //             return false;
 
 //         //Next
-//         if (Point.GetTriangleOrientation(CurveCenter, Next.MidPoint, curMidPoint) != Point.GetTriangleOrientation(CurveCenter, Next.MidPoint, newMidPoint))
+//         if (Point.getTriangleOrientation(CurveCenter, Next.MidPoint, curMidPoint) != Point.getTriangleOrientation(CurveCenter, Next.MidPoint, newMidPoint))
 //             return false;
 
 //         return true;

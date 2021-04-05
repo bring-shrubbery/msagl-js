@@ -2,7 +2,7 @@ import {
   from,
   IEnumerable,
   IGrouping,
-  InvalidOperationException,
+  Error,
 } from 'linq-to-typescript'
 import { Queue } from 'queue-typescript'
 import { Algorithm } from '../../src/utils/algorithm'
@@ -675,7 +675,7 @@ export class SplineRouter extends Algorithm {
   //                                                                                                                     ((e.IsPassable != null)
   //                                                                                                                         && e.IsPassable());
   //                                                                                                                     "black";
-  //                                                                                                                     visGraph.addEdge(p.Point, pn.Point);
+  //                                                                                                                     visGraph.addEdge(p.point, pn.point);
   //                                                                                                                     if ((pn == boundary.startPoint)) {
   //                                                                                                                         break;
   //                                                                                                                     }
@@ -928,7 +928,7 @@ export class SplineRouter extends Algorithm {
   //         }
 
   //         // CdtSweeper.ShowFront(cdt.GetTriangles(), null,
-  //         //                     gates.Select(g => new LineSegment(g.upperSite.Point, g.lowerSite.Point)), null);
+  //         //                     gates.Select(g => new LineSegment(g.upperSite.point, g.lowerSite.point)), null);
   //         return gates;
   //     }
 
@@ -1176,7 +1176,7 @@ export class SplineRouter extends Algorithm {
   //                         LineSweeper.InsertPointIntoPolylineAfter(boundary, polylinePoint, point);
   //                     }
   //                     else {
-  //                         throw new InvalidOperationException();
+  //                         throw new Error();
   //                     }
 
   //                     break;
@@ -1191,19 +1191,19 @@ export class SplineRouter extends Algorithm {
   //         for (const p: PolylinePoint = boundary.startPoint; ;
   //         ) {
   //             const pn: PolylinePoint = p.NextOnPolyline;
-  //             if ((ApproximateComparer.Close(point, p.Point) || ApproximateComparer.Close(point, pn.Point))) {
+  //             if ((ApproximateComparer.Close(point, p.point) || ApproximateComparer.Close(point, pn.point))) {
   //                 return null;
   //             }
 
   //             // the point is already inside
   //             const par: number;
-  //             if (ApproximateComparer.Close(Point.DistToLineSegment(point, p.Point, pn.Point, /* out */par), 0)) {
+  //             if (ApproximateComparer.Close(Point.DistToLineSegment(point, p.point, pn.point, /* out */par), 0)) {
   //                 return p;
   //             }
 
   //             p = pn;
   //             if ((p == boundary.startPoint)) {
-  //                 throw new InvalidOperationException();
+  //                 throw new Error();
   //             }
 
   //         }

@@ -295,7 +295,7 @@ namespace Microsoft.Msagl.Routing {
 
         static internal Polyline CreatePaddedPolyline(Polyline poly, double padding) {
 
-        Assert.assert(Point.GetTriangleOrientation(poly[0], poly[1], poly[2]) == TriangleOrientation.Clockwise
+        Assert.assert(Point.getTriangleOrientation(poly[0], poly[1], poly[2]) == TriangleOrientation.Clockwise
             , "Unpadded polyline is not clockwise");
 
         var ret = new Polyline();
@@ -311,10 +311,10 @@ namespace Microsoft.Msagl.Routing {
                 return CreatePaddedPolyline(new Polyline(ConvexHull.CalculateConvexHull(poly)) { Closed = true },
                     padding);
 
-        Assert.assert(Point.GetTriangleOrientation(ret[0], ret[1], ret[2]) != TriangleOrientation.Counterclockwise
+        Assert.assert(Point.getTriangleOrientation(ret[0], ret[1], ret[2]) != TriangleOrientation.Counterclockwise
             , "Padded polyline is counterclockwise");
 
-        ret.Closed = true;
+        ret.closed = true;
         return ret;
     }
 
@@ -351,10 +351,10 @@ namespace Microsoft.Msagl.Routing {
         static int GetPaddedCorner(PolylinePoint first, PolylinePoint second, PolylinePoint third, out Point a,
         out Point b,
         double padding) {
-        Point u = first.Point;
-        Point v = second.Point;
-        Point w = third.Point;
-        if (Point.GetTriangleOrientation(u, v, w) == TriangleOrientation.Counterclockwise) {
+        Point u = first.point;
+        Point v = second.point;
+        Point w = third.point;
+        if (Point.getTriangleOrientation(u, v, w) == TriangleOrientation.Counterclockwise) {
             a = new Point();
             b = new Point();
             return -1;
@@ -392,7 +392,7 @@ namespace Microsoft.Msagl.Routing {
 
         static bool CornerIsNotTooSharp(Point u, Point v, Point w) {
         Point a = (u - v).Rotate(Math.PI / 4) + v;
-        return Point.GetTriangleOrientation(v, a, w) == TriangleOrientation.Counterclockwise;
+        return Point.getTriangleOrientation(v, a, w) == TriangleOrientation.Counterclockwise;
 
         //   return Point.Angle(u, v, w) > Math.PI / 4;
     }
@@ -406,7 +406,7 @@ namespace Microsoft.Msagl.Routing {
     // <returns></returns>
     internal static bool CurveIsClockwise(ICurve iCurve, Point pointInside) {
         return
-        Point.GetTriangleOrientation(pointInside, iCurve.Start,
+        Point.getTriangleOrientation(pointInside, iCurve.Start,
             iCurve.Start + iCurve.Derivative(iCurve.ParStart)) ==
             TriangleOrientation.Clockwise;
     }
@@ -448,9 +448,9 @@ namespace Microsoft.Msagl.Routing {
     }
 
         static Point GetStickingVertexOnBisector(PolylinePoint pp, double p, out bool skip) {
-        Point u = pp.Polyline.Prev(pp).Point;
-        Point v = pp.Point;
-        Point w = pp.Polyline.next(pp).Point;
+        Point u = pp.Polyline.Prev(pp).point;
+        Point v = pp.point;
+        Point w = pp.Polyline.next(pp).point;
         var z = (v - u).Normalize() + (v - w).Normalize();
         var zLen = z.Length;
         if (zLen < ApproximateComparer.Tolerance)
