@@ -210,7 +210,7 @@ export class ConstrainedOrdering {
   // }
 
   // InitSolverVars(solver: ISolverShell) {
-  //   for (let i= 0; (i < this.LayerArrays.Y.length); i++) {
+  //   for (let i= 0; (i < this.LayerArrays.y.length); i++) {
   //     solver.AddVariableWithIdealPosition(i, 0);
   //   }
 
@@ -269,7 +269,7 @@ export class ConstrainedOrdering {
 
   // FillLayersWithVerticalComponentsOrder(order: number[], nodesToVerticalComponentsRoots: Dictionary<number, number>) {
   //   let componentRootsToComponents: Dictionary<number, Array<number>> = ConstrainedOrdering.CreateComponentRootsToComponentsMap(nodesToVerticalComponentsRoots);
-  //   let alreadyInLayers = new Array(this.LayerArrays.Y.length);
+  //   let alreadyInLayers = new Array(this.LayerArrays.y.length);
   //   let runninglayerCounts = new Array(this.LayerArrays.Layers.length);
   //   for (let vertCompRoot of order) {
   //     this.PutVerticalComponentIntoLayers(this.EnumerateVertComponent(componentRootsToComponents, vertCompRoot), runninglayerCounts, alreadyInLayers);
@@ -312,7 +312,7 @@ export class ConstrainedOrdering {
   //     return;
   //   }
 
-  //   let layerIndex: number = this.LayerArrays.Y[i];
+  //   let layerIndex: number = this.LayerArrays.y[i];
   //   let xIndex: number = runningLayerCounts[layerIndex];
   //   let layer = this.LayerArrays.Layers[layerIndex];
   //   layer[xIndex++] = i;
@@ -433,7 +433,7 @@ export class ConstrainedOrdering {
   //     i++;
   //   }
 
-  //   this.LayerArrays.X[v] = i;
+  //   this.LayerArrays.x[v] = i;
   // }
 
   //       /* const */ static ConstrainedVarWeight= 10000000;
@@ -671,8 +671,8 @@ export class ConstrainedOrdering {
   // }
 
   // RegisterAboveBelowOnConstrainedUpperLower(upper: number, lower: number) {
-  //   let topLayerInfo: LayerInfo = this.GetOrCreateLayerInfo(this.LayerArrays.Y[upper]);
-  //   let bottomLayerInfo: LayerInfo = this.GetOrCreateLayerInfo(this.LayerArrays.Y[lower]);
+  //   let topLayerInfo: LayerInfo = this.GetOrCreateLayerInfo(this.LayerArrays.y[upper]);
+  //   let bottomLayerInfo: LayerInfo = this.GetOrCreateLayerInfo(this.LayerArrays.y[lower]);
   //   topLayerInfo.constrainedFromBelow[upper] = lower;
   //   bottomLayerInfo.constrainedFromAbove[lower] = upper;
   // }

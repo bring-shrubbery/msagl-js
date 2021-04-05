@@ -4,7 +4,7 @@ import { CdtEdge } from '../../ConstrainedDelaunayTriangulation/CdtEdge'
 import { VisibilityEdge } from '../../visibility/VisibilityEdge'
 import { SdVertex } from './SdVertex'
 
-//     [DebuggerDisplay("({SourcePoint.X},{SourcePoint.Y})->({TargetPoint.X},{TargetPoint.Y})")]
+//     [DebuggerDisplay("({SourcePoint.x},{SourcePoint.y})->({TargetPoint.x},{TargetPoint.y})")]
 export class SdBoneEdge {
   VisibilityEdge: VisibilityEdge
 

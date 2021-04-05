@@ -14,7 +14,7 @@
 //     // this class builds the triangulation by a sweep with a horizontal line
 //     // </summary>
 //     public class CdtSweeper: AlgorithmBase {
-//         RbTree < CdtFrontElement > front = new RbTree<CdtFrontElement>((a, b) => a.X.CompareTo(b.X));
+//         RbTree < CdtFrontElement > front = new RbTree<CdtFrontElement>((a, b) => a.x.CompareTo(b.x));
 //         readonly Set < CdtTriangle > triangles=new Set<CdtTriangle>();
 //         List < CdtSite > listOfSites;
 //         CdtSite p_2;
@@ -86,8 +86,8 @@
 //             var e = firstPerimeterEdge;
 //             do {
 //                 e = e.next;
-//                 if (e.Start.point.X < pivot.Start.point.X ||
-//                     e.Start.point.X == pivot.Start.point.X && e.Start.point.Y < pivot.Start.point.Y)
+//                 if (e.Start.point.x < pivot.Start.point.x ||
+//                     e.Start.point.x == pivot.Start.point.x && e.Start.point.y < pivot.Start.point.y)
 //                     pivot = e;
 //             } while (e != firstPerimeterEdge);
 //             return pivot;
@@ -266,7 +266,7 @@
 
 //             ProjectToFront(pi, out hittedFrontElementNode);
 //             CdtSite rightSite;
-//             CdtSite leftSite = hittedFrontElementNode.Item.X + GeomConstants.distanceEpsilon < pi.point.X
+//             CdtSite leftSite = hittedFrontElementNode.Item.x + GeomConstants.distanceEpsilon < pi.point.x
 //                 ? MiddleCase(pi, hittedFrontElementNode, out rightSite)
 //                 : LeftCase(pi, hittedFrontElementNode, out rightSite);
 //             var piNode = InsertSiteIntoFront(leftSite, pi, rightSite);
@@ -318,7 +318,7 @@
 //         CdtSite LeftCase(CdtSite pi, RBNode < CdtFrontElement > hittedFrontElementNode, out CdtSite rightSite) {
 //             //left case
 //             //                if(db)ShowFrontWithSite(pi, new LineSegment(pi.point, hittedFrontElementNode.Item.Edge.upperSite.point), new LineSegment(pi.point, hittedFrontElementNode.Item.Edge.lowerSite.point));
-//             Assert.assert(Point.closeDistEps(pi.point.X, hittedFrontElementNode.Item.X));
+//             Assert.assert(Point.closeDistEps(pi.point.x, hittedFrontElementNode.Item.x));
 //             var hittedFrontElement = hittedFrontElementNode.Item;
 //             InsertAndLegalizeTriangle(pi, hittedFrontElement);
 //             var prevToHitted = front.Previous(hittedFrontElementNode);
@@ -421,10 +421,10 @@
 //                     ShortcutTwoFrontElements(prev, leftLegNode);
 //                     //      ShowFrontWithSite(site);
 //                 } else {
-//                     if (leftLegNode.Item.LeftSite.point.Y > leftLegNode.Item.RightSite.point.Y) {
+//                     if (leftLegNode.Item.LeftSite.point.y > leftLegNode.Item.RightSite.point.y) {
 //                         stack.Push(prev.Item.LeftSite);
 //                     } else {
-//                         if (prev.Item.LeftSite.point.Y <= prev.Item.RightSite.point.Y)
+//                         if (prev.Item.LeftSite.point.y <= prev.Item.RightSite.point.y)
 //                             return;
 //                         stack.Push(prev.Item.LeftSite);
 //                     }
@@ -437,8 +437,8 @@
 //             if (frontElement.RightSite != edge.upperSite)
 //                 return false;
 //             var d = edge.lowerSite.point - edge.upperSite.point;
-//             Assert.assert(d.X < 0 && d.Y <= 0);
-//             return d.X >= 0.5 * d.Y;
+//             Assert.assert(d.x < 0 && d.y <= 0);
+//             return d.x >= 0.5 * d.y;
 //         }
 
 //         RBNode < CdtFrontElement > InsertSiteIntoFront(CdtSite leftSite, CdtSite pi, CdtSite rightSite) {
@@ -490,10 +490,10 @@
 //                     ShortcutTwoFrontElements(piNode, next);
 //                     stack.Push(site);
 //                 } else {
-//                     if (piNode.Item.LeftSite.point.Y > piNode.Item.RightSite.point.Y) {
+//                     if (piNode.Item.LeftSite.point.y > piNode.Item.RightSite.point.y) {
 //                         stack.Push(piNode.Item.RightSite);
 //                     } else {
-//                         if (next.Item.LeftSite.point.Y >= next.Item.RightSite.point.Y)
+//                         if (next.Item.LeftSite.point.y >= next.Item.RightSite.point.y)
 //                             return;
 //                         stack.Push(piNode.Item.RightSite);
 //                     }
@@ -506,12 +506,12 @@
 //             if (frontElement.LeftSite != edge.upperSite)
 //                 return false;
 //             var d = edge.lowerSite.point - edge.upperSite.point;
-//             Assert.assert(d.X > 0 && d.Y <= 0);
-//             return d.X <= -0.5 * d.Y;
+//             Assert.assert(d.x > 0 && d.y <= 0);
+//             return d.x <= -0.5 * d.y;
 //         }
 
 //         internal static RBNode < CdtFrontElement > FindNodeInFrontBySite(RbTree < CdtFrontElement > cdtFrontElements, CdtSite piSite) {
-//             return cdtFrontElements.FindLast(x => x.LeftSite.point.X <= piSite.point.X);
+//             return cdtFrontElements.FindLast(x => x.LeftSite.point.x <= piSite.point.x);
 //         }
 
 //         void InsertAndLegalizeTriangle(CdtSite pi, CdtFrontElement frontElement) {
@@ -634,12 +634,12 @@
 //              *  | bx-dx by-dy (bx-dx)^2+(by-dy)^2|
 //              *  | cx-dx cy-dy (cx-dx)^2+(cy-dy)^2|
 //              */
-//             var axdx = a.point.X - d.point.X;
-//             var aydy = a.point.Y - d.point.Y;
-//             var bxdx = b.point.X - d.point.X;
-//             var bydy = b.point.Y - d.point.Y;
-//             var cxdx = c.point.X - d.point.X;
-//             var cydy = c.point.Y - d.point.Y;
+//             var axdx = a.point.x - d.point.x;
+//             var aydy = a.point.y - d.point.y;
+//             var bxdx = b.point.x - d.point.x;
+//             var bydy = b.point.y - d.point.y;
+//             var cxdx = c.point.x - d.point.x;
+//             var cydy = c.point.y - d.point.y;
 //             var t0 = axdx * axdx + aydy * aydy;
 //             var t1 = bxdx * bxdx + bydy * bydy;
 //             var t2 = cxdx * cxdx + cydy * cydy;
@@ -752,7 +752,7 @@
 //         }
 
 //         void ProjectToFront(CdtSite site, out RBNode < CdtFrontElement > frontElement) {
-//             frontElement = front.FindLast(s => s.X <= site.point.X);
+//             frontElement = front.FindLast(s => s.x <= site.point.x);
 //         }
 
 //     }

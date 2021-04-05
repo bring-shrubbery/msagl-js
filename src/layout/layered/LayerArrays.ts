@@ -1,8 +1,8 @@
-import {Assert} from '../../utils/assert'
-import {copyTo} from '../../utils/copy'
+import { Assert } from '../../utils/assert'
+import { copyTo } from '../../utils/copy'
 
 export class LayerArrays {
-  Y: number[]
+  y: number[]
 
   verticesToX: number[]
 
@@ -13,7 +13,7 @@ export class LayerArrays {
   }
 
   initialize(verticesToLayers: number[]) {
-    this.Y = verticesToLayers
+    this.y = verticesToLayers
     this.verticesToX = null
     this.layers = null
   }
@@ -30,8 +30,8 @@ export class LayerArrays {
     if (dropVal == 0) return this
 
     //we do have empty layers
-    const ny = new Array<number>(this.Y.length)
-    for (let i = 0; i < ny.length; i++) ny[i] = this.Y[i] - drop[this.Y[i]]
+    const ny = new Array<number>(this.y.length)
+    for (let i = 0; i < ny.length; i++) ny[i] = this.y[i] - drop[this.y[i]]
 
     //copy the layers itself
     const nls = new Array<number[]>(this.layers.length - dropVal)
@@ -57,7 +57,7 @@ export class LayerArrays {
     if (this.layers == null) this.InitLayers()
 
     if (this.verticesToX == null)
-      this.verticesToX = new Array<number>(this.Y.length)
+      this.verticesToX = new Array<number>(this.y.length)
 
     for (const layer of this.layers) {
       let i = 0
@@ -67,10 +67,10 @@ export class LayerArrays {
 
   // gives the order of the vertices in the y-layer
   // <value></value>
-  get X(): number[] {
+  get x(): number[] {
     if (this.verticesToX != null) return this.verticesToX
 
-    this.verticesToX = new Array<number>(this.Y.length)
+    this.verticesToX = new Array<number>(this.y.length)
 
     this.UpdateXFromLayers()
 
@@ -79,9 +79,9 @@ export class LayerArrays {
 
   // returns the layer hierarchy where the order of the layers is reversed
   ReversedClone(): LayerArrays {
-    const rv = new Array<number>(this.Y.length)
+    const rv = new Array<number>(this.y.length)
     const lastLayer = this.Layers.length - 1 //call Layers to ensure that the layers are calculated
-    for (let i = 0; i < this.Y.length; i++) rv[i] = lastLayer - this.Y[i]
+    for (let i = 0; i < this.y.length; i++) rv[i] = lastLayer - this.y[i]
     return new LayerArrays(rv)
   }
 
@@ -102,12 +102,12 @@ export class LayerArrays {
     //find the number of layers
     let nOfLayers = 0
 
-    for (const l of this.Y) if (l + 1 > nOfLayers) nOfLayers = l + 1
+    for (const l of this.y) if (l + 1 > nOfLayers) nOfLayers = l + 1
 
     const counts = new Array<number>(nOfLayers).fill(0)
 
     //find the number of vertices in the layer
-    for (const l of this.Y) counts[l]++
+    for (const l of this.y) counts[l]++
 
     this.layers = new Array<number[]>(nOfLayers)
 
@@ -116,8 +116,8 @@ export class LayerArrays {
       counts[i] = 0 //we reuse these counts below
     }
 
-    for (let i = 0; i < this.Y.length; i++) {
-      const l = this.Y[i]
+    for (let i = 0; i < this.y.length; i++) {
+      const l = this.y[i]
       this.layers[l][counts[l]++] = i
     }
     Assert.assert(layersAreCorrect(this))

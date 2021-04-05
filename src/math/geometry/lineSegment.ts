@@ -124,17 +124,17 @@ return null;
 }
 
 if(xx.Par0>1){
-if (Point.closeDistEps(coeff.End, xx.X))
+if (Point.closeDistEps(coeff.End, xx.x))
 {
-xx.X = coeff.End;
+xx.x = coeff.End;
 xx.Par0 = 1;
 }
 else
 return null;
 }
 else if(xx.Par0<0){
-if(Point.closeDistEps(coeff.Start,xx.X)){
-xx.X=coeff.Start; 
+if(Point.closeDistEps(coeff.Start,xx.x)){
+xx.x=coeff.Start; 
 xx.Par0=1;
 }
 else
@@ -143,9 +143,9 @@ return null;
 
 if (xx.Par1 > 1)
 {
-if (Point.closeDistEps(side1.End, xx.X))
+if (Point.closeDistEps(side1.End, xx.x))
 {
-xx.X = coeff.End;
+xx.x = coeff.End;
 xx.Par1 = 1;
 }
 else
@@ -153,9 +153,9 @@ return null;
 }
 else if (xx.Par1 < 0)
 {
-if (Point.closeDistEps(side1.Start, xx.X))
+if (Point.closeDistEps(side1.Start, xx.x))
 {
-xx.X = coeff.Start;
+xx.x = coeff.Start;
 xx.Par1 = 1;
 }
 else

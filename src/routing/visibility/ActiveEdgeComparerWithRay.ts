@@ -37,14 +37,14 @@
 //         private bool IntersectionPointBelongsToTheInsertedEdge(PolylinePoint x) {
 //     Point a = x.point - IntersectionOfTheRayAndInsertedEdge;
 //     Point b = x.NextOnPolyline.point - IntersectionOfTheRayAndInsertedEdge;
-//     return Math.Abs(a.X * b.Y - b.X * a.Y) < GeomConstants.distanceEpsilon;
+//     return Math.Abs(a.x * b.y - b.x * a.y) < GeomConstants.distanceEpsilon;
 // }
 
 // [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
 // Point IntersectEdgeWithRay(Point source, Point target, Point ray) {
 //     //let x(t-s)+s is on the ray, then for some y we x(t-s)+s=y*ray+pivot, or x(t-s)-y*ray=pivot-s
 //     double x, y;
-//     bool result = LinearSystem2.Solve(target.X - source.X, -ray.X, Pivot.X - source.X, target.Y - source.Y, -ray.Y, Pivot.Y - source.Y, out x, out y);
+//     bool result = LinearSystem2.Solve(target.x - source.x, -ray.x, Pivot.x - source.x, target.y - source.y, -ray.y, Pivot.y - source.y, out x, out y);
 //     if (!(-ApproximateComparer.Tolerance <= x && x <= 1 + ApproximateComparer.Tolerance))
 //         throw new Exception();
 //     if (!result)

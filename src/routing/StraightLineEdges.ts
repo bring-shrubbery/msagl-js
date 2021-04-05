@@ -116,11 +116,11 @@ export class StraightLineEdges extends Algorithm {
       targetBox,
     )
     const dir = closestPoint - center
-    const vert = Math.Abs(dir.X) < GeomConstants.distanceEpsilon
+    const vert = Math.Abs(dir.x) < GeomConstants.distanceEpsilon
     const maxWidth =
       (vert
-        ? Math.Min(center.Y - targetBox.Bottom, targetBox.Top - center.Y)
-        : Math.Min(center.X - targetBox.Left, targetBox.Right - center.X)) / 2 //divide over 2 to not miss the rect
+        ? Math.Min(center.y - targetBox.bottom, targetBox.top - center.y)
+        : Math.Min(center.x - targetBox.Left, targetBox.Right - center.x)) / 2 //divide over 2 to not miss the rect
 
     const width = Math.Min(howMuchToStickOut, maxWidth)
     if (dir.Length <= GeomConstants.distanceEpsilon) {
@@ -141,16 +141,16 @@ export class StraightLineEdges extends Algorithm {
 
   static FindClosestPointOnBoxBoundary(c: Point, targetBox: Rectangle): Point {
     const x =
-      c.X - targetBox.Left < targetBox.Right - c.X
+      c.x - targetBox.Left < targetBox.Right - c.x
         ? targetBox.Left
         : targetBox.Right
     const y =
-      c.Y - targetBox.Bottom < targetBox.Top - c.Y
-        ? targetBox.Bottom
-        : targetBox.Top
-    return Math.Abs(x - c.X) < Math.Abs(y - c.Y)
-      ? new Point(x, c.Y)
-      : new Point(c.X, y)
+      c.y - targetBox.bottom < targetBox.top - c.y
+        ? targetBox.bottom
+        : targetBox.top
+    return Math.Abs(x - c.x) < Math.Abs(y - c.y)
+      ? new Point(x, c.y)
+      : new Point(c.x, y)
   }
 
   //  Returns a line segment for the given geomedge.

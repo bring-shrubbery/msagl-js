@@ -587,7 +587,7 @@
 
 // //     //private bool QContains(int x ,int y) {
 // //     //    foreach (Point p of Q.Polyline) {
-// //     //        if (p.X == x && p.Y == y)
+// //     //        if (p.x == x && p.y == y)
 // //     //            return true;
 // //     //    }
 // //     //    return false;
@@ -595,7 +595,7 @@
 
 // //     //bool PContains(int x, int y) {
 // //     //    foreach (Point p of P.Polyline) {
-// //     //        if (p.X == x && p.Y == y)
+// //     //        if (p.x == x && p.y == y)
 // //     //            return true;
 // //     //    }
 // //     //    return false;

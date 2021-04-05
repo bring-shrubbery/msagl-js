@@ -41,7 +41,7 @@
 //         Point target = diagonal.End;
 //         //let x(t-s)+s is on the ray, then for some y we x(t-s)+s=y*ray+pivot, or x(t-s)-y*ray=pivot-s
 //         double x, y;
-//         bool result = LinearSystem2.Solve(target.X - source.X, -ray.X, pivot.X - source.X, target.Y - source.Y, -ray.Y, pivot.Y - source.Y, out x, out y);
+//         bool result = LinearSystem2.Solve(target.x - source.x, -ray.x, pivot.x - source.x, target.y - source.y, -ray.y, pivot.y - source.y, out x, out y);
 
 //         Assert.assert(result && -ApproximateComparer.Tolerance <= x && x <= 1 + ApproximateComparer.Tolerance);
 

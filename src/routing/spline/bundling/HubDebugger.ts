@@ -151,7 +151,7 @@
 //         double s = 1.0;
 //         Graph g = gViewer.Graph;
 //         double x = 0.5 * w - s * (g.Left + 0.5 * g.Width);
-//         double y = 0.5 * h + s * (g.Bottom + 0.5 * g.Height);
+//         double y = 0.5 * h + s * (g.bottom + 0.5 * g.Height);
 
 //         graphics.Transform = new Matrix((float)s, 0, 0, (float)-s, (float)x, (float)y);
 //         Draw.DrawPrecalculatedLayoutObject(graphics, gViewer.DGraph);

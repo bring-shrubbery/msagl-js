@@ -28,14 +28,14 @@
 //     }
 
 //     internal static int CompareVectorsByAngleToXAxis(Point a, Point b) {
-//         if (a.Y >= 0) {
-//             if (b.Y < 0)
+//         if (a.y >= 0) {
+//             if (b.y < 0)
 //                 return -1;
 //             return CompareVectorsPointingToTheSameYHalfPlane(ref a, ref b);
 
 //         } else {
-//             //a.Y <0
-//             if (b.Y >= 0)
+//             //a.y <0
+//             if (b.y >= 0)
 //                 return 1;
 //             return CompareVectorsPointingToTheSameYHalfPlane(ref a, ref b);
 //         }
@@ -45,26 +45,26 @@
 
 //         private static int CompareVectorsPointingToTheSameYHalfPlane(ref Point a, ref Point b) {
 //         //now we know that a and b do not point to different Y half planes
-//         double sign = a.X * b.Y - a.Y * b.X;
+//         double sign = a.x * b.y - a.y * b.x;
 //         if (sign > ApproximateComparer.Tolerance)
 //             return -1;
 //         if (sign < -ApproximateComparer.Tolerance)
 //             return 1;
 //         //are they on the opposite sides of the pivot by X?
-//         if (a.X >= 0) {
-//             if (b.X < 0)//yes
+//         if (a.x >= 0) {
+//             if (b.x < 0)//yes
 //                 return -1;
 //         } else
-//             if (b.X >= 0)
+//             if (b.x >= 0)
 //                 return 1;
 
-//         double del = Math.Abs(a.X) - Math.Abs(b.X);
+//         double del = Math.Abs(a.x) - Math.Abs(b.x);
 //         if (del < 0)
 //             return -1;
 //         if (del > 0)
 //             return 1;
 
-//         del = Math.Abs(a.Y) - Math.Abs(b.Y);
+//         del = Math.Abs(a.y) - Math.Abs(b.y);
 //         if (del < 0)
 //             return -1;
 //         if (del > 0)

@@ -155,7 +155,7 @@
 
 //         static internal Polyline Create4gon(Point apex, Point baseCenter, double width1, double width2) {
 //         var norm = (baseCenter - apex).Normalize();
-//         norm = new Point(norm.Y, -norm.X);
+//         norm = new Point(norm.y, -norm.x);
 //         return new Polyline(apex + norm * width1 / 2, apex - norm * width1 / 2, baseCenter - norm * width2 / 2, baseCenter + norm * width2 / 2) { Closed = true };
 //     }
 

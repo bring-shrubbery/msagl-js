@@ -364,9 +364,9 @@
 //             if (chordLength / radius < 0.0001)//to avoid a floating point error
 //                 return new LineSegment(a, c);
 //             var cenA = a - center;
-//             var aAngle = Math.Atan2(cenA.Y, cenA.X);
+//             var aAngle = Math.Atan2(cenA.y, cenA.x);
 //             var cenC = c - center;
-//             var cAngle = Math.Atan2(cenC.Y, cenC.X);
+//             var cAngle = Math.Atan2(cenC.y, cenC.x);
 //             var delac = cAngle - aAngle;
 //             if (delac < 0) {
 //                 delac += 2 * Math.PI;

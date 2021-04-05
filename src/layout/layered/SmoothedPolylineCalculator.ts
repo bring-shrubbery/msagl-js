@@ -152,7 +152,7 @@ export class SmoothedPolylineCalculator {
       )) {
         if (
           leftMost == -1 ||
-          this.layerArrays.X[v] < this.layerArrays.X[leftMost]
+          this.layerArrays.x[v] < this.layerArrays.x[leftMost]
         ) {
           leftMost = v
         }
@@ -184,10 +184,10 @@ export class SmoothedPolylineCalculator {
   ): IterableIterator<number> {
     let b = 0
     let t = 0
-    if (nodeKind == NodeKind.Bottom) {
+    if (nodeKind == NodeKind.bottom) {
       b = Number.MAX_VALUE
       // we don't have bottom boundaries here since they will be cut off
-    } else if (nodeKind == NodeKind.Top) {
+    } else if (nodeKind == NodeKind.top) {
       t = Number.MAX_VALUE
       // we don't have top boundaries here since they will be cut off
     }
@@ -225,12 +225,12 @@ export class SmoothedPolylineCalculator {
   ): IterableIterator<number> {
     let b = 0
     let t = 0
-    if (nodeKind == NodeKind.Top) {
+    if (nodeKind == NodeKind.top) {
       t = Number.MAX_VALUE
     }
 
     // there are no top vertices - they are cut down by the top boundaryCurve curve
-    if (nodeKind == NodeKind.Bottom) {
+    if (nodeKind == NodeKind.bottom) {
       b = Number.MAX_VALUE
     }
 
@@ -354,11 +354,11 @@ export class SmoothedPolylineCalculator {
 
   private Intersect(e: LayerEdge, m: LayerEdge): boolean {
     const a: number =
-      this.layerArrays.X[e.Source] - this.layerArrays.X[m.Source]
+      this.layerArrays.x[e.Source] - this.layerArrays.x[m.Source]
     const b: number =
-      this.layerArrays.X[e.Target] - this.layerArrays.X[m.Target]
+      this.layerArrays.x[e.Target] - this.layerArrays.x[m.Target]
     return (a > 0 && b < 0) || (a < 0 && b > 0)
-    // return (layerArrays.X[e.Source] - layerArrays.X[m.Source]) * (layerArrays.X[e.Target] - layerArrays.X[m.Target]) < 0;
+    // return (layerArrays.x[e.Source] - layerArrays.x[m.Source]) * (layerArrays.x[e.Target] - layerArrays.x[m.Target]) < 0;
   }
 
   private IncomingEdge(u: number): LayerEdge {
@@ -376,13 +376,13 @@ export class SmoothedPolylineCalculator {
   ): IterableIterator<number> {
     return this.FillRightTopAndBottomVerts(
       this.NodeLayer(i),
-      this.layerArrays.X[i],
+      this.layerArrays.x[i],
       nodeKind,
     )
   }
 
   private NodeLayer(i: number): number[] {
-    return this.layerArrays.Layers[this.layerArrays.Y[i]]
+    return this.layerArrays.Layers[this.layerArrays.y[i]]
   }
 
   private LeftBoundaryNodesOfANode(
@@ -391,7 +391,7 @@ export class SmoothedPolylineCalculator {
   ): IterableIterator<number> {
     return this.FillLeftTopAndBottomVerts(
       this.NodeLayer(i),
-      this.layerArrays.X[i],
+      this.layerArrays.x[i],
       nodeKind,
     )
   }
@@ -661,7 +661,7 @@ export class SmoothedPolylineCalculator {
   }
 
   get TailSite(): CornerSite {
-    const s: CornerSite = this.headSite
+    let s: CornerSite = this.headSite
     while (s.next != null) {
       s = s.next
     }
@@ -675,59 +675,56 @@ export class SmoothedPolylineCalculator {
     const bottom: number = this.EdgePathNode(2)
     const a: Anchor = this.anchors[top]
     const b: Anchor = this.anchors[bottom]
-    const ax: number = a.X
-    const bx: number = b.X
-    if (Point.closeDistEps(ax, bx)) {
+    if (Point.closeD(ax, bx)) {
       return
     }
 
-    const sign: number
+    const t = { ax: a.x, bx: b.x, sign: 0 }
     if (
-      !this.FindLegalPositions(a, b, /* ref */ ax, /* ref */ bx, /* out */ sign)
+      !this.FindLegalPositions(a, b, t)
     ) {
       return
     }
 
-    const ratio: number = (a.y - b.y) / (a.Bottom - b.Top)
-    const xc = 0.5 * (ax + bx)
-    const half: number = sign * ((ax - bx) * 0.5)
-    ax = xc + ratio * (half * sign)
-    bx = xc - ratio * (half * sign)
-    this.headSite.point = new Point(ax, a.y)
+    const ratio: number = (a.y - b.y) / (a.bottom - b.top)
+    const xc = 0.5 * (t.ax + t.bx)
+    const half: number = t.sign * ((t.ax - t.bx) * 0.5)
+    t.ax = xc + ratio * (half * t.sign)
+    t.bx = xc - ratio * (half * t.sign)
+    this.headSite.point = new Point(t.ax, a.y)
     const ms = this.headSite.next
     const mY: number = ms.point.y
-    ms.point = new Point(this.MiddlePos(ax, bx, a, b, mY), mY)
-    ms.next.point = new Point(bx, b.y)
+    ms.point = new Point(this.MiddlePos(t.ax, t.bx, a, b, mY), mY)
+    ms.next.point = new Point(t.bx, b.y)
     const ma: Anchor = this.anchors[this.EdgePathNode(1)]
-    ma.X = ms.point.x
-    // show(new DebugCurve(200, 3, "yellow", new LineSegment(ax, a.y, ms.point.X, ms.point.y)),
-    //     new DebugCurve(200, 3, "green", new LineSegment(bx, b.y, ms.point.X, ms.point.y)));
+    ma.x = ms.point.x
+    // show(new DebugCurve(200, 3, "yellow", new LineSegment(ax, a.y, ms.point.x, ms.point.y)),
+    //     new DebugCurve(200, 3, "green", new LineSegment(bx, b.y, ms.point.x, ms.point.y)));
   }
 
   OptimizeForTwoSites() {
-    Assert.assert(this.edgePath.LayerEdges.count == 1)
+    Assert.assert(this.edgePath.LayerEdges.length == 1)
     const top: number = this.EdgePathNode(0)
     const bottom: number = this.EdgePathNode(1)
     const a: Anchor = this.anchors[top]
     const b: Anchor = this.anchors[bottom]
-    const ax: number = a.X
-    const bx: number = b.X
-    if (Point.closeDistEps(ax, bx)) {
+    if (Point.closeD(a.x, b.x)) {
       return
     }
 
-    const sign: number
-    if (!this.FindPositions(a, b, /* ref */ ax, /* ref */ bx, /* out */ sign)) {
+    const t = { ax: a.x, bx: b.x, sign: 0 }
+
+    if (!this.FindPositions(a, b, t)) {
       return
     }
 
-    const ratio: number = (a.y - b.y) / (a.Bottom - b.Top)
-    const xc = 0.5 * (ax + bx)
-    const half: number = sign * ((ax - bx) * 0.5)
-    ax = xc + ratio * (half * sign)
-    bx = xc - ratio * (half * sign)
-    this.headSite.point = new Point(ax, a.y)
-    this.headSite.next.point = new Point(bx, b.y)
+    const ratio: number = (a.y - b.y) / (a.bottom - b.top)
+    const xc = 0.5 * (t.ax + t.bx)
+    const half: number = t.sign * ((t.ax - t.bx) * 0.5)
+    ax = xc + ratio * (half * t.sign)
+    bx = xc - ratio * (half * t.sign)
+    this.headSite.point = new Point(t.ax, t.a.y)
+    this.headSite.next.point = new Point(t.bx, t.b.y)
   }
 
   private FindLegalPositions(
@@ -743,12 +740,12 @@ export class SmoothedPolylineCalculator {
       return false
     }
 
-    if (this.PositionsAreLegal(ax, bx, sign, a, b, this.EdgePathNode(1))) {
+    if (this.PositionsAreLegal(t.ax, t.bx, t.sign, a, b, this.EdgePathNode(1))) {
       return true
     }
 
-    ax = (ax + a.X) / 2
-    bx = (bx + b.X) / 2
+    t.ax = (t.ax + a.x) / 2
+    t.bx = (t.bx + b.x) / 2
 
     return false
   }
@@ -798,13 +795,13 @@ export class SmoothedPolylineCalculator {
     Assert.assert(a.y > b.y)
     const seg = new LineSegment(a.Origin, b.Origin)
     return (
-      (a.X < b.X &&
+      (a.x < b.x &&
         Curve.CurvesIntersect(
           seg,
           new LineSegment(a.RightBottom, a.RightTop),
         )) ||
       Curve.CurvesIntersect(seg, new LineSegment(b.LeftBottom, a.LeftTop)) ||
-      (a.X > b.X &&
+      (a.x > b.x &&
         Curve.CurvesIntersect(seg, new LineSegment(a.LeftBottom, a.LeftTop))) ||
       Curve.CurvesIntersect(seg, new LineSegment(b.RightBottom, a.RightTop))
     )
@@ -846,8 +843,8 @@ export class SmoothedPolylineCalculator {
     }
 
     return !this.LineSegIntersectBound(
-      new Point(sax, a.Bottom),
-      new Point(sbx, b.Top),
+      new Point(sax, a.bottom),
+      new Point(sbx, b.top),
     )
   }
 
@@ -857,8 +854,8 @@ export class SmoothedPolylineCalculator {
     mAnchor: Anchor,
   ): boolean {
     const mLayer = this.NodeLayer(middleNodeIndex)
-    const pos: number = this.layerArrays.X[middleNodeIndex]
-    const shift: number = mx - mAnchor.X
+    const pos: number = this.layerArrays.x[middleNodeIndex]
+    const shift: number = mx - mAnchor.x
     if (pos > 0) {
       const l: Anchor = this.anchors[mLayer[pos - 1]]
       if (l.right > shift + mAnchor.left) {

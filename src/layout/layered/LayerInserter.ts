@@ -1,11 +1,11 @@
-import {BasicGraph} from '../../structs/BasicGraph'
-import {GeomNode} from '../core/geomNode'
-import {Database} from './Database'
-import {EdgePathsInserter} from './EdgePathsInserter'
-import {LayerArrays} from './LayerArrays'
-import {LayerEdge} from './LayerEdge'
-import {PolyIntEdge} from './polyIntEdge'
-import {ProperLayeredGraph} from './ProperLayeredGraph'
+import { BasicGraph } from '../../structs/BasicGraph'
+import { GeomNode } from '../core/geomNode'
+import { Database } from './Database'
+import { EdgePathsInserter } from './EdgePathsInserter'
+import { LayerArrays } from './LayerArrays'
+import { LayerEdge } from './LayerEdge'
+import { PolyIntEdge } from './polyIntEdge'
+import { ProperLayeredGraph } from './ProperLayeredGraph'
 
 // Preparing the graph for x-coordinate calculation by inserting dummy nodes into the layers
 export class LayerInserter {
@@ -44,7 +44,7 @@ export class LayerInserter {
     la: LayerArrays,
     db: Database,
     intGraphP: BasicGraph<GeomNode, PolyIntEdge>,
-  ): {layeredGraph: ProperLayeredGraph; la: LayerArrays} {
+  ): { layeredGraph: ProperLayeredGraph; la: LayerArrays } {
     const li = new LayerInserter(layeredGraph, la, db, intGraphP)
     li.InsertLayers()
 
@@ -55,7 +55,7 @@ export class LayerInserter {
   }
   // new Y-layering
   get NLayering(): number[] {
-    return this.Nla.Y
+    return this.Nla.y
   }
 
   // does the main work
@@ -96,12 +96,12 @@ export class LayerInserter {
   }
 
   private UpdateOldLayer(replacingNode: number, prevNode: number) {
-    const x = this.la.X[prevNode]
-    const y = this.la.Y[prevNode]
+    const x = this.la.x[prevNode]
+    const y = this.la.y[prevNode]
     const layer = this.la.Layers[y]
     layer[x] = replacingNode
-    //   this.la.X[replacingNode] = x;
-    //  this.la.Y[replacingNode] = y;
+    //   this.la.x[replacingNode] = x;
+    //  this.la.y[replacingNode] = y;
   }
 
   // Original layers are represented by even layers of the new layering.
@@ -122,15 +122,15 @@ export class LayerInserter {
             if (ie != e) {
               const u = ie.LayerEdges[layerOffsetInTheEdge].Source
               layer[offset] = u
-              this.Nla.X[u] = offset++
+              this.Nla.x[u] = offset++
             } else {
               layer[offset] = v
-              this.Nla.X[v] = offset++
+              this.Nla.x[v] = offset++
             }
           }
         } else {
           layer[offset] = v
-          this.Nla.X[v] = offset++
+          this.Nla.x[v] = offset++
         }
       }
     }
@@ -174,7 +174,7 @@ export class LayerInserter {
         if (span > 0) {
           e.LayerEdges = new LayerEdge[span]()
           for (let i = 0; i < span; i++) {
-            const bT = {currentVV: this.totalNodes}
+            const bT = { currentVV: this.totalNodes }
             const source = EdgePathsInserter.GetSource(bT, e, i)
             this.totalNodes = bT.currentVV
             const target = EdgePathsInserter.GetTarget(
@@ -205,7 +205,7 @@ export class LayerInserter {
         let successor = -1
         for (const ie of this.nLayeredGraph.OutEdges(v)) successor = ie.Target
 
-        const x = this.Nla.X[predecessor] + this.Nla.X[successor]
+        const x = this.Nla.x[predecessor] + this.Nla.x[successor]
 
         if (sd.has(x)) {
           const o = sd[x]
@@ -232,7 +232,7 @@ export class LayerInserter {
         }
 
       //update X now
-      for (let m = 0; m < layer.length; m++) this.Nla.X[layer[m]] = m
+      for (let m = 0; m < layer.length; m++) this.Nla.x[layer[m]] = m
     }
   }
 
@@ -241,12 +241,12 @@ export class LayerInserter {
     this.Nla = new LayerArrays(new Array<number>(this.totalNodes))
 
     for (let i = 0; i < this.layeredGraph.NodeCount; i++)
-      this.NLayering[i] = this.la.Y[i] * 2
+      this.NLayering[i] = this.la.y[i] * 2
 
     for (const [ip, v] of this.database.Multiedges.keyValues()) {
-      if (ip.x != ip.y && this.la.Y[ip.x] != this.la.Y[ip.y]) {
+      if (ip.x != ip.y && this.la.y[ip.x] != this.la.y[ip.y]) {
         //not a self edge and not a flat edge
-        const top = this.la.Y[ip.x] * 2
+        const top = this.la.y[ip.x] * 2
         for (const e of v) {
           let layer = top - 1
           for (const le of e.LayerEdges)

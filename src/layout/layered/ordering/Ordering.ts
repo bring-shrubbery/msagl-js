@@ -1,19 +1,19 @@
 // Following "A technique for Drawing Directed Graphs" of Gansner, Koutsofios, North and Vo
 
-import {copyTo} from '../../../utils/copy'
-import {randomInt} from '../../../utils/random'
-import {LayerArrays} from '../LayerArrays'
-import {ProperLayeredGraph} from '../ProperLayeredGraph'
-import {SugiyamaLayoutSettings} from '../SugiyamaLayoutSettings'
-import {OrderingMeasure} from './OrderingMeasure'
+import { copyTo } from '../../../utils/copy'
+import { randomInt } from '../../../utils/random'
+import { LayerArrays } from '../LayerArrays'
+import { ProperLayeredGraph } from '../ProperLayeredGraph'
+import { SugiyamaLayoutSettings } from '../SugiyamaLayoutSettings'
+import { OrderingMeasure } from './OrderingMeasure'
 import SortedMap = require('collections/sorted-map')
-import {CancelToken} from '../../../utils/cancelToken'
-import {LayerEdge} from '../LayerEdge'
-import {Stack} from 'stack-typescript'
-import {from} from 'linq-to-typescript'
-import {EdgeComparerBySource} from './EdgeComparerBySource'
-import {EdgeComparerByTarget} from './EdgeComparerByTarget'
-import {Algorithm} from './../../../utils/algorithm'
+import { CancelToken } from '../../../utils/cancelToken'
+import { LayerEdge } from '../LayerEdge'
+import { Stack } from 'stack-typescript'
+import { from } from 'linq-to-typescript'
+import { EdgeComparerBySource } from './EdgeComparerBySource'
+import { EdgeComparerByTarget } from './EdgeComparerByTarget'
+import { Algorithm } from './../../../utils/algorithm'
 // Works on the layered graph.
 // See GraphLayout.pdfhttps://www.researchgate.net/profile/Lev_Nachmanson/publication/30509007_Drawing_graphs_with_GLEE/links/54b6b2930cf2e68eb27edf71/Drawing-graphs-with-GLEE.pdf
 
@@ -51,7 +51,7 @@ function GetCrossingCountFromStripWhenTopLayerIsShorter(
   layerArrays: LayerArrays,
 ) {
   const edges = EdgesOfStrip(bottomVerts, properLayeredGraph)
-  const comparer = new EdgeComparerByTarget(layerArrays.X)
+  const comparer = new EdgeComparerByTarget(layerArrays.x)
   edges.sort((a, b) => comparer.Compare(a, b))
   //find first n such that 2^n >=topVerts.length
   let n = 1
@@ -64,7 +64,7 @@ function GetCrossingCountFromStripWhenTopLayerIsShorter(
 
   let cc = 0 //number of crossings
   for (const edge of edges) {
-    let index = n + layerArrays.X[edge.Source]
+    let index = n + layerArrays.x[edge.Source]
     const ew = edge.CrossingWeight
     tree[index] += ew
     while (index > 0) {
@@ -82,7 +82,7 @@ function GetCrossingCountFromStripWhenBottomLayerIsShorter(
   layerArrays: LayerArrays,
 ) {
   const edges: LayerEdge[] = EdgesOfStrip(bottomVerts, properLayeredGraph)
-  const comparer = new EdgeComparerBySource(layerArrays.X)
+  const comparer = new EdgeComparerBySource(layerArrays.x)
   edges.sort((a, b) => comparer.Compare(a, b))
   //find first n such that 2^n >=bottomVerts.length
   let n = 1
@@ -95,7 +95,7 @@ function GetCrossingCountFromStripWhenBottomLayerIsShorter(
 
   let cc = 0 //number of crossings
   for (const edge of edges) {
-    let index = n + layerArrays.X[edge.Target]
+    let index = n + layerArrays.x[edge.Target]
     const ew = edge.CrossingWeight
     tree[index] += ew
     while (index > 0) {
@@ -173,7 +173,7 @@ export class Ordering extends Algorithm {
     this.tryReverse = tryReverse
     this.startOfVirtNodes = startOfVirtualNodes
     this.layerArrays = layerArraysParam
-    this.layering = layerArraysParam.Y
+    this.layering = layerArraysParam.y
     this.nOfLayers = layerArraysParam.Layers.length
     this.layers = layerArraysParam.Layers
     this.properLayeredGraph = graphPar
@@ -340,7 +340,7 @@ export class Ordering extends Algorithm {
     //update X
     const vertices = this.layerArrays.Layers[layer]
     for (let i = 0; i < vertices.length; i++)
-      this.layerArrays.X[vertices[i]] = i
+      this.layerArrays.x[vertices[i]] = i
   }
 
   // sorts layerToSort according to medianValues
@@ -384,7 +384,7 @@ export class Ordering extends Algorithm {
 
     const senum = s.values()
 
-    for (i = 0; i < vertices.length; ) {
+    for (i = 0; i < vertices.length;) {
       if (medianValues[i] != -1) {
         const o = senum.next().value
         if (typeof o === 'number') vertices[i++] = o as number
@@ -417,8 +417,8 @@ export class Ordering extends Algorithm {
 
     let i = 0
     if (theMedianGoingDown)
-      for (const e of edges) parray[i++] = this.X[e.Target]
-    else for (const e of edges) parray[i++] = this.X[e.Source]
+      for (const e of edges) parray[i++] = this.x[e.Target]
+    else for (const e of edges) parray[i++] = this.x[e.Source]
 
     parray.sort((a, b) => a - b)
 
@@ -454,10 +454,10 @@ export class Ordering extends Algorithm {
 
     while (q.size > 0) {
       const u = q.pop()
-      const l = this.layerArrays.Y[u]
+      const l = this.layerArrays.y[u]
 
       this.layerArrays.Layers[l][counts[l]] = u
-      this.layerArrays.X[u] = counts[l]
+      this.layerArrays.x[u] = counts[l]
       counts[l]++
 
       for (const v of this.properLayeredGraph.Succ(u))
@@ -467,7 +467,7 @@ export class Ordering extends Algorithm {
         }
     }
 
-    this.X = this.layerArrays.X
+    this.x = this.layerArrays.x
   }
 
   predecessors: number[][]
@@ -546,7 +546,7 @@ export class Ordering extends Algorithm {
   }
 
   // calculates the number of intersections between edges adjacent to u and v
-  CalcPair(u: number, v: number): {cuv: number; cvu: number} {
+  CalcPair(u: number, v: number): { cuv: number; cvu: number } {
     const su = this.successors[u]
     const sv = this.successors[v]
     const pu = this.predecessors[u]
@@ -598,8 +598,8 @@ export class Ordering extends Algorithm {
     let j = -1 //the right most position of vnbs to the left from the current u neighbor
     let vnbsSeenAlready = 0
     for (const uNeighbor of unbs) {
-      const xu = this.X[uNeighbor]
-      for (; j < vl && this.X[vnbs[j + 1]] < xu; j++) vnbsSeenAlready++
+      const xu = this.x[uNeighbor]
+      for (; j < vl && this.x[vnbs[j + 1]] < xu; j++) vnbsSeenAlready++
       ret += vnbsSeenAlready
     }
     return ret
@@ -618,9 +618,9 @@ export class Ordering extends Algorithm {
 
     let vCrossingNumberSeenAlready = 0
     for (const uNeib of unbs) {
-      const xu = this.X[uNeib]
+      const xu = this.x[uNeib]
       let vnb: number
-      for (; j < vl && this.X[(vnb = vnbs[j + 1])] < xu; j++)
+      for (; j < vl && this.x[(vnb = vnbs[j + 1])] < xu; j++)
         vCrossingNumberSeenAlready += vCrossingCount[vnb]
       ret += vCrossingNumberSeenAlready * uCrossingCounts[uNeib]
     }
@@ -640,16 +640,16 @@ export class Ordering extends Algorithm {
 
   //in this routine u and v are adjacent, and u is to the left of v before the swap
   Swap(u: number, v: number) {
-    const left = this.X[u]
-    const right = this.X[v]
+    const left = this.x[u]
+    const right = this.x[v]
     const ln = this.layering[u] //layer number
     const layer = this.layers[ln]
 
     layer[left] = v
     layer[right] = u
 
-    this.X[u] = right
-    this.X[v] = left
+    this.x[u] = right
+    this.x[v] = left
 
     //update sorted arrays POrders and SOrders
     //an array should be updated only in case it contains both u and v.
@@ -803,8 +803,8 @@ export class Ordering extends Algorithm {
       return false
 
     return (
-      this.X[this.successors[u][uCount >> 1]] <
-      this.X[this.successors[v][vCount >> 1]]
+      this.x[this.successors[u][uCount >> 1]] <
+      this.x[this.successors[v][vCount >> 1]]
     )
   }
 
@@ -814,8 +814,8 @@ export class Ordering extends Algorithm {
     if (uCount == 0 || vCount == 0) return false
 
     return (
-      this.X[this.predecessors[u][uCount >> 1]] <
-      this.X[this.predecessors[v][vCount >> 1]]
+      this.x[this.predecessors[u][uCount >> 1]] <
+      this.x[this.predecessors[v][vCount >> 1]]
     )
   }
 

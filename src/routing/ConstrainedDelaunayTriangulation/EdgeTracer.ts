@@ -100,7 +100,7 @@
 //         foreach(var triangle of removedTriangles) {
 //             foreach(var e of triangle.Edges) {
 //                 if (e.CcwTriangle == null && e.CwTriangle == null) {
-//                     var site = e.upperSite.point.X < e.lowerSite.point.X ? e.upperSite : e.lowerSite;
+//                     var site = e.upperSite.point.x < e.lowerSite.point.x ? e.upperSite : e.lowerSite;
 //                     var frontNode = CdtSweeper.FindNodeInFrontBySite(front, site);
 //                     if (frontNode.Item.Edge == e)
 //                         elementsToBeRemovedFromFront.Add(frontNode.Item);
@@ -142,10 +142,10 @@
 //                 //e has to belong to the front, and its triangle has to be removed
 //                 piercedTriangle = null;
 //                 piercedEdge = null;
-//                 var leftSite = e.upperSite.point.X < e.lowerSite.point.X ? e.upperSite : e.lowerSite;
+//                 var leftSite = e.upperSite.point.x < e.lowerSite.point.x ? e.upperSite : e.lowerSite;
 //                 var frontElem = CdtSweeper.FindNodeInFrontBySite(front, leftSite);
 //                 Assert.assert(frontElem != null);
-//                 if (leftSite.point.X < a.point.X)
+//                 if (leftSite.point.x < a.point.x)
 //                     piercedToTheLeftFrontElemNode = frontElem;
 //                 else
 //                     piercedToTheRightFrontElemNode = frontElem;

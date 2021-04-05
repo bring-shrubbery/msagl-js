@@ -56,8 +56,8 @@ export class XLayoutGraph extends BasicGraphOnEdges<PolyIntEdge> {
     const t: number = edge.target
     if (
       s < this.layeredGraph.NodeCount &&
-      this.layerArrays.Y[s] == this.layerArrays.Y[t] &&
-      this.layerArrays.X[s] == this.layerArrays.X[t] + 1
+      this.layerArrays.y[s] == this.layerArrays.y[t] &&
+      this.layerArrays.x[s] == this.layerArrays.x[t] + 1
     ) {
       return 0
     }

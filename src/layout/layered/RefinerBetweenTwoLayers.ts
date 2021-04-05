@@ -260,13 +260,13 @@ export class RefinerBetweenTwoLayers {
   }
 
   *CornersToTheLeftOfBottom(): IterableIterator<Point> {
-    const bottomPosition: number = this.layerArrays.X[this.bottomNode]
+    const bottomPosition: number = this.layerArrays.x[this.bottomNode]
     const leftMost: number = this.currentTopSite.point.x
     const rightMost: number = this.currentBottomSite.point.x
     for (const node of this.LeftFromTheNode(
       this.NodeLayer(this.bottomNode),
       bottomPosition,
-      NodeKind.Bottom,
+      NodeKind.bottom,
       leftMost,
       rightMost,
     )) {
@@ -282,13 +282,13 @@ export class RefinerBetweenTwoLayers {
   }
 
   *CornersToTheLeftOfTop(): IterableIterator<Point> {
-    const topPosition: number = this.layerArrays.X[this.topNode]
+    const topPosition: number = this.layerArrays.x[this.topNode]
     const leftMost: number = this.currentBottomSite.point.x
     const rightMost: number = this.currentTopSite.point.x
     for (const node of this.LeftFromTheNode(
       this.NodeLayer(this.topNode),
       topPosition,
-      NodeKind.Top,
+      NodeKind.top,
       leftMost,
       rightMost,
     )) {
@@ -304,13 +304,13 @@ export class RefinerBetweenTwoLayers {
   }
 
   *CornersToTheRightOfBottom(): IterableIterator<Point> {
-    const bottomPosition: number = this.layerArrays.X[this.bottomNode]
+    const bottomPosition: number = this.layerArrays.x[this.bottomNode]
     const leftMost: number = this.currentBottomSite.point.x
     const rightMost: number = this.currentTopSite.point.x
     for (const node of this.RightFromTheNode(
       this.NodeLayer(this.bottomNode),
       bottomPosition,
-      NodeKind.Bottom,
+      NodeKind.bottom,
       leftMost,
       rightMost,
     )) {
@@ -326,13 +326,13 @@ export class RefinerBetweenTwoLayers {
   }
 
   *CornersToTheRightOfTop(): IterableIterator<Point> {
-    const topPosition: number = this.layerArrays.X[this.topNode]
+    const topPosition: number = this.layerArrays.x[this.topNode]
     const leftMost: number = this.currentTopSite.point.x
     const rightMost: number = this.currentBottomSite.point.x
     for (const node of this.RightFromTheNode(
       this.NodeLayer(this.topNode),
       topPosition,
-      NodeKind.Top,
+      NodeKind.top,
       leftMost,
       rightMost,
     )) {
@@ -356,7 +356,7 @@ export class RefinerBetweenTwoLayers {
   }
 
   private NodeLayer(j: number): number[] {
-    return this.layerArrays.Layers[this.layerArrays.Y[j]]
+    return this.layerArrays.Layers[this.layerArrays.y[j]]
   }
 
   // private static bool CounterClockwise(ref Point topPoint, ref Point cornerPoint, ref Point p) {
@@ -394,8 +394,8 @@ export class RefinerBetweenTwoLayers {
 
   private Intersect(e: LayerEdge, m: LayerEdge): boolean {
     return (
-      (this.layerArrays.X[e.Source] - this.layerArrays.X[m.Source]) *
-      (this.layerArrays.X[e.Target] - this.layerArrays.X[m.Target]) <
+      (this.layerArrays.x[e.Source] - this.layerArrays.x[m.Source]) *
+      (this.layerArrays.x[e.Target] - this.layerArrays.x[m.Target]) <
       0
     )
   }
@@ -430,12 +430,12 @@ export class RefinerBetweenTwoLayers {
   ): IterableIterator<number> {
     let b = 0
     let t = 0
-    if (nodeKind == NodeKind.Bottom) {
+    if (nodeKind == NodeKind.bottom) {
       b = Number.MAX_VALUE
     }
 
     // we don't have bottom boundaries here since they will be cut off
-    if (nodeKind == NodeKind.Top) {
+    if (nodeKind == NodeKind.top) {
       t = Number.MAX_VALUE
     }
 
@@ -473,12 +473,12 @@ export class RefinerBetweenTwoLayers {
   ): IterableIterator<number> {
     let b = 0
     let t = 0
-    if (nodeKind == NodeKind.Bottom) {
+    if (nodeKind == NodeKind.bottom) {
       b = Number.MAX_VALUE
     }
 
     // we don't have bottom boundaries here since they will be cut off
-    if (nodeKind == NodeKind.Top) {
+    if (nodeKind == NodeKind.top) {
       t = Number.MAX_VALUE
     }
 

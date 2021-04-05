@@ -22,7 +22,7 @@ export class EdgeGeometry {
    // </summary>
    // <param name="delta">vector by which to translate</param>
    public void Translate(Point delta) {
-     if (delta.X == 0 && delta.Y == 0) return;
+     if (delta.x == 0 && delta.y == 0) return;
      RaiseLayoutChangeEvent(delta);
      if (Curve != null)
        Curve.Translate(delta);

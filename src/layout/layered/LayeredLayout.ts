@@ -395,7 +395,7 @@ export class LayeredLayout extends Algorithm {
     // this.constrainedOrdering = new ConstrainedOrdering(
     //   this.originalGraph,
     //   this.IntGraph,
-    //   layerArrays.Y,
+    //   layerArrays.y,
     //   this.nodeIdToIndex,
     //   this.database,
     //   this.sugiyamaSettings,
@@ -479,7 +479,7 @@ export class LayeredLayout extends Algorithm {
     layerArraysIn: LayerArrays,
   ): LayerArrays {
     Assert.assert(layersAreCorrect(layerArraysIn))
-    const layerArrays = this.CreateProperLayeredGraph(layerArraysIn.Y)
+    const layerArrays = this.CreateProperLayeredGraph(layerArraysIn.y)
     Assert.assert(layersAreCorrect(layerArrays))
     Ordering.OrderLayers(
       this.properLayeredGraph,
@@ -552,7 +552,7 @@ export class LayeredLayout extends Algorithm {
     // If there are an even number of multi-edges between two nodes then
     //  add a virtual edge in the multi-edge dict to improve the placement, but only in case when the edge goes down only one layer.
     for (const [k, v] of this.database.Multiedges.keyValues())
-      if (v.length % 2 == 0 && layerArrays.Y[k.x] - 1 == layerArrays.Y[k.y]) {
+      if (v.length % 2 == 0 && layerArrays.y[k.x] - 1 == layerArrays.y[k.y]) {
         const e = new GeomEdge(null)
         const newVirtualEdge = new PolyIntEdge(k.x, k.y, e)
         newVirtualEdge.IsVirtualEdge = true
@@ -570,7 +570,7 @@ export class LayeredLayout extends Algorithm {
     let needToInsertLayers = false
     let multipleEdges = false
     for (const ie of this.IntGraph.edges)
-      if (ie.hasLabel && layerArrays.Y[ie.source] != layerArrays.Y[ie.target]) {
+      if (ie.hasLabel && layerArrays.y[ie.source] != layerArrays.y[ie.target]) {
         //if an edge is a flat edge then
         needToInsertLayers = true
         break
@@ -581,7 +581,7 @@ export class LayeredLayout extends Algorithm {
       for (const [k, v] of this.database.Multiedges.keyValues())
         if (v.length > 1) {
           multipleEdges = true
-          if (layerArrays.Y[k.x] - layerArrays.Y[k.y] == 1) {
+          if (layerArrays.y[k.x] - layerArrays.y[k.y] == 1) {
             //there is a multi edge spanning exactly one layer; unfortunately we need to introduce virtual vertices for
             //the edges middle points
             needToInsertLayers = true
@@ -595,7 +595,7 @@ export class LayeredLayout extends Algorithm {
   }
 
   DecideIfUsingFastXCoordCalculation(layerArrays: LayerArrays) {
-    if (layerArrays.X.length >= this.sugiyamaSettings.BrandesThreshold)
+    if (layerArrays.x.length >= this.sugiyamaSettings.BrandesThreshold)
       this.Brandes = true
   }
 
@@ -801,9 +801,9 @@ export class LayeredLayout extends Algorithm {
 
   TryShiftToTheLeft(x: number, v: number): boolean {
     const layer: number[] = this.engineLayerArrays.Layers[
-      this.engineLayerArrays.Y[v]
+      this.engineLayerArrays.y[v]
     ]
-    const vPosition: number = this.engineLayerArrays.X[v]
+    const vPosition: number = this.engineLayerArrays.x[v]
     if (vPosition > 0) {
       const uAnchor: Anchor = this.database.Anchors[layer[vPosition - 1]]
       const allowedX: number = Math.max(
@@ -826,9 +826,9 @@ export class LayeredLayout extends Algorithm {
 
   TryShiftToTheRight(x: number, v: number): boolean {
     const layer: number[] = this.engineLayerArrays.Layers[
-      this.engineLayerArrays.Y[v]
+      this.engineLayerArrays.y[v]
     ]
-    const vPosition: number = this.engineLayerArrays.X[v]
+    const vPosition: number = this.engineLayerArrays.x[v]
     if (vPosition < layer.length - 1) {
       const uAnchor: Anchor = this.database.Anchors[layer[vPosition + 1]]
       const allowedX: number = Math.min(
@@ -1118,7 +1118,7 @@ function SetFlatEdgesForLayer(
     //we stack labels of multiple flat edges on top of each other
     const flatPairs = GetFlatPairs(
       layerArrays.Layers[i - 1],
-      layerArrays.Y,
+      layerArrays.y,
       intGraph,
     )
     if (flatPairs.any()) {
@@ -1231,11 +1231,11 @@ function MakeVirtualNodesTall(
 }
 
 function NeedToSnapTopsToGrid(settings: SugiyamaLayoutSettings) {
-  return settings.SnapToGridByY == SnapToGridByY.Top
+  return settings.SnapToGridByY == SnapToGridByY.top
 }
 
 function NeedToSnapBottomsToGrid(settings: SugiyamaLayoutSettings) {
-  return settings.SnapToGridByY == SnapToGridByY.Bottom
+  return settings.SnapToGridByY == SnapToGridByY.bottom
 }
 
 function TryToPutLabelOutsideOfAngle(

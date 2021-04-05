@@ -10,7 +10,7 @@
 // using Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     [DebuggerDisplay("[{SerialNumber}] ({Position.X},{Position.Y})")]
+//     [DebuggerDisplay("[{SerialNumber}] ({Position.x},{Position.y})")]
 // #if SHARPKIT //http://code.google.com/p/sharpkit/issues/detail?id=203
 //     //SharpKit/Colin - Interface implementations
 //     // (this needs to be public because it's used elsewhere in an interface implementation)

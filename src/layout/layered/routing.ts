@@ -196,16 +196,16 @@ export class Routing extends Algorithm {
   static UpdateLabel(e: Edge, anchor: Anchor) {
     const labelSide: LineSegment = null
     if (anchor.LabelToTheRightOfAnchorCenter) {
-      e.Label.Center = new Point(anchor.X + anchor.RightAnchor / 2, anchor.Y)
+      e.Label.Center = new Point(anchor.x + anchor.RightAnchor / 2, anchor.y)
       labelSide = new LineSegment(e.LabelBBox.LeftTop, e.LabelBBox.LeftBottom)
     } else if (anchor.LabelToTheLeftOfAnchorCenter) {
-      e.Label.Center = new Point(anchor.X - anchor.LeftAnchor / 2, anchor.Y)
+      e.Label.Center = new Point(anchor.x - anchor.LeftAnchor / 2, anchor.y)
       labelSide = new LineSegment(e.LabelBBox.RightTop, e.LabelBBox.RightBottom)
     }
 
     const segmentInFrontOfLabel: ICurve = Routing.GetSegmentInFrontOfLabel(
       e.Curve,
-      e.Label.Center.Y,
+      e.Label.Center.y,
     )
     if (segmentInFrontOfLabel == null) {
       return
@@ -300,7 +300,7 @@ export class Routing extends Algorithm {
     const curve = <Curve>edgeCurve
     if (curve != null) {
       for (const seg: ICurve of curve.Segments) {
-        if ((seg.Start.Y - labelY) * (seg.End.Y - labelY) <= 0) {
+        if ((seg.Start.y - labelY) * (seg.End.y - labelY) <= 0) {
           return seg
         }
       }
@@ -314,9 +314,9 @@ export class Routing extends Algorithm {
 
   static GetNodeKind(vertexOffset: number, edgePath: PolyIntEdge): NodeKind {
     return vertexOffset == 0
-      ? NodeKind.Top
+      ? NodeKind.top
       : vertexOffset < edgePath.count
         ? NodeKind.Internal
-        : NodeKind.Bottom
+        : NodeKind.bottom
   }
 }

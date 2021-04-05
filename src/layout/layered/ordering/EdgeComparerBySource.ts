@@ -1,15 +1,15 @@
-import {LayerEdge} from '../LayerEdge'
+import { LayerEdge } from '../LayerEdge'
 
 export class EdgeComparerBySource {
   X: number[]
   constructor(X: number[]) {
-    this.X = X
+    this.x = X
   }
 
   Compare(a: LayerEdge, b: LayerEdge) {
-    const r = this.X[a.Source] - this.X[b.Source]
+    const r = this.x[a.Source] - this.x[b.Source]
     if (r != 0) return r
 
-    return this.X[a.Target] - this.X[b.Target]
+    return this.x[a.Target] - this.x[b.Target]
   }
 }

@@ -1,9 +1,9 @@
-import {LayerArrays} from '../LayerArrays'
-import {ProperLayeredGraph} from '../ProperLayeredGraph'
-import {ConstrainedOrdering} from './ConstrainedOrdering'
-import {LayerInfo} from './LayerInfo'
-import {Assert} from './../../../utils/assert'
-import {randomInt} from '../../../utils/random'
+import { LayerArrays } from '../LayerArrays'
+import { ProperLayeredGraph } from '../ProperLayeredGraph'
+import { ConstrainedOrdering } from './ConstrainedOrdering'
+import { LayerInfo } from './LayerInfo'
+import { Assert } from './../../../utils/assert'
+import { randomInt } from '../../../utils/random'
 export class AdjacentSwapsWithConstraints {
   static maxNumberOfAdjacentExchanges = 50
 
@@ -49,8 +49,8 @@ export class AdjacentSwapsWithConstraints {
     properLayeredGraph: ProperLayeredGraph,
     layerInfos: LayerInfo[],
   ) {
-    this.X = layerArray.X
-    this.layering = layerArray.Y
+    this.x = layerArray.x
+    this.layering = layerArray.y
     this.layers = layerArray.Layers
     this.properLayeredGraph = properLayeredGraph
     this.hasCrossWeights = hasCrossWeights
@@ -127,7 +127,7 @@ export class AdjacentSwapsWithConstraints {
       return -1
     }
 
-    let t: {cuv: number; cvu: number}
+    let t: { cuv: number; cvu: number }
     this.CalcPair(u, v, t)
     return t.cuv - t.cvu
   }
@@ -139,7 +139,7 @@ export class AdjacentSwapsWithConstraints {
   //  <param name="v">a vertex</param>
   //  <param name="cuv">the result when u is to the left of v</param>
   //  <param name="cvu">the result when v is to the left of u</param>
-  CalcPair(u: number, v: number, t: {cuv: number; cvu: number}) {
+  CalcPair(u: number, v: number, t: { cuv: number; cvu: number }) {
     const pv = this.P[v]
     const su = this.S[u]
     const sv = this.S[v]
@@ -168,8 +168,8 @@ export class AdjacentSwapsWithConstraints {
     // the right most position of vnbs to the left from the current u neighbor
     let vnbsSeenAlready = 0
     for (const uNeighbor of unbs) {
-      const xu: number = this.X[uNeighbor]
-      for (; j < vl && this.X[vnbs[j + 1]] < xu; j++) {
+      const xu: number = this.x[uNeighbor]
+      for (; j < vl && this.x[vnbs[j + 1]] < xu; j++) {
         vnbsSeenAlready++
       }
 
@@ -198,9 +198,9 @@ export class AdjacentSwapsWithConstraints {
     // the right most position of vnbs to the left from the current u neighbor
     let vCrossingNumberSeenAlready = 0
     for (const uNeib of unbs) {
-      const xu: number = this.X[uNeib]
+      const xu: number = this.x[uNeib]
       let vnb: number
-      for (; j < vl && this.X[(vnb = vnbs[j + 1])] < xu; j++) {
+      for (; j < vl && this.x[(vnb = vnbs[j + 1])] < xu; j++) {
         vCrossingNumberSeenAlready =
           vCrossingNumberSeenAlready + vCrossingCount[vnb]
       }
@@ -216,15 +216,15 @@ export class AdjacentSwapsWithConstraints {
     Assert.assert(this.UAndVAreOnSameLayer(u, v))
     Assert.assert(this.UIsToTheLeftOfV(u, v))
     Assert.assert(this.CanSwap(u, v))
-    const left: number = this.X[u]
-    const right: number = this.X[v]
+    const left: number = this.x[u]
+    const right: number = this.x[v]
     const ln: number = this.layering[u]
     // layer number
     const layer: number[] = this.layers[ln]
     layer[left] = v
     layer[right] = u
-    this.X[u] = right
-    this.X[v] = left
+    this.x[u] = right
+    this.x[v] = left
     // update sorted arrays POrders and SOrders
     // an array should be updated only in case it contains both u and v.
     //  More than that, v has to follow u in an the array.
@@ -511,6 +511,6 @@ export class AdjacentSwapsWithConstraints {
   }
 
   private UIsToTheLeftOfV(u: number, v: number): boolean {
-    return this.X[u] < this.X[v]
+    return this.x[u] < this.x[v]
   }
 }

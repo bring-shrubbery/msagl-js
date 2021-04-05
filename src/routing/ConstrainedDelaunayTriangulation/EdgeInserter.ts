@@ -41,7 +41,7 @@
 //         }
 
 //         void AddEdgeToFront(CdtEdge e) {
-//             var leftSite=e.upperSite.point.X<e.lowerSite.point.X?e.upperSite:e.lowerSite;
+//             var leftSite=e.upperSite.point.x<e.lowerSite.point.x?e.upperSite:e.lowerSite;
 //             front.Insert(new CdtFrontElement(leftSite, e));
 //         }
 

@@ -118,8 +118,8 @@
 
 //             foreach(PolylinePoint side of stem.Sides) {
 //                 PolylinePoint source = side;
-//                 if (source.point.Y < q.Y) {
-//                     if (side.NextOnPolyline.point.Y >= q.Y) {
+//                 if (source.point.y < q.y) {
+//                     if (side.NextOnPolyline.point.y >= q.y) {
 //                         TriangleOrientation orientation = Point.getTriangleOrientation(q, source.point,
 //                             side.NextOnPolyline.point);
 //                         if (orientation == TriangleOrientation.Counterclockwise ||
@@ -133,10 +133,10 @@
 //                             break;
 //                         }
 //                     }
-//                 } else if (source.point.Y > q.Y)
+//                 } else if (source.point.y > q.y)
 //                     break;
-//                 else if (side.point.X >= q.X) {
-//                     //we have pp.Y==q.Y
+//                 else if (side.point.x >= q.x) {
+//                     //we have pp.y==q.y
 //                     crosses = true;
 //                     //we need to add one or two stems here
 //                     yield return new Stem(side, stem.End);

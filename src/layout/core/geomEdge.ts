@@ -78,9 +78,9 @@ export class GeomEdge extends GeomObject {
    
       double del = LineWidth;
       rect.Left -= del;
-      rect.Top += del;
+      rect.top += del;
       rect.Right += del;
-      rect.Bottom -= del;
+      rect.bottom -= del;
       return rect;
     }
     set { throw new NotImplementedException(); }
@@ -154,10 +154,10 @@ export class GeomEdge extends GeomObject {
                     public void TransformRelativeTo(Rectangle oldBounds, Rectangle newBounds)
     {
       if (this.edgeGeometry != null) {
-        var toOrigin = new PlaneTransformation(1, 0, -oldBounds.Left, 0, 1, -oldBounds.Bottom);
+        var toOrigin = new PlaneTransformation(1, 0, -oldBounds.Left, 0, 1, -oldBounds.bottom);
         var scale = new PlaneTransformation(newBounds.Width / oldBounds.Width, 0, 0,
           0, newBounds.Height / oldBounds.Height, 0);
-        var toNewBounds = new PlaneTransformation(1, 0, newBounds.Left, 0, 1, newBounds.Bottom);
+        var toNewBounds = new PlaneTransformation(1, 0, newBounds.Left, 0, 1, newBounds.bottom);
         Transform(toNewBounds * scale * toOrigin);
       }
       foreach(var l of this.Labels)
@@ -202,10 +202,10 @@ export class GeomEdge extends GeomObject {
       var h = boundaryCurve.BoundingBox.Height;
       var center = boundaryCurve.BoundingBox.Center;
     
-      var p0 = new Point(center.X - w / 4, center.Y);
-      var p1 = new Point(center.X - w / 4, center.Y - h / 2 - howMuchToStickOut);
-      var p2 = new Point(center.X + w / 4, center.Y - h / 2 - howMuchToStickOut);
-      var p3 = new Point(center.X + w / 4, center.Y);
+      var p0 = new Point(center.x - w / 4, center.y);
+      var p1 = new Point(center.x - w / 4, center.y - h / 2 - howMuchToStickOut);
+      var p2 = new Point(center.x + w / 4, center.y - h / 2 - howMuchToStickOut);
+      var p3 = new Point(center.x + w / 4, center.y);
     
       smoothedPolyline = SmoothedPolyline.FromPoints(new [] { p0, p1, p2, p3 });
     
