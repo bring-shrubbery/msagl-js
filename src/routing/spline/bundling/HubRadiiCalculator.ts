@@ -35,7 +35,7 @@
 //         // </summary>
 //         internal void CreateNodeRadii() {
 //         //set radii to zero
-//         foreach(var v in metroGraphData.VirtualNodes()) {
+//         foreach(var v of metroGraphData.VirtualNodes()) {
 //             v.Radius = 0;
 //             v.cachedIdealRadius = CalculateIdealHubRadiusWithNeighbors(metroGraphData, bundlingSettings, v);
 //             ;
@@ -50,7 +50,7 @@
 //         //TimeMeasurer.DebugOutput("Optimized cost of radii: " + Cost());
 
 //         //ensure radii are not zero
-//         foreach(var v in metroGraphData.VirtualNodes()) {
+//         foreach(var v of metroGraphData.VirtualNodes()) {
 //             v.Radius = Math.Max(v.Radius, bundlingSettings.MinHubRadius);
 //         }
 //     }
@@ -60,7 +60,7 @@
 //     // </summary>
 //     bool GrowHubs(bool useHalfEdgesAsIdealR) {
 //         var queue = new GenericBinaryHeapPriorityQueue<Station>();
-//         foreach(var v in metroGraphData.VirtualNodes()) {
+//         foreach(var v of metroGraphData.VirtualNodes()) {
 //             queue.Enqueue(v, -CalculatePotential(v, useHalfEdgesAsIdealR));
 //         }
 
@@ -126,7 +126,7 @@
 //         double r = bundlingSettings.MaxHubRadius;
 
 //         //adjacent nodes
-//         foreach(Station adj in node.Neighbors) {
+//         foreach(Station adj of node.Neighbors) {
 //             double dist = (adj.Position - node.Position).Length;
 //             Assert.assert(dist - 0.05 * (node.Radius + adj.Radius) + 1 >= node.Radius + adj.Radius);
 //             r = Math.Min(r, dist / 1.05 - adj.Radius);
@@ -146,7 +146,7 @@
 //         // </summary>
 //         static double CalculateIdealHubRadius(MetroGraphData metroGraphData, BundlingSettings bundlingSettings, Station node) {
 //         double r = 1.0;
-//         foreach(Station adj in node.Neighbors) {
+//         foreach(Station adj of node.Neighbors) {
 //             double width = metroGraphData.GetWidth(adj, node, bundlingSettings.EdgeSeparation);
 //             double nr = width / 2.0 + bundlingSettings.EdgeSeparation;
 //             r = Math.Max(r, nr);
@@ -187,7 +187,7 @@
 //         // </summary>
 //         static double CalculateIdealHubRadiusWithAdjacentEdges(MetroGraphData metroGraphData, BundlingSettings bundlingSettings, Station node) {
 //         double r = bundlingSettings.MaxHubRadius;
-//         foreach(var adj in node.Neighbors) {
+//         foreach(var adj of node.Neighbors) {
 //             r = Math.Min(r, (node.Position - adj.Position).Length / 2);
 //         }
 
@@ -207,12 +207,12 @@
 //     // </summary>
 //     internal static double GetMinRadiusForTwoAdjacentBundles(double r, Point a, Point b, Point c, double widthAB, double widthAC,
 //         MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
-//         if (widthAB < ApproximateComparer.DistanceEpsilon || widthAC < ApproximateComparer.DistanceEpsilon)
+//         if (widthAB < GeomConstants.distanceEpsilon || widthAC < GeomConstants.distanceEpsilon)
 //             return r;
 
 //         double angle = Point.Angle(b, a, c);
 //         angle = Math.Min(angle, Math.PI * 2 - angle);
-//         if (angle < ApproximateComparer.DistanceEpsilon)
+//         if (angle < GeomConstants.distanceEpsilon)
 //             return 2 * bundlingSettings.MaxHubRadius;
 
 //         if (angle >= Math.PI / 2)

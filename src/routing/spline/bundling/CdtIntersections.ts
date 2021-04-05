@@ -38,7 +38,7 @@
 
 //         //Polyline bundle = Intersections.Create4gon(vPosition, uPosition, upperBound, upperBound);
 
-//         foreach(var item in closeObstacles) {
+//         foreach(var item of closeObstacles) {
 //             Tuple < Point, Point > dist = item.Value;
 
 //             //TODO: get rif od this call!
@@ -67,8 +67,8 @@
 
 //         var checkedSites = new HashSet<CdtSite>();
 
-//         foreach(var t in list) {
-//             foreach(var s in t.Sites) {
+//         foreach(var t of list) {
+//             foreach(var s of t.Sites) {
 //                 if (!checkedSites.Add(s)) continue;
 
 //                 var poly = (Polyline) s.Owner;
@@ -159,9 +159,9 @@
 //         bool seenBoundary = false;
 //         for (int i = 0; i < 3; i++) {
 //             var area = Point.SignedDoubledTriangleArea(p, triangle.Sites[i].Point, triangle.Sites[i + 1].Point);
-//             if (area < -ApproximateComparer.DistanceEpsilon)
+//             if (area < -GeomConstants.distanceEpsilon)
 //                 return PointLocation.Outside;
-//             if (area < ApproximateComparer.DistanceEpsilon)
+//             if (area < GeomConstants.distanceEpsilon)
 //                 seenBoundary = true;
 //         }
 
@@ -169,7 +169,7 @@
 //     }
 
 //         static PolylinePoint FindPolylinePoint(Polyline poly, Point point) {
-//         foreach(var ppp in poly.PolylinePoints)
+//         foreach(var ppp of poly.PolylinePoints)
 //         if (ppp.Point == point)
 //             return ppp;
 

@@ -87,9 +87,9 @@
 //         bool seenBoundary = false;
 //         for (int i = 0; i < 3; i++) {
 //             var area = Point.SignedDoubledTriangleArea(p, triangle.Sites[i].Point, triangle.Sites[i + 1].Point);
-//             if (area < -ApproximateComparer.DistanceEpsilon)
+//             if (area < -GeomConstants.distanceEpsilon)
 //                 return PointLocation.Outside;
-//             if (area < ApproximateComparer.DistanceEpsilon)
+//             if (area < GeomConstants.distanceEpsilon)
 //                 seenBoundary = true;
 //         }
 
@@ -160,7 +160,7 @@
 
 //         currentPiercedEdge =
 //             Point.SignedDoubledTriangleArea(end, currentTriangle.Sites[j].Point, currentTriangle.Sites[j + 1].Point) <
-//                 - ApproximateComparer.DistanceEpsilon
+//                 - GeomConstants.distanceEpsilon
 //                 ? currentTriangle.Edges[j]
 //                 : null;
 
@@ -177,15 +177,15 @@
 //     //
 //     //        }
 //     //        static void AddTriangleToListOfDebugCurves(List<DebugCurve> debugCurves,CdtTriangle triangle,byte transparency,double width,string color) {
-//     //            foreach(var cdtEdge in triangle.Edges) {
+//     //            foreach(var cdtEdge of triangle.Edges) {
 //     //                debugCurves.Add(new DebugCurve(transparency,width,color,new LineSegment(cdtEdge.upperSite.Point,cdtEdge.lowerSite.Point)));
 //     //            }
 //     //        }
 
 //     internal int GetHyperplaneSign(CdtSite cdtSite) {
 //         var area = Point.SignedDoubledTriangleArea(start, cdtSite.Point, end);
-//         if (area > ApproximateComparer.DistanceEpsilon) return 1;
-//         if (area < -ApproximateComparer.DistanceEpsilon) return -1;
+//         if (area > GeomConstants.distanceEpsilon) return 1;
+//         if (area < -GeomConstants.distanceEpsilon) return -1;
 //         return 0;
 //     }
 

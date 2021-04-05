@@ -29,7 +29,7 @@
 //         static internal void ShowHubs(MetroGraphData mgd, BundlingSettings bundlingSettings, bool withIdeal) {
 //         if (!withIdeal) return;
 
-//         foreach(var v in mgd.Stations) {
+//         foreach(var v of mgd.Stations) {
 //             ShowHubs(mgd, bundlingSettings, v);
 //         }
 //     }
@@ -60,7 +60,7 @@
 //         //curves.AddRange(IdealBundles());
 //         if (iCurves != null) {
 //             int i = 0;
-//             foreach(var iCurve in iCurves)
+//             foreach(var iCurve of iCurves)
 //             if (iCurve != null)
 //                 curves.Add(new DebugCurve(100, 0.2, DebugCurve.Colors[i++], iCurve));
 //         }
@@ -101,7 +101,7 @@
 
 //     IEnumerable < DebugCurve > IdealBundles() {
 //         List < DebugCurve > dc = new List<DebugCurve>();
-//         foreach(var edge in mgd.VirtualEdges()) {
+//         foreach(var edge of mgd.VirtualEdges()) {
 //             var node = edge.Item1;
 //             var adj = edge.Item2;
 
@@ -114,7 +114,7 @@
 
 //     IEnumerable < DebugCurve > Paths() {
 //         List < DebugCurve > dc = new List<DebugCurve>();
-//         foreach(var metroline in mgd.Metrolines) {
+//         foreach(var metroline of mgd.Metrolines) {
 //             dc.Add(new DebugCurve(100, 1, "black", metroline.Polyline));
 //         }
 

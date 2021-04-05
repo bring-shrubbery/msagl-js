@@ -34,15 +34,15 @@
 //     }
 
 //     void Init() {
-//         foreach(EdgeGeometry e in metroGraphData.Edges)
+//         foreach(EdgeGeometry e of metroGraphData.Edges)
 //         polylineToEdgeGeom[(Polyline)e.Curve] = e;
 
-//         foreach(Polyline poly in Polylines)
+//         foreach(Polyline poly of Polylines)
 //         RegisterPolylinePointInPathsThrough(poly.PolylinePoints);
 //     }
 
 //     void RegisterPolylinePointInPathsThrough(IEnumerable < PolylinePoint > points) {
-//         foreach(var pp in points)
+//         foreach(var pp of points)
 //         RegisterPolylinePointInPathsThrough(pp);
 //     }
 
@@ -51,7 +51,7 @@
 //     }
 
 //     void UnregisterPolylinePointInPathsThrough(IEnumerable < PolylinePoint > points) {
-//         foreach(var pp in points)
+//         foreach(var pp of points)
 //         UnregisterPolylinePointInPathsThrough(pp);
 //     }
 
@@ -62,7 +62,7 @@
 //     void SwitchFlips() {
 //         var queued = new Set<Polyline>(Polylines);
 //         var queue = new Queue<Polyline>();
-//         foreach(Polyline e in Polylines)
+//         foreach(Polyline e of Polylines)
 //         queue.Enqueue(e);
 //         while (queue.Count > 0) {
 //             Polyline initialPolyline = queue.Dequeue();
@@ -84,11 +84,11 @@
 
 //     Polyline ProcessPolyline(Polyline polyline) {
 //         var departed = new Dictionary<Polyline, PolylinePoint>();
-//         for (PolylinePoint pp = polyline.StartPoint.Next; pp != null; pp = pp.Next) {
+//         for (PolylinePoint pp = polyline.startPoint.next; pp != null; pp = pp.next) {
 //             FillDepartedPolylinePoints(pp, departed);
 
 //             //find returning
-//             foreach(PolylinePoint polyPoint in pathsThroughPoints[pp.Point]) {
+//             foreach(PolylinePoint polyPoint of pathsThroughPoints[pp.Point]) {
 //                 if (departed.ContainsKey(polyPoint.Polyline)) {
 //                     if (ProcessFlip(polyline, polyPoint.Polyline, departed[polyPoint.Polyline].Point, pp.Point))
 //                         return polyPoint.Polyline;
@@ -102,7 +102,7 @@
 
 //     void FillDepartedPolylinePoints(PolylinePoint pp, Dictionary < Polyline, PolylinePoint > departed) {
 //         Point prevPoint = pp.Prev.Point;
-//         foreach(PolylinePoint polyPoint in pathsThroughPoints[prevPoint]) {
+//         foreach(PolylinePoint polyPoint of pathsThroughPoints[prevPoint]) {
 //             if (!IsNeighbor(polyPoint, pp)) {
 //                 Assert.assert(!departed.ContainsKey(polyPoint.Polyline));
 //                 departed[polyPoint.Polyline] = polyPoint;
@@ -161,7 +161,7 @@
 //         out PolylinePoint ppFirst, out PolylinePoint ppLast, out bool forwardOrder) {
 //         ppFirst = ppLast = null;
 //         forwardOrder = false;
-//         for (PolylinePoint pp = polyline.StartPoint; pp != null; pp = pp.Next) {
+//         for (PolylinePoint pp = polyline.startPoint; pp != null; pp = pp.next) {
 //             if (pp.Point == first) ppFirst = pp;
 //             if (pp.Point == last) ppLast = pp;
 //             if (ppFirst != null && ppLast == null) forwardOrder = true;
@@ -172,17 +172,17 @@
 
 //     bool PolylinePointsAreInForwardOrder(PolylinePoint u, PolylinePoint v) {
 //         Assert.assert(u.Polyline == v.Polyline);
-//         for (PolylinePoint p = u; p != null; p = p.Next)
+//         for (PolylinePoint p = u; p != null; p = p.next)
 //         if (p == v) return true;
 //         return false;
 //     }
 
 //     PolylinePoint Next(PolylinePoint p, bool forwardOrder) {
-//         return forwardOrder ? p.Next : p.Prev;
+//         return forwardOrder ? p.next : p.Prev;
 //     }
 
 //     PolylinePoint Prev(PolylinePoint p, bool forwardOrder) {
-//         return forwardOrder ? p.Prev : p.Next;
+//         return forwardOrder ? p.Prev : p.next;
 //     }
 
 //     int FindRelationOnFirstPoint(PolylinePoint aFirst, PolylinePoint bFirst, bool forwardOrderA, bool forwardOrderB) {
@@ -295,25 +295,25 @@
 
 //     void ChangePolylineSegment(PolylinePoint aFirst, PolylinePoint aLast, bool forwardOrderA, List < PolylinePoint > intermediateBPoints) {
 //         PolylinePoint curA = aFirst;
-//         foreach(PolylinePoint b in intermediateBPoints) {
+//         foreach(PolylinePoint b of intermediateBPoints) {
 //             var newp = new PolylinePoint(b.Point) { Polyline = curA.Polyline };
 //             if (forwardOrderA) {
 //                 newp.Prev = curA;
-//                 curA.Next = newp;
+//                 curA.next = newp;
 //             }
 //             else {
-//                 newp.Next = curA;
+//                 newp.next = curA;
 //                 curA.Prev = newp;
 //             }
 //             curA = newp;
 //         }
 //         if (forwardOrderA) {
-//             curA.Next = aLast;
+//             curA.next = aLast;
 //             aLast.Prev = curA;
 //         }
 //         else {
 //             curA.Prev = aLast;
-//             aLast.Next = curA;
+//             aLast.next = curA;
 //         }
 //     }
 
@@ -326,7 +326,7 @@
 //     }
 
 //     bool IsNeighbor(PolylinePoint a, PolylinePoint b) {
-//         return a.Prev != null && a.Prev.Point == b.Point || a.Next != null && a.Next.Point == b.Point;
+//         return a.Prev != null && a.Prev.Point == b.Point || a.next != null && a.next.Point == b.Point;
 //     }
 
 //     void RegisterInterestingPoint(Point p) {
@@ -344,26 +344,26 @@
 
 //     bool PolylineIsOK(Polyline poly) {
 //         HashSet < Point > pointsToPP = new HashSet<Point>();
-//         for (var pp = poly.StartPoint; pp != null; pp = pp.Next) {
-//             if (pp == poly.StartPoint) {
+//         for (var pp = poly.startPoint; pp != null; pp = pp.next) {
+//             if (pp == poly.startPoint) {
 //                 if (pp.Prev != null) return false;
 //             }
 //             else {
-//                 if (pp.Prev.Next != pp) return false;
+//                 if (pp.Prev.next != pp) return false;
 //             }
-//             if (pp == poly.EndPoint) {
-//                 if (pp.Next != null) return false;
+//             if (pp == poly.endPoint) {
+//                 if (pp.next != null) return false;
 //             }
 //             else {
-//                 if (pp.Next.Prev != pp) return false;
+//                 if (pp.next.Prev != pp) return false;
 //             }
 
 //             if (pointsToPP.Contains(pp.Point)) return false;
 //             pointsToPP.Add(pp.Point);
 //         }
 
-//         if (poly.StartPoint.Prev != null) return false;
-//         if (poly.EndPoint.Next != null) return false;
+//         if (poly.startPoint.Prev != null) return false;
+//         if (poly.endPoint.next != null) return false;
 //         return true;
 //     }
 // }

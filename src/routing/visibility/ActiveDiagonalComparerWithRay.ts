@@ -17,7 +17,7 @@
 //           public int Compare(Diagonal x, Diagonal y) {
 //         ValidateArg.IsNotNull(x, "x");
 //         ValidateArg.IsNotNull(y, "y");
-//         System.Diagnostics.Assert.assert(BelongsToTheDiagonal(PointOnTangentAndInsertedDiagonal, x.Start, x.End));
+//         Assert.assert(BelongsToTheDiagonal(PointOnTangentAndInsertedDiagonal, x.Start, x.End));
 //         if (x.Start != y.Start)
 //             switch (Point.GetTriangleOrientation(PointOnTangentAndInsertedDiagonal, y.Start, y.End)) {
 //                 case TriangleOrientation.Counterclockwise:
@@ -43,7 +43,7 @@
 //         double x, y;
 //         bool result = LinearSystem2.Solve(target.X - source.X, -ray.X, pivot.X - source.X, target.Y - source.Y, -ray.Y, pivot.Y - source.Y, out x, out y);
 
-//         System.Diagnostics.Assert.assert(result && -ApproximateComparer.Tolerance <= x && x <= 1 + ApproximateComparer.Tolerance);
+//         Assert.assert(result && -ApproximateComparer.Tolerance <= x && x <= 1 + ApproximateComparer.Tolerance);
 
 //         return pivot + y * ray;
 //     }

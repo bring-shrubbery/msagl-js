@@ -78,7 +78,7 @@
 //             Point start = FindCurveStart(metroGraphData, metroOrdering, line);
 //             Point currentEnd = start;
 //             var hubSegsOfLine = HubSegsOfLine(metroGraphData, metroOrdering, line);
-//             foreach(var seg in hubSegsOfLine) {
+//             foreach(var seg of hubSegsOfLine) {
 //                 if (seg == null) continue;
 //                 c.AddSegment(new LineSegment(currentEnd, seg.Start));
 //                 c.AddSegment(seg);
@@ -91,8 +91,8 @@
 //         }
 
 //         static Point FindCurveStart(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroOrdering, Metroline metroline) {
-//             Station u = metroGraphData.PointToStations[metroline.Polyline.StartPoint.Point];
-//             Station v = metroGraphData.PointToStations[metroline.Polyline.StartPoint.Next.Point];
+//             Station u = metroGraphData.PointToStations[metroline.Polyline.startPoint.Point];
+//             Station v = metroGraphData.PointToStations[metroline.Polyline.startPoint.next.Point];
 
 //             BundleBase bb = u.BundleBases[v];
 //             int index = (!bb.IsParent ? metroOrdering.GetLineIndexInOrder(v, u, metroline) : metroOrdering.GetLineIndexInOrder(u, v, metroline));
@@ -100,8 +100,8 @@
 //         }
 
 //         static Point FindCurveEnd(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroOrdering, Metroline metroline) {
-//             Station u = metroGraphData.PointToStations[metroline.Polyline.EndPoint.Prev.Point];
-//             Station v = metroGraphData.PointToStations[metroline.Polyline.EndPoint.Point];
+//             Station u = metroGraphData.PointToStations[metroline.Polyline.endPoint.Prev.Point];
+//             Station v = metroGraphData.PointToStations[metroline.Polyline.endPoint.Point];
 
 //             BundleBase bb = v.BundleBases[u];
 //             int index = (!bb.IsParent ? metroOrdering.GetLineIndexInOrder(u, v, metroline) : metroOrdering.GetLineIndexInOrder(v, u, metroline));
@@ -116,7 +116,7 @@
 //         }
 
 //         static IEnumerable < ICurve > HubSegsOfLine(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroOrdering, Metroline line) {
-//             for (PolylinePoint i = line.Polyline.StartPoint.Next; i.Next != null; i = i.Next)
+//             for (PolylinePoint i = line.Polyline.startPoint.next; i.next != null; i = i.next)
 //             yield return SegOnLineVertex(metroGraphData, metroOrdering, line, i);
 //         }
 
@@ -126,7 +126,7 @@
 //             BundleBase h0 = v.BundleBases[u];
 //             int j0 = metroOrdering.GetLineIndexInOrder(u, v, line);
 //             if (h0.OrientedHubSegments[j0] == null || h0.OrientedHubSegments[j0].Segment == null) {
-//                 var w = metroGraphData.PointToStations[i.Next.Point];
+//                 var w = metroGraphData.PointToStations[i.next.Point];
 //                 var otherBase = v.BundleBases[w];
 //                 var j1 = metroOrdering.GetLineIndexInOrder(w, v, line);
 //                 return new LineSegment(h0.Points[j0], otherBase.Points[j1]);
@@ -136,7 +136,7 @@
 //         }
 
 //         void CreateSegmentsInsideHubs() {
-//             foreach(var metroline in metroGraphData.Metrolines)
+//             foreach(var metroline of metroGraphData.Metrolines)
 //             CreateOrientedSegsOnLine(metroline);
 
 //             if (bundlingSettings.UseCubicBezierSegmentsInsideOfHubs)
@@ -144,14 +144,14 @@
 //         }
 
 //         void CreateOrientedSegsOnLine(Metroline line) {
-//             for (PolylinePoint polyPoint = line.Polyline.StartPoint.Next; polyPoint.Next != null; polyPoint = polyPoint.Next)
+//             for (PolylinePoint polyPoint = line.Polyline.startPoint.next; polyPoint.next != null; polyPoint = polyPoint.next)
 //             CreateOrientedSegsOnLineVertex(line, polyPoint);
 //         }
 
 //         void CreateOrientedSegsOnLineVertex(Metroline line, PolylinePoint polyPoint) {
 //             Station u = metroGraphData.PointToStations[polyPoint.Prev.Point];
 //             Station v = metroGraphData.PointToStations[polyPoint.Point];
-//             Station w = metroGraphData.PointToStations[polyPoint.Next.Point];
+//             Station w = metroGraphData.PointToStations[polyPoint.next.Point];
 //             BundleBase h0 = v.BundleBases[u];
 //             BundleBase h1 = v.BundleBases[w];
 //             int j0 = metroOrdering.GetLineIndexInOrder(u, v, line);
@@ -193,10 +193,10 @@
 
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //         static IEnumerable < DebugCurve > BetweenHubs(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
-//             foreach(Metroline ml in metroGraphData.Metrolines) {
+//             foreach(Metroline ml of metroGraphData.Metrolines) {
 //                 List < Tuple < Point, Point >> segs = GetInterestingSegs(metroGraphData, metroMapOrdering, ml);
 //                 string color = GetMonotoneColor(ml.Polyline.Start, ml.Polyline.End, segs);
-//                 foreach(var seg in segs)
+//                 foreach(var seg of segs)
 //                 yield return new DebugCurve(100, ml.Width, color, new LineSegment(seg.Item1, seg.Item2));
 //             }
 //         }
@@ -205,7 +205,7 @@
 //             var ret = new List<Tuple<Point, Point>>();
 //             Point start = FindCurveStart(metroGraphData, metroMapOrdering, line);
 //             var cubicSegs = HubSegsOfLine(metroGraphData, metroMapOrdering, line);
-//             foreach(var seg in cubicSegs) {
+//             foreach(var seg of cubicSegs) {
 //                 if (seg == null) continue;
 //                 ret.Add(new Tuple<Point, Point>(start, seg.Start));
 //                 start = seg.End;
@@ -225,8 +225,8 @@
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //         static IEnumerable < DebugCurve > DebugHubBases(MetroGraphData metroGraphData) {
 //             List < DebugCurve > dc = new List<DebugCurve>();
-//             foreach(var s in metroGraphData.Stations)
-//             foreach(var h in s.BundleBases.Values) {
+//             foreach(var s of metroGraphData.Stations)
+//             foreach(var h of s.BundleBases.Values) {
 //                 dc.Add(new DebugCurve(100, 1, "red", new LineSegment(h.LeftPoint, h.RightPoint)));
 //             }
 
@@ -247,9 +247,9 @@
 //         static IEnumerable < DebugCurve > DebugSegs(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroMapOrdering) {
 
 //             var ls = new List<ICurve>();
-//             foreach(var s in metroGraphData.VirtualNodes()) {
-//                 foreach(var b in s.BundleBases.Values) {
-//                     foreach(var h in b.OrientedHubSegments) {
+//             foreach(var s of metroGraphData.VirtualNodes()) {
+//                 foreach(var b of s.BundleBases.Values) {
+//                     foreach(var h of b.OrientedHubSegments) {
 //                         if (h == null) continue;
 //                         if (h.Segment == null) {
 //                             var uBase = h.Other.BundleBase;
@@ -293,7 +293,7 @@
 //             Assert.assert(ApproximateComparer.Close(ts.LengthSquared, 1));
 //             Assert.assert(ApproximateComparer.Close(te.LengthSquared, 1));
 //             var v = p0 - p4;
-//             if (v.Length < ApproximateComparer.DistanceEpsilon)
+//             if (v.Length < GeomConstants.distanceEpsilon)
 //                 return null;
 
 //             var vtse = v * (ts - te);
@@ -304,8 +304,8 @@
 //             var b = 2 * vtse;
 //             var c = v * v;
 //             double al;
-//             if (Math.Abs(a) < ApproximateComparer.DistanceEpsilon) { //we have b*al+c=0
-//                 if (Math.Abs(b) > ApproximateComparer.DistanceEpsilon) {
+//             if (Math.Abs(a) < GeomConstants.distanceEpsilon) { //we have b*al+c=0
+//                 if (Math.Abs(b) > GeomConstants.distanceEpsilon) {
 //                     al = -c / b;
 //                 }
 //                 else {
@@ -417,8 +417,8 @@
 //             int steps = 0;
 //             while (progress && steps++ < maxSteps) {
 //                 progress = false;
-//                 foreach(Station s in metroGraphData.Stations)
-//                 foreach(var segmentHub in s.BundleBases.Values)
+//                 foreach(Station s of metroGraphData.Stations)
+//                 foreach(var segmentHub of s.BundleBases.Values)
 //                 progress |= FanEdgesOfHubSegment(segmentHub);
 //             }
 //         }
@@ -456,7 +456,7 @@
 //            var desiredDelta = Math.Min(del0, del1);
 //             var leftMiddle = lSeg[0.5];
 //             var rightMiddle = rSeg[0.5];
-//             if ((leftMiddle - rightMiddle).Length >= desiredDelta - ApproximateComparer.DistanceEpsilon)
+//             if ((leftMiddle - rightMiddle).Length >= desiredDelta - GeomConstants.distanceEpsilon)
 //                 return false;
 //             var leftMiddleToCenter = (leftMiddle - BundleHub.Vertex).Length;
 //             var rightMiddleToCenter = (rightMiddle - BundleHub.Vertex).Length;

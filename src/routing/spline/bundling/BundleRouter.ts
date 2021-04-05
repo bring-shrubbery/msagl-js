@@ -1,23 +1,23 @@
 //  The class is responsible for general edge bundling with ordered bundles.
 
-import {IEnumerable} from 'linq-to-typescript'
-import {Dictionary} from 'lodash'
-import {RectangleNode} from '../../../core/geometry/RTree/RectangleNode'
-import {Port} from '../../../core/layout/Port'
-import {BundlingSettings} from '../../../core/routing/BundlingSettings'
-import {EdgeGeometry} from '../../../layout/core/edgeGeometry'
-import {GeomEdge} from '../../../layout/core/geomEdge'
-import {GeomGraph} from '../../../layout/core/GeomGraph'
-import {Curve} from '../../../math/geometry/curve'
-import {IntersectionInfo} from '../../../math/geometry/intersectionInfo'
-import {LineSegment} from '../../../math/geometry/lineSegment'
-import {Point} from '../../../math/geometry/point'
-import {Polyline} from '../../../math/geometry/polyline'
-import {Rectangle} from '../../../math/geometry/rectangle'
-import {SmoothedPolyline} from '../../../math/geometry/smoothedPolyline'
-import {Algorithm} from '../../../utils/algorithm'
-import {ClusterBoundaryPort} from '../../ClusterBoundaryPort'
-import {VisibilityGraph} from '../../visibility/VisibilityGraph'
+import { IEnumerable } from 'linq-to-typescript'
+import { Dictionary } from 'lodash'
+import { RectangleNode } from '../../../core/geometry/RTree/RectangleNode'
+import { Port } from '../../../core/layout/Port'
+import { BundlingSettings } from '../../../core/routing/BundlingSettings'
+import { EdgeGeometry } from '../../../layout/core/edgeGeometry'
+import { GeomEdge } from '../../../layout/core/geomEdge'
+import { GeomGraph } from '../../../layout/core/GeomGraph'
+import { Curve } from '../../../math/geometry/curve'
+import { IntersectionInfo } from '../../../math/geometry/intersectionInfo'
+import { LineSegment } from '../../../math/geometry/lineSegment'
+import { Point } from '../../../math/geometry/point'
+import { Polyline } from '../../../math/geometry/polyline'
+import { Rectangle } from '../../../math/geometry/rectangle'
+import { SmoothedPolyline } from '../../../math/geometry/smoothedPolyline'
+import { Algorithm } from '../../../utils/algorithm'
+import { ClusterBoundaryPort } from '../../ClusterBoundaryPort'
+import { VisibilityGraph } from '../../visibility/VisibilityGraph'
 
 //  Currently the router will fail if there are node overlaps.
 export class BundleRouter extends Algorithm {
@@ -46,7 +46,7 @@ export class BundleRouter extends Algorithm {
 
   //  #if TEST_MSAGL && TEST_MSAGL
   //          void CheckGraph() {
-  //              foreach (var e in geometryGraph.Edges) {
+  //              foreach (var e of geometryGraph.Edges) {
   //                  if (e.Source == e.Target)
   //                      continue;
   //                  CheckPortOfNode(e.Source, e.SourcePort);
@@ -148,7 +148,7 @@ export class BundleRouter extends Algorithm {
           new LineSegment(edge.Curve.Start, edge.Curve.End),
           true,
         )
-        ;(<Polyline>edge.Curve).StartPoint.Point = ii.IntersectionPoint
+          ; (<Polyline>edge.Curve).startPoint.Point = ii.IntersectionPoint
       }
 
       if (ePort.Curve.BoundingBox.Contains(sPort.Curve.BoundingBox)) {
@@ -157,7 +157,7 @@ export class BundleRouter extends Algorithm {
           new LineSegment(edge.Curve.Start, edge.Curve.End),
           true,
         )
-        ;(<Polyline>edge.Curve).EndPoint.Point = ii.IntersectionPoint
+          ; (<Polyline>edge.Curve).endPoint.Point = ii.IntersectionPoint
       }
     }
   }
@@ -195,7 +195,7 @@ export class BundleRouter extends Algorithm {
   //              // ReSharper restore UnusedMember.Local
   //              var l = new List<ICurve>();
   //              l.Clear();
-  //              foreach (var e in geometryGraph.Edges) {
+  //              foreach (var e of geometryGraph.Edges) {
   //                  {
   //                      l.Add(new Ellipse(2, 2, e.Curve.Start));
   //                      l.Add(CurveFactory.CreateDiamond(5, 5, e.Curve.End));
@@ -206,7 +206,7 @@ export class BundleRouter extends Algorithm {
   //          }
   //  #endif
   FixLocationsForHookAnywherePorts(edges: IEnumerable<GeomEdge>) {
-    for (const edge in edges) {
+    for (const edge of edges) {
       const hookPort = <HookUpAnywhereFromInsidePort>edge.SourcePort
       if (hookPort != null) {
         hookPort.SetLocation(
@@ -270,7 +270,7 @@ export class BundleRouter extends Algorithm {
       this.VisibilityGraph,
     )
     const path = s.GetPath()
-    for (const sh in shapes) {
+    for (const sh of shapes) {
       sh.IsTransparent = false
     }
 
@@ -296,7 +296,7 @@ export class BundleRouter extends Algorithm {
       this.VisibilityGraph,
     )
     const path = s.GetPath()
-    for (const sh in shapes) {
+    for (const sh of shapes) {
       sh.IsTransparent = false
     }
 
@@ -353,7 +353,7 @@ export class BundleRouter extends Algorithm {
       TimeMeasurer.DebugOutput(
         "edge bundling can't be executed: not enough free space around obstacles",
       )
-      for (const e in this.regularEdges) {
+      for (const e of this.regularEdges) {
         e.Curve = null
       }
 
@@ -374,8 +374,8 @@ export class BundleRouter extends Algorithm {
       CdtEdge,
       Set<EdgeGeometry>
     >()
-    for (const edge in crossedEdges.Keys) {
-      for (const cdtEdge in crossedEdges[edge]) {
+    for (const edge of crossedEdges.Keys) {
+      for (const cdtEdge of crossedEdges[edge]) {
         CollectionUtilities.AddToMap(res, cdtEdge, edge)
       }
     }
@@ -417,7 +417,7 @@ export class BundleRouter extends Algorithm {
 
     // number of edges with requiredWidth <= availableWidth
     let ok = 0
-    for (const edge in pathsOnCdtEdge.Keys) {
+    for (const edge of pathsOnCdtEdge.Keys) {
       if (this.EdgeSeparationIsOk(edge, pathsOnCdtEdge[edge], separation)) {
         ok++
       }
@@ -439,7 +439,7 @@ export class BundleRouter extends Algorithm {
   }
 
   RouteSelfEdges() {
-    for (const edge in this.geometryGraph.Edges.Where(
+    for (const edge of this.geometryGraph.Edges.Where(
       (e) => e.Source == e.Target,
     )) {
       const sp: SmoothedPolyline
@@ -452,7 +452,7 @@ export class BundleRouter extends Algorithm {
   }
 
   FixArrowheads() {
-    for (const edge in this.geometryGraph.Edges) {
+    for (const edge of this.geometryGraph.Edges) {
       Arrowheads.TrimSplineAndCalculateArrowheads(
         edge.EdgeGeometry,
         edge.Source.BoundaryCurve,

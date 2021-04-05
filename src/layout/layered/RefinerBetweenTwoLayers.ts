@@ -1,14 +1,14 @@
-import {from, IEnumerable} from 'linq-to-typescript'
-import {CornerSite} from '../../math/geometry/cornerSite'
-import {GeomConstants} from '../../math/geometry/geomConstants'
-import {Point} from '../../math/geometry/point'
-import {randomInt} from '../../utils/random'
-import {GeomGraph} from '../core/GeomGraph'
-import {Anchor} from './anchor'
-import {LayerArrays} from './LayerArrays'
-import {LayerEdge} from './LayerEdge'
-import {NodeKind} from './NodeKind'
-import {ProperLayeredGraph} from './ProperLayeredGraph'
+import { from, IEnumerable } from 'linq-to-typescript'
+import { CornerSite } from '../../math/geometry/cornerSite'
+import { GeomConstants } from '../../math/geometry/geomConstants'
+import { Point } from '../../math/geometry/point'
+import { randomInt } from '../../utils/random'
+import { GeomGraph } from '../core/GeomGraph'
+import { Anchor } from './anchor'
+import { LayerArrays } from './LayerArrays'
+import { LayerEdge } from './LayerEdge'
+import { NodeKind } from './NodeKind'
+import { ProperLayeredGraph } from './ProperLayeredGraph'
 
 type Points = () => IEnumerable<Point>
 
@@ -87,7 +87,7 @@ export class RefinerBetweenTwoLayers {
 
   Refine() {
     this.Init()
-    while (this.InsertSites()) {}
+    while (this.InsertSites()) { }
   }
 
   private FixCorner(start: Point, corner: Point, end: Point): Point {
@@ -219,7 +219,7 @@ export class RefinerBetweenTwoLayers {
   // }
   // private bool StickingCornerFromTheTopLayer(out Point corner) {
   //     corner = this.currentBottomSite.v;
-  //     foreach (Point l in this.topCorners()) {
+  //     foreach (Point l of this.topCorners()) {
   //         Point p = l;
   //         if (this.counterClockwise(ref currentTopSite.v, ref p, ref corner))
   //             corner = p;
@@ -228,7 +228,7 @@ export class RefinerBetweenTwoLayers {
   // }
   // private bool StickingCornerFromTheBottomLayer(out Point corner) {
   //     corner = this.currentTopSite.v;
-  //     foreach (Point l in this.bottomCorners()) {
+  //     foreach (Point l of this.bottomCorners()) {
   //         Point p = l;
   //         if (this.counterClockwise(ref currentBottomSite.v, ref p, ref corner))
   //             corner = p;
@@ -395,7 +395,7 @@ export class RefinerBetweenTwoLayers {
   private Intersect(e: LayerEdge, m: LayerEdge): boolean {
     return (
       (this.layerArrays.X[e.Source] - this.layerArrays.X[m.Source]) *
-        (this.layerArrays.X[e.Target] - this.layerArrays.X[m.Target]) <
+      (this.layerArrays.X[e.Target] - this.layerArrays.X[m.Target]) <
       0
     )
   }

@@ -73,11 +73,11 @@
 // #if TEST_MSAGL
 //                 //List<ICurve> cs = new List<ICurve>();
 
-//                 //foreach (Diagonal d in this.activeDiagonalTree) {
+//                 //foreach (Diagonal d of this.activeDiagonalTree) {
 //                 //    cs.Add(new LineSegment(d.Start, d.End));
 //                 //}
 
-//                 //foreach (Polygon p in this.polygons)
+//                 //foreach (Polygon p of this.polygons)
 //                 //    cs.Add(p.Polyline);
 
 //                 //cs.Add(new LineSegment(t.Start.Point, t.End.Point));
@@ -87,7 +87,7 @@
 //     }
 
 //         private void AddVisibleEdge(Tangent t) {
-//         VisibilityGraph.AddEdge(visibilityGraph.GetVertex(t.Start), visibilityGraph.GetVertex(t.End));
+//         VisibilityGraph.addEdge(visibilityGraph.GetVertex(t.Start), visibilityGraph.GetVertex(t.End));
 //     }
 
 //         // <summary>
@@ -99,7 +99,7 @@
 //         Point firstTangentStart = firstTangent.Start.Point;
 //         Point firstTangentEnd = firstTangent.End.Point;
 
-//         foreach(Diagonal diagonal in diagonals) {
+//         foreach(Diagonal diagonal of diagonals) {
 //             if (RayIntersectDiagonal(firstTangentStart, firstTangentEnd, diagonal)) {
 //                 this.activeDiagonalComparer.PointOnTangentAndInsertedDiagonal =
 //                     ActiveDiagonalComparerWithRay.IntersectDiagonalWithRay(firstTangentStart, firstTangentEnd, diagonal);
@@ -119,7 +119,7 @@
 // #if TEST_MSAGL && TEST_MSAGL
 //     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //         private void AddPolylinesForShow(List < ICurve > curves) {
-//         foreach(Polygon p in this.polygons)
+//         foreach(Polygon p of this.polygons)
 //         curves.Add(p.Polyline);
 //     }
 // #endif
@@ -165,16 +165,16 @@
 
 //     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "cc")]
 //         private void OrganizeTangents() {
-//         foreach(Polygon q in polygons)
+//         foreach(Polygon q of polygons)
 //         if (q != this.currentPolygon)
 //             ProcessPolygonQ(q);
 
 //         this.tangents.Sort(new Comparison<Tangent>(TangentComparison));
 //         ////debug
 //         //List<ICurve> cc = new List<ICurve>();
-//         //foreach (Tangent t in this.tangents)
+//         //foreach (Tangent t of this.tangents)
 //         //    cc.Add(new LineSegment(t.Start.Point, t.End.Point));
-//         //foreach (Polygon p in polygons)
+//         //foreach (Polygon p of polygons)
 //         //    cc.Add(p.Polyline);
 //         //SugiyamaLayoutSettings.Show(cc.ToArray());
 //         ///end debug

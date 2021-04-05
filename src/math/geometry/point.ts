@@ -1,5 +1,5 @@
-import {LinearSystem2} from './linearSystem'
-import {GeomConstants} from './geomConstants'
+import { LinearSystem2 } from './linearSystem'
+import { GeomConstants } from './geomConstants'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,
@@ -103,7 +103,7 @@ export class Point {
     c: Point,
     d: Point,
   ): Point | undefined {
-    //look for the solution in the form a+u*(b-a)=c+v*(d-c)
+    //look for the solution of the form a+u*(b-a)=c+v*(d-c)
     const ba = b.sub(a)
     const cd = c.sub(d)
     const ca = c.sub(a)

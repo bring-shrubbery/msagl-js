@@ -70,7 +70,7 @@
 //             cost += bundlingSettings.InkImportance * metroGraphData.Ink;
 
 //             //path lengths
-//             foreach(var metroline in metroGraphData.Metrolines) {
+//             foreach(var metroline of metroGraphData.Metrolines) {
 //                 cost += bundlingSettings.PathLengthImportance * metroline.Length / metroline.IdealLength;
 //             }
 
@@ -86,12 +86,12 @@
 //             double cost = 0;
 
 //             //hubs
-//             foreach(var v in metroGraphData.VirtualNodes()) {
+//             foreach(var v of metroGraphData.VirtualNodes()) {
 //                 cost += v.cachedRadiusCost;
 //             }
 
 //             //bundles
-//             foreach(var edge in metroGraphData.VirtualEdges()) {
+//             foreach(var edge of metroGraphData.VirtualEdges()) {
 //                 var v = edge.Item1;
 //                 var u = edge.Item2;
 //                 cost += metroGraphData.GetIjInfo(v, u).cachedBundleCost;
@@ -107,7 +107,7 @@
 //             //ink
 //             double oldInk = metroGraphData.Ink;
 //             double newInk = metroGraphData.Ink;
-//             foreach(var adj in node.Neighbors) {
+//             foreach(var adj of node.Neighbors) {
 //                 Point adjPosition = adj.Position;
 //                 newInk -= (adjPosition - node.Position).Length;
 //                 newInk += (adjPosition - newPosition).Length;
@@ -121,12 +121,12 @@
 //         internal double PathLengthsGain(Station node, Point newPosition) {
 //             double gain = 0;
 //             //edge lengths
-//             foreach(var e in metroGraphData.MetroNodeInfosOfNode(node)) {
+//             foreach(var e of metroGraphData.MetroNodeInfosOfNode(node)) {
 //                 var oldLength = e.Metroline.Length;
 //                 var newLength = e.Metroline.Length;
 
 //                 var prev = e.PolyPoint.Prev.Point;
-//                 var next = e.PolyPoint.Next.Point;
+//                 var next = e.PolyPoint.next.Point;
 
 //                 newLength += (next - newPosition).Length + (prev - newPosition).Length - (next - node.Position).Length - (prev - node.Position).Length;
 
@@ -161,7 +161,7 @@
 //             }
 
 //             double cost = 0;
-//             foreach(var d in touchedObstacles) {
+//             foreach(var d of touchedObstacles) {
 //                 double dist = (d.Item2 - newPosition).Length;
 //                 cost += RError(idealR, dist, bundlingSettings);
 //             }
@@ -177,7 +177,7 @@
 //             double gain = 0;
 
 //             gain += node.cachedBundleCost;
-//             foreach(var adj in node.Neighbors) {
+//             foreach(var adj of node.Neighbors) {
 //                 double lgain = BundleCost(node, adj, newPosition);
 //                 if (ApproximateComparer.GreaterOrEqual(lgain, Inf)) return -Inf;
 //                 gain -= lgain;
@@ -196,7 +196,7 @@
 //                 return Inf;
 //             }
 
-//             foreach(var pair in closestDist) {
+//             foreach(var pair of closestDist) {
 //                 double dist = (pair.Item1 - pair.Item2).Length;
 //                 cost += BundleError(idealWidth / 2, dist, bundlingSettings);
 //             }

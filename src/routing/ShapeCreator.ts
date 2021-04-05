@@ -1,9 +1,9 @@
-﻿import {Edge} from 'graphlib'
-import {from, IEnumerable} from 'linq-to-typescript'
-import {Port} from '../core/layout/Port'
-import {GeomGraph} from '../layout/core/GeomGraph'
-import {GeomNode} from '../layout/core/geomNode'
-import {Shape} from './Shape'
+﻿import { Edge } from 'graphlib'
+import { from, IEnumerable } from 'linq-to-typescript'
+import { Port } from '../core/layout/Port'
+import { GeomGraph } from '../layout/core/GeomGraph'
+import { GeomNode } from '../layout/core/geomNode'
+import { Shape } from './Shape'
 
 //  Class for creating Shape elements from a Graph.
 export class ShapeCreator {
@@ -16,13 +16,13 @@ export class ShapeCreator {
     const interestingNodes = from(graph.nodes())
       .where((n: GeomNode) => !n.underCollapsedCluster())
       .ToArray()
-    for (const v in interestingNodes) {
+    for (const v of interestingNodes) {
       nodesToShapes[v] = ShapeCreator.CreateShapeWithCenterPort(v)
     }
 
-    for (const c in graph.RootCluster.AllClustersDepthFirst()) {
+    for (const c of graph.RootCluster.AllClustersDepthFirst()) {
       if (!c.IsCollapsed) {
-        for (const v in c.Nodes) {
+        for (const v of c.Nodes) {
           if (!nodesToShapes.has(v)) {
             nodesToShapes[v] = ShapeCreator.CreateShapeWithCenterPort(v)
           }
@@ -38,16 +38,16 @@ export class ShapeCreator {
         // TODO: Warning!!! continue If
       }
 
-      for (const v in c.Nodes) {
+      for (const v of c.Nodes) {
         parent.AddChild(nodesToShapes[v])
       }
 
-      for (const d in c.Clusters) {
+      for (const d of c.Clusters) {
         parent.AddChild(nodesToShapes[d])
       }
     }
 
-    for (const edge in graph.Edges) {
+    for (const edge of graph.Edges) {
       const shape: Shape
       if (nodesToShapes.TryGetValue(edge.Source, /* out */ shape)) {
         if (edge.SourcePort != null) {
@@ -76,15 +76,15 @@ export class ShapeCreator {
       (node) => node.Center,
     )
     shape.Ports.Insert(port)
-    for (const e in node.InEdges) {
+    for (const e of node.InEdges) {
       ShapeCreator.FixPortAtTarget(shape, port, e)
     }
 
-    for (const e in node.OutEdges) {
+    for (const e of node.OutEdges) {
       ShapeCreator.FixPortAtSource(shape, port, e)
     }
 
-    for (const e in node.SelfEdges) {
+    for (const e of node.SelfEdges) {
       ShapeCreator.FixPortAtSource(shape, port, e)
       ShapeCreator.FixPortAtTarget(shape, port, e)
     }
@@ -104,15 +104,15 @@ export class ShapeCreator {
       (node) => node.Center,
     )
     shape.Ports.Insert(port)
-    for (const e in node.InEdges) {
+    for (const e of node.InEdges) {
       ShapeCreator.FixPortAtTarget(shape, port, e)
     }
 
-    for (const e in node.OutEdges) {
+    for (const e of node.OutEdges) {
       ShapeCreator.FixPortAtSource(shape, port, e)
     }
 
-    for (const e in node.SelfEdges) {
+    for (const e of node.SelfEdges) {
       ShapeCreator.FixPortAtSource(shape, port, e)
       ShapeCreator.FixPortAtTarget(shape, port, e)
     }

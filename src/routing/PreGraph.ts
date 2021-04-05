@@ -18,7 +18,7 @@
 //             edgeGeometries = new List<EdgeGeometry>(egs);
 //             this.nodeBoundaries = new Set<ICurve>(nodeBoundaries);
 //             boundingBox = Rectangle.CreateAnEmptyBox();
-//             foreach (var curve in nodeBoundaries)
+//             foreach (var curve of nodeBoundaries)
 //                 boundingBox.Add(curve.BoundingBox);
 //         }
 

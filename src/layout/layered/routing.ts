@@ -1,24 +1,24 @@
-import {Edge} from 'graphlib'
-import {Curve} from '../../math/geometry/curve'
-import {ICurve} from '../../math/geometry/icurve'
-import {LineSegment} from '../../math/geometry/lineSegment'
-import {Point} from '../../math/geometry/point'
-import {Rectangle} from '../../math/geometry/rectangle'
-import {SmoothedPolyline} from '../../math/geometry/smoothedPolyline'
-import {BasicGraph} from '../../structs/BasicGraph'
-import {IntPair} from '../../utils/IntPair'
-import {GeomGraph} from '../core/GeomGraph'
-import {Algorithm} from './../../utils/algorithm'
-import {Anchor} from './anchor'
-import {Database} from './Database'
-import {LayerArrays} from './LayerArrays'
-import {PolyIntEdge} from './polyIntEdge'
-import {ProperLayeredGraph} from './ProperLayeredGraph'
-import {SugiyamaLayoutSettings} from './SugiyamaLayoutSettings'
+import { Edge } from 'graphlib'
+import { Curve } from '../../math/geometry/curve'
+import { ICurve } from '../../math/geometry/icurve'
+import { LineSegment } from '../../math/geometry/lineSegment'
+import { Point } from '../../math/geometry/point'
+import { Rectangle } from '../../math/geometry/rectangle'
+import { SmoothedPolyline } from '../../math/geometry/smoothedPolyline'
+import { BasicGraph } from '../../structs/BasicGraph'
+import { IntPair } from '../../utils/IntPair'
+import { GeomGraph } from '../core/GeomGraph'
+import { Algorithm } from './../../utils/algorithm'
+import { Anchor } from './anchor'
+import { Database } from './Database'
+import { LayerArrays } from './LayerArrays'
+import { PolyIntEdge } from './polyIntEdge'
+import { ProperLayeredGraph } from './ProperLayeredGraph'
+import { SugiyamaLayoutSettings } from './SugiyamaLayoutSettings'
 //import { FlatEdgeRouter } from './FlatEdgeRouter'
-import {CornerSite} from '../../math/geometry/cornerSite'
-import {NodeKind} from './NodeKind'
-import {Arrowhead} from '../core/arrowhead'
+import { CornerSite } from '../../math/geometry/cornerSite'
+import { NodeKind } from './NodeKind'
+import { Arrowhead } from '../core/arrowhead'
 //  The class responsible for the routing of splines
 export class Routing extends Algorithm {
   settings: SugiyamaLayoutSettings
@@ -299,7 +299,7 @@ export class Routing extends Algorithm {
   static GetSegmentInFrontOfLabel(edgeCurve: ICurve, labelY: number): ICurve {
     const curve = <Curve>edgeCurve
     if (curve != null) {
-      for (const seg: ICurve in curve.Segments) {
+      for (const seg: ICurve of curve.Segments) {
         if ((seg.Start.Y - labelY) * (seg.End.Y - labelY) <= 0) {
           return seg
         }
@@ -316,7 +316,7 @@ export class Routing extends Algorithm {
     return vertexOffset == 0
       ? NodeKind.Top
       : vertexOffset < edgePath.count
-      ? NodeKind.Internal
-      : NodeKind.Bottom
+        ? NodeKind.Internal
+        : NodeKind.Bottom
   }
 }

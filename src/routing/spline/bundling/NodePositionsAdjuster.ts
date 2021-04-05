@@ -102,9 +102,9 @@
 
 //   //can it be more efficient?
 //   HashSet < Point > affectedPoints = new HashSet<Point>();
-//   foreach(var s in gluedDomain) {
+//   foreach(var s of gluedDomain) {
 //     affectedPoints.Add(s.Position);
-//     foreach(var neig in s.Neighbors)
+//     foreach(var neig of s.Neighbors)
 //     if (!neig.IsRealNode)
 //       affectedPoints.Add(neig.Position);
 //   }
@@ -117,7 +117,7 @@
 // }
 
 // RectangleNode < Station, Point > GetCirclesHierarchy() {
-//   foreach(var v in metroGraphData.VirtualNodes()) {
+//   foreach(var v of metroGraphData.VirtualNodes()) {
 //     v.Radius = GetCurrentHubRadius(v);
 //   }
 
@@ -139,7 +139,7 @@
 //     double r = metroGraphData.looseIntersections.GetMinimalDistanceToObstacles(node, node.Position, idealR);
 //     //double r = idealR;
 //     Assert.assert(r <= idealR);
-//     foreach(var adj in node.Neighbors)
+//     foreach(var adj of node.Neighbors)
 //     r = Math.Min(r, (node.Position - adj.Position).Length);
 //     return r;
 //   }
@@ -175,7 +175,7 @@
 // // trying to glue i to j
 // // </summary>
 // bool NodeGluingIsAllowed(Station i, Station j, Dictionary < Station, Station > gluingMap) {
-//   foreach(var adj in i.Neighbors) {
+//   foreach(var adj of i.Neighbors) {
 //     var k = Glued(adj, gluingMap);
 //     //1. check that we can merge these stations (== no intersections)
 //     Set < Polyline > obstaclesToIgnore = metroGraphData.looseIntersections.ObstaclesToIgnoreForBundle(k, i);
@@ -199,7 +199,7 @@
 //   //ink
 //   double oldInk = metroGraphData.Ink;
 //   double newInk = metroGraphData.Ink - (j.Position - i.Position).Length;
-//   foreach(var adj in i.Neighbors) {
+//   foreach(var adj of i.Neighbors) {
 //     var k = Glued(adj, gluingMap);
 //     newInk -= (k.Position - i.Position).Length;
 //     newInk += (metroGraphData.RealEdgeCount(k, j) == 0 ? (k.Position - j.Position).Length : 0);
@@ -208,13 +208,13 @@
 //   gain += CostCalculator.InkError(oldInk, newInk, bundlingSettings);
 
 //   //path lengths
-//   foreach(var metroInfo in metroGraphData.MetroNodeInfosOfNode(i)) {
+//   foreach(var metroInfo of metroGraphData.MetroNodeInfosOfNode(i)) {
 //     double oldLength = metroInfo.Metroline.Length;
 //     double newLength = metroInfo.Metroline.Length;
 
 //     PolylinePoint pi = metroInfo.PolyPoint;
 //     PolylinePoint pa = pi.Prev;
-//     PolylinePoint pb = pi.Next;
+//     PolylinePoint pb = pi.next;
 
 //     newLength -= (pa.Point - i.Position).Length + (pb.Point - i.Position).Length;
 //     newLength += (pa.Point - j.Position).Length + (pb.Point - j.Position).Length;
@@ -278,16 +278,16 @@
 //   ink = metroGraphData.Ink;
 //   polylineLength = new Dictionary<Metroline, double>();
 //   //create polylines
-//   foreach(var metroline in metroGraphData.Metrolines) {
+//   foreach(var metroline of metroGraphData.Metrolines) {
 //     polylineLength[metroline] = metroline.Length;
-//     for (var pp = metroline.Polyline.StartPoint; pp.Next != null; pp = pp.Next) {
-//       var segment = new PointPair(pp.Point, pp.Next.Point);
+//     for (var pp = metroline.Polyline.startPoint; pp.next != null; pp = pp.next) {
+//       var segment = new PointPair(pp.Point, pp.next.Point);
 //       CollectionUtilities.AddToMap(segsToPolylines, segment, metroline);
 //     }
 //   }
 //   var affectedPoints = new HashSet<Point>();
 //   var progress = false;
-//   foreach(var metroline in metroGraphData.Metrolines) {
+//   foreach(var metroline of metroGraphData.Metrolines) {
 //     var obstaclesAllowedToIntersect =
 //       metroGraphData.PointToStations[metroline.Polyline.Start].EnterableLoosePolylines *
 //       metroGraphData.PointToStations[metroline.Polyline.End].EnterableLoosePolylines;
@@ -310,7 +310,7 @@
 //   var relaxing = true;
 //   while (relaxing) {
 //     relaxing = false;
-//     for (var p = metroline.Polyline.StartPoint; p.Next != null && p.Next.Next != null; p = p.Next)
+//     for (var p = metroline.Polyline.startPoint; p.next != null && p.next.next != null; p = p.next)
 //       if (TryShortcutPolypoint(p, segsToPolylines, affectedPoints, obstaclesAllowedToIntersect))
 //         relaxing = true;
 //     if (relaxing) progress = true;
@@ -321,8 +321,8 @@
 // bool TryShortcutPolypoint(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines, HashSet < Point > affectedPoints, Set < Polyline > obstaclesAllowedToIntersect) {
 //   if (SeparationShortcutAllowed(pp, segsToPolylines, obstaclesAllowedToIntersect)) {
 //     affectedPoints.Add(pp.Point);
-//     affectedPoints.Add(pp.Next.Point);
-//     affectedPoints.Add(pp.Next.Next.Point);
+//     affectedPoints.Add(pp.next.Point);
+//     affectedPoints.Add(pp.next.next.Point);
 //     RemoveShortcuttedPolypoint(pp, segsToPolylines);
 
 //     return true;
@@ -335,8 +335,8 @@
 // // </summary>
 // bool SeparationShortcutAllowed(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines, Set < Polyline > obstaclesAllowedToIntersect) {
 //   var a = pp.Point;
-//   var b = pp.Next.Point;
-//   var c = pp.Next.Next.Point;
+//   var b = pp.next.Point;
+//   var c = pp.next.next.Point;
 //   var aStation = metroGraphData.PointToStations[a];
 //   var bStation = metroGraphData.PointToStations[b];
 //   var cStation = metroGraphData.PointToStations[c];
@@ -373,7 +373,7 @@
 //   gain += CostCalculator.InkError(oldInk, newInk, bundlingSettings);
 
 //   //path lengths
-//   foreach(var metroline in abcPolylines) {
+//   foreach(var metroline of abcPolylines) {
 //     double oldLength = polylineLength[metroline];
 //     double newLength = polylineLength[metroline];
 //     newLength -= ab + bc - ac;
@@ -403,8 +403,8 @@
 
 // void RemoveShortcuttedPolypoint(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines) {
 //   var a = pp.Point;
-//   var b = pp.Next.Point;
-//   var c = pp.Next.Next.Point;
+//   var b = pp.next.Point;
+//   var c = pp.next.next.Point;
 
 //   Set < Metroline > abPolylines, bcPolylines, abcPolylines;
 //   FindPolylines(pp, segsToPolylines, out abPolylines, out bcPolylines, out abcPolylines);
@@ -420,11 +420,11 @@
 //     ink += ac;
 
 //   //fixing edge lengths
-//   foreach(var metroline in abcPolylines)
+//   foreach(var metroline of abcPolylines)
 //   polylineLength[metroline] -= ab + bc - ac;
 
 //   //fixing polylines
-//   foreach(var metroline in abcPolylines) {
+//   foreach(var metroline of abcPolylines) {
 //     RemovePolypoint(metroline.Polyline.PolylinePoints.First(p => p.Point == b));
 //     CollectionUtilities.RemoveFromMap(segsToPolylines, new PointPair(a, b), metroline);
 //     CollectionUtilities.RemoveFromMap(segsToPolylines, new PointPair(b, c), metroline);
@@ -435,8 +435,8 @@
 // void FindPolylines(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines,
 //   out Set < Metroline > abPolylines, out Set < Metroline > bcPolylines, out Set < Metroline > abcPolylines) {
 //   Point a = pp.Point;
-//   Point b = pp.Next.Point;
-//   Point c = pp.Next.Next.Point;
+//   Point b = pp.next.Point;
+//   Point c = pp.next.next.Point;
 //   abPolylines = segsToPolylines[new PointPair(a, b)];
 //   bcPolylines = segsToPolylines[new PointPair(b, c)];
 //   abcPolylines = abPolylines * bcPolylines;
@@ -444,8 +444,8 @@
 
 // void RemovePolypoint(PolylinePoint p) {
 //   PolylinePoint prev = p.Prev;
-//   PolylinePoint next = p.Next;
-//   prev.Next = next;
+//   PolylinePoint next = p.next;
+//   prev.next = next;
 //   next.Prev = prev;
 // }
 
@@ -459,7 +459,7 @@
 // bool GlueCollinearNeighbors(int step) {
 //   HashSet < Point > affectedPoints = new HashSet<Point>();
 //   bool progress = false;
-//   foreach(var node in metroGraphData.Stations)
+//   foreach(var node of metroGraphData.Stations)
 //   if (GlueCollinearNeighbors(node, affectedPoints, step)) progress = true;
 
 //   if (progress) {
@@ -483,7 +483,7 @@
 //   if (gluedEdges.Count == 0)
 //     return false;
 
-//   foreach(var keyValuePair in gluedEdges) {
+//   foreach(var keyValuePair of gluedEdges) {
 //     GlueEdge(keyValuePair);
 //     affectedPoints.Add(keyValuePair.Key.Item1.Position);
 //     affectedPoints.Add(keyValuePair.Key.Item2.Position);
@@ -583,13 +583,13 @@
 //   gain += CostCalculator.InkError(oldInk, newInk, bundlingSettings);
 
 //   //path lengths
-//   foreach(var metroline in metroGraphData.GetIjInfo(node, b).Metrolines) {
+//   foreach(var metroline of metroGraphData.GetIjInfo(node, b).Metrolines) {
 //     double oldLength = metroline.Length;
 //     double newLength = metroline.Length - (node.Position - b.Position).Length +
 //       (node.Position - newp).Length + (newp - b.Position).Length;
 //     gain += CostCalculator.PathLengthsError(oldLength, newLength, metroline.IdealLength, bundlingSettings);
 //   }
-//   foreach(var metroline in metroGraphData.GetIjInfo(node, a).Metrolines) {
+//   foreach(var metroline of metroGraphData.GetIjInfo(node, a).Metrolines) {
 //     double oldLength = metroline.Length;
 //     double newLength = metroline.Length - (node.Position - a.Position).Length +
 //       (node.Position - newp).Length + (newp - a.Position).Length;
@@ -630,8 +630,8 @@
 //   var a = keyValuePair.Key.Item2;
 //   var newp = keyValuePair.Value;
 
-//   foreach(var polylinePoint in node.MetroNodeInfos.Select(i => i.PolyPoint)) {
-//     if (polylinePoint.Next != null && polylinePoint.Next.Point == a.Position)
+//   foreach(var polylinePoint of node.MetroNodeInfos.Select(i => i.PolyPoint)) {
+//     if (polylinePoint.next != null && polylinePoint.next.Point == a.Position)
 //       SplitPolylinePoint(polylinePoint, newp);
 //     else if (polylinePoint.Prev != null && polylinePoint.Prev.Point == a.Position)
 //       SplitPolylinePoint(polylinePoint.Prev, newp);
@@ -639,11 +639,11 @@
 // }
 
 // void SplitPolylinePoint(PolylinePoint node, Point pointToInsert) {
-//   if (node.Point == pointToInsert || node.Next.Point == pointToInsert) return;
+//   if (node.Point == pointToInsert || node.next.Point == pointToInsert) return;
 
-//   var p = new PolylinePoint(pointToInsert) { Polyline = node.Polyline, Next = node.Next, Prev = node };
-//   p.Next.Prev = p;
-//   p.Prev.Next = p;
+//   var p = new PolylinePoint(pointToInsert) { Polyline = node.Polyline, Next = node.next, Prev = node };
+//   p.next.Prev = p;
+//   p.Prev.next = p;
 // }
 
 //         #endregion
@@ -656,7 +656,7 @@
 // bool RelaxConstrainedEdges() {
 //   HashSet < Point > affectedPoints = new HashSet<Point>();
 //   bool progress = false;
-//   foreach(var edge in metroGraphData.VirtualEdges())
+//   foreach(var edge of metroGraphData.VirtualEdges())
 //   if (RelaxConstrainedEdge(edge.Item1, edge.Item2, affectedPoints)) progress = true;
 
 //   if (progress) {
@@ -680,7 +680,7 @@
 //     //find closest obstacle
 //     double bestDist = -1;
 //     Point bestPoint = new Point();
-//     foreach(var d in closestPoints) {
+//     foreach(var d of closestPoints) {
 //       //should not be too close
 //       double distToSegmentEnd = Math.Min((a.Position - d.Item2).Length, (b.Position - d.Item2).Length);
 //       double distAB = (a.Position - b.Position).Length;
@@ -703,17 +703,17 @@
 //     affectedPoints.Add(a.Position);
 //     affectedPoints.Add(b.Position);
 
-//     foreach(var metroline in metroGraphData.GetIjInfo(a, b).Metrolines) {
+//     foreach(var metroline of metroGraphData.GetIjInfo(a, b).Metrolines) {
 //       PolylinePoint pp = null;
 //       //TODO: replace the cycle!
-//       foreach(var ppp in metroline.Polyline.PolylinePoints)
+//       foreach(var ppp of metroline.Polyline.PolylinePoints)
 //       if (ppp.Point == a.Position) {
 //         pp = ppp;
 //         break;
 //       }
 
 //       Assert.assert(pp != null);
-//       if (pp.Next != null && pp.Next.Point == b.Position)
+//       if (pp.next != null && pp.next.Point == b.Position)
 //         SplitPolylinePoint(pp, bestPoint);
 //       else
 //         SplitPolylinePoint(pp.Prev, bestPoint);

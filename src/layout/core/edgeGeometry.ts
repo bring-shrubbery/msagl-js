@@ -1,6 +1,6 @@
-import {ICurve} from './../../math/geometry/icurve'
-import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
-import {Arrowhead} from './arrowhead'
+import { ICurve } from './../../math/geometry/icurve'
+import { SmoothedPolyline } from './../../math/geometry/smoothedPolyline'
+import { Arrowhead } from './arrowhead'
 export class EdgeGeometry {
   curve: ICurve
   smoothedPolyline: SmoothedPolyline
@@ -30,7 +30,7 @@ export class EdgeGeometry {
      if (SmoothedPolyline != null)
        for (Site s = SmoothedPolyline.HeadSite, s0 = SmoothedPolyline.HeadSite;
          s != null;
-     s = s.Next, s0 = s0.Next)
+     s = s.next, s0 = s0.next)
      s.Point = s0.Point + delta;
  
      if (SourceArrowhead != null)

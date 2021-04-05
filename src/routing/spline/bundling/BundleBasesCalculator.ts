@@ -68,13 +68,13 @@
 //         internalBases = new Dictionary<ICurve, List<BundleBase>>();
 //         Bundles = new List<BundleInfo>();
 
-//         foreach(var station in metroGraphData.Stations) {
+//         foreach(var station of metroGraphData.Stations) {
 //             if (station.BoundaryCurve == null)
 //                 station.BoundaryCurve = new Ellipse(station.Radius, station.Radius, station.Position);
 //         }
 
-//         foreach(var station in metroGraphData.Stations) {
-//             foreach(Station neighbor in station.Neighbors) {
+//         foreach(var station of metroGraphData.Stations) {
+//             foreach(Station neighbor of station.Neighbors) {
 //                 if (station < neighbor) {
 //                     var bb = new BundleBase(metroGraphData.RealEdgeCount(station, neighbor), station.BoundaryCurve, station.Position, station.IsRealNode, neighbor.SerialNumber);
 //                     station.BundleBases[neighbor] = bb;
@@ -111,7 +111,7 @@
 //     }
 
 //     void SetBundleBaseNeighbors() {
-//         foreach(var c in externalBases.Keys) {
+//         foreach(var c of externalBases.Keys) {
 //             List < BundleBase > list = externalBases[c];
 //             SortBundlesCounterClockwise(list);
 
@@ -119,7 +119,7 @@
 //             SetLeftRightBases(list);
 //         }
 
-//         foreach(var c in internalBases.Keys) {
+//         foreach(var c of internalBases.Keys) {
 //             List < BundleBase > list = internalBases[c];
 //             SortBundlesCounterClockwise(list);
 
@@ -144,25 +144,25 @@
 //             return;
 //         for (int i = 0; i < count; i++) {
 //             bases[i].Prev = bases[(i - 1 + count) % count];
-//             bases[i].Next = bases[(i + 1) % count];
+//             bases[i].next = bases[(i + 1) % count];
 //         }
 //     }
 
 //     void CreateOrientedSegs() {
-//         foreach(var metroline in metroGraphData.Metrolines) {
+//         foreach(var metroline of metroGraphData.Metrolines) {
 //             CreateOrientedSegsOnLine(metroline);
 //         }
 //     }
 
 //     void CreateOrientedSegsOnLine(Metroline line) {
-//         for (PolylinePoint polyPoint = line.Polyline.StartPoint.Next; polyPoint.Next != null; polyPoint = polyPoint.Next)
+//         for (PolylinePoint polyPoint = line.Polyline.startPoint.next; polyPoint.next != null; polyPoint = polyPoint.next)
 //         CreateOrientedSegsOnLineVertex(line, polyPoint);
 //     }
 
 //     void CreateOrientedSegsOnLineVertex(Metroline line, PolylinePoint polyPoint) {
 //         Station u = metroGraphData.PointToStations[polyPoint.Prev.Point];
 //         Station v = metroGraphData.PointToStations[polyPoint.Point];
-//         Station w = metroGraphData.PointToStations[polyPoint.Next.Point];
+//         Station w = metroGraphData.PointToStations[polyPoint.next.Point];
 //         BundleBase h0 = v.BundleBases[u];
 //         BundleBase h1 = v.BundleBases[w];
 //         int j0 = metroOrdering.GetLineIndexInOrder(u, v, line);
@@ -174,12 +174,12 @@
 //     }
 
 //     void UpdateSourceAndTargetBases() {
-//         foreach(var bundleInfo in Bundles)
+//         foreach(var bundleInfo of Bundles)
 //         bundleInfo.UpdateSourceAndTargetBases(true, true);
 //     }
 
 //     void SetBasesRightLeftParamsToTheMiddles() {
-//         foreach(var bundle in Bundles) {
+//         foreach(var bundle of Bundles) {
 //             var sbase = bundle.SourceBase;
 //             var tbase = bundle.TargetBase;
 //             sbase.ParRight = sbase.ParLeft = GetBaseMiddleParamInDirection(sbase, sbase.Position, tbase.Position);
@@ -194,7 +194,7 @@
 //             return Point.Angle(circle.AxisA, neighbPos - sPos);
 
 //         var intersections = Curve.GetAllIntersections(curve, new LineSegment(sPos, neighbPos), true);
-//         foreach(var intersectionInfo in intersections) {
+//         foreach(var intersectionInfo of intersections) {
 //             var xP = intersectionInfo.IntersectionPoint;
 //             if ((xP - sPos) * (xP - neighbPos) <= 0) {
 //                 return intersectionInfo.Par0;
@@ -205,17 +205,17 @@
 //     }
 
 //     void SetRightLeftParamsFeasiblySymmetrically() {
-//         foreach(var bundle in Bundles) {
+//         foreach(var bundle of Bundles) {
 //             bundle.SetParamsFeasiblySymmetrically(metroGraphData.TightTree);
 //         }
 //     }
 
 //     void AdjustStartEndParamsToAvoidBaseOverlaps() {
-//         foreach(var c in externalBases.Keys) {
+//         foreach(var c of externalBases.Keys) {
 //             AdjustCurrentBundleWidthsOnCurve(externalBases[c]);
 //         }
 
-//         foreach(var c in internalBases.Keys) {
+//         foreach(var c of internalBases.Keys) {
 //             AdjustCurrentBundleWidthsOnCurve(internalBases[c]);
 //         }
 //     }
@@ -227,7 +227,7 @@
 
 //         for (int i = 0; i < count; i++) {
 //             BundleBase rBase = bases[i];
-//             BundleBase lBase = rBase.Next;
+//             BundleBase lBase = rBase.next;
 
 //             ShrinkBasesToMakeTwoConsecutiveNeighborsHappy(rBase, lBase);
 //             Assert.assert(!rBase.Intersect(lBase));
@@ -392,7 +392,7 @@
 
 //     bool OptimizeBundles(double parameterChange, ref double cost) {
 //         var progress = false;
-//         foreach(var bundleInfo in Bundles) {
+//         foreach(var bundleInfo of Bundles) {
 //             if (fixedBundles.Contains(bundleInfo))
 //                 continue;
 
@@ -528,7 +528,7 @@
 
 //         double assymetryWeight = bundleBase.OppositeBase.BelongsToRealNode ? 200 : 500;
 //         double cost = 0;
-//         foreach(var o in bundleBase.OrientedHubSegments) {
+//         foreach(var o of bundleBase.OrientedHubSegments) {
 //             int i0 = o.Index;
 //             int i1 = o.Other.Index;
 
@@ -549,7 +549,7 @@
 //     double GetAssymetryCostOnData(Point a, Point tangentA, Point b, Point tangentB, double assymetryWeight) {
 //         var xAxis = (a - b);
 //         var len = xAxis.Length;
-//         if (len < ApproximateComparer.DistanceEpsilon)
+//         if (len < GeomConstants.distanceEpsilon)
 //             return 0;
 //         xAxis /= len;
 //         //Tangents both have length 1. If they compensate each other on x-asis,
@@ -578,7 +578,7 @@
 //         if (bBase.Prev == null)
 //             return 0;
 
-//         return SeparationCostForAdjacentBundleBases(bBase, bBase.Prev) + SeparationCostForAdjacentBundleBases(bBase, bBase.Next);
+//         return SeparationCostForAdjacentBundleBases(bBase, bBase.Prev) + SeparationCostForAdjacentBundleBases(bBase, bBase.next);
 //     }
 
 //     double SeparationCostForAdjacentBundleBases(BundleBase base0, BundleBase base1) {
@@ -625,7 +625,7 @@
 
 //     double Cost() {
 //         double cost = 0;
-//         foreach(var bundleInfo in Bundles) {
+//         foreach(var bundleInfo of Bundles) {
 //             double c1 = SeparationCoeff * SeparationCost(bundleInfo);
 //             double c2 = AssymetryCoeff * AssymetryCost(bundleInfo);
 //             double c3 = SqueezeCoeff * SqueezeCost(bundleInfo);

@@ -24,7 +24,7 @@
 //     }
 
 //     internal Stem(PolylinePoint start, PolylinePoint end) {
-//         System.Diagnostics.Assert.assert(start.Polyline == end.Polyline);
+//         Assert.assert(start.Polyline == end.Polyline);
 //         this.start = start;
 //         this.end = end;
 //     }

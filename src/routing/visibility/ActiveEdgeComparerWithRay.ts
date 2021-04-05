@@ -23,7 +23,7 @@
 //     int IComparer<PolylinePoint>.Compare(PolylinePoint x, PolylinePoint y) {
 //         ValidateArg.IsNotNull(x, "x");
 //         ValidateArg.IsNotNull(y, "y");
-//         System.Diagnostics.Assert.assert(IntersectionPointBelongsToTheInsertedEdge(x));
+//         Assert.assert(IntersectionPointBelongsToTheInsertedEdge(x));
 
 //         switch(Point.GetTriangleOrientation(IntersectionOfTheRayAndInsertedEdge, y.Point, y.NextOnPolyline.Point)) {
 //                 case TriangleOrientation.Counterclockwise:
@@ -37,7 +37,7 @@
 //         private bool IntersectionPointBelongsToTheInsertedEdge(PolylinePoint x) {
 //     Point a = x.Point - IntersectionOfTheRayAndInsertedEdge;
 //     Point b = x.NextOnPolyline.Point - IntersectionOfTheRayAndInsertedEdge;
-//     return Math.Abs(a.X * b.Y - b.X * a.Y) < ApproximateComparer.DistanceEpsilon;
+//     return Math.Abs(a.X * b.Y - b.X * a.Y) < GeomConstants.distanceEpsilon;
 // }
 
 // [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]

@@ -31,12 +31,12 @@
 
 //         void UpdateFront() {
 //             var newFrontEdges = new Set<CdtEdge>();
-//             foreach (var t in addedTriangles)
-//                 foreach (var e in t.Edges)
+//             foreach (var t of addedTriangles)
+//                 foreach (var e of t.Edges)
 //                     if (e.CwTriangle == null || e.CcwTriangle == null)
 //                         newFrontEdges.Insert(e);
 
-//             foreach (var e in newFrontEdges)
+//             foreach (var e of newFrontEdges)
 //                 AddEdgeToFront(e);
 //         }
 

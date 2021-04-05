@@ -44,7 +44,7 @@
 //             MetroEdge me = MetroEdge.CreateFromTwoNodes(u.SerialNumber, v.SerialNumber);
 //             List < int > orderedMetrolineListForUv = order[me];
 //             if (u.SerialNumber < v.SerialNumber) {
-//                 foreach(int MetrolineIndex in orderedMetrolineListForUv)
+//                 foreach(int MetrolineIndex of orderedMetrolineListForUv)
 //                 yield return MetrolinesGlobal[MetrolineIndex];
 //             }
 //             else {
@@ -70,9 +70,9 @@
 //         void ConvertParameters(Dictionary < Point, Station > pointToIndex) {
 //             Metrolines = new List<int[]>();
 //             positions = new Point[pointToIndex.Count];
-//             foreach(Metroline gline in MetrolinesGlobal) {
+//             foreach(Metroline gline of MetrolinesGlobal) {
 //                 List < int > line = new List<int>();
-//                 foreach(Point p in gline.Polyline) {
+//                 foreach(Point p of gline.Polyline) {
 //                     line.Add(pointToIndex[p].SerialNumber);
 //                     positions[pointToIndex[p].SerialNumber] = p;
 //                 }
@@ -156,7 +156,7 @@
 
 //             public override string ToString() {
 //             string s = "(";
-//             foreach(int i in nodes)
+//             foreach(int i of nodes)
 //             s += i + " ";
 //             s += ")";
 //             return s;
@@ -249,7 +249,7 @@
 //     Initialize();
 
 //     //ordering itself
-//     foreach(int v in nonTerminals) {
+//     foreach(int v of nonTerminals) {
 //         ProcessNonTerminal(v);
 //     }
 
@@ -314,7 +314,7 @@
 // void InitAdjacencyData(Dictionary < int, HashSet < MetroEdge >> adjacent) {
 //     orderedAdjacent = new Dictionary<int, LinkedList<MetroEdge>>();
 //     adjacencyIndex = new Dictionary<Tuple<int, MetroEdge>, LinkedListNode<MetroEdge>>();
-//     foreach(int v in adjacent.Keys) {
+//     foreach(int v of adjacent.Keys) {
 //         List < MetroEdge > adj = new List<MetroEdge>(adjacent[v]);
 //         orderedAdjacent.Add(v, SortAdjacentEdges(v, adj));
 //     }
@@ -335,7 +335,7 @@
 //     });
 
 //     LinkedList < MetroEdge > res = new LinkedList<MetroEdge>();
-//     foreach(MetroEdge edge in adjacent) {
+//     foreach(MetroEdge edge of adjacent) {
 //         LinkedListNode < MetroEdge > node = res.AddLast(edge);
 //         adjacencyIndex.Add(new Tuple<int, MetroEdge>(v, edge), node);
 //     }
@@ -351,7 +351,7 @@
 //     Assert.assert(node.Value == oldEdge);
 
 //     LinkedListNode < MetroEdge > inode = node;
-//     foreach(PathList pl in newSubList) {
+//     foreach(PathList pl of newSubList) {
 //         MetroEdge newEdge = pl.edge;
 
 //         if (oldEdge.Source() == a)
@@ -374,11 +374,11 @@
 
 //     PathList pl = e2p[edge];
 //     if (pl.subLists == null) {
-//         foreach(PathOnEdge path in pl.paths)
+//         foreach(PathOnEdge path of pl.paths)
 //         res.Add(path.index);
 //     }
 //     else {
-//         foreach(PathList subList in pl.subLists) {
+//         foreach(PathList subList of pl.subLists) {
 //             List < int > subResult = RestoreResult(subList.edge);
 //             if (!(edge.Source() == subList.edge.Source() || edge.Target() == subList.edge.Target()))
 //                 subResult.Reverse();
@@ -391,11 +391,11 @@
 // void RestoreResult() {
 //     order = new Dictionary<MetroEdge, List<int>>();
 //     lineIndexInOrder = new Dictionary<MetroEdge, Dictionary<Metroline, int>>();
-//     foreach(MetroEdge me in initialEdges) {
+//     foreach(MetroEdge me of initialEdges) {
 //         order.Add(me, RestoreResult(me));
 //         Dictionary < Metroline, int > d = new Dictionary<Metroline, int>();
 //         int index = 0;
-//         foreach(int v in order[me]) {
+//         foreach(int v of order[me]) {
 //             d[MetrolinesGlobal[v]] = index++;
 //         }
 //         lineIndexInOrder.Add(me, d);
@@ -410,7 +410,7 @@
 //     Dictionary < MetroEdge, List < PathList >> newSubLists = RadixSort(v);
 
 //     //update current data
-//     foreach(MetroEdge oldEdge in orderedAdjacent[v]) {
+//     foreach(MetroEdge oldEdge of orderedAdjacent[v]) {
 //         Assert.assert(e2p.ContainsKey(oldEdge));
 //         List < PathList > newSubList = newSubLists[oldEdge];
 
@@ -422,7 +422,7 @@
 //         UpdateAdjacencyData(OppositeNode(oldEdge, v), oldEdge, newSubList);
 
 //         //update paths and add new edges
-//         foreach(PathList pl in newSubList) {
+//         foreach(PathList pl of newSubList) {
 //             MetroEdge newEdge = pl.edge;
 
 //             //we could check the reverse edge before
@@ -432,7 +432,7 @@
 //             e2p.Add(newEdge, pl);
 
 //             //update paths
-//             foreach(PathOnEdge path in pl.paths) {
+//             foreach(PathOnEdge path of pl.paths) {
 //                 UpdatePath(path, v, newEdge);
 //             }
 //         }
@@ -448,9 +448,9 @@
 //     //first index in circular order
 //     Dictionary < MetroEdge, int > firstIndex = new Dictionary<MetroEdge, int>();
 
-//     foreach(MetroEdge oldEdge in orderedAdjacent[v]) {
+//     foreach(MetroEdge oldEdge of orderedAdjacent[v]) {
 //         PathList pathList = e2p[oldEdge];
-//         foreach(PathOnEdge path in pathList.paths) {
+//         foreach(PathOnEdge path of pathList.paths) {
 //             MetroEdge ej = FindNextEdgeOnPath(v, path);
 //             CollectionUtilities.AddToMap(r, ej, path);
 //         }
@@ -461,7 +461,7 @@
 //     //oldEdge => SortedPathLists
 //     Dictionary < MetroEdge, List < PathList >> res = new Dictionary<MetroEdge, List<PathList>>();
 //     //build the desired order for each edge
-//     foreach(MetroEdge oldEdge in orderedAdjacent[v]) {
+//     foreach(MetroEdge oldEdge of orderedAdjacent[v]) {
 //         //r[oldEdge] is the right order! (up to the circleness)
 //         List < PathOnEdge > paths = r[oldEdge];
 //         Assert.assert(paths.Count > 0);
@@ -501,9 +501,9 @@
 // // extract the next edge on a given path after node v
 // // </summary>
 // MetroEdge FindNextEdgeOnPath(int v, PathOnEdge pathOnEdge) {
-//     if (pathOnEdge.node.Next != null) {
-//         int o = OppositeNode(pathOnEdge.node.Next.Value, v);
-//         if (o != -1) return pathOnEdge.node.Next.Value;
+//     if (pathOnEdge.node.next != null) {
+//         int o = OppositeNode(pathOnEdge.node.next.Value, v);
+//         if (o != -1) return pathOnEdge.node.next.Value;
 //     }
 
 //     if (pathOnEdge.node.Previous != null) {
@@ -535,12 +535,12 @@
 
 //     a = OppositeNode(f.Value, v);
 
-//     if (f.Next != null && (b = OppositeNode(f.Next.Value, v)) != -1) {
+//     if (f.next != null && (b = OppositeNode(f.next.Value, v)) != -1) {
 //         Assert.assert((a == newEdge.Source() || a == newEdge.Target()));
 //         Assert.assert((b == newEdge.Source() || b == newEdge.Target()));
 
 //         f.Value = newEdge;
-//         f.List.Remove(f.Next);
+//         f.List.Remove(f.next);
 //     }
 //     else if (f.Previous != null && (b = OppositeNode(f.Previous.Value, v)) != -1) {
 //         Assert.assert((a == newEdge.Source() || a == newEdge.Target()));

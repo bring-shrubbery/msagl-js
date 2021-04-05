@@ -21,7 +21,7 @@
 //     {
 //         _visGraph = visibilityGraph;
 //         visibilityGraph.ClearPrevEdgesTable();
-//         foreach(var v in visibilityGraph.Vertices())
+//         foreach(var v of visibilityGraph.Vertices())
 //         {
 //             v.Distance = Double.PositiveInfinity;
 //         }
@@ -36,7 +36,7 @@
 //     // <returns>a path or null if the target is not reachable from the source</returns>
 //     internal IEnumerable < VisibilityVertex > GetPath(){
 //         var pq = new GenericBinaryHeapPriorityQueue<VisibilityVertex>();
-//         foreach(var v in sources) {
+//         foreach(var v of sources) {
 //             v.Distance = 0;
 //             pq.Enqueue(v, 0);
 //         }
@@ -45,10 +45,10 @@
 //             if (targets.Contains(_current))
 //                 break;
 
-//             foreach(var e in _current.OutEdges.Where(PassableOutEdge))
+//             foreach(var e of _current.OutEdges.Where(PassableOutEdge))
 //             ProcessNeighbor(pq, e, e.Target);
 
-//             foreach(var e in _current.InEdges.Where(PassableInEdge))
+//             foreach(var e of _current.InEdges.Where(PassableInEdge))
 //             ProcessNeighbor(pq, e, e.Source);
 //         }
 

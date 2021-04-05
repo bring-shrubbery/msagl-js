@@ -1,11 +1,12 @@
-﻿import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
-import {CdtEdge} from './CdtEdge'
-import {CdtTriangle} from './CdtTriangle'
-
+﻿import { ICurve } from '../../math/geometry/icurve'
+import { Point } from '../../math/geometry/point'
+import { Assert } from '../../utils/assert'
+import { CdtEdge } from './CdtEdge'
+import { CdtTriangle } from './CdtTriangle'
+import { Cdt } from './Cdt'
 export class CdtSite {
   //  Object to which this site refers to.
-  Owner: ICurve // not sure it is correct
+  Owner: ICurve // not sure the type is correct
 
   public Point: Point
 
@@ -41,7 +42,7 @@ export class CdtSite {
   //          }
   //  #endif
   EdgeBetweenUpperSiteAndLowerSite(b: CdtSite): CdtEdge {
-    Assert.assert(Cdt.Above(this, b) > 0)
+    Assert.assert(Cdt.AboveCC(this, b) > 0)
     if (this.Edges != null) {
       for (const edge of this.Edges) {
         if (edge.lowerSite == b) {
@@ -78,7 +79,7 @@ export class CdtSite {
         break
       }
       yield t
-      e = t.Edges[t.Edges.Index(e) + 2]
+      e = t.Edges[t.Edges.index(e) + 2]
     } while (e != edge) //full circle
 
     if (e != edge) {
@@ -90,7 +91,7 @@ export class CdtSite {
           break
         }
         yield t
-        e = t.Edges[t.Edges.Index(e) + 1]
+        e = t.Edges[t.Edges.index(e) + 1]
       } while (true) // we will hit a null triangle for the convex hull border edge
     }
   }

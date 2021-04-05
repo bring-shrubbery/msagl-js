@@ -134,26 +134,26 @@
 //         node.Position = newPosition;
 
 //         //move curves
-//         foreach(MetroNodeInfo metroNodeInfo in MetroNodeInfosOfNode(node))
+//         foreach(MetroNodeInfo metroNodeInfo of MetroNodeInfosOfNode(node))
 //         metroNodeInfo.PolyPoint.Point = newPosition;
 
 //         //update lengths
-//         foreach(MetroNodeInfo e in MetroNodeInfosOfNode(node)) {
+//         foreach(MetroNodeInfo e of MetroNodeInfosOfNode(node)) {
 //             var metroLine = e.Metroline;
 //             var prev = e.PolyPoint.Prev.Point;
-//             var succ = e.PolyPoint.Next.Point;
+//             var succ = e.PolyPoint.next.Point;
 //             metroLine.Length += (succ - newPosition).Length + (prev - newPosition).Length
 //                 - (succ - oldPosition).Length - (prev - oldPosition).Length;
 //         }
 
 //         //update ink
-//         foreach(var adj in node.Neighbors) {
+//         foreach(var adj of node.Neighbors) {
 //             ink += (newPosition - adj.Position).Length - (oldPosition - adj.Position).Length;
 //         }
 
 //         //update neighbors order
 //         SortNeighbors(node);
-//         foreach(var adj in node.Neighbors)
+//         foreach(var adj of node.Neighbors)
 //         SortNeighbors(adj);
 //     }
 
@@ -167,7 +167,7 @@
 
 //     internal double GetWidth(IEnumerable < Metroline > metrolines, double edgeSeparation) {
 //         double width = 0;
-//         foreach(var metroline in metrolines) {
+//         foreach(var metroline of metrolines) {
 //             width += metroline.Width;
 //         }
 //         int count = metrolines.Count();
@@ -203,7 +203,7 @@
 //     // remove self-cycles
 //     // </summary>
 //     void SimplifyRegularEdges() {
-//         foreach(var edge in regularEdges)
+//         foreach(var edge of regularEdges)
 //         SimplifyRegularEdge(edge);
 //     }
 
@@ -215,22 +215,22 @@
 
 //         var stack = new Stack<Point>();
 //         var seen = new Set<Point>();
-//         for (var p = polyline.EndPoint; p != null; p = p.Prev) {
+//         for (var p = polyline.endPoint; p != null; p = p.Prev) {
 //             var v = p.Point;
 //             if (seen.Contains(p.Point)) {
-//                 var pp = p.Next;
+//                 var pp = p.next;
 //                 do {
 //                     var u = stack.Peek();
 //                     if (u != v) {
 //                         seen.Remove(u);
 //                         stack.Pop();
-//                         pp = pp.Next;
+//                         pp = pp.next;
 //                     }
 //                     else
 //                         break;
 //                 } while (true);
 //                 pp.Prev = p.Prev;
-//                 pp.Prev.Next = pp;
+//                 pp.Prev.next = pp;
 //             }
 //             else {
 //                 stack.Push(v);
@@ -244,17 +244,17 @@
 //         //create indexes
 //         PointToStations = new Dictionary<Point, Station>();
 //         int i = 0;
-//         foreach(var edge in regularEdges) {
+//         foreach(var edge of regularEdges) {
 //             Polyline poly = (Polyline)edge.Curve;
 //             i = ProcessPolylinePoints(i, poly);
 //         }
 //     }
 
 //     int ProcessPolylinePoints(int i, Polyline poly) {
-//         var pp = poly.StartPoint;
+//         var pp = poly.startPoint;
 //         i = RegisterStation(i, pp, true);
 
-//         for (pp = pp.Next; pp != poly.EndPoint; pp = pp.Next)
+//         for (pp = pp.next; pp != poly.endPoint; pp = pp.next)
 //             i = RegisterStation(i, pp, false);
 
 //         i = RegisterStation(i, pp, true);
@@ -304,17 +304,17 @@
 //     // </summary>
 //     void InitializeVirtualGraph() {
 //         Dictionary < Station, Set < Station >> neighbors = new Dictionary<Station, Set<Station>>();
-//         foreach(var metroline in metrolines) {
+//         foreach(var metroline of metrolines) {
 //             Station u = PointToStations[metroline.Polyline.Start];
 //             Station v;
-//             for (var p = metroline.Polyline.StartPoint; p.Next != null; p = p.Next, u = v) {
-//                 v = PointToStations[p.Next.Point];
+//             for (var p = metroline.Polyline.startPoint; p.next != null; p = p.next, u = v) {
+//                 v = PointToStations[p.next.Point];
 //                 CollectionUtilities.AddToMap(neighbors, u, v);
 //                 CollectionUtilities.AddToMap(neighbors, v, u);
 //             }
 //         }
 
-//         foreach(var s in Stations) {
+//         foreach(var s of Stations) {
 //             s.Neighbors = neighbors[s].ToArray();
 //         }
 //     }
@@ -341,7 +341,7 @@
 //         SortNeighbors();
 //         InitEdgeIjInfos();
 //         ink = 0;
-//         foreach(var edge in VirtualEdges())
+//         foreach(var edge of VirtualEdges())
 //         ink += (edge.Item1.Position - edge.Item2.Position).Length;
 //     }
 
@@ -357,7 +357,7 @@
 //     }
 
 //     void InitMetroNodeInfos(Metroline metroline) {
-//         for (var pp = metroline.Polyline.StartPoint; pp != null; pp = pp.Next) {
+//         for (var pp = metroline.Polyline.startPoint; pp != null; pp = pp.next) {
 //             Station station = PointToStations[pp.Point];
 //             station.MetroNodeInfos.Add(new MetroNodeInfo(metroline, station, pp));
 //         }
@@ -367,7 +367,7 @@
 //         //If we have groups, EdgeLooseEnterable are precomputed.
 //         var metrolineEnterable = EdgeLooseEnterable != null ? EdgeLooseEnterable[regularEdge] : new Set<Polyline>();
 
-//         for (var p = metroline.Polyline.StartPoint.Next; p != null && p.Next != null; p = p.Next) {
+//         for (var p = metroline.Polyline.startPoint.next; p != null && p.next != null; p = p.next) {
 //             var v = PointToStations[p.Point];
 //             if (v.EnterableLoosePolylines != null)
 //                 v.EnterableLoosePolylines *= metrolineEnterable;
@@ -393,7 +393,7 @@
 //     void AddLooseEnterableForEnd(Point point) {
 //         Station station = PointToStations[point];
 //         if (!cachedEnterableLooseForEnd.ContainsKey(point)) {
-//             foreach(var poly in LooseTree.AllHitItems(point))
+//             foreach(var poly of LooseTree.AllHitItems(point))
 //             if (Curve.PointRelativeToCurveLocation(point, poly) == PointLocation.Inside)
 //                 station.AddEnterableLoosePolyline(poly);
 
@@ -403,14 +403,14 @@
 //             station.EnterableLoosePolylines = cachedEnterableLooseForEnd[point];
 //         }
 
-//         //foreach (var poly in LooseTree.AllHitItems(point))
+//         //foreach (var poly of LooseTree.AllHitItems(point))
 //         //    if (Curve.PointRelativeToCurveLocation(point, poly) == PointLocation.Inside)
 //         //        station.EnterableLoosePolylines.Insert(poly);
 //     }
 
 //     void AddTightEnterableForEnd(Point point) {
 //         Station station = PointToStations[point];
-//         foreach(var poly in TightTree.AllHitItems(point))
+//         foreach(var poly of TightTree.AllHitItems(point))
 //         if (Curve.PointRelativeToCurveLocation(point, poly) == PointLocation.Inside)
 //             station.AddEnterableTightPolyline(poly);
 //     }
@@ -419,7 +419,7 @@
 //         //If we have groups, EdgeTightEnterable are precomputed.
 //         var metrolineEnterable = EdgeTightEnterable != null ? EdgeTightEnterable[regularEdge] : new Set<Polyline>();
 
-//         for (var p = metroline.Polyline.StartPoint.Next; p != null && p.Next != null; p = p.Next) {
+//         for (var p = metroline.Polyline.startPoint.next; p != null && p.next != null; p = p.next) {
 //             var v = PointToStations[p.Point];
 //             Set < Polyline > nodeEnterable = v.EnterableTightPolylines;
 //             if (nodeEnterable != null)
@@ -433,7 +433,7 @@
 
 //     void SortNeighbors() {
 //         //counter-clockwise sorting
-//         foreach(var station in Stations)
+//         foreach(var station of Stations)
 //         SortNeighbors(station);
 //     }
 
@@ -449,12 +449,12 @@
 //     }
 
 //     void InitEdgeIjInfos() {
-//         foreach(Metroline metroLine in metrolines) {
+//         foreach(Metroline metroLine of metrolines) {
 //             var poly = metroLine.Polyline;
 //             var u = PointToStations[poly.Start];
 //             Station v;
-//             for (var p = metroLine.Polyline.StartPoint; p.Next != null; p = p.Next, u = v) {
-//                 v = PointToStations[p.Next.Point];
+//             for (var p = metroLine.Polyline.startPoint; p.next != null; p = p.next, u = v) {
+//                 v = PointToStations[p.next.Point];
 //                 var info = GetUnorderedIjInfo(u, v);
 //                 info.Count++;
 //                 info.Width += metroLine.Width;
@@ -465,7 +465,7 @@
 
 //     void InitializeCdtInfo() {
 //         RectangleNode < CdtTriangle > cdtTree = Cdt.GetCdtTree();
-//         foreach(var station in Stations) {
+//         foreach(var station of Stations) {
 //             station.CdtTriangle = cdtTree.FirstHitNode(station.Position, IntersectionCache.Test).UserData;
 //             Assert.assert(station.CdtTriangle != null);
 //         }

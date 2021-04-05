@@ -42,7 +42,7 @@
 //                     Assert.assert(f.Prev == null);
 //                     var ret = new List<CdtEdge>();
 //                     var site = f.Site;
-//                     foreach (var t in site.Triangles) {
+//                     foreach (var t of site.Triangles) {
 //                         var si = t.Sites.Index(site);
 //                         if (Point.PointIsInsideCone(pp.Point, site.Point, t.Sites[si + 1].Point, t.Sites[si + 2].Point)) {
 //                             if (Point.GetTriangleOrientation(pp.Point, t.Sites[si + 1].Point, t.Sites[si + 2].Point) ==
@@ -66,7 +66,7 @@
 //                 Set<CdtEdge> GetCdtEdgesCrossedByPath0(List<PolylinePoint> polyPoints) {
 //                     PolylinePoint prevPolyPoint = null, prevPrevPolyPoint=null;
 //                     var ret = new Set<CdtEdge>();
-//                     foreach (var polylinePoint in polyPoints) {
+//                     foreach (var polylinePoint of polyPoints) {
 //                         if (prevPolyPoint!=null)
 //                             ret.InsertRange(GetCdtEdgesCrossedBySegment(prevPrevPolyPoint, prevPolyPoint, polylinePoint));
 
@@ -97,7 +97,7 @@
 //         */
 
 //         internal static PointPair OrderedPair(PolylinePoint pp) {
-//             return OrderedPair(pp, pp.Next);
+//             return OrderedPair(pp, pp.next);
 //         }
 
 //         static PointPair OrderedPair(PolylinePoint p0, PolylinePoint p1) {

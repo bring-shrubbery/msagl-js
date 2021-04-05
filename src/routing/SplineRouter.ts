@@ -4,40 +4,40 @@ import {
   IGrouping,
   InvalidOperationException,
 } from 'linq-to-typescript'
-import {Queue} from 'queue-typescript'
-import {Algorithm} from '../../src/utils/algorithm'
-import {RectangleNode} from '../core/geometry/RTree/RectangleNode'
-import {RTree} from '../core/geometry/RTree/RTree'
-import {Port} from '../core/layout/Port'
-import {BundlingSettings} from '../core/routing/BundlingSettings'
-import {EdgeRoutingSettings} from '../core/routing/EdgeRoutingSettings'
-import {GeomEdge} from '../layout/core/geomEdge'
-import {GeomGraph} from '../layout/core/GeomGraph'
-import {Curve} from '../math/geometry/curve'
-import {CurveFactory} from '../math/geometry/curveFactory'
-import {DebugCurve} from '../math/geometry/debugCurve'
-import {ICurve} from '../math/geometry/icurve'
-import {LineSegment} from '../math/geometry/lineSegment'
-import {Point} from '../math/geometry/point'
-import {Polyline} from '../math/geometry/polyline'
-import {PolylinePoint} from '../math/geometry/polylinePoint'
-import {Rectangle} from '../math/geometry/rectangle'
-import {SmoothedPolyline} from '../math/geometry/smoothedPolyline'
-import {Edge} from '../structs/edge'
-import {PointMap} from '../utils/PointMap'
-import {Shape} from './Shape'
-import {TightLooseCouple} from './TightLooseCouple'
-import {VisibilityEdge} from './visibility/VisibilityEdge'
-import {VisibilityGraph} from './visibility/VisibilityGraph'
-import {EdgeGeometry} from './../layout/core/edgeGeometry'
-import {CancelToken} from '../utils/cancelToken'
-import {Assert} from '../utils/assert'
-import {List} from 'lodash'
-import {ShapeCreator} from './ShapeCreator'
-import {ShapeCreatorForRoutingToParents} from './ShapeCreatorForRoutingToParents'
-import {RelativeFloatingPort} from '../core/layout/RelativeFloatingPort'
-import {ClusterBoundaryPort} from './ClusterBoundaryPort'
-import {ShapeObstacleCalculator} from './ShapeObstacleCalculator'
+import { Queue } from 'queue-typescript'
+import { Algorithm } from '../../src/utils/algorithm'
+import { RectangleNode } from '../core/geometry/RTree/RectangleNode'
+import { RTree } from '../core/geometry/RTree/RTree'
+import { Port } from '../core/layout/Port'
+import { BundlingSettings } from '../core/routing/BundlingSettings'
+import { EdgeRoutingSettings } from '../core/routing/EdgeRoutingSettings'
+import { GeomEdge } from '../layout/core/geomEdge'
+import { GeomGraph } from '../layout/core/GeomGraph'
+import { Curve } from '../math/geometry/curve'
+import { CurveFactory } from '../math/geometry/curveFactory'
+import { DebugCurve } from '../math/geometry/debugCurve'
+import { ICurve } from '../math/geometry/icurve'
+import { LineSegment } from '../math/geometry/lineSegment'
+import { Point } from '../math/geometry/point'
+import { Polyline } from '../math/geometry/polyline'
+import { PolylinePoint } from '../math/geometry/polylinePoint'
+import { Rectangle } from '../math/geometry/rectangle'
+import { SmoothedPolyline } from '../math/geometry/smoothedPolyline'
+import { Edge } from '../structs/edge'
+import { PointMap } from '../utils/PointMap'
+import { Shape } from './Shape'
+import { TightLooseCouple } from './TightLooseCouple'
+import { VisibilityEdge } from './visibility/VisibilityEdge'
+import { VisibilityGraph } from './visibility/VisibilityGraph'
+import { EdgeGeometry } from './../layout/core/edgeGeometry'
+import { CancelToken } from '../utils/cancelToken'
+import { Assert } from '../utils/assert'
+import { List } from 'lodash'
+import { ShapeCreator } from './ShapeCreator'
+import { ShapeCreatorForRoutingToParents } from './ShapeCreatorForRoutingToParents'
+import { RelativeFloatingPort } from '../core/layout/RelativeFloatingPort'
+import { ClusterBoundaryPort } from './ClusterBoundaryPort'
+import { ShapeObstacleCalculator } from './ShapeObstacleCalculator'
 
 function insertRange<T>(collection: Set<T>, elems: IEnumerable<T>) {
   for (const e of elems) collection.add(e)
@@ -278,7 +278,7 @@ export class SplineRouter extends Algorithm {
     for (const [shape, val] of this.shapesToTightLooseCouples) {
       for (const port of shape.Ports) {
         if (port.hasOwnProperty('LoosePolyline')) {
-          ;(port as ClusterBoundaryPort).LoosePolyline = <Polyline>(
+          ; (port as ClusterBoundaryPort).LoosePolyline = <Polyline>(
             val.LooseShape.BoundaryCurve
           )
         }
@@ -653,7 +653,7 @@ export class SplineRouter extends Algorithm {
   //                                                                                                                 return;
   //                                                                                                             }
 
-  //                                                                                                             e = visGraph.AddEdge(edge.SourcePoint, edge.TargetPoint);
+  //                                                                                                             e = visGraph.addEdge(edge.SourcePoint, edge.TargetPoint);
   //                                                                                                             if ((looseShape != null)) {
   //                                                                                                             }
 
@@ -675,8 +675,8 @@ export class SplineRouter extends Algorithm {
   //                                                                                                                     ((e.IsPassable != null)
   //                                                                                                                         && e.IsPassable());
   //                                                                                                                     "black";
-  //                                                                                                                     visGraph.AddEdge(p.Point, pn.Point);
-  //                                                                                                                     if ((pn == boundary.StartPoint)) {
+  //                                                                                                                     visGraph.addEdge(p.Point, pn.Point);
+  //                                                                                                                     if ((pn == boundary.startPoint)) {
   //                                                                                                                         break;
   //                                                                                                                     }
 
@@ -720,7 +720,7 @@ export class SplineRouter extends Algorithm {
   //                                                                                                                         Unknown#if(TEST_MSAGL)
   //                                                                                                                         staticShow(IEnumerable, edgeGeometries, IEnumerable, listOfShapes);
   //                                                                                                                         {
-  //                                                                                                                             LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(listOfShapes.Select(() => { }, s.BoundaryCurve).Select(() => { }, new DebugCurve(50, 1, DebugCurve.Colors[r.Next((DebugCurve.Colors.Length - 1))], c)).Concat(edgeGeometries.Select(() => { }, new DebugCurve(100, 1, "red", e.Curve))));
+  //                                                                                                                             LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(listOfShapes.Select(() => { }, s.BoundaryCurve).Select(() => { }, new DebugCurve(50, 1, DebugCurve.Colors[r.next((DebugCurve.Colors.Length - 1))], c)).Concat(edgeGeometries.Select(() => { }, new DebugCurve(100, 1, "red", e.Curve))));
   //                                                                                                                             Unknown#endif
   //                                                                                                                             staticCreatePortsIfNeeded(IEnumerable, edges);
   //                                                                                                                             {
@@ -1025,7 +1025,7 @@ export class SplineRouter extends Algorithm {
   //         port.Location;
   //         point;
   //         null;
-  //         const visGraph.AddEdge: select;
+  //         const visGraph.addEdge: select;
   //         port.Location;
   //         point;
   //     }
@@ -1146,7 +1146,7 @@ export class SplineRouter extends Algorithm {
 
   //     e: var = visGraph.FindEdge(edge.SourcePoint, edge.TargetPoint);
 
-  //     p: var = boundary.StartPoint;
+  //     p: var = boundary.startPoint;
 
   //     RemoveInsidePortsAndSplitBoundaryIfNeeded(boundary: Polyline): Set<Point> {
   //         const ret = new Set<Point>();
@@ -1188,7 +1188,7 @@ export class SplineRouter extends Algorithm {
   //     }
 
   //     static FindPointOnPolylineToInsertAfter(boundary: Polyline, point: Point): PolylinePoint {
-  //         for (const p: PolylinePoint = boundary.StartPoint; ;
+  //         for (const p: PolylinePoint = boundary.startPoint; ;
   //         ) {
   //             const pn: PolylinePoint = p.NextOnPolyline;
   //             if ((ApproximateComparer.Close(point, p.Point) || ApproximateComparer.Close(point, pn.Point))) {
@@ -1202,7 +1202,7 @@ export class SplineRouter extends Algorithm {
   //             }
 
   //             p = pn;
-  //             if ((p == boundary.StartPoint)) {
+  //             if ((p == boundary.startPoint)) {
   //                 throw new InvalidOperationException();
   //             }
 

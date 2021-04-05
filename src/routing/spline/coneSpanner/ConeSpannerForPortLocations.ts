@@ -49,8 +49,8 @@
 //             var visibilityGraph = new VisibilityGraph();
 //             LineSweeperForPortLocations.Sweep(obstacles, direction, coneAngle, visibilityGraph,
 //                                               PortLocations);
-//             foreach (var edge in visibilityGraph.Edges)
-//                 VisibilityGraph.AddEdge(edge.SourcePoint, edge.TargetPoint,
+//             foreach (var edge of visibilityGraph.Edges)
+//                 VisibilityGraph.addEdge(edge.SourcePoint, edge.TargetPoint,
 //                                         ((a, b) => new TollFreeVisibilityEdge(a, b)));
 //         }
 

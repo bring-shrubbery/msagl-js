@@ -1,45 +1,45 @@
-import {RealNumberSpan} from '../../utils/RealNumberSpan'
-import {BasicGraph} from '../../structs/BasicGraph'
-import {Point, TriangleOrientation} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
-import {Algorithm} from './../../utils/algorithm'
-import {PolyIntEdge} from './polyIntEdge'
-import {SugiyamaLayoutSettings, SnapToGridByY} from './SugiyamaLayoutSettings'
-import {from, IEnumerable} from 'linq-to-typescript'
-import {IEdge} from '../../structs/iedge'
-import {CycleRemoval} from './CycleRemoval'
-import {GeomNode} from '../core/geomNode'
-import {Database} from './Database'
-import {LayerArrays, layersAreCorrect} from './LayerArrays'
-import {GeomEdge} from '../core/geomEdge'
-import {GeomGraph} from '../core/GeomGraph'
-import {IntPairMap} from '../../utils/IntPairMap'
-import {IntPairSet} from '../../utils/IntPairSet'
-import {IntPair} from '../../utils/IntPair'
-import {CancelToken} from '../../utils/cancelToken'
-import {Balancing} from './Balancing'
-import {LayerCalculator} from './layering/layerCalculator'
-import {ConstrainedOrdering} from './ordering/ConstrainedOrdering'
-import {ProperLayeredGraph} from './ProperLayeredGraph'
-import {LayerEdge} from './LayerEdge'
-import {EdgePathsInserter} from './EdgePathsInserter'
-import {LayerInserter} from './LayerInserter'
-import {Ordering} from './ordering/Ordering'
-import {MetroMapOrdering} from './ordering/MetroMapOrdering'
-import {NetworkSimplexForGeneralGraph} from './layering/NetworkSimplexForGeneralGraph'
-import {Anchor} from './anchor'
-import {XCoordsWithAlignment} from './XCoordsWithAlignment'
-import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
-import {XLayoutGraph} from './XLayoutGraph'
-import {Rectangle} from '../../math/geometry/rectangle'
-import {NetworkSimplex} from './layering/NetworkSimplex'
-import {GeomConstants} from '../../math/geometry/geomConstants'
-import {BundlingSettings} from '../../core/routing/BundlingSettings'
-import {EdgeRoutingMode} from '../../core/routing/EdgeRoutingMode'
-import {EdgeRoutingSettings} from '../../core/routing/EdgeRoutingSettings'
-import {SplineRouter} from '../../routing/SplineRouter'
-import {StraightLineEdges} from '../../routing/StraightLineEdges'
-import {Routing} from './routing'
+import { RealNumberSpan } from '../../utils/RealNumberSpan'
+import { BasicGraph } from '../../structs/BasicGraph'
+import { Point, TriangleOrientation } from '../../math/geometry/point'
+import { Assert } from '../../utils/assert'
+import { Algorithm } from './../../utils/algorithm'
+import { PolyIntEdge } from './polyIntEdge'
+import { SugiyamaLayoutSettings, SnapToGridByY } from './SugiyamaLayoutSettings'
+import { from, IEnumerable } from 'linq-to-typescript'
+import { IEdge } from '../../structs/iedge'
+import { CycleRemoval } from './CycleRemoval'
+import { GeomNode } from '../core/geomNode'
+import { Database } from './Database'
+import { LayerArrays, layersAreCorrect } from './LayerArrays'
+import { GeomEdge } from '../core/geomEdge'
+import { GeomGraph } from '../core/GeomGraph'
+import { IntPairMap } from '../../utils/IntPairMap'
+import { IntPairSet } from '../../utils/IntPairSet'
+import { IntPair } from '../../utils/IntPair'
+import { CancelToken } from '../../utils/cancelToken'
+import { Balancing } from './Balancing'
+import { LayerCalculator } from './layering/layerCalculator'
+import { ConstrainedOrdering } from './ordering/ConstrainedOrdering'
+import { ProperLayeredGraph } from './ProperLayeredGraph'
+import { LayerEdge } from './LayerEdge'
+import { EdgePathsInserter } from './EdgePathsInserter'
+import { LayerInserter } from './LayerInserter'
+import { Ordering } from './ordering/Ordering'
+import { MetroMapOrdering } from './ordering/MetroMapOrdering'
+import { NetworkSimplexForGeneralGraph } from './layering/NetworkSimplexForGeneralGraph'
+import { Anchor } from './anchor'
+import { XCoordsWithAlignment } from './XCoordsWithAlignment'
+import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges'
+import { XLayoutGraph } from './XLayoutGraph'
+import { Rectangle } from '../../math/geometry/rectangle'
+import { NetworkSimplex } from './layering/NetworkSimplex'
+import { GeomConstants } from '../../math/geometry/geomConstants'
+import { BundlingSettings } from '../../core/routing/BundlingSettings'
+import { EdgeRoutingMode } from '../../core/routing/EdgeRoutingMode'
+import { EdgeRoutingSettings } from '../../core/routing/EdgeRoutingSettings'
+import { SplineRouter } from '../../routing/SplineRouter'
+import { StraightLineEdges } from '../../routing/StraightLineEdges'
+import { Routing } from './routing'
 
 export class LayeredLayout extends Algorithm {
   originalGraph: GeomGraph
@@ -196,9 +196,9 @@ export class LayeredLayout extends Algorithm {
     const feedbackSet: IEdge[] = verticalConstraints.isEmpty
       ? CycleRemoval.getFeedbackSet(this.IntGraph)
       : verticalConstraints.getFeedbackSetExternal(
-          this.IntGraph,
-          this.nodeIdToIndex,
-        )
+        this.IntGraph,
+        this.nodeIdToIndex,
+      )
 
     this.database.addFeedbackSet(feedbackSet)
   }
@@ -644,7 +644,7 @@ export class LayeredLayout extends Algorithm {
 
   GetSuccessorAndPredecessor(
     i: number,
-  ): {predecessor: Anchor; successor: Anchor} {
+  ): { predecessor: Anchor; successor: Anchor } {
     let predecessor: number
     for (const ie of this.properLayeredGraph.InEdges(i)) predecessor = ie.Source // there will be only one
 
@@ -758,7 +758,7 @@ export class LayeredLayout extends Algorithm {
   }
 
   StraightensShortEdges() {
-    for (; this.StraightenEdgePaths(); ) {}
+    for (; this.StraightenEdgePaths();) { }
   }
 
   StraightenEdgePaths() {
@@ -772,9 +772,9 @@ export class LayeredLayout extends Algorithm {
             e.LayerEdges[1].Target,
           ) || ret
     return ret
-    //foreach (LayerEdge[][] edgeStrings in this.dataBase.RefinedEdges.Values)
+    //foreach (LayerEdge[][] edgeStrings of this.dataBase.RefinedEdges.Values)
     //    if (edgeStrings[0].Length == 2)
-    //        foreach (LayerEdge[] edgePath in edgeStrings)
+    //        foreach (LayerEdge[] edgePath of edgeStrings)
     //            ret = ShiftVertexWithNeighbors(edgePath[0].Source, edgePath[0].Target, edgePath[1].Target) || ret;
     //return ret;
   }
@@ -808,8 +808,8 @@ export class LayeredLayout extends Algorithm {
       const uAnchor: Anchor = this.database.Anchors[layer[vPosition - 1]]
       const allowedX: number = Math.max(
         uAnchor.right +
-          (this.sugiyamaSettings.NodeSeparation +
-            this.database.Anchors[v].leftAnchor),
+        (this.sugiyamaSettings.NodeSeparation +
+          this.database.Anchors[v].leftAnchor),
         x,
       )
       if (allowedX < this.database.Anchors[v].x - 1) {
@@ -833,8 +833,8 @@ export class LayeredLayout extends Algorithm {
       const uAnchor: Anchor = this.database.Anchors[layer[vPosition + 1]]
       const allowedX: number = Math.min(
         uAnchor.left -
-          (this.sugiyamaSettings.NodeSeparation -
-            this.database.Anchors[v].rightAnchor),
+        (this.sugiyamaSettings.NodeSeparation -
+          this.database.Anchors[v].rightAnchor),
         x,
       )
       if (allowedX > this.database.Anchors[v].x + 1) {

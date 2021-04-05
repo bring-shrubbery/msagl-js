@@ -26,8 +26,8 @@
 
 //     IEnumerable < PointPair > Edges() {
 //         var set = new Set<PointPair>();
-//         foreach(var poly in Polylines)
-//         for (var pp = poly.StartPoint; pp.Next != null; pp = pp.Next)
+//         foreach(var poly of Polylines)
+//         for (var pp = poly.startPoint; pp.next != null; pp = pp.next)
 //             set.Insert(FlipCollapser.OrderedPair(pp));
 //         return set;
 //     }
@@ -37,7 +37,7 @@
 
 //         var splittingPoints = new Dictionary<PointPair, List<Point>>();
 //         var treeOfVertices = new RTree<Point, P>();
-//         foreach(var vertex in Vertices()) {
+//         foreach(var vertex of Vertices()) {
 //             var r = new Rectangle(vertex.Point);
 //             r.Pad(ApproximateComparer.IntersectionEpsilon);
 //             treeOfVertices.Add(r, vertex.Point);
@@ -65,18 +65,18 @@
 //     }
 
 //     void SortInsertedPoints(Dictionary < PointPair, List < Point >> splittingPoints) {
-//         foreach(var pair in splittingPoints)
+//         foreach(var pair of splittingPoints)
 //         SortInsideSegment(pair.Key, pair.Value);
 //     }
 
 //     void SortInsideSegment(PointPair edge, List < Point > list) {
-//         System.Diagnostics.Assert.assert(list.Count > 0, "an edge should not be present with an empty list");
+//         Assert.assert(list.Count > 0, "an edge should not be present with an empty list");
 //         list.Sort((a, b) => (a - edge.First).Length.CompareTo((b - edge.First).Length));
 //     }
 
 //     bool InsertPointsIntoPolylines(Dictionary < PointPair, List < Point >> splittingPoints) {
 //         bool inserted = false;
-//         foreach(var metroline in metroGraphData.Metrolines) {
+//         foreach(var metroline of metroGraphData.Metrolines) {
 //             if (InsertPointsIntoPolyline(metroline, splittingPoints))
 //                 inserted = true;
 //         }
@@ -85,7 +85,7 @@
 
 //     bool InsertPointsIntoPolyline(Metroline metroline, Dictionary < PointPair, List < Point >> splittingPoints) {
 //         bool inserted = false;
-//         for (var pp = metroline.Polyline.StartPoint; pp.Next != null; pp = pp.Next)
+//         for (var pp = metroline.Polyline.startPoint; pp.next != null; pp = pp.next)
 //             if (InsertPointsOnPolypoint(pp, splittingPoints, metroline)) inserted = true;
 //         return inserted;
 //     }
@@ -97,30 +97,30 @@
 //         if (!splittingPoints.TryGetValue(pointPair, out list))
 //             return false;
 
-//         var endPolyPoint = pp.Next;
+//         var endPolyPoint = pp.next;
 //         var poly = pp.Polyline;
 //         if (reversed)
 //             for (int i = list.Count - 1; i >= 0; i--) {
 //             if (polylineAcceptsPoint != null && !polylineAcceptsPoint(metroline, list[i])) continue;
 //             var p = new PolylinePoint(list[i]) { Prev = pp, Polyline = poly };
-//             pp.Next = p;
+//             pp.next = p;
 //             pp = p;
 //         }
 //             else
 //         for (int i = 0; i < list.Count; i++) {
 //             if (polylineAcceptsPoint != null && !polylineAcceptsPoint(metroline, list[i])) continue;
 //             var p = new PolylinePoint(list[i]) { Prev = pp, Polyline = poly };
-//             pp.Next = p;
+//             pp.next = p;
 //             pp = p;
 //         }
-//         pp.Next = endPolyPoint;
+//         pp.next = endPolyPoint;
 //         endPolyPoint.Prev = pp;
 //         return true;
 //     }
 
 //     bool RemoveSelfCycles() {
 //         bool progress = false;
-//         foreach(var poly in Polylines)
+//         foreach(var poly of Polylines)
 //         if (RemoveSelfCyclesFromPolyline(poly)) progress = true;
 //         return progress;
 //     }
@@ -129,16 +129,16 @@
 //     internal static bool RemoveSelfCyclesFromPolyline(Polyline poly) {
 //         bool progress = false;
 //         Dictionary < Point, PolylinePoint > pointsToPp = new Dictionary<Point, PolylinePoint>();
-//         for (var pp = poly.StartPoint; pp != null; pp = pp.Next) {
+//         for (var pp = poly.startPoint; pp != null; pp = pp.next) {
 //             var point = pp.Point;
 //             PolylinePoint previous;
 
 //             if (pointsToPp.TryGetValue(point, out previous)) {//we have a cycle
-//                 for (var px = previous.Next; px != pp.Next; px = px.Next) {
+//                 for (var px = previous.next; px != pp.next; px = px.next) {
 //                     pointsToPp.Remove(px.Point);
 //                 }
-//                 previous.Next = pp.Next;
-//                 pp.Next.Prev = previous;
+//                 previous.next = pp.next;
+//                 pp.next.Prev = previous;
 //                 progress = true;
 //             }
 //             else
@@ -166,19 +166,19 @@
 //     bool RemoveUnimportantCrossings() {
 //         bool removed = false;
 //         pointsToDelete = foundCrossings - crossingsThatShouldBecomeHubs;
-//         foreach(var polyline in Polylines)
+//         foreach(var polyline of Polylines)
 //         if (RemoveUnimportantCrossingsFromPolyline(polyline)) removed = true;
 //         return removed;
 //     }
 
 //     bool RemoveUnimportantCrossingsFromPolyline(Polyline polyline) {
 //         bool removed = false;
-//         for (var p = polyline.StartPoint.Next; p != null && p.Next != null; p = p.Next)
-//             if (pointsToDelete.Contains(p.Point) && Point.GetTriangleOrientation(p.Prev.Point, p.Point, p.Next.Point) == TriangleOrientation.Collinear) {
+//         for (var p = polyline.startPoint.next; p != null && p.next != null; p = p.next)
+//             if (pointsToDelete.Contains(p.Point) && Point.GetTriangleOrientation(p.Prev.Point, p.Point, p.next.Point) == TriangleOrientation.Collinear) {
 //                 //forget p
 //                 var pp = p.Prev;
-//                 var pn = p.Next;
-//                 pp.Next = pn;
+//                 var pn = p.next;
+//                 pp.next = pn;
 //                 pn.Prev = pp;
 //                 p = pp;
 //                 removed = true;
@@ -210,7 +210,7 @@
 //     bool AddVertexToSplittingList(PointPair a, Dictionary < PointPair, List < Point >> splittingPoints, Point intersectionPoint) {
 // #if TEST_MSAGL && TEST_MSAGL
 //         double t;
-//         System.Diagnostics.Assert.assert(Point.DistToLineSegment(intersectionPoint, a.First, a.Second, out t) < ApproximateComparer.IntersectionEpsilon);
+//         Assert.assert(Point.DistToLineSegment(intersectionPoint, a.First, a.Second, out t) < ApproximateComparer.IntersectionEpsilon);
 // #endif
 //         if (!ApproximateComparer.CloseIntersections(intersectionPoint, a.First) &&
 //             !ApproximateComparer.CloseIntersections(intersectionPoint, a.Second)) {

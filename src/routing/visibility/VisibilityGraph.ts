@@ -1,27 +1,80 @@
+import { IEnumerable, InvalidOperationException } from "linq-to-typescript"
+import { Point, TriangleOrientation } from "../../math/geometry/point"
+import { Polyline } from "../../math/geometry/polyline"
+import { PolylinePoint } from "../../math/geometry/polylinePoint"
+import { Assert } from "../../utils/assert"
+import { PointMap } from "../../utils/PointMap"
+import { VisibilityEdge } from "./VisibilityEdge"
+import { VisibilityKind } from "./VisibilityKind"
+import { VisibilityVertex } from "./VisibilityVertex"
+class Polygon {
+  constructor(hole: Object) {
+
+  }
+}
+class TangentVisibilityGraphCalculator {
+  static AddTangentVisibilityEdgesToGraph(polygons: Polygon[], visibilityGraph: VisibilityGraph) {
+    throw new Error("Method not implemented.")
+  }
+}
+
+class PointVisibilityCalculator {
+  static CalculatePointVisibilityGraph: any
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //  the visibility graph
 export class VisibilityGraph {
-  _prevEdgesDictionary: Dictionary<
+  _prevEdgesDictionary: Map<
     VisibilityVertex,
     VisibilityEdge
-  > = new Dictionary<VisibilityVertex, VisibilityEdge>()
+  > = new Map<VisibilityVertex, VisibilityEdge>()
 
-  visVertexToId: Dictionary<VisibilityVertex, number> = new Dictionary<
+  visVertexToId: Map<VisibilityVertex, number> = new Map<
     VisibilityVertex,
     number
   >()
 
   ClearPrevEdgesTable() {
-    this._prevEdgesDictionary.Clear()
+    this._prevEdgesDictionary.clear()
   }
 
   ShrinkLengthOfPrevEdge(v: VisibilityVertex, lengthMultiplier: number) {
-    this._prevEdgesDictionary[v].LengthMultiplier = lengthMultiplier
+    this._prevEdgesDictionary.get(v).LengthMultiplier = lengthMultiplier
   }
 
   //  needed for shortest path calculations
   PreviosVertex(v: VisibilityVertex): VisibilityVertex {
-    const prev: VisibilityEdge
-    if (!this._prevEdgesDictionary.TryGetValue(v, /* out */ prev)) {
+    const prev = this._prevEdgesDictionary.get(v)
+    if (prev == null) {
       return null
     }
 
@@ -34,31 +87,14 @@ export class VisibilityGraph {
 
   SetPreviousEdge(v: VisibilityVertex, e: VisibilityEdge) {
     Assert.assert(v == e.Source || v == e.Target)
-    this._prevEdgesDictionary[v] = e
+    this._prevEdgesDictionary.set(v, e)
   }
 
   //  the default is just to return VisibilityVertex
-  vertexFactory: Func<Point, VisibilityVertex>
+  VertexFactory: (Point) => VisibilityVertex
 
-  get VertexFactory(): Func<Point, VisibilityVertex> {
-    return this.vertexFactory
-  }
-  set VertexFactory(value: Func<Point, VisibilityVertex>) {
-    this.vertexFactory = value
-  }
+  pointToVertexMap: PointMap<VisibilityVertex> = new PointMap<VisibilityVertex>()
 
-  pointToVertexMap: Dictionary<Point, VisibilityVertex> = new Dictionary<
-    Point,
-    VisibilityVertex
-  >()
-
-  //
-  //  <param name="pathStart"></param>
-  //  <param name="pathEnd"></param>
-  //  <param name="obstacles"></param>
-  //  <param name="sourceVertex">graph vertex corresponding to the source</param>
-  //  <param name="targetVertex">graph vertex corresponding to the target</param>
-  //  <returns></returns>
   static GetVisibilityGraphForShortestPath(
     pathStart: Point,
     pathEnd: Point,
@@ -66,11 +102,9 @@ export class VisibilityGraph {
     /* out */ sourceVertex: VisibilityVertex,
     /* out */ targetVertex: VisibilityVertex,
   ): VisibilityGraph {
-    const holes = new List<Polyline>(
-      VisibilityGraph.OrientHolesClockwise(obstacles),
-    )
+    const holes = [...OrientHolesClockwise(obstacles)]
     const visibilityGraph = VisibilityGraph.CalculateGraphOfBoundaries(holes)
-    const polygons = holes.Select((hole) => new Polygon(hole)).ToList()
+    const polygons = holes.map((hole) => new Polygon(hole))
     TangentVisibilityGraphCalculator.AddTangentVisibilityEdgesToGraph(
       polygons,
       visibilityGraph,
@@ -98,11 +132,9 @@ export class VisibilityGraph {
   public static FillVisibilityGraphForShortestPath(
     obstacles: IEnumerable<Polyline>,
   ): VisibilityGraph {
-    const holes = new List<Polyline>(
-      VisibilityGraph.OrientHolesClockwise(obstacles),
-    )
+    const holes = [...OrientHolesClockwise(obstacles)]
     const visibilityGraph = VisibilityGraph.CalculateGraphOfBoundaries(holes)
-    const polygons = holes.Select((hole) => new Polygon(hole)).ToList()
+    const polygons = holes.map((hole) => new Polygon(hole))
     TangentVisibilityGraphCalculator.AddTangentVisibilityEdgesToGraph(
       polygons,
       visibilityGraph,
@@ -110,9 +142,9 @@ export class VisibilityGraph {
     return visibilityGraph
   }
 
-  static CalculateGraphOfBoundaries(holes: List<Polyline>): VisibilityGraph {
+  static CalculateGraphOfBoundaries(holes: Array<Polyline>): VisibilityGraph {
     const graphOfHoleBoundaries = new VisibilityGraph()
-    for (const polyline: Polyline in holes) {
+    for (const polyline of holes) {
       graphOfHoleBoundaries.AddHole(polyline)
     }
 
@@ -120,43 +152,18 @@ export class VisibilityGraph {
   }
 
   AddHole(polyline: Polyline) {
-    const p = polyline.StartPoint
-    while (p != polyline.EndPoint) {
-      this.AddEdge(p, p.Next)
-      p = p.Next
+    const p = polyline.startPoint
+    while (p != polyline.endPoint) {
+      this.addEdge(p, p.next)
+      p = p.next
     }
 
-    this.AddEdge(polyline.EndPoint, polyline.StartPoint)
+    this.addEdge(polyline.endPoint, polyline.startPoint)
   }
 
-  static OrientHolesClockwise(
-    holes: IEnumerable<Polyline>,
-  ): IEnumerable<Polyline> {
-    //     #if((TEST_MSAGL || VERIFY))
-    // VisibilityGraph.CheckThatPolylinesAreConvex(holes);
-    //     #endif
-    //  TEST || VERIFY
-    for (const poly: Polyline in holes) {
-      for (const p: PolylinePoint = poly.StartPoint; ; p = p.Next) {
-        //  Find the first non-collinear segments and see which direction the triangle is.
-        //  If it's consistent with Clockwise, then return the polyline, else return its Reverse.
-        const orientation = Point.GetTriangleOrientation(
-          p.Point,
-          p.Next.Point,
-          p.Next.Next.Point,
-        )
-        if (orientation != TriangleOrientation.Collinear) {
-          yield orientation == TriangleOrientation.Clockwise
-            ? poly
-            : poly.Reverse()
-          break
-        }
-      }
-    }
-  }
 
   static CheckThatPolylinesAreConvex(holes: IEnumerable<Polyline>) {
-    for (const polyline in holes) {
+    for (const polyline of holes) {
       VisibilityGraph.CheckThatPolylineIsConvex(polyline)
     }
   }
@@ -164,18 +171,18 @@ export class VisibilityGraph {
   @SuppressMessage('Microsoft.Usage', 'CA2201:DoNotRaiseReservedExceptionTypes')
   static CheckThatPolylineIsConvex(polyline: Polyline) {
     Assert.assert(polyline.Closed, 'Polyline is not closed')
-    const a: PolylinePoint = polyline.StartPoint
-    const b: PolylinePoint = a.Next
-    const c: PolylinePoint = b.Next
+    const a: PolylinePoint = polyline.startPoint
+    const b: PolylinePoint = a.next
+    const c: PolylinePoint = b.next
     const orient: TriangleOrientation = Point.GetTriangleOrientation(
       a.Point,
       b.Point,
       c.Point,
     )
-    while (c != polyline.EndPoint) {
-      a = a.Next
-      b = b.Next
-      c = c.Next
+    while (c != polyline.endPoint) {
+      a = a.next
+      b = b.next
+      c = c.next
       const currentOrient = Point.GetTriangleOrientation(
         a.Point,
         b.Point,
@@ -193,9 +200,9 @@ export class VisibilityGraph {
     }
 
     const o = Point.GetTriangleOrientation(
-      polyline.EndPoint.Point,
-      polyline.StartPoint.Point,
-      polyline.StartPoint.Next.Point,
+      polyline.endPoint.Point,
+      polyline.startPoint.Point,
+      polyline.startPoint.next.Point,
     )
     if (o != TriangleOrientation.Collinear && o != orient) {
       throw new InvalidOperationException()
@@ -208,7 +215,7 @@ export class VisibilityGraph {
     return PointToVertexMap.Values.SelectMany((vertex) => vertex.OutEdges)
   }
 
-  get PointToVertexMap(): Dictionary<Point, VisibilityVertex> {
+  get PointToVertexMap(): Map<Point, VisibilityVertex> {
     return this.pointToVertexMap
   }
 
@@ -264,7 +271,7 @@ export class VisibilityGraph {
   }
 
   AddEdge_PolyPoly(source: PolylinePoint, target: PolylinePoint) {
-    this.AddEdge(source.Point, target.Point)
+    this.addEdge(source.Point, target.Point)
   }
 
   static AddEdge(edge: VisibilityEdge) {
@@ -341,11 +348,11 @@ export class VisibilityGraph {
 
   RemoveVertex(vertex: VisibilityVertex) {
     //  Assert.assert(PointToVertexMap.ContainsKey(vertex.Point), "Cannot find vertex in PointToVertexMap");
-    for (const edge in vertex.OutEdges) {
+    for (const edge of vertex.OutEdges) {
       edge.Target.RemoveInEdge(edge)
     }
 
-    for (const edge in vertex.InEdges) {
+    for (const edge of vertex.InEdges) {
       edge.Source.RemoveOutEdge(edge)
     }
 
@@ -408,8 +415,33 @@ export class VisibilityGraph {
   }
 
   public ClearEdges() {
-    for (const visibilityVertex in this.Vertices()) {
+    for (const visibilityVertex of this.Vertices()) {
       visibilityVertex.ClearEdges()
+    }
+  }
+}
+function* OrientHolesClockwise(
+  holes: IEnumerable<Polyline>
+): IterableIterator<Polyline> {
+  //     #if((TEST_MSAGL || VERIFY))
+  // VisibilityGraph.CheckThatPolylinesAreConvex(holes);
+  //     #endif
+  //  TEST || VERIFY
+  for (const poly of holes) {
+    for (const p = poly.startPoint; ; p = p.next) {
+      //  Find the first non-collinear segments and see which direction the triangle is.
+      //  If it's consistent with Clockwise, then return the polyline, else return its Reverse.
+      const orientation = Point.GetTriangleOrientation(
+        p.Point,
+        p.next.Point,
+        p.next.next.Point,
+      )
+      if (orientation != TriangleOrientation.Collinear) {
+        yield orientation == TriangleOrientation.Clockwise
+          ? poly
+          : poly.Reverse()
+        break
+      }
     }
   }
 }

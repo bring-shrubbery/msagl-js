@@ -1,6 +1,6 @@
-import {RBNode} from './rbNode'
-import {RBColor} from './rbColor'
-import {Assert} from './../../utils/assert'
+import { RBNode } from './rbNode'
+import { RBColor } from './rbColor'
+import { Assert } from './../../utils/assert'
 
 //later will extend Iterable<T>
 export class RBTree<T> {
@@ -172,7 +172,7 @@ export class RBTree<T> {
   }
 
   deleteSubTree(z: RBNode<T>): RBNode<T> {
-    //System.Diagnostics.Assert.assert(z != nil);
+    //Assert.assert(z != nil);
     Assert.assert(z != this.nil, 'root of subtree to delete must not be null.')
     let y: RBNode<T>
     if (z.left == this.nil || z.right == this.nil) {

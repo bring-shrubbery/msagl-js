@@ -2,10 +2,10 @@ import {
   BasicGraphOnEdges,
   mkGraphOnEdges,
 } from '../../structs/basicGraphOnEdges'
-import {IntPair} from '../../utils/IntPair'
-import {IntPairSet} from '../../utils/IntPairSet'
-import {GeomNode} from '../core/geomNode'
-import {CycleRemoval} from './CycleRemoval'
+import { IntPair } from '../../utils/IntPair'
+import { IntPairSet } from '../../utils/IntPairSet'
+import { GeomNode } from '../core/geomNode'
+import { CycleRemoval } from './CycleRemoval'
 
 function mktuple<T>(a: T, b: T): [T, T] {
   return [a, b]
@@ -101,12 +101,12 @@ export class HorizontalConstraintsForSugiyama {
   //        void MakeUpDownRelationsMonotone(number[] yLayers) {
   //            BasicGraph<IntPair> upDownGraph = new BasicGraph<IntPair>(from c in this.verticalInts select new IntPair(c.First,c.Second));
   //            List<Tuple<number, number>> upDownToRemove = new List<Tuple<number, number>>();
-  //            foreach (IEnumerable<number> componentNodes in ConnectedComponentCalculator<IntPair>.GetComponents(GraphOfLeftRightRelations())) {
+  //            foreach (IEnumerable<number> componentNodes of ConnectedComponentCalculator<IntPair>.GetComponents(GraphOfLeftRightRelations())) {
   //                ResolveConflictsUboveComponent(upDownGraph, componentNodes, upDownToRemove, yLayers);
   //                ResolveConflictsBelowComponent(upDownGraph, componentNodes, upDownToRemove, yLayers);
   //            }
   //
-  //            foreach (var v in upDownToRemove)
+  //            foreach (var v of upDownToRemove)
   //                this.verticalInts.Remove(v);
   //        }
   //makes left-right relations to be between neighb blocks and removes cycles in these relations

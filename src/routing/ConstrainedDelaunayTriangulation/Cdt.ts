@@ -1,255 +1,277 @@
 /*
 Following "Sweep-line algorithm for constrained Delaunay triangulation", by Domiter and Zalik
 */
-/*
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Microsoft.Msagl.Core;
-using Microsoft.Msagl.Core.DataStructures;
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Core.Geometry.Curves;
-using SymmetricSegment = Microsoft.Msagl.Core.DataStructures.SymmetricTuple<Microsoft.Msagl.Core.Geometry.Point>;
+//triangulates the space between point, line segment and polygons of the Delaunay fashion
+import { from, IEnumerable } from 'linq-to-typescript';
+import { CreateRectangleNodeOnEnumeration, mkRectangleNode, RectangleNode } from '../../core/geometry/RTree/RectangleNode';
+import { GeomConstants } from '../../math/geometry/geomConstants';
+import { Point } from '../../math/geometry/point';
+import { Polyline } from '../../math/geometry/polyline';
+import { Rectangle } from '../../math/geometry/rectangle';
+import { Assert } from '../../utils/assert';
+import { PointMap } from '../../utils/PointMap';
+import { Algorithm } from './../../utils/algorithm'
+import { CdtEdge } from './CdtEdge';
+import { CdtSite } from './CdtSite';
+import { CdtTriangle } from './CdtTriangle';
 
-namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
-    //<summary>
-    //triangulates the space between point, line segment and polygons in the Delaunay fashion
-    //</summary>
-    public class Cdt : AlgorithmBase {
-         readonly IEnumerable < Tuple < Point, object >> isolatedSitesWithObject;
-        readonly IEnumerable < Point > isolatedSites;
-        readonly IEnumerable < Polyline > obstacles;
-        readonly List < SymmetricSegment > isolatedSegments;
-        CdtSite P1;
-        CdtSite P2;
-        CdtSweeper sweeper;
-        internal readonly Dictionary < Point, CdtSite > PointsToSites = new Dictionary<Point, CdtSite>();
-        List < CdtSite > allInputSites;
+export class Cdt extends Algorithm {
 
-        //<summary>
-        //constructor
-        //</summary>
-        //<param name="isolatedSites"></param>
-        //<param name="obstacles"></param>
-        //<param name="isolatedSegments"></param>
-        public Cdt(IEnumerable < Point > isolatedSites, IEnumerable < Polyline > obstacles, List < SymmetricSegment > isolatedSegments) {
-            this.isolatedSites = isolatedSites;
-            this.obstacles = obstacles;
-            this.isolatedSegments = isolatedSegments;
-        }
+    isolatedSitesWithObject: IEnumerable<[Point, Object]>;
 
-        // <summary>
-        // constructor
-        // </summary>
-        // <param name="isolatedSites"></param>
-        public Cdt(IEnumerable < Tuple < Point, object >> isolatedSites) {
-            isolatedSitesWithObject = isolatedSites;
-        }
+    isolatedSites: IEnumerable<Point>;
 
-        void FillAllInputSites() {
-            //for now suppose that the data is correct: no isolatedSites coincide with obstacles or isolatedSegments, obstacles are mutually disjoint, etc
+    obstacles: IEnumerable<Polyline>;
 
-            if (isolatedSitesWithObject != null)
-                foreach(var tuple in isolatedSitesWithObject)
-            AddSite(tuple.Item1, tuple.Item2);
+    isolatedSegments: Array<SymmetricSegment>;
 
-            if (isolatedSites != null)
-                foreach(var isolatedSite in isolatedSites)
-            AddSite(isolatedSite, null);
+    P1: CdtSite;
 
-            if (obstacles != null)
-                foreach(var poly in obstacles)
-            AddPolylineToAllInputSites(poly);
+    P2: CdtSite;
 
-            if (isolatedSegments != null)
-                foreach(var isolatedSegment in isolatedSegments)
-            AddConstrainedEdge(isolatedSegment.A, isolatedSegment.B, null);
+    sweeper: CdtSweeper;
 
-            AddP1AndP2();
+    PointsToSites: PointMap<CdtSite> = new PointMap<CdtSite>();
 
-            allInputSites = new List<CdtSite>(PointsToSites.Values);
-        }
+    allInputSites: Array<CdtSite>;
 
-        CdtSite AddSite(Point point, object relatedObject) {
-            CdtSite site;
-            if (PointsToSites.TryGetValue(point, out site)) {
-                site.Owner = relatedObject;//set the owner anyway
-                return site;
+    // constructor
+    // <param name="isolatedSites"></param>
+    // <param name="obstacles"></param>
+    // <param name="isolatedSegments"></param>
+    constructor(isolatedSites: IEnumerable<Point>, obstacles: IEnumerable<Polyline>, isolatedSegments: Array<SymmetricSegment>) {
+        super(null);
+        this.isolatedSites = isolatedSites;
+        this.obstacles = obstacles;
+        this.isolatedSegments = isolatedSegments;
+    }
+
+    //  constructor
+    //  <param name="isolatedSites"></param>
+    static constructor_(isolatedSitesWithObj: IEnumerable<[Point, Object]>) {
+        const r = new Cdt(null, null, null);
+        r.isolatedSitesWithObject = isolatedSitesWithObj;
+        return r;
+    }
+
+    FillAllInputSites() {
+        // for now suppose that the data is correct: no isolatedSites coincide with obstacles or isolatedSegments, obstacles are mutually disjoint, etc
+        if ((this.isolatedSitesWithObject != null)) {
+            for (let tuple of this.isolatedSitesWithObject) {
+                this.AddSite(tuple[0], tuple[1]);
             }
-            PointsToSites[point] = site = new CdtSite(point) { Owner = relatedObject };
+
+        }
+
+        if ((this.isolatedSites != null)) {
+            for (let isolatedSite of this.isolatedSites) {
+                this.AddSite(isolatedSite, null);
+            }
+
+        }
+
+        if ((this.obstacles != null)) {
+            for (let poly of this.obstacles) {
+                this.AddPolylineToAllInputSites(poly);
+            }
+
+        }
+
+        if ((this.isolatedSegments != null)) {
+            for (let isolatedSegment of this.isolatedSegments) {
+                this.AddConstrainedEdge(isolatedSegment.A, isolatedSegment.B, null);
+            }
+
+        }
+
+        this.AddP1AndP2();
+        this.allInputSites = [...this.PointsToSites.values()]
+    }
+
+    AddSite(point: Point, relatedObject: Object): CdtSite {
+        let site: CdtSite;
+        if (site = this.PointsToSites.getP(point)) {
+            site.Owner = relatedObject;
+            // set the owner anyway
             return site;
         }
 
-        void AddP1AndP2() {
-            var box = Rectangle.CreateAnEmptyBox();
-            foreach(var site in PointsToSites.Keys)
-            box.Add(site);
+        site = new CdtSite(point);
+        this.PointsToSites.setP(point, new CdtSite(point))
+        return site;
+    }
 
-            var delx = box.Width / 3;
-            var dely = box.Height / 3;
-            P1 = new CdtSite(box.LeftBottom + new Point(-delx, -dely));
-            P2 = new CdtSite(box.RightBottom + new Point(delx, -dely));
+    AddP1AndP2() {
+        const box = Rectangle.mkEmpty();
+        for (const site of this.PointsToSites.keys()) {
+            box.add(site);
         }
 
-        void AddPolylineToAllInputSites(Polyline poly) {
-            for (var pp = poly.StartPoint; pp.Next != null; pp = pp.Next)
-                AddConstrainedEdge(pp.Point, pp.Next.Point, poly);
-            if (poly.Closed)
-                AddConstrainedEdge(poly.EndPoint.Point, poly.StartPoint.Point, poly);
+        const delx = (box.width / 3);
+        const dely = (box.height / 3);
+        this.P1 = new CdtSite(box.leftBottom.add(new Point((delx * -1), (dely * -1))));
+        this.P2 = new CdtSite(box.rightBottom.add(new Point(delx, (dely * -1))));
+    }
+
+    AddPolylineToAllInputSites(poly: Polyline) {
+        for (let pp = poly.startPoint; (pp.next != null); pp = pp.next) {
+            this.AddConstrainedEdge(pp.point, pp.next.point, poly);
         }
 
+        if (poly.closed) {
+            this.AddConstrainedEdge(poly.endPoint.point, poly.startPoint.point, poly);
+        }
 
-        void AddConstrainedEdge(Point a, Point b, Polyline poly) {
-            var ab = Above(a, b);
-            Assert.assert(ab != 0);
-            CdtSite upperPoint;
-            CdtSite lowerPoint;
-            if (ab > 0) {//a is above b
-                upperPoint = AddSite(a, poly);
-                lowerPoint = AddSite(b, poly);
+    }
+
+    AddConstrainedEdge(a: Point, b: Point, poly: Polyline) {
+        const ab = Cdt.AbovePP(a, b);
+        Assert.assert((ab != 0));
+        let upperPoint: CdtSite;
+        let lowerPoint: CdtSite;
+        if ((ab > 0)) {
+            // a is above b
+            upperPoint = this.AddSite(a, poly);
+            lowerPoint = this.AddSite(b, poly);
+        }
+        else {
+            Assert.assert((ab < 0));
+            upperPoint = this.AddSite(b, poly);
+            lowerPoint = this.AddSite(a, poly);
+        }
+
+        const edge = Cdt.CreateEdgeOnOrderedCouple(upperPoint, lowerPoint);
+        edge.Constrained = true;
+    }
+
+    static GetOrCreateEdge(a: CdtSite, b: CdtSite): CdtEdge {
+        if ((Cdt.AboveCC(a, b) == 1)) {
+            const e = a.EdgeBetweenUpperSiteAndLowerSite(b);
+            if ((e != null)) {
+                return e;
             }
-            else {
-                Assert.assert(ab < 0);
-                upperPoint = AddSite(b, poly);
-                lowerPoint = AddSite(a, poly);
+
+            return Cdt.CreateEdgeOnOrderedCouple(a, b);
+        }
+        else {
+            const e = b.EdgeBetweenUpperSiteAndLowerSite(a);
+            if ((e != null)) {
+                return e;
             }
-            var edge = CreateEdgeOnOrderedCouple(upperPoint, lowerPoint);
-            edge.Constrained = true;
+
+            return Cdt.CreateEdgeOnOrderedCouple(b, a);
         }
 
+    }
 
-        static internal CdtEdge GetOrCreateEdge(CdtSite a, CdtSite b) {
-            if (Above(a.Point, b.Point) == 1) {
-                var e = a.EdgeBetweenUpperSiteAndLowerSite(b);
-                if (e != null)
-                    return e;
-                return CreateEdgeOnOrderedCouple(a, b);
-            }
-            else {
-                var e = b.EdgeBetweenUpperSiteAndLowerSite(a);
-                if (e != null)
-                    return e;
-                return CreateEdgeOnOrderedCouple(b, a);
-            }
+    static CreateEdgeOnOrderedCouple(upperPoint: CdtSite, lowerPoint: CdtSite): CdtEdge {
+        Assert.assert((Cdt.AboveCC(upperPoint, lowerPoint) == 1));
+        return new CdtEdge(upperPoint, lowerPoint);
+    }
+
+    // <returns></returns>
+    public GetTriangles(): Set<CdtTriangle> {
+        return this.sweeper.Triangles;
+    }
+
+    //  Executes the actual algorithm.
+    run() {
+        this.Initialization();
+        this.SweepAndFinalize();
+    }
+
+    SweepAndFinalize() {
+        this.sweeper = new CdtSweeper(this.allInputSites, this.P1, this.P2, Cdt.GetOrCreateEdge);
+        this.sweeper.Run();
+    }
+
+    Initialization() {
+        this.FillAllInputSites();
+        this.allInputSites.sort(Cdt.OnComparison);
+    }
+
+    static OnComparison(a: CdtSite, b: CdtSite): number {
+        return Cdt.AboveCC(a, b);
+    }
+
+    //  compare first y then -x coordinates
+    //  <param name="a"></param>
+    //  <param name="b"></param>
+    //  <returns>1 if a is above b, 0 if points are the same and -1 if a is below b</returns>
+    public static AbovePP(a: Point, b: Point): number {
+        let del = a.y - b.y
+        if ((del > 0)) {
+            return 1;
         }
 
-        static CdtEdge CreateEdgeOnOrderedCouple(CdtSite upperPoint, CdtSite lowerPoint) {
-            Assert.assert(Above(upperPoint.Point, lowerPoint.Point) == 1);
-            return new CdtEdge(upperPoint, lowerPoint);
+        if ((del < 0)) {
+            return -1;
         }
 
+        del = (a.x - b.x);
+        // for a horizontal edge return the point with the smaller X
+        return del > 0 ? -1 : (del < 0 ? 1 : 0);
+    }
 
-        //<summary>
-        //</summary>
-        //<returns></returns>
-        public Set < CdtTriangle > GetTriangles() {
-            return sweeper.Triangles;
-        }
+    //  compare first y then -x coordinates
+    //  <param name="a"></param>
+    //  <param name="b"></param>
+    //  <returns>1 if a is above b, 0 if points are the same and -1 if a is below b</returns>
+    static AboveCC(a: CdtSite, b: CdtSite): number {
+        return Cdt.AbovePP(a.Point, b.Point);
+    }
 
-        // <summary>
-        // Executes the actual algorithm.
-        // </summary>
-        protected override void RunInternal() {
-            Initialization();
-            SweepAndFinalize();
-        }
-
-
-        void SweepAndFinalize() {
-            sweeper = new CdtSweeper(allInputSites, P1, P2, GetOrCreateEdge);
-            sweeper.Run();
-        }
-
-
-        void Initialization() {
-            FillAllInputSites();
-            allInputSites.Sort(OnComparison);
-        }
-
-        static int OnComparison(CdtSite a, CdtSite b) {
-            return Above(a.Point, b.Point);
-        }
-        // <summary>
-        // compare first y then -x coordinates
-        // </summary>
-        // <param name="a"></param>
-        // <param name="b"></param>
-        // <returns>1 if a is above b, 0 if points are the same and -1 if a is below b</returns>
-        static public int Above(Point a, Point b) {
-            var del = a.Y - b.Y;
-            if (del > 0)
-                return 1;
-            if (del < 0)
-                return -1;
-            del = a.X - b.X;
-            return del > 0 ? -1 : (del < 0 ? 1 : 0); //for a horizontal edge the point with the smaller X is the upper point
-        }
-
-        // <summary>
-        // compare first y then -x coordinates
-        // </summary>
-        // <param name="a"></param>
-        // <param name="b"></param>
-        // <returns>1 if a is above b, 0 if points are the same and -1 if a is below b</returns>
-        static internal int Above(CdtSite a, CdtSite b) {
-            var del = a.Point.Y - b.Point.Y;
-            if (del > 0)
-                return 1;
-            if (del < 0)
-                return -1;
-            del = a.Point.X - b.Point.X;
-            return del > 0 ? -1 : (del < 0 ? 1 : 0); //for a horizontal edge the point with the smaller X is the upper point
-        }
-
-        internal void RestoreEdgeCapacities() {
-            foreach(var site in allInputSites)
-            foreach(var e in site.Edges)
-            if (!e.Constrained) //do not care of constrained edges
-                e.ResidualCapacity = e.Capacity;
-        }
-
-        //<summary>
-        //</summary>
-        public void SetInEdges() {
-            foreach(var site in PointsToSites.Values) {
-                var edges = site.Edges;
-                for (int i = edges.Count - 1; i >= 0; i--) {
-                    var e = edges[i];
-                    var oSite = e.lowerSite;
-                    Assert.assert(oSite != site);
-                    oSite.AddInEdge(e);
+    RestoreEdgeCapacities() {
+        for (const site of this.allInputSites) {
+            for (const e of site.Edges) {
+                if (!e.Constrained) {
+                    e.ResidualCapacity = e.Capacity;
                 }
-            }
-        }
 
-        //<summary>
-        //</summary>
-        //<param name="point"></param>
-        //<returns></returns>
-        public CdtSite FindSite(Point point) {
-            return PointsToSites[point];
-        }
-
-        internal static bool PointIsInsideOfTriangle(Point point, CdtTriangle t) {
-            for (int i = 0; i < 3; i++) {
-                var a = t.Sites[i].Point;
-                var b = t.Sites[i + 1].Point;
-                if (Point.SignedDoubledTriangleArea(point, a, b) < -ApproximateComparer.DistanceEpsilon)
-                    return false;
-            }
-            return true;
-        }
-
-        RectangleNode < CdtTriangle > cdtTree = null;
-
-        internal RectangleNode < CdtTriangle > GetCdtTree() {
-            if (cdtTree == null) {
-                cdtTree = RectangleNode<CdtTriangle, Point>.CreateRectangleNodeOnEnumeration(GetTriangles().Select(t => new RectangleNode<CdtTriangle, Point>(t, t.BoundingBox())));
             }
 
-            return cdtTree;
         }
+
+    }
+
+    public SetInEdges() {
+        for (const site of this.PointsToSites.values()) {
+            for (const e of site.Edges) {
+                const oSite = e.lowerSite;
+                Assert.assert((oSite != site));
+                oSite.AddInEdge(e);
+            }
+
+        }
+
+    }
+
+    public FindSite(point: Point): CdtSite {
+        return this.PointsToSites.getP(point)
+    }
+
+    static PointIsInsideOfTriangle(point: Point, t: CdtTriangle): boolean {
+        for (let i = 0; (i < 3); i++) {
+            const a = t.Sites[i].Point;
+            const b = t.Sites[(i + 1)].Point;
+            if ((Point.signedDoubledTriangleArea(point, a, b)
+                < (GeomConstants.distanceEpsilon * -1))) {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    cdtTree: RectangleNode<CdtTriangle, Point> = null;
+
+    GetCdtTree(): RectangleNode<CdtTriangle, Point> {
+        if (this.cdtTree == null) {
+            this.cdtTree = CreateRectangleNodeOnEnumeration(from(this.GetTriangles().values()).
+                select((t) => mkRectangleNode<CdtTriangle, Point>(t, t.BoundingBox())));
+        }
+
+        return this.cdtTree;
     }
 }
-*/

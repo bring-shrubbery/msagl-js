@@ -99,7 +99,7 @@
 
 //     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //     void InitHeapAndInsertActiveSides() {
-//         foreach(Stem pp in GetInitialVisibleBoundaryStemsAndInsertActiveSides())
+//         foreach(Stem pp of GetInitialVisibleBoundaryStemsAndInsertActiveSides())
 //         heapForSorting.Enqueue(pp);
 //     }
 
@@ -111,12 +111,12 @@
 //     // <returns></returns>
 //     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //     IEnumerable < Stem > GetInitialVisibleBoundaryStemsAndInsertActiveSides() {
-//         foreach(var keyValuePair in visibleBoundaries) {
+//         foreach(var keyValuePair of visibleBoundaries) {
 //             Polyline hole = keyValuePair.Key;
 //             Stem stem = keyValuePair.Value;
 //             bool crosses = false;
 
-//             foreach(PolylinePoint side in stem.Sides) {
+//             foreach(PolylinePoint side of stem.Sides) {
 //                 PolylinePoint source = side;
 //                 if (source.Point.Y < q.Y) {
 //                     if (side.NextOnPolyline.Point.Y >= q.Y) {
@@ -163,7 +163,7 @@
 //     //    Polyline ret = new Polyline();
 //     //    while (p0 != p1) {
 //     //        ret.AddPoint(p0.Point);
-//     //        p0 = hole.Next(p0);
+//     //        p0 = hole.next(p0);
 //     //    }
 
 //     //    ret.AddPoint(p1.Point);
@@ -185,16 +185,16 @@
 
 //     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //     void Sweep() {
-//         foreach(PolylinePoint polylinePoint in sortedListOfPolypoints)
+//         foreach(PolylinePoint polylinePoint of sortedListOfPolypoints)
 //         SweepPolylinePoint(polylinePoint);
 // #if TEST_MSAGL
 //             //List<ICurve> l = new List<ICurve>();
-//             //foreach (PEdge pe in this.visibilityGraph.Edges) {
+//             //foreach (PEdge pe of this.visibilityGraph.Edges) {
 //             //    if (!ApproximateComparer.Close(pe.SourcePoint, pe.TargetPoint && pe.Target.PolylinePoint.Polyline!=pe.Source.PolylinePoint.Polyline))
 //             //        l.Add(new LineSegment(pe.SourcePoint, pe.TargetPoint));
 //             //}
 
-//             ///foreach(PEdge pe in this.graphOfHoleBoundaries.Edges)
+//             ///foreach(PEdge pe of this.graphOfHoleBoundaries.Edges)
 //             ///    l.Add(new LineSegment(pe.SourcePoint, pe.TargetPoint));
 
 //             //SugiyamaLayoutSettings.Show(l.ToArray());
@@ -251,14 +251,14 @@
 //     void AddEdge(PolylinePoint v) {
 //         if (visibilityKind == VisibilityKind.Regular ||
 //             (visibilityKind == VisibilityKind.Tangent && LineTouchesPolygon(QVertex.Point, v))) {
-//             visibilityGraph.AddEdge(QVertex.Point, v.Point, ((a, b) => new TollFreeVisibilityEdge(a, b)));
+//             visibilityGraph.addEdge(QVertex.Point, v.Point, ((a, b) => new TollFreeVisibilityEdge(a, b)));
 //         }
 //     }
 
 //     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //         static bool LineTouchesPolygon(Point a, PolylinePoint p) {
 //         Point prev = p.Polyline.Prev(p).Point;
-//         Point next = p.Polyline.Next(p).Point;
+//         Point next = p.Polyline.next(p).Point;
 //         Point v = p.Point;
 //         return Point.SignedDoubledTriangleArea(a, v, prev) * Point.SignedDoubledTriangleArea(a, v, next) >= 0;
 //     }
@@ -269,10 +269,10 @@
 //     void DrawActiveEdgesAndVisibleGraph() {
 //         // ReSharper restore UnusedMember.Local
 //         var l = new List<ICurve>();
-//         foreach(VisibilityEdge pe in visibilityGraph.Edges)
+//         foreach(VisibilityEdge pe of visibilityGraph.Edges)
 //         l.Add(new LineSegment(pe.SourcePoint, pe.TargetPoint));
 
-//         foreach(PolylinePoint pe in activeSidesTree)
+//         foreach(PolylinePoint pe of activeSidesTree)
 //         l.Add(new LineSegment(pe.Point, pe.NextOnPolyline.Point));
 //         l.Add(new Ellipse(0.1, 0.1, q));
 
@@ -299,7 +299,7 @@
 //     void ComputeHoleBoundariesPossiblyVisibleFromQ() {
 //         InitActiveEdgesAndActiveEdgesComparer();
 
-//         foreach(Polyline hole in holes)
+//         foreach(Polyline hole of holes)
 //         ComputeVisiblePartOfTheHole(hole);
 //     }
 
@@ -315,28 +315,28 @@
 //         PolylinePoint a;
 //         var needToGoCounterclockWise = true;
 
-//         for (a = hole.StartPoint; !HoleSideIsVisibleFromQ(hole, a); a = hole.Next(a)) {
-//             Assert.assert(needToGoCounterclockWise || a != hole.StartPoint);
+//         for (a = hole.startPoint; !HoleSideIsVisibleFromQ(hole, a); a = hole.next(a)) {
+//             Assert.assert(needToGoCounterclockWise || a != hole.startPoint);
 //             //check that we have not done the full circle
 //             needToGoCounterclockWise = false;
 //         }
 
-//         PolylinePoint b = hole.Next(a);
+//         PolylinePoint b = hole.next(a);
 
-//         //now the side a, a.Next - is separating
+//         //now the side a, a.next - is separating
 //         if (needToGoCounterclockWise)
 //             while (HoleSideIsVisibleFromQ(hole, hole.Prev(a)))
 //                 a = hole.Prev(a);
 
 //         //go clockwise starting from b
-//         for (; HoleSideIsVisibleFromQ(hole, b); b = hole.Next(b)) { }
+//         for (; HoleSideIsVisibleFromQ(hole, b); b = hole.next(b)) { }
 
 //         visibleBoundaries[hole] = new Stem(a, b);
 //     }
 
 //     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //     bool HoleSideIsVisibleFromQ(Polyline hole, PolylinePoint b) {
-//         return Point.SignedDoubledTriangleArea(q, b.Point, hole.Next(b).Point) >= -ApproximateComparer.SquareOfDistanceEpsilon;
+//         return Point.SignedDoubledTriangleArea(q, b.Point, hole.next(b).Point) >= -ApproximateComparer.SquareOfDistanceEpsilon;
 //     }
 // }
 // }

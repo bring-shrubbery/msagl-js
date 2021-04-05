@@ -1,3 +1,6 @@
+export class Polygon
+
+
 // using System;
 // using System.IO;
 // using System.Linq;
@@ -34,8 +37,8 @@
 //         this.polyline = polyline;
 //         points = new PolylinePoint[polyline.Count];
 //         int i = 0;
-//         PolylinePoint pp = polyline.StartPoint;
-//         for (; i < polyline.Count; i++, pp = pp.Next)
+//         PolylinePoint pp = polyline.startPoint;
+//         for (; i < polyline.Count; i++, pp = pp.next)
 //             points[i] = pp;
 
 //     }
@@ -83,7 +86,7 @@
 //     // <param name="p2"></param>
 //     // <returns></returns>
 //     internal int Median(int p1, int p2) {
-//         System.Diagnostics.Assert.assert(p1 != p2);//otherwise we do not know what arc is mean: the whole one or just the point
+//         Assert.assert(p1 != p2);//otherwise we do not know what arc is mean: the whole one or just the point
 //         if (p2 > p1)
 //             return (p2 + p1) / 2;
 
@@ -101,7 +104,7 @@
 //     // <returns></returns>
 //     internal int FindTheFurthestVertexFromBisector(int p1, int p2, Point bisectorPivot, Point bisectorRay) {
 //         Point directionToTheHill = bisectorRay.Rotate(Math.PI / 2);
-//         if ((polyline.StartPoint.Point - bisectorPivot) * directionToTheHill < 0)
+//         if ((polyline.startPoint.Point - bisectorPivot) * directionToTheHill < 0)
 //             directionToTheHill = -directionToTheHill;
 //         if (p1 == p2)
 //             p2 = Next(p1);
@@ -166,8 +169,8 @@
 //         // Distance between two polygons
 //         // </summary>
 //         static public double Distance(Polygon a, Polygon b) {
-//         System.Diagnostics.Assert.assert(PolygonIsLegalDebug(a));
-//         System.Diagnostics.Assert.assert(PolygonIsLegalDebug(b));
+//         Assert.assert(PolygonIsLegalDebug(a));
+//         Assert.assert(PolygonIsLegalDebug(b));
 
 //         Point p, q;
 //         return Distance(a, b, out p, out q);
@@ -176,8 +179,8 @@
 //         private static bool PolygonIsLegalDebug(Polygon a)
 //     {
 //         var poly = a.Polyline;
-//         for (var p = poly.StartPoint; p.Next != null && p.Next.Next != null; p = p.Next)
-//             if (Point.GetTriangleOrientation(p.Point, p.Next.Point, p.Next.Next.Point) ==
+//         for (var p = poly.startPoint; p.next != null && p.next.next != null; p = p.next)
+//             if (Point.GetTriangleOrientation(p.Point, p.next.Point, p.next.next.Point) ==
 //                 TriangleOrientation.Collinear)
 //                 return false;
 //         return true;

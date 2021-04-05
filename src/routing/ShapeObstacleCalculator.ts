@@ -1,13 +1,13 @@
 ﻿//  The class calculates obstacles under the shape.
 //  We assume that the boundaries are not set for the shape children yet
 
-import {IEnumerable} from 'linq-to-typescript'
-import {Dictionary} from 'lodash'
-import {RectangleNode} from '../core/geometry/RTree/RectangleNode'
-import {Curve} from '../math/geometry/curve'
-import {Polyline} from '../math/geometry/polyline'
-import {Shape} from './Shape'
-import {TightLooseCouple} from './TightLooseCouple'
+import { IEnumerable } from 'linq-to-typescript'
+import { Dictionary } from 'lodash'
+import { RectangleNode } from '../core/geometry/RTree/RectangleNode'
+import { Curve } from '../math/geometry/curve'
+import { Polyline } from '../math/geometry/polyline'
+import { Shape } from './Shape'
+import { TightLooseCouple } from './TightLooseCouple'
 
 //  </summary>
 export class ShapeObstacleCalculator {
@@ -73,7 +73,7 @@ export class ShapeObstacleCalculator {
   
     CreateTigthLooseCouples() {
       let couples = new List<TightLooseCouple>();
-      for (let tightPolyline in this.tightHierarchy.GetAllLeaves()) {
+      for (let tightPolyline of this.tightHierarchy.GetAllLeaves()) {
         let distance = InteractiveObstacleCalculator.FindMaxPaddingForTightPolyline(this.tightHierarchy, tightPolyline, this.LoosePadding);
         let loosePoly = InteractiveObstacleCalculator.LoosePolylineWithFewCorners(tightPolyline, distance);
         couples.Add(new TightLooseCouple(tightPolyline, new Shape(loosePoly), distance));

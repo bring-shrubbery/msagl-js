@@ -7,7 +7,7 @@
 //         internal StationEdgeInfo(Point iPos, Point jPos) {
 //             var dir = jPos - iPos;
 //             var length = dir.Length;
-//             if (length > ApproximateComparer.DistanceEpsilon)
+//             if (length > GeomConstants.distanceEpsilon)
 //                 dir /= length;
 //         }
 

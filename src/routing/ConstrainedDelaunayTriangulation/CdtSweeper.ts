@@ -67,7 +67,7 @@
 //             var a = firstPerimeterEdge;
 //             PerimeterEdge b;
 //             do {
-//                 b = a.Next;
+//                 b = a.next;
 //                 if (Point.GetTriangleOrientationWithNoEpsilon(a.Start.Point, a.End.Point, b.End.Point) == TriangleOrientation.Counterclockwise) {
 //                     a = ShortcutTwoListElements(a);
 //                     while (a.Start != firstSite) {
@@ -85,7 +85,7 @@
 //             var pivot = firstPerimeterEdge;
 //             var e = firstPerimeterEdge;
 //             do {
-//                 e = e.Next;
+//                 e = e.next;
 //                 if (e.Start.Point.X < pivot.Start.Point.X ||
 //                     e.Start.Point.X == pivot.Start.Point.X && e.Start.Point.Y < pivot.Start.Point.Y)
 //                     pivot = e;
@@ -104,7 +104,7 @@
 //                 edge = FindNextEdgeOnPerimeter(edge);
 //                 if (prevPe != null) {
 //                     pe.Prev = prevPe;
-//                     prevPe.Next = pe;
+//                     prevPe.next = pe;
 //                 } else
 //                     listStart = pe;
 
@@ -112,7 +112,7 @@
 
 //             } while (edge != firstEdge);
 //             listStart.Prev = pe;
-//             pe.Next = listStart;
+//             pe.next = listStart;
 //             return listStart;
 //         }
 
@@ -140,16 +140,16 @@
 
 //         void RemoveP1AndP2Triangles() {
 //             var trianglesToRemove = new Set<CdtTriangle>();
-//             foreach(var t in triangles)
+//             foreach(var t of triangles)
 //             if (t.Sites.Contains(p_1) || t.Sites.Contains(p_2))
 //                 trianglesToRemove.Insert(t);
-//             foreach(var t in trianglesToRemove)
+//             foreach(var t of trianglesToRemove)
 //             RemoveTriangleWithEdges(triangles, t);
 //         }
 
 //         internal static void RemoveTriangleWithEdges(Set < CdtTriangle > cdtTriangles, CdtTriangle t) {
 //             cdtTriangles.Remove(t);
-//             foreach(var e in t.Edges) {
+//             foreach(var e of t.Edges) {
 //                 if (e.CwTriangle == t)
 //                     e.CwTriangle = null;
 //                 else e.CcwTriangle = null;
@@ -160,7 +160,7 @@
 
 //         internal static void RemoveTriangleButLeaveEdges(Set < CdtTriangle > cdtTriangles, CdtTriangle t) {
 //             cdtTriangles.Remove(t);
-//             foreach(var e in t.Edges)
+//             foreach(var e of t.Edges)
 //             if (e.CwTriangle == t)
 //                 e.CwTriangle = null;
 //             else
@@ -180,7 +180,7 @@
 // #if TEST_MSAGL && TEST_MSAGL
 //         void TestThatFrontIsConnected() {
 //             CdtFrontElement p = null;
-//             foreach(var cdtFrontElement in front) {
+//             foreach(var cdtFrontElement of front) {
 //                 if (p != null)
 //                     Assert.assert(p.RightSite == cdtFrontElement.LeftSite);
 //                 p = cdtFrontElement;
@@ -205,22 +205,22 @@
 //             var ls = new List<DebugCurve>();
 
 //             if (site.Edges != null)
-//                 foreach(var e in site.Edges)
+//                 foreach(var e of site.Edges)
 //             ls.Add(new DebugCurve(100, 0.001, e.Constrained ? "pink" : "brown", new LineSegment(e.upperSite.Point, e.lowerSite.Point)));
 
 //             ls.Add(new DebugCurve(100, 0.01, "brown", new Ellipse(0.5, 0.5, site.Point)));
 
-//             foreach(var t in Triangles) {
+//             foreach(var t of Triangles) {
 //                 for (int i = 0; i < 3; i++) {
 //                     var e = t.Edges[i];
 //                     ls.Add(new DebugCurve(e.Constrained ? (byte)150: (byte)50, e.Constrained ? 0.002 : 0.001, e.Constrained ? "pink" : "navy", new LineSegment(e.upperSite.Point, e.lowerSite.Point)));
 //                 }
 //             }
 
-//             foreach(var c in redCurves)
+//             foreach(var c of redCurves)
 //             ls.Add(new DebugCurve(100, 0.005, "red", c));
 
-//             foreach(var frontElement in front)
+//             foreach(var frontElement of front)
 //             ls.Add(new DebugCurve(100, 0.005, "green",
 //                 new LineSegment(frontElement.Edge.upperSite.Point,
 //                     frontElement.Edge.lowerSite.Point)));
@@ -233,18 +233,18 @@
 //         internal static void ShowFront(IEnumerable < CdtTriangle > cdtTriangles, RbTree < CdtFrontElement > cdtFrontElements, IEnumerable < ICurve > redCurves, IEnumerable < ICurve > blueCurves) {
 //             List < DebugCurve > ls = new List<DebugCurve>();
 //             if (redCurves != null)
-//                 foreach(var c in redCurves)
+//                 foreach(var c of redCurves)
 //             ls.Add(new DebugCurve(100, 0.5, "red", c));
 //             if (blueCurves != null)
-//                 foreach(var c in blueCurves)
+//                 foreach(var c of blueCurves)
 //             ls.Add(new DebugCurve(100, 2, "blue", c));
 
 //             if (cdtFrontElements != null)
-//                 foreach(var frontElement in cdtFrontElements)
+//                 foreach(var frontElement of cdtFrontElements)
 //             ls.Add(new DebugCurve(100, 0.001, "green",
 //                 new LineSegment(frontElement.Edge.upperSite.Point,
 //                     frontElement.Edge.lowerSite.Point)));
-//             foreach(var t in cdtTriangles) {
+//             foreach(var t of cdtTriangles) {
 //                 for (int i = 0; i < 3; i++) {
 //                     var e = t.Edges[i];
 //                     ls.Add(GetDebugCurveOfCdtEdge(e));
@@ -266,7 +266,7 @@
 
 //             ProjectToFront(pi, out hittedFrontElementNode);
 //             CdtSite rightSite;
-//             CdtSite leftSite = hittedFrontElementNode.Item.X + ApproximateComparer.DistanceEpsilon < pi.Point.X
+//             CdtSite leftSite = hittedFrontElementNode.Item.X + GeomConstants.distanceEpsilon < pi.Point.X
 //                 ? MiddleCase(pi, hittedFrontElementNode, out rightSite)
 //                 : LeftCase(pi, hittedFrontElementNode, out rightSite);
 //             var piNode = InsertSiteIntoFront(leftSite, pi, rightSite);
@@ -278,16 +278,16 @@
 // #if TEST_MSAGL && TEST_MSAGL
 //         void TestTriangles() {
 //             var usedSites = new Set<CdtSite>();
-//             foreach(var t in Triangles)
+//             foreach(var t of Triangles)
 //             usedSites.InsertRange(t.Sites);
-//             foreach(var triangle in Triangles) {
+//             foreach(var triangle of Triangles) {
 //                 TestTriangle(triangle, usedSites);
 //             }
 //         }
 
 //         void TestTriangle(CdtTriangle triangle, Set < CdtSite > usedSites) {
 //             var tsites = triangle.Sites;
-//             foreach(var site in usedSites) {
+//             foreach(var site of usedSites) {
 //                 if (!tsites.Contains(site)) {
 //                     if (!SeparatedByConstrainedEdge(triangle, site) && InCircle(site, tsites[0], tsites[1], tsites[2])) {
 //                         List < ICurve > redCurves=new List<ICurve>();
@@ -363,7 +363,7 @@
 //         }
 
 //         PerimeterEdge ShortcutTwoListElements(PerimeterEdge a) {
-//             var b = a.Next;
+//             var b = a.next;
 //             Assert.assert(a.End == b.Start);
 //             var t = new CdtTriangle(a.Start, a.End, b.End, a.Edge, b.Edge,
 //                 createEdgeDelegate);
@@ -374,10 +374,10 @@
 //             t = newEdge.CcwTriangle ?? newEdge.CwTriangle;
 //             LegalizeEdge(b.End, t.OppositeEdge(b.End));
 //             var c = new PerimeterEdge(newEdge) { Start = a.Start, End = b.End };
-//             a.Prev.Next = c;
+//             a.Prev.next = c;
 //             c.Prev = a.Prev;
-//             c.Next = b.Next;
-//             b.Next.Prev = c;
+//             c.next = b.next;
+//             b.next.Prev = c;
 //             return c;
 //         }
 //         // <summary>
@@ -443,7 +443,7 @@
 
 //         RBNode < CdtFrontElement > InsertSiteIntoFront(CdtSite leftSite, CdtSite pi, CdtSite rightSite) {
 //             CdtEdge leftEdge = null, rightEdge = null;
-//             foreach(var edge in pi.Edges) {
+//             foreach(var edge of pi.Edges) {
 //                 if (leftEdge == null && edge.lowerSite == leftSite)
 //                     leftEdge = edge;
 //                 if (rightEdge == null && edge.lowerSite == rightSite)
@@ -458,7 +458,7 @@
 //         void TriangulateEmptySpaceToTheRight(RBNode < CdtFrontElement > piNode) {
 //             var piSite = piNode.Item.LeftSite;
 //             var piPoint = piSite.Point;
-//             var piNext = front.Next(piNode);
+//             var piNext = front.next(piNode);
 //             while (piNext != null) {
 //                 var frontElem = piNext.Item;
 //                 var r = frontElem.LeftSite;
@@ -466,7 +466,7 @@
 //                 if ((r.Point - piPoint) * (rp.Point - r.Point) < 0) {
 //                     //see figures 9(a) and 9(b) of the paper
 //                     piNode = ShortcutTwoFrontElements(piNode, piNext);
-//                     piNext = front.Next(piNode);
+//                     piNext = front.next(piNode);
 //                 } else {
 //                     TryTriangulateBasinToTheRight(piNode);
 //                     break;
@@ -483,7 +483,7 @@
 //             while (true) {
 //                 var site = stack.Pop();
 //                 piNode = FindNodeInFrontBySite(front, site);
-//                 var next = front.Next(piNode);
+//                 var next = front.next(piNode);
 //                 if (next == null)
 //                     return;
 //                 if (Point.GetTriangleOrientationWithNoEpsilon(piNode.Item.LeftSite.Point, piNode.Item.RightSite.Point, next.Item.RightSite.Point) == TriangleOrientation.Counterclockwise) {

@@ -22,7 +22,7 @@
 //         IEnumerable < VisibilityVertex > targetVisVertices, VisibilityGraph visibilityGraph) {
 //         _visGraph = visibilityGraph;
 //         _visGraph.ClearPrevEdgesTable();
-//         foreach(var v in visibilityGraph.Vertices())
+//         foreach(var v of visibilityGraph.Vertices())
 //         v.Distance = Double.PositiveInfinity;
 
 //         source = sourceVisVertex;
@@ -43,10 +43,10 @@
 //             if (targets.Contains(current))
 //                 break;
 
-//             foreach(var e in current.OutEdges.Where(PassableOutEdge))
+//             foreach(var e of current.OutEdges.Where(PassableOutEdge))
 //             ProcessNeighbor(pq, e, e.Target);
 
-//             foreach(var e in current.InEdges.Where(PassableInEdge))
+//             foreach(var e of current.InEdges.Where(PassableInEdge))
 //             ProcessNeighbor(pq, e, e.Source);
 //         }
 

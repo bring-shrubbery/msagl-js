@@ -118,12 +118,12 @@
 //     // </summary>
 //     internal static bool LineSegmentIntersectPolyline(Point start, Point end, Polyline poly) {
 //         Point segDirection = end - start;   // the segment direction vector
-//         Assert.assert(segDirection.Length > ApproximateComparer.DistanceEpsilon);
+//         Assert.assert(segDirection.Length > GeomConstants.distanceEpsilon);
 
 //         double tStart = 0;                  // the maximum entering segment parameter
 //         double tEnd = 1;                    // the minimum leaving segment parameter
 
-//         foreach(var p in poly.PolylinePoints) {
+//         foreach(var p of poly.PolylinePoints) {
 //             //process one edge
 //             var prev = p.PrevOnPolyline;
 //             Point e = prev.Point - p.Point;
@@ -167,13 +167,13 @@
 //     // </summary>
 //     internal bool HubPositionsAreOK() {
 //         //check polylines
-//         foreach(var line in metroGraphData.Metrolines) {
+//         foreach(var line of metroGraphData.Metrolines) {
 //             var poly = line.Polyline;
-//             foreach(var p in poly.PolylinePoints)
+//             foreach(var p of poly.PolylinePoints)
 //             Assert.assert(metroGraphData.PointToStations.ContainsKey(p.Point));
 //         }
 
-//         foreach(var station in metroGraphData.Stations) {
+//         foreach(var station of metroGraphData.Stations) {
 
 //             if (!station.IsRealNode && !HubAvoidsObstacles(station.Position, 0, obstaclesToIgnore(station))) {
 //                 if (LayoutAlgorithmSettings.ShowDebugCurvesEnumeration != null) {
@@ -183,7 +183,7 @@
 //                 return false;
 //             }
 //             //bundles
-//             foreach(var adj in station.Neighbors) {
+//             foreach(var adj of station.Neighbors) {
 //                 if (ApproximateComparer.Close(adj.Position, station.Position))
 //                     return false;
 
@@ -191,14 +191,14 @@
 //                     if (LayoutAlgorithmSettings.ShowDebugCurvesEnumeration != null) {
 //                         //debug visualization
 //                         var l = new List<DebugCurve>();
-//                         //foreach (var st in metroGraphData.Stations) {
+//                         //foreach (var st of metroGraphData.Stations) {
 //                         //    l.Add(new DebugCurve(100, 0.5, "grey", st.BoundaryCurve));
 //                         //}
-//                         foreach(var poly in obstaclesToIgnore(station)) {
+//                         foreach(var poly of obstaclesToIgnore(station)) {
 //                             l.Add(new DebugCurve(100, 5, "green", poly));
 //                         }
 
-//                         foreach(var obstacle in obstacleTree.GetAllLeaves()) {
+//                         foreach(var obstacle of obstacleTree.GetAllLeaves()) {
 //                             l.Add(new DebugCurve(100, 1, "red", obstacle));
 //                         }
 
@@ -221,14 +221,14 @@
 
 //     void ShowStationWithObstaclesToIgnore(Station station, IEnumerable < Polyline > allHitItems) {
 //         var l = new List<DebugCurve>();
-//         foreach(var poly in allHitItems) {
+//         foreach(var poly of allHitItems) {
 //             l.Add(new DebugCurve(100, 0.5, "brown", poly));
 //         }
 //         if (obstaclesToIgnore(station) != null)
-//             foreach(var poly in obstaclesToIgnore(station))
+//             foreach(var poly of obstaclesToIgnore(station))
 //         l.Add(new DebugCurve(100, 1, "red", poly));
 
-//         foreach(var obstacle in obstacleTree.GetAllLeaves())
+//         foreach(var obstacle of obstacleTree.GetAllLeaves())
 //         l.Add(new DebugCurve(50, 0.1, "green", obstacle));
 
 //         l.Add(new DebugCurve(0.1, "blue", new Ellipse(1, 1, station.Position)));

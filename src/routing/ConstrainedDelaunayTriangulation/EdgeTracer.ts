@@ -57,7 +57,7 @@
 
 //         FindMoreRemovedFromFrontElements();
 
-//         foreach(var elem in elementsToBeRemovedFromFront)
+//         foreach(var elem of elementsToBeRemovedFromFront)
 //         front.Remove(elem);
 //     }
 
@@ -97,8 +97,8 @@
 //     }
 
 //     void FindMoreRemovedFromFrontElements() {
-//         foreach(var triangle in removedTriangles) {
-//             foreach(var e in triangle.Edges) {
+//         foreach(var triangle of removedTriangles) {
+//             foreach(var e of triangle.Edges) {
 //                 if (e.CcwTriangle == null && e.CwTriangle == null) {
 //                     var site = e.upperSite.Point.X < e.lowerSite.Point.X ? e.upperSite : e.lowerSite;
 //                     var frontNode = CdtSweeper.FindNodeInFrontBySite(front, site);
@@ -158,7 +158,7 @@
 
 //     void RemovePiercedTriangle(CdtTriangle t) {
 //         triangles.Remove(t);
-//         foreach(var e in t.Edges)
+//         foreach(var e of t.Edges)
 //         if (e.CwTriangle == t)
 //             e.CwTriangle = null;
 //         else e.CcwTriangle = null;
@@ -171,7 +171,7 @@
 //         do {
 //             elementsToBeRemovedFromFront.Add(v.Item);
 //             AddSiteToRightPolygon(v.Item.RightSite);
-//             v = front.Next(v);
+//             v = front.next(v);
 //         } while (Point.PointToTheRightOfLine(v.Item.RightSite.Point, a.Point, b.Point)); //that is why we are adding to the right polygon
 //         elementsToBeRemovedFromFront.Add(v.Item);
 //         AddSiteToLeftPolygon(v.Item.RightSite);
@@ -217,7 +217,7 @@
 //         else if (Point.PointToTheRightOfLine(b.Point, frontElemNodeRightOfA.Item.RightSite.Point, frontElemNodeRightOfA.Item.LeftSite.Point))
 //             piercedToTheRightFrontElemNode = frontElemNodeRightOfA;
 //         else {
-//             foreach(var e in a.Edges) {
+//             foreach(var e of a.Edges) {
 //                 var t = e.CcwTriangle;
 //                 if (t == null) continue;
 //                 if (Point.PointToTheLeftOfLine(b.Point, e.lowerSite.Point, e.upperSite.Point))

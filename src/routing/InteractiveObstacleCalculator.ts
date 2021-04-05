@@ -101,7 +101,7 @@ namespace Microsoft.Msagl.Routing {
     internal void CreateLooseObstacles() {
         tightPolylinesToLooseDistances = new Dictionary<Polyline, double>();
         LooseObstacles = new List<Polyline>();
-        foreach(var tightPolyline in TightObstacles) {
+        foreach(var tightPolyline of TightObstacles) {
             var distance = FindMaxPaddingForTightPolyline(RootOfTightHierarchy, tightPolyline, LoosePadding);
             tightPolylinesToLooseDistances[tightPolyline] = distance;
             LooseObstacles.Add(LoosePolylineWithFewCorners(tightPolyline, distance));
@@ -165,7 +165,7 @@ namespace Microsoft.Msagl.Routing {
         Assert.assert(tightObstacleSet != null);
         if (obstacles.Count() == 0)
             return null;
-        foreach(ICurve curve in obstacles)
+        foreach(ICurve curve of obstacles)
         CalculateTightPolyline(tightObstacleSet, tightPadding, curve);
 
         return RemovePossibleOverlapsInTightPolylinesAndCalculateHierarchy(tightObstacleSet);
@@ -185,14 +185,14 @@ namespace Microsoft.Msagl.Routing {
         var overlappingPairSet = GetOverlappedPairSet(polylineHierarchy);
         TightObstacles = new Set<Polyline>();
         if (overlappingPairSet.Count == 0) {
-            foreach(var polyline in polysWithoutPadding) {
+            foreach(var polyline of polysWithoutPadding) {
                 var distance = FindMaxPaddingForTightPolyline(polylineHierarchy, polyline, TightPadding);
                 TightObstacles.Insert(LoosePolylineWithFewCorners(polyline, distance));
             }
             RootOfTightHierarchy = CalculateHierarchy(TightObstacles);
         } else {
 
-            foreach(var poly in polysWithoutPadding)
+            foreach(var poly of polysWithoutPadding)
             TightObstacles.Insert(CreatePaddedPolyline(poly, TightPadding));
 
 
@@ -224,7 +224,7 @@ namespace Microsoft.Msagl.Routing {
 
     internal static RectangleNode < Polyline > ReplaceTightObstaclesWithConvexHulls(Set < Polyline > tightObsts, IEnumerable < Tuple < Polyline, Polyline >> overlappingPairSet) {
         var overlapping = new Set<Polyline>();
-        foreach(var pair in overlappingPairSet) {
+        foreach(var pair of overlappingPairSet) {
             overlapping.Insert(pair.Item1);
             overlapping.Insert(pair.Item2);
         }
@@ -234,11 +234,11 @@ namespace Microsoft.Msagl.Routing {
             overlappingPairSet.
                 Select(pair => new IntPair(polyToInt[pair.Item1], polyToInt[pair.Item2])));
         var connectedComponents = ConnectedComponentCalculator<IntPair>.GetComponents(graph);
-        foreach(var component in connectedComponents) {
+        foreach(var component of connectedComponents) {
             var polys = component.Select(i => intToPoly[i]);
             var points = polys.SelectMany(p => p);
             var convexHull = ConvexHull.CreateConvexHullAsClosedPolyline(points);
-            foreach(var poly in polys)
+            foreach(var poly of polys)
             tightObsts.Remove(poly);
             tightObsts.Insert(convexHull);
         }
@@ -299,15 +299,15 @@ namespace Microsoft.Msagl.Routing {
             , "Unpadded polyline is not clockwise");
 
         var ret = new Polyline();
-        if (!PadCorner(ret, poly.EndPoint.Prev, poly.EndPoint, poly.StartPoint, padding))
+        if (!PadCorner(ret, poly.endPoint.Prev, poly.endPoint, poly.startPoint, padding))
             return CreatePaddedPolyline(new Polyline(ConvexHull.CalculateConvexHull(poly)) { Closed = true }, padding);
 
-        if (!PadCorner(ret, poly.EndPoint, poly.StartPoint, poly.StartPoint.Next, padding))
+        if (!PadCorner(ret, poly.endPoint, poly.startPoint, poly.startPoint.next, padding))
             return CreatePaddedPolyline(new Polyline(ConvexHull.CalculateConvexHull(poly)) { Closed = true }, padding);
 
 
-        for (var pp = poly.StartPoint; pp.Next.Next != null; pp = pp.Next)
-            if (!PadCorner(ret, pp, pp.Next, pp.Next.Next, padding))
+        for (var pp = poly.startPoint; pp.next.next != null; pp = pp.next)
+            if (!PadCorner(ret, pp, pp.next, pp.next.next, padding))
                 return CreatePaddedPolyline(new Polyline(ConvexHull.CalculateConvexHull(poly)) { Closed = true },
                     padding);
 
@@ -423,7 +423,7 @@ namespace Microsoft.Msagl.Routing {
     }
 
     internal static Polyline LoosePolylineWithFewCorners(Polyline tightPolyline, double p) {
-        if (p < ApproximateComparer.DistanceEpsilon)
+        if (p < GeomConstants.distanceEpsilon)
             return tightPolyline;
         Polyline loosePolyline = CreateLoosePolylineOnBisectors(tightPolyline, p);
 
@@ -438,7 +438,7 @@ namespace Microsoft.Msagl.Routing {
 
         static IEnumerable < Point > BisectorPoints(Polyline tightPolyline, double offset){
         List < Point > ret=new List<Point>();
-        for (PolylinePoint pp = tightPolyline.StartPoint; pp != null; pp = pp.Next) {
+        for (PolylinePoint pp = tightPolyline.startPoint; pp != null; pp = pp.next) {
             bool skip;
             Point currentSticking = GetStickingVertexOnBisector(pp, offset, out skip);
             if (!skip)
@@ -450,7 +450,7 @@ namespace Microsoft.Msagl.Routing {
         static Point GetStickingVertexOnBisector(PolylinePoint pp, double p, out bool skip) {
         Point u = pp.Polyline.Prev(pp).Point;
         Point v = pp.Point;
-        Point w = pp.Polyline.Next(pp).Point;
+        Point w = pp.Polyline.next(pp).Point;
         var z = (v - u).Normalize() + (v - w).Normalize();
         var zLen = z.Length;
         if (zLen < ApproximateComparer.Tolerance)
@@ -484,7 +484,7 @@ namespace Microsoft.Msagl.Routing {
         var boundingBox = polyline.BoundingBox;
 #endif
         boundingBox.Pad(2.0 * desiredPadding);
-        foreach(var poly in hierarchy.GetNodeItemsIntersectingRectangle(boundingBox).Where(p => p != polyline)) {
+        foreach(var poly of hierarchy.GetNodeItemsIntersectingRectangle(boundingBox).Where(p => p != polyline)) {
             var separation = Polygon.Distance(polygon, new Polygon(poly));
             dist = Math.Min(dist, separation / LooseDistCoefficient);
         }

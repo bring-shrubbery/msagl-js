@@ -60,7 +60,7 @@
 //             if (hu >= _target.Distance)
 //                 break;
 
-//             foreach(var e in u.OutEdges)
+//             foreach(var e of u.OutEdges)
 //             {
 
 //                 if (PassableOutEdge(e)) {
@@ -70,7 +70,7 @@
 //                 }
 //             }
 
-//             foreach(var e in u.InEdges)
+//             foreach(var e of u.InEdges)
 //             {
 //                 if (PassableInEdge(e)) {
 //                     var v = e.Source;
@@ -86,7 +86,7 @@
 
 //     internal void AssertEdgesPassable(List < VisibilityEdge > path)
 //     {
-//         foreach(var edge in path)
+//         foreach(var edge of path)
 //         {
 //             Assert.assert(PassableOutEdge(edge) || PassableInEdge(edge));
 //         }

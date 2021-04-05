@@ -43,9 +43,9 @@
 //   }
 
 //   void CreateGraphElements() {
-//     foreach(var sdVertex in vertexArray) {
+//     foreach(var sdVertex of vertexArray) {
 //       var vv = sdVertex.VisibilityVertex;
-//       foreach(var vEdge in vv.InEdges) {
+//       foreach(var vEdge of vv.InEdges) {
 //         var boneEdge = new SdBoneEdge(vEdge, VisibilityVerticesToSdVerts[vEdge.Source], VisibilityVerticesToSdVerts[vEdge.Target]);
 //         var otherSdVertex = VisibilityVerticesToSdVerts[vEdge.Source];
 //         sdVertex.InBoneEdges.Add(boneEdge);
@@ -58,7 +58,7 @@
 //     vertexArray = new SdVertex[VisibilityGraph.VertexCount];
 //     int i = 0;
 //     VisibilityVerticesToSdVerts = new Dictionary<VisibilityVertex, SdVertex>();
-//     foreach(var v in VisibilityGraph.Vertices()) {
+//     foreach(var v of VisibilityGraph.Vertices()) {
 //       var sdVert = new SdVertex(v);
 //       vertexArray[i++] = sdVert;
 //       VisibilityVerticesToSdVerts[v] = sdVert;
@@ -73,13 +73,13 @@
 //   internal void RouteEdges() {
 //     Initialize();
 //     RestoreCapacities();
-//     foreach(var edgeGeometry in EdgeGeometries) {
+//     foreach(var edgeGeometry of EdgeGeometries) {
 //       EdgesToRoutes[edgeGeometry] = RouteEdge(edgeGeometry);
 //     }
 
 //     RerouteEdges();
 
-//     foreach(var edgeGeometry in EdgeGeometries)
+//     foreach(var edgeGeometry of EdgeGeometries)
 //     SetEdgeGeometryCurve(edgeGeometry);
 //   }
 
@@ -87,7 +87,7 @@
 //     Polyline poly = new Polyline();
 //     SdVertex curV = EdgesToRouteSources[edgeGeometry];
 //     poly.AddPoint(curV.Point);
-//     foreach(var edge in EdgesToRoutes[edgeGeometry]) {
+//     foreach(var edge of EdgesToRoutes[edgeGeometry]) {
 //       if (edge.SourcePoint == curV.Point) {
 //         poly.AddPoint(edge.TargetPoint);
 //         curV = edge.Target;
@@ -120,7 +120,7 @@
 
 //   void RerouteEdges() {
 //     RestoreCapacities();
-//     foreach(var edgeGeometry in EdgeGeometries) {
+//     foreach(var edgeGeometry of EdgeGeometries) {
 //       var newRoute = RerouteEdge(edgeGeometry);
 //       EdgesToRoutes[edgeGeometry] = newRoute;
 //     }
@@ -137,7 +137,7 @@
 //   List < SdBoneEdge > RerouteEdge(EdgeGeometry edgeGeometry) {
 //     var route = EdgesToRoutes[edgeGeometry];
 
-//     foreach(var edge in route)
+//     foreach(var edge of route)
 //     edge.RemoveOccupiedEdge();
 
 //     return RouteEdge(edgeGeometry);
@@ -154,11 +154,11 @@
 //     var transparentShapes = MakeTransparentShapesOfEdgeGeometry(edgeGeometry);
 //     var ret = RouteEdgeWithGroups();
 
-//     foreach(var shape in transparentShapes)
+//     foreach(var shape of transparentShapes)
 //     shape.IsTransparent = false;
 
 //     /*List<LineSegment> ls = new List<LineSegment>();
-//     foreach (var e in ret)
+//     foreach (var e of ret)
 //         ls.Add(new LineSegment(e.SourcePoint, e.TargetPoint));
 //     SplineRouter.ShowVisGraph(this.VisibilityGraph, ObstacleHierarchy.GetAllLeaves(), null, ls);*/
 
@@ -293,7 +293,7 @@
 //   }
 
 //   void UpdateResidualCostsOfCrossedCdtEdges(SdBoneEdge boneEdge) {
-//     foreach(var cdtEdge in boneEdge.CrossedCdtEdges) {
+//     foreach(var cdtEdge of boneEdge.CrossedCdtEdges) {
 //       if (AdjacentToSourceOrTarget(cdtEdge))
 //         continue;
 //       if (cdtEdge.ResidualCapacity == cdtEdge.Capacity)
@@ -319,7 +319,7 @@
 //     if (Cdt == null || BundlingSettings.CapacityOverflowCoefficient == 0)
 //       return 0;
 //     double ret = 0;
-//     foreach(var cdtEdge in CrossedCdtEdgesOfBoneEdge(boneEdge)) {
+//     foreach(var cdtEdge of CrossedCdtEdgesOfBoneEdge(boneEdge)) {
 //       ret += CostOfCrossingCdtEdgeLocal(capacityOverlowPenaltyMultiplier, BundlingSettings, CurrentEdgeGeometry, cdtEdge);
 //     }
 //     return ret;
@@ -404,7 +404,7 @@
 //     if (cbport != null) {
 //       //SplineRouter.ShowVisGraph(this.VisibilityGraph, this.ObstacleHierarchy.GetAllLeaves(), null, new[]{cbport.LoosePolyline});
 //       poly = cbport.LoosePolyline;
-//       foreach(var point in poly) {
+//       foreach(var point of poly) {
 //         double initialCost = 0;
 //         if (sources) {
 //           //we prefer paths starting from the center of the group
@@ -417,7 +417,7 @@
 //       var anywherePort = port as HookUpAnywhereFromInsidePort;
 //       if (anywherePort != null) {
 //         poly = anywherePort.LoosePolyline;
-//         foreach(var point in poly)
+//         foreach(var point of poly)
 //         AddAndEnqueueVertexToEnds(point, sources, 0);
 //       }
 //       else {
@@ -474,7 +474,7 @@
 //   }
 
 //   void CalculateCapacitiesOfTrianglulation() {
-//     foreach(var e in Gates)
+//     foreach(var e of Gates)
 //     CalculateCdtEdgeCapacityForEdge(e);
 //   }
 
@@ -502,7 +502,7 @@
 //         vertexArray.Select(v => new RectangleNode<SdVertex, Point>(v, new Rectangle(v.Point))));
 
 //     RectangleNodeUtils.CrossRectangleNodes(triangleTree, vertexTree, TryToAssigenTriangleToVertex);
-//     foreach(var v in vertexArray) {
+//     foreach(var v of vertexArray) {
 //       Assert.assert(v.Triangle != null);
 //     }
 //   }
@@ -523,13 +523,13 @@
 //   // compute cdt edges crossed by paths
 //   // </summary>
 //   internal void FillCrossedCdtEdges(Dictionary < EdgeGeometry, Set < CdtEdge >> crossedCdtEdges) {
-//     foreach(var geometryEdge in EdgeGeometries) {
+//     foreach(var geometryEdge of EdgeGeometries) {
 //       SetPortVerticesAndObstacles(geometryEdge.SourcePort, true, out sourceLoosePoly);
 //       SetPortVerticesAndObstacles(geometryEdge.TargetPort, false, out targetLoosePoly);
 
 //       //crossedCdtEdges.Add(geometryEdge, new Set<CdtEdge>());
-//       foreach(var boneEdge in EdgesToRoutes[geometryEdge]) {
-//         foreach(var cdtEdge in CrossedCdtEdgesOfBoneEdge(boneEdge)) {
+//       foreach(var boneEdge of EdgesToRoutes[geometryEdge]) {
+//         foreach(var cdtEdge of CrossedCdtEdgesOfBoneEdge(boneEdge)) {
 //           if (AdjacentToSourceOrTarget(cdtEdge))
 //             continue;
 //           CollectionUtilities.AddToMap(crossedCdtEdges, geometryEdge, cdtEdge);

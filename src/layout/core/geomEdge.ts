@@ -1,11 +1,11 @@
-import {GeomNode} from './geomNode'
-import {EdgeGeometry} from './edgeGeometry'
-import {Edge} from './../../structs/edge'
-import {GeomObject} from './geomObject'
-import {Rectangle} from './../../math/geometry/rectangle'
-import {ICurve} from './../../math/geometry/icurve'
-import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
-import {GeomLabel} from './geomLabel'
+import { GeomNode } from './geomNode'
+import { EdgeGeometry } from './edgeGeometry'
+import { Edge } from './../../structs/edge'
+import { GeomObject } from './geomObject'
+import { Rectangle } from './../../math/geometry/rectangle'
+import { ICurve } from './../../math/geometry/icurve'
+import { SmoothedPolyline } from './../../math/geometry/smoothedPolyline'
+import { GeomLabel } from './geomLabel'
 
 export class GeomEdge extends GeomObject {
   underlyingPolyline: SmoothedPolyline
@@ -63,7 +63,7 @@ export class GeomEdge extends GeomObject {
    
       var rect = Rectangle.CreateAnEmptyBox();
       if (UnderlyingPolyline != null)
-        foreach(Point p in UnderlyingPolyline)
+        foreach(Point p of UnderlyingPolyline)
       rect.Add(p);
    
       if (Curve != null)
@@ -119,7 +119,7 @@ export class GeomEdge extends GeomObject {
       if (UnderlyingPolyline != null)
         for (Site s = UnderlyingPolyline.HeadSite, s0 = UnderlyingPolyline.HeadSite;
           s != null;
-      s = s.Next, s0 = s0.Next)
+      s = s.next, s0 = s0.next)
       s.Point = matrix * s.Point;
     
       var sourceArrow = edgeGeometry.sourceArrowhead;
@@ -142,7 +142,7 @@ export class GeomEdge extends GeomObject {
       if (this.this.edgeGeometry != null) {
         this.this.edgeGeometry.Translate(delta);
       }
-      foreach(var l in this.Labels)
+      foreach(var l of this.Labels)
       {
         l.Translate(delta);
       }
@@ -160,7 +160,7 @@ export class GeomEdge extends GeomObject {
         var toNewBounds = new PlaneTransformation(1, 0, newBounds.Left, 0, 1, newBounds.Bottom);
         Transform(toNewBounds * scale * toOrigin);
       }
-      foreach(var l in this.Labels)
+      foreach(var l of this.Labels)
       {
         l.Translate(newBounds.LeftBottom - oldBounds.LeftBottom);
       }

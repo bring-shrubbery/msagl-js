@@ -1,22 +1,22 @@
-import {ICurve} from './icurve'
-import {PN, PNInternal, PNLeaf, ParallelogramNode} from './parallelogramNode'
-import {allVerticesOfParall} from './parallelogram'
-import {Point} from './point'
-import {LineSegment} from './lineSegment'
-import {IntersectionInfo} from './intersectionInfo'
-import {Assert} from './../../utils/assert'
-import {Parallelogram} from './parallelogram'
-import {Ellipse} from './ellipse'
-import {Polyline} from './polyline'
-import {GeomConstants} from './geomConstants'
-import {LinearSystem2} from './linearSystem'
-import {MinDistCurveCurve} from './minDistCurveCurve'
-import {Rectangle} from './rectangle'
-import {PlaneTransformation} from './planeTransformation'
-import {SvgDebugWriter} from './svgDebugWriter'
-import {DebugCurve} from './debugCurve'
-import {BezierSeg} from './bezierSeg'
-import {CornerSite} from './cornerSite'
+import { ICurve } from './icurve'
+import { PN, PNInternal, PNLeaf, ParallelogramNode } from './parallelogramNode'
+import { allVerticesOfParall } from './parallelogram'
+import { Point } from './point'
+import { LineSegment } from './lineSegment'
+import { IntersectionInfo } from './intersectionInfo'
+import { Assert } from './../../utils/assert'
+import { Parallelogram } from './parallelogram'
+import { Ellipse } from './ellipse'
+import { Polyline } from './polyline'
+import { GeomConstants } from './geomConstants'
+import { LinearSystem2 } from './linearSystem'
+import { MinDistCurveCurve } from './minDistCurveCurve'
+import { Rectangle } from './rectangle'
+import { PlaneTransformation } from './planeTransformation'
+import { SvgDebugWriter } from './svgDebugWriter'
+import { DebugCurve } from './debugCurve'
+import { BezierSeg } from './bezierSeg'
+import { CornerSite } from './cornerSite'
 
 type Params = {
   start: number
@@ -253,7 +253,7 @@ export class Curve implements ICurve {
       parallelogram: Parallelogram.getParallelogramOfAGroup(parallelograms),
       seg: this,
       leafBoxesOffset: GeomConstants.defaultLeafBoxesOffset,
-      node: {children: childrenNodes},
+      node: { children: childrenNodes },
     }
 
     return this.pBNode
@@ -1284,10 +1284,10 @@ export class Curve implements ICurve {
     return aMinusB.dot(aMinusB) >= GeomConstants.distanceEpsilon
       ? undefined
       : {
-          aSol: mdout.aSol,
-          bSol: mdout.bSol,
-          x: Point.middle(mdout.aX, mdout.bX),
-        }
+        aSol: mdout.aSol,
+        bSol: mdout.bSol,
+        x: Point.middle(mdout.aX, mdout.bX),
+      }
   }
 
   static crossTwoLineSegs(
@@ -1353,7 +1353,7 @@ export class Curve implements ICurve {
     // CurveSerializer.Serialize("cornerC:\\tmp\\ls",ls);
     // CurveSerializer.Serialize("cornerC:\\tmp\\pol",curve);
     if (AllIntersectionsAreGood(intersections, curve)) {
-    for (IntersectionInfo xx in intersections)
+    for (IntersectionInfo xx of intersections)
     if (Point.closeDistEps(xx.intersectionPoint, point))
     return PointLocation.Boundary;
     boolean insideThisTime = intersections.length % 2 == 1;
@@ -1386,7 +1386,7 @@ export class Curve implements ICurve {
     polyCurve = polyLine.ToCurve();
     }
     if (null != polyCurve)
-    for (IntersectionInfo xx in intersections)
+    for (IntersectionInfo xx of intersections)
     if (!RealCut(DropIntersectionToSegs(xx), polyCurve, false))
     return false;
     return true;
@@ -1532,11 +1532,11 @@ export class Curve implements ICurve {
     md.solve()
     return md.success
       ? {
-          aSol: md.aSolution,
-          bSol: md.bSolution,
-          aX: md.aPoint,
-          bX: md.bPoint,
-        }
+        aSol: md.aSolution,
+        bSol: md.bSolution,
+        aX: md.aPoint,
+        bX: md.bPoint,
+      }
       : undefined
   }
   /*
@@ -1544,7 +1544,7 @@ export class Curve implements ICurve {
       public override string ToString()
       {
       boolean poly = true;
-      for (ICurve s in segs)
+      for (ICurve s of segs)
       if (s is LineSeg == false)
       {
       poly = false;
@@ -1556,7 +1556,7 @@ export class Curve implements ICurve {
       {
       ret = "{";
       
-      for (ICurve seg in Segs)
+      for (ICurve seg of Segs)
       {
       ret += seg + ",";
       }
@@ -1567,7 +1567,7 @@ export class Curve implements ICurve {
       ret = "{";
       if (segs.length > 0)
       ret += segs[0].start.x.ToString() + "," + segs[0].start.y.ToString()+" ";
-      for(LineSeg s in segs)
+      for(LineSeg s of segs)
       ret += s.end.x.ToString() + "," + s.end.y.ToString() + " ";
       return ret + "}";
       }
@@ -1869,12 +1869,12 @@ export class Curve implements ICurve {
     return new BezierSeg(a, a.add(d), b.add(d), b)
   }
 
-  static findCorner(a: CornerSite): {b: CornerSite; c: CornerSite} | undefined {
+  static findCorner(a: CornerSite): { b: CornerSite; c: CornerSite } | undefined {
     const b = a.next
     if (b.next == null) return //no corner has been found
     const c = b.next
     if (c == null) return
-    return {b: b, c: c}
+    return { b: b, c: c }
   }
 
   static trimEdgeSplineWithNodeBoundaries(

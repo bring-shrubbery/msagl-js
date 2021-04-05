@@ -1,18 +1,18 @@
 ﻿//  Basic geomedge router for producing straight edges.
 
-import {IEnumerable} from 'linq-to-typescript'
-import {EdgeGeometry} from '../layout/core/edgeGeometry'
-import {GeomEdge} from '../layout/core/geomEdge'
-import {GeomGraph} from '../layout/core/GeomGraph'
-import {Curve} from '../math/geometry/curve'
-import {ICurve} from '../math/geometry/icurve'
-import {IntersectionInfo} from '../math/geometry/intersectionInfo'
-import {LineSegment} from '../math/geometry/lineSegment'
-import {Point} from '../math/geometry/point'
-import {Rectangle} from '../math/geometry/rectangle'
-import {SmoothedPolyline} from '../math/geometry/smoothedPolyline'
-import {Algorithm} from '../utils/algorithm'
-import {SplineRouter} from './SplineRouter'
+import { IEnumerable } from 'linq-to-typescript'
+import { EdgeGeometry } from '../layout/core/edgeGeometry'
+import { GeomEdge } from '../layout/core/geomEdge'
+import { GeomGraph } from '../layout/core/GeomGraph'
+import { Curve } from '../math/geometry/curve'
+import { ICurve } from '../math/geometry/icurve'
+import { IntersectionInfo } from '../math/geometry/intersectionInfo'
+import { LineSegment } from '../math/geometry/lineSegment'
+import { Point } from '../math/geometry/point'
+import { Rectangle } from '../math/geometry/rectangle'
+import { SmoothedPolyline } from '../math/geometry/smoothedPolyline'
+import { Algorithm } from '../utils/algorithm'
+import { SplineRouter } from './SplineRouter'
 
 export class StraightLineEdges extends Algorithm {
   private edges: IEnumerable<GeomEdge>
@@ -116,14 +116,14 @@ export class StraightLineEdges extends Algorithm {
       targetBox,
     )
     const dir = closestPoint - center
-    const vert = Math.Abs(dir.X) < ApproximateComparer.DistanceEpsilon
+    const vert = Math.Abs(dir.X) < GeomConstants.distanceEpsilon
     const maxWidth =
       (vert
         ? Math.Min(center.Y - targetBox.Bottom, targetBox.Top - center.Y)
         : Math.Min(center.X - targetBox.Left, targetBox.Right - center.X)) / 2 //divide over 2 to not miss the rect
 
     const width = Math.Min(howMuchToStickOut, maxWidth)
-    if (dir.Length <= ApproximateComparer.DistanceEpsilon) {
+    if (dir.Length <= GeomConstants.distanceEpsilon) {
       dir = new Point(1, 0)
     }
 

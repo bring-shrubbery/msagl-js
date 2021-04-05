@@ -69,7 +69,7 @@
 //     }
 
 //         protected bool SegmentIsNotHorizontal(Point a, Point b) {
-//         return Math.Abs((a - b) * SweepDirection) > ApproximateComparer.DistanceEpsilon;
+//         return Math.Abs((a - b) * SweepDirection) > GeomConstants.distanceEpsilon;
 //     }
 
 //         protected void RemoveLeftSide(LeftObstacleSide side) {
@@ -112,10 +112,10 @@
 //     }
 
 //         protected void InitQueueOfEvents() {
-//         foreach(var obstacle in Obstacles)
+//         foreach(var obstacle of Obstacles)
 //         EnqueueLowestPointsOnObstacles(obstacle);
 //         if (Ports != null)
-//             foreach(var point in Ports)
+//             foreach(var point of Ports)
 //         EnqueueEvent(new PortObstacleEvent(point));
 //     }
 
@@ -125,10 +125,10 @@
 //     }
 
 //     PolylinePoint GetLowestPoint(Polyline poly) {
-//         PolylinePoint candidate = poly.StartPoint;
-//         PolylinePoint pp = poly.StartPoint.Next;
+//         PolylinePoint candidate = poly.startPoint;
+//         PolylinePoint pp = poly.startPoint.next;
 
-//         for (; pp != null; pp = pp.Next)
+//         for (; pp != null; pp = pp.next)
 //             if (Less(pp.Point, candidate.Point))
 //                 candidate = pp;
 //         return candidate;

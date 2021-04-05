@@ -30,13 +30,13 @@
 //         }
 
 //         internal void InitializeCostCache() {
-//         foreach(var v in metroGraphData.VirtualNodes()) {
+//         foreach(var v of metroGraphData.VirtualNodes()) {
 //             v.cachedIdealRadius = HubRadiiCalculator.CalculateIdealHubRadiusWithNeighbors(metroGraphData, bundlingSettings, v);
 //             v.cachedRadiusCost = costCalculator.RadiusCost(v, v.Position);
 //             v.cachedBundleCost = 0;
 //         }
 
-//         foreach(var edge in metroGraphData.VirtualEdges()) {
+//         foreach(var edge of metroGraphData.VirtualEdges()) {
 //             var v = edge.Item1;
 //             var u = edge.Item2;
 //             StationEdgeInfo edgeInfo = metroGraphData.GetIjInfo(v, u);
@@ -54,7 +54,7 @@
 //         node.cachedRadiusCost = costCalculator.RadiusCost(node, node.Position);
 //         node.cachedBundleCost = 0;
 
-//         foreach(var adj in node.Neighbors) {
+//         foreach(var adj of node.Neighbors) {
 //             if (!adj.IsRealNode) {
 //                 adj.cachedIdealRadius = HubRadiiCalculator.CalculateIdealHubRadiusWithNeighbors(metroGraphData, bundlingSettings, adj);
 //                 adj.cachedRadiusCost = costCalculator.RadiusCost(adj, adj.Position);

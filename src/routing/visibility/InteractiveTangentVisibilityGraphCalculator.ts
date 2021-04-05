@@ -42,7 +42,7 @@
 //         }
 
 //         void CalculateAndAddEdges() {
-//             foreach(Polygon p in this.addedPolygons) {
+//             foreach(Polygon p of this.addedPolygons) {
 //                 CalculateVisibleTangentsFromPolygon(p);
 //                 ProgressStep();
 //             }
@@ -84,11 +84,11 @@
 // #if TEST_MSAGL
 //                 //List<ICurve> cs = new List<ICurve>();
 
-//                 //foreach (Diagonal d in this.activeDiagonalTree) {
+//                 //foreach (Diagonal d of this.activeDiagonalTree) {
 //                 //    cs.Add(new LineSegment(d.Start, d.End));
 //                 //}
 
-//                 //foreach (Polygon p in this.polygons)
+//                 //foreach (Polygon p of this.polygons)
 //                 //    cs.Add(p.Polyline);
 
 //                 //cs.Add(new LineSegment(t.Start.Point, t.End.Point));
@@ -98,7 +98,7 @@
 //         }
 
 //         private void AddVisibleEdge(Tangent t) {
-//             VisibilityGraph.AddEdge(visibilityGraph.GetVertex(t.Start), visibilityGraph.GetVertex(t.End));
+//             VisibilityGraph.addEdge(visibilityGraph.GetVertex(t.Start), visibilityGraph.GetVertex(t.End));
 //         }
 
 //         // <summary>
@@ -111,7 +111,7 @@
 //             Point firstTangentStart = firstTangent.Start.Point;
 //             Point firstTangentEnd = firstTangent.End.Point;
 
-//             foreach(Diagonal diagonal in diagonals) {
+//             foreach(Diagonal diagonal of diagonals) {
 //                 if (RayIntersectDiagonal(firstTangentStart, firstTangentEnd, diagonal)) {
 //                     this.activeDiagonalComparer.PointOnTangentAndInsertedDiagonal =
 //                         ActiveDiagonalComparerWithRay.IntersectDiagonalWithRay(firstTangentStart, firstTangentEnd, diagonal);
@@ -133,7 +133,7 @@
 
 //         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //         private void AddPolylinesForShow(List < ICurve > curves) {
-//             foreach(Polygon p in this.AllObstacles)
+//             foreach(Polygon p of this.AllObstacles)
 //             curves.Add(p.Polyline);
 //         }
 // #endif
@@ -180,15 +180,15 @@
 
 //         IEnumerable < Polygon > AllObstacles {
 //             get {
-//                 foreach(Polygon p in addedPolygons)
+//                 foreach(Polygon p of addedPolygons)
 //                 yield return p;
-//                 foreach(Polygon p in polygons)
+//                 foreach(Polygon p of polygons)
 //                 yield return p;
 //             }
 //         }
 
 //         private void OrganizeTangents() {
-//             foreach(Polygon q in AllObstacles)
+//             foreach(Polygon q of AllObstacles)
 //             if (q != this.currentPolygon)
 //                 ProcessPolygonQ(q);
 

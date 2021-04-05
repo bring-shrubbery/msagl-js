@@ -100,7 +100,7 @@
 //         }
 //         else {
 //             HashSet < Station > result = new HashSet<Station>();
-//             foreach(var p in changedPoints) {
+//             foreach(var p of changedPoints) {
 //                 if (metroGraphData.PointToStations.ContainsKey(p)) {
 //                     var s = metroGraphData.PointToStations[p];
 //                     if (!s.IsRealNode) result.Add(s);
@@ -148,15 +148,15 @@
 //     bool TryMoveNodes() {
 //         var coordinatesChanged = false;
 //         HashSet < Station > movedStations = new HashSet<Station>();
-//         //foreach (var node in metroGraphData.VirtualNodes()) {
-//         foreach(var node in stationsForOptimizations) {
+//         //foreach (var node of metroGraphData.VirtualNodes()) {
+//         foreach(var node of stationsForOptimizations) {
 //             if (TryMoveNode(node)) {
 //                 Assert.assert(stationsForOptimizations.Contains(node));
 
 //                 coordinatesChanged = true;
 
 //                 movedStations.Add(node);
-//                 foreach(var adj in node.Neighbors)
+//                 foreach(var adj of node.Neighbors)
 //                 if (!adj.IsRealNode) movedStations.Add(adj);
 //             }
 //         }
@@ -249,7 +249,7 @@
 //     Point BuildForceForInk(Station node) {
 //         //return new Point();
 //         Point direction = new Point();
-//         foreach(var adj in node.Neighbors) {
+//         foreach(var adj of node.Neighbors) {
 //             var p = (adj.Position - node.Position);
 //             direction += p / p.Length;
 //         }
@@ -267,9 +267,9 @@
 //         //return new Point();
 //         var direction = new Point();
 
-//         foreach(var mni in metroGraphData.MetroNodeInfosOfNode(node)) {
+//         foreach(var mni of metroGraphData.MetroNodeInfosOfNode(node)) {
 //             var metroline = mni.Metroline;
-//             Point u = mni.PolyPoint.Next.Point;
+//             Point u = mni.PolyPoint.next.Point;
 //             Point v = mni.PolyPoint.Prev.Point;
 
 //             var p1 = u - node.Position;
@@ -295,7 +295,7 @@
 //         bool res = metroGraphData.looseIntersections.HubAvoidsObstacles(node, node.Position, idealR, out touchedObstacles);
 //         Assert.assert(res);
 
-//         foreach(var d in touchedObstacles) {
+//         foreach(var d of touchedObstacles) {
 //             double dist = (d.Item2 - node.Position).Length;
 //             Assert.assert(dist <= idealR);
 //             double lforce = 2.0 * (1.0 - dist / idealR);
@@ -314,7 +314,7 @@
 //     // </summary>
 //     Point BuildForceForBundle(Station node) {
 //         var direction = new Point();
-//         foreach(var adj in node.Neighbors) {
+//         foreach(var adj of node.Neighbors) {
 //             double idealWidth = metroGraphData.GetWidth(node, adj, bundlingSettings.EdgeSeparation);
 
 //             List < Tuple < Point, Point >> closestPoints;
@@ -326,7 +326,7 @@
 //             }
 //             //Assert.assert(res);  //todo : still unsolved
 
-//             foreach(var d in closestPoints) {
+//             foreach(var d of closestPoints) {
 //                 double dist = (d.Item1 - d.Item2).Length;
 //                 Assert.assert(ApproximateComparer.LessOrEqual(dist, idealWidth / 2));
 //                 double lforce = 2.0 * (1.0 - dist / (idealWidth / 2));

@@ -38,7 +38,7 @@
 //                 var pointPair = new PointPair(u.Position, v.Position);
 //                 var orderedMetrolineListForUv = bundles[pointPair].Metrolines;
 //                 if (u.Position == pointPair.First) {
-//                     foreach(var Metroline in orderedMetrolineListForUv) {
+//                     foreach(var Metroline of orderedMetrolineListForUv) {
 //                         yield return Metroline;
 //                     }
 //                 }
@@ -70,9 +70,9 @@
 //                     bundles = new Dictionary<PointPair, PointPairOrder>();
 
 //                     //initialization
-//                     foreach(var Metroline in Metrolines) {
-//                         for (var p = Metroline.Polyline.StartPoint; p.Next != null; p = p.Next) {
-//                             var e = new PointPair(p.Point, p.Next.Point);
+//                     foreach(var Metroline of Metrolines) {
+//                         for (var p = Metroline.Polyline.startPoint; p.next != null; p = p.next) {
+//                             var e = new PointPair(p.Point, p.next.Point);
 //                             PointPairOrder li;
 //                             if (!bundles.TryGetValue(e, out li))
 //                                 bundles[e] = li = new PointPairOrder();
@@ -80,7 +80,7 @@
 //                         }
 //                     }
 
-//                     foreach(var edge in bundles)
+//                     foreach(var edge of bundles)
 //                     BuildOrder(edge.Key, edge.Value);
 //                 }
 
@@ -167,18 +167,18 @@
 //                 void FindStationOnLine(Point u, Point v, Metroline Metroline, out PolylinePoint polyPoint, out Func < PolylinePoint, PolylinePoint > next,
 //                     out Func < PolylinePoint, PolylinePoint > prev) {
 
-//                     for (var p = Metroline.Polyline.StartPoint; p.Next != null; p = p.Next) {
-//                         if (p.Point == u && p.Next.Point == v) {
+//                     for (var p = Metroline.Polyline.startPoint; p.next != null; p = p.next) {
+//                         if (p.Point == u && p.next.Point == v) {
 //                             next = Next;
 //                             prev = Prev;
 //                             polyPoint = p;
 //                             return;
 //                         }
 
-//                         if (p.Point == v && p.Next.Point == u) {
+//                         if (p.Point == v && p.next.Point == u) {
 //                             prev = Next;
 //                             next = Prev;
-//                             polyPoint = p.Next;
+//                             polyPoint = p.next;
 //                             return;
 //                         }
 //                     }
@@ -186,7 +186,7 @@
 //                 }
 
 //         static PolylinePoint Next(PolylinePoint p) {
-//                     return p.Next;
+//                     return p.next;
 //                 }
 //         static PolylinePoint Prev(PolylinePoint p) {
 //                     return p.Prev;

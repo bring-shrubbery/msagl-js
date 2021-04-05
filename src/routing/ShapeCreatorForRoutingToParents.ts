@@ -4,12 +4,12 @@
 // export class ShapeCreatorForRoutingToParents {
 //   static GetShapes(inParentEdges: IEnumerable<Edge>, outParentEdges: List<Edge>): IEnumerable<Shape> {
 //     let nodesToShapes = new Dictionary<Node, Shape>();
-//     for (let edge in inParentEdges) {
+//     for (let edge of inParentEdges) {
 //       ProcessAncestorDescendantCouple((<Cluster>(edge.Target)), edge.Source, nodesToShapes);
 //       InsertEdgePortsToShapes(nodesToShapes, edge);
 //     }
 
-//     for (let edge in outParentEdges) {
+//     for (let edge of outParentEdges) {
 //       ProcessAncestorDescendantCouple((<Cluster>(edge.Source)), edge.Target, nodesToShapes);
 //       InsertEdgePortsToShapes(nodesToShapes, edge);
 //     }
@@ -23,11 +23,11 @@
 // }
 
 //         static void BindShapes(Dictionary < Node, Shape > nodesToShapes) {
-//   foreach(var nodeShape in nodesToShapes) {
+//   foreach(var nodeShape of nodesToShapes) {
 //     var cluster = nodeShape.Key as Cluster;
 //     if (cluster == null) continue;
 //     var shape = nodeShape.Value;
-//     foreach(var child in Children(cluster) ) {
+//     foreach(var child of Children(cluster) ) {
 //       Shape childShape;
 //       if (nodesToShapes.TryGetValue(child, out childShape))
 //         shape.AddChild(childShape);
@@ -38,7 +38,7 @@
 //         static void ProcessAncestorDescendantCouple(Cluster ancestor, Node node, Dictionary < Node, Shape > nodesToShapes) {
 //   Cluster parent = Parent(node);
 //   do {
-//     foreach(var n in Children(parent))
+//     foreach(var n of Children(parent))
 //     CreateShapeIfNeeeded(n, nodesToShapes);
 //     if (parent == ancestor)
 //       break;
@@ -68,11 +68,11 @@
 
 // internal static bool NumberOfActiveNodesIsUnderThreshold(List < Edge > inParentEdges, List < Edge > outParentEdges, int threshold) {
 //   var usedNodeSet = new Set<Node>();
-//   foreach(var edge in inParentEdges)
+//   foreach(var edge of inParentEdges)
 //   if (SetOfActiveNodesIsLargerThanThreshold((Cluster)edge.Target, edge.Source, usedNodeSet, threshold))
 //     return false;
 
-//   foreach(var edge in outParentEdges)
+//   foreach(var edge of outParentEdges)
 //   if (SetOfActiveNodesIsLargerThanThreshold((Cluster)edge.Source, edge.Target, usedNodeSet, threshold))
 //     return false;
 
@@ -82,7 +82,7 @@
 //         private static bool SetOfActiveNodesIsLargerThanThreshold(Cluster ancestor, Node node, Set < Node > usedNodeSet, int threshold) {
 //   Cluster parent = Parent(node);
 //   do {
-//     foreach(var n in Children(parent)) {
+//     foreach(var n of Children(parent)) {
 //       usedNodeSet.Insert(n);
 //       if (usedNodeSet.Count > threshold)
 //         return true;

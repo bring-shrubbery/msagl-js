@@ -65,24 +65,24 @@
 // //     int PrevOnP(int i) {
 // //         if (upperBranchOnP)
 // //             return P.Prev(i);
-// //         return P.Next(i);
+// //         return P.next(i);
 // //     }
 
 // //     int PrevOnQ(int i) {
 // //         if (lowerBranchOnQ)
 // //             return Q.Prev(i);
-// //         return Q.Next(i);
+// //         return Q.next(i);
 // //     }
 
 // //     int NextOnP(int i) {
 // //         if (upperBranchOnP)
-// //             return P.Next(i);
+// //             return P.next(i);
 // //         return P.Prev(i);
 // //     }
 
 // //     int NextOnQ(int i) {
 // //         if (lowerBranchOnQ)
-// //             return Q.Next(i);
+// //             return Q.next(i);
 // //         return Q.Prev(i);
 // //     }
 
@@ -306,12 +306,12 @@
 // //             return;
 
 // //         // the case where we have exactly two vertices in each chunk
-// //         if (p2 == P.Next(p1) && q1 == Q.Next(q2)) {
+// //         if (p2 == P.next(p1) && q1 == Q.next(q2)) {
 // //             double psol, qsol;
 
 // //             LineSegment.MinDistBetweenLineSegments(P.Pnt(p1), P.Pnt(p2), Q.Pnt(q1), Q.Pnt(q2), out psol,
 // //                 out qsol);
-// //             //System.Diagnostics.Assert.assert(res);
+// //             //Assert.assert(res);
 // //             if (psol == 0)
 // //                 p2 = p1;
 // //             else if (psol == 1)
@@ -374,12 +374,12 @@
 // //             //                if(debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(p1, q1), Ls(p2, q2), Ls(mp, mq));
 // //             Point mpp = P[mp].Point;
 // //             Point mqp = Q[mq].Point;
-// //             Point mpnp = P[P.Next(mp)].Point;
+// //             Point mpnp = P[P.next(mp)].Point;
 // //             TriangleOrientation orientation = Point.GetTriangleOrientation(mpp, mqp, Q[0].Point);
 // //             TriangleOrientation nextOrientation = Point.GetTriangleOrientation(mpp, mqp, mpnp);
 
 // //             if (orientation == nextOrientation)
-// //                 p1 = P.Next(mp);
+// //                 p1 = P.next(mp);
 // //             else
 // //                 p2 = P.Prev(mp);
 // //             ret = true;
@@ -390,11 +390,11 @@
 // //             //                if (debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(p1, q1), Ls(p2, q2), Ls(mp, mq));
 // //             Point mpp = P[mp].Point;
 // //             Point mqp = Q[mq].Point;
-// //             Point mqnp = Q[Q.Next(mq)].Point;
+// //             Point mqnp = Q[Q.next(mq)].Point;
 // //             TriangleOrientation orientation = Point.GetTriangleOrientation(mpp, mqp, P[0].Point);
 // //             TriangleOrientation nextOrientation = Point.GetTriangleOrientation(mpp, mqp, mqnp);
 // //             if (orientation == nextOrientation)
-// //                 q2 = Q.Next(mq);
+// //                 q2 = Q.next(mq);
 // //             else
 // //                 q1 = Q.Prev(mq);
 // //             ret = true;
@@ -410,7 +410,7 @@
 // //     //   //SugiyamaLayoutSettings.Show(new LineSegment(pn1, pn2), new LineSegment(pn2, qn2), new LineSegment(qn2, qn1), new LineSegment(qn1, pn1));
 // //     //    double ap1 = Point.Angle(pn2, pn1, qn1);
 // //     //    double aq1 = Point.Angle(pn1, qn1, qn2);
-// //     //    System.Diagnostics.Assert.assert(ap1 + aq1 >= Math.PI);
+// //     //    Assert.assert(ap1 + aq1 >= Math.PI);
 // //     //    //the point is on the left side
 // //     //    if (ap1 >= Math.PI / 2 && aq1 >= Math.PI / 2) {
 // //     //        q2 = q1; //the vertices of the left side gives the solution
@@ -429,8 +429,8 @@
 // //     void GetAnglesAtTheMedian(int mp, int mq, ref Point mP, ref Point mQ, out double a1, out double a2,
 // //         out double b1, out double b2) {
 // //         a1 = Point.Angle(mQ, mP, P.Pnt(P.Prev(mp)));
-// //         a2 = Point.Angle(P.Pnt(P.Next(mp)), mP, mQ);
-// //         b1 = Point.Angle(Q.Pnt(Q.Next(mq)), mQ, mP);
+// //         a2 = Point.Angle(P.Pnt(P.next(mp)), mP, mQ);
+// //         b1 = Point.Angle(Q.Pnt(Q.next(mq)), mQ, mP);
 // //         b2 = Point.Angle(mP, mQ, Q.Pnt(Q.Prev(mq)));
 // //     }
 
@@ -450,8 +450,8 @@
 // //     // <returns></returns>
 // //     bool OnlyOneChunkContainsExactlyTwoVertices(ref int p2, ref int p1, ref int q2, ref int q1,
 // //         int mp, int mq, double a1, double b1, double a2, double b2) {
-// //         bool pSideIsShort = p2 == P.Next(p1);
-// //         bool qSideIsShort = q1 == Q.Next(q2);
+// //         bool pSideIsShort = p2 == P.next(p1);
+// //         bool qSideIsShort = q1 == Q.next(q2);
 // //         if (pSideIsShort && !qSideIsShort) {
 // //             ProcessShortSide(ref p2, ref p1, ref q2, ref q1, mp, mq, a1, b1, a2, b2);
 // //             return true;
@@ -586,7 +586,7 @@
 // //     }
 
 // //     //private bool QContains(int x ,int y) {
-// //     //    foreach (Point p in Q.Polyline) {
+// //     //    foreach (Point p of Q.Polyline) {
 // //     //        if (p.X == x && p.Y == y)
 // //     //            return true;
 // //     //    }
@@ -594,7 +594,7 @@
 // //     //}
 
 // //     //bool PContains(int x, int y) {
-// //     //    foreach (Point p in P.Polyline) {
+// //     //    foreach (Point p of P.Polyline) {
 // //     //        if (p.X == x && p.Y == y)
 // //     //            return true;
 // //     //    }

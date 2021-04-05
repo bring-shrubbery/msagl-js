@@ -1,26 +1,26 @@
-﻿import {CornerSite} from '../../math/geometry/cornerSite'
-import {Curve} from '../../math/geometry/curve'
-import {GeomConstants} from '../../math/geometry/geomConstants'
-import {ICurve} from '../../math/geometry/icurve'
-import {LineSegment} from '../../math/geometry/lineSegment'
-import {Parallelogram} from '../../math/geometry/parallelogram'
-import {PN, PNInternal} from '../../math/geometry/parallelogramNode'
-import {Point, TriangleOrientation} from '../../math/geometry/point'
-import {Polyline} from '../../math/geometry/polyline'
-import {SmoothedPolyline} from '../../math/geometry/smoothedPolyline'
-import {GeomGraph} from '../core/GeomGraph'
-import {Anchor} from './anchor'
-import {Database} from './Database'
-import {LayerArrays} from './LayerArrays'
-import {LayerEdge} from './LayerEdge'
-import {PolyIntEdge} from './polyIntEdge'
-import {ProperLayeredGraph} from './ProperLayeredGraph'
-import {SugiyamaLayoutSettings} from './SugiyamaLayoutSettings'
-import {HierarchyCalculator} from './HierarchyCalculator'
-import {BezierSeg} from '../../math/geometry/bezierSeg'
-import {Routing} from './routing'
-import {NodeKind} from './NodeKind'
-import {Assert} from '../../utils/assert'
+﻿import { CornerSite } from '../../math/geometry/cornerSite'
+import { Curve } from '../../math/geometry/curve'
+import { GeomConstants } from '../../math/geometry/geomConstants'
+import { ICurve } from '../../math/geometry/icurve'
+import { LineSegment } from '../../math/geometry/lineSegment'
+import { Parallelogram } from '../../math/geometry/parallelogram'
+import { PN, PNInternal } from '../../math/geometry/parallelogramNode'
+import { Point, TriangleOrientation } from '../../math/geometry/point'
+import { Polyline } from '../../math/geometry/polyline'
+import { SmoothedPolyline } from '../../math/geometry/smoothedPolyline'
+import { GeomGraph } from '../core/GeomGraph'
+import { Anchor } from './anchor'
+import { Database } from './Database'
+import { LayerArrays } from './LayerArrays'
+import { LayerEdge } from './LayerEdge'
+import { PolyIntEdge } from './polyIntEdge'
+import { ProperLayeredGraph } from './ProperLayeredGraph'
+import { SugiyamaLayoutSettings } from './SugiyamaLayoutSettings'
+import { HierarchyCalculator } from './HierarchyCalculator'
+import { BezierSeg } from '../../math/geometry/bezierSeg'
+import { Routing } from './routing'
+import { NodeKind } from './NodeKind'
+import { Assert } from '../../utils/assert'
 export class SmoothedPolylineCalculator {
   headSite: CornerSite
 
@@ -131,7 +131,7 @@ export class SmoothedPolylineCalculator {
     //        l.AddRange(db.Anchors.Select(a=>new DebugCurve(100,1,"red", a.PolygonalBoundary)));
     //     l.AddRange(thinRightNodes.Select(n=>n.parallelogram).Select(p=>new Polyline(p.Vertex(VertexId.Corner), p.Vertex(VertexId.VertexA),
     //         p.Vertex(VertexId.OtherCorner), p.Vertex(VertexId.VertexB))).Select(c=>new DebugCurve(100,3,"brown", c)));
-    //     foreach (var le in this.edgePath.LayerEdges)
+    //     foreach (var le of this.edgePath.LayerEdges)
     //         l. push(new DebugCurve(100, 1, "blue", new LineSegment(db.anchors[le.Source].Origin, db.anchors[le.Target].Origin)));
     //    LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(l);
     //     // Database(db, thinRightNodes.Select(p=>new Polyline(p.parallelogram.Vertex(VertexId.Corner), p.parallelogram.Vertex(VertexId.VertexA),
@@ -295,7 +295,7 @@ export class SmoothedPolylineCalculator {
       this.database.MultipleMiddles.has(u) &&
       this.database.MultipleMiddles.has(v) &&
       this.SourceOfTheOriginalEdgeContainingAVirtualNode(u) ==
-        this.SourceOfTheOriginalEdgeContainingAVirtualNode(v)
+      this.SourceOfTheOriginalEdgeContainingAVirtualNode(v)
     ) {
       return true
     }
@@ -967,7 +967,7 @@ export class SmoothedPolylineCalculator {
   }
 
   private RemoveVerticesWithNoTurns() {
-    while (this.RemoveVerticesWithNoTurnsOnePass()) {}
+    while (this.RemoveVerticesWithNoTurnsOnePass()) { }
   }
 
   private RemoveVerticesWithNoTurnsOnePass(): boolean {
@@ -1010,7 +1010,7 @@ export class SmoothedPolylineCalculator {
     /* ref */ b: CornerSite,
     /* ref */ c: CornerSite,
   ) {
-    for (; true; ) {
+    for (; true;) {
       this.AddSmoothedCorner(a, b, c, curve)
       a = b
       b = c
@@ -1030,7 +1030,7 @@ export class SmoothedPolylineCalculator {
   ) {
     const k = 0.5
     const seg: CubicBezierSegment
-    for (; this.BezierSegIntersectsBoundary(seg); ) {
+    for (; this.BezierSegIntersectsBoundary(seg);) {
       seg = Curve.CreateBezierSeg(k, k, a, b, c)
       // if (Routing.db)
       //     LayoutAlgorithmSettings .Show(seg, CreatePolyTest());

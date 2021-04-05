@@ -30,7 +30,7 @@ namespace Microsoft.Msagl.Routing {
     }
 
     internal void Run() {
-        foreach(GeometryGraph graph in GetGeometryGraphs()) {
+        foreach(GeometryGraph graph of GetGeometryGraphs()) {
             var br = new BundleRouter(graph, new SdShortestPath(transparentShapeSetter, null, null),
                 interactiveEdgeRouter.VisibilityGraph, bundlingSettings, interactiveEdgeRouter.LoosePadding, interactiveEdgeRouter.TightHierarchy,
                 interactiveEdgeRouter.LooseHierarchy, null, null, null);
@@ -40,19 +40,19 @@ namespace Microsoft.Msagl.Routing {
     }
 
     IEnumerable < GeometryGraph > GetGeometryGraphs() {
-        foreach(PreGraph preGraph in GetIndependantPreGraphs())
+        foreach(PreGraph preGraph of GetIndependantPreGraphs())
         yield return CreateGeometryGraph(preGraph);
     }
 
     GeometryGraph CreateGeometryGraph(PreGraph preGraph) {
         var graph = new GeometryGraph();
         var nodeDictionary = new Dictionary<ICurve, Node>();
-        foreach(var curve in preGraph.nodeBoundaries) {
+        foreach(var curve of preGraph.nodeBoundaries) {
             var node = new Node(curve);
             nodeDictionary[curve] = node;
             graph.Nodes.Add(node);
         }
-        foreach(var eg in preGraph.edgeGeometries)
+        foreach(var eg of preGraph.edgeGeometries)
         AddEdgeGeometryToGraph(eg, graph, nodeDictionary);
 
         return graph;
@@ -99,9 +99,9 @@ namespace Microsoft.Msagl.Routing {
             return;
         var connectedComponents = ConnectedComponentCalculator<IntPair>.GetComponents(intersectionGraph);
         var newPreGraphList = new List<PreGraph>();
-        foreach(var component in connectedComponents) {
+        foreach(var component of connectedComponents) {
             PreGraph preGraph = null;
-            foreach(var i in component) {
+            foreach(var i of component) {
                 if (preGraph == null) {
                     preGraph = preGraphs[i];
                     newPreGraphList.Add(preGraph);
@@ -110,13 +110,13 @@ namespace Microsoft.Msagl.Routing {
             }
         }
         preGraphs = newPreGraphList;
-        foreach(var pg in preGraphs)
+        foreach(var pg of preGraphs)
         AddIntersectingNodes(pg);
     }
 
         private void AddIntersectingNodes(PreGraph pg) {
         var rect = pg.boundingBox;
-        foreach(var curve in nodeTree.GetNodeItemsIntersectingRectangle(rect))
+        foreach(var curve of nodeTree.GetNodeItemsIntersectingRectangle(rect))
         pg.AddNodeBoundary(curve);
     }
 
@@ -151,7 +151,7 @@ namespace Microsoft.Msagl.Routing {
         nodeBoundaries.Insert(eg.TargetPort.Curve);
         rect.Add(eg.TargetPort.Curve.BoundingBox);
         var overlapped = nodeTree.GetNodeItemsIntersectingRectangle(rect);
-        foreach(var nodeBoundary in overlapped)
+        foreach(var nodeBoundary of overlapped)
         nodeBoundaries.Insert(nodeBoundary);
 
         return new PreGraph(egs, nodeBoundaries);
