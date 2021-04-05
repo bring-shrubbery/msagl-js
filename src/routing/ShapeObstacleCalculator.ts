@@ -68,7 +68,7 @@ export class ShapeObstacleCalculator {
     //  <param name="tightPolyline"></param>
     //  <returns></returns>
     static ShapeIsInsideOfPoly(shape: Shape, tightPolyline: Polyline): boolean {
-      return (Curve.PointRelativeToCurveLocation(shape.BoundaryCurve.Start, tightPolyline) == PointLocation.Inside);
+      return (Curve.PointRelativeToCurveLocation(shape.BoundaryCurve.start, tightPolyline) == PointLocation.Inside);
     }
   
     CreateTigthLooseCouples() {

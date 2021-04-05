@@ -289,8 +289,8 @@ namespace Microsoft.Msagl.Routing {
 
     internal static bool OneCurveLiesInsideOfOther(ICurve polyA, ICurve polyB) {
         Assert.assert(!Curve.CurvesIntersect(polyA, polyB), "The curves should not intersect");
-        return (Curve.PointRelativeToCurveLocation(polyA.Start, polyB) != PointLocation.Outside ||
-            Curve.PointRelativeToCurveLocation(polyB.Start, polyA) != PointLocation.Outside);
+        return (Curve.PointRelativeToCurveLocation(polyA.start, polyB) != PointLocation.Outside ||
+            Curve.PointRelativeToCurveLocation(polyB.start, polyA) != PointLocation.Outside);
     }
 
         static internal Polyline CreatePaddedPolyline(Polyline poly, double padding) {
@@ -361,12 +361,12 @@ namespace Microsoft.Msagl.Routing {
         }
 
 
-        Point uvPerp = (v - u).Rotate(Math.PI / 2).Normalize();
+        Point uvPerp = (v - u).rotate(Math.PI / 2).normalize();
 
         if (CornerIsNotTooSharp(u, v, w)) {
             //the angle is not too sharp: just continue the offset lines of the sides and return their intersection
             uvPerp *= padding;
-            Point vwPerp = ((w - v).Normalize() * padding).Rotate(Math.PI / 2);
+            Point vwPerp = ((w - v).normalize() * padding).rotate(Math.PI / 2);
 
             bool result = Point.LineLineIntersection(u + uvPerp, v + uvPerp, v + vwPerp, w + vwPerp, out a);
             Assert.assert(result);
@@ -374,13 +374,13 @@ namespace Microsoft.Msagl.Routing {
             return 1;
         }
 
-        Point l = (v - u).Normalize() + (v - w).Normalize();
+        Point l = (v - u).normalize() + (v - w).normalize();
         if (l.length < ApproximateComparer.IntersectionEpsilon) {
             a = b = v + padding * uvPerp;
             return 1;
         }
-        Point d = l.Normalize() * padding;
-        Point dp = d.Rotate(Math.PI / 2);
+        Point d = l.normalize() * padding;
+        Point dp = d.rotate(Math.PI / 2);
 
         //look for a in the form d+x*dp
         //we have:  Padding=(d+x*dp)*uvPerp
@@ -391,7 +391,7 @@ namespace Microsoft.Msagl.Routing {
     }
 
         static bool CornerIsNotTooSharp(Point u, Point v, Point w) {
-        Point a = (u - v).Rotate(Math.PI / 4) + v;
+        Point a = (u - v).rotate(Math.PI / 4) + v;
         return Point.getTriangleOrientation(v, a, w) == TriangleOrientation.Counterclockwise;
 
         //   return Point.Angle(u, v, w) > Math.PI / 4;
@@ -406,8 +406,8 @@ namespace Microsoft.Msagl.Routing {
     // <returns></returns>
     internal static bool CurveIsClockwise(ICurve iCurve, Point pointInside) {
         return
-        Point.getTriangleOrientation(pointInside, iCurve.Start,
-            iCurve.Start + iCurve.Derivative(iCurve.ParStart)) ==
+        Point.getTriangleOrientation(pointInside, iCurve.start,
+            iCurve.start + iCurve.Derivative(iCurve.ParStart)) ==
             TriangleOrientation.Clockwise;
     }
 
@@ -451,7 +451,7 @@ namespace Microsoft.Msagl.Routing {
         Point u = pp.Polyline.Prev(pp).point;
         Point v = pp.point;
         Point w = pp.Polyline.next(pp).point;
-        var z = (v - u).Normalize() + (v - w).Normalize();
+        var z = (v - u).normalize() + (v - w).normalize();
         var zLen = z.length;
         if (zLen < ApproximateComparer.Tolerance)
             skip = true;
@@ -524,7 +524,7 @@ namespace Microsoft.Msagl.Routing {
         // <param name="curve"></param>
         // <returns></returns>
         static bool Inside(ICurve curveUnderTest, ICurve curve) {
-        return Curve.PointRelativeToCurveLocation(curve.Start, curveUnderTest) == PointLocation.Inside;
+        return Curve.PointRelativeToCurveLocation(curve.start, curveUnderTest) == PointLocation.Inside;
     }
 }
 }

@@ -234,15 +234,15 @@ export class Routing extends Algorithm {
       } else {
         // assume that the distance is reached at the ends of labelSideClosest
         const u: number = segmentInFrontOfLabel.ClosestParameter(
-          labelSide.Start,
+          labelSide.start,
         )
         const v: number = segmentInFrontOfLabel.ClosestParameter(labelSide.End)
         if (
-          (segmentInFrontOfLabel[u] - labelSide.Start).length <
+          (segmentInFrontOfLabel[u] - labelSide.start).length <
           (segmentInFrontOfLabel[v] - labelSide.End).length
         ) {
           curveClosestPoint = segmentInFrontOfLabel[u]
-          labelSideClosest = labelSide.Start
+          labelSideClosest = labelSide.start
         } else {
           curveClosestPoint = segmentInFrontOfLabel[v]
           labelSideClosest = labelSide.End
@@ -299,8 +299,8 @@ export class Routing extends Algorithm {
   static GetSegmentInFrontOfLabel(edgeCurve: ICurve, labelY: number): ICurve {
     const curve = <Curve>edgeCurve
     if (curve != null) {
-      for (const seg: ICurve of curve.Segments) {
-        if ((seg.Start.y - labelY) * (seg.End.y - labelY) <= 0) {
+      for (const seg: ICurve of curve.segs) {
+        if ((seg.start.y - labelY) * (seg.End.y - labelY) <= 0) {
           return seg
         }
       }

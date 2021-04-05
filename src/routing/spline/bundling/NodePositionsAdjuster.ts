@@ -289,7 +289,7 @@
 //   var progress = false;
 //   foreach(var metroline of metroGraphData.Metrolines) {
 //     var obstaclesAllowedToIntersect =
-//       metroGraphData.PointToStations[metroline.Polyline.Start].EnterableLoosePolylines *
+//       metroGraphData.PointToStations[metroline.Polyline.start].EnterableLoosePolylines *
 //       metroGraphData.PointToStations[metroline.Polyline.End].EnterableLoosePolylines;
 //     if (TrySeparateOnPolyline(metroline, segsToPolylines, affectedPoints, obstaclesAllowedToIntersect))
 //       progress = true;
@@ -528,7 +528,7 @@
 // Point ConstructGluingPoint(Station node, Station a, Station b) {
 //   //temp
 //   double len = Math.Min((a.Position - node.Position).length, (b.Position - node.Position).length) / 2;
-//   Point dir = (a.Position - node.Position).Normalize() + (b.Position - node.Position).Normalize();
+//   Point dir = (a.Position - node.Position).normalize() + (b.Position - node.Position).normalize();
 //   return node.Position + dir * len / 2;
 // }
 

@@ -127,8 +127,8 @@ export class StraightLineEdges extends Algorithm {
       dir = new Point(1, 0)
     }
 
-    const hookDir = dir.Normalize()
-    const hookPerp = hookDir.Rotate(Math.PI / 2)
+    const hookDir = dir.normalize()
+    const hookPerp = hookDir.rotate(Math.PI / 2)
     const p1 = closestPoint + hookDir * howMuchToStickOut
     const p2 = p1 + hookPerp * width
     const p3 = closestPoint + hookPerp * width

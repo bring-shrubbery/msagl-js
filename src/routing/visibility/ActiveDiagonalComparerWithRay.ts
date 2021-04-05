@@ -17,9 +17,9 @@
 //           public int Compare(Diagonal x, Diagonal y) {
 //         ValidateArg.IsNotNull(x, "x");
 //         ValidateArg.IsNotNull(y, "y");
-//         Assert.assert(BelongsToTheDiagonal(PointOnTangentAndInsertedDiagonal, x.Start, x.End));
-//         if (x.Start != y.Start)
-//             switch (Point.getTriangleOrientation(PointOnTangentAndInsertedDiagonal, y.Start, y.End)) {
+//         Assert.assert(BelongsToTheDiagonal(PointOnTangentAndInsertedDiagonal, x.start, x.End));
+//         if (x.start != y.start)
+//             switch (Point.getTriangleOrientation(PointOnTangentAndInsertedDiagonal, y.start, y.End)) {
 //                 case TriangleOrientation.Counterclockwise:
 //                     return -1;
 //                 default:
@@ -37,7 +37,7 @@
 //     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //           static internal Point IntersectDiagonalWithRay(Point pivot, Point pointOnRay, Diagonal diagonal) {
 //         Point ray = pointOnRay - pivot;
-//         Point source = diagonal.Start;
+//         Point source = diagonal.start;
 //         Point target = diagonal.End;
 //         //let x(t-s)+s is on the ray, then for some y we x(t-s)+s=y*ray+pivot, or x(t-s)-y*ray=pivot-s
 //         double x, y;

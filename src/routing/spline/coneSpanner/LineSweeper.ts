@@ -51,8 +51,8 @@
 //             Set < Point > ports,
 //             Polyline borderPolyline) {
 
-//             var cs = new LineSweeper(obstacles, direction, direction.Rotate(-coneAngle / 2),
-//                 direction.Rotate(coneAngle / 2), visibilityGraph, ports,
+//             var cs = new LineSweeper(obstacles, direction, direction.rotate(-coneAngle / 2),
+//                 direction.rotate(coneAngle / 2), visibilityGraph, ports,
 //                 borderPolyline);
 //             cs.Calculate();
 //         }
@@ -141,8 +141,8 @@
 //         void AddEdgesAndRemoveRemainingConesByPoint(Point point) {
 //             var conesToRemove = new List<Cone>();
 //             foreach(var leftConeSide of leftConeSides) {
-//                 if (Point.PointToTheRightOfLineOrOnLine(point, leftConeSide.Start,
-//                     leftConeSide.Start + leftConeSide.Direction))
+//                 if (Point.PointToTheRightOfLineOrOnLine(point, leftConeSide.start,
+//                     leftConeSide.start + leftConeSide.Direction))
 //                     conesToRemove.Add(leftConeSide.Cone);
 //                 else
 //                     break;
@@ -349,7 +349,7 @@
 //             var coneRightSide = leftSide.Cone.RightSide as ConeRightSide;
 //             if (coneRightSide != null)
 //                 if (
-//                     Point.getTriangleOrientation(coneRightSide.Start, coneRightSide.Start + coneRightSide.Direction,
+//                     Point.getTriangleOrientation(coneRightSide.start, coneRightSide.start + coneRightSide.Direction,
 //                         leftSide.EndVertex.point) == TriangleOrientation.Clockwise)
 //                     CreateConeClosureEvent(leftSide, coneRightSide);
 //         }
@@ -359,14 +359,14 @@
 // #if TEST_MSAGL && TEST_MSAGL
 //             var r =
 // #endif
-//             Point.RayIntersectsRayInteriors(brokenConeSide.start, brokenConeSide.Direction, otherSide.Start,
+//             Point.RayIntersectsRayInteriors(brokenConeSide.start, brokenConeSide.Direction, otherSide.start,
 //                 otherSide.Direction, out x);
 // #if TEST_MSAGL && TEST_MSAGL
 //             if (!r)
 //                 LayoutAlgorithmSettings.ShowDebugCurves(
-//                     new DebugCurve(100, 0.1, "red", new LineSegment(brokenConeSide.Start, brokenConeSide.start + brokenConeSide.Direction)),
-//                     new DebugCurve(100, 0.1, "black", new Ellipse(0.1, 0.1, brokenConeSide.Start)),
-//                     new DebugCurve(100, 0.1, "blue", new LineSegment(otherSide.Start, otherSide.Start + otherSide.Direction)));
+//                     new DebugCurve(100, 0.1, "red", new LineSegment(brokenConeSide.start, brokenConeSide.start + brokenConeSide.Direction)),
+//                     new DebugCurve(100, 0.1, "black", new Ellipse(0.1, 0.1, brokenConeSide.start)),
+//                     new DebugCurve(100, 0.1, "blue", new LineSegment(otherSide.start, otherSide.start + otherSide.Direction)));
 //             Assert.assert(r);
 // #endif
 //             EnqueueEvent(new ConeClosureEvent(x, brokenConeSide.Cone));
@@ -398,7 +398,7 @@
 //             var coneLeftSide = rightSide.Cone.LeftSide as ConeLeftSide;
 //             if (coneLeftSide != null)
 //                 if (
-//                     Point.getTriangleOrientation(coneLeftSide.Start, coneLeftSide.Start + coneLeftSide.Direction,
+//                     Point.getTriangleOrientation(coneLeftSide.start, coneLeftSide.start + coneLeftSide.Direction,
 //                         rightSide.EndVertex.point) == TriangleOrientation.Counterclockwise)
 //                     CreateConeClosureEvent(rightSide, coneLeftSide);
 //         }
@@ -412,19 +412,19 @@
 
 //         void CloseConesCoveredBySegment(Point leftPoint, Point rightPoint, RbTree < ConeSide > tree) {
 //             var node = tree.FindFirst(
-//                 s => Point.getTriangleOrientation(s.Start, s.Start + s.Direction, leftPoint) ==
+//                 s => Point.getTriangleOrientation(s.start, s.start + s.Direction, leftPoint) ==
 //                     TriangleOrientation.Counterclockwise);
 
 //             Point x;
 //             if (node == null || !Point.IntervalIntersectsRay(leftPoint, rightPoint,
-//                 node.Item.Start, node.Item.Direction, out x))
+//                 node.Item.start, node.Item.Direction, out x))
 //                 return;
 //             var conesToRemove = new List<Cone>();
 //             do {
 //                 conesToRemove.Add(node.Item.Cone);
 //                 node = tree.next(node);
 //             } while (node != null && Point.IntervalIntersectsRay(leftPoint, rightPoint,
-//                 node.Item.Start, node.Item.Direction, out x));
+//                 node.Item.start, node.Item.Direction, out x));
 
 //             foreach(var cone of conesToRemove)
 //             RemoveCone(cone);
@@ -520,7 +520,7 @@
 
 //             foreach(var s of leftConeSides) {
 //                 var curve = ExtendSegmentToZ(s);
-//                 range.AddValue(curve.Start * DirectionPerp);
+//                 range.AddValue(curve.start * DirectionPerp);
 //                 range.AddValue(curve.End * DirectionPerp);
 //                 l.Add(new DebugCurve(100, 0.1, "red", curve));
 //                 l.Add(new DebugCurve(200, 0.1, "black", new Ellipse(ellipseSize, ellipseSize, curve.End)));
@@ -621,7 +621,7 @@
 //                 if (coneRightSide != null) {
 //                     Point intersection;
 //                     if (Point.IntervalIntersectsRay(obstacleSideStart, obstacleSideVertex.point,
-//                         coneRightSide.Start, ConeRightSideDirection, out intersection) &&
+//                         coneRightSide.start, ConeRightSideDirection, out intersection) &&
 //                         SegmentIsNotHorizontal(intersection, obstacleSideVertex.point)) {
 //                         EnqueueEvent(CreateRightIntersectionEvent(coneRightSide, intersection, obstacleSideVertex));
 //                     }
@@ -650,7 +650,7 @@
 //             var coneLeftSide = node.Item as ConeLeftSide;
 //             if (coneLeftSide == null) return;
 //             Point intersection;
-//             if (Point.IntervalIntersectsRay(obstacleSideStart, obstacleSideVertex.point, coneLeftSide.Start,
+//             if (Point.IntervalIntersectsRay(obstacleSideStart, obstacleSideVertex.point, coneLeftSide.start,
 //                 ConeLeftSideDirection, out intersection)) {
 //                 EnqueueEvent(new LeftIntersectionEvent(coneLeftSide, intersection, obstacleSideVertex));
 //             }
@@ -680,12 +680,12 @@
 // #endif
 
 //         static bool PointIsToTheLeftOfSegment(Point p, ConeSide seg) {
-//             return (Point.getTriangleOrientation(seg.Start, seg.Start + seg.Direction, p) ==
+//             return (Point.getTriangleOrientation(seg.start, seg.start + seg.Direction, p) ==
 //                 TriangleOrientation.Counterclockwise);
 //         }
 
 //         static bool PointIsToTheRightOfSegment(Point p, ConeSide seg) {
-//             return (Point.getTriangleOrientation(seg.Start, seg.Start + seg.Direction, p) ==
+//             return (Point.getTriangleOrientation(seg.start, seg.start + seg.Direction, p) ==
 //                 TriangleOrientation.Clockwise);
 //         }
 
@@ -694,13 +694,13 @@
 //             Assert.assert(rbNode != null);
 //             do { //this loop usually works only once
 //                 rbNode = leftConeSides.next(rbNode);
-//             } while (rbNode != null && Point.PointToTheRightOfLineOrOnLine(leftSide.Start, rbNode.Item.Start, rbNode.Item.Start + rbNode.Item.Direction));
+//             } while (rbNode != null && Point.PointToTheRightOfLineOrOnLine(leftSide.start, rbNode.Item.start, rbNode.Item.start + rbNode.Item.Direction));
 
 //             if (rbNode != null) {
 //                 Point intersection;
 //                 var seg = rbNode.Item as ConeLeftSide;
 //                 if (seg != null &&
-//                     Point.IntervalIntersectsRay(leftSide.Start, leftSide.End, seg.Start, seg.Direction, out intersection)) {
+//                     Point.IntervalIntersectsRay(leftSide.start, leftSide.End, seg.start, seg.Direction, out intersection)) {
 //                     EnqueueEvent(new LeftIntersectionEvent(seg, intersection, leftSide.EndVertex));
 //                     //Show(CurveFactory.CreateDiamond(3, 3, intersection));
 //                 }
@@ -792,7 +792,7 @@
 //             coneSide.Removed = true;
 //             if (b == null) {
 //                 var tmpZ = Z;
-//                 Z = Math.Max(GetZ(coneSide.Start), Z - 0.01);
+//                 Z = Math.Max(GetZ(coneSide.start), Z - 0.01);
 //                 //we need to return to the past a little bit when the order was still correc
 //                 coneSideComparer.SetOperand(coneSide);
 //                 b = rightConeSides.Remove(coneSide);
@@ -814,7 +814,7 @@
 
 //             if (b == null) {
 //                 var tmpZ = Z;
-//                 Z = Math.Max(GetZ(coneSide.Start), Z - 0.01);
+//                 Z = Math.Max(GetZ(coneSide.start), Z - 0.01);
 //                 coneSideComparer.SetOperand(coneSide);
 // #if TEST_MSAGL
 //                 b =
@@ -824,7 +824,7 @@
 // #if TEST_MSAGL
 //                 if (b == null) {
 //                     PrintOutLeftSegTree();
-//                     ShowLeftTree(new Ellipse(2, 2, coneSide.Start));
+//                     ShowLeftTree(new Ellipse(2, 2, coneSide.start));
 //                 }
 // #endif
 //             }
@@ -842,12 +842,12 @@
 //             Assert.assert(rbNode != null);
 //             do { //this loop usually works only once
 //                 rbNode = rightConeSides.Previous(rbNode);
-//             } while (rbNode != null && Point.PointToTheLeftOfLineOrOnLine(rightSide.Start, rbNode.Item.Start, rbNode.Item.Start + rbNode.Item.Direction));
+//             } while (rbNode != null && Point.PointToTheLeftOfLineOrOnLine(rightSide.start, rbNode.Item.start, rbNode.Item.start + rbNode.Item.Direction));
 //             if (rbNode != null) {
 //                 Point intersection;
 //                 var seg = rbNode.Item as ConeRightSide;
 //                 if (seg != null &&
-//                     Point.IntervalIntersectsRay(rightSide.Start, rightSide.End, seg.Start, seg.Direction,
+//                     Point.IntervalIntersectsRay(rightSide.start, rightSide.End, seg.start, seg.Direction,
 //                         out intersection)) {
 //                     EnqueueEvent(CreateRightIntersectionEvent(seg, intersection, rightSide.EndVertex));
 //                     // Show(CurveFactory.CreateDiamond(3, 3, intersection));
@@ -873,7 +873,7 @@
 //         }
 
 //         void LookForIntersectionWithConeLeftSide(RBNode < ConeSide > leftNode) {
-//             //Show(new Ellipse(1, 1, leftNode.item.Start));
+//             //Show(new Ellipse(1, 1, leftNode.item.start));
 
 //             var coneLeftSide = leftNode.Item as ConeLeftSide;
 //             if (coneLeftSide != null) {
@@ -884,7 +884,7 @@
 //                 //        TryIntersectionOfConeLeftSideAndObstacleConeSide(coneLeftSide, seg);
 //                 //}
 
-//                 RightObstacleSide rightObstacleSide = FindFirstObstacleSideToTheLeftOfPoint(coneLeftSide.Start);
+//                 RightObstacleSide rightObstacleSide = FindFirstObstacleSideToTheLeftOfPoint(coneLeftSide.start);
 //                 if (rightObstacleSide != null)
 //                     TryIntersectionOfConeLeftSideAndObstacleSide(coneLeftSide, rightObstacleSide);
 //             } else {
@@ -899,7 +899,7 @@
 //         }
 
 //         void LookForIntersectionWithConeRightSide(RBNode < ConeSide > rightNode) {
-//             //Show(new Ellipse(10, 5, rightNode.item.Start));
+//             //Show(new Ellipse(10, 5, rightNode.item.start));
 //             var coneRightSide = rightNode.Item as ConeRightSide;
 //             if (coneRightSide != null) {
 //                 //rightNode = rightSegmentTree.TreeSuccessor(rightNode);
@@ -909,7 +909,7 @@
 //                 //        TryIntersectionOfConeRightSideAndObstacleConeSide(coneRightSide, seg);
 //                 //}
 
-//                 LeftObstacleSide leftObstacleSide = FindFirstObstacleSideToToTheRightOfPoint(coneRightSide.Start);
+//                 LeftObstacleSide leftObstacleSide = FindFirstObstacleSideToToTheRightOfPoint(coneRightSide.start);
 //                 if (leftObstacleSide != null)
 //                     TryIntersectionOfConeRightSideAndObstacleSide(coneRightSide, leftObstacleSide);
 //             } else {
@@ -926,7 +926,7 @@
 //         void TryIntersectionOfConeRightSideAndObstacleConeSide(ConeRightSide coneRightSide,
 //             BrokenConeSide seg) {
 //             Point x;
-//             if (Point.IntervalIntersectsRay(seg.Start, seg.End, coneRightSide.Start,
+//             if (Point.IntervalIntersectsRay(seg.start, seg.End, coneRightSide.start,
 //                 coneRightSide.Direction, out x)) {
 //                 EnqueueEvent(CreateRightIntersectionEvent(coneRightSide, x, seg.EndVertex));
 //                 //Show(CurveFactory.CreateDiamond(3, 3, x));
@@ -935,7 +935,7 @@
 
 //         void TryIntersectionOfConeRightSideAndObstacleSide(ConeRightSide coneRightSide, ObstacleSide side) {
 //             Point x;
-//             if (Point.IntervalIntersectsRay(side.Start, side.End, coneRightSide.Start,
+//             if (Point.IntervalIntersectsRay(side.start, side.End, coneRightSide.start,
 //                 coneRightSide.Direction, out x)) {
 //                 EnqueueEvent(CreateRightIntersectionEvent(coneRightSide, x, side.EndVertex));
 //                 //Show(CurveFactory.CreateDiamond(3, 3, x));
@@ -944,7 +944,7 @@
 
 //         void TryIntersectionOfConeLeftSideAndObstacleConeSide(ConeLeftSide coneLeftSide, BrokenConeSide seg) {
 //             Point x;
-//             if (Point.IntervalIntersectsRay(seg.Start, seg.End, coneLeftSide.Start, coneLeftSide.Direction, out x)) {
+//             if (Point.IntervalIntersectsRay(seg.start, seg.End, coneLeftSide.start, coneLeftSide.Direction, out x)) {
 //                 EnqueueEvent(new LeftIntersectionEvent(coneLeftSide, x, seg.EndVertex));
 //                 //Show(CurveFactory.CreateDiamond(3, 3, x));
 //             }
@@ -952,7 +952,7 @@
 
 //         void TryIntersectionOfConeLeftSideAndObstacleSide(ConeLeftSide coneLeftSide, ObstacleSide side) {
 //             Point x;
-//             if (Point.IntervalIntersectsRay(side.Start, side.End, coneLeftSide.Start, coneLeftSide.Direction, out x)) {
+//             if (Point.IntervalIntersectsRay(side.start, side.End, coneLeftSide.start, coneLeftSide.Direction, out x)) {
 //                 EnqueueEvent(new LeftIntersectionEvent(coneLeftSide, x, side.EndVertex));
 //                 //    Show(CurveFactory.CreateDiamond(3, 3, x));
 //             }
@@ -965,11 +965,11 @@
 //             foreach(var s of rightConeSides) {
 //                 l.Add(new DebugCurve(0.5, "brown", ExtendSegmentToZ(s)));
 //                 if (s is BrokenConeSide)
-//                 l.Add(new DebugCurve("brown", Diamond(s.Start)));
+//                 l.Add(new DebugCurve("brown", Diamond(s.start)));
 //                 l.Add(new DebugCurve(0.5, "green",
 //                     ExtendSegmentToZ(s.Cone.LeftSide)));
 //                 if (s.Cone.LeftSide is BrokenConeSide)
-//                 l.Add(new DebugCurve("green", Diamond(s.Cone.LeftSide.Start)));
+//                 l.Add(new DebugCurve("green", Diamond(s.Cone.LeftSide.start)));
 //             }
 
 //             //            l.AddRange(
@@ -981,24 +981,24 @@
 //         }
 
 //         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         static CubicBezierSegment BezierOnEdge(VisibilityEdge edge) {
-//             return new CubicBezierSegment(edge.SourcePoint, 2.0 / 3.0 * edge.SourcePoint + 1.0 / 3.0 * edge.TargetPoint,
+//         static BezierSeg BezierOnEdge(VisibilityEdge edge) {
+//             return new BezierSeg(edge.SourcePoint, 2.0 / 3.0 * edge.SourcePoint + 1.0 / 3.0 * edge.TargetPoint,
 //                 1.0 / 3.0 * edge.SourcePoint + 2.0 / 3.0 * edge.TargetPoint, edge.TargetPoint);
 //         }
 
 //         internal ICurve ExtendSegmentToZ(ConeSide segment) {
 //             double den = segment.Direction * SweepDirection;
 //             Assert.assert(Math.Abs(den) > GeomConstants.distanceEpsilon);
-//             double t = (Z + 40 - segment.Start * SweepDirection) / den;
-//             return new LineSegment(segment.Start, segment.Start + segment.Direction * t);
+//             double t = (Z + 40 - segment.start * SweepDirection) / den;
+//             return new LineSegment(segment.start, segment.start + segment.Direction * t);
 //         }
 
 //         internal ICurve ExtendSegmentToZPlus1(ConeSide segment) {
 //             double den = segment.Direction * SweepDirection;
 //             Assert.assert(Math.Abs(den) > GeomConstants.distanceEpsilon);
-//             double t = (Z + 1 - segment.Start * SweepDirection) / den;
+//             double t = (Z + 1 - segment.start * SweepDirection) / den;
 
-//             return new LineSegment(segment.Start, segment.Start + segment.Direction * t);
+//             return new LineSegment(segment.start, segment.start + segment.Direction * t);
 //         }
 // #endif
 
@@ -1017,7 +1017,7 @@
 
 //             if (rbNode == null) {
 //                 var tmpZ = Z;
-//                 Z = Math.Max(GetZ(leftConeSide.Start), PreviousZ);
+//                 Z = Math.Max(GetZ(leftConeSide.start), PreviousZ);
 //                 //we need to return to the past a little bit when the order was still correct
 //                 coneSideComparer.SetOperand(leftConeSide);
 //                 rbNode = leftConeSides.Find(leftConeSide);
@@ -1090,12 +1090,12 @@
 // #endif
 
 //         static bool VertexIsToTheLeftOfSegment(SweepEvent vertexEvent, ConeSide seg) {
-//             return (Point.getTriangleOrientation(seg.Start, seg.Start + seg.Direction,
+//             return (Point.getTriangleOrientation(seg.start, seg.start + seg.Direction,
 //                 vertexEvent.Site) == TriangleOrientation.Counterclockwise);
 //         }
 
 //         static bool VertexIsToTheRightOfSegment(SweepEvent vertexEvent, ConeSide seg) {
-//             return (Point.getTriangleOrientation(seg.Start, seg.Start + seg.Direction,
+//             return (Point.getTriangleOrientation(seg.start, seg.start + seg.Direction,
 //                 vertexEvent.Site) == TriangleOrientation.Clockwise);
 //         }
 

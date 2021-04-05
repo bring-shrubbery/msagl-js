@@ -85,20 +85,20 @@
 //                 //List<ICurve> cs = new List<ICurve>();
 
 //                 //foreach (Diagonal d of this.activeDiagonalTree) {
-//                 //    cs.Add(new LineSegment(d.Start, d.End));
+//                 //    cs.Add(new LineSegment(d.start, d.End));
 //                 //}
 
 //                 //foreach (Polygon p of this.polygons)
 //                 //    cs.Add(p.Polyline);
 
-//                 //cs.Add(new LineSegment(t.Start.point, t.End.point));
+//                 //cs.Add(new LineSegment(t.start.point, t.End.point));
 //                 //SugiyamaLayoutSettings.Show(cs.ToArray);
 // #endif
 //             }
 //         }
 
 //         private void AddVisibleEdge(Tangent t) {
-//             VisibilityGraph.addEdge(visibilityGraph.GetVertex(t.Start), visibilityGraph.GetVertex(t.End));
+//             VisibilityGraph.addEdge(visibilityGraph.GetVertex(t.start), visibilityGraph.GetVertex(t.End));
 //         }
 
 //         // <summary>
@@ -108,7 +108,7 @@
 //             if (tangents.Count == 0)
 //                 return;
 //             Tangent firstTangent = this.tangents[0];
-//             Point firstTangentStart = firstTangent.Start.point;
+//             Point firstTangentStart = firstTangent.start.point;
 //             Point firstTangentEnd = firstTangent.End.point;
 
 //             foreach(Diagonal diagonal of diagonals) {
@@ -159,7 +159,7 @@
 //         }
 
 //         static bool RayIntersectDiagonal(Point pivot, Point pointOnRay, Diagonal diagonal) {
-//             Point a = diagonal.Start;
+//             Point a = diagonal.start;
 //             Point b = diagonal.End;
 //             return Point.getTriangleOrientation(pivot, a, b) == TriangleOrientation.Counterclockwise
 //                 &&
@@ -175,7 +175,7 @@
 //         // <param name="e1"></param>
 //         // <returns></returns>
 //         int TangentComparison(Tangent e0, Tangent e1) {
-//             return StemStartPointComparer.CompareVectorsByAngleToXAxis(e0.End.point - e0.Start.point, e1.End.point - e1.Start.point);
+//             return StemStartPointComparer.CompareVectorsByAngleToXAxis(e0.End.point - e0.start.point, e1.End.point - e1.start.point);
 //         }
 
 //         IEnumerable < Polygon > AllObstacles {

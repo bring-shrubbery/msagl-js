@@ -21,7 +21,7 @@
 //         public LineSweeperBase(IEnumerable < Polyline > obstacles, Point sweepDirection) {
 //         Obstacles = obstacles;
 //         SweepDirection = sweepDirection;
-//         DirectionPerp = sweepDirection.Rotate(-Math.PI / 2);
+//         DirectionPerp = sweepDirection.rotate(-Math.PI / 2);
 //         EventQueue = new BinaryHeapWithComparer<SweepEvent>(this);
 //         ObstacleSideComparer = new ObstacleSideComparer(this);
 //         LeftObstacleSideTree = new RbTree<SegmentBase>(ObstacleSideComparer);
@@ -95,14 +95,14 @@
 //         protected RightObstacleSide FindFirstObstacleSideToTheLeftOfPoint(Point point) {
 //         var node =
 //             RightObstacleSideTree.FindLast(
-//                 s => Point.PointToTheRightOfLineOrOnLine(point, s.Start, s.End));
+//                 s => Point.PointToTheRightOfLineOrOnLine(point, s.start, s.End));
 //         return node == null ? null : (RightObstacleSide)(node.Item);
 //     }
 
 //         protected LeftObstacleSide FindFirstObstacleSideToToTheRightOfPoint(Point point) {
 //         var node =
 //             LeftObstacleSideTree.FindFirst(
-//                 s => !Point.PointToTheRightOfLineOrOnLine(point, s.Start, s.End));
+//                 s => !Point.PointToTheRightOfLineOrOnLine(point, s.start, s.End));
 //         return node == null ? null : (LeftObstacleSide)node.Item;
 //     }
 

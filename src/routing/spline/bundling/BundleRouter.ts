@@ -145,7 +145,7 @@ export class BundleRouter extends Algorithm {
       if (sPort.Curve.BoundingBox.Contains(ePort.Curve.BoundingBox)) {
         const ii: IntersectionInfo = Curve.CurveCurveIntersectionOne(
           sPort.Curve,
-          new LineSegment(edge.Curve.Start, edge.Curve.End),
+          new LineSegment(edge.Curve.start, edge.Curve.End),
           true,
         )
           ; (<Polyline>edge.Curve).startPoint.point = ii.IntersectionPoint
@@ -154,7 +154,7 @@ export class BundleRouter extends Algorithm {
       if (ePort.Curve.BoundingBox.Contains(sPort.Curve.BoundingBox)) {
         const ii: IntersectionInfo = Curve.CurveCurveIntersectionOne(
           ePort.Curve,
-          new LineSegment(edge.Curve.Start, edge.Curve.End),
+          new LineSegment(edge.Curve.start, edge.Curve.End),
           true,
         )
           ; (<Polyline>edge.Curve).endPoint.point = ii.IntersectionPoint
@@ -197,7 +197,7 @@ export class BundleRouter extends Algorithm {
   //              l.Clear();
   //              foreach (var e of geometryGraph.Edges) {
   //                  {
-  //                      l.Add(new Ellipse(2, 2, e.Curve.Start));
+  //                      l.Add(new Ellipse(2, 2, e.Curve.start));
   //                      l.Add(CurveFactory.CreateDiamond(5, 5, e.Curve.End));
   //                      l.Add(e.Curve);
   //                  }

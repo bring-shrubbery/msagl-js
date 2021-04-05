@@ -71,7 +71,7 @@ export class Arrowhead {
   // we need to pass arrowhead length here since the original length mibh
   static findTrimEndForArrowheadAtTarget(edgeGeometry: EdgeGeometry): number {
     const eps = GeomConstants.distanceEpsilon * GeomConstants.distanceEpsilon
-    //Assert.assert((edgeGeometry.Curve.End - edgeGeometry.Curve.Start).LengthSquared > eps);
+    //Assert.assert((edgeGeometry.Curve.End - edgeGeometry.Curve.start).LengthSquared > eps);
     let p = edgeGeometry.curve.parEnd
     if (
       edgeGeometry.targetArrowhead == null ||

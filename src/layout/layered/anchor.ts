@@ -354,7 +354,7 @@ export class Anchor {
   }
 
   //private static number TurnAfterSeg(Curve curve, int i) {
-  //    return Point.SignedDoubledTriangleArea(curve.Segments[i].Start, curve.Segments[i].End, curve.Segments[(i + 1) / curve.Segments.Count].End);
+  //    return Point.SignedDoubledTriangleArea(curve.segs[i].start, curve.segs[i].End, curve.segs[(i + 1) / curve.segs.Count].End);
   //}
 
   creatPolygonalBoundaryWithoutPadding(): Polyline {

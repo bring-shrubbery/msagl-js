@@ -28,7 +28,7 @@
 //     }
 
 //         static int CompareNotIntersectingSegs(ConeSide a, ConeSide b) {
-//         var signedArea = Point.getTriangleOrientation(a.Start, b.Start, b.Start + b.Direction);
+//         var signedArea = Point.getTriangleOrientation(a.start, b.start, b.start + b.Direction);
 
 //         switch (signedArea) {
 //             case TriangleOrientation.Counterclockwise:
@@ -41,8 +41,8 @@
 //     }
 
 //     int CompareObstacleSideAndConeSide(ConeSide coneSide) {
-//         var orientation = Point.getTriangleOrientation(x, coneSide.Start,
-//             coneSide.Start + coneSide.Direction);
+//         var orientation = Point.getTriangleOrientation(x, coneSide.start,
+//             coneSide.start + coneSide.Direction);
 //         if (orientation == TriangleOrientation.Counterclockwise)
 //             return -1;
 //         if (orientation == TriangleOrientation.Clockwise)
@@ -54,7 +54,7 @@
 //     }
 
 //     int CompareConeSideAndObstacleSide(ConeSide coneSide, BrokenConeSide brokenConeSide) {
-//         var orientation = Point.getTriangleOrientation(x, brokenConeSide.Start, brokenConeSide.End);
+//         var orientation = Point.getTriangleOrientation(x, brokenConeSide.start, brokenConeSide.End);
 //         if (orientation == TriangleOrientation.Counterclockwise)
 //             return -1;
 //         if (orientation == TriangleOrientation.Clockwise)
@@ -70,15 +70,15 @@
 //     internal Point IntersectionOfSegmentAndSweepLine(ConeSide obstacleSide) {
 //         var den = obstacleSide.Direction * coneSweeper.SweepDirection;
 //         Assert.assert(Math.Abs(den) > 0);
-//         var t = (coneSweeper.Z - obstacleSide.Start * coneSweeper.SweepDirection) / den;
-//         return obstacleSide.Start + t * obstacleSide.Direction;
+//         var t = (coneSweeper.Z - obstacleSide.start * coneSweeper.SweepDirection) / den;
+//         return obstacleSide.start + t * obstacleSide.Direction;
 //     }
 
 //     int CompareBrokenSides(BrokenConeSide aObst, BrokenConeSide bObst) {
 //         if (aObst.EndVertex == bObst.EndVertex)
 //             return CompareNotIntersectingSegs(aObst.ConeSide, bObst.ConeSide);
 
-//         if (Point.getTriangleOrientation(x, bObst.Start, bObst.EndVertex.point) ==
+//         if (Point.getTriangleOrientation(x, bObst.start, bObst.EndVertex.point) ==
 //             TriangleOrientation.Counterclockwise)
 //             return -1;
 //         return 1;

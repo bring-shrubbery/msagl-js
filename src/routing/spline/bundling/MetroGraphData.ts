@@ -288,7 +288,7 @@
 //     void InitEdgeData(EdgeGeometry geomEdge, int index) {
 //         var metroEdge = new Metroline((Polyline)geomEdge.Curve, geomEdge.LineWidth, EdgeSourceAndTargetFunc(geomEdge), index);
 //         metrolines.Add(metroEdge);
-//         PointToStations[metroEdge.Polyline.Start].BoundaryCurve = geomEdge.SourcePort.Curve;
+//         PointToStations[metroEdge.Polyline.start].BoundaryCurve = geomEdge.SourcePort.Curve;
 //         PointToStations[metroEdge.Polyline.End].BoundaryCurve = geomEdge.TargetPort.Curve;
 //     }
 
@@ -305,7 +305,7 @@
 //     void InitializeVirtualGraph() {
 //         Dictionary < Station, Set < Station >> neighbors = new Dictionary<Station, Set<Station>>();
 //         foreach(var metroline of metrolines) {
-//             Station u = PointToStations[metroline.Polyline.Start];
+//             Station u = PointToStations[metroline.Polyline.start];
 //             Station v;
 //             for (var p = metroline.Polyline.startPoint; p.next != null; p = p.next, u = v) {
 //                 v = PointToStations[p.next.point];
@@ -379,12 +379,12 @@
 //     }
 
 //     void AddLooseEnterableForMetrolineStartEndPoints(Metroline metroline) {
-//         AddLooseEnterableForEnd(metroline.Polyline.Start);
+//         AddLooseEnterableForEnd(metroline.Polyline.start);
 //         AddLooseEnterableForEnd(metroline.Polyline.End);
 //     }
 
 //     void AddTightEnterableForMetrolineStartEndPoints(Metroline metroline) {
-//         AddTightEnterableForEnd(metroline.Polyline.Start);
+//         AddTightEnterableForEnd(metroline.Polyline.start);
 //         AddTightEnterableForEnd(metroline.Polyline.End);
 //     }
 
@@ -451,7 +451,7 @@
 //     void InitEdgeIjInfos() {
 //         foreach(Metroline metroLine of metrolines) {
 //             var poly = metroLine.Polyline;
-//             var u = PointToStations[poly.Start];
+//             var u = PointToStations[poly.start];
 //             Station v;
 //             for (var p = metroLine.Polyline.startPoint; p.next != null; p = p.next, u = v) {
 //                 v = PointToStations[p.next.point];

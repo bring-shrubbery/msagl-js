@@ -103,7 +103,7 @@ export class Polygon
 //     // <param name="bisectorRay"></param>
 //     // <returns></returns>
 //     internal int FindTheFurthestVertexFromBisector(int p1, int p2, Point bisectorPivot, Point bisectorRay) {
-//         Point directionToTheHill = bisectorRay.Rotate(Math.PI / 2);
+//         Point directionToTheHill = bisectorRay.rotate(Math.PI / 2);
 //         if ((polyline.startPoint.point - bisectorPivot) * directionToTheHill < 0)
 //             directionToTheHill = -directionToTheHill;
 //         if (p1 == p2)

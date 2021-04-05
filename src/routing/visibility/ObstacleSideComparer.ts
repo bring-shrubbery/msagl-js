@@ -20,7 +20,7 @@
 
 //         public int Compare(SegmentBase a, SegmentBase b) {
 //             ValidateArg.IsNotNull(b, "b");
-//             var orient = Point.getTriangleOrientation(b.Start, b.End, x);
+//             var orient = Point.getTriangleOrientation(b.start, b.End, x);
 //             switch (orient) {
 //                 case TriangleOrientation.Collinear:
 //                     return 0;
@@ -38,8 +38,8 @@
 //     internal Point IntersectionOfSideAndSweepLine(SegmentBase obstacleSide) {
 //         var den = obstacleSide.Direction * lineSweeper.SweepDirection;
 //         Assert.assert(Math.Abs(den) > GeomConstants.distanceEpsilon);
-//         var t = (lineSweeper.Z - obstacleSide.Start * lineSweeper.SweepDirection) / den;
-//         return obstacleSide.Start + t * obstacleSide.Direction;
+//         var t = (lineSweeper.Z - obstacleSide.start * lineSweeper.SweepDirection) / den;
+//         return obstacleSide.start + t * obstacleSide.Direction;
 //     }
 
 // }

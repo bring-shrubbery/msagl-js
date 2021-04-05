@@ -10,7 +10,7 @@
 //         static Timer timer;
 //         static TimeMeasurer() {
 //         timer = new Timer();
-//         timer.Start();
+//         timer.start();
 //     }
 // #endif
 

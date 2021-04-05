@@ -20,8 +20,8 @@
 //         if (j == null)
 //             return 1;
 
-//         Point a = i.Start.point - pivot;
-//         Point b = j.Start.point - pivot;
+//         Point a = i.start.point - pivot;
+//         Point b = j.start.point - pivot;
 
 //         return CompareVectorsByAngleToXAxis(a, b);
 

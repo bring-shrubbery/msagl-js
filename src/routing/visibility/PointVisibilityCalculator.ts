@@ -87,7 +87,7 @@
 //     void SortSAndInitActiveSides() {
 //         InitHeapAndInsertActiveSides();
 //         for (Stem stem = heapForSorting.GetMinimum();; stem = heapForSorting.GetMinimum()) {
-//             sortedListOfPolypoints.Add(stem.Start);
+//             sortedListOfPolypoints.Add(stem.start);
 //             if (stem.MoveStartClockwise())
 //                 heapForSorting.ChangeMinimum(stem);
 //             else
@@ -126,7 +126,7 @@
 //                             orientation == TriangleOrientation.Collinear) {
 //                             crosses = true;
 //                             //we have two stems here
-//                             yield return new Stem(stem.Start, side);
+//                             yield return new Stem(stem.start, side);
 //                             yield return new Stem(side.NextOnPolyline, stem.End);
 
 //                             RegisterActiveSide(side);
@@ -140,8 +140,8 @@
 //                     crosses = true;
 //                     //we need to add one or two stems here
 //                     yield return new Stem(side, stem.End);
-//                     if (side != stem.Start)
-//                         yield return new Stem(stem.Start, hole.Prev(source));
+//                     if (side != stem.start)
+//                         yield return new Stem(stem.start, hole.Prev(source));
 
 //                     RegisterActiveSide(side);
 //                     break;
@@ -208,12 +208,12 @@
 //         PolylinePoint outSide = GetOutgoingSide(v);
 
 //         //if (inEdge != null && outEdge != null)
-//         //    SugiyamaLayoutSettings.Show(new LineSegment(inEdge.Start.point, inEdge.End.point), new LineSegment(outEdge.Start.point,
+//         //    SugiyamaLayoutSettings.Show(new LineSegment(inEdge.start.point, inEdge.End.point), new LineSegment(outEdge.start.point,
 //         //        outEdge.End.point), new LineSegment(this.q, v.point));
 //         //else if (inEdge != null)
-//         //    SugiyamaLayoutSettings.Show(new LineSegment(inEdge.Start.point, inEdge.End.point), new LineSegment(this.q, v.point));
+//         //    SugiyamaLayoutSettings.Show(new LineSegment(inEdge.start.point, inEdge.End.point), new LineSegment(this.q, v.point));
 //         //else if (outEdge != null)
-//         //    SugiyamaLayoutSettings.Show(new LineSegment(outEdge.Start.point, outEdge.End.point), new LineSegment(this.q, v.point));
+//         //    SugiyamaLayoutSettings.Show(new LineSegment(outEdge.start.point, outEdge.End.point), new LineSegment(this.q, v.point));
 
 //         activeEdgeComparer.IntersectionOfTheRayAndInsertedEdge = v.point;
 //         RBNode < PolylinePoint > node;

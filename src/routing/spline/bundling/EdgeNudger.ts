@@ -80,7 +80,7 @@
 //             var hubSegsOfLine = HubSegsOfLine(metroGraphData, metroOrdering, line);
 //             foreach(var seg of hubSegsOfLine) {
 //                 if (seg == null) continue;
-//                 c.AddSegment(new LineSegment(currentEnd, seg.Start));
+//                 c.AddSegment(new LineSegment(currentEnd, seg.start));
 //                 c.AddSegment(seg);
 //                 currentEnd = seg.End;
 //             }
@@ -195,7 +195,7 @@
 //         static IEnumerable < DebugCurve > BetweenHubs(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
 //             foreach(Metroline ml of metroGraphData.Metrolines) {
 //                 List < Tuple < Point, Point >> segs = GetInterestingSegs(metroGraphData, metroMapOrdering, ml);
-//                 string color = GetMonotoneColor(ml.Polyline.Start, ml.Polyline.End, segs);
+//                 string color = GetMonotoneColor(ml.Polyline.start, ml.Polyline.End, segs);
 //                 foreach(var seg of segs)
 //                 yield return new DebugCurve(100, ml.Width, color, new LineSegment(seg.Item1, seg.Item2));
 //             }
@@ -207,7 +207,7 @@
 //             var cubicSegs = HubSegsOfLine(metroGraphData, metroMapOrdering, line);
 //             foreach(var seg of cubicSegs) {
 //                 if (seg == null) continue;
-//                 ret.Add(new Tuple<Point, Point>(start, seg.Start));
+//                 ret.Add(new Tuple<Point, Point>(start, seg.start));
 //                 start = seg.End;
 //             }
 //             ret.Add(new Tuple<Point, Point>(start, FindCurveEnd(metroGraphData, metroMapOrdering, line)));
@@ -406,9 +406,9 @@
 
 //         #region Bezier segments
 
-//         internal static CubicBezierSegment StandardBezier(Point segStart, Point tangentAtStart, Point segEnd, Point tangentAtEnd) {
+//         internal static BezierSeg StandardBezier(Point segStart, Point tangentAtStart, Point segEnd, Point tangentAtEnd) {
 //             double len = (segStart - segEnd).length / 4.0;
-//             return new CubicBezierSegment(segStart, segStart + tangentAtStart * len, segEnd + tangentAtEnd * len, segEnd);
+//             return new BezierSeg(segStart, segStart + tangentAtStart * len, segEnd + tangentAtEnd * len, segEnd);
 //         }
 
 //         void FanBezierSegs() {
@@ -438,7 +438,7 @@
 //             OrientedHubSegment rSeg = bundleHub.OrientedHubSegments[i + 1];
 //             if (lSeg == null) return false;
 //             Point x;
-//             if (LineSegment.Intersect(lSeg.Segment.Start, lSeg.Segment.End, rSeg.Segment.Start, rSeg.Segment.End, out x))
+//             if (LineSegment.Intersect(lSeg.Segment.start, lSeg.Segment.End, rSeg.Segment.start, rSeg.Segment.End, out x))
 //                 return false; //it doesn not make sense to push these segs apart
 //             if (Point.getTriangleOrientation(lSeg[0], lSeg[0.5], lSeg[1]) !=
 //                 Point.getTriangleOrientation(rSeg[0], rSeg[0.5], rSeg[1]))
@@ -451,7 +451,7 @@
 //                 return AdjustLongerSeg(lSeg, rSeg, center, radius);
 //             return AdjustLongerSeg(rSeg, lSeg, center, radius);
 //             /*
-//             var del0 = lSeg.Start - rSeg.Start;
+//             var del0 = lSeg.start - rSeg.start;
 //             var del1 = lSeg.End - rSeg.End;
 //            var desiredDelta = Math.Min(del0, del1);
 //             var leftMiddle = lSeg[0.5];
@@ -476,7 +476,7 @@
 //             double minDelLength = Math.Min(del0.length, del1.length);
 //             Point midPointOfShorter = shorterSeg[0.5];
 //             double maxDelLen = Math.Max(del0.length, del1.length);
-//             if (NicelyAligned((CubicBezierSegment)longerSeg.Segment, del0, del1, midPointOfShorter, minDelLength, maxDelLen) == 0)
+//             if (NicelyAligned((BezierSeg)longerSeg.Segment, del0, del1, midPointOfShorter, minDelLength, maxDelLen) == 0)
 //                 return false;
 //             return FitLonger(longerSeg, del0, del1, midPointOfShorter, minDelLength, maxDelLen, center, radius);
 //         }
@@ -485,19 +485,19 @@
 
 //         bool FitLonger(OrientedHubSegment longerOrientedSeg, Point del0, Point del1, Point midPointOfShorter,
 //             double minDelLength, double maxDel, Point center, double radius) {
-//             CubicBezierSegment seg = (CubicBezierSegment)longerOrientedSeg.Segment;
-//             Point start = seg.Start;
+//             BezierSeg seg = (BezierSeg)longerOrientedSeg.Segment;
+//             Point start = seg.start;
 //             Point end = seg.End;
 //             // LayoutAlgorithmSettings.ShowDebugCurves(new DebugCurve("green", shorterDebugOnly), new DebugCurve("red", seg));
 
 //             int steps = 0;
 //             const int maxSteps = 10;
-//             Point lowP1 = (1 - SqueezeBound) * seg.Start + SqueezeBound * seg.B(1);
+//             Point lowP1 = (1 - SqueezeBound) * seg.start + SqueezeBound * seg.B(1);
 //             Point lowP2 = (1 - SqueezeBound) * seg.End + SqueezeBound * seg.B(2);
-//             Point highP1 = 2 * seg.B(1) - seg.Start;
+//             Point highP1 = 2 * seg.B(1) - seg.start;
 //             //originally the tangents were 0.25 of the length of seg[1]-seg[0] - so were are safe to lengthen two times
 //             Point highP2 = 2 * seg.B(2) - seg.End;
-//             PullControlPointToTheCircle(seg.Start, ref highP1, center, radius);
+//             PullControlPointToTheCircle(seg.start, ref highP1, center, radius);
 //             int r = NicelyAligned(seg, del0, del1, midPointOfShorter, minDelLength, maxDel);
 //             do {
 //                 if (r == -1) {
@@ -506,7 +506,7 @@
 //                     Point p2 = (seg.B(2) + lowP2) / 2;
 //                     highP1 = seg.B(1);
 //                     highP2 = seg.B(2);
-//                     seg = new CubicBezierSegment(start, p1, p2, end);
+//                     seg = new BezierSeg(start, p1, p2, end);
 //                 }
 //                 else {
 //                     Assert.assert(r == 1);
@@ -515,7 +515,7 @@
 //                     Point p2 = (seg.B(2) + highP2) / 2;
 //                     lowP1 = seg.B(1);
 //                     lowP2 = seg.B(2);
-//                     seg = new CubicBezierSegment(start, p1, p2, end);
+//                     seg = new BezierSeg(start, p1, p2, end);
 //                 }
 
 //                 if ((r = NicelyAligned(seg, del0, del1, midPointOfShorter, minDelLength, maxDel)) == 0) {
@@ -546,7 +546,7 @@
 //         // <param name="minDelLength"></param>
 //         // <param name="maxDelLen"></param>
 //         // <returns> 1 - need to stretch, -1 - need to squeze, 0 - OK </returns>
-//         int NicelyAligned(CubicBezierSegment longerSeg, Point del0, Point del1, Point midPointOfShorter,
+//         int NicelyAligned(BezierSeg longerSeg, Point del0, Point del1, Point midPointOfShorter,
 //             double minDelLength, double maxDelLen) {
 //             const double eps = 0.001;
 //             Point midDel = longerSeg[0.5] - midPointOfShorter;

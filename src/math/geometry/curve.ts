@@ -1394,123 +1394,127 @@ export class Curve implements ICurve {
     return false;
     return true;
     }
-    
-    
-    // Returns true if curves do not touch in the intersection point
-    // only when the second curve cuts the first one from the inside</param>
-    public static boolean RealCutWithClosedCurve(IntersectionInfo xx, Curve polygon, boolean onlyFromInsideCuts) {
-    ValidateArg.IsNotNull(xx, "xx");
-    ValidateArg.IsNotNull(polygon, "polygon");
-    ICurve sseg = xx.segment0;
-    ICurve pseg = xx.seg1;
-    number spar = xx.Par0;
-    number ppar = xx.par1;
-    Point x = xx.intersectionPoint;
-    
-    //normalised tangent to spline
-    Point ts = sseg.derivative(spar).Normalize();
-    Point pn = pseg.derivative(ppar).Normalize().Rotate(Math.PI/2);
-    
-    if (Point.closeDistEps(x, pseg.end)) {
-    //so pseg enters the spline 
-    ICurve exitSeg = null;
-    for (int i = 0; i < polygon.segs.length; i++)
-    if (polygon.segs[i] == pseg) {
-    exitSeg = polygon.segs[(i + 1)%polygon.segs.length];
-    break;
-    }
-    
-    if (exitSeg == null)
-    throw new Error(); //"exitSeg==null");
-    
-    Point tsn = ts.Rotate((Math.PI/2));
-    
-    boolean touch = (tsn*pseg.derivative(pseg.parEnd))*(tsn*exitSeg.derivative(exitSeg.parStart)) <
-    GeomConstants.tolerance;
-    
-    return !touch;
-    }
-    
-    if (Point.closeDistEps(x, pseg.start)) {
-    //so pseg exits the spline 
-    ICurve enterSeg = null;
-    for (int i = 0; i < polygon.segs.length; i++)
-    if (polygon.segs[i] == pseg) {
-    enterSeg = polygon.segs[i > 0 ? (i - 1) : polygon.segs.length - 1];
-    break;
-    }
-    
-    Point tsn = ts.Rotate((Math.PI/2));
-    boolean touch = (tsn*pseg.derivative(pseg.parStart))*
-    (tsn*enterSeg.derivative(enterSeg.parEnd)) < GeomConstants.tolerance;
-    
-    return !touch;
-    }
-    
-    number d = ts*pn;
-    if (onlyFromInsideCuts)
-    return d > GeomConstants.distanceEpsilon;
-    return Math.Abs(d) > GeomConstants.distanceEpsilon;
-    }
-    
-    // 
-    public static boolean RealCut(IntersectionInfo xx, Curve polyline, boolean onlyFromInsideCuts) {
-    ValidateArg.IsNotNull(xx, "xx");
-    ValidateArg.IsNotNull(polyline, "polyline");
-    ICurve sseg = xx.segment0;
-    ICurve pseg = xx.seg1;
-    number spar = xx.Par0;
-    number ppar = xx.par1;
-    Point x = xx.intersectionPoint;
-    
-    
-    //normalised tangent to spline
-    Point ts = sseg.derivative(spar).Normalize();
-    Point pn = pseg.derivative(ppar).Normalize().Rotate(Math.PI/2);
-    
-    if (Point.closeDistEps(x, pseg.end)) {
-    //so pseg enters the spline 
-    ICurve exitSeg = null;
-    for (int i = 0; i < polyline.segs.length - 1; i++)
-    if (polyline.segs[i] == pseg) {
-    exitSeg = polyline.segs[i + 1];
-    break;
-    }
-    
-    if (exitSeg == null)
-    return false; //hit the end of the polyline
-    
-    Point tsn = ts.Rotate((Math.PI/2));
-    
-    boolean touch = (tsn*pseg.derivative(pseg.parEnd))*(tsn*exitSeg.derivative(exitSeg.parStart)) <
-    GeomConstants.tolerance;
-    
-    return !touch;
-    }
-    
-    if (Point.closeDistEps(x, pseg.start)) {
-    //so pseg exits the spline 
-    ICurve enterSeg = null;
-    for (int i = polyline.segs.length - 1; i > 0; i--)
-    if (polyline.segs[i] == pseg) {
-    enterSeg = polyline.segs[i - 1];
-    break;
-    }
-    if (enterSeg == null)
-    return false;
-    Point tsn = ts.Rotate((Math.PI/2));
-    boolean touch = (tsn*pseg.derivative(pseg.Parstart))*
-    (tsn*enterSeg.derivative(enterSeg.parEnd)) < GeomConstants.tolerance;
-    
-    return !touch;
-    }
-    
-    number d = ts*pn;
-    if (onlyFromInsideCuts)
-    return d > GeomConstants.distanceEpsilon;
-    return Math.Abs(d) > GeomConstants.distanceEpsilon;
-    }
     */
+
+  // Returns true if curves do not touch in the intersection point
+  // only when the second curve cuts the first one from the inside</param>
+  public static realCutWithClosedCurve(xx: IntersectionInfo, polygon: Curve, onlyFromInsideCuts: boolean): boolean {
+    const sseg: ICurve = xx.seg0;
+    const pseg: ICurve = xx.seg1;
+    const spar: number = xx.par0;
+    const ppar: number = xx.par1;
+    const x: Point = xx.x
+    // normalised tangent to spline
+    const ts: Point = sseg.derivative(spar).normalize();
+    const pn: Point = pseg.derivative(ppar).normalize().rotate((Math.PI / 2));
+    if (Point.closeDistEps(x, pseg.end)) {
+      // so pseg enters the spline 
+      let exitSeg: ICurve = null;
+      for (let i: number = 0; (i < polygon.segs.length); i++) {
+        if ((polygon.segs[i] == pseg)) {
+          exitSeg = polygon.segs[((i + 1)
+            % polygon.segs.length)];
+          break;
+        }
+
+      }
+
+      if ((exitSeg == null)) {
+        throw new Error();
+      }
+
+      const tsn: Point = ts.rotate((Math.PI / 2));
+      const touch: boolean = tsn.dot(pseg.derivative(pseg.parEnd))
+        * tsn.dot(exitSeg.derivative(exitSeg.parStart))
+        < GeomConstants.tolerance
+      return !touch;
+    }
+
+    if (Point.closeDistEps(x, pseg.start)) {
+      // so pseg exits the spline 
+      let enterSeg: ICurve = null;
+      for (let i: number = 0; (i < polygon.segs.length); i++) {
+        if ((polygon.segs[i] == pseg)) {
+          enterSeg = polygon.segs[i > 0 ? (i - 1) : polygon.segs.length - 1];
+
+          break;
+        }
+
+      }
+
+      const tsn: Point = ts.rotate((Math.PI / 2));
+      const touch: boolean = tsn.dot(pseg.derivative(pseg.parStart))
+        * tsn.dot(enterSeg.derivative(enterSeg.parEnd))
+        < GeomConstants.tolerance;
+      return !touch;
+    }
+
+    const d: number = ts.dot(pn);
+    if (onlyFromInsideCuts) {
+      return (d > GeomConstants.distanceEpsilon);
+    }
+
+    return Math.abs(d) > GeomConstants.distanceEpsilon;
+  }
+  /*
+  // 
+  public static boolean RealCut(IntersectionInfo xx, Curve polyline, boolean onlyFromInsideCuts) {
+  ValidateArg.IsNotNull(xx, "xx");
+  ValidateArg.IsNotNull(polyline, "polyline");
+  ICurve sseg = xx.segment0;
+  ICurve pseg = xx.seg1;
+  number spar = xx.Par0;
+  number ppar = xx.par1;
+  Point x = xx.intersectionPoint;
+  
+  
+  //normalised tangent to spline
+  Point ts = sseg.derivative(spar).normalize();
+  Point pn = pseg.derivative(ppar).normalize().rotate(Math.PI/2);
+  
+  if (Point.closeDistEps(x, pseg.end)) {
+  //so pseg enters the spline 
+  ICurve exitSeg = null;
+  for (int i = 0; i < polyline.segs.length - 1; i++)
+  if (polyline.segs[i] == pseg) {
+  exitSeg = polyline.segs[i + 1];
+  break;
+  }
+  
+  if (exitSeg == null)
+  return false; //hit the end of the polyline
+  
+  Point tsn = ts.rotate((Math.PI/2));
+  
+  boolean touch = (tsn*pseg.derivative(pseg.parEnd))*(tsn*exitSeg.derivative(exitSeg.parStart)) <
+  GeomConstants.tolerance;
+  
+  return !touch;
+  }
+  
+  if (Point.closeDistEps(x, pseg.start)) {
+  //so pseg exits the spline 
+  ICurve enterSeg = null;
+  for (int i = polyline.segs.length - 1; i > 0; i--)
+  if (polyline.segs[i] == pseg) {
+  enterSeg = polyline.segs[i - 1];
+  break;
+  }
+  if (enterSeg == null)
+  return false;
+  Point tsn = ts.rotate((Math.PI/2));
+  boolean touch = (tsn*pseg.derivative(pseg.Parstart))*
+  (tsn*enterSeg.derivative(enterSeg.parEnd)) < GeomConstants.tolerance;
+  
+  return !touch;
+  }
+  
+  number d = ts*pn;
+  if (onlyFromInsideCuts)
+  return d > GeomConstants.distanceEpsilon;
+  return Math.Abs(d) > GeomConstants.distanceEpsilon;
+  }
+  */
 
   static minDistWithinIntervals(
     a: ICurve,

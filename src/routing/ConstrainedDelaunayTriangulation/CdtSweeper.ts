@@ -63,16 +63,16 @@
 
 //         void MakePerimeterConvex(PerimeterEdge firstPerimeterEdge) {
 //             firstPerimeterEdge = FindPivot(firstPerimeterEdge);
-//             var firstSite = firstPerimeterEdge.Start;
+//             var firstSite = firstPerimeterEdge.start;
 //             var a = firstPerimeterEdge;
 //             PerimeterEdge b;
 //             do {
 //                 b = a.next;
-//                 if (Point.GetTriangleOrientationWithNoEpsilon(a.Start.point, a.End.point, b.End.point) == TriangleOrientation.Counterclockwise) {
+//                 if (Point.GetTriangleOrientationWithNoEpsilon(a.start.point, a.End.point, b.End.point) == TriangleOrientation.Counterclockwise) {
 //                     a = ShortcutTwoListElements(a);
-//                     while (a.Start != firstSite) {
+//                     while (a.start != firstSite) {
 //                         var c = a.Prev;
-//                         if (Point.GetTriangleOrientationWithNoEpsilon(c.Start.point, c.End.point, a.End.point) == TriangleOrientation.Counterclockwise) {
+//                         if (Point.GetTriangleOrientationWithNoEpsilon(c.start.point, c.End.point, a.End.point) == TriangleOrientation.Counterclockwise) {
 //                             a = ShortcutTwoListElements(c);
 //                         } else break;
 //                     }
@@ -86,8 +86,8 @@
 //             var e = firstPerimeterEdge;
 //             do {
 //                 e = e.next;
-//                 if (e.Start.point.x < pivot.Start.point.x ||
-//                     e.Start.point.x == pivot.Start.point.x && e.Start.point.y < pivot.Start.point.y)
+//                 if (e.start.point.x < pivot.start.point.x ||
+//                     e.start.point.x == pivot.start.point.x && e.start.point.y < pivot.start.point.y)
 //                     pivot = e;
 //             } while (e != firstPerimeterEdge);
 //             return pivot;
@@ -129,11 +129,11 @@
 //         static PerimeterEdge CreatePerimeterElementFromEdge(CdtEdge edge) {
 //             var pe = new PerimeterEdge(edge);
 //             if (edge.CwTriangle != null) {
-//                 pe.Start = edge.upperSite;
+//                 pe.start = edge.upperSite;
 //                 pe.End = edge.lowerSite;
 //             } else {
 //                 pe.End = edge.upperSite;
-//                 pe.Start = edge.lowerSite;
+//                 pe.start = edge.lowerSite;
 //             }
 //             return pe;
 //         }
@@ -364,16 +364,16 @@
 
 //         PerimeterEdge ShortcutTwoListElements(PerimeterEdge a) {
 //             var b = a.next;
-//             Assert.assert(a.End == b.Start);
-//             var t = new CdtTriangle(a.Start, a.End, b.End, a.Edge, b.Edge,
+//             Assert.assert(a.End == b.start);
+//             var t = new CdtTriangle(a.start, a.End, b.End, a.Edge, b.Edge,
 //                 createEdgeDelegate);
 //             Triangles.Insert(t);
 //             var newEdge = t.Edges[2];
-//             Assert.assert(newEdge.IsAdjacent(a.Start) && newEdge.IsAdjacent(b.End));
-//             LegalizeEdge(a.Start, t.OppositeEdge(a.Start));
+//             Assert.assert(newEdge.IsAdjacent(a.start) && newEdge.IsAdjacent(b.End));
+//             LegalizeEdge(a.start, t.OppositeEdge(a.start));
 //             t = newEdge.CcwTriangle ?? newEdge.CwTriangle;
 //             LegalizeEdge(b.End, t.OppositeEdge(b.End));
-//             var c = new PerimeterEdge(newEdge) { Start = a.Start, End = b.End };
+//             var c = new PerimeterEdge(newEdge) { Start = a.start, End = b.End };
 //             a.Prev.next = c;
 //             c.Prev = a.Prev;
 //             c.next = b.next;
@@ -571,7 +571,7 @@
 //             var mab = 0.5 * (a + b);
 //             var mbc = 0.5 * (c + b);
 //             Point center;
-//             Point.LineLineIntersection(mab, mab + (b - a).Rotate(Math.PI / 2), mbc, mbc + (b - c).Rotate(Math.PI / 2), out center);
+//             Point.LineLineIntersection(mab, mab + (b - a).rotate(Math.PI / 2), mbc, mbc + (b - c).rotate(Math.PI / 2), out center);
 //             var r = (center - a).length;
 //             return new Ellipse(r, r, center);
 //         }

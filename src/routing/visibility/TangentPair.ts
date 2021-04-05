@@ -196,7 +196,7 @@
 // //         Point qClosest;
 // //         FindClosestFeatures(out p1, out p2, out q1, out q2, out pClosest, out qClosest);
 // //         bisectorPivot = (pClosest + qClosest) / 2;
-// //         bisectorRay = (pClosest - qClosest).Rotate(Math.PI / 2);
+// //         bisectorRay = (pClosest - qClosest).rotate(Math.PI / 2);
 
 // //             // int p=P.FindTheFurthestVertexFromBisector(
 // // #if TEST_MSAGL

@@ -482,7 +482,7 @@
 //     }
 
 //     double SqueezeCost(BundleInfo bundleInfo) {
-//         var middleLineDir = (bundleInfo.TargetBase.MidPoint - bundleInfo.SourceBase.MidPoint).Normalize();
+//         var middleLineDir = (bundleInfo.TargetBase.MidPoint - bundleInfo.SourceBase.MidPoint).normalize();
 //         var perp = middleLineDir.Rotate90Ccw();
 //         var projecton0 = Math.Abs((bundleInfo.SourceBase.RightPoint - bundleInfo.SourceBase.LeftPoint) * perp);
 //         var projecton1 = Math.Abs((bundleInfo.TargetBase.RightPoint - bundleInfo.TargetBase.LeftPoint) * perp);

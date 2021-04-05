@@ -62,7 +62,7 @@
 //         Point targetPos = TargetBase.Position;
 //         Point sourcePos = SourceBase.Position;
 
-//         var dir = (targetPos - sourcePos).Normalize();
+//         var dir = (targetPos - sourcePos).normalize();
 //         var perp = dir.Rotate90Ccw();
 //         var middle = 0.5 * (targetPos + sourcePos);
 //         var a = middle + longEnoughSideLength * dir;
@@ -110,13 +110,13 @@
 //         var ls = TrimSegWithBoundaryCurves(new LineSegment(a + perpL, b + perpL), out sourceLParam, out targetRParam);
 //         if (ls == null)
 //             return false;
-//         if (tightObstaclesInTheBoundingBox.Any(t => Intersections.LineSegmentIntersectPolyline(ls.Start, ls.End, t)))
+//         if (tightObstaclesInTheBoundingBox.Any(t => Intersections.LineSegmentIntersectPolyline(ls.start, ls.End, t)))
 //             return false;
 
 //         ls = TrimSegWithBoundaryCurves(new LineSegment(a + perpR, b + perpR), out sourceRParam, out targetLParam);
 //         if (ls == null)
 //             return false;
-//         if (tightObstaclesInTheBoundingBox.Any(t => Intersections.LineSegmentIntersectPolyline(ls.Start, ls.End, t)))
+//         if (tightObstaclesInTheBoundingBox.Any(t => Intersections.LineSegmentIntersectPolyline(ls.start, ls.End, t)))
 //             return false;
 
 //         if (SourceBase.IsParent) {

@@ -114,7 +114,7 @@
 //   }
 
 //         static void ExtendPolylineStartToClusterBoundary(Polyline poly, ICurve curve) {
-//     var par = curve.ClosestParameter(poly.Start);
+//     var par = curve.ClosestParameter(poly.start);
 //     poly.PrependPoint(curve[par]);
 //   }
 
@@ -171,7 +171,7 @@
 //       Queue = new GenericBinaryHeapPriorityQueue<SdVertex>();
 //       SetPortVerticesAndObstacles(CurrentEdgeGeometry.SourcePort, true, out sourceLoosePoly);
 //       SetPortVerticesAndObstacles(CurrentEdgeGeometry.TargetPort, false, out targetLoosePoly);
-//       List < SdBoneEdge > ret = RouteOnKnownSourceTargetVertices((CurrentEdgeGeometry.TargetPort.Location - CurrentEdgeGeometry.SourcePort.Location).Normalize(), i == 0);
+//       List < SdBoneEdge > ret = RouteOnKnownSourceTargetVertices((CurrentEdgeGeometry.TargetPort.Location - CurrentEdgeGeometry.SourcePort.Location).normalize(), i == 0);
 //       if (ret != null)
 //         return ret;
 //       for (int j = 0; j < vertexArray.length; j++) {

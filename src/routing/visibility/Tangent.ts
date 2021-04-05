@@ -61,7 +61,7 @@
 //     }
 //     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //     internal Tangent(PolylinePoint start, PolylinePoint end) {
-//         this.Start = start;
+//         this.start = start;
 //         this.End = end;
 //     }
 

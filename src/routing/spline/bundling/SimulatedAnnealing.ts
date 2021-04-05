@@ -203,7 +203,7 @@
 
 //         var force = forceInk + forcePL + forceR + forceBundle;
 //         if (force.length < 0.1) return new Point();
-//         force = force.Normalize();
+//         force = force.normalize();
 
 //         return force;
 //     }
@@ -299,7 +299,7 @@
 //             double dist = (d.Item2 - node.Position).length;
 //             Assert.assert(dist <= idealR);
 //             double lforce = 2.0 * (1.0 - dist / idealR);
-//             Point dir = (node.Position - d.Item2).Normalize();
+//             Point dir = (node.Position - d.Item2).normalize();
 //             direction += dir * lforce;
 //         }
 
@@ -330,7 +330,7 @@
 //                 double dist = (d.Item1 - d.Item2).length;
 //                 Assert.assert(ApproximateComparer.LessOrEqual(dist, idealWidth / 2));
 //                 double lforce = 2.0 * (1.0 - dist / (idealWidth / 2));
-//                 Point dir = -(d.Item1 - d.Item2).Normalize();
+//                 Point dir = -(d.Item1 - d.Item2).normalize();
 //                 direction += dir * lforce;
 //             }
 //         }

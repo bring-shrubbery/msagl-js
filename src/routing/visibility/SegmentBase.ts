@@ -1,4 +1,4 @@
-import {Point} from '../../math/geometry/point'
+import { Point } from '../../math/geometry/point'
 
 export abstract class SegmentBase {
   abstract get Start(): Point
@@ -6,6 +6,6 @@ export abstract class SegmentBase {
   abstract get End(): Point
 
   get Direction(): Point {
-    return this.End.sub(this.Start)
+    return this.End.sub(this.start)
   }
 }

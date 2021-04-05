@@ -184,10 +184,10 @@ export class SmoothedPolylineCalculator {
   ): IterableIterator<number> {
     let b = 0
     let t = 0
-    if (nodeKind == NodeKind.bottom) {
+    if (nodeKind == NodeKind.Bottom) {
       b = Number.MAX_VALUE
       // we don't have bottom boundaries here since they will be cut off
-    } else if (nodeKind == NodeKind.top) {
+    } else if (nodeKind == NodeKind.Top) {
       t = Number.MAX_VALUE
       // we don't have top boundaries here since they will be cut off
     }
@@ -225,12 +225,12 @@ export class SmoothedPolylineCalculator {
   ): IterableIterator<number> {
     let b = 0
     let t = 0
-    if (nodeKind == NodeKind.top) {
+    if (nodeKind == NodeKind.Top) {
       t = Number.MAX_VALUE
     }
 
     // there are no top vertices - they are cut down by the top boundaryCurve curve
-    if (nodeKind == NodeKind.bottom) {
+    if (nodeKind == NodeKind.Bottom) {
       b = Number.MAX_VALUE
     }
 
@@ -675,7 +675,7 @@ export class SmoothedPolylineCalculator {
     const bottom: number = this.EdgePathNode(2)
     const a: Anchor = this.anchors[top]
     const b: Anchor = this.anchors[bottom]
-    if (Point.closeD(ax, bx)) {
+    if (Point.closeD(a.x, b.x)) {
       return
     }
 
@@ -721,10 +721,10 @@ export class SmoothedPolylineCalculator {
     const ratio: number = (a.y - b.y) / (a.bottom - b.top)
     const xc = 0.5 * (t.ax + t.bx)
     const half: number = t.sign * ((t.ax - t.bx) * 0.5)
-    ax = xc + ratio * (half * t.sign)
-    bx = xc - ratio * (half * t.sign)
-    this.headSite.point = new Point(t.ax, t.a.y)
-    this.headSite.next.point = new Point(t.bx, t.b.y)
+    t.ax = xc + ratio * (half * t.sign)
+    t.bx = xc - ratio * (half * t.sign)
+    this.headSite.point = new Point(t.ax, a.y)
+    this.headSite.next.point = new Point(t.bx, b.y)
   }
 
   private FindLegalPositions(
@@ -895,7 +895,7 @@ export class SmoothedPolylineCalculator {
     while (progress) {
       progress = false
       for (
-        const s: CornerSite = this.headSite;
+        let s = this.headSite;
         s != null && s.next != null;
         s = s.next
       ) {
@@ -908,11 +908,11 @@ export class SmoothedPolylineCalculator {
     let sign = 0
     // undecided
     for (
-      const s: CornerSite = this.headSite.next;
+      let s = this.headSite.next;
       s != null && s.next != null;
       s = s.next
     ) {
-      const nsign: number = s.Turn
+      const nsign: number = s.turn
       if (sign == 0) {
         // try to set the sign
         if (nsign > 0) {
@@ -933,30 +933,24 @@ export class SmoothedPolylineCalculator {
   }
 
   EdgePathNode(i: number): number {
-    const v: number
-    if (i == this.edgePath.count) {
-      v = this.edgePath[this.edgePath.count - 1].Target
-    } else {
-      v = this.edgePath[i].Source
-    }
-
-    return v
+    return i == this.edgePath.count ?
+      this.edgePath[this.edgePath.count - 1].Target
+      : this.edgePath[i].Source
   }
+
 
   CreateSmoothedPolyline(): Curve {
     this.RemoveVerticesWithNoTurns()
-    const curve: Curve = new Curve()
+    let curve = new Curve()
     const a: CornerSite = this.headSite
-    // the corner start
-    const b: CornerSite
-    // the corner origin
-    const c: CornerSite
+    const t = Curve.findCorner(a)
+
     // the corner other end
-    if (Curve.FindCorner(a, /* out */ b, /* out */ c)) {
-      this.CreateFilletCurve(curve, /* ref */ a, /* ref */ b, /* ref */ c)
+    if (t != undefined) {
+      this.CreateFilletCurve(curve, { a: a, b: t.b, c: t.c })
       curve = this.ExtendCurveToEndpoints(curve)
     } else {
-      curve.AddSegment(
+      curve.addSegment(
         LineSegment.mkPP(this.headSite.point, this.TailSite.point),
       )
     }
@@ -969,9 +963,9 @@ export class SmoothedPolylineCalculator {
   }
 
   private RemoveVerticesWithNoTurnsOnePass(): boolean {
-    const ret = false
+    let ret = false
     for (
-      const s: CornerSite = this.headSite;
+      let s: CornerSite = this.headSite;
       s.next != null && s.next.next != null;
       s = s.next
     ) {
@@ -987,16 +981,16 @@ export class SmoothedPolylineCalculator {
   }
 
   private ExtendCurveToEndpoints(curve: Curve): Curve {
-    const p: Point = this.headSite.point
-    if (!Point.closeDistEps(p, curve.Start)) {
+    let p: Point = this.headSite.point
+    if (!Point.closeDistEps(p, curve.start)) {
       const nc: Curve = new Curve()
-      nc.AddSegs(LineSegment.mkPP(p, curve.Start), curve)
+      nc.addSegs([LineSegment.mkPP(p, curve.start), curve])
       curve = nc
     }
 
     p = this.TailSite.point
-    if (!Point.closeDistEps(p, curve.End)) {
-      curve.AddSegment(LineSegment.mkPP(curve.End, p))
+    if (!Point.closeDistEps(p, curve.end)) {
+      curve.addSegment(LineSegment.mkPP(curve.end, p))
     }
 
     return curve
@@ -1004,16 +998,18 @@ export class SmoothedPolylineCalculator {
 
   private CreateFilletCurve(
     curve: Curve,
-    /* ref */ a: CornerSite,
-    /* ref */ b: CornerSite,
-    /* ref */ c: CornerSite,
+    t: {
+      a: CornerSite,
+      b: CornerSite,
+      c: CornerSite,
+    }
   ) {
     for (; true;) {
-      this.AddSmoothedCorner(a, b, c, curve)
-      a = b
-      b = c
-      if (b.next != null) {
-        c = b.next
+      this.AddSmoothedCorner(t.a, t.b, t.c, curve)
+      t.a = t.b
+      t.b = t.c
+      if (t.b.next != null) {
+        t.c = t.b.next
       } else {
         break
       }
@@ -1026,41 +1022,41 @@ export class SmoothedPolylineCalculator {
     c: CornerSite,
     curve: Curve,
   ) {
-    const k = 0.5
-    const seg: CubicBezierSegment
-    for (; this.BezierSegIntersectsBoundary(seg);) {
-      seg = Curve.CreateBezierSeg(k, k, a, b, c)
+    let k = 0.5
+    let seg: BezierSeg
+    do {
+      seg = Curve.createBezierSeg(k, k, a, b, c)
       // if (Routing.db)
       //     LayoutAlgorithmSettings .Show(seg, CreatePolyTest());
-      b.PreviousBezierSegmentFitCoefficient = k
+      b.previouisBezierCoefficient = k
       2
-    }
+    } while (this.BezierSegIntersectsBoundary(seg))
 
     k = k * 2
     // that was the last k
     if (k < 0.5) {
       // one time try a smoother seg
       k = 0.5 * (k + k * 2)
-      const nseg: CubicBezierSegment = Curve.CreateBezierSeg(k, k, a, b, c)
+      const nseg: BezierSeg = Curve.createBezierSeg(k, k, a, b, c)
       if (!this.BezierSegIntersectsBoundary(nseg)) {
-        b.NextBezierSegmentFitCoefficient = k
-        b.PreviousBezierSegmentFitCoefficient = k
+        b.nextBezierCoefficient = k
+        b.previouisBezierCoefficient = k
         seg = nseg
       }
     }
 
     if (
-      curve.Segments.count > 0 &&
-      !Point.closeDistEps(curve.End, seg.Start)
+      curve.segs.length > 0 &&
+      !Point.closeDistEps(curve.end, seg.start)
     ) {
-      curve.AddSegment(LineSegment.mkPP(curve.End, seg.Start))
+      curve.addSegment(LineSegment.mkPP(curve.end, seg.start))
     }
 
-    curve.AddSegment(seg)
+    curve.addSegment(seg)
   }
 
-  private BezierSegIntersectsBoundary(seg: CubicBezierSegment): boolean {
-    const side: number = Point.SignedDoubledTriangleArea(
+  private BezierSegIntersectsBoundary(seg: BezierSeg): boolean {
+    const side: number = Point.signedDoubledTriangleArea(
       seg.B(0),
       seg.B(1),
       seg.B(2),
@@ -1099,7 +1095,7 @@ export class SmoothedPolylineCalculator {
           this.BezierSegIntersectsTree(seg, (n.node as PNInternal).children[1])
         )
       } else {
-        return this.BezierSegIntersectsBoundary(seg, (tree as PN).seg)
+        return SmoothedPolylineCalculator.BezierSegIntersectsBoundary(seg, (tree as PN).seg)
       }
     } else {
       return false
@@ -1107,13 +1103,13 @@ export class SmoothedPolylineCalculator {
   }
 
   static BezierSegIntersectsBoundary(
-    seg: CubicBezierSegment,
+    seg: BezierSeg,
     curve: ICurve,
   ): boolean {
-    for (const x of Curve.GetAllIntersections(seg, curve, false)) {
+    for (const x of Curve.getAllIntersections(seg, curve, false)) {
       const c: Curve = <Curve>curve
       if (c != null) {
-        if (Curve.RealCutWithClosedCurve(x, c, false)) {
+        if (Curve.realCutWithClosedCurve(x, c, false)) {
           return true
         }
       } else {

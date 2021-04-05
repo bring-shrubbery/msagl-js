@@ -264,13 +264,13 @@ namespace Microsoft.Msagl.Routing {
         Point TakeBoundaryPortOutsideOfItsLoosePolyline(ICurve nodeBoundary, double parameter, Polyline loosePolyline) {
             Point location = nodeBoundary[parameter];
             Point tangent =
-                (nodeBoundary.LeftDerivative(parameter).Normalize() +
-                    nodeBoundary.RightDerivative(parameter).Normalize()).Normalize();
+                (nodeBoundary.LeftDerivative(parameter).normalize() +
+                    nodeBoundary.RightDerivative(parameter).normalize()).normalize();
             if (Point.getTriangleOrientation(PointInsideOfConvexCurve(nodeBoundary), location, location + tangent) ==
                 TriangleOrientation.Counterclockwise)
                 tangent = -tangent;
 
-            tangent = tangent.Rotate(Math.PI / 2);
+            tangent = tangent.rotate(Math.PI / 2);
 
             double len = loosePolyline.BoundingBox.Diagonal;
             var ls = new LineSegment(location, location + len * tangent);
@@ -305,11 +305,11 @@ namespace Microsoft.Msagl.Routing {
         //    CurvePort bp = SourcePort as CurvePort;
         //    ICurve nodeBoundary = bp.node.BoundaryCurve;
         //    Point location = bp.Location;
-        //    Point tangent = (nodeBoundary.LeftDerivative(bp.Parameter).Normalize() + nodeBoundary.RightDerivative(bp.Parameter).Normalize()).Normalize();
+        //    Point tangent = (nodeBoundary.LeftDerivative(bp.Parameter).normalize() + nodeBoundary.RightDerivative(bp.Parameter).normalize()).normalize();
         //    if (Point.getTriangleOrientation(bp.node.Center, location, location + tangent) == TriangleOrientation.Counterclockwise)
         //        tangent = -tangent;
 
-        //    tangent = tangent.Rotate(Math.PI / 2);
+        //    tangent = tangent.rotate(Math.PI / 2);
 
         //    double len = this.sourceLoosePolyline.BoundingBox.Diagonal;
         //    Point portLocation = bp.Location;
@@ -503,7 +503,7 @@ namespace Microsoft.Msagl.Routing {
                 if (!InsideOfTheAllowedConeOfBoundaryPort(ls.End, SourcePort as CurvePort))
                     return false;
             if (!targetIsFloating && TargetPort != null && !sourceIsInsideOfTargetTightPolyline)
-                if (!InsideOfTheAllowedConeOfBoundaryPort(ls.Start, TargetPort as CurvePort))
+                if (!InsideOfTheAllowedConeOfBoundaryPort(ls.start, TargetPort as CurvePort))
                     return false;
             List < IntersectionInfo > xx = IntersectionsOfLineAndRectangleNodeOverPolyline(ls,
                 ObstacleCalculator.
@@ -542,7 +542,7 @@ namespace Microsoft.Msagl.Routing {
                 ? boundaryCurve.RightDerivative(portParam)
                 : -boundaryCurve.LeftDerivative(portParam);
 
-            return portLocation + tan.Rotate(EnteringAngleBound);
+            return portLocation + tan.rotate(EnteringAngleBound);
         }
 
         Point GetPointOnTheLeftBoundaryPortConeSide(Point portLocation, ICurve boundaryCurve, bool curveIsClockwise,
@@ -550,7 +550,7 @@ namespace Microsoft.Msagl.Routing {
             Point tan = curveIsClockwise
                 ? -boundaryCurve.LeftDerivative(portParam)
                 : boundaryCurve.RightDerivative(portParam);
-            return portLocation + tan.Rotate(-EnteringAngleBound);
+            return portLocation + tan.rotate(-EnteringAngleBound);
         }
 
 
@@ -559,7 +559,7 @@ namespace Microsoft.Msagl.Routing {
                 Point.getTriangleOrientation(relaxedPoint.next.OriginalPosition, relaxedPoint.OriginalPosition,
                     relaxedPoint.Prev.OriginalPosition) == TriangleOrientation.Counterclockwise;
             Point v =
-                ((relaxedPoint.next.OriginalPosition - relaxedPoint.Prev.OriginalPosition).Normalize() * offset).Rotate(
+                ((relaxedPoint.next.OriginalPosition - relaxedPoint.Prev.OriginalPosition).normalize() * offset).rotate(
                     Math.PI / 2);
 
             if (!leftTurn)
@@ -618,7 +618,7 @@ namespace Microsoft.Msagl.Routing {
             Site a = edgePolyline.HeadSite; //the corner start
             Site b; //the corner origin
             Site c; //the corner other end
-            while (Curve.FindCorner(a, out b, out c))
+            while (Curve.findCorner(a, out b, out c))
                 a = SmoothOneCorner(a, c, b);
         }
 
@@ -635,7 +635,7 @@ namespace Microsoft.Msagl.Routing {
             const double kMin = 0.01;
 
             double k = 0.5;
-            CubicBezierSegment seg;
+            BezierSeg seg;
             double u, v;
             if (a.Previous == null) {
                 //this will allow to the segment to start from site "a"
@@ -722,7 +722,7 @@ namespace Microsoft.Msagl.Routing {
             while (progress) {
                 progress = false;
                 for (Site s = underlyingPolyline.HeadSite; s != null && s.next != null; s = s.next) {
-                    if (s.Turn * s.next.Turn < 0)
+                    if (s.turn * s.next.turn < 0)
                         progress = TryToRemoveInflectionEdge(ref s) || progress;
                 }
             }
@@ -880,7 +880,7 @@ namespace Microsoft.Msagl.Routing {
 
             if (LineCanBeAcceptedForRouting(ls)) {
                 _polyline = new Polyline();
-                _polyline.AddPoint(ls.Start);
+                _polyline.AddPoint(ls.start);
                 _polyline.AddPoint(ls.End);
                 edgeGeometry.SmoothedPolyline = SmoothedPolyline.FromPoints(_polyline);
                 edgeGeometry.Curve = edgeGeometry.SmoothedPolyline.CreateCurve();
@@ -895,7 +895,7 @@ namespace Microsoft.Msagl.Routing {
                     0) {
                     _polyline = new Polyline();
                     _polyline.AddPoint(SourcePort.Location);
-                    _polyline.AddPoint(ls.Start);
+                    _polyline.AddPoint(ls.start);
                     _polyline.AddPoint(ls.End);
                     //RelaxPolyline();
                     edgeGeometry.SmoothedPolyline = SmoothedPolyline.FromPoints(_polyline);
@@ -964,7 +964,7 @@ namespace Microsoft.Msagl.Routing {
             Point targetPortLocation = targetPort.Location;
             var ls = new LineSegment(sourcePortLocation, targetPortLocation);
             if (LineCanBeAcceptedForRouting(ls)) {
-                polyline = SmoothedPolylineFromTwoPoints(ls.Start, ls.End);
+                polyline = SmoothedPolylineFromTwoPoints(ls.start, ls.End);
                 return ls;
             }
             if (!targetIsInsideOfSourceTightPolyline) {
@@ -974,7 +974,7 @@ namespace Microsoft.Msagl.Routing {
                     SourceLoosePolyline);
                 ls = new LineSegment(takenOutPoint, targetPortLocation);
                 if (LineAvoidsTightHierarchy(ls, targetPortLoosePolyline)) {
-                    polyline = SmoothedPolylineFromTwoPoints(ls.Start, ls.End);
+                    polyline = SmoothedPolylineFromTwoPoints(ls.start, ls.End);
                     return ls;
                 }
             }
@@ -1005,7 +1005,7 @@ namespace Microsoft.Msagl.Routing {
 
             var ls = new LineSegment(StartPointOfEdgeRouting, targetPortLocation);
             if (AllowedShootingStraightLines && LineAvoidsTightHierarchy(ls, SourceTightPolyline, targetTightPolyline)) {
-                smoothedPolyline = SmoothedPolylineFromTwoPoints(ls.Start, ls.End);
+                smoothedPolyline = SmoothedPolylineFromTwoPoints(ls.start, ls.End);
                 return ls;
             }
             //we need to route through the visibility graph
@@ -1204,9 +1204,9 @@ namespace Microsoft.Msagl.Routing {
             var ls = new LineSegment(sourcePortLocation, targetPortLocation);
             if (LineCanBeAcceptedForRouting(ls)) {
                 _polyline = new Polyline();
-                _polyline.AddPoint(ls.Start);
+                _polyline.AddPoint(ls.start);
                 _polyline.AddPoint(ls.End);
-                smoothedPolyline = SmoothedPolylineFromTwoPoints(ls.Start, ls.End);
+                smoothedPolyline = SmoothedPolylineFromTwoPoints(ls.start, ls.End);
                 curve = SmoothedPolyline.FromPoints(_polyline).CreateCurve();
             } else {
                 //try three variants with two segments
@@ -1217,7 +1217,7 @@ namespace Microsoft.Msagl.Routing {
                 if (InsideOfTheAllowedConeOfBoundaryPort(takenOutPoint, SourcePort as CurvePort) &&
                     LineAvoidsTightHierarchy(ls, _sourceTightPolyline)) {
                     _polyline = new Polyline();
-                    _polyline.AddPoint(ls.Start);
+                    _polyline.AddPoint(ls.start);
                     _polyline.AddPoint(ls.End);
                     _polyline.AddPoint(targetPortLocation);
                     curve = SmoothCornersAndReturnCurve(smooth, out smoothedPolyline);
@@ -1227,7 +1227,7 @@ namespace Microsoft.Msagl.Routing {
                         LineAvoidsTightHierarchy(ls)) {
                         _polyline = new Polyline();
                         _polyline.AddPoint(sourcePortLocation);
-                        _polyline.AddPoint(ls.Start);
+                        _polyline.AddPoint(ls.start);
                         _polyline.AddPoint(ls.End);
                         curve = SmoothCornersAndReturnCurve(smooth, out smoothedPolyline);
                     } else {
@@ -1300,7 +1300,7 @@ namespace Microsoft.Msagl.Routing {
             if (InsideOfTheAllowedConeOfBoundaryPort(sourcePort.Location, (CurvePort)targetPort)) {
                 ls = new LineSegment(SourcePort.Location, targetPortLocation);
                 if (LineCanBeAcceptedForRouting(ls)) {
-                    smoothedPolyline = SmoothedPolylineFromTwoPoints(ls.Start, ls.End);
+                    smoothedPolyline = SmoothedPolylineFromTwoPoints(ls.start, ls.End);
                     return ls;
                 }
             }
@@ -1311,7 +1311,7 @@ namespace Microsoft.Msagl.Routing {
             //can we do with just two line segments?
             ls = new LineSegment(SourcePort.Location, takenOutTargetPortLocation);
             if (LineAvoidsTightHierarchy(ls, _sourceTightPolyline)) {
-                _polyline = new Polyline(ls.Start, ls.End, targetPortLocation);
+                _polyline = new Polyline(ls.start, ls.End, targetPortLocation);
                 smoothedPolyline = SmoothedPolyline.FromPoints(_polyline);
                 return smoothedPolyline.CreateCurve();
             }
@@ -1587,14 +1587,14 @@ namespace Microsoft.Msagl.Routing {
             if (Point.getTriangleOrientation(intersections[0].IntersectionPoint, _polyline.End, _polyline.endPoint.Prev.point) == TriangleOrientation.Counterclockwise)
                 intersections.Reverse(); //so the [0] point is to the left of the Polyline
 
-            var polylineTangent = (_polyline.End - _polyline.endPoint.Prev.point).Normalize();
+            var polylineTangent = (_polyline.End - _polyline.endPoint.Prev.point).normalize();
 
-            var tan0 = curve.Derivative(intersections[0].Par0).Normalize();
+            var tan0 = curve.Derivative(intersections[0].Par0).normalize();
             var prj0 = tan0 * polylineTangent;
             if (Math.Abs(prj0) < 0.2)
                 ExtendPolyline(tan0, intersections[0], polylineTangent, port);
             else {
-                var tan1 = curve.Derivative(intersections[1].Par0).Normalize();
+                var tan1 = curve.Derivative(intersections[1].Par0).normalize();
                 var prj1 = tan1 * polylineTangent;
                 if (prj1 < prj0)
                     ExtendPolyline(tan1, intersections[1], polylineTangent, port);
@@ -1606,7 +1606,7 @@ namespace Microsoft.Msagl.Routing {
 
         void ExtendPolyline(Point tangentAtIntersection, IntersectionInfo x, Point polylineTangent, HookUpAnywhereFromInsidePort port) {
 
-            var normal = tangentAtIntersection.Rotate(Math.PI / 2);
+            var normal = tangentAtIntersection.rotate(Math.PI / 2);
             if (normal * polylineTangent < 0)
                 normal = -normal;
 
@@ -1626,9 +1626,9 @@ namespace Microsoft.Msagl.Routing {
                 lastPointInside.next.next = null;
                 _polyline.endPoint = lastPointInside.next;
                 var dir = lastPointInside.next.point - lastPointInside.point;
-                dir = dir.Normalize() * port.Curve.BoundingBox.Diagonal; //make it a long vector
-                var dir0 = dir.Rotate(-port.AdjustmentAngle);
-                var dir1 = dir.Rotate(port.AdjustmentAngle);
+                dir = dir.normalize() * port.Curve.BoundingBox.Diagonal; //make it a long vector
+                var dir0 = dir.rotate(-port.AdjustmentAngle);
+                var dir1 = dir.rotate(port.AdjustmentAngle);
                 var rx = Curve.CurveCurveIntersectionOne(port.Curve, new LineSegment(lastPointInside.point, lastPointInside.point + dir0), true);
                 var lx = Curve.CurveCurveIntersectionOne(port.Curve, new LineSegment(lastPointInside.point, lastPointInside.point + dir1), true);
                 if (rx == null || lx == null) return;

@@ -103,7 +103,7 @@ export class LineSegment implements ICurve {
 
   /*      
 static internal IntersectionInfo Cross(LineSeg coeff, LineSeg side1){
-IntersectionInfo xx=CrossTwoLines(coeff.Start, coeff.End-coeff.Start,side1.Start, side1.End-side1.Start);
+IntersectionInfo xx=CrossTwoLines(coeff.start, coeff.End-coeff.start,side1.start, side1.End-side1.start);
 if (xx == null)
 {
 //parallel segs
@@ -114,7 +114,7 @@ if (adir.length > bdir.length)
 {
 if (adir.length > Curve.DistEps)
 {
-adir = adir.Normalize();
+adir = adir.normalize();
 if(Math.Abs((coeff-side1)*adir<Curve.DistEps)){
 
 }
@@ -133,8 +133,8 @@ else
 return null;
 }
 else if(xx.Par0<0){
-if(Point.closeDistEps(coeff.Start,xx.x)){
-xx.x=coeff.Start; 
+if(Point.closeDistEps(coeff.start,xx.x)){
+xx.x=coeff.start; 
 xx.Par0=1;
 }
 else
@@ -153,9 +153,9 @@ return null;
 }
 else if (xx.Par1 < 0)
 {
-if (Point.closeDistEps(side1.Start, xx.x))
+if (Point.closeDistEps(side1.start, xx.x))
 {
-xx.x = coeff.Start;
+xx.x = coeff.start;
 xx.Par1 = 1;
 }
 else

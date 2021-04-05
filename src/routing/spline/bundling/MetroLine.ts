@@ -36,7 +36,7 @@
 //             l += (p.next.point - p.point).length;
 //         }
 //         Length = l;
-//         IdealLength = (Polyline.End - Polyline.Start).length;
+//         IdealLength = (Polyline.End - Polyline.start).length;
 //     }
 
 //     internal Func < Tuple < Polyline, Polyline >> sourceAndTargetLoosePolylines;
