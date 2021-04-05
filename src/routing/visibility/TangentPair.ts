@@ -200,7 +200,7 @@
 
 // //             // int p=P.FindTheFurthestVertexFromBisector(
 // // #if TEST_MSAGL
-// //             //if (!ApproximateComparer.Close(pClosest, qClosest))
+// //             //if (!Point.closeDistEps(pClosest, qClosest))
 // //             //    SugiyamaLayoutSettings.Show(this.P.Polyline, this.Q.Polyline, new LineSegment(pClosest, qClosest));
 // // #endif
 // //     }
@@ -244,18 +244,18 @@
 // //             else {
 // //                 //                    if(debug) LayoutAlgorithmSettings.Show(new LineSegment(P.Pnt(p2), Q.Pnt(q2)), new LineSegment(P.Pnt(p1), Q.Pnt(q1)), P.Polyline, Q.Polyline);
 // //                 qClosest = Point.ClosestPointAtLineSegment(pClosest, Q[q1].point, Q[q2].point);
-// //                 if (ApproximateComparer.Close(qClosest, Q.Pnt(q1)))
+// //                 if (Point.closeDistEps(qClosest, Q.Pnt(q1)))
 // //                     q2 = q1;
-// //                 else if (ApproximateComparer.Close(qClosest, Q.Pnt(q2)))
+// //                 else if (Point.closeDistEps(qClosest, Q.Pnt(q2)))
 // //                     q1 = q2;
 // //             }
 // //         } else {
 // //             Assert.assert(q1 == q2);
 // //             qClosest = Q[q1].point;
 // //             pClosest = Point.ClosestPointAtLineSegment(qClosest, P[p1].point, P[p2].point);
-// //             if (ApproximateComparer.Close(pClosest, P.Pnt(p1)))
+// //             if (Point.closeDistEps(pClosest, P.Pnt(p1)))
 // //                 p2 = p1;
-// //             else if (ApproximateComparer.Close(qClosest, P.Pnt(p2)))
+// //             else if (Point.closeDistEps(qClosest, P.Pnt(p2)))
 // //                 p1 = p2;
 // //         }
 // //     }

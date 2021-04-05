@@ -184,7 +184,7 @@
 //             }
 //             //bundles
 //             foreach(var adj of station.Neighbors) {
-//                 if (ApproximateComparer.Close(adj.Position, station.Position))
+//                 if (Point.closeDistEps(adj.Position, station.Position))
 //                     return false;
 
 //                 if (!EdgeIsLegal(station, adj, station.Position, adj.Position)) {

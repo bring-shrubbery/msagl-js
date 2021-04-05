@@ -148,7 +148,7 @@ export class Polygon
 //         var tp = new TangentPair(a, b);
 //         tp.FindClosestPoints(out p, out q);
 // #if TEST_MSAGL
-//         if (!ApproximateComparer.Close((p - q).Length, TestPolygonDist(a, b))) {
+//         if (!Point.closeDistEps((p - q).Length, TestPolygonDist(a, b))) {
 //             using(var stream = File.Open(@"c:\tmp\polygonBug", FileMode.Create)) {
 //                 var bf = new BinaryFormatter();
 //                 bf.Serialize(stream, a);

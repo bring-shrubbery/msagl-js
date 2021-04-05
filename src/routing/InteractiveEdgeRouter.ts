@@ -1240,7 +1240,7 @@ namespace Microsoft.Msagl.Routing {
                             _polyline.AddPoint(x);
                             _polyline.AddPoint(targetPortLocation);
                             curve = SmoothCornersAndReturnCurve(smooth, out smoothedPolyline);
-                        } else if (ApproximateComparer.Close(StartPointOfEdgeRouting, takenOutPoint)) {
+                        } else if (Point.closeDistEps(StartPointOfEdgeRouting, takenOutPoint)) {
                             _polyline = new Polyline();
                             _polyline.AddPoint(sourcePortLocation);
                             _polyline.AddPoint(takenOutPoint);

@@ -509,7 +509,7 @@ export class SplineRouter extends Algorithm {
   //                                                                             addedEdges.AddRange(AddVisibilityEdgesFromPort(edgeGeometry.TargetPort));
   //                                                                         }
 
-  //                                                                         if (!ApproximateComparer.Close(edgeGeometry.SourcePort.Location, edgeGeometry.TargetPort.Location)) {
+  //                                                                         if (!Point.closeDistEps(edgeGeometry.SourcePort.Location, edgeGeometry.TargetPort.Location)) {
   //                                                                             edgeGeometry.Curve = iRouter.RouteSplineFromPortToPortWhenTheWholeGraphIsReady(edgeGeometry.SourcePort, edgeGeometry.TargetPort, true, /* out */smoothedPolyline);
   //                                                                         }
   //                                                                         else {
@@ -1082,9 +1082,9 @@ export class SplineRouter extends Algorithm {
   //             return "green";
   //         }
 
-  //         if ((ApproximateComparer.Close(e.SourcePoint, sourcePort.Location)
-  //             || (ApproximateComparer.Close(e.SourcePoint, targetPort.Location)
-  //                 || (ApproximateComparer.Close(e.TargetPoint, sourcePort.Location) || ApproximateComparer.Close(e.TargetPoint, targetPort.Location))))) {
+  //         if ((Point.closeDistEps(e.SourcePoint, sourcePort.Location)
+  //             || (Point.closeDistEps(e.SourcePoint, targetPort.Location)
+  //                 || (Point.closeDistEps(e.TargetPoint, sourcePort.Location) || Point.closeDistEps(e.TargetPoint, targetPort.Location))))) {
   //             return "lightgreen";
   //         }
 
@@ -1191,13 +1191,13 @@ export class SplineRouter extends Algorithm {
   //         for (const p: PolylinePoint = boundary.startPoint; ;
   //         ) {
   //             const pn: PolylinePoint = p.NextOnPolyline;
-  //             if ((ApproximateComparer.Close(point, p.point) || ApproximateComparer.Close(point, pn.point))) {
+  //             if ((Point.closeDistEps(point, p.point) || Point.closeDistEps(point, pn.point))) {
   //                 return null;
   //             }
 
   //             // the point is already inside
   //             const par: number;
-  //             if (ApproximateComparer.Close(Point.DistToLineSegment(point, p.point, pn.point, /* out */par), 0)) {
+  //             if (Point.closeDistEps(Point.DistToLineSegment(point, p.point, pn.point, /* out */par), 0)) {
   //                 return p;
   //             }
 

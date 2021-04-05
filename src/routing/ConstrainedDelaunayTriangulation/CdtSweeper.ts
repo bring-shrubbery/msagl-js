@@ -318,7 +318,7 @@
 //         CdtSite LeftCase(CdtSite pi, RBNode < CdtFrontElement > hittedFrontElementNode, out CdtSite rightSite) {
 //             //left case
 //             //                if(db)ShowFrontWithSite(pi, new LineSegment(pi.point, hittedFrontElementNode.Item.Edge.upperSite.point), new LineSegment(pi.point, hittedFrontElementNode.Item.Edge.lowerSite.point));
-//             Assert.assert(ApproximateComparer.Close(pi.point.X, hittedFrontElementNode.Item.X));
+//             Assert.assert(Point.closeDistEps(pi.point.X, hittedFrontElementNode.Item.X));
 //             var hittedFrontElement = hittedFrontElementNode.Item;
 //             InsertAndLegalizeTriangle(pi, hittedFrontElement);
 //             var prevToHitted = front.Previous(hittedFrontElementNode);

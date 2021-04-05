@@ -150,7 +150,7 @@
 
 //         internal double RadiusCost(Station node, Point newPosition) {
 //             double idealR;
-//             if (ApproximateComparer.Close(node.Position, newPosition))
+//             if (Point.closeDistEps(node.Position, newPosition))
 //                 idealR = node.cachedIdealRadius;
 //             else
 //                 idealR = HubRadiiCalculator.CalculateIdealHubRadiusWithNeighbors(metroGraphData, bundlingSettings, node, newPosition);

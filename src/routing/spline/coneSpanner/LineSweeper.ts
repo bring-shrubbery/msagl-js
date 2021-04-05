@@ -94,11 +94,11 @@
 //             var pn = p.NextOnPolyline;
 //             Point insidePoint = FindInsidePoint(p.point, pn.point, cone);
 
-//             if (ApproximateComparer.Close(insidePoint, p.point)) {
+//             if (Point.closeDistEps(insidePoint, p.point)) {
 //                 AddEdgeAndRemoveCone(cone, p.point);
 //                 AddEdgesAndRemoveRemainingConesByPoint(p.point);
 //                 //we don't move p forward here. In the next iteration we just cross [p,pn] with the new leftmost cone right side
-//             } else if (ApproximateComparer.Close(insidePoint, pn.point)) {
+//             } else if (Point.closeDistEps(insidePoint, pn.point)) {
 //                 AddEdgeAndRemoveCone(cone, pn.point);
 //                 AddEdgesAndRemoveRemainingConesByPoint(pn.point);
 //                 p = pn;
@@ -122,7 +122,7 @@
 
 //         static Point FindInsidePointBool(Point leftPoint, Point rightPoint, Point apex, Point leftSideConePoint,
 //             Point rightSideConePoint) {
-//             if (ApproximateComparer.Close(leftPoint, rightPoint))
+//             if (Point.closeDistEps(leftPoint, rightPoint))
 //                 return leftPoint; //does not matter which one to return
 //             if (Point.PointIsInsideCone(leftPoint, apex, leftSideConePoint, rightSideConePoint))
 //                 return leftPoint;
@@ -197,7 +197,7 @@
 //         //            do
 //         //            {
 //         //                var pn = p.NextOnPolyline;
-//         //                Assert.assert(!ApproximateComparer.Close(p.point, pn.point));
+//         //                Assert.assert(!Point.closeDistEps(p.point, pn.point));
 //         //                Assert.assert((pn.point - p.point)*(pn.NextOnPolyline.point - pn.point) > -ApproximateComparer.Tolerance);
 //         //                p = pn;
 //         //            } while (p != BorderPolyline.startPoint);
@@ -266,8 +266,8 @@
 //             }
 
 //             Assert.assert(
-//                 !(ApproximateComparer.Close(np.point, np.PrevOnPolyline.point) ||
-//                     ApproximateComparer.Close(np.point, np.NextOnPolyline.point)));
+//                 !(Point.closeDistEps(np.point, np.PrevOnPolyline.point) ||
+//                     Point.closeDistEps(np.point, np.NextOnPolyline.point)));
 
 //             borderPolyline.RequireInit();
 //             return np;
@@ -562,7 +562,7 @@
 //             PolylinePoint nextVertex) {
 //             var prevSite = rightVertexEvent.Vertex.NextOnPolyline.point;
 //             var prevZ = prevSite * SweepDirection;
-//             if (ApproximateComparer.Close(prevZ, Z))
+//             if (Point.closeDistEps(prevZ, Z))
 //                 RemoveConesClosedBySegment(prevSite, rightVertexEvent.Vertex.point);
 
 //             var site = rightVertexEvent.Site;
@@ -717,7 +717,7 @@
 //             //close segments first
 //             Point prevSite = leftVertexEvent.Vertex.PrevOnPolyline.point;
 //             double prevZ = prevSite * SweepDirection;
-//             if (ApproximateComparer.Close(prevZ, Z) && (prevSite - leftVertexEvent.Site) * DirectionPerp > 0) {
+//             if (Point.closeDistEps(prevZ, Z) && (prevSite - leftVertexEvent.Site) * DirectionPerp > 0) {
 //                 //Show(
 //                 //    new Ellipse(1, 1, prevSite),
 //                 //    CurveFactory.CreateBox(2, 2, leftVertexEvent.Vertex.point));
@@ -738,7 +738,7 @@
 //                 RemoveRightSide(new RightObstacleSide(nextVertex));
 
 //             if (nextDelZ < -GeomConstants.distanceEpsilon ||
-//                 ApproximateComparer.Close(nextDelZ, 0) && (nextSite - leftVertexEvent.Site) * DirectionPerp > 0) {
+//                 Point.closeDistEps(nextDelZ, 0) && (nextSite - leftVertexEvent.Site) * DirectionPerp > 0) {
 //                 //if (angle > Math.PI / 2)
 //                 CreateConeOnVertex(leftVertexEvent); //it is the last left vertex on this obstacle
 

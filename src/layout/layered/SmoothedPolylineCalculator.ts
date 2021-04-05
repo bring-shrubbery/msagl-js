@@ -676,7 +676,7 @@ export class SmoothedPolylineCalculator {
     const b: Anchor = this.anchors[bottom]
     const ax: number = a.X
     const bx: number = b.X
-    if (ApproximateComparer.Close(ax, bx)) {
+    if (Point.closeDistEps(ax, bx)) {
       return
     }
 
@@ -711,7 +711,7 @@ export class SmoothedPolylineCalculator {
     const b: Anchor = this.anchors[bottom]
     const ax: number = a.X
     const bx: number = b.X
-    if (ApproximateComparer.Close(ax, bx)) {
+    if (Point.closeDistEps(ax, bx)) {
       return
     }
 
@@ -834,7 +834,7 @@ export class SmoothedPolylineCalculator {
     b: Anchor,
     middleNodeIndex: number,
   ): boolean {
-    if (!ApproximateComparer.Close(sax, sbx) && (sax - sbx) * sign > 0) {
+    if (!Point.closeDistEps(sax, sbx) && (sax - sbx) * sign > 0) {
       return false
     }
 
@@ -990,14 +990,14 @@ export class SmoothedPolylineCalculator {
 
   private ExtendCurveToEndpoints(curve: Curve): Curve {
     const p: Point = this.headSite.point
-    if (!ApproximateComparer.Close(p, curve.Start)) {
+    if (!Point.closeDistEps(p, curve.Start)) {
       const nc: Curve = new Curve()
       nc.AddSegs(new LineSegment(p, curve.Start), curve)
       curve = nc
     }
 
     p = this.TailSite.point
-    if (!ApproximateComparer.Close(p, curve.End)) {
+    if (!Point.closeDistEps(p, curve.End)) {
       curve.AddSegment(new LineSegment(curve.End, p))
     }
 
@@ -1053,7 +1053,7 @@ export class SmoothedPolylineCalculator {
 
     if (
       curve.Segments.Count > 0 &&
-      !ApproximateComparer.Close(curve.End, seg.Start)
+      !Point.closeDistEps(curve.End, seg.Start)
     ) {
       curve.AddSegment(new LineSegment(curve.End, seg.Start))
     }

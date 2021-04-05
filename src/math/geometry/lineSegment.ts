@@ -1,10 +1,10 @@
-import {ICurve} from './icurve'
-import {Point} from './point'
-import {Parallelogram} from './parallelogram'
-import {PlaneTransformation} from './planeTransformation'
-import {Rectangle} from './rectangle'
-import {GeomConstants} from './geomConstants'
-import {PN} from './parallelogramNode'
+import { ICurve } from './icurve'
+import { Point } from './point'
+import { Parallelogram } from './parallelogram'
+import { PlaneTransformation } from './planeTransformation'
+import { Rectangle } from './rectangle'
+import { GeomConstants } from './geomConstants'
+import { PN } from './parallelogramNode'
 export class LineSegment implements ICurve {
   start: Point //the line goes from start to end
   end: Point // the line end point
@@ -124,7 +124,7 @@ return null;
 }
 
 if(xx.Par0>1){
-if (ApproximateComparer.Close(coeff.End, xx.X))
+if (Point.closeDistEps(coeff.End, xx.X))
 {
 xx.X = coeff.End;
 xx.Par0 = 1;
@@ -133,7 +133,7 @@ else
 return null;
 }
 else if(xx.Par0<0){
-if(ApproximateComparer.Close(coeff.Start,xx.X)){
+if(Point.closeDistEps(coeff.Start,xx.X)){
 xx.X=coeff.Start; 
 xx.Par0=1;
 }
@@ -143,7 +143,7 @@ return null;
 
 if (xx.Par1 > 1)
 {
-if (ApproximateComparer.Close(side1.End, xx.X))
+if (Point.closeDistEps(side1.End, xx.X))
 {
 xx.X = coeff.End;
 xx.Par1 = 1;
@@ -153,7 +153,7 @@ return null;
 }
 else if (xx.Par1 < 0)
 {
-if (ApproximateComparer.Close(side1.Start, xx.X))
+if (Point.closeDistEps(side1.Start, xx.X))
 {
 xx.X = coeff.Start;
 xx.Par1 = 1;
@@ -303,7 +303,7 @@ return xx;
     b: Point,
     c: Point,
     d: Point,
-  ): {dist: number; parab: number; parcd: number} {
+  ): { dist: number; parab: number; parcd: number } {
     const u = b.sub(a)
     const v = d.sub(c)
     const w = a.sub(c)

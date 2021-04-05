@@ -290,8 +290,8 @@
 //         // <param name="te"></param>
 //         // <returns></returns>
 //         internal static ICurve BiArc(Point p0, Point ts, Point p4, Point te) {
-//             Assert.assert(ApproximateComparer.Close(ts.LengthSquared, 1));
-//             Assert.assert(ApproximateComparer.Close(te.LengthSquared, 1));
+//             Assert.assert(Point.closeDistEps(ts.LengthSquared, 1));
+//             Assert.assert(Point.closeDistEps(te.LengthSquared, 1));
 //             var v = p0 - p4;
 //             if (v.Length < GeomConstants.distanceEpsilon)
 //                 return null;

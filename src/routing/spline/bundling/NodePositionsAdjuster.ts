@@ -248,7 +248,7 @@
 //         seenStations.Delete(ret.Pop());
 //       continue;
 //     }
-//     if (ApproximateComparer.Close(station.Position, ret.Peek().Position))
+//     if (Point.closeDistEps(station.Position, ret.Peek().Position))
 //       continue;
 //     seenStations.Insert(station);
 //     ret.Push(station);

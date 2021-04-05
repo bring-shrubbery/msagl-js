@@ -190,7 +190,7 @@
 // #if TEST_MSAGL
 //             //List<ICurve> l = new List<ICurve>();
 //             //foreach (PEdge pe of this.visibilityGraph.Edges) {
-//             //    if (!ApproximateComparer.Close(pe.SourcePoint, pe.TargetPoint && pe.Target.PolylinePoint.Polyline!=pe.Source.PolylinePoint.Polyline))
+//             //    if (!Point.closeDistEps(pe.SourcePoint, pe.TargetPoint && pe.Target.PolylinePoint.Polyline!=pe.Source.PolylinePoint.Polyline))
 //             //        l.Add(new LineSegment(pe.SourcePoint, pe.TargetPoint));
 //             //}
 
