@@ -572,7 +572,7 @@
 //             var mbc = 0.5 * (c + b);
 //             Point center;
 //             Point.LineLineIntersection(mab, mab + (b - a).Rotate(Math.PI / 2), mbc, mbc + (b - c).Rotate(Math.PI / 2), out center);
-//             var r = (center - a).Length;
+//             var r = (center - a).length;
 //             return new Ellipse(r, r, center);
 //         }
 // #endif

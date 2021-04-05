@@ -68,7 +68,7 @@
 //         }
 
 //         void CreateCurves() {
-//             Assert.assert(metroGraphData.Metrolines.Count == metroGraphData.Edges.Length);
+//             Assert.assert(metroGraphData.Metrolines.Count == metroGraphData.Edges.length);
 //             for (int i = 0; i < metroGraphData.Metrolines.Count; i++)
 //             CreateCurveLine(metroGraphData.Metrolines[i], metroGraphData.Edges[i]);
 //         }
@@ -293,7 +293,7 @@
 //             Assert.assert(Point.closeDistEps(ts.LengthSquared, 1));
 //             Assert.assert(Point.closeDistEps(te.LengthSquared, 1));
 //             var v = p0 - p4;
-//             if (v.Length < GeomConstants.distanceEpsilon)
+//             if (v.length < GeomConstants.distanceEpsilon)
 //                 return null;
 
 //             var vtse = v * (ts - te);
@@ -359,8 +359,8 @@
 //             if (Math.Abs(Point.SignedDoubledTriangleArea(a, b, c)) < 0.0001 || !FindArcCenter(a, b, c, out center))
 //                 return new LineSegment(a, c);
 
-//             var radius = (a - center).Length;
-//             var chordLength = (a - b).Length;
+//             var radius = (a - center).length;
+//             var chordLength = (a - b).length;
 //             if (chordLength / radius < 0.0001)//to avoid a floating point error
 //                 return new LineSegment(a, c);
 //             var cenA = a - center;
@@ -407,7 +407,7 @@
 //         #region Bezier segments
 
 //         internal static CubicBezierSegment StandardBezier(Point segStart, Point tangentAtStart, Point segEnd, Point tangentAtEnd) {
-//             double len = (segStart - segEnd).Length / 4.0;
+//             double len = (segStart - segEnd).length / 4.0;
 //             return new CubicBezierSegment(segStart, segStart + tangentAtStart * len, segEnd + tangentAtEnd * len, segEnd);
 //         }
 
@@ -456,10 +456,10 @@
 //            var desiredDelta = Math.Min(del0, del1);
 //             var leftMiddle = lSeg[0.5];
 //             var rightMiddle = rSeg[0.5];
-//             if ((leftMiddle - rightMiddle).Length >= desiredDelta - GeomConstants.distanceEpsilon)
+//             if ((leftMiddle - rightMiddle).length >= desiredDelta - GeomConstants.distanceEpsilon)
 //                 return false;
-//             var leftMiddleToCenter = (leftMiddle - BundleHub.Vertex).Length;
-//             var rightMiddleToCenter = (rightMiddle - BundleHub.Vertex).Length;
+//             var leftMiddleToCenter = (leftMiddle - BundleHub.Vertex).length;
+//             var rightMiddleToCenter = (rightMiddle - BundleHub.Vertex).length;
 //             if (leftMiddleToCenter > rightMiddleToCenter) {
 //                 if (MoveSegToDesiredDistance(rightMiddle, lSeg, desiredDelta))
 //                     return true;
@@ -473,9 +473,9 @@
 //             double radius) {
 //             Point del0 = longerSeg[0] - shorterSeg[0];
 //             Point del1 = longerSeg[1] - shorterSeg[1];
-//             double minDelLength = Math.Min(del0.Length, del1.Length);
+//             double minDelLength = Math.Min(del0.length, del1.length);
 //             Point midPointOfShorter = shorterSeg[0.5];
-//             double maxDelLen = Math.Max(del0.Length, del1.Length);
+//             double maxDelLen = Math.Max(del0.length, del1.length);
 //             if (NicelyAligned((CubicBezierSegment)longerSeg.Segment, del0, del1, midPointOfShorter, minDelLength, maxDelLen) == 0)
 //                 return false;
 //             return FitLonger(longerSeg, del0, del1, midPointOfShorter, minDelLength, maxDelLen, center, radius);
@@ -531,7 +531,7 @@
 //             //the max offset from closestPointOnLine
 //             double maxOffset = Math.Sqrt(radius * radius - (closestPointOnLine - center).LengthSquared);
 //             Point offsetNow = highP - closestPointOnLine;
-//             double offsetLen = offsetNow.Length;
+//             double offsetLen = offsetNow.length;
 //             if (offsetLen > maxOffset)
 //                 highP = closestPointOnLine + maxOffset * offsetNow / offsetLen;
 //         }
@@ -550,7 +550,7 @@
 //             double minDelLength, double maxDelLen) {
 //             const double eps = 0.001;
 //             Point midDel = longerSeg[0.5] - midPointOfShorter;
-//             double midDelLen = midDel.Length;
+//             double midDelLen = midDel.length;
 //             if (del0 * midDel < 0 || del1 * midDel < 0)
 //                 return 1;
 //             if (midDelLen < minDelLength - eps)

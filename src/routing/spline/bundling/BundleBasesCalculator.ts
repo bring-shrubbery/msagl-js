@@ -417,17 +417,17 @@
 //         double bestDelta = 0;
 //         int bestI = -1, bestJ = -1;
 
-//         for (int i = 0; i < Deltas.Length - 1; i++) {
+//         for (int i = 0; i < Deltas.length - 1; i++) {
 //             double delta = DeltaWithChangedAngles(Deltas[i][0], Deltas[i][1], 0, 0, bundleInfo, bundleCost, parameterChange);
 //             if (delta > CostDeltaThreshold && delta > bestDelta) {
 //                 bestI = i;
-//                 bestJ = Deltas.Length - 1;
+//                 bestJ = Deltas.length - 1;
 //                 bestDelta = delta;
 //             }
 
 //             delta = DeltaWithChangedAngles(0, 0, Deltas[i][0], Deltas[i][1], bundleInfo, bundleCost, parameterChange);
 //             if (delta > CostDeltaThreshold && delta > bestDelta) {
-//                 bestI = Deltas.Length - 1;
+//                 bestI = Deltas.length - 1;
 //                 bestJ = i;
 //                 bestDelta = delta;
 //             }
@@ -548,7 +548,7 @@
 
 //     double GetAssymetryCostOnData(Point a, Point tangentA, Point b, Point tangentB, double assymetryWeight) {
 //         var xAxis = (a - b);
-//         var len = xAxis.Length;
+//         var len = xAxis.length;
 //         if (len < GeomConstants.distanceEpsilon)
 //             return 0;
 //         xAxis /= len;

@@ -97,7 +97,7 @@
 //   if (gluingMap.Count == 0)
 //     return false;
 
-//   for (int i = 0; i < metroGraphData.Edges.Length; i++)
+//   for (int i = 0; i < metroGraphData.Edges.length; i++)
 //   RegenerateEdge(gluingMap, i);
 
 //   //can it be more efficient?
@@ -140,14 +140,14 @@
 //     //double r = idealR;
 //     Assert.assert(r <= idealR);
 //     foreach(var adj of node.Neighbors)
-//     r = Math.Min(r, (node.Position - adj.Position).Length);
+//     r = Math.Min(r, (node.Position - adj.Position).length);
 //     return r;
 //   }
 // }
 
 // void TryToGlueNodes(Station i, Station j, Dictionary < Station, Station > gluingMap, Set < Station > gluedDomain) {
 //   Assert.assert(i != j);
-//   double d = (i.Position - j.Position).Length;
+//   double d = (i.Position - j.Position).length;
 //   double r1 = Math.Max(i.Radius, 5);
 //   double r2 = Math.Max(j.Radius, 5);
 //   if (d >= r1 + r2)
@@ -191,33 +191,33 @@
 // }
 
 // double ComputeCostDeltaAfterNodeGluing(Station i, Station j, Dictionary < Station, Station > gluingMap) {
-//   double d = (i.Position - j.Position).Length;
+//   double d = (i.Position - j.Position).length;
 //   if (i.Radius >= d || j.Radius >= d) return 1.0;
 
 //   double gain = 0;
 
 //   //ink
 //   double oldInk = metroGraphData.Ink;
-//   double newInk = metroGraphData.Ink - (j.Position - i.Position).Length;
+//   double newInk = metroGraphData.Ink - (j.Position - i.Position).length;
 //   foreach(var adj of i.Neighbors) {
 //     var k = Glued(adj, gluingMap);
-//     newInk -= (k.Position - i.Position).Length;
-//     newInk += (metroGraphData.RealEdgeCount(k, j) == 0 ? (k.Position - j.Position).Length : 0);
+//     newInk -= (k.Position - i.Position).length;
+//     newInk += (metroGraphData.RealEdgeCount(k, j) == 0 ? (k.Position - j.Position).length : 0);
 //   }
 
 //   gain += CostCalculator.InkError(oldInk, newInk, bundlingSettings);
 
 //   //path lengths
 //   foreach(var metroInfo of metroGraphData.MetroNodeInfosOfNode(i)) {
-//     double oldLength = metroInfo.Metroline.Length;
-//     double newLength = metroInfo.Metroline.Length;
+//     double oldLength = metroInfo.Metroline.length;
+//     double newLength = metroInfo.Metroline.length;
 
 //     PolylinePoint pi = metroInfo.PolyPoint;
 //     PolylinePoint pa = pi.Prev;
 //     PolylinePoint pb = pi.next;
 
-//     newLength -= (pa.point - i.Position).Length + (pb.point - i.Position).Length;
-//     newLength += (pa.point - j.Position).Length + (pb.point - j.Position).Length;
+//     newLength -= (pa.point - i.Position).length + (pb.point - i.Position).length;
+//     newLength += (pa.point - j.Position).length + (pb.point - j.Position).length;
 
 //     gain += CostCalculator.PathLengthsError(oldLength, newLength, metroInfo.Metroline.IdealLength,
 //       bundlingSettings);
@@ -240,7 +240,7 @@
 //   var ret = new Stack<Station>();
 //   ret.Push(metroline[0]);
 //   var seenStations = new Set<Station>();
-//   for (i = 1; i < metroline.Length - 1; i++) {
+//   for (i = 1; i < metroline.length - 1; i++) {
 //     var station = Glued(metroline[i], gluedMap);
 //     if (seenStations.Contains(station)) {
 //       //we made a cycle - need to cut it out
@@ -279,7 +279,7 @@
 //   polylineLength = new Dictionary<Metroline, double>();
 //   //create polylines
 //   foreach(var metroline of metroGraphData.Metrolines) {
-//     polylineLength[metroline] = metroline.Length;
+//     polylineLength[metroline] = metroline.length;
 //     for (var pp = metroline.Polyline.startPoint; pp.next != null; pp = pp.next) {
 //       var segment = new PointPair(pp.point, pp.next.point);
 //       CollectionUtilities.AddToMap(segsToPolylines, segment, metroline);
@@ -363,9 +363,9 @@
 //   //ink
 //   double oldInk = ink;
 //   double newInk = ink;
-//   double ab = (a - b).Length;
-//   double bc = (b - c).Length;
-//   double ac = (a - c).Length;
+//   double ab = (a - b).length;
+//   double bc = (b - c).length;
+//   double ac = (a - c).length;
 //   if (abPolylines.Count == abcPolylines.Count) newInk -= ab;
 //   if (bcPolylines.Count == abcPolylines.Count) newInk -= bc;
 //   if (!segsToPolylines.ContainsKey(new PointPair(a, c)) || segsToPolylines[new PointPair(a, c)].Count == 0)
@@ -409,9 +409,9 @@
 //   Set < Metroline > abPolylines, bcPolylines, abcPolylines;
 //   FindPolylines(pp, segsToPolylines, out abPolylines, out bcPolylines, out abcPolylines);
 
-//   double ab = (a - b).Length;
-//   double bc = (b - c).Length;
-//   double ac = (a - c).Length;
+//   double ab = (a - b).length;
+//   double bc = (b - c).length;
+//   double ac = (a - c).length;
 
 //   //fixing ink
 //   if (abPolylines.Count == abcPolylines.Count) ink -= ab;
@@ -472,13 +472,13 @@
 // }
 
 // bool GlueCollinearNeighbors(Station node, HashSet < Point > affectedPoints, int step) {
-//   if (node.Neighbors.Length <= 1) return false;
+//   if (node.Neighbors.length <= 1) return false;
 
 //   //node,adj => new via point
 //   Dictionary < Tuple < Station, Station >, Point > gluedEdges = new Dictionary<Tuple<Station, Station>, Point>();
 //   var neighbors = node.Neighbors;
-//   for (int i = 0; i < neighbors.Length; i++)
-//   TryToGlueEdges(node, neighbors[i], neighbors[(i + 1) % neighbors.Length], gluedEdges, step);
+//   for (int i = 0; i < neighbors.length; i++)
+//   TryToGlueEdges(node, neighbors[i], neighbors[(i + 1) % neighbors.length], gluedEdges, step);
 
 //   if (gluedEdges.Count == 0)
 //     return false;
@@ -497,8 +497,8 @@
 //   Assert.assert(a != b);
 //   var angle = Point.Angle(a.Position, node.Position, b.Position);
 //   if (angle < bundlingSettings.AngleThreshold) {
-//     var la = (a.Position - node.Position).Length;
-//     var lb = (b.Position - node.Position).Length;
+//     var la = (a.Position - node.Position).length;
+//     var lb = (b.Position - node.Position).length;
 //     double ratio = Math.Min(la, lb) / Math.Max(la, lb);
 //     if (ratio < 0.05) return;
 
@@ -527,7 +527,7 @@
 
 // Point ConstructGluingPoint(Station node, Station a, Station b) {
 //   //temp
-//   double len = Math.Min((a.Position - node.Position).Length, (b.Position - node.Position).Length) / 2;
+//   double len = Math.Min((a.Position - node.Position).length, (b.Position - node.Position).length) / 2;
 //   Point dir = (a.Position - node.Position).Normalize() + (b.Position - node.Position).Normalize();
 //   return node.Position + dir * len / 2;
 // }
@@ -578,26 +578,26 @@
 
 //   //ink
 //   double oldInk = metroGraphData.Ink;
-//   double newInk = metroGraphData.Ink - (node.Position - b.Position).Length - (node.Position - a.Position).Length +
-//     (node.Position - newp).Length + (newp - a.Position).Length + (newp - b.Position).Length;
+//   double newInk = metroGraphData.Ink - (node.Position - b.Position).length - (node.Position - a.Position).length +
+//     (node.Position - newp).length + (newp - a.Position).length + (newp - b.Position).length;
 //   gain += CostCalculator.InkError(oldInk, newInk, bundlingSettings);
 
 //   //path lengths
 //   foreach(var metroline of metroGraphData.GetIjInfo(node, b).Metrolines) {
-//     double oldLength = metroline.Length;
-//     double newLength = metroline.Length - (node.Position - b.Position).Length +
-//       (node.Position - newp).Length + (newp - b.Position).Length;
+//     double oldLength = metroline.length;
+//     double newLength = metroline.length - (node.Position - b.Position).length +
+//       (node.Position - newp).length + (newp - b.Position).length;
 //     gain += CostCalculator.PathLengthsError(oldLength, newLength, metroline.IdealLength, bundlingSettings);
 //   }
 //   foreach(var metroline of metroGraphData.GetIjInfo(node, a).Metrolines) {
-//     double oldLength = metroline.Length;
-//     double newLength = metroline.Length - (node.Position - a.Position).Length +
-//       (node.Position - newp).Length + (newp - a.Position).Length;
+//     double oldLength = metroline.length;
+//     double newLength = metroline.length - (node.Position - a.Position).length +
+//       (node.Position - newp).length + (newp - a.Position).length;
 //     gain += CostCalculator.PathLengthsError(oldLength, newLength, metroline.IdealLength, bundlingSettings);
 //   }
 
 //   //also compute radii gain
-//   //double nowR = Math.Min(GetCurrentHubRadius(node), (node.Position - newp).Length);
+//   //double nowR = Math.Min(GetCurrentHubRadius(node), (node.Position - newp).length);
 //   //double id2 = HubRadiiCalculator.CalculateIdealHubRadiusWithNeighbors(metroGraphData, bundlingSettings, node);
 //   double id2 = node.cachedIdealRadius;
 //   double nowR = GetCurrentHubRadius(node);
@@ -607,8 +607,8 @@
 //     gain += CostCalculator.RError(idealR, nowR, bundlingSettings);
 //   }
 
-//   if (id2 > (node.Position - newp).Length && !node.IsRealNode) {
-//     gain -= CostCalculator.RError(id2, (node.Position - newp).Length, bundlingSettings);
+//   if (id2 > (node.Position - newp).length && !node.IsRealNode) {
+//     gain -= CostCalculator.RError(id2, (node.Position - newp).length, bundlingSettings);
 //   }
 
 //   return gain;
@@ -682,13 +682,13 @@
 //     Point bestPoint = new Point();
 //     foreach(var d of closestPoints) {
 //       //should not be too close
-//       double distToSegmentEnd = Math.Min((a.Position - d.Item2).Length, (b.Position - d.Item2).Length);
-//       double distAB = (a.Position - b.Position).Length;
+//       double distToSegmentEnd = Math.Min((a.Position - d.Item2).length, (b.Position - d.Item2).length);
+//       double distAB = (a.Position - b.Position).length;
 //       double ratio = distToSegmentEnd / distAB;
 //       if (ratio < 0.1) continue;
 
 //       //choose the closest
-//       double dist = (d.Item1 - d.Item2).Length;
+//       double dist = (d.Item1 - d.Item2).length;
 //       if (bestDist == -1 || dist < bestDist) {
 //         bestDist = dist;
 //         bestPoint = d.Item2;

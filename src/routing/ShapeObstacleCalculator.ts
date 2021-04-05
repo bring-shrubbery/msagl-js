@@ -92,7 +92,7 @@ export class ShapeObstacleCalculator {
     InitialTightPolyline(shape: Shape): Polyline {
       let poly = InteractiveObstacleCalculator.PaddedPolylineBoundaryOfNode(shape.BoundaryCurve, this.TightPadding);
       let stickingPointsArray = this.LoosePolylinesUnderShape(shape).SelectMany(() => { }, l).Where(() => { }, (Curve.PointRelativeToCurveLocation(p, poly) == PointLocation.Outside)).ToArray();
-      if ((stickingPointsArray.Length <= 0)) {
+      if ((stickingPointsArray.length <= 0)) {
         return poly;
       }
   

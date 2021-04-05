@@ -6,7 +6,7 @@
 //     internal class StationEdgeInfo {
 //         internal StationEdgeInfo(Point iPos, Point jPos) {
 //             var dir = jPos - iPos;
-//             var length = dir.Length;
+//             var length = dir.length;
 //             if (length > GeomConstants.distanceEpsilon)
 //                 dir /= length;
 //         }

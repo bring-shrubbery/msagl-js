@@ -274,7 +274,7 @@
 //         }
 
 //         void ProcessEvent(SweepEvent p) {
-//             //            if(debug && (p.Site-new Point(-313.122 ,-170.6)).Length<1)
+//             //            if(debug && (p.Site-new Point(-313.122 ,-170.6)).length<1)
 //             //               Show( EllipseOnVert(p));
 //             var vertexEvent = p as VertexEvent;
 //             if (vertexEvent != null)
@@ -431,7 +431,7 @@
 //         }
 
 //         void ProcessVertexEvent(VertexEvent vertexEvent) {
-//             //            if (count == 872 && (vertexEvent.Site - new Point(-130.7368, -305.908)).Length < 1)
+//             //            if (count == 872 && (vertexEvent.Site - new Point(-130.7368, -305.908)).length < 1)
 //             //                Show(EllipseOnVert(vertexEvent));
 
 //             Z = GetZ(vertexEvent);

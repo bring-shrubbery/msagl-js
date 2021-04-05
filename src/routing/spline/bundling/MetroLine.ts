@@ -33,10 +33,10 @@
 //     internal void UpdateLengths() {
 //         var l = 0.0;
 //         for (var p = Polyline.startPoint; p.next != null; p = p.next) {
-//             l += (p.next.point - p.point).Length;
+//             l += (p.next.point - p.point).length;
 //         }
 //         Length = l;
-//         IdealLength = (Polyline.End - Polyline.Start).Length;
+//         IdealLength = (Polyline.End - Polyline.Start).length;
 //     }
 
 //     internal Func < Tuple < Polyline, Polyline >> sourceAndTargetLoosePolylines;

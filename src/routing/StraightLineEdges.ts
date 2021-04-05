@@ -123,7 +123,7 @@ export class StraightLineEdges extends Algorithm {
         : Math.Min(center.x - targetBox.Left, targetBox.Right - center.x)) / 2 //divide over 2 to not miss the rect
 
     const width = Math.Min(howMuchToStickOut, maxWidth)
-    if (dir.Length <= GeomConstants.distanceEpsilon) {
+    if (dir.length <= GeomConstants.distanceEpsilon) {
       dir = new Point(1, 0)
     }
 

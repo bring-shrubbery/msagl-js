@@ -70,6 +70,9 @@ enum PointLocation {
 }
 
 export class Curve implements ICurve {
+  static CurvesIntersect(curve1: ICurve, curve2: ICurve): boolean {
+    return curve1 == curve2 || (Curve.intersectionOne(curve1, curve2, false) != null);
+  }
   // fields
   parEnd_: number
 
@@ -1017,11 +1020,11 @@ export class Curve implements ICurve {
         const ls0 =
           nl0.seg instanceof LineSegment
             ? (nl0.seg as LineSegment)
-            : LineSegment.mkLinePP(l0Low, l0High)
+            : LineSegment.mkPP(l0Low, l0High)
         const ls1 =
           nl1.seg instanceof LineSegment
             ? (nl1.seg as LineSegment)
-            : LineSegment.mkLinePP(l1Low, l1High)
+            : LineSegment.mkPP(l1Low, l1High)
 
         const sol = Curve.crossWithinIntervalsWithGuess(
           ls0,
@@ -1125,11 +1128,11 @@ export class Curve implements ICurve {
           const ls0 =
             nl0.seg instanceof LineSegment
               ? (nl0.seg as LineSegment)
-              : LineSegment.mkLinePP(l0Low, l0High)
+              : LineSegment.mkPP(l0Low, l0High)
           const ls1 =
             nl1.seg instanceof LineSegment
               ? (nl1.seg as LineSegment)
-              : LineSegment.mkLinePP(l1Low, l1High)
+              : LineSegment.mkPP(l1Low, l1High)
 
           const sol = Curve.crossWithinIntervalsWithGuess(
             ls0,
@@ -1669,7 +1672,7 @@ export class Curve implements ICurve {
   }
 
   static addLineSegment(curve: Curve, pointA: Point, pointB: Point): Curve {
-    return curve.addSegment(LineSegment.mkLinePP(pointA, pointB))
+    return curve.addSegment(LineSegment.mkPP(pointA, pointB))
   }
 
   /*     
@@ -1982,7 +1985,7 @@ export class Curve implements ICurve {
       const p = ellipse[t] //point on the ellipse
       const tan = ellipse.derivative(t).normalize().mul(l) //make it long enough
 
-      const ls = LineSegment.mkLinePP(p.sub(tan), p.add(tan))
+      const ls = LineSegment.mkPP(p.sub(tan), p.add(tan))
       for (const x of Curve.getAllIntersections(rect, ls, true)) xs.push(x)
     }
 
@@ -2039,7 +2042,7 @@ function interpolate(
   Assert.assert(Point.closeDistEps(s.value(b), bp))
   const r = new Array<LineSegment>(0)
   if (isCloseToLineSeg(a, ap, b, bp, s, eps))
-    r.push(LineSegment.mkLinePP(ap, bp))
+    r.push(LineSegment.mkPP(ap, bp))
   else {
     const m = 0.5 * (a + b)
     const mp = s.value(m)

@@ -102,7 +102,7 @@
 //             if (pl != PointLocation.Outside) return false;
 
 //             Point touchPoint = obstacle[obstacle.ClosestParameter(center)];
-//             double dist = (touchPoint - center).Length;
+//             double dist = (touchPoint - center).length;
 //             if (dist <= radius)
 //                 touchedObstacles.Add(new Tuple<Polyline, Point>(obstacle, touchPoint));
 //             minimalDistance = Math.Min(dist, minimalDistance);
@@ -118,7 +118,7 @@
 //     // </summary>
 //     internal static bool LineSegmentIntersectPolyline(Point start, Point end, Polyline poly) {
 //         Point segDirection = end - start;   // the segment direction vector
-//         Assert.assert(segDirection.Length > GeomConstants.distanceEpsilon);
+//         Assert.assert(segDirection.length > GeomConstants.distanceEpsilon);
 
 //         double tStart = 0;                  // the maximum entering segment parameter
 //         double tEnd = 1;                    // the minimum leaving segment parameter

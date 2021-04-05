@@ -33,7 +33,7 @@ export class LineSegment implements ICurve {
     if (Point.close(p1, p2, GeomConstants.distanceEpsilon)) {
       return null
     }
-    return LineSegment.mkLinePP(p1, p2)
+    return LineSegment.mkPP(p1, p2)
   }
 
   value(t: number): Point {
@@ -73,7 +73,7 @@ export class LineSegment implements ICurve {
   }
 
   // construct a line segment
-  static mkLinePP(start: Point, end: Point): LineSegment {
+  static mkPP(start: Point, end: Point): LineSegment {
     return new LineSegment(start.x, start.y, end.x, end.y)
   }
 
@@ -98,7 +98,7 @@ export class LineSegment implements ICurve {
   }
 
   reverse() {
-    return LineSegment.mkLinePP(this.end, this.start)
+    return LineSegment.mkPP(this.end, this.start)
   }
 
   /*      
@@ -110,9 +110,9 @@ if (xx == null)
 Point adir=coeff.d1(0);
 Point bdir=side1.d1(0);
 
-if (adir.Length > bdir.Length)
+if (adir.length > bdir.length)
 {
-if (adir.Length > Curve.DistEps)
+if (adir.length > Curve.DistEps)
 {
 adir = adir.Normalize();
 if(Math.Abs((coeff-side1)*adir<Curve.DistEps)){
@@ -175,7 +175,7 @@ return xx;
 
   // Scale (multiply) from origin by x and y
   scaleFromOrigin(xScale: number, yScale: number) {
-    return LineSegment.mkLinePP(
+    return LineSegment.mkPP(
       this.start.scale(xScale, yScale),
       this.end.scale(xScale, yScale),
     )
@@ -191,7 +191,7 @@ return xx;
 
   // Return the transformed curve
   transform(transformation: PlaneTransformation) {
-    return LineSegment.mkLinePP(
+    return LineSegment.mkPP(
       transformation.multiplyPoint(this.start),
       transformation.multiplyPoint(this.end),
     )
@@ -223,7 +223,7 @@ return xx;
   // clones the curve.
 
   clone() {
-    return LineSegment.mkLinePP(this.start.clone(), this.end.clone())
+    return LineSegment.mkPP(this.start.clone(), this.end.clone())
   }
 
   static closestParameterOnLineSegment(

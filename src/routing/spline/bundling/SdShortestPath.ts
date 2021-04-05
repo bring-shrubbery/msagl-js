@@ -145,7 +145,7 @@
 
 //   List < SdBoneEdge > RouteEdge(EdgeGeometry edgeGeometry) {
 //     CurrentEdgeGeometry = edgeGeometry;
-//     for (int i = 0; i < vertexArray.Length; i++) {
+//     for (int i = 0; i < vertexArray.length; i++) {
 //       var sdv = vertexArray[i];
 //       sdv.SetPreviousToNull();
 //       sdv.IsSourceOfRouting = sdv.IsTargetOfRouting = false;
@@ -174,7 +174,7 @@
 //       List < SdBoneEdge > ret = RouteOnKnownSourceTargetVertices((CurrentEdgeGeometry.TargetPort.Location - CurrentEdgeGeometry.SourcePort.Location).Normalize(), i == 0);
 //       if (ret != null)
 //         return ret;
-//       for (int j = 0; j < vertexArray.Length; j++) {
+//       for (int j = 0; j < vertexArray.length; j++) {
 //         vertexArray[j].SetPreviousToNull();
 //       }
 //     }
@@ -233,7 +233,7 @@
 //       if (queueCandidate.IsTargetOfRouting) {
 //         double costToTarget = 0;
 //         if (CurrentEdgeGeometry.TargetPort is ClusterBoundaryPort)
-//         costToTarget = LengthCoefficient * (queueCandidate.point - CurrentEdgeGeometry.TargetPort.Location).Length;
+//         costToTarget = LengthCoefficient * (queueCandidate.point - CurrentEdgeGeometry.TargetPort.Location).length;
 
 //         if (newCost + costToTarget < LowestCostToTarget) {
 //           LowestCostToTarget = newCost + costToTarget;
@@ -306,11 +306,11 @@
 //   }
 
 //   double H(SdVertex v) {
-//     return v.Cost + LengthCoefficient * (v.point - CurrentEdgeGeometry.TargetPort.Location).Length;
+//     return v.Cost + LengthCoefficient * (v.point - CurrentEdgeGeometry.TargetPort.Location).length;
 //   }
 
 //   double GetEdgeAdditionalCost(SdBoneEdge boneEdge, double previousCost) {
-//     var len = (boneEdge.TargetPoint - boneEdge.SourcePoint).Length;
+//     var len = (boneEdge.TargetPoint - boneEdge.SourcePoint).length;
 //     return LengthCoefficient * len + previousCost +
 //       (boneEdge.IsOccupied ? 0 : BundlingSettings.InkImportance * len) + CapacityOverflowCost(boneEdge);
 //   }
@@ -396,7 +396,7 @@
 //   }
 
 //   double GetIdealDistanceBetweenSourceAndTarget(EdgeGeometry edgeGeometry) {
-//     return (edgeGeometry.SourcePort.Location - edgeGeometry.TargetPort.Location).Length;
+//     return (edgeGeometry.SourcePort.Location - edgeGeometry.TargetPort.Location).length;
 //   }
 
 //   void SetPortVerticesAndObstacles(Port port, bool sources, out Polyline poly) {
@@ -408,7 +408,7 @@
 //         double initialCost = 0;
 //         if (sources) {
 //           //we prefer paths starting from the center of the group
-//           initialCost = LengthCoefficient * (point - CurrentEdgeGeometry.SourcePort.Location).Length;
+//           initialCost = LengthCoefficient * (point - CurrentEdgeGeometry.SourcePort.Location).length;
 //         }
 //         AddAndEnqueueVertexToEnds(point, sources, initialCost);
 //       }
@@ -425,7 +425,7 @@
 //         var polys = this.ObstacleHierarchy.GetNodeItemsIntersectingRectangle(port.Curve.BoundingBox).ToArray();
 //         double mindiag = polys[0].BoundingBox.Diagonal;
 //         poly = polys[0];
-//         for (int i = 1; i < polys.Length; i++) {
+//         for (int i = 1; i < polys.length; i++) {
 //           var pl = polys[i];
 //           var diag = pl.BoundingBox.Diagonal;
 //           if (diag < mindiag) {
@@ -485,7 +485,7 @@
 //     var endPoly = e.lowerSite.Owner as Polyline;
 //     if (startPoly != endPoly) {
 //       //e.Capacity = Polygon.Distance(new Polygon(startPoly), new Polygon(endPoly)); //todo: cache this
-//       //e.Capacity = (e.upperSite.point - e.lowerSite.point).Length;
+//       //e.Capacity = (e.upperSite.point - e.lowerSite.point).length;
 //       double distA = Polygon.Distance(new Polygon(startPoly), e.lowerSite.point);
 //       double distB = Polygon.Distance(new Polygon(endPoly), e.upperSite.point);
 //       e.Capacity = (distA + distB) / 2;

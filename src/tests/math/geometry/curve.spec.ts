@@ -1,17 +1,17 @@
-import {LineSegment} from '../../../math/geometry/lineSegment'
-import {Ellipse} from '../../../math/geometry/ellipse'
-import {Point} from './../../../math/geometry/point'
-import {Curve} from './../../../math/geometry/curve'
-import {PlaneTransformation} from './../../../math/geometry/planeTransformation'
-import {CurveFactory} from './../../../math/geometry/curveFactory'
-import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
-import {DebugCurve} from './../../../math/geometry/debugCurve'
-import {BezierSeg} from './../../../math/geometry/bezierSeg'
-import {ICurve} from './../../../math/geometry/icurve'
-import {Rectangle} from './../../../math/geometry/rectangle'
+import { LineSegment } from '../../../math/geometry/lineSegment'
+import { Ellipse } from '../../../math/geometry/ellipse'
+import { Point } from './../../../math/geometry/point'
+import { Curve } from './../../../math/geometry/curve'
+import { PlaneTransformation } from './../../../math/geometry/planeTransformation'
+import { CurveFactory } from './../../../math/geometry/curveFactory'
+import { SvgDebugWriter } from './../../../math/geometry/svgDebugWriter'
+import { DebugCurve } from './../../../math/geometry/debugCurve'
+import { BezierSeg } from './../../../math/geometry/bezierSeg'
+import { ICurve } from './../../../math/geometry/icurve'
+import { Rectangle } from './../../../math/geometry/rectangle'
 
 function intersectOnDiameter(a: Point, b: Point) {
-  const ls = LineSegment.mkLinePP(a, b)
+  const ls = LineSegment.mkPP(a, b)
   const circ = Ellipse.mkCircle(b.sub(a).length / 2, Point.middle(a, b))
   let xx = Curve.getAllIntersections(ls, circ, false)
   expect(xx.length == 2).toBeTruthy()
@@ -61,7 +61,7 @@ test('box translate behavior', () => {
     new Point(300, 0),
   ]
   const bezSeg = new BezierSeg(b[0], b[1], b[2], b[3])
-  const ls = LineSegment.mkLinePP(b[0], b[1])
+  const ls = LineSegment.mkPP(b[0], b[1])
   const rr: Curve = CurveFactory.mkRectangleWithRoundedCorners(
     100,
     52,

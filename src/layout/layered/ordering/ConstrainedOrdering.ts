@@ -525,8 +525,8 @@ export class ConstrainedOrdering {
   // }
 
   // SimpleGapBetweenTwoNodes(leftNode: number, rightNode: number): number {
-  //   return (this.database.anchors[leftNode].RightAnchor
-  //     + (this.NodeSeparation() + this.database.anchors[rightNode].LeftAnchor));
+  //   return (this.database.anchors[leftNode].rightAnchor
+  //     + (this.NodeSeparation() + this.database.anchors[rightNode].leftAnchor));
   // }
 
   // private /* internal */ static CreateSolver(): ISolverShell {

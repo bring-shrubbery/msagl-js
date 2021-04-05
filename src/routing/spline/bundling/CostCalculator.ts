@@ -71,7 +71,7 @@
 
 //             //path lengths
 //             foreach(var metroline of metroGraphData.Metrolines) {
-//                 cost += bundlingSettings.PathLengthImportance * metroline.Length / metroline.IdealLength;
+//                 cost += bundlingSettings.PathLengthImportance * metroline.length / metroline.IdealLength;
 //             }
 
 //             cost += CostOfForces(metroGraphData, bundlingSettings);
@@ -109,8 +109,8 @@
 //             double newInk = metroGraphData.Ink;
 //             foreach(var adj of node.Neighbors) {
 //                 Point adjPosition = adj.Position;
-//                 newInk -= (adjPosition - node.Position).Length;
-//                 newInk += (adjPosition - newPosition).Length;
+//                 newInk -= (adjPosition - node.Position).length;
+//                 newInk += (adjPosition - newPosition).length;
 //             }
 //             return InkError(oldInk, newInk, bundlingSettings);
 //         }
@@ -122,13 +122,13 @@
 //             double gain = 0;
 //             //edge lengths
 //             foreach(var e of metroGraphData.MetroNodeInfosOfNode(node)) {
-//                 var oldLength = e.Metroline.Length;
-//                 var newLength = e.Metroline.Length;
+//                 var oldLength = e.Metroline.length;
+//                 var newLength = e.Metroline.length;
 
 //                 var prev = e.PolyPoint.Prev.point;
 //                 var next = e.PolyPoint.next.point;
 
-//                 newLength += (next - newPosition).Length + (prev - newPosition).Length - (next - node.Position).Length - (prev - node.Position).Length;
+//                 newLength += (next - newPosition).length + (prev - newPosition).length - (next - node.Position).length - (prev - node.Position).length;
 
 //                 gain += PathLengthsError(oldLength, newLength, e.Metroline.IdealLength, bundlingSettings);
 //             }
@@ -162,7 +162,7 @@
 
 //             double cost = 0;
 //             foreach(var d of touchedObstacles) {
-//                 double dist = (d.Item2 - newPosition).Length;
+//                 double dist = (d.Item2 - newPosition).length;
 //                 cost += RError(idealR, dist, bundlingSettings);
 //             }
 
@@ -197,7 +197,7 @@
 //             }
 
 //             foreach(var pair of closestDist) {
-//                 double dist = (pair.Item1 - pair.Item2).Length;
+//                 double dist = (pair.Item1 - pair.Item2).length;
 //                 cost += BundleError(idealWidth / 2, dist, bundlingSettings);
 //             }
 

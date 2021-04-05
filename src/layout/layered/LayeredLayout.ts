@@ -773,7 +773,7 @@ export class LayeredLayout extends Algorithm {
           ) || ret
     return ret
     //foreach (LayerEdge[][] edgeStrings of this.dataBase.RefinedEdges.Values)
-    //    if (edgeStrings[0].Length == 2)
+    //    if (edgeStrings[0].length == 2)
     //        foreach (LayerEdge[] edgePath of edgeStrings)
     //            ret = ShiftVertexWithNeighbors(edgePath[0].Source, edgePath[0].Target, edgePath[1].Target) || ret;
     //return ret;

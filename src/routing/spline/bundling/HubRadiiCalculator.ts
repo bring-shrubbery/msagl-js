@@ -127,7 +127,7 @@
 
 //         //adjacent nodes
 //         foreach(Station adj of node.Neighbors) {
-//             double dist = (adj.Position - node.Position).Length;
+//             double dist = (adj.Position - node.Position).length;
 //             Assert.assert(dist - 0.05 * (node.Radius + adj.Radius) + 1 >= node.Radius + adj.Radius);
 //             r = Math.Min(r, dist / 1.05 - adj.Radius);
 //         }
@@ -172,9 +172,9 @@
 //         if (node.Neighbors.Count() > 1) {
 //             Station[] adjNodes = node.Neighbors;
 //             //there must be enough space between neighbor bundles
-//             for (int i = 0; i < adjNodes.Length; i++) {
+//             for (int i = 0; i < adjNodes.length; i++) {
 //                 Station adj = adjNodes[i];
-//                 Station nextAdj = adjNodes[(i + 1) % adjNodes.Length];
+//                 Station nextAdj = adjNodes[(i + 1) % adjNodes.length];
 //                 r = Math.Max(r, GetMinRadiusForTwoAdjacentBundles(r, node, newPosition, adj, nextAdj, metroGraphData, bundlingSettings));
 //             }
 //         }
@@ -188,7 +188,7 @@
 //         static double CalculateIdealHubRadiusWithAdjacentEdges(MetroGraphData metroGraphData, BundlingSettings bundlingSettings, Station node) {
 //         double r = bundlingSettings.MaxHubRadius;
 //         foreach(var adj of node.Neighbors) {
-//             r = Math.Min(r, (node.Position - adj.Position).Length / 2);
+//             r = Math.Min(r, (node.Position - adj.Position).length / 2);
 //         }
 
 //         return r;

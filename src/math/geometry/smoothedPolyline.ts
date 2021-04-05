@@ -57,7 +57,7 @@ export class SmoothedPolyline {
     let s0 = this.headSite
     let s1 = s0.next
     while (s1 != null) {
-      yield LineSegment.mkLinePP(s0.point, s1.point)
+      yield LineSegment.mkPP(s0.point, s1.point)
       s0 = s1
       s1 = s1.next
     }

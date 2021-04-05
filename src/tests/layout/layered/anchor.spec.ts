@@ -1,14 +1,14 @@
-import {GeomNode} from './../../../layout/core/geomNode'
-import {Anchor} from './../../../layout/layered/anchor'
-import {CurveFactory} from './../../../math/geometry/curveFactory'
-import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
-import {Point} from './../../../math/geometry/point'
-import {Polyline} from './../../../math/geometry/polyline'
-import {LineSegment} from './../../../math/geometry/lineSegment'
-import {Curve} from './../../../math/geometry/curve'
-import {IntersectionInfo} from './../../../math/geometry/intersectionInfo'
-import {Node} from './../../../structs/node'
-import {GeomConstants} from '../../../math/geometry/geomConstants'
+import { GeomNode } from './../../../layout/core/geomNode'
+import { Anchor } from './../../../layout/layered/anchor'
+import { CurveFactory } from './../../../math/geometry/curveFactory'
+import { SvgDebugWriter } from './../../../math/geometry/svgDebugWriter'
+import { Point } from './../../../math/geometry/point'
+import { Polyline } from './../../../math/geometry/polyline'
+import { LineSegment } from './../../../math/geometry/lineSegment'
+import { Curve } from './../../../math/geometry/curve'
+import { IntersectionInfo } from './../../../math/geometry/intersectionInfo'
+import { Node } from './../../../structs/node'
+import { GeomConstants } from '../../../math/geometry/geomConstants'
 
 function paddingIsCorrectOnLineSeg(
   ls: LineSegment,
@@ -60,7 +60,7 @@ function paddingIsCorrectForDirection(angle: number, anch: Anchor) {
   const center = anch.polygonalBoundary.boundingBox.center
   const del = new Point(l, 0)
   // this line should cross anch.polygonalBoundary at two points
-  let ls = LineSegment.mkLinePP(center.add(del), center.sub(del))
+  let ls = LineSegment.mkPP(center.add(del), center.sub(del))
   ls = CurveFactory.rotateCurveAroundCenterByDegree(
     ls,
     center,

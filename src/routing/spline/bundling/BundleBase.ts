@@ -63,7 +63,7 @@
 
 //     internal BundleBase OppositeBase { get { return OutgoingBundleInfo != null ? OutgoingBundleInfo.TargetBase : IncomingBundleInfo.SourceBase; } }
 
-//     internal int Count { get { return points.Length; } }
+//     internal int Count { get { return points.length; } }
 
 //     internal Point[] Points { get { return points; } }
 

@@ -133,7 +133,7 @@ export class SmoothedPolylineCalculator {
     //     l.AddRange(thinRightNodes.Select(n=>n.parallelogram).Select(p=>new Polyline(p.Vertex(VertexId.Corner), p.Vertex(VertexId.VertexA),
     //         p.Vertex(VertexId.OtherCorner), p.Vertex(VertexId.VertexB))).Select(c=>new DebugCurve(100,3,"brown", c)));
     //     foreach (var le of this.edgePath.LayerEdges)
-    //         l. push(new DebugCurve(100, 1, "blue", new LineSegment(db.anchors[le.Source].Origin, db.anchors[le.Target].Origin)));
+    //         l. push(new DebugCurve(100, 1, "blue", LineSegment.mkPP(db.anchors[le.Source].Origin, db.anchors[le.Target].Origin)));
     //    LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(l);
     //     // Database(db, thinRightNodes.Select(p=>new Polyline(p.parallelogram.Vertex(VertexId.Corner), p.parallelogram.Vertex(VertexId.VertexA),
     //         //p.parallelogram.Vertex(VertexId.OtherCorner), p.parallelogram.Vertex(VertexId.VertexB)){Closed=true}).ToArray());
@@ -425,7 +425,7 @@ export class SmoothedPolylineCalculator {
   }
 
   LineSegIntersectBound(a: Point, b: Point): boolean {
-    const l = LineSegment.mkLinePP(a, b)
+    const l = LineSegment.mkPP(a, b)
     return (
       SmoothedPolylineCalculator.CurveIntersectsHierarchy(
         l,
@@ -544,7 +544,7 @@ export class SmoothedPolylineCalculator {
     hierarchy: PN,
   ): boolean {
     return SmoothedPolylineCalculator.CurveIntersectsHierarchy(
-      LineSegment.mkLinePP(a.point, b.point),
+      LineSegment.mkPP(a.point, b.point),
       hierarchy,
     )
   }
@@ -698,8 +698,8 @@ export class SmoothedPolylineCalculator {
     ms.next.point = new Point(t.bx, b.y)
     const ma: Anchor = this.anchors[this.EdgePathNode(1)]
     ma.x = ms.point.x
-    // show(new DebugCurve(200, 3, "yellow", new LineSegment(ax, a.y, ms.point.x, ms.point.y)),
-    //     new DebugCurve(200, 3, "green", new LineSegment(bx, b.y, ms.point.x, ms.point.y)));
+    // show(new DebugCurve(200, 3, "yellow", LineSegment.mkPP(ax, a.y, ms.point.x, ms.point.y)),
+    //     new DebugCurve(200, 3, "green", LineSegment.mkPP(bx, b.y, ms.point.x, ms.point.y)));
   }
 
   OptimizeForTwoSites() {
@@ -780,10 +780,10 @@ export class SmoothedPolylineCalculator {
       }
 
       if (t.sign == 1) {
-        t.ax = a.right - 0.1 * a.RightAnchor
+        t.ax = a.right - 0.1 * a.rightAnchor
         t.bx = b.left
       } else {
-        t.ax = a.left + 0.1 * a.LeftAnchor
+        t.ax = a.left + 0.1 * a.leftAnchor
         t.bx = b.right
       }
     }
@@ -793,17 +793,17 @@ export class SmoothedPolylineCalculator {
 
   private OriginToOriginSegCrossesAnchorSide(a: Anchor, b: Anchor): boolean {
     Assert.assert(a.y > b.y)
-    const seg = new LineSegment(a.Origin, b.Origin)
+    const seg = LineSegment.mkPP(a.Origin, b.Origin)
     return (
       (a.x < b.x &&
         Curve.CurvesIntersect(
           seg,
-          new LineSegment(a.RightBottom, a.RightTop),
+          LineSegment.mkPP(a.rightBottom, a.rightTop),
         )) ||
-      Curve.CurvesIntersect(seg, new LineSegment(b.LeftBottom, a.LeftTop)) ||
+      Curve.CurvesIntersect(seg, LineSegment.mkPP(b.leftBottom, a.leftTop)) ||
       (a.x > b.x &&
-        Curve.CurvesIntersect(seg, new LineSegment(a.LeftBottom, a.LeftTop))) ||
-      Curve.CurvesIntersect(seg, new LineSegment(b.RightBottom, a.RightTop))
+        Curve.CurvesIntersect(seg, LineSegment.mkPP(a.leftBottom, a.leftTop))) ||
+      Curve.CurvesIntersect(seg, LineSegment.mkPP(b.rightBottom, a.rightTop))
     )
   }
 
@@ -816,7 +816,7 @@ export class SmoothedPolylineCalculator {
       this.edgePath.count == 2 &&
       this.headSite.next.next != null &&
       this.headSite.next.next.next == null &&
-      this.anchors[this.EdgePathNode(1)].Node == null
+      this.anchors[this.EdgePathNode(1)].node == null
     ) {
       this.OptimizeForThreeSites()
     } else if (this.edgePath.count == 1) {
@@ -832,7 +832,7 @@ export class SmoothedPolylineCalculator {
     b: Anchor,
     middleNodeIndex: number,
   ): boolean {
-    if (!Point.closeDistEps(sax, sbx) && (sax - sbx) * sign > 0) {
+    if (!Point.closeD(sax, sbx) && (sax - sbx) * sign > 0) {
       return false
     }
 
@@ -863,7 +863,7 @@ export class SmoothedPolylineCalculator {
       }
     }
 
-    if (pos < mLayer.Length - 1) {
+    if (pos < mLayer.length - 1) {
       const r: Anchor = this.anchors[mLayer[pos + 1]]
       if (r.left < shift + mAnchor.right) {
         return false
@@ -957,7 +957,7 @@ export class SmoothedPolylineCalculator {
       curve = this.ExtendCurveToEndpoints(curve)
     } else {
       curve.AddSegment(
-        new LineSegment(this.headSite.point, this.TailSite.point),
+        LineSegment.mkPP(this.headSite.point, this.TailSite.point),
       )
     }
 
@@ -990,13 +990,13 @@ export class SmoothedPolylineCalculator {
     const p: Point = this.headSite.point
     if (!Point.closeDistEps(p, curve.Start)) {
       const nc: Curve = new Curve()
-      nc.AddSegs(new LineSegment(p, curve.Start), curve)
+      nc.AddSegs(LineSegment.mkPP(p, curve.Start), curve)
       curve = nc
     }
 
     p = this.TailSite.point
     if (!Point.closeDistEps(p, curve.End)) {
-      curve.AddSegment(new LineSegment(curve.End, p))
+      curve.AddSegment(LineSegment.mkPP(curve.End, p))
     }
 
     return curve
@@ -1053,7 +1053,7 @@ export class SmoothedPolylineCalculator {
       curve.Segments.count > 0 &&
       !Point.closeDistEps(curve.End, seg.Start)
     ) {
-      curve.AddSegment(new LineSegment(curve.End, seg.Start))
+      curve.AddSegment(LineSegment.mkPP(curve.End, seg.Start))
     }
 
     curve.AddSegment(seg)

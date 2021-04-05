@@ -109,7 +109,7 @@
 
 //     void ProcessNeighbor(GenericBinaryHeapPriorityQueue < VisibilityVertex > pq, VisibilityVertex u, VisibilityEdge l, VisibilityVertex v, int penalty)
 //     {
-//         var len = l.Length + penalty;
+//         var len = l.length + penalty;
 //         var c = u.Distance + len;
 
 //         if (v != _source && _visGraph.PreviosVertex(v) == null) {
@@ -135,7 +135,7 @@
 
 //     void ProcessNeighbor(GenericBinaryHeapPriorityQueue < VisibilityVertex > pq, VisibilityVertex u, VisibilityEdge l, VisibilityVertex v)
 //     {
-//         var len = l.Length;
+//         var len = l.length;
 //         var c = u.Distance + len;
 
 //         if (v != _source && _visGraph.PreviosVertex(v) == null) {
@@ -161,7 +161,7 @@
 
 //     double H(VisibilityVertex visibilityVertex)
 //     {
-//         return visibilityVertex.Distance + (visibilityVertex.point - _target.point).Length * LengthMultiplierForAStar;
+//         return visibilityVertex.Distance + (visibilityVertex.point - _target.point).length * LengthMultiplierForAStar;
 //     }
 
 //     IEnumerable < VisibilityVertex > CalculatePath(bool shrinkEdgeLength)

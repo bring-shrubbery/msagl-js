@@ -34,17 +34,17 @@ export class UnimodalSequence {
 
   constructor(sequenceDelegate: (m: number) => number, length: number) {
     this.f = sequenceDelegate
-    this.Length = length
+    this.length = length
   }
 
   FindMinimum(): number {
     // find out first that the minimum is inside of the domain
     let a = 0
-    let b: number = this.Length - 1
+    let b: number = this.length - 1
     let m: number = a + Math.floor((b - a) / 2)
     const valAtM: number = this.f(m)
-    if (valAtM >= this.f(0) && valAtM >= this.f(this.Length - 1))
-      return this.f(0) < this.f(this.Length - 1) ? 0 : this.Length - 1
+    if (valAtM >= this.f(0) && valAtM >= this.f(this.length - 1))
+      return this.f(0) < this.f(this.length - 1) ? 0 : this.length - 1
     while (b - a > 1) {
       m = a + Math.floor((b - a) / 2)
       switch (this.BehaviourAtIndex(m)) {
@@ -72,8 +72,8 @@ export class UnimodalSequence {
       return seqAt1 > seqAtM ? Behavior.Increasing : Behavior.Decreasing
     }
 
-    if (m == this.Length - 1) {
-      const seqAt1: number = this.f(this.Length - 2)
+    if (m == this.length - 1) {
+      const seqAt1: number = this.f(this.length - 2)
       if (seqAt1 == seqAtM) {
         return Behavior.Extremum
       }
@@ -91,11 +91,11 @@ export class UnimodalSequence {
   FindMaximum(): number {
     // find out first that the maximum is inside of the domain
     let a = 0
-    let b: number = this.Length - 1
+    let b: number = this.length - 1
     let m: number = a + Math.floor((b - a) / 2)
     const valAtM: number = this.f(m)
-    if (valAtM <= this.f(0) && valAtM <= this.f(this.Length - 1)) {
-      return this.f(0) > this.f(this.Length - 1) ? 0 : this.Length - 1
+    if (valAtM <= this.f(0) && valAtM <= this.f(this.length - 1)) {
+      return this.f(0) > this.f(this.length - 1) ? 0 : this.length - 1
     }
 
     while (b - a > 1) {

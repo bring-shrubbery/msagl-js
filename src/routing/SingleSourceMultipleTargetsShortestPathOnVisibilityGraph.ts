@@ -69,7 +69,7 @@
 
 //     void ProcessNeighbor(GenericBinaryHeapPriorityQueue < VisibilityVertex > pq, VisibilityEdge l,
 //         VisibilityVertex v) {
-//         var len = l.Length;
+//         var len = l.length;
 //         var c = current.Distance + len;
 //         if (c >= upperBound)
 //             return;

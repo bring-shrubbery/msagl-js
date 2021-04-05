@@ -43,9 +43,9 @@ export class EdgeGeometry {
    internal number GetMaxArrowheadLength() {
    number l = 0;
    if (SourceArrowhead != null)
-     l = SourceArrowhead.Length;
-   if (TargetArrowhead != null && TargetArrowhead.Length > l)
-     return TargetArrowhead.Length;
+     l = SourceArrowhead.length;
+   if (TargetArrowhead != null && TargetArrowhead.length > l)
+     return TargetArrowhead.length;
    return l;
  }
  

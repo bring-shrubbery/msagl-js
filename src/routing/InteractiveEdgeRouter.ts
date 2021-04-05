@@ -276,7 +276,7 @@ namespace Microsoft.Msagl.Routing {
             var ls = new LineSegment(location, location + len * tangent);
             Point p = Curve.GetAllIntersections(ls, loosePolyline, false)[0].IntersectionPoint;
 
-            Point del = tangent * (p - location).Length * 0.5;
+            Point del = tangent * (p - location).length * 0.5;
             //Point del = tangent * this.OffsetForPolylineRelaxing * 2;
 
 
@@ -303,10 +303,10 @@ namespace Microsoft.Msagl.Routing {
 
         //Point TakeSourcePortOutsideOfLoosePolyline() {
         //    CurvePort bp = SourcePort as CurvePort;
-        //    ICurve nodeBoundary = bp.Node.BoundaryCurve;
+        //    ICurve nodeBoundary = bp.node.BoundaryCurve;
         //    Point location = bp.Location;
         //    Point tangent = (nodeBoundary.LeftDerivative(bp.Parameter).Normalize() + nodeBoundary.RightDerivative(bp.Parameter).Normalize()).Normalize();
-        //    if (Point.getTriangleOrientation(bp.Node.Center, location, location + tangent) == TriangleOrientation.Counterclockwise)
+        //    if (Point.getTriangleOrientation(bp.node.Center, location, location + tangent) == TriangleOrientation.Counterclockwise)
         //        tangent = -tangent;
 
         //    tangent = tangent.Rotate(Math.PI / 2);
@@ -1583,7 +1583,7 @@ namespace Microsoft.Msagl.Routing {
             //creating a hook
             var ellipse = new Ellipse(port.HookSize, port.HookSize, _polyline.End);
             var intersections = Curve.GetAllIntersections(curve, ellipse, true).ToArray();
-            Assert.assert(intersections.Length == 2);
+            Assert.assert(intersections.length == 2);
             if (Point.getTriangleOrientation(intersections[0].IntersectionPoint, _polyline.End, _polyline.endPoint.Prev.point) == TriangleOrientation.Counterclockwise)
                 intersections.Reverse(); //so the [0] point is to the left of the Polyline
 

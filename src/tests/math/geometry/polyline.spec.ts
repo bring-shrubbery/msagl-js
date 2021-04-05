@@ -1,11 +1,11 @@
-import {LineSegment} from '../../../math/geometry/lineSegment'
-import {Point} from './../../../math/geometry/point'
-import {Polyline} from './../../../math/geometry/polyline'
-import {Curve} from './../../../math/geometry/curve'
-import {PlaneTransformation} from './../../../math/geometry/planeTransformation'
-import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
-import {DebugCurve} from './../../../math/geometry/debugCurve'
-import {CurveFactory} from './../../../math/geometry/curveFactory'
+import { LineSegment } from '../../../math/geometry/lineSegment'
+import { Point } from './../../../math/geometry/point'
+import { Polyline } from './../../../math/geometry/polyline'
+import { Curve } from './../../../math/geometry/curve'
+import { PlaneTransformation } from './../../../math/geometry/planeTransformation'
+import { SvgDebugWriter } from './../../../math/geometry/svgDebugWriter'
+import { DebugCurve } from './../../../math/geometry/debugCurve'
+import { CurveFactory } from './../../../math/geometry/curveFactory'
 test('polyline test iterator', () => {
   const poly = new Polyline()
   const ps = [
@@ -51,7 +51,7 @@ test('polyline test intersection one', () => {
   for (const p of ps) {
     poly.addPoint(p)
   }
-  const ls = LineSegment.mkLinePP(new Point(10, 0), new Point(10, 40))
+  const ls = LineSegment.mkPP(new Point(10, 0), new Point(10, 40))
   const x = Curve.intersectionOne(ls, poly, true)
   expect(x != undefined).toBe(true)
 })
@@ -67,10 +67,10 @@ test('polyline test all intersection', () => {
   for (const p of ps) {
     poly.addPoint(p)
   }
-  let ls = LineSegment.mkLinePP(new Point(10, 0), new Point(10, 40))
+  let ls = LineSegment.mkPP(new Point(10, 0), new Point(10, 40))
   let xx = Curve.getAllIntersections(ls, poly, true)
   expect(xx.length == 1).toBe(true)
-  ls = LineSegment.mkLinePP(new Point(0, 5), new Point(40, 6))
+  ls = LineSegment.mkPP(new Point(0, 5), new Point(40, 6))
   xx = Curve.getAllIntersections(ls, poly, true)
   expect(xx.length == 3).toBe(true)
   for (const i of xx) {

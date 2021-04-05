@@ -265,13 +265,13 @@
 //     Dictionary < int, HashSet < MetroEdge >> adjacent = new Dictionary<int, HashSet<MetroEdge>>();
 //     for (int mi = 0; mi < Metrolines.Count; mi++) {
 //         int[] Metroline = Metrolines[mi];
-//         for (int i = 0; i + 1 < Metroline.Length; i++) {
+//         for (int i = 0; i + 1 < Metroline.length; i++) {
 //             MetroEdge me = MetroEdge.CreateFromTwoNodes(Metroline[i], Metroline[i + 1]);
 
 //             if (!initialEdges.Contains(me))
 //                 initialEdges.Add(me);
 
-//             if (i + 2 < Metroline.Length)
+//             if (i + 2 < Metroline.length)
 //                 nonTerminals.Add(Metroline[i + 1]);
 
 //             CollectionUtilities.AddToMap(adjacent, Metroline[i], me);
@@ -293,7 +293,7 @@
 //         int[] Metroline = Metrolines[mi];
 //         paths.Add(mi, new LinkedList<MetroEdge>());
 
-//         for (int i = 0; i + 1 < Metroline.Length; i++) {
+//         for (int i = 0; i + 1 < Metroline.length; i++) {
 //             MetroEdge me = MetroEdge.CreateFromTwoNodes(Metroline[i], Metroline[i + 1]);
 
 //             if (!e2p.ContainsKey(me)) {

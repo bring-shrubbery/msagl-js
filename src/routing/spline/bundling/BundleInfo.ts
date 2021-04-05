@@ -28,14 +28,14 @@
 //         this.obstaclesToIgnore = obstaclesToIgnore;
 //         EdgeSeparation = edgeSeparation;
 //         HalfWidthArray = halfWidthArray;
-//         TotalRequiredWidth = EdgeSeparation * HalfWidthArray.Length + HalfWidthArray.Sum() * 2;
+//         TotalRequiredWidth = EdgeSeparation * HalfWidthArray.length + HalfWidthArray.Sum() * 2;
 //         longEnoughSideLength = new Rectangle(sourceBase.Curve.BoundingBox, targetBase.Curve.BoundingBox).Diagonal;
 
 //         //sometimes TotalRequiredWidth is too large to fit into the circle, so we evenly scale everything
 //         double mn = Math.Max(sourceBase.Curve.BoundingBox.Diagonal, targetBase.Curve.BoundingBox.Diagonal);
 //         if (TotalRequiredWidth > mn) {
 //             double scale = TotalRequiredWidth / mn;
-//             for (int i = 0; i < HalfWidthArray.Length; i++)
+//             for (int i = 0; i < HalfWidthArray.length; i++)
 //             HalfWidthArray[i] /= scale;
 //             TotalRequiredWidth /= scale;
 //             EdgeSeparation /= scale;
@@ -221,7 +221,7 @@
 //         //updating tangents
 //         for (int i = 0; i < count; i++) {
 //             Point d = TargetBase.Points[i] - SourceBase.Points[count - 1 - i];
-//             double len = d.Length;
+//             double len = d.length;
 //             if (len >= ApproximateComparer.Tolerance) {
 //                 d /= len;
 //                 TargetBase.Tangents[i] = d;

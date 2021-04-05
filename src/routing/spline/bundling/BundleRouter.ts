@@ -168,10 +168,10 @@ export class BundleRouter extends Algorithm {
     const obstacles: IEnumerable<Polyline> = looseHierarchy.GetAllLeaves()
     const rectangle: Rectangle = looseHierarchy.irect
     const d: number = rectangle.Diagonal / 4
-    const lb: Point = rectangle.LeftBottom + new Point(d * -1, d * -1)
-    const lt: Point = rectangle.LeftTop + new Point(d * -1, d)
-    const rt: Point = rectangle.RightTop + new Point(d, d)
-    const rb: Point = rectangle.RightBottom + new Point(d, d * -1)
+    const lb: Point = rectangle.leftBottom + new Point(d * -1, d * -1)
+    const lt: Point = rectangle.leftTop + new Point(d * -1, d)
+    const rt: Point = rectangle.rightTop + new Point(d, d)
+    const rb: Point = rectangle.rightBottom + new Point(d, d * -1)
     const additionalObstacles
     new Polyline(lb, lt, rt, rb)
 

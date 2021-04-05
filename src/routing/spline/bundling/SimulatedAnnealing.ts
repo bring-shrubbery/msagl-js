@@ -171,7 +171,7 @@
 //     // </summary>
 //     bool TryMoveNode(Station node) {
 //         Point direction = BuildDirection(node);
-//         if (direction.Length == 0) return false;
+//         if (direction.length == 0) return false;
 
 //         double stepLength = BuildStepLength(node, direction);
 //         if (stepLength < MinStep) {
@@ -202,7 +202,7 @@
 //         var forceBundle = BuildForceForBundle(node);
 
 //         var force = forceInk + forcePL + forceR + forceBundle;
-//         if (force.Length < 0.1) return new Point();
+//         if (force.length < 0.1) return new Point();
 //         force = force.Normalize();
 
 //         return force;
@@ -251,7 +251,7 @@
 //         Point direction = new Point();
 //         foreach(var adj of node.Neighbors) {
 //             var p = (adj.Position - node.Position);
-//             direction += p / p.Length;
+//             direction += p / p.length;
 //         }
 
 //         //derivative
@@ -274,8 +274,8 @@
 
 //             var p1 = u - node.Position;
 //             var p2 = v - node.Position;
-//             direction += p1 / (p1.Length * metroline.IdealLength);
-//             direction += p2 / (p2.Length * metroline.IdealLength);
+//             direction += p1 / (p1.length * metroline.IdealLength);
+//             direction += p2 / (p2.length * metroline.IdealLength);
 //         }
 
 //         //derivative
@@ -296,7 +296,7 @@
 //         Assert.assert(res);
 
 //         foreach(var d of touchedObstacles) {
-//             double dist = (d.Item2 - node.Position).Length;
+//             double dist = (d.Item2 - node.Position).length;
 //             Assert.assert(dist <= idealR);
 //             double lforce = 2.0 * (1.0 - dist / idealR);
 //             Point dir = (node.Position - d.Item2).Normalize();
@@ -327,7 +327,7 @@
 //             //Assert.assert(res);  //todo : still unsolved
 
 //             foreach(var d of closestPoints) {
-//                 double dist = (d.Item1 - d.Item2).Length;
+//                 double dist = (d.Item1 - d.Item2).length;
 //                 Assert.assert(ApproximateComparer.LessOrEqual(dist, idealWidth / 2));
 //                 double lforce = 2.0 * (1.0 - dist / (idealWidth / 2));
 //                 Point dir = -(d.Item1 - d.Item2).Normalize();

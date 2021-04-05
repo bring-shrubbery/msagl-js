@@ -142,13 +142,13 @@
 //             var metroLine = e.Metroline;
 //             var prev = e.PolyPoint.Prev.point;
 //             var succ = e.PolyPoint.next.point;
-//             metroLine.Length += (succ - newPosition).Length + (prev - newPosition).Length
-//                 - (succ - oldPosition).Length - (prev - oldPosition).Length;
+//             metroLine.length += (succ - newPosition).length + (prev - newPosition).length
+//                 - (succ - oldPosition).length - (prev - oldPosition).length;
 //         }
 
 //         //update ink
 //         foreach(var adj of node.Neighbors) {
-//             ink += (newPosition - adj.Position).Length - (oldPosition - adj.Position).Length;
+//             ink += (newPosition - adj.Position).length - (oldPosition - adj.Position).length;
 //         }
 
 //         //update neighbors order
@@ -279,7 +279,7 @@
 
 //     void InitializeEdgeData() {
 //         metrolines = new List<Metroline>();
-//         for (int i = 0; i < regularEdges.Length; i++) {
+//         for (int i = 0; i < regularEdges.length; i++) {
 //             EdgeGeometry geomEdge = regularEdges[i];
 //             InitEdgeData(geomEdge, i);
 //         }
@@ -342,7 +342,7 @@
 //         InitEdgeIjInfos();
 //         ink = 0;
 //         foreach(var edge of VirtualEdges())
-//         ink += (edge.Item1.Position - edge.Item2.Position).Length;
+//         ink += (edge.Item1.Position - edge.Item2.Position).length;
 //     }
 
 //     void InitMetroNodeInfos(bool initTightTree) {
@@ -439,7 +439,7 @@
 
 //     void SortNeighbors(Station station) {
 //         //nothing to sort
-//         if (station.Neighbors.Length <= 2) return;
+//         if (station.Neighbors.length <= 2) return;
 
 //         Point pivot = station.Neighbors[0].Position;
 //         Point center = station.Position;

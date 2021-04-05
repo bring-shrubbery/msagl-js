@@ -98,7 +98,7 @@ export class Routing extends Algorithm {
       const ip: IntPair = k
       if (ip.x == ip.y) {
         const anchor: Anchor = this.Database.Anchors[ip.x]
-        let offset: number = anchor.LeftAnchor
+        let offset: number = anchor.leftAnchor
         for (const intEdge of v) {
           this.ProgressStep()
           const dx: number =
@@ -196,11 +196,11 @@ export class Routing extends Algorithm {
   static UpdateLabel(e: Edge, anchor: Anchor) {
     const labelSide: LineSegment = null
     if (anchor.LabelToTheRightOfAnchorCenter) {
-      e.Label.Center = new Point(anchor.x + anchor.RightAnchor / 2, anchor.y)
-      labelSide = new LineSegment(e.LabelBBox.LeftTop, e.LabelBBox.LeftBottom)
+      e.Label.Center = new Point(anchor.x + anchor.rightAnchor / 2, anchor.y)
+      labelSide = new LineSegment(e.LabelBBox.leftTop, e.LabelBBox.leftBottom)
     } else if (anchor.LabelToTheLeftOfAnchorCenter) {
-      e.Label.Center = new Point(anchor.x - anchor.LeftAnchor / 2, anchor.y)
-      labelSide = new LineSegment(e.LabelBBox.RightTop, e.LabelBBox.RightBottom)
+      e.Label.Center = new Point(anchor.x - anchor.leftAnchor / 2, anchor.y)
+      labelSide = new LineSegment(e.LabelBBox.rightTop, e.LabelBBox.rightBottom)
     }
 
     const segmentInFrontOfLabel: ICurve = Routing.GetSegmentInFrontOfLabel(
@@ -238,8 +238,8 @@ export class Routing extends Algorithm {
         )
         const v: number = segmentInFrontOfLabel.ClosestParameter(labelSide.End)
         if (
-          (segmentInFrontOfLabel[u] - labelSide.Start).Length <
-          (segmentInFrontOfLabel[v] - labelSide.End).Length
+          (segmentInFrontOfLabel[u] - labelSide.Start).length <
+          (segmentInFrontOfLabel[v] - labelSide.End).length
         ) {
           curveClosestPoint = segmentInFrontOfLabel[u]
           labelSideClosest = labelSide.Start
@@ -264,7 +264,7 @@ export class Routing extends Algorithm {
   ) {
     const w: number = e.LineWidth / 2
     const shift: Point = curveClosestPoint - labelSideClosest
-    const shiftLength: number = shift.Length
+    const shiftLength: number = shift.length
     //    SugiyamaLayoutSettings.Show(e.Curve, shiftLength > 0 ? new LineSegment(curveClosestPoint, labelSideClosest) : null, PolyFromBox(e.LabelBBox));
     if (shiftLength > w) {
       e.Label.Center =

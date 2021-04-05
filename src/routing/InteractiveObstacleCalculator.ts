@@ -247,7 +247,7 @@ namespace Microsoft.Msagl.Routing {
 
     internal static Dictionary < T, int > MapToInt<T>(T[] objects) {
         var ret = new Dictionary<T, int>();
-        for (int i = 0; i < objects.Length; i++)
+        for (int i = 0; i < objects.length; i++)
         ret[objects[i]] = i;
         return ret;
     }
@@ -375,7 +375,7 @@ namespace Microsoft.Msagl.Routing {
         }
 
         Point l = (v - u).Normalize() + (v - w).Normalize();
-        if (l.Length < ApproximateComparer.IntersectionEpsilon) {
+        if (l.length < ApproximateComparer.IntersectionEpsilon) {
             a = b = v + padding * uvPerp;
             return 1;
         }
@@ -452,7 +452,7 @@ namespace Microsoft.Msagl.Routing {
         Point v = pp.point;
         Point w = pp.Polyline.next(pp).point;
         var z = (v - u).Normalize() + (v - w).Normalize();
-        var zLen = z.Length;
+        var zLen = z.length;
         if (zLen < ApproximateComparer.Tolerance)
             skip = true;
         else {

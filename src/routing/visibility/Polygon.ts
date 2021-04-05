@@ -148,7 +148,7 @@ export class Polygon
 //         var tp = new TangentPair(a, b);
 //         tp.FindClosestPoints(out p, out q);
 // #if TEST_MSAGL
-//         if (!Point.closeDistEps((p - q).Length, TestPolygonDist(a, b))) {
+//         if (!Point.closeDistEps((p - q).length, TestPolygonDist(a, b))) {
 //             using(var stream = File.Open(@"c:\tmp\polygonBug", FileMode.Create)) {
 //                 var bf = new BinaryFormatter();
 //                 bf.Serialize(stream, a);
@@ -162,7 +162,7 @@ export class Polygon
 //             System.Diagnostics.Debug.Fail("wrong distance between two polygons");
 //         }
 // #endif
-//         return (p - q).Length;
+//         return (p - q).length;
 //     }
 
 //         // <summary>

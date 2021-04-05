@@ -162,7 +162,7 @@ export class GeomEdge extends GeomObject {
       }
       foreach(var l of this.Labels)
       {
-        l.Translate(newBounds.LeftBottom - oldBounds.LeftBottom);
+        l.Translate(newBounds.leftBottom - oldBounds.leftBottom);
       }
     }
     

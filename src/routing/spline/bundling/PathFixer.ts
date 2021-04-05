@@ -71,7 +71,7 @@
 
 //     void SortInsideSegment(PointPair edge, List < Point > list) {
 //         Assert.assert(list.Count > 0, "an edge should not be present with an empty list");
-//         list.Sort((a, b) => (a - edge.First).Length.CompareTo((b - edge.First).Length));
+//         list.Sort((a, b) => (a - edge.First).length.CompareTo((b - edge.First).length));
 //     }
 
 //     bool InsertPointsIntoPolylines(Dictionary < PointPair, List < Point >> splittingPoints) {
