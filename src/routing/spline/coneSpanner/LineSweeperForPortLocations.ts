@@ -759,12 +759,12 @@
 //             //Show(new Ellipse(1, 1, vertexEvent.Site));
 
 //             foreach(Cone c of visibleCones) {
-//                 AddEdge(c.Apex, vertexEvent.Site);
+//                 addEdge(c.Apex, vertexEvent.Site);
 //                 RemoveCone(c);
 //             }
 //         }
 
-//         void AddEdge(Point a, Point b) {
+//         void addEdge(Point a, Point b) {
 //             Assert.assert(PortLocations.Contains(a));
 //             /*********************
 //             A complication arises when we have overlaps. Loose obstacles become large enough to contain several

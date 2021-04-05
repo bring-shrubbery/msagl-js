@@ -122,9 +122,9 @@ export class VisibilityGraph {
   }
 
   AddHole(polyline: Polyline) {
-    const p = polyline.startPoint
+    let p = polyline.startPoint
     while (p != polyline.endPoint) {
-      this.addEdge(p, p.next)
+      VisibilityGraph.addEdge(p, p.next)
       p = p.next
     }
 
@@ -237,16 +237,16 @@ export class VisibilityGraph {
   }
 
   AddEdge_PolyPoly(source: PolylinePoint, target: PolylinePoint) {
-    this.addEdge(source.point, target.point)
+    this.addEdge_PointPoint(source.point, target.point)
   }
 
-  static AddEdge(edge: VisibilityEdge) {
+  static addEdge(edge: VisibilityEdge) {
     Assert.assert(edge.Source != edge.Target)
     edge.Source.OutEdges.Insert(edge)
     edge.Target.InEdges.Add(edge)
   }
 
-  AddEdge_PointPoint(source: Point, target: Point): VisibilityEdge {
+  addEdge_PointPoint(source: Point, target: Point): VisibilityEdge {
     const edge: VisibilityEdge
     const sourceV = this.FindVertex(source)
     const targetV: VisibilityVertex = null

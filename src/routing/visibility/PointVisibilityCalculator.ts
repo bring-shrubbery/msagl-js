@@ -220,7 +220,7 @@
 //         if (sideNodes.TryGetValue(inSide, out node) && node != null) {
 //             //we have an active edge
 //             if (node == activeSidesTree.TreeMinimum())
-//                 AddEdge(v);
+//                 addEdge(v);
 
 //             if (outSide != null) {
 //                 node.Item = outSide; //just replace the edge since the order does not change
@@ -239,7 +239,7 @@
 //                     outsideNode = activeSidesTree.Insert(outSide);
 //                     sideNodes[outSide] = outsideNode;
 //                     if (outsideNode == activeSidesTree.TreeMinimum())
-//                         AddEdge(v);
+//                         addEdge(v);
 //                 }
 //             } else
 //                 throw new Error();
@@ -248,7 +248,7 @@
 //     }
 
 //     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//     void AddEdge(PolylinePoint v) {
+//     void addEdge(PolylinePoint v) {
 //         if (visibilityKind == VisibilityKind.Regular ||
 //             (visibilityKind == VisibilityKind.Tangent && LineTouchesPolygon(QVertex.point, v))) {
 //             visibilityGraph.addEdge(QVertex.point, v.point, ((a, b) => new TollFreeVisibilityEdge(a, b)));
