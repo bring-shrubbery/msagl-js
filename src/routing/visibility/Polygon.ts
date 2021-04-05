@@ -1,5 +1,4 @@
-export class Polygon
-
+// export class Polygon
 
 // using System;
 // using System.IO;

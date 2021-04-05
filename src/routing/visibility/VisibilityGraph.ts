@@ -1,20 +1,23 @@
-import { IEnumerable, from } from "linq-to-typescript"
-import { Point, TriangleOrientation } from "../../math/geometry/point"
-import { Polyline } from "../../math/geometry/polyline"
-import { PolylinePoint } from "../../math/geometry/polylinePoint"
-import { Assert } from "../../utils/assert"
-import { PointMap } from "../../utils/PointMap"
-import { VisibilityEdge } from "./VisibilityEdge"
-import { VisibilityKind } from "./VisibilityKind"
-import { VisibilityVertex } from "./VisibilityVertex"
+import {IEnumerable, from} from 'linq-to-typescript'
+import {Point, TriangleOrientation} from '../../math/geometry/point'
+import {Polyline} from '../../math/geometry/polyline'
+import {PolylinePoint} from '../../math/geometry/polylinePoint'
+import {Assert} from '../../utils/assert'
+import {PointMap} from '../../utils/PointMap'
+import {VisibilityEdge} from './VisibilityEdge'
+import {VisibilityKind} from './VisibilityKind'
+import {VisibilityVertex} from './VisibilityVertex'
 class Polygon {
-  constructor(hole: Object) {
-
+  constructor(hole: unknown) {
+    throw new Error('not implemented')
   }
 }
 class TangentVisibilityGraphCalculator {
-  static AddTangentVisibilityEdgesToGraph(polygons: Polygon[], visibilityGraph: VisibilityGraph) {
-    throw new Error("Method not implemented.")
+  static AddTangentVisibilityEdgesToGraph(
+    polygons: Polygon[],
+    visibilityGraph: VisibilityGraph,
+  ) {
+    throw new Error('Method not implemented.')
   }
 }
 
@@ -23,10 +26,10 @@ class PointVisibilityCalculator {
 }
 //  the visibility graph
 export class VisibilityGraph {
-  _prevEdgesDictionary: Map<
+  _prevEdgesDictionary: Map<VisibilityVertex, VisibilityEdge> = new Map<
     VisibilityVertex,
     VisibilityEdge
-  > = new Map<VisibilityVertex, VisibilityEdge>()
+  >()
 
   visVertexToId: Map<VisibilityVertex, number> = new Map<
     VisibilityVertex,
@@ -130,7 +133,6 @@ export class VisibilityGraph {
 
     this.addEdge_pp(polyline.endPoint, polyline.startPoint)
   }
-
 
   static CheckThatPolylinesAreConvex(holes: IEnumerable<Polyline>) {
     for (const polyline of holes) {
@@ -379,7 +381,7 @@ export class VisibilityGraph {
     edge.Source.OutEdges.remove(edge)
     // not efficient!
 
-    let i = edge.Target.InEdges.indexOf(edge)
+    const i = edge.Target.InEdges.indexOf(edge)
     Assert.assert(i >= 0)
     edge.Target.InEdges.splice(i, 1)
     // not efficient
@@ -392,12 +394,8 @@ export class VisibilityGraph {
   }
 }
 function* OrientHolesClockwise(
-  holes: IEnumerable<Polyline>
+  holes: IEnumerable<Polyline>,
 ): IterableIterator<Polyline> {
-  //     #if((TEST_MSAGL || VERIFY))
-  // VisibilityGraph.CheckThatPolylinesAreConvex(holes);
-  //     #endif
-  //  TEST || VERIFY
   for (const poly of holes) {
     for (let p = poly.startPoint; ; p = p.next) {
       // Find the first non-collinear segments and see which direction the triangle is.
@@ -408,8 +406,10 @@ function* OrientHolesClockwise(
         p.next.next.point,
       )
       if (orientation != TriangleOrientation.Collinear) {
-        yield orientation == TriangleOrientation.Clockwise ? poly : poly.reverse() as Polyline;
-        break;
+        yield orientation == TriangleOrientation.Clockwise
+          ? poly
+          : (poly.reverse() as Polyline)
+        break
       }
     }
   }

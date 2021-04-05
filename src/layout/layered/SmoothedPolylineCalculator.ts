@@ -1,27 +1,27 @@
-﻿import { CornerSite } from '../../math/geometry/cornerSite'
-import { Curve } from '../../math/geometry/curve'
-import { GeomConstants } from '../../math/geometry/geomConstants'
-import { ICurve } from '../../math/geometry/icurve'
-import { LineSegment } from '../../math/geometry/lineSegment'
-import { Parallelogram } from '../../math/geometry/parallelogram'
-import { PN, PNInternal } from '../../math/geometry/parallelogramNode'
-import { Point, TriangleOrientation } from '../../math/geometry/point'
-import { Polyline } from '../../math/geometry/polyline'
-import { SmoothedPolyline } from '../../math/geometry/smoothedPolyline'
-import { GeomGraph } from '../core/GeomGraph'
-import { Anchor } from './anchor'
-import { Database } from './Database'
-import { LayerArrays } from './LayerArrays'
-import { LayerEdge } from './LayerEdge'
-import { PolyIntEdge } from './polyIntEdge'
-import { ProperLayeredGraph } from './ProperLayeredGraph'
-import { SugiyamaLayoutSettings } from './SugiyamaLayoutSettings'
-import { HierarchyCalculator } from './HierarchyCalculator'
-import { BezierSeg } from '../../math/geometry/bezierSeg'
-import { Routing } from './routing'
-import { NodeKind } from './NodeKind'
-import { Assert } from '../../utils/assert'
-import { RefinerBetweenTwoLayers } from './RefinerBetweenTwoLayers'
+﻿import {CornerSite} from '../../math/geometry/cornerSite'
+import {Curve} from '../../math/geometry/curve'
+import {GeomConstants} from '../../math/geometry/geomConstants'
+import {ICurve} from '../../math/geometry/icurve'
+import {LineSegment} from '../../math/geometry/lineSegment'
+import {Parallelogram} from '../../math/geometry/parallelogram'
+import {PN, PNInternal} from '../../math/geometry/parallelogramNode'
+import {Point, TriangleOrientation} from '../../math/geometry/point'
+import {Polyline} from '../../math/geometry/polyline'
+import {SmoothedPolyline} from '../../math/geometry/smoothedPolyline'
+import {GeomGraph} from '../core/GeomGraph'
+import {Anchor} from './anchor'
+import {Database} from './Database'
+import {LayerArrays} from './LayerArrays'
+import {LayerEdge} from './LayerEdge'
+import {PolyIntEdge} from './polyIntEdge'
+import {ProperLayeredGraph} from './ProperLayeredGraph'
+import {SugiyamaLayoutSettings} from './SugiyamaLayoutSettings'
+import {HierarchyCalculator} from './HierarchyCalculator'
+import {BezierSeg} from '../../math/geometry/bezierSeg'
+import {Routing} from './routing'
+import {NodeKind} from './NodeKind'
+import {Assert} from '../../utils/assert'
+import {RefinerBetweenTwoLayers} from './RefinerBetweenTwoLayers'
 export class SmoothedPolylineCalculator {
   headSite: CornerSite
 
@@ -296,7 +296,7 @@ export class SmoothedPolylineCalculator {
       this.database.MultipleMiddles.has(u) &&
       this.database.MultipleMiddles.has(v) &&
       this.SourceOfTheOriginalEdgeContainingAVirtualNode(u) ==
-      this.SourceOfTheOriginalEdgeContainingAVirtualNode(v)
+        this.SourceOfTheOriginalEdgeContainingAVirtualNode(v)
     ) {
       return true
     }
@@ -654,7 +654,9 @@ export class SmoothedPolylineCalculator {
   }
 
   private CreateInitialListOfSites() {
-    let currentSite = this.headSite = CornerSite.mkSiteP(this.EdgePathPoint(0));
+    let currentSite = (this.headSite = CornerSite.mkSiteP(
+      this.EdgePathPoint(0),
+    ))
     for (let i = 1; i <= this.edgePath.count; i++) {
       currentSite = CornerSite.mkSiteSP(currentSite, this.EdgePathPoint(i))
     }
@@ -679,10 +681,8 @@ export class SmoothedPolylineCalculator {
       return
     }
 
-    const t = { ax: a.x, bx: b.x, sign: 0 }
-    if (
-      !this.FindLegalPositions(a, b, t)
-    ) {
+    const t = {ax: a.x, bx: b.x, sign: 0}
+    if (!this.FindLegalPositions(a, b, t)) {
       return
     }
 
@@ -698,8 +698,6 @@ export class SmoothedPolylineCalculator {
     ms.next.point = new Point(t.bx, b.y)
     const ma: Anchor = this.anchors[this.EdgePathNode(1)]
     ma.x = ms.point.x
-    // show(new DebugCurve(200, 3, "yellow", LineSegment.mkPP(ax, a.y, ms.point.x, ms.point.y)),
-    //     new DebugCurve(200, 3, "green", LineSegment.mkPP(bx, b.y, ms.point.x, ms.point.y)));
   }
 
   OptimizeForTwoSites() {
@@ -712,7 +710,7 @@ export class SmoothedPolylineCalculator {
       return
     }
 
-    const t = { ax: a.x, bx: b.x, sign: 0 }
+    const t = {ax: a.x, bx: b.x, sign: 0}
 
     if (!this.FindPositions(a, b, t)) {
       return
@@ -740,7 +738,9 @@ export class SmoothedPolylineCalculator {
       return false
     }
 
-    if (this.PositionsAreLegal(t.ax, t.bx, t.sign, a, b, this.EdgePathNode(1))) {
+    if (
+      this.PositionsAreLegal(t.ax, t.bx, t.sign, a, b, this.EdgePathNode(1))
+    ) {
       return true
     }
 
@@ -802,7 +802,10 @@ export class SmoothedPolylineCalculator {
         )) ||
       Curve.CurvesIntersect(seg, LineSegment.mkPP(b.leftBottom, a.leftTop)) ||
       (a.x > b.x &&
-        Curve.CurvesIntersect(seg, LineSegment.mkPP(a.leftBottom, a.leftTop))) ||
+        Curve.CurvesIntersect(
+          seg,
+          LineSegment.mkPP(a.leftBottom, a.leftTop),
+        )) ||
       Curve.CurvesIntersect(seg, LineSegment.mkPP(b.rightBottom, a.rightTop))
     )
   }
@@ -894,11 +897,7 @@ export class SmoothedPolylineCalculator {
     let progress = true
     while (progress) {
       progress = false
-      for (
-        let s = this.headSite;
-        s != null && s.next != null;
-        s = s.next
-      ) {
+      for (let s = this.headSite; s != null && s.next != null; s = s.next) {
         progress = this.TryToRemoveInflectionEdge(/* ref */ s) || progress
       }
     }
@@ -907,11 +906,7 @@ export class SmoothedPolylineCalculator {
   private TurningAlwaySameDirection(): boolean {
     let sign = 0
     // undecided
-    for (
-      let s = this.headSite.next;
-      s != null && s.next != null;
-      s = s.next
-    ) {
+    for (let s = this.headSite.next; s != null && s.next != null; s = s.next) {
       const nsign: number = s.turn
       if (sign == 0) {
         // try to set the sign
@@ -933,11 +928,10 @@ export class SmoothedPolylineCalculator {
   }
 
   EdgePathNode(i: number): number {
-    return i == this.edgePath.count ?
-      this.edgePath[this.edgePath.count - 1].Target
+    return i == this.edgePath.count
+      ? this.edgePath[this.edgePath.count - 1].Target
       : this.edgePath[i].Source
   }
-
 
   CreateSmoothedPolyline(): Curve {
     this.RemoveVerticesWithNoTurns()
@@ -947,7 +941,7 @@ export class SmoothedPolylineCalculator {
 
     // the corner other end
     if (t != undefined) {
-      this.CreateFilletCurve(curve, { a: a, b: t.b, c: t.c })
+      this.CreateFilletCurve(curve, {a: a, b: t.b, c: t.c})
       curve = this.ExtendCurveToEndpoints(curve)
     } else {
       curve.addSegment(
@@ -959,7 +953,7 @@ export class SmoothedPolylineCalculator {
   }
 
   private RemoveVerticesWithNoTurns() {
-    while (this.RemoveVerticesWithNoTurnsOnePass()) { }
+    while (this.RemoveVerticesWithNoTurnsOnePass()) {}
   }
 
   private RemoveVerticesWithNoTurnsOnePass(): boolean {
@@ -999,12 +993,12 @@ export class SmoothedPolylineCalculator {
   private CreateFilletCurve(
     curve: Curve,
     t: {
-      a: CornerSite,
-      b: CornerSite,
-      c: CornerSite,
-    }
+      a: CornerSite
+      b: CornerSite
+      c: CornerSite
+    },
   ) {
-    for (; true;) {
+    for (; true; ) {
       this.AddSmoothedCorner(t.a, t.b, t.c, curve)
       t.a = t.b
       t.b = t.c
@@ -1045,10 +1039,7 @@ export class SmoothedPolylineCalculator {
       }
     }
 
-    if (
-      curve.segs.length > 0 &&
-      !Point.closeDistEps(curve.end, seg.start)
-    ) {
+    if (curve.segs.length > 0 && !Point.closeDistEps(curve.end, seg.start)) {
       curve.addSegment(LineSegment.mkPP(curve.end, seg.start))
     }
 
@@ -1095,17 +1086,17 @@ export class SmoothedPolylineCalculator {
           this.BezierSegIntersectsTree(seg, (n.node as PNInternal).children[1])
         )
       } else {
-        return SmoothedPolylineCalculator.BezierSegIntersectsBoundary(seg, (tree as PN).seg)
+        return SmoothedPolylineCalculator.BezierSegIntersectsBoundary(
+          seg,
+          (tree as PN).seg,
+        )
       }
     } else {
       return false
     }
   }
 
-  static BezierSegIntersectsBoundary(
-    seg: BezierSeg,
-    curve: ICurve,
-  ): boolean {
+  static BezierSegIntersectsBoundary(seg: BezierSeg, curve: ICurve): boolean {
     for (const x of Curve.getAllIntersections(seg, curve, false)) {
       const c: Curve = <Curve>curve
       if (c != null) {
