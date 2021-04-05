@@ -289,7 +289,7 @@ export class RBTree<T> {
     this.root.color = RBColor.Black
   }
 
-  *allNodes(): IterableIterator<T> {
+  private *allNodes(): IterableIterator<T> {
     if (this.isEmpty()) return
     let c: RBNode<T> = this.treeMinimum()
     while (c != null) {

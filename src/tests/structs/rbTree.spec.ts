@@ -1,6 +1,6 @@
-import {RBTree} from './../../structs/RBTree/rbTree'
-import {RbTreeUtils} from './../testUtils/rbTreeUtils'
-import {Assert} from './../../utils/assert'
+import { RBTree } from './../../structs/RBTree/rbTree'
+import { RbTreeUtils } from './../testUtils/rbTreeUtils'
+import { Assert } from './../../utils/assert'
 
 test('check if has correct in-order-traversal', () => {
   const comparer = (a: number, b: number) => a - b
@@ -9,12 +9,24 @@ test('check if has correct in-order-traversal', () => {
 
   vals.sort(comparer)
   let i = 0
-  for (const node of tree.allNodes()) {
+  for (const node of tree) {
     expect(node).toBe(vals[i]) // 'nodes not in order')
     i++
   }
 
   //  console.log(tree.toString())
+})
+test('check if the iterator works', () => {
+  const comparer = (a: number, b: number) => a - b
+  const vals = [0, 1, 2]
+  const tree: RBTree<number> = RbTreeUtils.buildTreeWithNums(vals, comparer)
+
+  vals.sort(comparer)
+  let i = 0
+  for (const node of tree) {
+    expect(node).toBe(vals[i]) // 'nodes not in order')
+    i++
+  }
 })
 
 test('check black height(s) are equal', () => {
@@ -35,7 +47,7 @@ test('check removal', () => {
   }
   tree.remove(10)
   let i = 1
-  for (const node of tree.allNodes()) {
+  for (const node of tree) {
     if (i == 10) expect(node).toBe(11) // 'node w/ value 10 not removed')
     i++
   }
