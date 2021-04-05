@@ -656,7 +656,7 @@ export class SmoothedPolylineCalculator {
   private CreateInitialListOfSites() {
     let currentSite = this.headSite = CornerSite.mkSiteP(this.EdgePathPoint(0));
     for (let i = 1; i <= this.edgePath.count; i++) {
-      currentSite = new CornerSite(currentSite, this.EdgePathPoint(i))
+      currentSite = CornerSite.mkSiteSP(currentSite, this.EdgePathPoint(i))
     }
   }
 
@@ -670,7 +670,7 @@ export class SmoothedPolylineCalculator {
   }
 
   OptimizeForThreeSites() {
-    Assert.assert(this.edgePath.LayerEdges.count == 2)
+    Assert.assert(this.edgePath.LayerEdges.length == 2)
     const top: number = this.EdgePathNode(0)
     const bottom: number = this.EdgePathNode(2)
     const a: Anchor = this.anchors[top]

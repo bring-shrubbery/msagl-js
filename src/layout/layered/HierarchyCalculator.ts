@@ -1,12 +1,12 @@
-import {Parallelogram} from '../../math/geometry/parallelogram'
-import {PN} from '../../math/geometry/parallelogramNode'
+import { Parallelogram } from '../../math/geometry/parallelogram'
+import { PN } from '../../math/geometry/parallelogramNode'
 
 export class HierarchyCalculator {
   initialNodes: Array<PN>
 
   groupSplitThreshold = 2
 
-  static Calculate(nodes: Array<PN>, groupSplitThresholdPar: number): PN {
+  static Calculate(nodes: Array<PN>, groupSplitThresholdPar = 0): PN {
     const calc: HierarchyCalculator = new HierarchyCalculator(
       nodes,
       groupSplitThresholdPar,
@@ -122,7 +122,7 @@ export class HierarchyCalculator {
     }
     return {
       parallelogram: Parallelogram.parallelogramOfTwo(box0, box1),
-      node: {children: [this.Calc(gr0), this.Calc(gr1)]},
+      node: { children: [this.Calc(gr0), this.Calc(gr1)] },
       seg: undefined,
       leafBoxesOffset: undefined,
     }
