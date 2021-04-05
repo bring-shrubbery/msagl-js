@@ -1454,7 +1454,7 @@ export class Curve implements ICurve {
       return (d > GeomConstants.distanceEpsilon);
     }
 
-    return Math.abs(d) > GeomConstants.distanceEpsilon;
+    return Math.abs(d) > GeomConstants.distanceEpsilon
   }
   /*
   // 
