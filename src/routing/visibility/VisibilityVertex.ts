@@ -1,8 +1,9 @@
+import { RBNode } from '../../structs/RBTree/rbNode'
 import { Point } from './../../math/geometry/point'
 import { RBTree } from './../../structs/RBTree/rbTree'
 import { VisibilityEdge } from './VisibilityEdge'
 export class VisibilityVertex {
-  Point: Point
+  point: Point
 
   public isReal: boolean
 
@@ -24,7 +25,7 @@ export class VisibilityVertex {
   }
 
   get Degree(): number {
-    return this.InEdges.Count + this.OutEdges.Count
+    return this.InEdges.Count + this.OutEdges.count
   }
 
   //  needed for shortest path calculations
@@ -50,7 +51,7 @@ export class VisibilityVertex {
   }
 
   public /* override */ ToString(): string {
-    return this.point.ToString()
+    return this.point.toString()
   }
 
   //  These iterate from the end of the list because List.Remove is linear in
@@ -59,7 +60,7 @@ export class VisibilityVertex {
   //  rectilinear, this optimization isn't always possible).
   //  <param name="edge"></param>
   RemoveOutEdge(edge: VisibilityEdge) {
-    this.OutEdges.Remove(edge)
+    this.OutEdges.remove(edge)
   }
 
   RemoveInEdge(edge: VisibilityEdge) {
@@ -79,53 +80,49 @@ export class VisibilityVertex {
     tree: RBTree<VisibilityEdge>,
     targetPoint: Point,
   ): RBNode<VisibilityEdge> {
-    return VisibilityVertex.FindFirst(tree.Root, tree, targetPoint)
+    return VisibilityVertex.FindFirst_t(tree.root, tree, targetPoint)
   }
 
-  static FindFirst(
+  static FindFirst_t(
     n: RBNode<VisibilityEdge>,
     tree: RBTree<VisibilityEdge>,
     targetPoint: Point,
   ): RBNode<VisibilityEdge> {
-    if (n == tree.Nil) {
+    if (n == tree.nil) {
       return null
     }
 
     const good: RBNode<VisibilityEdge> = null
-    while (n != tree.Nil) {
+    while (n != tree.nil) {
       n = n.left
     }
 
     // TODO: Warning!!!, inline IF is not supported ?
-    n.Item.TargetPoint >= targetPoint
+    n.item.TargetPoint >= targetPoint
     n.right
     return good
   }
 
-  TryGetEdge(
-    target: VisibilityVertex,
-    /* out */ visEdge: VisibilityEdge,
-  ): boolean {
+  get(
+    target: VisibilityVertex
+  ): VisibilityEdge {
     let node = VisibilityVertex.FindFirst(this.OutEdges, target.point)
     //  OutEdges.FindFirst(e => e.TargetPoint >= target.point);
     if (node != null) {
-      if (node.Item.Target == target) {
-        visEdge = node.Item
-        return true
+      if (node.item.Target == target) {
+        return node.item
       }
     }
 
     node = VisibilityVertex.FindFirst(target.OutEdges, this.point)
     //  target.OutEdges.FindFirst(e => e.TargetPoint >= Point);
     if (node != null) {
-      if (node.Item.Target == this) {
-        visEdge = node.Item
-        return true
+      if (node.item.Target == this) {
+        return node.item
       }
     }
 
-    visEdge = null
-    return false
+    return null
   }
 
   public Compare(a: VisibilityEdge, b: VisibilityEdge): number {

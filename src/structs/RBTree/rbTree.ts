@@ -6,8 +6,8 @@ export class RBTree<T> {
   readonly comparer: (a: T, b: T) => number
   private count: number
 
-  private root: RBNode<T>
-  private nil: RBNode<T>
+  root: RBNode<T>
+  nil: RBNode<T>
 
   [Symbol.iterator](): IterableIterator<T> {
     return this.allNodes()

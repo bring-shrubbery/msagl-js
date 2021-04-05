@@ -1,4 +1,4 @@
-import { IEnumerable, Error, from } from "linq-to-typescript"
+import { IEnumerable, from } from "linq-to-typescript"
 import { Point, TriangleOrientation } from "../../math/geometry/point"
 import { Polyline } from "../../math/geometry/polyline"
 import { PolylinePoint } from "../../math/geometry/polylinePoint"
@@ -61,7 +61,7 @@ export class VisibilityGraph {
   }
 
   //  the default is just to return VisibilityVertex
-  VertexFactory: (Point) => VisibilityVertex
+  vertexFactory: (Point) => VisibilityVertex
 
   pointToVertexMap: PointMap<VisibilityVertex> = new PointMap<VisibilityVertex>()
 
@@ -124,11 +124,11 @@ export class VisibilityGraph {
   AddHole(polyline: Polyline) {
     let p = polyline.startPoint
     while (p != polyline.endPoint) {
-      VisibilityGraph.addEdge(p, p.next)
+      this.addEdge_pp(p, p.next)
       p = p.next
     }
 
-    this.addEdge(polyline.endPoint, polyline.startPoint)
+    this.addEdge_pp(polyline.endPoint, polyline.startPoint)
   }
 
 
@@ -186,42 +186,42 @@ export class VisibilityGraph {
   }
 
   get VertexCount(): number {
-    return this.pointToVertexMap.Count
+    return this.pointToVertexMap.size
   }
 
-  AddVertex(polylinePoint: PolylinePoint): VisibilityVertex {
-    return this.AddVertex(polylinePoint.point)
+  addVertex_plp(polylinePoint: PolylinePoint): VisibilityVertex {
+    return this.addVertex_point(polylinePoint.point)
   }
 
-  AddVertex(point: Point): VisibilityVertex {
-    const currentVertex: VisibilityVertex
-    if (this.pointToVertexMap.TryGetValue(point, /* out */ currentVertex)) {
+  addVertex_point(point: Point): VisibilityVertex {
+    const currentVertex = this.pointToVertexMap.getP(point)
+    if (currentVertex != null) {
       return currentVertex
     }
 
-    const newVertex = this.VertexFactory(point)
-    this.pointToVertexMap[point] = newVertex
+    const newVertex = this.vertexFactory(point)
+    this.pointToVertexMap.setP(point, newVertex)
     return newVertex
   }
 
   AddVertex(vertex: VisibilityVertex) {
     Assert.assert(
-      !this.pointToVertexMap.ContainsKey(vertex.point),
+      !this.pointToVertexMap.hasP(vertex.point),
       'A vertex already exists at this location',
     )
-    this.pointToVertexMap[vertex.point] = vertex
+    this.pointToVertexMap.setP(vertex.point, vertex)
   }
 
   ContainsVertex(point: Point): boolean {
-    return this.pointToVertexMap.ContainsKey(point)
+    return this.pointToVertexMap.hasP(point)
   }
 
-  static AddEdge_vv(
+  static addEdge_vv(
     source: VisibilityVertex,
     target: VisibilityVertex,
   ): VisibilityEdge {
-    const visEdge: VisibilityEdge
-    if (source.TryGetEdge(target, /* out */ visEdge)) {
+    const visEdge = source.get(target)
+    if (visEdge != null) {
       return visEdge
     }
 
@@ -231,85 +231,91 @@ export class VisibilityGraph {
     }
 
     const edge = new VisibilityEdge(source, target)
-    source.OutEdges.Insert(edge)
-    target.InEdges.Add(edge)
+    source.OutEdges.insert(edge)
+    target.InEdges.push(edge)
     return edge
   }
 
-  AddEdge_PolyPoly(source: PolylinePoint, target: PolylinePoint) {
+  addEdge_pp(source: PolylinePoint, target: PolylinePoint) {
     this.addEdge_PointPoint(source.point, target.point)
   }
 
   static addEdge(edge: VisibilityEdge) {
     Assert.assert(edge.Source != edge.Target)
-    edge.Source.OutEdges.Insert(edge)
-    edge.Target.InEdges.Add(edge)
+    edge.Source.OutEdges.insert(edge)
+    edge.Target.InEdges.push(edge)
   }
 
   addEdge_PointPoint(source: Point, target: Point): VisibilityEdge {
-    const edge: VisibilityEdge
-    const sourceV = this.FindVertex(source)
-    const targetV: VisibilityVertex = null
+    let edge: VisibilityEdge
+    let sourceV = this.FindVertex(source)
+    let targetV: VisibilityVertex = null
     if (sourceV != null) {
       targetV = this.FindVertex(target)
-      if (targetV != null && sourceV.TryGetEdge(targetV, /* out */ edge)) {
-        return edge
+      if (targetV != null) {
+        edge = sourceV.get(targetV)
+        if (edge != null) {
+          return edge
+        }
       }
     }
 
     if (sourceV == null) {
       // then targetV is also null
-      sourceV = this.AddVertex(source)
-      targetV = this.AddVertex(target)
+      sourceV = this.addVertex_point(source)
+      targetV = this.addVertex_point(target)
     } else if (targetV == null) {
-      targetV = this.AddVertex(target)
+      targetV = this.addVertex_point(target)
     }
 
     edge = new VisibilityEdge(sourceV, targetV)
-    sourceV.OutEdges.Insert(edge)
-    targetV.InEdges.Add(edge)
+    sourceV.OutEdges.insert(edge)
+    targetV.InEdges.push(edge)
     return edge
   }
 
-  AddEdge_pp_ec(
+  addEdge_pp_ec(
     source: Point,
     target: Point,
-    edgeCreator: Func<VisibilityVertex, VisibilityVertex, VisibilityEdge>,
+    edgeCreator: (a: VisibilityVertex, b: VisibilityVertex) => VisibilityEdge,
   ): VisibilityEdge {
-    const edge: VisibilityEdge
-    const sourceV = this.FindVertex(source)
-    const targetV: VisibilityVertex = null
+    let edge: VisibilityEdge
+    let sourceV = this.FindVertex(source)
+    let targetV: VisibilityVertex = null
     if (sourceV != null) {
       targetV = this.FindVertex(target)
-      if (targetV != null && sourceV.TryGetEdge(targetV, /* out */ edge)) {
-        return edge
+      if (targetV != null) {
+        edge = sourceV.get(targetV)
+        if (edge != null) {
+          return edge
+        }
       }
     }
 
     if (sourceV == null) {
       // then targetV is also null
-      sourceV = this.AddVertex(source)
-      targetV = this.AddVertex(target)
+      sourceV = this.addVertex_point(source)
+      targetV = this.addVertex_point(target)
     } else if (targetV == null) {
-      targetV = this.AddVertex(target)
+      targetV = this.addVertex_point(target)
     }
 
     edge = edgeCreator(sourceV, targetV)
-    sourceV.OutEdges.Insert(edge)
-    targetV.InEdges.Add(edge)
+    sourceV.OutEdges.insert(edge)
+    targetV.InEdges.push(edge)
     return edge
   }
 
   FindVertex(point: Point): VisibilityVertex {
-    return this.pointToVertexMap.get(point)
+    return this.pointToVertexMap.getP(point)
   }
 
   GetVertex(polylinePoint: PolylinePoint): VisibilityVertex {
     return this.FindVertex(polylinePoint.point)
   }
 
-  Vertices(): IEnumerable<VisibilityVertex> {
-    return this.pointToVertexMap.Values
+  *Vertices(): IterableIterator<VisibilityVertex> {
+    return this.pointToVertexMap.values()
   }
 
   RemoveVertex(vertex: VisibilityVertex) {
@@ -322,12 +328,12 @@ export class VisibilityGraph {
       edge.Source.RemoveOutEdge(edge)
     }
 
-    this.pointToVertexMap.Remove(vertex.point)
+    this.pointToVertexMap.deleteP(vertex.point)
   }
 
   RemoveEdge(v1: VisibilityVertex, v2: VisibilityVertex) {
-    const edge: VisibilityEdge
-    if (!v1.TryGetEdge(v2, /* out */ edge)) {
+    const edge = v1.get(v2)
+    if (!v1.get(v2)) {
       return
     }
 
@@ -335,7 +341,7 @@ export class VisibilityGraph {
     edge.Target.RemoveInEdge(edge)
   }
 
-  RemoveEdge(p1: Point, p2: Point) {
+  RemoveEdge_pp(p1: Point, p2: Point) {
     //  the order of p1 and p2 is not important.
     const edge: VisibilityEdge = this.FindEdge(p1, p2)
     if (edge == null) {
@@ -347,11 +353,7 @@ export class VisibilityGraph {
   }
 
   static FindEdge(edge: VisibilityEdge): VisibilityEdge {
-    if (edge.Source.TryGetEdge(edge.Target, /* out */ edge)) {
-      return edge
-    }
-
-    return null
+    return edge.Source.get(edge.Target)
   }
 
   FindEdge(source: Point, target: Point): VisibilityEdge {
@@ -365,8 +367,8 @@ export class VisibilityGraph {
       return null
     }
 
-    const edge: VisibilityEdge
-    if (sourceV.TryGetEdge(targetV, /* out */ edge)) {
+    const edge: VisibilityEdge = sourceV.get(targetV)
+    if (edge != null) {
       return edge
     }
 
@@ -374,9 +376,12 @@ export class VisibilityGraph {
   }
 
   static RemoveEdge(edge: VisibilityEdge) {
-    edge.Source.OutEdges.Remove(edge)
+    edge.Source.OutEdges.remove(edge)
     // not efficient!
-    edge.Target.InEdges.Remove(edge)
+
+    let i = edge.Target.InEdges.indexOf(edge)
+    Assert.assert(i >= 0)
+    edge.Target.InEdges.splice(i, 1)
     // not efficient
   }
 
@@ -394,19 +399,17 @@ function* OrientHolesClockwise(
   //     #endif
   //  TEST || VERIFY
   for (const poly of holes) {
-    for (const p = poly.startPoint; ; p = p.next) {
-      //  Find the first non-collinear segments and see which direction the triangle is.
-      //  If it's consistent with Clockwise, then return the polyline, else return its Reverse.
+    for (let p = poly.startPoint; ; p = p.next) {
+      // Find the first non-collinear segments and see which direction the triangle is.
+      // If it's consistent with Clockwise, then return the polyline, else return its Reverse.
       const orientation = Point.getTriangleOrientation(
         p.point,
         p.next.point,
         p.next.next.point,
       )
       if (orientation != TriangleOrientation.Collinear) {
-        yield orientation == TriangleOrientation.Clockwise
-          ? poly
-          : poly.Reverse()
-        break
+        yield orientation == TriangleOrientation.Clockwise ? poly : poly.reverse() as Polyline;
+        break;
       }
     }
   }
