@@ -99,7 +99,7 @@ export class SmoothedPolylineCalculator {
   FindRightBoundaryAnchorCurves(): Array<Polyline> {
     const ret: Array<Polyline> = new Array<Polyline>()
     let uOffset = 0
-    for (const u of this.edgePath.nodes()) {
+    for (const u of this.edgePath) {
       let rightMostAnchor: Anchor = null
       for (const v of this.LeftBoundaryNodesOfANode(
         u,
