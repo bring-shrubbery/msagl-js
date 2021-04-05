@@ -21,6 +21,7 @@ import { BezierSeg } from '../../math/geometry/bezierSeg'
 import { Routing } from './routing'
 import { NodeKind } from './NodeKind'
 import { Assert } from '../../utils/assert'
+import { RefinerBetweenTwoLayers } from './RefinerBetweenTwoLayers'
 export class SmoothedPolylineCalculator {
   headSite: CornerSite
 
@@ -619,7 +620,7 @@ export class SmoothedPolylineCalculator {
     this.CreateInitialListOfSites()
     let topSite: CornerSite = this.headSite
     let bottomSite: CornerSite
-    for (let i = 0; i < this.edgePath.Count; i++) {
+    for (let i = 0; i < this.edgePath.count; i++) {
       bottomSite = topSite.next
       this.RefineBeetweenNeighborLayers(
         topSite,
@@ -653,8 +654,8 @@ export class SmoothedPolylineCalculator {
   }
 
   private CreateInitialListOfSites() {
-    const currentSite: CornerSite
-    for (let i = 1; i <= this.edgePath.Count; i++) {
+    let currentSite = this.headSite = CornerSite.mkSiteP(this.EdgePathPoint(0));
+    for (let i = 1; i <= this.edgePath.count; i++) {
       currentSite = new CornerSite(currentSite, this.EdgePathPoint(i))
     }
   }
@@ -669,7 +670,7 @@ export class SmoothedPolylineCalculator {
   }
 
   OptimizeForThreeSites() {
-    Assert.assert(this.edgePath.LayerEdges.Count == 2)
+    Assert.assert(this.edgePath.LayerEdges.count == 2)
     const top: number = this.EdgePathNode(0)
     const bottom: number = this.EdgePathNode(2)
     const a: Anchor = this.anchors[top]
@@ -704,7 +705,7 @@ export class SmoothedPolylineCalculator {
   }
 
   OptimizeForTwoSites() {
-    Assert.assert(this.edgePath.LayerEdges.Count == 1)
+    Assert.assert(this.edgePath.LayerEdges.count == 1)
     const top: number = this.EdgePathNode(0)
     const bottom: number = this.EdgePathNode(1)
     const a: Anchor = this.anchors[top]
@@ -810,18 +811,18 @@ export class SmoothedPolylineCalculator {
   }
 
   private OptimizeShortPath() {
-    if (this.edgePath.Count > 2) {
+    if (this.edgePath.count > 2) {
       return
     }
 
     if (
-      this.edgePath.Count == 2 &&
+      this.edgePath.count == 2 &&
       this.headSite.next.next != null &&
       this.headSite.next.next.next == null &&
       this.anchors[this.EdgePathNode(1)].Node == null
     ) {
       this.OptimizeForThreeSites()
-    } else if (this.edgePath.Count == 1) {
+    } else if (this.edgePath.count == 1) {
       this.OptimizeForTwoSites()
     }
   }
@@ -936,8 +937,8 @@ export class SmoothedPolylineCalculator {
 
   EdgePathNode(i: number): number {
     const v: number
-    if (i == this.edgePath.Count) {
-      v = this.edgePath[this.edgePath.Count - 1].Target
+    if (i == this.edgePath.count) {
+      v = this.edgePath[this.edgePath.count - 1].Target
     } else {
       v = this.edgePath[i].Source
     }
@@ -1052,7 +1053,7 @@ export class SmoothedPolylineCalculator {
     }
 
     if (
-      curve.Segments.Count > 0 &&
+      curve.Segments.count > 0 &&
       !Point.closeDistEps(curve.End, seg.Start)
     ) {
       curve.AddSegment(new LineSegment(curve.End, seg.Start))
