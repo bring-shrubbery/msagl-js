@@ -1,18 +1,18 @@
 ﻿//  Basic geomedge router for producing straight edges.
 
-import { IEnumerable } from 'linq-to-typescript'
-import { EdgeGeometry } from '../layout/core/edgeGeometry'
-import { GeomEdge } from '../layout/core/geomEdge'
-import { GeomGraph } from '../layout/core/GeomGraph'
-import { Curve } from '../math/geometry/curve'
-import { ICurve } from '../math/geometry/icurve'
-import { IntersectionInfo } from '../math/geometry/intersectionInfo'
-import { LineSegment } from '../math/geometry/lineSegment'
-import { Point } from '../math/geometry/point'
-import { Rectangle } from '../math/geometry/rectangle'
-import { SmoothedPolyline } from '../math/geometry/smoothedPolyline'
-import { Algorithm } from '../utils/algorithm'
-import { SplineRouter } from './SplineRouter'
+import {IEnumerable} from 'linq-to-typescript'
+import {EdgeGeometry} from '../layout/core/edgeGeometry'
+import {GeomEdge} from '../layout/core/geomEdge'
+import {GeomGraph} from '../layout/core/GeomGraph'
+import {Curve} from '../math/geometry/curve'
+import {ICurve} from '../math/geometry/icurve'
+import {IntersectionInfo} from '../math/geometry/intersectionInfo'
+import {LineSegment} from '../math/geometry/lineSegment'
+import {Point} from '../math/geometry/point'
+import {Rectangle} from '../math/geometry/rectangle'
+import {SmoothedPolyline} from '../math/geometry/smoothedPolyline'
+import {Algorithm} from '../utils/algorithm'
+import {SplineRouter} from './SplineRouter'
 
 export class StraightLineEdges extends Algorithm {
   private edges: IEnumerable<GeomEdge>

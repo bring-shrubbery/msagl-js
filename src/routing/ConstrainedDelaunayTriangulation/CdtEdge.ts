@@ -1,7 +1,7 @@
-﻿import { String } from 'typescript-string-operations'
-import { Assert } from '../../utils/assert'
-import { CdtSite } from './CdtSite'
-import { CdtTriangle } from './CdtTriangle'
+﻿import {String} from 'typescript-string-operations'
+import {Assert} from '../../utils/assert'
+import {CdtSite} from './CdtSite'
+import {CdtTriangle} from './CdtTriangle'
 
 export class CdtEdge {
   // <summary>
@@ -62,8 +62,8 @@ export class CdtEdge {
   public set CcwTriangle(value: CdtTriangle) {
     Assert.assert(
       value == null ||
-      this.cwTriangle == null ||
-      value.OppositeSite(this) != this.cwTriangle.OppositeSite(this),
+        this.cwTriangle == null ||
+        value.OppositeSite(this) != this.cwTriangle.OppositeSite(this),
     )
     this.ccwTriangle = value
   }
@@ -76,8 +76,8 @@ export class CdtEdge {
   public set CwTriangle(value: CdtTriangle) {
     Assert.assert(
       value == null ||
-      this.ccwTriangle == null ||
-      value.OppositeSite(this) != this.ccwTriangle.OppositeSite(this),
+        this.ccwTriangle == null ||
+        value.OppositeSite(this) != this.ccwTriangle.OppositeSite(this),
     )
     this.cwTriangle = value
   }

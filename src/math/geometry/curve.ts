@@ -1,22 +1,22 @@
-import { ICurve } from './icurve'
-import { PN, PNInternal, PNLeaf, ParallelogramNode } from './parallelogramNode'
-import { allVerticesOfParall } from './parallelogram'
-import { Point } from './point'
-import { LineSegment } from './lineSegment'
-import { IntersectionInfo } from './intersectionInfo'
-import { Assert } from './../../utils/assert'
-import { Parallelogram } from './parallelogram'
-import { Ellipse } from './ellipse'
-import { Polyline } from './polyline'
-import { GeomConstants } from './geomConstants'
-import { LinearSystem2 } from './linearSystem'
-import { MinDistCurveCurve } from './minDistCurveCurve'
-import { Rectangle } from './rectangle'
-import { PlaneTransformation } from './planeTransformation'
-import { SvgDebugWriter } from './svgDebugWriter'
-import { DebugCurve } from './debugCurve'
-import { BezierSeg } from './bezierSeg'
-import { CornerSite } from './cornerSite'
+import {ICurve} from './icurve'
+import {PN, PNInternal, PNLeaf, ParallelogramNode} from './parallelogramNode'
+import {allVerticesOfParall} from './parallelogram'
+import {Point} from './point'
+import {LineSegment} from './lineSegment'
+import {IntersectionInfo} from './intersectionInfo'
+import {Assert} from './../../utils/assert'
+import {Parallelogram} from './parallelogram'
+import {Ellipse} from './ellipse'
+import {Polyline} from './polyline'
+import {GeomConstants} from './geomConstants'
+import {LinearSystem2} from './linearSystem'
+import {MinDistCurveCurve} from './minDistCurveCurve'
+import {Rectangle} from './rectangle'
+import {PlaneTransformation} from './planeTransformation'
+import {SvgDebugWriter} from './svgDebugWriter'
+import {DebugCurve} from './debugCurve'
+import {BezierSeg} from './bezierSeg'
+import {CornerSite} from './cornerSite'
 
 type Params = {
   start: number
@@ -71,7 +71,9 @@ enum PointLocation {
 
 export class Curve implements ICurve {
   static CurvesIntersect(curve1: ICurve, curve2: ICurve): boolean {
-    return curve1 == curve2 || (Curve.intersectionOne(curve1, curve2, false) != null);
+    return (
+      curve1 == curve2 || Curve.intersectionOne(curve1, curve2, false) != null
+    )
   }
   // fields
   parEnd_: number
@@ -256,7 +258,7 @@ export class Curve implements ICurve {
       parallelogram: Parallelogram.getParallelogramOfAGroup(parallelograms),
       seg: this,
       leafBoxesOffset: GeomConstants.defaultLeafBoxesOffset,
-      node: { children: childrenNodes },
+      node: {children: childrenNodes},
     }
 
     return this.pBNode
@@ -1287,10 +1289,10 @@ export class Curve implements ICurve {
     return aMinusB.dot(aMinusB) >= GeomConstants.distanceEpsilon
       ? undefined
       : {
-        aSol: mdout.aSol,
-        bSol: mdout.bSol,
-        x: Point.middle(mdout.aX, mdout.bX),
-      }
+          aSol: mdout.aSol,
+          bSol: mdout.bSol,
+          x: Point.middle(mdout.aX, mdout.bX),
+        }
   }
 
   static crossTwoLineSegs(
@@ -1398,60 +1400,66 @@ export class Curve implements ICurve {
 
   // Returns true if curves do not touch in the intersection point
   // only when the second curve cuts the first one from the inside</param>
-  public static realCutWithClosedCurve(xx: IntersectionInfo, polygon: Curve, onlyFromInsideCuts: boolean): boolean {
-    const sseg: ICurve = xx.seg0;
-    const pseg: ICurve = xx.seg1;
-    const spar: number = xx.par0;
-    const ppar: number = xx.par1;
+  public static realCutWithClosedCurve(
+    xx: IntersectionInfo,
+    polygon: Curve,
+    onlyFromInsideCuts: boolean,
+  ): boolean {
+    const sseg: ICurve = xx.seg0
+    const pseg: ICurve = xx.seg1
+    const spar: number = xx.par0
+    const ppar: number = xx.par1
     const x: Point = xx.x
     // normalised tangent to spline
-    const ts: Point = sseg.derivative(spar).normalize();
-    const pn: Point = pseg.derivative(ppar).normalize().rotate((Math.PI / 2));
+    const ts: Point = sseg.derivative(spar).normalize()
+    const pn: Point = pseg
+      .derivative(ppar)
+      .normalize()
+      .rotate(Math.PI / 2)
     if (Point.closeDistEps(x, pseg.end)) {
-      // so pseg enters the spline 
-      let exitSeg: ICurve = null;
-      for (let i: number = 0; (i < polygon.segs.length); i++) {
-        if ((polygon.segs[i] == pseg)) {
-          exitSeg = polygon.segs[((i + 1)
-            % polygon.segs.length)];
-          break;
+      // so pseg enters the spline
+      let exitSeg: ICurve = null
+      for (let i: number = 0; i < polygon.segs.length; i++) {
+        if (polygon.segs[i] == pseg) {
+          exitSeg = polygon.segs[(i + 1) % polygon.segs.length]
+          break
         }
-
       }
 
-      if ((exitSeg == null)) {
-        throw new Error();
+      if (exitSeg == null) {
+        throw new Error()
       }
 
-      const tsn: Point = ts.rotate((Math.PI / 2));
-      const touch: boolean = tsn.dot(pseg.derivative(pseg.parEnd))
-        * tsn.dot(exitSeg.derivative(exitSeg.parStart))
-        < GeomConstants.tolerance
-      return !touch;
+      const tsn: Point = ts.rotate(Math.PI / 2)
+      const touch: boolean =
+        tsn.dot(pseg.derivative(pseg.parEnd)) *
+          tsn.dot(exitSeg.derivative(exitSeg.parStart)) <
+        GeomConstants.tolerance
+      return !touch
     }
 
     if (Point.closeDistEps(x, pseg.start)) {
-      // so pseg exits the spline 
-      let enterSeg: ICurve = null;
-      for (let i: number = 0; (i < polygon.segs.length); i++) {
-        if ((polygon.segs[i] == pseg)) {
-          enterSeg = polygon.segs[i > 0 ? (i - 1) : polygon.segs.length - 1];
+      // so pseg exits the spline
+      let enterSeg: ICurve = null
+      for (let i: number = 0; i < polygon.segs.length; i++) {
+        if (polygon.segs[i] == pseg) {
+          enterSeg = polygon.segs[i > 0 ? i - 1 : polygon.segs.length - 1]
 
-          break;
+          break
         }
-
       }
 
-      const tsn: Point = ts.rotate((Math.PI / 2));
-      const touch: boolean = tsn.dot(pseg.derivative(pseg.parStart))
-        * tsn.dot(enterSeg.derivative(enterSeg.parEnd))
-        < GeomConstants.tolerance;
-      return !touch;
+      const tsn: Point = ts.rotate(Math.PI / 2)
+      const touch: boolean =
+        tsn.dot(pseg.derivative(pseg.parStart)) *
+          tsn.dot(enterSeg.derivative(enterSeg.parEnd)) <
+        GeomConstants.tolerance
+      return !touch
     }
 
-    const d: number = ts.dot(pn);
+    const d: number = ts.dot(pn)
     if (onlyFromInsideCuts) {
-      return (d > GeomConstants.distanceEpsilon);
+      return d > GeomConstants.distanceEpsilon
     }
 
     return Math.abs(d) > GeomConstants.distanceEpsilon
@@ -1539,11 +1547,11 @@ export class Curve implements ICurve {
     md.solve()
     return md.success
       ? {
-        aSol: md.aSolution,
-        bSol: md.bSolution,
-        aX: md.aPoint,
-        bX: md.bPoint,
-      }
+          aSol: md.aSolution,
+          bSol: md.bSolution,
+          aX: md.aPoint,
+          bX: md.bPoint,
+        }
       : undefined
   }
   /*
@@ -1876,12 +1884,12 @@ export class Curve implements ICurve {
     return new BezierSeg(a, a.add(d), b.add(d), b)
   }
 
-  static findCorner(a: CornerSite): { b: CornerSite; c: CornerSite } | undefined {
+  static findCorner(a: CornerSite): {b: CornerSite; c: CornerSite} | undefined {
     const b = a.next
     if (b.next == null) return //no corner has been found
     const c = b.next
     if (c == null) return
-    return { b: b, c: c }
+    return {b: b, c: c}
   }
 
   static trimEdgeSplineWithNodeBoundaries(
@@ -2045,8 +2053,7 @@ function interpolate(
   Assert.assert(Point.closeDistEps(s.value(a), ap))
   Assert.assert(Point.closeDistEps(s.value(b), bp))
   const r = new Array<LineSegment>(0)
-  if (isCloseToLineSeg(a, ap, b, bp, s, eps))
-    r.push(LineSegment.mkPP(ap, bp))
+  if (isCloseToLineSeg(a, ap, b, bp, s, eps)) r.push(LineSegment.mkPP(ap, bp))
   else {
     const m = 0.5 * (a + b)
     const mp = s.value(m)

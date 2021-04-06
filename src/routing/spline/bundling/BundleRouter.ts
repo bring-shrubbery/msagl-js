@@ -1,23 +1,23 @@
 //  The class is responsible for general edge bundling with ordered bundles.
 
-import { IEnumerable } from 'linq-to-typescript'
-import { Dictionary } from 'lodash'
-import { RectangleNode } from '../../../core/geometry/RTree/RectangleNode'
-import { Port } from '../../../core/layout/Port'
-import { BundlingSettings } from '../../../core/routing/BundlingSettings'
-import { EdgeGeometry } from '../../../layout/core/edgeGeometry'
-import { GeomEdge } from '../../../layout/core/geomEdge'
-import { GeomGraph } from '../../../layout/core/GeomGraph'
-import { Curve } from '../../../math/geometry/curve'
-import { IntersectionInfo } from '../../../math/geometry/intersectionInfo'
-import { LineSegment } from '../../../math/geometry/lineSegment'
-import { Point } from '../../../math/geometry/point'
-import { Polyline } from '../../../math/geometry/polyline'
-import { Rectangle } from '../../../math/geometry/rectangle'
-import { SmoothedPolyline } from '../../../math/geometry/smoothedPolyline'
-import { Algorithm } from '../../../utils/algorithm'
-import { ClusterBoundaryPort } from '../../ClusterBoundaryPort'
-import { VisibilityGraph } from '../../visibility/VisibilityGraph'
+import {IEnumerable} from 'linq-to-typescript'
+import {Dictionary} from 'lodash'
+import {RectangleNode} from '../../../core/geometry/RTree/RectangleNode'
+import {Port} from '../../../core/layout/Port'
+import {BundlingSettings} from '../../../core/routing/BundlingSettings'
+import {EdgeGeometry} from '../../../layout/core/edgeGeometry'
+import {GeomEdge} from '../../../layout/core/geomEdge'
+import {GeomGraph} from '../../../layout/core/GeomGraph'
+import {Curve} from '../../../math/geometry/curve'
+import {IntersectionInfo} from '../../../math/geometry/intersectionInfo'
+import {LineSegment} from '../../../math/geometry/lineSegment'
+import {Point} from '../../../math/geometry/point'
+import {Polyline} from '../../../math/geometry/polyline'
+import {Rectangle} from '../../../math/geometry/rectangle'
+import {SmoothedPolyline} from '../../../math/geometry/smoothedPolyline'
+import {Algorithm} from '../../../utils/algorithm'
+import {ClusterBoundaryPort} from '../../ClusterBoundaryPort'
+import {VisibilityGraph} from '../../visibility/VisibilityGraph'
 
 //  Currently the router will fail if there are node overlaps.
 export class BundleRouter extends Algorithm {
@@ -148,7 +148,7 @@ export class BundleRouter extends Algorithm {
           new LineSegment(edge.Curve.start, edge.Curve.End),
           true,
         )
-          ; (<Polyline>edge.Curve).startPoint.point = ii.IntersectionPoint
+        ;(<Polyline>edge.Curve).startPoint.point = ii.IntersectionPoint
       }
 
       if (ePort.Curve.BoundingBox.Contains(sPort.Curve.BoundingBox)) {
@@ -157,7 +157,7 @@ export class BundleRouter extends Algorithm {
           new LineSegment(edge.Curve.start, edge.Curve.End),
           true,
         )
-          ; (<Polyline>edge.Curve).endPoint.point = ii.IntersectionPoint
+        ;(<Polyline>edge.Curve).endPoint.point = ii.IntersectionPoint
       }
     }
   }

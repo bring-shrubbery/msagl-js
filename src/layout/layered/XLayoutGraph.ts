@@ -1,12 +1,12 @@
 //  Follows the idea from Gansner etc 93, creating a special graph
 //  for x-coordinates calculation
 
-import { List } from 'lodash'
-import { BasicGraphOnEdges } from '../../structs/basicGraphOnEdges'
-import { Assert } from '../../utils/assert'
-import { LayerArrays } from './LayerArrays'
-import { PolyIntEdge } from './polyIntEdge'
-import { ProperLayeredGraph } from './ProperLayeredGraph'
+import {List} from 'lodash'
+import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
+import {Assert} from '../../utils/assert'
+import {LayerArrays} from './LayerArrays'
+import {PolyIntEdge} from './polyIntEdge'
+import {ProperLayeredGraph} from './ProperLayeredGraph'
 
 export class XLayoutGraph extends BasicGraphOnEdges<PolyIntEdge> {
   layeredGraph: ProperLayeredGraph
@@ -92,8 +92,8 @@ export class XLayoutGraph extends BasicGraphOnEdges<PolyIntEdge> {
       k == 0
         ? this.weightMultiplierOfOriginalOriginal
         : k == 1
-          ? this.weightMultOfOneVirtual
-          : this.weightMultiplierOfTwoVirtual
+        ? this.weightMultOfOneVirtual
+        : this.weightMultiplierOfTwoVirtual
     return ret
   }
 

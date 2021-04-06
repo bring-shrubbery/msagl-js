@@ -1,9 +1,9 @@
-import { CornerSite } from './cornerSite'
-import { Point } from './../../math/geometry/point'
-import { LineSegment } from './../../math/geometry/lineSegment'
-import { Curve } from './../../math/geometry/curve'
-import { BezierSeg } from './../../math/geometry/bezierSeg'
-import { Assert } from './../../utils/assert'
+import {CornerSite} from './cornerSite'
+import {Point} from './../../math/geometry/point'
+import {LineSegment} from './../../math/geometry/lineSegment'
+import {Curve} from './../../math/geometry/curve'
+import {BezierSeg} from './../../math/geometry/bezierSeg'
+import {Assert} from './../../utils/assert'
 export class SmoothedPolyline {
   // creates the polyline from corner points
   static mkFromPoints(points: Point[]) {

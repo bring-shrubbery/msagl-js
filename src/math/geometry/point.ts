@@ -1,5 +1,5 @@
-import { LinearSystem2 } from './linearSystem'
-import { GeomConstants } from './geomConstants'
+import {LinearSystem2} from './linearSystem'
+import {GeomConstants} from './geomConstants'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,

@@ -2,10 +2,10 @@ import {
   BasicGraphOnEdges,
   mkGraphOnEdges,
 } from '../../structs/basicGraphOnEdges'
-import { IntPair } from '../../utils/IntPair'
-import { IntPairSet } from '../../utils/IntPairSet'
-import { GeomNode } from '../core/geomNode'
-import { CycleRemoval } from './CycleRemoval'
+import {IntPair} from '../../utils/IntPair'
+import {IntPairSet} from '../../utils/IntPairSet'
+import {GeomNode} from '../core/geomNode'
+import {CycleRemoval} from './CycleRemoval'
 
 function mktuple<T>(a: T, b: T): [T, T] {
   return [a, b]

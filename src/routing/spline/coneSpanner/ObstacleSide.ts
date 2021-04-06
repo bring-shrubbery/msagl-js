@@ -1,7 +1,7 @@
-import { Point } from '../../../math/geometry/point'
-import { Polyline } from '../../../math/geometry/polyline'
-import { PolylinePoint } from '../../../math/geometry/polylinePoint'
-import { SegmentBase } from '../../visibility/SegmentBase'
+import {Point} from '../../../math/geometry/point'
+import {Polyline} from '../../../math/geometry/polyline'
+import {PolylinePoint} from '../../../math/geometry/polylinePoint'
+import {SegmentBase} from '../../visibility/SegmentBase'
 
 export abstract class ObstacleSide extends SegmentBase {
   StartVertex: PolylinePoint

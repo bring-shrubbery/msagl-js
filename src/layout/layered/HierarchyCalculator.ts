@@ -1,5 +1,5 @@
-import { Parallelogram } from '../../math/geometry/parallelogram'
-import { PN } from '../../math/geometry/parallelogramNode'
+import {Parallelogram} from '../../math/geometry/parallelogram'
+import {PN} from '../../math/geometry/parallelogramNode'
 
 export class HierarchyCalculator {
   initialNodes: Array<PN>
@@ -122,7 +122,7 @@ export class HierarchyCalculator {
     }
     return {
       parallelogram: Parallelogram.parallelogramOfTwo(box0, box1),
-      node: { children: [this.Calc(gr0), this.Calc(gr1)] },
+      node: {children: [this.Calc(gr0), this.Calc(gr1)]},
       seg: undefined,
       leafBoxesOffset: undefined,
     }

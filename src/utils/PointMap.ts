@@ -1,4 +1,4 @@
-import { Point } from '../math/geometry/point'
+import {Point} from '../math/geometry/point'
 
 export class PointMap<T> {
   deleteP(point: Point) {
@@ -6,7 +6,9 @@ export class PointMap<T> {
   }
   mapOfMaps: Map<number, Map<number, T>>
   size_: number
-  get size(): number { return this.size_ }
+  get size(): number {
+    return this.size_
+  }
   set(x: number, y: number, v: T) {
     let m = this.mapOfMaps.get(x)
     if (m == null) this.mapOfMaps.set(x, (m = new Map<number, T>()))

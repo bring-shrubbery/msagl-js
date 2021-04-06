@@ -1,4 +1,4 @@
-import { LayerEdge } from '../LayerEdge'
+import {LayerEdge} from '../LayerEdge'
 
 export class EdgeComparerByTarget {
   X: number[]

@@ -1,7 +1,7 @@
-import { RBNode } from '../../structs/RBTree/rbNode'
-import { Point } from './../../math/geometry/point'
-import { RBTree } from './../../structs/RBTree/rbTree'
-import { VisibilityEdge } from './VisibilityEdge'
+import {RBNode} from '../../structs/RBTree/rbNode'
+import {Point} from './../../math/geometry/point'
+import {RBTree} from './../../structs/RBTree/rbTree'
+import {VisibilityEdge} from './VisibilityEdge'
 export class VisibilityVertex {
   point: Point
 
@@ -103,9 +103,7 @@ export class VisibilityVertex {
     return good
   }
 
-  get(
-    target: VisibilityVertex
-  ): VisibilityEdge {
+  get(target: VisibilityVertex): VisibilityEdge {
     let node = VisibilityVertex.FindFirst(this.OutEdges, target.point)
     //  OutEdges.FindFirst(e => e.TargetPoint >= target.point);
     if (node != null) {

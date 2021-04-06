@@ -1,14 +1,14 @@
-import { from, IEnumerable } from 'linq-to-typescript'
-import { CornerSite } from '../../math/geometry/cornerSite'
-import { GeomConstants } from '../../math/geometry/geomConstants'
-import { Point } from '../../math/geometry/point'
-import { randomInt } from '../../utils/random'
-import { GeomGraph } from '../core/GeomGraph'
-import { Anchor } from './anchor'
-import { LayerArrays } from './LayerArrays'
-import { LayerEdge } from './LayerEdge'
-import { NodeKind } from './NodeKind'
-import { ProperLayeredGraph } from './ProperLayeredGraph'
+import {from, IEnumerable} from 'linq-to-typescript'
+import {CornerSite} from '../../math/geometry/cornerSite'
+import {GeomConstants} from '../../math/geometry/geomConstants'
+import {Point} from '../../math/geometry/point'
+import {randomInt} from '../../utils/random'
+import {GeomGraph} from '../core/GeomGraph'
+import {Anchor} from './anchor'
+import {LayerArrays} from './LayerArrays'
+import {LayerEdge} from './LayerEdge'
+import {NodeKind} from './NodeKind'
+import {ProperLayeredGraph} from './ProperLayeredGraph'
 
 type Points = () => IEnumerable<Point>
 
@@ -87,7 +87,7 @@ export class RefinerBetweenTwoLayers {
 
   Refine() {
     this.Init()
-    while (this.InsertSites()) { }
+    while (this.InsertSites()) {}
   }
 
   private FixCorner(start: Point, corner: Point, end: Point): Point {
@@ -395,7 +395,7 @@ export class RefinerBetweenTwoLayers {
   private Intersect(e: LayerEdge, m: LayerEdge): boolean {
     return (
       (this.layerArrays.x[e.Source] - this.layerArrays.x[m.Source]) *
-      (this.layerArrays.x[e.Target] - this.layerArrays.x[m.Target]) <
+        (this.layerArrays.x[e.Target] - this.layerArrays.x[m.Target]) <
       0
     )
   }

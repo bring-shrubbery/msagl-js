@@ -1,10 +1,10 @@
-﻿import { Error } from 'linq-to-typescript'
-import { Point, TriangleOrientation } from '../../math/geometry/point'
-import { Rectangle } from '../../math/geometry/rectangle'
-import { Assert } from '../../utils/assert'
-import { CdtEdge } from './CdtEdge'
-import { CdtSite } from './CdtSite'
-import { ThreeArray } from './ThreeArray'
+﻿import {Error} from 'linq-to-typescript'
+import {Point, TriangleOrientation} from '../../math/geometry/point'
+import {Rectangle} from '../../math/geometry/rectangle'
+import {Assert} from '../../utils/assert'
+import {CdtEdge} from './CdtEdge'
+import {CdtSite} from './CdtSite'
+import {ThreeArray} from './ThreeArray'
 
 //  a trianlge oriented counterclockwise
 export class CdtTriangle {
@@ -48,11 +48,11 @@ export class CdtTriangle {
     createEdgeDelegate: Func<CdtSite, CdtSite, CdtEdge>,
   ) {
     switch (
-    Point.GetTriangleOrientationWithNoEpsilon(
-      edge.upperSite.point,
-      edge.lowerSite.point,
-      pi.point,
-    )
+      Point.GetTriangleOrientationWithNoEpsilon(
+        edge.upperSite.point,
+        edge.lowerSite.point,
+        pi.point,
+      )
     ) {
       case TriangleOrientation.Counterclockwise:
         edge.CcwTriangle = this

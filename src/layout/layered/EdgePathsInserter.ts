@@ -1,13 +1,13 @@
 // This class is used of the case when there are multiple edges, but there is no need to duplicate layers.
 
-import { BasicGraph } from '../../structs/BasicGraph'
-import { GeomNode } from '../core/geomNode'
-import { Database } from './Database'
-import { LayerArrays } from './LayerArrays'
-import { LayerEdge } from './LayerEdge'
-import { LayerInserter } from './LayerInserter'
-import { PolyIntEdge } from './polyIntEdge'
-import { ProperLayeredGraph } from './ProperLayeredGraph'
+import {BasicGraph} from '../../structs/BasicGraph'
+import {GeomNode} from '../core/geomNode'
+import {Database} from './Database'
+import {LayerArrays} from './LayerArrays'
+import {LayerEdge} from './LayerEdge'
+import {LayerInserter} from './LayerInserter'
+import {PolyIntEdge} from './polyIntEdge'
+import {ProperLayeredGraph} from './ProperLayeredGraph'
 
 // We just insert dummy nodes for edge middles without distorting the order of vertices of the layers.
 export class EdgePathsInserter {
@@ -124,7 +124,7 @@ export class EdgePathsInserter {
               )
             else {
               for (let i = 0; i < span; i++) {
-                const bVV = { currentVV: currentVV }
+                const bVV = {currentVV: currentVV}
                 const source = EdgePathsInserter.GetSource(bVV, e, i)
                 currentVV = bVV.currentVV
                 const target = EdgePathsInserter.GetTarget(
@@ -159,7 +159,7 @@ export class EdgePathsInserter {
   }
 
   static GetSource(
-    boxedVV: { currentVV: number },
+    boxedVV: {currentVV: number},
     e: PolyIntEdge,
     i: number,
   ): number {

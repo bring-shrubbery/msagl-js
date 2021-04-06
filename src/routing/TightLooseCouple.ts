@@ -1,6 +1,6 @@
-import { Error } from 'linq-to-typescript'
-import { Polyline } from '../math/geometry/polyline'
-import { Shape } from './Shape'
+import {Error} from 'linq-to-typescript'
+import {Polyline} from '../math/geometry/polyline'
+import {Shape} from './Shape'
 
 //  an utility class to keep different polylines created around a shape
 export class TightLooseCouple {

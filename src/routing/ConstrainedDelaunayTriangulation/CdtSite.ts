@@ -1,9 +1,9 @@
-﻿import { ICurve } from '../../math/geometry/icurve'
-import { Point } from '../../math/geometry/point'
-import { Assert } from '../../utils/assert'
-import { CdtEdge } from './CdtEdge'
-import { CdtTriangle } from './CdtTriangle'
-import { Cdt } from './Cdt'
+﻿import {ICurve} from '../../math/geometry/icurve'
+import {Point} from '../../math/geometry/point'
+import {Assert} from '../../utils/assert'
+import {CdtEdge} from './CdtEdge'
+import {CdtTriangle} from './CdtTriangle'
+import {Cdt} from './Cdt'
 export class CdtSite {
   //  Object to which this site refers to.
   Owner: ICurve // not sure the type is correct

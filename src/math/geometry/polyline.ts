@@ -1,13 +1,13 @@
-import { ICurve } from './icurve'
-import { PN } from './parallelogramNode'
-import { PlaneTransformation } from './planeTransformation'
-import { Point, TriangleOrientation } from './point'
-import { Rectangle } from './rectangle'
-import { PolylinePoint } from './polylinePoint'
-import { GeomConstants } from './geomConstants'
-import { Assert } from './../../utils/assert'
-import { Parallelogram } from './parallelogram'
-import { LineSegment } from './lineSegment'
+import {ICurve} from './icurve'
+import {PN} from './parallelogramNode'
+import {PlaneTransformation} from './planeTransformation'
+import {Point, TriangleOrientation} from './point'
+import {Rectangle} from './rectangle'
+import {PolylinePoint} from './polylinePoint'
+import {GeomConstants} from './geomConstants'
+import {Assert} from './../../utils/assert'
+import {Parallelogram} from './parallelogram'
+import {LineSegment} from './lineSegment'
 
 type AdjustedPar = {
   a: Point
@@ -124,10 +124,7 @@ export class Polyline implements ICurve {
         node: {
           low: offset,
           high: offset + 1,
-          chord: LineSegment.mkPP(
-            this.endPoint.point,
-            this.startPoint.point,
-          ),
+          chord: LineSegment.mkPP(this.endPoint.point, this.startPoint.point),
         },
       })
     }

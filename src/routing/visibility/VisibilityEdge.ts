@@ -1,7 +1,7 @@
-import { Point } from './../../math/geometry/point'
-import { Assert } from './../../utils/assert'
-import { String } from 'typescript-string-operations'
-import { VisibilityVertex } from './VisibilityVertex'
+import {Point} from './../../math/geometry/point'
+import {Assert} from './../../utils/assert'
+import {String} from 'typescript-string-operations'
+import {VisibilityVertex} from './VisibilityVertex'
 //  an edge connecting two VisibilityVertices
 export class VisibilityEdge {
   LengthMultiplier = 1

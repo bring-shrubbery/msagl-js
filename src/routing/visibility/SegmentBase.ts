@@ -1,4 +1,4 @@
-import { Point } from '../../math/geometry/point'
+import {Point} from '../../math/geometry/point'
 
 export abstract class SegmentBase {
   abstract get Start(): Point

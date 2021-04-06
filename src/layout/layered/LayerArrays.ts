@@ -1,5 +1,5 @@
-import { Assert } from '../../utils/assert'
-import { copyTo } from '../../utils/copy'
+import {Assert} from '../../utils/assert'
+import {copyTo} from '../../utils/copy'
 
 export class LayerArrays {
   y: number[]

@@ -1,14 +1,14 @@
-﻿import { Point } from './../../math/geometry/point'
-import { IntersectionInfo } from './../../math/geometry/intersectionInfo'
-import { GeomConstants } from './../../math/geometry/geomConstants'
-import { Curve } from './../../math/geometry/curve'
-import { ICurve } from './../../math/geometry/icurve'
-import { Ellipse } from './../../math/geometry/ellipse'
-import { LineSegment } from './../../math/geometry/lineSegment'
-import { EdgeGeometry } from './edgeGeometry'
-import { Assert } from './../../utils/assert'
-import { GeomEdge } from './geomEdge'
-import { from } from 'linq-to-typescript'
+﻿import {Point} from './../../math/geometry/point'
+import {IntersectionInfo} from './../../math/geometry/intersectionInfo'
+import {GeomConstants} from './../../math/geometry/geomConstants'
+import {Curve} from './../../math/geometry/curve'
+import {ICurve} from './../../math/geometry/icurve'
+import {Ellipse} from './../../math/geometry/ellipse'
+import {LineSegment} from './../../math/geometry/lineSegment'
+import {EdgeGeometry} from './edgeGeometry'
+import {Assert} from './../../utils/assert'
+import {GeomEdge} from './geomEdge'
+import {from} from 'linq-to-typescript'
 export class Arrowhead {
   static defaultArrowheadLength = 10
   length = Arrowhead.defaultArrowheadLength
@@ -202,10 +202,10 @@ export class Arrowhead {
     while (
       ((edgeGeometry.sourceArrowhead != null &&
         edgeGeometry.sourceArrowhead.length >
-        GeomConstants.intersectionEpsilon) ||
+          GeomConstants.intersectionEpsilon) ||
         (edgeGeometry.targetArrowhead != null &&
           edgeGeometry.targetArrowhead.length >
-          GeomConstants.intersectionEpsilon)) &&
+            GeomConstants.intersectionEpsilon)) &&
       !success
     ) {
       success = Arrowhead.calculateArrowheads(edgeGeometry)

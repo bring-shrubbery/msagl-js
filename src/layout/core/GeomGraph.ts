@@ -1,15 +1,23 @@
-import { Graph } from '../../structs/graph'
-import { Rectangle } from '../../math/geometry/rectangle'
-import { GeomObject } from './geomObject'
-import { GeomNode } from './geomNode'
-import { GeomEdge } from './geomEdge'
-import { Point } from '../../math/geometry/point'
+import {Graph} from '../../structs/graph'
+import {Rectangle} from '../../math/geometry/rectangle'
+import {GeomObject} from './geomObject'
+import {GeomNode} from './geomNode'
+import {GeomEdge} from './geomEdge'
+import {Point} from '../../math/geometry/point'
 
 export class GeomGraph extends GeomObject {
-  get left() { return this.boundingBox.left }
-  get right() { return this.boundingBox.right }
-  get top() { return this.boundingBox.top }
-  get bottom() { return this.boundingBox.bottom }
+  get left() {
+    return this.boundingBox.left
+  }
+  get right() {
+    return this.boundingBox.right
+  }
+  get top() {
+    return this.boundingBox.top
+  }
+  get bottom() {
+    return this.boundingBox.bottom
+  }
   CheckClusterConsistency(): boolean {
     throw new Error('Method not implemented.')
   }

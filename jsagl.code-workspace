@@ -5,6 +5,7 @@
 		}
 	],
 	"settings": {
-		"debug.javascript.unmapMissingSources": true
+		"debug.javascript.unmapMissingSources": true,
+		"json.maxItemsComputed": 50000
 	}
 }

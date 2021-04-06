@@ -1,5 +1,5 @@
-import { GeomConstants } from '../../math/geometry/geomConstants'
-import { IRectangle } from './IRectangle'
+import {GeomConstants} from '../../math/geometry/geomConstants'
+import {IRectangle} from './IRectangle'
 
 export class Interval implements IRectangle<number> {
   start: number

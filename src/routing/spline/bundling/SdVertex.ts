@@ -1,4 +1,4 @@
-﻿import { VisibilityVertex } from '../../visibility/VisibilityVertex'
+﻿import {VisibilityVertex} from '../../visibility/VisibilityVertex'
 
 export class SdVertex {
   VisibilityVertex: VisibilityVertex

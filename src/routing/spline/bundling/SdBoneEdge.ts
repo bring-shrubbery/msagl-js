@@ -1,8 +1,8 @@
-﻿import { Point } from '../../../math/geometry/point'
-import { Assert } from '../../../utils/assert'
-import { CdtEdge } from '../../ConstrainedDelaunayTriangulation/CdtEdge'
-import { VisibilityEdge } from '../../visibility/VisibilityEdge'
-import { SdVertex } from './SdVertex'
+﻿import {Point} from '../../../math/geometry/point'
+import {Assert} from '../../../utils/assert'
+import {CdtEdge} from '../../ConstrainedDelaunayTriangulation/CdtEdge'
+import {VisibilityEdge} from '../../visibility/VisibilityEdge'
+import {SdVertex} from './SdVertex'
 
 //     [DebuggerDisplay("({SourcePoint.x},{SourcePoint.y})->({TargetPoint.x},{TargetPoint.y})")]
 export class SdBoneEdge {

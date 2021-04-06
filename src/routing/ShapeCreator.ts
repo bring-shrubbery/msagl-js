@@ -1,9 +1,9 @@
-﻿import { Edge } from 'graphlib'
-import { from, IEnumerable } from 'linq-to-typescript'
-import { Port } from '../core/layout/Port'
-import { GeomGraph } from '../layout/core/GeomGraph'
-import { GeomNode } from '../layout/core/geomNode'
-import { Shape } from './Shape'
+﻿import {Edge} from 'graphlib'
+import {from, IEnumerable} from 'linq-to-typescript'
+import {Port} from '../core/layout/Port'
+import {GeomGraph} from '../layout/core/GeomGraph'
+import {GeomNode} from '../layout/core/geomNode'
+import {Shape} from './Shape'
 
 //  Class for creating Shape elements from a Graph.
 export class ShapeCreator {

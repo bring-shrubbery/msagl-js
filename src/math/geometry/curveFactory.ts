@@ -1,9 +1,9 @@
-import { Ellipse } from './ellipse'
-import { Curve } from './curve'
-import { Point } from './point'
-import { LineSegment } from './lineSegment'
-import { PlaneTransformation } from './planeTransformation'
-import { ICurve } from './icurve'
+import {Ellipse} from './ellipse'
+import {Curve} from './curve'
+import {Point} from './point'
+import {LineSegment} from './lineSegment'
+import {PlaneTransformation} from './planeTransformation'
+import {ICurve} from './icurve'
 type RoundedRectRadii = {
   radX: number
   radY: number
@@ -118,20 +118,14 @@ export class CurveFactory {
 
     if (ox > 0)
       c.addSegment(
-        LineSegment.mkPP(
-          new Point(x - ox, bottom),
-          new Point(x + ox, bottom),
-        ),
+        LineSegment.mkPP(new Point(x - ox, bottom), new Point(x + ox, bottom)),
       )
     c.addSegment(
       Ellipse.mkEllipse(1.5 * Math.PI, 2 * Math.PI, a, b, x + ox, y - oy),
     )
     if (oy > 0)
       c.addSegment(
-        LineSegment.mkPP(
-          new Point(right, y - oy),
-          new Point(right, y + oy),
-        ),
+        LineSegment.mkPP(new Point(right, y - oy), new Point(right, y + oy)),
       )
     c.addSegment(Ellipse.mkEllipse(0, 0.5 * Math.PI, a, b, x + ox, y + oy))
     if (ox > 0)
