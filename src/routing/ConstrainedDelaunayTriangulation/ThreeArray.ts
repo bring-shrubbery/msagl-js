@@ -69,7 +69,9 @@
         break
     }
   }
-
+  [Symbol.iterator]() {
+    return this.GetEnumerator()
+  }
   //  Returns an enumerator that iterates through the collection.
   public *GetEnumerator(): IterableIterator<T> {
     yield this.item0

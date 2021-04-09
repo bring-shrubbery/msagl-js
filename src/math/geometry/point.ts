@@ -1,5 +1,5 @@
-import {LinearSystem2} from './linearSystem'
-import {GeomConstants} from './geomConstants'
+import { LinearSystem2 } from './linearSystem'
+import { GeomConstants } from './geomConstants'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,
@@ -217,6 +217,19 @@ export class Point {
     if (area > GeomConstants.distanceEpsilon)
       return TriangleOrientation.Counterclockwise
     if (area < -GeomConstants.distanceEpsilon)
+      return TriangleOrientation.Clockwise
+    return TriangleOrientation.Collinear
+  }
+
+  static getTriangleOrientationWithNoEpsilon(
+    cornerA: Point,
+    cornerB: Point,
+    cornerC: Point,
+  ) {
+    const area = Point.signedDoubledTriangleArea(cornerA, cornerB, cornerC)
+    if (area > 0)
+      return TriangleOrientation.Counterclockwise
+    if (area < -0)
       return TriangleOrientation.Clockwise
     return TriangleOrientation.Collinear
   }

@@ -1,21 +1,20 @@
-﻿import {ICurve} from '../../math/geometry/icurve'
-import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
-import {CdtEdge} from './CdtEdge'
-import {CdtTriangle} from './CdtTriangle'
-import {Cdt} from './Cdt'
+﻿import { ICurve } from '../../math/geometry/icurve'
+import { Point } from '../../math/geometry/point'
+import { Assert } from '../../utils/assert'
+import { CdtEdge } from './CdtEdge'
+import { CdtTriangle } from './CdtTriangle'
+import { Cdt } from './Cdt'
 export class CdtSite {
   //  Object to which this site refers to.
-  Owner: ICurve // not sure the type is correct
+  Owner: unknown
 
-  public Point: Point
+  point: Point
 
   //  each CdtSite points to the edges for which it is the upper virtex ( for horizontal edges it is the left point)
   public Edges: Array<CdtEdge>
 
-  private /* internal */ InEdges: Array<CdtEdge>
+  InEdges: Array<CdtEdge>
 
-  // <param name="isolatedSite"></param>
   public constructor(isolatedSite: Point) {
     this.point = isolatedSite
   }
@@ -29,12 +28,8 @@ export class CdtSite {
   }
 
   //  #if TEST_MSAGL && TEST_MSAGL
-  //          // <summary>
   //          // Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
-  //          // </summary>
-  //          // <returns>
   //          // A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
-  //          // </returns>
   //          // <filterpriority>2</filterpriority>
   //          public override string ToString()
   //          {

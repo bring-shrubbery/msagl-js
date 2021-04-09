@@ -12,11 +12,11 @@
 //         Point directionPerp; // sweep direction rotated 90 degrees clockwse
 //         BinaryHeapWithComparer<SweepEvent> eventQueue;
 
-//         protected RbTree<SegmentBase> LeftObstacleSideTree { get; set; }
+//         protected RBTree<SegmentBase> LeftObstacleSideTree { get; set; }
 
 //         protected ObstacleSideComparer ObstacleSideComparer { get; set; }
 
-//         protected RbTree < SegmentBase > RightObstacleSideTree { get; set; }
+//         protected RBTree < SegmentBase > RightObstacleSideTree { get; set; }
 //         protected Set < Point > Ports;
 //         public LineSweeperBase(IEnumerable < Polyline > obstacles, Point sweepDirection) {
 //         Obstacles = obstacles;
@@ -24,8 +24,8 @@
 //         DirectionPerp = sweepDirection.rotate(-Math.PI / 2);
 //         EventQueue = new BinaryHeapWithComparer<SweepEvent>(this);
 //         ObstacleSideComparer = new ObstacleSideComparer(this);
-//         LeftObstacleSideTree = new RbTree<SegmentBase>(ObstacleSideComparer);
-//         RightObstacleSideTree = new RbTree<SegmentBase>(ObstacleSideComparer);
+//         LeftObstacleSideTree = new RBTree<SegmentBase>(ObstacleSideComparer);
+//         RightObstacleSideTree = new RBTree<SegmentBase>(ObstacleSideComparer);
 //     }
 
 //         protected internal BinaryHeapWithComparer < SweepEvent > EventQueue {

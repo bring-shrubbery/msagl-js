@@ -1,30 +1,30 @@
-import {IEnumerable, from} from 'linq-to-typescript'
-import {BasicGraph} from '../../../structs/BasicGraph'
-import {IntPairMap} from '../../../utils/IntPairMap'
-import {GeomGraph} from '../../core/GeomGraph'
-import {GeomNode} from '../../core/geomNode'
-import {Database} from '../Database'
-import {HorizontalConstraintsForSugiyama} from '../HorizontalConstraintsForSugiyama'
-import {LayerArrays} from '../LayerArrays'
-import {PolyIntEdge} from '../polyIntEdge'
-import {ProperLayeredGraph} from '../ProperLayeredGraph'
-import {SugiyamaLayoutSettings} from '../SugiyamaLayoutSettings'
-import {AdjacentSwapsWithConstraints} from './AdjacentSwapsWithConstraints'
-import {LayerInfo} from './LayerInfo'
-import {GetCrossingsTotal, Ordering} from './Ordering'
+import { IEnumerable, from } from 'linq-to-typescript'
+import { BasicGraph } from '../../../structs/BasicGraph'
+import { IntPairMap } from '../../../utils/IntPairMap'
+import { GeomGraph } from '../../core/GeomGraph'
+import { GeomNode } from '../../core/geomNode'
+import { Database } from '../Database'
+import { HorizontalConstraintsForSugiyama } from '../HorizontalConstraintsForSugiyama'
+import { LayerArrays } from '../LayerArrays'
+import { PolyIntEdge } from '../polyIntEdge'
+import { ProperLayeredGraph } from '../ProperLayeredGraph'
+import { SugiyamaLayoutSettings } from '../SugiyamaLayoutSettings'
+import { AdjacentSwapsWithConstraints } from './AdjacentSwapsWithConstraints'
+import { LayerInfo } from './LayerInfo'
+import { GetCrossingsTotal, Ordering } from './Ordering'
 
 export class ConstrainedOrdering {
   geometryGraph: GeomGraph
 
   intGraph: BasicGraph<Node, PolyIntEdge>
 
-  private /* internal */ ProperLayeredGraph: ProperLayeredGraph
+  ProperLayeredGraph: ProperLayeredGraph
 
   initialLayering: number[]
 
   layerInfos: LayerInfo[]
 
-  private /* internal */ LayerArrays: LayerArrays
+  LayerArrays: LayerArrays
 
   horizontalConstraints: HorizontalConstraintsForSugiyama
 
@@ -121,7 +121,7 @@ export class ConstrainedOrdering {
     )
   }
 
-  // private /* internal */ Calculate() {
+  //  Calculate() {
   //   this.AllocateXPositions();
   //   let originalGraph = (<GeomGraph>(this.intGraph.Nodes[0].GeometryParent));
   //   LayeredLayoutEngine.CalculateAnchorSizes(this.database, /* out */this.database.anchors, this.ProperLayeredGraph, originalGraph, this.intGraph, this.settings);
@@ -529,7 +529,7 @@ export class ConstrainedOrdering {
   //     + (this.NodeSeparation() + this.database.anchors[rightNode].leftAnchor));
   // }
 
-  // private /* internal */ static CreateSolver(): ISolverShell {
+  //  static CreateSolver(): ISolverShell {
   //   return new SolverShell();
   // }
 

@@ -1,24 +1,29 @@
-﻿// using System.Diagnostics;
+﻿import { Assert } from "../../utils/assert";
+import { CdtEdge } from "./CdtEdge";
+import { CdtSite } from "./CdtSite";
 
-// namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
-//     internal class CdtFrontElement {
-//         //The LeftSite should coincide with the leftmost end of the Edge, and the edge should not be vertical
+export class CdtFrontElement {
 
-//         internal CdtSite LeftSite;
-//         internal CdtEdge Edge;
-//         internal CdtSite RightSite;
+    // The LeftSite should coincide with the leftmost end of the Edge, and the edge should not be vertical
+    LeftSite: CdtSite;
 
-//         internal double X {
-//         get { return LeftSite.point.x; }
-//     }
+    Edge: CdtEdge;
 
-//     internal CdtFrontElement(CdtSite leftSite, CdtEdge edge) {
-//         Assert.assert(edge.upperSite.point.x != edge.lowerSite.point.x &&
-//             edge.upperSite.point.x < edge.lowerSite.point.x && leftSite == edge.upperSite ||
-//             edge.upperSite.point.x > edge.lowerSite.point.x && leftSite == edge.lowerSite);
-//         RightSite = edge.upperSite == leftSite ? edge.lowerSite : edge.upperSite;
-//         LeftSite = leftSite;
-//         Edge = edge;
-//     }
-// }
-// }
+    RightSite: CdtSite;
+
+    get X(): number {
+        return this.LeftSite.point.x;
+    }
+
+    constructor(leftSite: CdtSite, edge: CdtEdge) {
+        Assert.assert((((edge.upperSite.point.x != edge.lowerSite.point.x)
+            && ((edge.upperSite.point.x < edge.lowerSite.point.x)
+                && (leftSite == edge.upperSite)))
+            || ((edge.upperSite.point.x > edge.lowerSite.point.x)
+                && (leftSite == edge.lowerSite))));
+
+        this.RightSite = edge.upperSite == leftSite ? edge.lowerSite : edge.upperSite;
+        this.LeftSite = leftSite;
+        this.Edge = edge;
+    }
+}

@@ -1,239 +1,303 @@
-﻿// using System;
-// using System.Collections.Generic;
-// using System.Diagnostics;
-// using System.Linq;
-// using Microsoft.Msagl.Core.DataStructures;
-// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Core.Geometry.Curves;
+﻿import { Point } from "../../math/geometry/point";
+import { RBNode } from "../../structs/RBTree/rbNode";
+import { RBTree } from "../../structs/RBTree/rbTree";
+import { Assert } from "../../utils/assert";
+import { CdtEdge } from "./CdtEdge";
+import { CdtFrontElement } from "./CdtFrontElement";
+import { CdtSite } from "./CdtSite";
+import { CdtSweeper } from "./CdtSweeper";
+import { CdtTriangle } from "./CdtTriangle";
 
-// namespace Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation {
-//     internal class EdgeTracer {
-//         readonly CdtEdge edge;
-//         readonly Set<CdtTriangle> triangles;
-//         readonly RbTree<CdtFrontElement> front;
-//         readonly List<CdtSite> leftPolygon;
-//         readonly List<CdtSite> rightPolygon;
+export class EdgeTracer {
+    readonly edge: CdtEdge;
+    readonly triangles: Set<CdtTriangle>;
+    readonly front: RBTree<CdtFrontElement>;
+    readonly leftPolygon: Array<CdtSite>;
+    readonly rightPolygon: Array<CdtSite>;
 
-//         // <summary>
-//         // the upper site of the edge
-//         // </summary>
-//         CdtSite a;
-//         // <summary>
-//         // the lower site of the edge
-//         // </summary>
-//         CdtSite b;
-//         CdtEdge piercedEdge;
-//         CdtTriangle piercedTriangle;
-//         RBNode<CdtFrontElement> piercedToTheLeftFrontElemNode;
-//         RBNode<CdtFrontElement> piercedToTheRightFrontElemNode;
-//         List<CdtFrontElement> elementsToBeRemovedFromFront = new List<CdtFrontElement>();
-//         List<CdtTriangle> removedTriangles = new List<CdtTriangle>();
+    // the upper site of the edge
+    a: CdtSite;
+    // the lower site of the edge
+    b: CdtSite;
+    piercedEdge: CdtEdge;
+    piercedTriangle: CdtTriangle;
+    piercedToTheLeftFrontElemNode: RBNode<CdtFrontElement>;
+    piercedToTheRightFrontElemNode: RBNode<CdtFrontElement>;
+    elementsToBeRemovedFromFront = new Array<CdtFrontElement>();
+    removedTriangles = new Array<CdtTriangle>();
 
-//         public EdgeTracer(CdtEdge edge, Set<CdtTriangle> triangles, RbTree < CdtFrontElement > front, List < CdtSite > leftPolygon, List < CdtSite > rightPolygon) {
-//         this.edge = edge;
-//         this.triangles = triangles;
-//         this.front = front;
-//         this.leftPolygon = leftPolygon;
-//         this.rightPolygon = rightPolygon;
-//         a = edge.upperSite;
-//         b = edge.lowerSite;
-//     }
+    constructor(edge: CdtEdge, triangles: Set<CdtTriangle>, front: RBTree<CdtFrontElement>, leftPolygon: Array<CdtSite>, rightPolygon: Array<CdtSite>) {
+        this.edge = edge;
+        this.triangles = triangles;
+        this.front = front;
+        this.leftPolygon = leftPolygon;
+        this.rightPolygon = rightPolygon;
+        this.a = edge.upperSite;
+        this.b = edge.lowerSite;
+    }
 
-//         public void Run() {
-//         Init();
-//         Traverse();
-//     }
+    Run() {
+        this.Init();
+        this.Traverse();
+    }
 
-//     void Traverse() {
-//         while (!BIsReached()) {
-//             if (piercedToTheLeftFrontElemNode != null) { ProcessLeftFrontPiercedElement(); }
-//             else if (piercedToTheRightFrontElemNode != null) {
-//                 ProcessRightFrontPiercedElement();
-//             }
-//             else ProcessPiercedEdge();
-//         }
-//         if (piercedTriangle != null)
-//             RemovePiercedTriangle(piercedTriangle);
+    Traverse() {
+        while (!this.BIsReached()) {
+            if ((this.piercedToTheLeftFrontElemNode != null)) {
+                ProcessLeftFrontPiercedElement();
+            }
+            else if ((piercedToTheRightFrontElemNode != null)) {
+                ProcessRightFrontPiercedElement();
+            }
+            else {
+                ProcessPiercedEdge();
+            }
 
-//         FindMoreRemovedFromFrontElements();
+        }
 
-//         foreach(var elem of elementsToBeRemovedFromFront)
-//         front.Remove(elem);
-//     }
+        if ((piercedTriangle != null)) {
+            RemovePiercedTriangle(piercedTriangle);
+        }
 
-//     void ProcessLeftFrontPiercedElement() {
-//         // CdtSweeper.ShowFront(triangles, front,new []{new LineSegment(a.point, b.point),new LineSegment(piercedToTheLeftFrontElemNode.Item.Edge.lowerSite.point,piercedToTheLeftFrontElemNode.Item.Edge.upperSite.point)},null);
-//         var v = piercedToTheLeftFrontElemNode;
+        FindMoreRemovedFromFrontElements();
+        for (let elem in of) {
+            elementsToBeRemovedFromFront;
+        }
 
-//         do {
-//             elementsToBeRemovedFromFront.Add(v.Item);
-//             AddSiteToLeftPolygon(v.Item.LeftSite);
-//             v = front.Previous(v);
-//         } while (Point.PointToTheLeftOfLine(v.Item.LeftSite.point, a.point, b.point)); //that is why we are adding to the left polygon
-//         elementsToBeRemovedFromFront.Add(v.Item);
-//         AddSiteToRightPolygon(v.Item.LeftSite);
-//         if (v.Item.LeftSite == b) {
-//             piercedToTheLeftFrontElemNode = v; //this will stop the traversal
-//             return;
-//         }
-//         FindPiercedTriangle(v);
-//         piercedToTheLeftFrontElemNode = null;
-//     }
+        front.Remove(elem);
+    }
 
-//     void FindPiercedTriangle(RBNode < CdtFrontElement > v) {
-//         var e = v.Item.Edge;
-//         var t = e.CcwTriangle ?? e.CwTriangle;
-//         var eIndex = t.Edges.Index(e);
-//         for (int i = 1; i <= 2; i++) {
-//             var ei = t.Edges[i + eIndex];
-//             var signedArea0 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(ei.lowerSite.point, a.point, b.point));
-//             var signedArea1 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(ei.upperSite.point, a.point, b.point));
-//             if (signedArea1 * signedArea0 <= 0) {
-//                 piercedTriangle = t;
-//                 piercedEdge = ei;
-//                 break;
-//             }
-//         }
-//     }
+    ProcessLeftFrontPiercedElement() {
+        //  CdtSweeper.ShowFront(triangles, front,new []{new LineSegment(a.point, b.point),new LineSegment(piercedToTheLeftFrontElemNode.Item.Edge.lowerSite.point,piercedToTheLeftFrontElemNode.Item.Edge.upperSite.point)},null);
+        let v = piercedToTheLeftFrontElemNode;
+        for (
+            ; Point.PointToTheLeftOfLine(v.Item.LeftSite.point, a.point, b.point);
+        ) {
+            elementsToBeRemovedFromFront.Add(v.Item);
+            AddSiteToLeftPolygon(v.Item.LeftSite);
+            v = front.Previous(v);
+        }
 
-//     void FindMoreRemovedFromFrontElements() {
-//         foreach(var triangle of removedTriangles) {
-//             foreach(var e of triangle.Edges) {
-//                 if (e.CcwTriangle == null && e.CwTriangle == null) {
-//                     var site = e.upperSite.point.x < e.lowerSite.point.x ? e.upperSite : e.lowerSite;
-//                     var frontNode = CdtSweeper.FindNodeInFrontBySite(front, site);
-//                     if (frontNode.Item.Edge == e)
-//                         elementsToBeRemovedFromFront.Add(frontNode.Item);
-//                 }
-//             }
-//         }
-//     }
+        elementsToBeRemovedFromFront.Add(v.Item);
+        AddSiteToRightPolygon(v.Item.LeftSite);
+        if ((v.Item.LeftSite == b)) {
+            piercedToTheLeftFrontElemNode = v;
+            // this will stop the traversal
+            return;
+        }
 
-//     void ProcessPiercedEdge() {
-//         //if(CdtSweeper.db)
-//         //          CdtSweeper.ShowFront(triangles, front, new[] { new LineSegment(a.point, b.point) },
-//         //                      new[] { new LineSegment(piercedEdge.upperSite.point, piercedEdge.lowerSite.point) });
-//         if (piercedEdge.CcwTriangle == piercedTriangle) {
-//             AddSiteToLeftPolygon(piercedEdge.lowerSite);
-//             AddSiteToRightPolygon(piercedEdge.upperSite);
-//         }
-//         else {
-//             AddSiteToLeftPolygon(piercedEdge.upperSite);
-//             AddSiteToRightPolygon(piercedEdge.lowerSite);
-//         }
+        FindPiercedTriangle(v);
+        piercedToTheLeftFrontElemNode = null;
+    }
 
-//         RemovePiercedTriangle(piercedTriangle);
-//         PrepareNextStateAfterPiercedEdge();
-//     }
+    FindPiercedTriangle(v: RBNode<CdtFrontElement>) {
+        let e = v.Item.Edge;
+        let t;
+        e.CwTriangle;
+        let eIndex = t.Edges.Index(e);
+        for (let i: number = 1; (i <= 2); i++) {
+            let ei = t.Edges[(i + eIndex)];
+            let signedArea0 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(ei.lowerSite.point, a.point, b.point));
+            let signedArea1 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(ei.upperSite.point, a.point, b.point));
+            if (((signedArea1 * signedArea0)
+                <= 0)) {
+                piercedTriangle = t;
+                piercedEdge = ei;
+                break;
+            }
 
-//     void PrepareNextStateAfterPiercedEdge() {
-//         var t = piercedEdge.CwTriangle ?? piercedEdge.CcwTriangle;
-//         var eIndex = t.Edges.Index(piercedEdge);
-//         for (int i = 1; i <= 2; i++) {
-//             var e = t.Edges[i + eIndex];
-//             var signedArea0 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(e.lowerSite.point, a.point, b.point));
-//             var signedArea1 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(e.upperSite.point, a.point, b.point));
-//             if (signedArea1 * signedArea0 <= 0) {
-//                 if (e.CwTriangle != null && e.CcwTriangle != null) {
-//                     piercedTriangle = t;
-//                     piercedEdge = e;
-//                     break;
-//                 }
-//                 //e has to belong to the front, and its triangle has to be removed
-//                 piercedTriangle = null;
-//                 piercedEdge = null;
-//                 var leftSite = e.upperSite.point.x < e.lowerSite.point.x ? e.upperSite : e.lowerSite;
-//                 var frontElem = CdtSweeper.FindNodeInFrontBySite(front, leftSite);
-//                 Assert.assert(frontElem != null);
-//                 if (leftSite.point.x < a.point.x)
-//                     piercedToTheLeftFrontElemNode = frontElem;
-//                 else
-//                     piercedToTheRightFrontElemNode = frontElem;
+        }
 
-//                 RemovePiercedTriangle(e.CwTriangle ?? e.CcwTriangle);
-//                 break;
-//             }
-//         }
-//     }
+    }
 
-//     void RemovePiercedTriangle(CdtTriangle t) {
-//         triangles.Remove(t);
-//         foreach(var e of t.Edges)
-//         if (e.CwTriangle == t)
-//             e.CwTriangle = null;
-//         else e.CcwTriangle = null;
-//         removedTriangles.Add(t);
-//     }
+    FindMoreRemovedFromFrontElements() {
+        for (let triangle in of) {
+            removedTriangles;
+        }
 
-//     void ProcessRightFrontPiercedElement() {
-//         var v = piercedToTheRightFrontElemNode;
+        for (let e in of) {
+            triangle.Edges;
+        }
 
-//         do {
-//             elementsToBeRemovedFromFront.Add(v.Item);
-//             AddSiteToRightPolygon(v.Item.RightSite);
-//             v = front.next(v);
-//         } while (Point.PointToTheRightOfLine(v.Item.RightSite.point, a.point, b.point)); //that is why we are adding to the right polygon
-//         elementsToBeRemovedFromFront.Add(v.Item);
-//         AddSiteToLeftPolygon(v.Item.RightSite);
-//         if (v.Item.RightSite == b) {
-//             piercedToTheRightFrontElemNode = v; //this will stop the traversal
-//             return;
-//         }
-//         FindPiercedTriangle(v);
-//         piercedToTheRightFrontElemNode = null;
-//     }
+        if (((e.CcwTriangle == null)
+            && (e.CwTriangle == null))) {
+            let site = e.upperSite;
+            // TODO: Warning!!!, inline IF is not supported ?
+            (e.upperSite.point.x < e.lowerSite.point.x);
+            e.lowerSite;
+            let frontNode = CdtSweeper.FindNodeInFrontBySite(front, site);
+            if ((frontNode.Item.Edge == e)) {
+                elementsToBeRemovedFromFront.Add(frontNode.Item);
+            }
 
-//     void AddSiteToLeftPolygon(CdtSite site) {
-//         AddSiteToPolygonWithCheck(site, leftPolygon);
-//     }
+        }
 
-//     void AddSiteToPolygonWithCheck(CdtSite site, List < CdtSite > list) {
-//         if (site == b) return;
+    }
 
-//         if (list.Count == 0 || list[list.Count - 1] != site)
-//             list.Add(site);
+    ProcessPiercedEdge() {
+        // if(CdtSweeper.db)
+        //           CdtSweeper.ShowFront(triangles, front, new[] { new LineSegment(a.point, b.point) },
+        //                       new[] { new LineSegment(piercedEdge.upperSite.point, piercedEdge.lowerSite.point) });
+        if ((piercedEdge.CcwTriangle == piercedTriangle)) {
+            AddSiteToLeftPolygon(piercedEdge.lowerSite);
+            AddSiteToRightPolygon(piercedEdge.upperSite);
+        }
+        else {
+            AddSiteToLeftPolygon(piercedEdge.upperSite);
+            AddSiteToRightPolygon(piercedEdge.lowerSite);
+        }
 
-//     }
+        RemovePiercedTriangle(piercedTriangle);
+        PrepareNextStateAfterPiercedEdge();
+    }
 
-//     void AddSiteToRightPolygon(CdtSite site) {
-//         AddSiteToPolygonWithCheck(site, rightPolygon);
-//     }
 
-//     bool BIsReached() {
-//         var node = piercedToTheLeftFrontElemNode ?? piercedToTheRightFrontElemNode;
-//         if (node != null)
-//             return node.Item.Edge.IsAdjacent(b);
-//         return piercedEdge.IsAdjacent(b);
-//     }
 
-//     void Init() {
-//         //            if (CdtSweeper.D)
-//         //                CdtSweeper.ShowFront(triangles, front, new[] {new LineSegment(a.point, b.point)},null);
-//         //new[] {new LineSegment(piercedEdge.upperSite.point, piercedEdge.lowerSite.point)});
-//         var frontElemNodeRightOfA = CdtSweeper.FindNodeInFrontBySite(front, a);
-//         var frontElemNodeLeftOfA = front.Previous(frontElemNodeRightOfA);
-//         if (Point.PointToTheLeftOfLine(b.point, frontElemNodeLeftOfA.Item.LeftSite.point, frontElemNodeLeftOfA.Item.RightSite.point))
-//             piercedToTheLeftFrontElemNode = frontElemNodeLeftOfA;
-//         else if (Point.PointToTheRightOfLine(b.point, frontElemNodeRightOfA.Item.RightSite.point, frontElemNodeRightOfA.Item.LeftSite.point))
-//             piercedToTheRightFrontElemNode = frontElemNodeRightOfA;
-//         else {
-//             foreach(var e of a.Edges) {
-//                 var t = e.CcwTriangle;
-//                 if (t == null) continue;
-//                 if (Point.PointToTheLeftOfLine(b.point, e.lowerSite.point, e.upperSite.point))
-//                     continue;
-//                 var eIndex = t.Edges.Index(e);
-//                 var site = t.Sites[eIndex + 2];
-//                 if (Point.PointToTheLeftOfLineOrOnLine(b.point, site.point, e.upperSite.point)) {
-//                     piercedEdge = t.Edges[eIndex + 1];
-//                     piercedTriangle = t;
-//                     //                                                CdtSweeper.ShowFront(triangles, front, new[] { new LineSegment(e.upperSite.point, e.lowerSite.point) },
-//                     //                                                    new[] { new LineSegment(piercedEdge.upperSite.point, piercedEdge.lowerSite.point) });
-//                     break;
-//                 }
-//             }
-//         }
-//     }
+    PrepareNextStateAfterPiercedEdge() {
+        let t;
+        piercedEdge.CcwTriangle;
+        let eIndex = t.Edges.Index(piercedEdge);
+        for (let i: number = 1; (i <= 2); i++) {
+            let e = t.Edges[(i + eIndex)];
+            let signedArea0 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(e.lowerSite.point, a.point, b.point));
+            let signedArea1 = ApproximateComparer.Sign(Point.SignedDoubledTriangleArea(e.upperSite.point, a.point, b.point));
+            if (((signedArea1 * signedArea0)
+                <= 0)) {
+                if (((e.CwTriangle != null)
+                    && (e.CcwTriangle != null))) {
+                    piercedTriangle = t;
+                    piercedEdge = e;
+                    break;
+                }
 
-// }
-// }
+                // e has to belong to the front, and its triangle has to be removed
+                piercedTriangle = null;
+                piercedEdge = null;
+                let leftSite = e.upperSite;
+                // TODO: Warning!!!, inline IF is not supported ?
+                (e.upperSite.point.x < e.lowerSite.point.x);
+                e.lowerSite;
+                let frontElem = CdtSweeper.FindNodeInFrontBySite(front, leftSite);
+                Assert.assert((frontElem != null));
+                if ((leftSite.point.x < a.point.x)) {
+                    piercedToTheLeftFrontElemNode = frontElem;
+                }
+                else {
+                    piercedToTheRightFrontElemNode = frontElem;
+                }
+
+                RemovePiercedTriangle(e.CwTriangle, Question, Question, e.CcwTriangle);
+                break;
+            }
+
+        }
+    }
+    RemovePiercedTriangle(t: CdtTriangle) {
+        triangles.Remove(t);
+        for (let e in of) {
+            t.Edges;
+        }
+
+        if ((e.CwTriangle == t)) {
+            e.CwTriangle = null;
+        }
+        else {
+            e.CcwTriangle = null;
+        }
+
+        removedTriangles.Add(t);
+    }
+
+
+    ProcessRightFrontPiercedElement() {
+        let v = piercedToTheRightFrontElemNode;
+        for (
+            ; Point.PointToTheRightOfLine(v.Item.RightSite.point, a.point, b.point);
+        ) {
+            elementsToBeRemovedFromFront.Add(v.Item);
+            this.AddSiteToRightPolygon(v.Item.RightSite);
+            v = front.next(v);
+        }
+
+        elementsToBeRemovedFromFront.Add(v.Item);
+        this.AddSiteToLeftPolygon(v.Item.RightSite);
+        if ((v.Item.RightSite == b)) {
+            piercedToTheRightFrontElemNode = v;
+            // this will stop the traversal
+            return;
+        }
+
+        FindPiercedTriangle(v);
+        piercedToTheRightFrontElemNode = null;
+    }
+
+    AddSiteToLeftPolygon(site: CdtSite) {
+        this.AddSiteToPolygonWithCheck(site, leftPolygon);
+    }
+
+    AddSiteToPolygonWithCheck(site: CdtSite, list: Array<CdtSite>) {
+        if ((site == b)) {
+            return;
+        }
+
+        if (((list.Count == 0)
+            || (list[(list.Count - 1)] != site))) {
+            list.Add(site);
+        }
+
+    }
+
+    AddSiteToRightPolygon(site: CdtSite) {
+        this.AddSiteToPolygonWithCheck(site, rightPolygon);
+    }
+
+    BIsReached(): boolean {
+        let node;
+        piercedToTheRightFrontElemNode;
+        if ((node != null)) {
+            return node.Item.Edge.IsAdjacent(b);
+        }
+
+        return piercedEdge.IsAdjacent(b);
+    }
+
+
+    Init() {
+        //             if (CdtSweeper.D)
+        //                 CdtSweeper.ShowFront(triangles, front, new[] {new LineSegment(a.point, b.point)},null);
+        // new[] {new LineSegment(piercedEdge.upperSite.point, piercedEdge.lowerSite.point)});
+        let frontElemNodeRightOfA = CdtSweeper.FindNodeInFrontBySite(front, a);
+        let frontElemNodeLeftOfA = front.Previous(frontElemNodeRightOfA);
+        if (Point.PointToTheLeftOfLine(b.point, frontElemNodeLeftOfA.Item.LeftSite.point, frontElemNodeLeftOfA.Item.RightSite.point)) {
+            piercedToTheLeftFrontElemNode = frontElemNodeLeftOfA;
+        }
+        else if (Point.PointToTheRightOfLine(b.point, frontElemNodeRightOfA.Item.RightSite.point, frontElemNodeRightOfA.Item.LeftSite.point)) {
+            piercedToTheRightFrontElemNode = frontElemNodeRightOfA;
+        }
+        else {
+            for (let e in a.Edges) {
+                let t = e.CcwTriangle;
+                if ((t == null)) {
+                    // TODO: Warning!!! continue If
+                }
+
+                if (Point.PointToTheLeftOfLine(b.point, e.lowerSite.point, e.upperSite.point)) {
+                    // TODO: Warning!!! continue If
+                }
+
+                let eIndex = t.Edges.Index(e);
+                let site = t.Sites[(eIndex + 2)];
+                if (Point.PointToTheLeftOfLineOrOnLine(b.point, site.point, e.upperSite.point)) {
+                    piercedEdge = t.Edges[(eIndex + 1)];
+                    piercedTriangle = t;
+                    //                                                 CdtSweeper.ShowFront(triangles, front, new[] { new LineSegment(e.upperSite.point, e.lowerSite.point) },
+                    //                                                     new[] { new LineSegment(piercedEdge.upperSite.point, piercedEdge.lowerSite.point) });
+                    break;
+                }
+
+            }
+
+        }
+
+    }
+}

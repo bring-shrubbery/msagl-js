@@ -1,9 +1,9 @@
-import {LayerArrays} from '../LayerArrays'
-import {ProperLayeredGraph} from '../ProperLayeredGraph'
-import {ConstrainedOrdering} from './ConstrainedOrdering'
-import {LayerInfo} from './LayerInfo'
-import {Assert} from './../../../utils/assert'
-import {randomInt} from '../../../utils/random'
+import { LayerArrays } from '../LayerArrays'
+import { ProperLayeredGraph } from '../ProperLayeredGraph'
+import { ConstrainedOrdering } from './ConstrainedOrdering'
+import { LayerInfo } from './LayerInfo'
+import { Assert } from './../../../utils/assert'
+import { randomInt } from '../../../utils/random'
 export class AdjacentSwapsWithConstraints {
   static maxNumberOfAdjacentExchanges = 50
 
@@ -43,7 +43,7 @@ export class AdjacentSwapsWithConstraints {
   //  </summary>
   SOrder: Map<number, number>[]
 
-  private /* internal */ constructor(
+  constructor(
     layerArray: LayerArrays,
     hasCrossWeights: boolean,
     properLayeredGraph: ProperLayeredGraph,
@@ -127,7 +127,7 @@ export class AdjacentSwapsWithConstraints {
       return -1
     }
 
-    let t: {cuv: number; cvu: number}
+    let t: { cuv: number; cvu: number }
     this.CalcPair(u, v, t)
     return t.cuv - t.cvu
   }
@@ -139,7 +139,7 @@ export class AdjacentSwapsWithConstraints {
   //  <param name="v">a vertex</param>
   //  <param name="cuv">the result when u is to the left of v</param>
   //  <param name="cvu">the result when v is to the left of u</param>
-  CalcPair(u: number, v: number, t: {cuv: number; cvu: number}) {
+  CalcPair(u: number, v: number, t: { cuv: number; cvu: number }) {
     const pv = this.P[v]
     const su = this.S[u]
     const sv = this.S[v]

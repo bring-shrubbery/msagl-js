@@ -16,7 +16,7 @@
 //         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")] //  VisibilityGraph graphOfHoleBoundaries;
 //         ActiveEdgeComparerWithRay activeEdgeComparer;
 
-//         RbTree<PolylinePoint> activeSidesTree;
+//         RBTree<PolylinePoint> activeSidesTree;
 
 //         // <summary>
 //         // A mapping from sides to their RBNodes
@@ -306,7 +306,7 @@
 //     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //     void InitActiveEdgesAndActiveEdgesComparer() {
 //         activeEdgeComparer = new ActiveEdgeComparerWithRay { Pivot = q };
-//         activeSidesTree = new RbTree<PolylinePoint>(activeEdgeComparer);
+//         activeSidesTree = new RBTree<PolylinePoint>(activeEdgeComparer);
 //     }
 
 //     [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]

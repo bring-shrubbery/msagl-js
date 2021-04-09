@@ -9,7 +9,7 @@
 // using Microsoft.Msagl.Routing.Visibility;
 
 // namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
-//     internal class ConeSpanner : AlgorithmBase {
+//     internal class ConeSpanner : Algorithm {
 //         readonly IEnumerable < Polyline > _obstacles;
 //         // double coneAngle = Math.PI / 18;// ten degrees
 //         //double coneAngle = Math.PI / 9;// twenty degrees

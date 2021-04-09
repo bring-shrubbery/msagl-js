@@ -15,7 +15,7 @@
 //         VisibilityGraph visibilityGraph;
 //         List<Diagonal> diagonals;
 //         List<Tangent> tangents;
-//         RbTree<Diagonal> activeDiagonalTree;
+//         RBTree<Diagonal> activeDiagonalTree;
 //         Polygon currentPolygon;
 //         ActiveDiagonalComparerWithRay activeDiagonalComparer = new ActiveDiagonalComparerWithRay();
 //         bool useLeftPTangents;
@@ -48,7 +48,7 @@
 //         private void AllocateDataStructures(int i) {
 //         tangents = new List<Tangent>();
 //         diagonals = new List<Diagonal>();
-//         activeDiagonalTree = new RbTree<Diagonal>(this.activeDiagonalComparer);
+//         activeDiagonalTree = new RBTree<Diagonal>(this.activeDiagonalComparer);
 //         this.currentPolygon = polygons[i];
 //     }
 //         private void Sweep() {

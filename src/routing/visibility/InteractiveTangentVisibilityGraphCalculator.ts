@@ -9,7 +9,7 @@
 
 // namespace Microsoft.Msagl.Routing.Visibility {
 //     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
-//     internal class InteractiveTangentVisibilityGraphCalculator : AlgorithmBase {
+//     internal class InteractiveTangentVisibilityGraphCalculator : Algorithm {
 //         // <summary>
 //         // the list of obstacles
 //         // </summary>
@@ -23,7 +23,7 @@
 //         VisibilityGraph visibilityGraph;
 //         List < Diagonal > diagonals;
 //         List < Tangent > tangents;
-//         RbTree < Diagonal > activeDiagonalTree;
+//         RBTree < Diagonal > activeDiagonalTree;
 //         Polygon currentPolygon;
 //         ActiveDiagonalComparerWithRay activeDiagonalComparer = new ActiveDiagonalComparerWithRay();
 //         bool useLeftPTangents;
@@ -59,7 +59,7 @@
 //         private void AllocateDataStructures() {
 //             tangents = new List<Tangent>();
 //             diagonals = new List<Diagonal>();
-//             activeDiagonalTree = new RbTree<Diagonal>(this.activeDiagonalComparer);
+//             activeDiagonalTree = new RBTree<Diagonal>(this.activeDiagonalComparer);
 //         }
 
 //         private void Sweep() {

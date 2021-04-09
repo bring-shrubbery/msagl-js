@@ -21,7 +21,7 @@ namespace Microsoft.Msagl.Routing {
     // <summary>
     // the router between nodes
     // </summary>
-    public class InteractiveEdgeRouter : AlgorithmBase {
+    public class InteractiveEdgeRouter : Algorithm {
 
         // <summary>
         // the obstacles for routing
@@ -1475,7 +1475,7 @@ namespace Microsoft.Msagl.Routing {
             foreach(Polyline polylineLocal of ObstacleCalculator.LooseObstacles)
             VisibilityGraph.AddHole(polylineLocal);
 
-            AlgorithmBase visibilityGraphGenerator;
+            Algorithm visibilityGraphGenerator;
             if (UseSpanner) {
                 visibilityGraphGenerator = new ConeSpanner(ObstacleCalculator.LooseObstacles, VisibilityGraph)
                 { ConeAngle = ConeSpannerAngle };

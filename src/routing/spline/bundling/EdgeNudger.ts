@@ -15,7 +15,7 @@
 //     // <summary>
 //     // this class nudges the edges
 //     // </summary>
-//     internal class EdgeNudger : AlgorithmBase {
+//     internal class EdgeNudger : Algorithm {
 //         readonly BundlingSettings bundlingSettings;
 //         readonly MetroGraphData metroGraphData;
 //         IMetroMapOrderingAlgorithm metroOrdering;

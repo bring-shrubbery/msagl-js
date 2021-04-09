@@ -33,8 +33,8 @@
 
 //         readonly VisibilityGraph visibilityGraph;
 
-//         readonly RbTree < ConeSide > rightConeSides;
-//         readonly RbTree < ConeSide > leftConeSides;
+//         readonly RBTree < ConeSide > rightConeSides;
+//         readonly RBTree < ConeSide > leftConeSides;
 
 //         LineSweeperForPortLocations(IEnumerable < Polyline > obstacles, Point direction, Point coneRsDir, Point coneLsDir,
 //             VisibilityGraph visibilityGraph, IEnumerable < Point > portLocations)
@@ -43,8 +43,8 @@
 //             ConeRightSideDirection = coneRsDir;
 //             ConeLeftSideDirection = coneLsDir;
 //             coneSideComparer = new ConeSideComparer(this);
-//             leftConeSides = new RbTree<ConeSide>(coneSideComparer);
-//             rightConeSides = new RbTree<ConeSide>(coneSideComparer);
+//             leftConeSides = new RBTree<ConeSide>(coneSideComparer);
+//             rightConeSides = new RBTree<ConeSide>(coneSideComparer);
 //             PortLocations = portLocations;
 //         }
 
@@ -197,7 +197,7 @@
 //                     : rightConeSides);
 //         }
 
-//         void CloseConesCoveredBySegment(Point leftPoint, Point rightPoint, RbTree < ConeSide > tree) {
+//         void CloseConesCoveredBySegment(Point leftPoint, Point rightPoint, RBTree < ConeSide > tree) {
 //             RBNode < ConeSide > node = tree.FindFirst(
 //                 s => Point.getTriangleOrientation(s.start, s.start + s.Direction, leftPoint) ==
 //                     TriangleOrientation.Counterclockwise);
@@ -484,7 +484,7 @@
 //             }
 //         }
 
-//         RBNode < ConeSide > InsertToTree(RbTree < ConeSide > tree, ConeSide coneSide) {
+//         RBNode < ConeSide > InsertToTree(RBTree < ConeSide > tree, ConeSide coneSide) {
 //             Assert.assert(coneSide.Direction * SweepDirection > GeomConstants.distanceEpsilon);
 //             coneSideComparer.SetOperand(coneSide);
 //             return tree.Insert(coneSide);

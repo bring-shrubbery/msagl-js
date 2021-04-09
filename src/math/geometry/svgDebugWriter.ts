@@ -1,18 +1,18 @@
-import {ICurve} from './icurve'
-import {Curve} from './curve'
-import {Point} from './point'
-import {Polyline} from './polyline'
-import {Rectangle} from './rectangle'
-import {Ellipse} from './ellipse'
-import {LineSegment} from './lineSegment'
-import {BezierSeg} from './bezierSeg'
-import {DebugCurve} from './debugCurve'
-import {String, StringBuilder} from 'typescript-string-operations'
-import {from} from 'linq-to-typescript'
-import {allVerticesOfParall} from './parallelogram'
-import {GeomEdge} from './../../layout/core/geomEdge'
-import {GeomGraph} from '../../layout/core/GeomGraph'
-import {GeomLabel} from './../../layout/core/geomLabel'
+import { ICurve } from './icurve'
+import { Curve } from './curve'
+import { Point } from './point'
+import { Polyline } from './polyline'
+import { Rectangle } from './rectangle'
+import { Ellipse } from './ellipse'
+import { LineSegment } from './lineSegment'
+import { BezierSeg } from './bezierSeg'
+import { DebugCurve } from './debugCurve'
+import { String, StringBuilder } from 'typescript-string-operations'
+import { from } from 'linq-to-typescript'
+import { allVerticesOfParall } from './parallelogram'
+import { GeomEdge } from './../../layout/core/geomEdge'
+import { GeomGraph } from '../../layout/core/GeomGraph'
+import { GeomLabel } from './../../layout/core/geomLabel'
 
 export class SvgDebugWriter {
   // Here we import the File System module of node
@@ -210,7 +210,7 @@ export class SvgDebugWriter {
 
   dashArrayString(da: number[]): string {
     const stringBuilder = new StringBuilder('stroke-dasharray:')
-    for (let i = 0; ; ) {
+    for (let i = 0; ;) {
       stringBuilder.Append(da[i].toString())
       i++
       if (i < da.length) stringBuilder.Append(' ')
@@ -268,6 +268,11 @@ export class SvgDebugWriter {
     const w = new SvgDebugWriter(fileName)
     const dcs = icurves.map((c) => DebugCurve.mkDebugCurveI(c))
     w.writeDebugCurves(dcs)
+    w.close()
+  }
+  static dumpDebugCurves(fileName: string, debugCurves: DebugCurve[]) {
+    const w = new SvgDebugWriter(fileName)
+    w.writeDebugCurves(debugCurves)
     w.close()
   }
 

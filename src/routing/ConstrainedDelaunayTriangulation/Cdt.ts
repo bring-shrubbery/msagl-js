@@ -19,6 +19,7 @@ import { CdtEdge } from './CdtEdge'
 import { CdtSite } from './CdtSite'
 import { CdtTriangle } from './CdtTriangle'
 import { SymmetricTuple } from './../../structs/SymmetricTuple'
+type SymmetricSegment = SymmetricTuple<Point>
 export class Cdt extends Algorithm {
   isolatedSitesWithObject: IEnumerable<[Point, Object]>
 
@@ -39,9 +40,6 @@ export class Cdt extends Algorithm {
   allInputSites: Array<CdtSite>
 
   // constructor
-  // <param name="isolatedSites"></param>
-  // <param name="obstacles"></param>
-  // <param name="isolatedSegments"></param>
   constructor(
     isolatedSites: IEnumerable<Point>,
     obstacles: IEnumerable<Polyline>,
@@ -54,7 +52,6 @@ export class Cdt extends Algorithm {
   }
 
   //  constructor
-  //  <param name="isolatedSites"></param>
   static constructor_(isolatedSitesWithObj: IEnumerable<[Point, Object]>) {
     const r = new Cdt(null, null, null)
     r.isolatedSitesWithObject = isolatedSitesWithObj
@@ -171,7 +168,6 @@ export class Cdt extends Algorithm {
     return new CdtEdge(upperPoint, lowerPoint)
   }
 
-  // <returns></returns>
   public GetTriangles(): Set<CdtTriangle> {
     return this.sweeper.Triangles
   }
@@ -202,9 +198,6 @@ export class Cdt extends Algorithm {
   }
 
   //  compare first y then -x coordinates
-  //  <param name="a"></param>
-  //  <param name="b"></param>
-  //  <returns>1 if a is above b, 0 if points are the same and -1 if a is below b</returns>
   public static AbovePP(a: Point, b: Point): number {
     let del = a.y - b.y
     if (del > 0) {
@@ -221,9 +214,6 @@ export class Cdt extends Algorithm {
   }
 
   //  compare first y then -x coordinates
-  //  <param name="a"></param>
-  //  <param name="b"></param>
-  //  <returns>1 if a is above b, 0 if points are the same and -1 if a is below b</returns>
   static AboveCC(a: CdtSite, b: CdtSite): number {
     return Cdt.AbovePP(a.point, b.point)
   }

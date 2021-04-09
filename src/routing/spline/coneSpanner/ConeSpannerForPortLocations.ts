@@ -8,7 +8,7 @@
 
 // namespace Microsoft.Msagl.Routing.Spline.ConeSpanner
 // {
-//     internal class ConeSpannerForPortLocations : AlgorithmBase {
+//     internal class ConeSpannerForPortLocations : Algorithm {
 
 //         readonly IEnumerable<Polyline> obstacles;
 //         // double coneAngle = Math.PI / 18;// ten degrees

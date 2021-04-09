@@ -22,8 +22,8 @@
 //         readonly ConeSideComparer coneSideComparer;
 //         readonly VisibilityGraph visibilityGraph;
 
-//         readonly RbTree < ConeSide > rightConeSides;
-//         readonly RbTree < ConeSide > leftConeSides;
+//         readonly RBTree < ConeSide > rightConeSides;
+//         readonly RBTree < ConeSide > leftConeSides;
 //         VisibilityGraph portEdgesGraph;
 //         internal Func < VisibilityVertex, VisibilityVertex, VisibilityEdge > PortEdgesCreator { get; set; }
 
@@ -34,8 +34,8 @@
 //             ConeRightSideDirection = coneRsDir;
 //             ConeLeftSideDirection = coneLsDir;
 //             coneSideComparer = new ConeSideComparer(this);
-//             leftConeSides = new RbTree<ConeSide>(coneSideComparer);
-//             rightConeSides = new RbTree<ConeSide>(coneSideComparer);
+//             leftConeSides = new RBTree<ConeSide>(coneSideComparer);
+//             rightConeSides = new RBTree<ConeSide>(coneSideComparer);
 //             Ports = ports;
 //             BorderPolyline = borderPolyline;
 //             PortEdgesCreator = (a, b) => new TollFreeVisibilityEdge(a, b);
@@ -305,7 +305,7 @@
 // //            return TreeIsCorrect(leftConeSides) && TreeIsCorrect(rightConeSides);
 // //        }
 // //
-// //        bool TreeIsCorrect(RbTree<ConeSide> tree) {
+// //        bool TreeIsCorrect(RBTree<ConeSide> tree) {
 // //            var y = double.NegativeInfinity;
 // //            foreach (var t of tree) {
 // //                var x = coneSideComparer.IntersectionOfSegmentAndSweepLine(t);
@@ -410,7 +410,7 @@
 //                     : rightConeSides);
 //         }
 
-//         void CloseConesCoveredBySegment(Point leftPoint, Point rightPoint, RbTree < ConeSide > tree) {
+//         void CloseConesCoveredBySegment(Point leftPoint, Point rightPoint, RBTree < ConeSide > tree) {
 //             var node = tree.FindFirst(
 //                 s => Point.getTriangleOrientation(s.start, s.start + s.Direction, leftPoint) ==
 //                     TriangleOrientation.Counterclockwise);
@@ -707,7 +707,7 @@
 //             }
 //         }
 
-//         RBNode < ConeSide > InsertToTree(RbTree < ConeSide > tree, ConeSide coneSide) {
+//         RBNode < ConeSide > InsertToTree(RBTree < ConeSide > tree, ConeSide coneSide) {
 //             Assert.assert(coneSide.Direction * SweepDirection > 0);
 //             coneSideComparer.SetOperand(coneSide);
 //             return tree.Insert(coneSide);

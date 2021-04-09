@@ -1,6 +1,6 @@
-import {RBNode} from './rbNode'
-import {RBColor} from './rbColor'
-import {Assert} from './../../utils/assert'
+import { RBNode } from './rbNode'
+import { RBColor } from './rbColor'
+import { Assert } from './../../utils/assert'
 
 export class RBTree<T> {
   readonly comparer: (a: T, b: T) => number
@@ -202,7 +202,7 @@ export class RBTree<T> {
     return this.toNull(z)
   }
 
-  private deleteNodeInternal(x: RBNode<T>) {
+  deleteNodeInternal(x: RBNode<T>) {
     this.count--
     this.deleteSubTree(x)
   }
@@ -289,7 +289,7 @@ export class RBTree<T> {
     this.root.color = RBColor.Black
   }
 
-  private *allNodes(): IterableIterator<T> {
+  *allNodes(): IterableIterator<T> {
     if (this.isEmpty()) return
     let c: RBNode<T> = this.treeMinimum()
     while (c != null) {
