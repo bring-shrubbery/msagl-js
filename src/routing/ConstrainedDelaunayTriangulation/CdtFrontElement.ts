@@ -11,7 +11,7 @@ export class CdtFrontElement {
 
     RightSite: CdtSite;
 
-    get X(): number {
+    get x(): number {
         return this.LeftSite.point.x;
     }
 

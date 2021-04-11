@@ -2,26 +2,27 @@
 Following "Sweep-line algorithm for constrained Delaunay triangulation", by Domiter and Zalik
 */
 //triangulates the space between point, line segment and polygons of the Delaunay fashion
-import { from, IEnumerable } from 'linq-to-typescript'
+import {from, IEnumerable} from 'linq-to-typescript'
 import {
   CreateRectangleNodeOnEnumeration,
   mkRectangleNode,
   RectangleNode,
 } from '../../core/geometry/RTree/RectangleNode'
-import { GeomConstants } from '../../math/geometry/geomConstants'
-import { Point } from '../../math/geometry/point'
-import { Polyline } from '../../math/geometry/polyline'
-import { Rectangle } from '../../math/geometry/rectangle'
-import { Assert } from '../../utils/assert'
-import { PointMap } from '../../utils/PointMap'
-import { Algorithm } from './../../utils/algorithm'
-import { CdtEdge } from './CdtEdge'
-import { CdtSite } from './CdtSite'
-import { CdtTriangle } from './CdtTriangle'
-import { SymmetricTuple } from './../../structs/SymmetricTuple'
+import {GeomConstants} from '../../math/geometry/geomConstants'
+import {Point} from '../../math/geometry/point'
+import {Polyline} from '../../math/geometry/polyline'
+import {Rectangle} from '../../math/geometry/rectangle'
+import {Assert} from '../../utils/assert'
+import {PointMap} from '../../utils/PointMap'
+import {Algorithm} from './../../utils/algorithm'
+import {CdtEdge} from './CdtEdge'
+import {CdtSite} from './CdtSite'
+import {CdtTriangle} from './CdtTriangle'
+import {SymmetricTuple} from './../../structs/SymmetricTuple'
+import {CdtSweeper} from './CdtSweeper'
 type SymmetricSegment = SymmetricTuple<Point>
 export class Cdt extends Algorithm {
-  isolatedSitesWithObject: IEnumerable<[Point, Object]>
+  isolatedSitesWithObject: IEnumerable<[Point, unknown]>
 
   isolatedSites: IEnumerable<Point>
 
@@ -52,7 +53,7 @@ export class Cdt extends Algorithm {
   }
 
   //  constructor
-  static constructor_(isolatedSitesWithObj: IEnumerable<[Point, Object]>) {
+  static constructor_(isolatedSitesWithObj: IEnumerable<[Point, unknown]>) {
     const r = new Cdt(null, null, null)
     r.isolatedSitesWithObject = isolatedSitesWithObj
     return r
@@ -61,25 +62,25 @@ export class Cdt extends Algorithm {
   FillAllInputSites() {
     // for now suppose that the data is correct: no isolatedSites coincide with obstacles or isolatedSegments, obstacles are mutually disjoint, etc
     if (this.isolatedSitesWithObject != null) {
-      for (let tuple of this.isolatedSitesWithObject) {
+      for (const tuple of this.isolatedSitesWithObject) {
         this.AddSite(tuple[0], tuple[1])
       }
     }
 
     if (this.isolatedSites != null) {
-      for (let isolatedSite of this.isolatedSites) {
+      for (const isolatedSite of this.isolatedSites) {
         this.AddSite(isolatedSite, null)
       }
     }
 
     if (this.obstacles != null) {
-      for (let poly of this.obstacles) {
+      for (const poly of this.obstacles) {
         this.AddPolylineToAllInputSites(poly)
       }
     }
 
     if (this.isolatedSegments != null) {
-      for (let isolatedSegment of this.isolatedSegments) {
+      for (const isolatedSegment of this.isolatedSegments) {
         this.AddConstrainedEdge(isolatedSegment.A, isolatedSegment.B, null)
       }
     }
@@ -88,7 +89,7 @@ export class Cdt extends Algorithm {
     this.allInputSites = [...this.PointsToSites.values()]
   }
 
-  AddSite(point: Point, relatedObject: Object): CdtSite {
+  AddSite(point: Point, relatedObject: unknown): CdtSite {
     let site: CdtSite
     if ((site = this.PointsToSites.getP(point))) {
       site.Owner = relatedObject
@@ -169,7 +170,7 @@ export class Cdt extends Algorithm {
   }
 
   public GetTriangles(): Set<CdtTriangle> {
-    return this.sweeper.Triangles
+    return this.sweeper.triangles
   }
 
   //  Executes the actual algorithm.
@@ -185,7 +186,7 @@ export class Cdt extends Algorithm {
       this.P2,
       Cdt.GetOrCreateEdge,
     )
-    this.sweeper.Run()
+    this.sweeper.run()
   }
 
   Initialization() {

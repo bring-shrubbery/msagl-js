@@ -1,3 +1,5 @@
+import { GeomConstants } from "../math/geometry/geomConstants"
+
 // this class behaves like one dimensional bounding box
 export class RealNumberSpan {
   isEmpty = true
@@ -17,5 +19,13 @@ export class RealNumberSpan {
 
   get length(): number {
     return this.max - this.min
+  }
+
+  //  0  if value is close to zero;
+  //  1  if value is strictly greater than zero;
+  //  -1 if value is strictly lower than zero;
+  static sign(value: number): number {
+    return value > GeomConstants.distanceEpsilon ? 1 :
+      (value < - GeomConstants.distanceEpsilon) ? -1 : 0
   }
 }

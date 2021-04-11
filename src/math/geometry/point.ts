@@ -249,4 +249,22 @@ export class Point {
 
     return segmentStart.add(bc.mul(c1 / c2))
   }
+
+  static pointToTheLeftOfLineOrOnLine(point: Point, linePoint0: Point, linePoint1: Point): boolean {
+    return (Point.signedDoubledTriangleArea(point, linePoint0, linePoint1) >= 0);
+  }
+
+  //  returns true if "point" lies to the left of the line linePoint0, linePoint1 
+  public static pointToTheLeftOfLine(point: Point, linePoint0: Point, linePoint1: Point): boolean {
+    return (Point.signedDoubledTriangleArea(point, linePoint0, linePoint1) > 0);
+  }
+
+  // returns true if "point" lies to the right of the line linePoint0, linePoint1 
+  static pointToTheRightOfLineOrOnLine(point: Point, linePoint0: Point, linePoint1: Point): boolean {
+    return (Point.signedDoubledTriangleArea(linePoint0, linePoint1, point) <= 0);
+  }
+
+  static pointToTheRightOfLine(point: Point, linePoint0: Point, linePoint1: Point): boolean {
+    return (Point.signedDoubledTriangleArea(linePoint0, linePoint1, point) < 0);
+  }
 }

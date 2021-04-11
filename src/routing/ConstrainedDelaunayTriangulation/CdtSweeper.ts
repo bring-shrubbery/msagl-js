@@ -572,7 +572,7 @@ export class CdtSweeper extends Algorithm {
     TriangulateEmptySpaceToTheRight(piNode: RBNode<CdtFrontElement>) {
         let piSite = piNode.item.LeftSite;
         let piPoint = piSite.point;
-        let piNext = this.front.nextR(piNode);
+        let piNext = this.front.next(piNode);
         while ((piNext != null)) {
             let frontElem = piNext.Item;
             let r = frontElem.LeftSite;
@@ -582,7 +582,7 @@ export class CdtSweeper extends Algorithm {
                 < 0)) {
                 // see figures 9(a) and 9(b) of the paper
                 piNode = this.ShortcutTwoFrontElements(piNode, piNext);
-                piNext = this.front.nextR(piNode);
+                piNext = this.front.next(piNode);
             }
             else {
                 this.TryTriangulateBasinToTheRight(piNode);
@@ -604,7 +604,7 @@ export class CdtSweeper extends Algorithm {
         while (true) {
             let site = stack.pop();
             piNode = CdtSweeper.FindNodeInFrontBySite(this.front, site);
-            let next = this.front.nextR(piNode);
+            let next = this.front.next(piNode);
             if ((next == null)) {
                 return;
             }
@@ -741,7 +741,6 @@ export class CdtSweeper extends Algorithm {
         return axdx * (bydy * t2 - cydy * t1) - bxdx * (aydy * t2 - cydy * t0) + cxdx * (aydy * t1 - bydy * t0)
             > GeomConstants.tolerance;
     }
-    //  }
 
     ProjectToFront(site: CdtSite) {
         return this.front.findLast(s => s.x <= site.point.x)

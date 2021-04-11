@@ -1,7 +1,8 @@
-﻿import { String } from 'typescript-string-operations'
-import { Assert } from '../../utils/assert'
-import { CdtSite } from './CdtSite'
-import { CdtTriangle } from './CdtTriangle'
+﻿import {String} from 'typescript-string-operations'
+import {Assert} from '../../utils/assert'
+import {Cdt} from './Cdt'
+import {CdtSite} from './CdtSite'
+import {CdtTriangle} from './CdtTriangle'
 
 export class CdtEdge {
   public upperSite: CdtSite
@@ -18,7 +19,7 @@ export class CdtEdge {
   public Constrained: boolean
 
   public constructor(a: CdtSite, b: CdtSite) {
-    const above = Cdt.Above(a.point, b.point)
+    const above = Cdt.AbovePP(a.point, b.point)
     if (above == 1) {
       this.upperSite = a
       this.lowerSite = b
@@ -42,8 +43,8 @@ export class CdtEdge {
   public set CcwTriangle(value: CdtTriangle) {
     Assert.assert(
       value == null ||
-      this.cwTriangle == null ||
-      value.OppositeSite(this) != this.cwTriangle.OppositeSite(this),
+        this.cwTriangle == null ||
+        value.OppositeSite(this) != this.cwTriangle.OppositeSite(this),
     )
     this.ccwTriangle = value
   }
@@ -54,18 +55,15 @@ export class CdtEdge {
   public set CwTriangle(value: CdtTriangle) {
     Assert.assert(
       value == null ||
-      this.ccwTriangle == null ||
-      value.OppositeSite(this) != this.ccwTriangle.OppositeSite(this),
+        this.ccwTriangle == null ||
+        value.OppositeSite(this) != this.ccwTriangle.OppositeSite(this),
     )
     this.cwTriangle = value
   }
 
   //  returns the trianlge on the edge opposite to the site
   public GetOtherTriangle_c(p: CdtSite): CdtTriangle {
-    return this.ccwTriangle
-    // TODO: Warning!!!, inline IF is not supported ?
-    this.cwTriangle.Contains(p)
-    this.cwTriangle
+    return this.cwTriangle.Contains(p) ? this.ccwTriangle : this.cwTriangle
   }
 
   public IsAdjacent(pi: CdtSite): boolean {
@@ -73,7 +71,7 @@ export class CdtEdge {
   }
 
   public GetOtherTriangle_T(triangle: CdtTriangle): CdtTriangle {
-    return cwTriangle.Contains(p) ? ccwTriangle : cwTriangle
+    return this.ccwTriangle == triangle ? this.cwTriangle : this.ccwTriangle
   }
 
   //  Returns a string that represents the current object.

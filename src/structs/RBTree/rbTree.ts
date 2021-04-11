@@ -72,7 +72,7 @@ export class RBTree<T> {
     return this.toNull(x)
   }
 
-  nextR(x: RBNode<T>): RBNode<T> {
+  next(x: RBNode<T>): RBNode<T> {
     if (x.right != this.nil) return this.treeMinimum(x.right)
     let y: RBNode<T> = x.parent
     while (y != this.nil && x == y.right) {
@@ -294,7 +294,7 @@ export class RBTree<T> {
     let c: RBNode<T> = this.treeMinimum()
     while (c != null) {
       yield c.item
-      c = this.nextR(c)
+      c = this.next(c)
     }
     return
   }
