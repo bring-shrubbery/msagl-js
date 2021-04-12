@@ -1,38 +1,39 @@
-import { String } from 'typescript-string-operations'
+import {String} from 'typescript-string-operations'
 export class SymmetricTuple<T> {
-    A: T
+  A: T
 
-    B: T
+  B: T
 
-    GetHashCode(): number {
-        throw new Error('not implemented')
-        //return (this.A.GetHashCode() | this.B.GetHashCode());
-        // The operator should be an XOR ^ instead of an OR, but not available in CodeDOM
-        //  we need a symmetric hash code
+  GetHashCode(): number {
+    throw new Error('not implemented')
+    //return (this.A.GetHashCode() | this.B.GetHashCode());
+    // The operator should be an XOR ^ instead of an OR, but not available in CodeDOM
+    //  we need a symmetric hash code
+  }
+
+  constructor(a: T, b: T) {
+    this.A = a
+    this.B = b
+  }
+
+  Equals(obj: unknown): boolean {
+    if (null == obj) {
+      return false
     }
 
-    constructor(a: T, b: T) {
-        this.A = a;
-        this.B = b;
+    if (this == obj) {
+      return true
     }
 
-    Equals(obj: unknown): boolean {
+    const other = (obj as unknown) as SymmetricTuple<T>
 
-        if (null == obj) {
-            return false;
-        }
+    return (
+      (this.A == other.A && this.B == other.B) ||
+      (this.A == other.B && this.B == other.A)
+    )
+  }
 
-        if (this == obj) {
-            return true;
-        }
-
-        const other = obj as unknown as SymmetricTuple<T>
-
-        return (this.A == other.A && this.B == other.B)
-            || (this.A == other.B && this.B == other.A)
-    }
-
-    public ToString(): string {
-        return String.Format("({0},{1})", this.A, this.B);
-    }
+  public ToString(): string {
+    return String.Format('({0},{1})', this.A, this.B)
+  }
 }

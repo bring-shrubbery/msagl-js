@@ -1,6 +1,6 @@
-import { RBNode } from './rbNode'
-import { RBColor } from './rbColor'
-import { Assert } from './../../utils/assert'
+import {RBNode} from './rbNode'
+import {RBColor} from './rbColor'
+import {Assert} from './../../utils/assert'
 
 export class RBTree<T> {
   readonly comparer: (a: T, b: T) => number

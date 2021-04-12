@@ -1,12 +1,12 @@
-import { IEnumerable, from } from 'linq-to-typescript'
-import { Point, TriangleOrientation } from '../../math/geometry/point'
-import { Polyline } from '../../math/geometry/polyline'
-import { PolylinePoint } from '../../math/geometry/polylinePoint'
-import { Assert } from '../../utils/assert'
-import { PointMap } from '../../utils/PointMap'
-import { VisibilityEdge } from './VisibilityEdge'
-import { VisibilityKind } from './VisibilityKind'
-import { VisibilityVertex } from './VisibilityVertex'
+import {IEnumerable, from} from 'linq-to-typescript'
+import {Point, TriangleOrientation} from '../../math/geometry/point'
+import {Polyline} from '../../math/geometry/polyline'
+import {PolylinePoint} from '../../math/geometry/polylinePoint'
+import {Assert} from '../../utils/assert'
+import {PointMap} from '../../utils/PointMap'
+import {VisibilityEdge} from './VisibilityEdge'
+import {VisibilityKind} from './VisibilityKind'
+import {VisibilityVertex} from './VisibilityVertex'
 class Polygon {
   constructor(hole: unknown) {
     throw new Error('not implemented')

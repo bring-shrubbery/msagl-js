@@ -1,22 +1,20 @@
-﻿import { Assert } from "../../utils/assert";
-import { CdtEdge } from "./CdtEdge";
-import { CdtSite } from "./CdtSite";
+﻿import {Assert} from '../../utils/assert'
+import {CdtEdge} from './CdtEdge'
+import {CdtSite} from './CdtSite'
 
 export class PerimeterEdge {
+  Start: CdtSite
 
-    Start: CdtSite;
+  End: CdtSite
 
-    End: CdtSite;
+  Prev: PerimeterEdge
 
-    Prev: PerimeterEdge;
+  Next: PerimeterEdge
 
-    Next: PerimeterEdge;
+  Edge: CdtEdge
 
-    Edge: CdtEdge;
-
-    constructor(edge: CdtEdge) {
-        Assert.assert(((edge.CcwTriangle == null)
-            || (edge.CwTriangle == null)));
-        this.Edge = edge;
-    }
+  constructor(edge: CdtEdge) {
+    Assert.assert(edge.CcwTriangle == null || edge.CwTriangle == null)
+    this.Edge = edge
+  }
 }
