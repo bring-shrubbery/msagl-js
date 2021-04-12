@@ -47,7 +47,7 @@
         break
     }
   }
-  public setItem(value: T, i: number) {
+  public setItem(i: number, value: T) {
     switch (i) {
       case 0:
       case 3:
@@ -79,6 +79,7 @@
     yield this.item2
   }
 }
+
 export function constructor<T>(item0: T, item1: T, item2: T) {
   const r = new ThreeArray()
   r.item0 = item0

@@ -1,9 +1,9 @@
-﻿import { Point, TriangleOrientation } from '../../math/geometry/point'
-import { Rectangle } from '../../math/geometry/rectangle'
-import { Assert } from '../../utils/assert'
-import { CdtEdge } from './CdtEdge'
-import { CdtSite } from './CdtSite'
-import { ThreeArray } from './ThreeArray'
+﻿import {Point, TriangleOrientation} from '../../math/geometry/point'
+import {Rectangle} from '../../math/geometry/rectangle'
+import {Assert} from '../../utils/assert'
+import {CdtEdge} from './CdtEdge'
+import {CdtSite} from './CdtSite'
+import {ThreeArray} from './ThreeArray'
 
 //  a trianlge oriented counterclockwise
 export class CdtTriangle {
@@ -13,7 +13,7 @@ export class CdtTriangle {
   //  the sites
   public Sites: ThreeArray<CdtSite> = new ThreeArray<CdtSite>()
 
-  constructor(
+  static mkSSSD(
     a: CdtSite,
     b: CdtSite,
     c: CdtSite,
@@ -24,37 +24,49 @@ export class CdtTriangle {
       b.point,
       c.point,
     )
+    const r = new CdtTriangle()
     switch (orientation) {
       case TriangleOrientation.Counterclockwise:
-        this.FillCcwTriangle(a, b, c, createEdgeDelegate)
+        r.FillCcwTriangle(a, b, c, createEdgeDelegate)
         break
       case TriangleOrientation.Clockwise:
-        this.FillCcwTriangle(a, c, b, createEdgeDelegate)
+        r.FillCcwTriangle(a, c, b, createEdgeDelegate)
         break
       default:
         throw new Error()
         break
     }
+    return r
   }
 
-  static constructor_t(
+  static mkSED(
     pi: CdtSite,
     edge: CdtEdge,
     createEdgeDelegate: (a: CdtSite, b: CdtSite) => CdtEdge,
   ) {
     let tri: CdtTriangle
     switch (
-    Point.getTriangleOrientationWithNoEpsilon(
-      edge.upperSite.point,
-      edge.lowerSite.point,
-      pi.point,
-    )
+      Point.getTriangleOrientationWithNoEpsilon(
+        edge.upperSite.point,
+        edge.lowerSite.point,
+        pi.point,
+      )
     ) {
       case TriangleOrientation.Counterclockwise:
-        tri = new CdtTriangle(edge.upperSite, edge.lowerSite, pi, createEdgeDelegate)
+        tri = CdtTriangle.mkSSSD(
+          edge.upperSite,
+          edge.lowerSite,
+          pi,
+          createEdgeDelegate,
+        )
         break
       case TriangleOrientation.Clockwise:
-        tri = new CdtTriangle(edge.lowerSite, edge.upperSite, pi, createEdgeDelegate)
+        tri = CdtTriangle.mkSSSD(
+          edge.lowerSite,
+          edge.upperSite,
+          pi,
+          createEdgeDelegate,
+        )
         break
       default:
         throw new Error()
@@ -68,7 +80,7 @@ export class CdtTriangle {
   }
 
   //
-  static constructor_55(
+  static mkSSSEE(
     aLeft: CdtSite,
     aRight: CdtSite,
     bRight: CdtSite,
@@ -76,8 +88,11 @@ export class CdtTriangle {
     b: CdtEdge,
     createEdgeDelegate: (a: CdtSite, b: CdtSite) => CdtEdge,
   ) {
-    Assert.assert(Point.getTriangleOrientation(aLeft.point, aRight.point, bRight.point) == TriangleOrientation.Counterclockwise);
-    const tri = new CdtTriangle(aLeft, aRight, bRight, createEdgeDelegate)
+    Assert.assert(
+      Point.getTriangleOrientation(aLeft.point, aRight.point, bRight.point) ==
+        TriangleOrientation.Counterclockwise,
+    )
+    const tri = CdtTriangle.mkSSSD(aLeft, aRight, bRight, createEdgeDelegate)
     tri.Edges[0] = a
     tri.Edges[1] = b
     tri.BindEdgeToTriangle(aLeft, a)
@@ -110,11 +125,14 @@ export class CdtTriangle {
     }
   }
 
-  CreateEdge(i: number, createEdgeDelegate: (a: CdtSite, b: CdtSite) => CdtEdge) {
+  CreateEdge(
+    i: number,
+    createEdgeDelegate: (a: CdtSite, b: CdtSite) => CdtEdge,
+  ) {
     const a = this.Sites[i]
     const b = this.Sites[i + 1]
-    const edge = this.Edges[i] = createEdgeDelegate(a, b);
-    this.BindEdgeToTriangle(a, edge);
+    const edge = (this.Edges[i] = createEdgeDelegate(a, b))
+    this.BindEdgeToTriangle(a, edge)
   }
 
   Contains(cdtSite: CdtSite): boolean {
@@ -147,5 +165,25 @@ export class CdtTriangle {
     )
     rect.add(this.Sites[2].point)
     return rect
+  }
+
+  static mkSSSEED(
+    aLeft: CdtSite,
+    aRight: CdtSite,
+    bRight: CdtSite,
+    a: CdtEdge,
+    b: CdtEdge,
+    createEdgeDelegate: (a: CdtSite, b: CdtSite) => CdtEdge,
+  ) {
+    const t = new CdtTriangle()
+    t.Sites[0] = aLeft
+    t.Sites[1] = aRight
+    t.Sites[2] = bRight
+    t.Edges[0] = a
+    t.Edges[1] = b
+    t.BindEdgeToTriangle(aLeft, a)
+    t.BindEdgeToTriangle(aRight, b)
+    t.CreateEdge(2, createEdgeDelegate)
+    return t
   }
 }
