@@ -17,7 +17,11 @@ export class CdtSite {
   public constructor(isolatedSite: Point) {
     this.point = isolatedSite
   }
-
+  static mkSO(isolatedSite: Point, owner: unknown) {
+    const s = new CdtSite(isolatedSite)
+    s.Owner = owner
+    return s
+  }
   AddEdgeToSite(edge: CdtEdge) {
     if (this.Edges == null) {
       this.Edges = new Array<CdtEdge>()

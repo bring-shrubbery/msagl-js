@@ -94,11 +94,10 @@ export class Cdt extends Algorithm {
     if ((site = this.PointsToSites.getP(point))) {
       site.Owner = relatedObject
       // set the owner anyway
-      return site
+    } else {
+      site = CdtSite.mkSO(point, relatedObject)
+      this.PointsToSites.setP(point, new CdtSite(point))
     }
-
-    site = new CdtSite(point)
-    this.PointsToSites.setP(point, new CdtSite(point))
     return site
   }
 
