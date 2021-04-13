@@ -158,7 +158,7 @@
 //     internal static PointLocation PointLocationInsideTriangle(Point p, CdtTriangle triangle) {
 //         bool seenBoundary = false;
 //         for (int i = 0; i < 3; i++) {
-//             var area = Point.SignedDoubledTriangleArea(p, triangle.Sites[i].point, triangle.Sites[i + 1].point);
+//             var area = Point.SignedDoubledTriangleArea(p, triangle.Sites.getItem(i).point, triangle.Sites.getItem(i + 1).point);
 //             if (area < -GeomConstants.distanceEpsilon)
 //                 return PointLocation.Outside;
 //             if (area < GeomConstants.distanceEpsilon)

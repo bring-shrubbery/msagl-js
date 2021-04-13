@@ -1,10 +1,14 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+      "source.fixAll.eslint": true
+      "source.formatDocument",
   },
   "eslint.validate": [
     "typescript"
   ],
+    "[typescript]": {
+    "esbenp.prettier-vscode"
+    },
   "editor.formatOnSave": true,
   "debug.javascript.unmapMissingSources": true,
   "files.watcherExclude": {

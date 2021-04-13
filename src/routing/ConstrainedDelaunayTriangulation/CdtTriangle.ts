@@ -8,7 +8,7 @@ import {ThreeArray} from './ThreeArray'
 //  a trianlge oriented counterclockwise
 export class CdtTriangle {
   //  the edges
-  public Edges: ThreeArray<CdtEdge> = new ThreeArray<CdtEdge>()
+  public TriEdges: ThreeArray<CdtEdge> = new ThreeArray<CdtEdge>()
 
   //  the sites
   public Sites: ThreeArray<CdtSite> = new ThreeArray<CdtSite>()
@@ -73,7 +73,7 @@ export class CdtTriangle {
     }
     edge.CcwTriangle = tri
 
-    tri.Edges[0] = edge
+    tri.TriEdges.setItem(0, edge)
     tri.CreateEdge(1, createEdgeDelegate)
     tri.CreateEdge(2, createEdgeDelegate)
     return tri
@@ -93,8 +93,8 @@ export class CdtTriangle {
         TriangleOrientation.Counterclockwise,
     )
     const tri = CdtTriangle.mkSSSD(aLeft, aRight, bRight, createEdgeDelegate)
-    tri.Edges[0] = a
-    tri.Edges[1] = b
+    tri.TriEdges.setItem(0, a)
+    tri.TriEdges.setItem(1, b)
     tri.BindEdgeToTriangle(aLeft, a)
     tri.BindEdgeToTriangle(aRight, b)
     tri.CreateEdge(2, createEdgeDelegate)
@@ -117,9 +117,9 @@ export class CdtTriangle {
     c: CdtSite,
     createEdgeDelegate: (a: CdtSite, b: CdtSite) => CdtEdge,
   ) {
-    this.Sites[0] = a
-    this.Sites[1] = b
-    this.Sites[2] = c
+    this.Sites.setItem(0, a)
+    this.Sites.setItem(1, b)
+    this.Sites.setItem(2, c)
     for (let i = 0; i < 3; i++) {
       this.CreateEdge(i, createEdgeDelegate)
     }
@@ -129,9 +129,10 @@ export class CdtTriangle {
     i: number,
     createEdgeDelegate: (a: CdtSite, b: CdtSite) => CdtEdge,
   ) {
-    const a = this.Sites[i]
-    const b = this.Sites[i + 1]
-    const edge = (this.Edges[i] = createEdgeDelegate(a, b))
+    const a = this.Sites.getItem(i)
+    const b = this.Sites.getItem(i + 1)
+    const edge: CdtEdge = createEdgeDelegate(a, b)
+    this.TriEdges.setItem(i, edge)
     this.BindEdgeToTriangle(a, edge)
   }
 
@@ -142,7 +143,7 @@ export class CdtTriangle {
   OppositeEdge(pi: CdtSite): CdtEdge {
     const index = this.Sites.index(pi)
     Assert.assert(index != -1)
-    return this.Edges[index + 1]
+    return this.TriEdges.getItem(index + 1)
   }
 
   //  #if TEST_MSAGL&&TEST_MSAGL
@@ -154,16 +155,16 @@ export class CdtTriangle {
   //          }
   //  #endif
   OppositeSite(cdtEdge: CdtEdge): CdtSite {
-    const i = this.Edges.index(cdtEdge)
-    return this.Sites[i + 2]
+    const i = this.TriEdges.index(cdtEdge)
+    return this.Sites.getItem(i + 2)
   }
 
   BoundingBox(): Rectangle {
     const rect: Rectangle = Rectangle.mkPP(
-      this.Sites[0].point,
-      this.Sites[1].point,
+      this.Sites.getItem(0).point,
+      this.Sites.getItem(1).point,
     )
-    rect.add(this.Sites[2].point)
+    rect.add(this.Sites.getItem(2).point)
     return rect
   }
 
@@ -176,11 +177,11 @@ export class CdtTriangle {
     createEdgeDelegate: (a: CdtSite, b: CdtSite) => CdtEdge,
   ) {
     const t = new CdtTriangle()
-    t.Sites[0] = aLeft
-    t.Sites[1] = aRight
-    t.Sites[2] = bRight
-    t.Edges[0] = a
-    t.Edges[1] = b
+    t.Sites.setItem(0, aLeft)
+    t.Sites.setItem(1, aRight)
+    t.Sites.setItem(2, bRight)
+    t.TriEdges.setItem(0, a)
+    t.TriEdges.setItem(1, b)
     t.BindEdgeToTriangle(aLeft, a)
     t.BindEdgeToTriangle(aRight, b)
     t.CreateEdge(2, createEdgeDelegate)

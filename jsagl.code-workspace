@@ -1,14 +1,13 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"debug.javascript.unmapMissingSources": true,
-		"json.maxItemsComputed": 50000,
-		"eslint.alwaysShowStatus": true,
-		"eslint.format.enable": true,
-		"editor.formatOnSave": true
-	}
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "debug.javascript.unmapMissingSources": true,
+    "json.maxItemsComputed": 50000,
+    "eslint.alwaysShowStatus": true,
+    "editor.formatOnSave": true
+  }
 }

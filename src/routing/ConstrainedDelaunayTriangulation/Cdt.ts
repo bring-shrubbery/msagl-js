@@ -245,8 +245,8 @@ export class Cdt extends Algorithm {
 
   static PointIsInsideOfTriangle(point: Point, t: CdtTriangle): boolean {
     for (let i = 0; i < 3; i++) {
-      const a = t.Sites[i].point
-      const b = t.Sites[i + 1].point
+      const a = t.Sites.getItem(i).point
+      const b = t.Sites.getItem(i + 1).point
       if (
         Point.signedDoubledTriangleArea(point, a, b) <
         GeomConstants.distanceEpsilon * -1

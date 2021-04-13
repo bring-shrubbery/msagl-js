@@ -35,18 +35,18 @@
 //         Assert.assert(PointLocationForTriangle(start, currentTriangle) != PointLocation.Outside);
 //         Assert.assert(PointLocationForTriangle(end, currentTriangle) == PointLocation.Outside);
 
-//         var sign0 = GetHyperplaneSign(currentTriangle.Sites[0]);
-//         var sign1 = GetHyperplaneSign(currentTriangle.Sites[1]);
+//         var sign0 = GetHyperplaneSign(currentTriangle.Sites.getItem(0));
+//         var sign1 = GetHyperplaneSign(currentTriangle.Sites.getItem(1));
 //         if (sign0 != sign1) {
-//             if (Point.getTriangleOrientation(end, currentTriangle.Sites[0].point, currentTriangle.Sites[1].point) == TriangleOrientation.Clockwise) {
+//             if (Point.getTriangleOrientation(end, currentTriangle.Sites.getItem(0].point, currentTriangle.Sites[1).point) == TriangleOrientation.Clockwise) {
 //                 positiveSign = sign0;
 //                 negativeSign = sign1;
 //                 return currentTriangle.Edges[0];
 //             }
 //         }
-//         var sign2 = GetHyperplaneSign(currentTriangle.Sites[2]);
+//         var sign2 = GetHyperplaneSign(currentTriangle.Sites.getItem(2));
 //         if (sign1 != sign2) {
-//             if (Point.getTriangleOrientation(end, currentTriangle.Sites[1].point, currentTriangle.Sites[2].point) == TriangleOrientation.Clockwise) {
+//             if (Point.getTriangleOrientation(end, currentTriangle.Sites.getItem(1].point, currentTriangle.Sites[2).point) == TriangleOrientation.Clockwise) {
 //                 positiveSign = sign1;
 //                 negativeSign = sign2;
 //                 return currentTriangle.Edges[1];
@@ -86,7 +86,7 @@
 //     internal static PointLocation PointLocationForTriangle(Point p, CdtTriangle triangle) {
 //         bool seenBoundary = false;
 //         for (int i = 0; i < 3; i++) {
-//             var area = Point.SignedDoubledTriangleArea(p, triangle.Sites[i].point, triangle.Sites[i + 1].point);
+//             var area = Point.SignedDoubledTriangleArea(p, triangle.Sites.getItem(i).point, triangle.Sites.getItem(i + 1).point);
 //             if (area < -GeomConstants.distanceEpsilon)
 //                 return PointLocation.Outside;
 //             if (area < GeomConstants.distanceEpsilon)
@@ -126,7 +126,7 @@
 //         }
 //         var i = currentTriangle.Edges.Index(currentPiercedEdge);
 //         int j; //pierced index
-//         var oppositeSite = currentTriangle.Sites[i + 2];
+//         var oppositeSite = currentTriangle.Sites.getItem(i + 2);
 //         var oppositeSiteSign = GetHyperplaneSign(oppositeSite);
 //         if (negativeSign == 0) {
 //             Assert.assert(positiveSign == 1);
@@ -159,7 +159,7 @@
 //         }
 
 //         currentPiercedEdge =
-//             Point.SignedDoubledTriangleArea(end, currentTriangle.Sites[j].point, currentTriangle.Sites[j + 1].point) <
+//             Point.SignedDoubledTriangleArea(end, currentTriangle.Sites.getItem(j].point, currentTriangle.Sites[j + 1).point) <
 //                 - GeomConstants.distanceEpsilon
 //                 ? currentTriangle.Edges[j]
 //                 : null;

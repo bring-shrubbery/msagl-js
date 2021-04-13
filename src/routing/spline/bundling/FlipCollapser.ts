@@ -44,16 +44,16 @@
 //                     var site = f.Site;
 //                     foreach (var t of site.Triangles) {
 //                         var si = t.Sites.Index(site);
-//                         if (Point.PointIsInsideCone(pp.point, site.point, t.Sites[si + 1].point, t.Sites[si + 2].point)) {
-//                             if (Point.getTriangleOrientation(pp.point, t.Sites[si + 1].point, t.Sites[si + 2].point) ==
+//                         if (Point.PointIsInsideCone(pp.point, site.point, t.Sites.getItem(si + 1].point, t.Sites[si + 2).point)) {
+//                             if (Point.getTriangleOrientation(pp.point, t.Sites.getItem(si + 1].point, t.Sites[si + 2).point) ==
 //                                 TriangleOrientation.Collinear) {//pp belongs to the edge [si+1]
 //                                 ret.Add(t.Edges[si + 1]);
-//                                 if (Point.getTriangleOrientation(site.point, t.Sites[si + 1].point, pp.point) ==
+//                                 if (Point.getTriangleOrientation(site.point, t.Sites.getItem(si + 1).point, pp.point) ==
 //                                     TriangleOrientation.Collinear)
-//                                     nextFeature = new CdtSiteFeature(t.Sites[si + 1], f) {Prev = f};
-//                                 else if (Point.getTriangleOrientation(site.point, t.Sites[si + 2].point, pp.point) ==
+//                                     nextFeature = new CdtSiteFeature(t.Sites.getItem(si + 1), f) {Prev = f};
+//                                 else if (Point.getTriangleOrientation(site.point, t.Sites.getItem(si + 2).point, pp.point) ==
 //                                          TriangleOrientation.Collinear)
-//                                     nextFeature = new CdtSiteFeature(t.Sites[si + 2], f) {Prev = f};
+//                                     nextFeature = new CdtSiteFeature(t.Sites.getItem(si + 2), f) {Prev = f};
 //                                 else
 //                                     nextFeature = new CdtEdgeFeature(t.Edges[si + 1], pp.point, f) {Prev = f};
 //                             }
