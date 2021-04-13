@@ -24,9 +24,9 @@ type SymmetricSegment = SymmetricTuple<Point>
 export class Cdt extends Algorithm {
   isolatedSitesWithObject: IEnumerable<[Point, unknown]>
 
-  isolatedSites: IEnumerable<Point>
+  isolatedSites: Point[] = []
 
-  obstacles: IEnumerable<Polyline>
+  obstacles: Polyline[] = []
 
   isolatedSegments: Array<SymmetricSegment>
 
@@ -44,12 +44,12 @@ export class Cdt extends Algorithm {
   constructor(
     isolatedSites: IEnumerable<Point>,
     obstacles: IEnumerable<Polyline>,
-    isolatedSegments: Array<SymmetricSegment>,
+    isolatedSegments: IEnumerable<SymmetricSegment>,
   ) {
     super(null)
-    this.isolatedSites = isolatedSites
-    this.obstacles = obstacles
-    this.isolatedSegments = isolatedSegments
+    if (isolatedSites) this.isolatedSites = isolatedSites.toArray()
+    if (obstacles) this.obstacles = obstacles.toArray()
+    if (isolatedSegments) this.isolatedSegments = isolatedSegments.toArray()
   }
 
   //  constructor

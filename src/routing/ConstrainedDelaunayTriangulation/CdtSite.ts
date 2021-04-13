@@ -1,5 +1,4 @@
-﻿import {ICurve} from '../../math/geometry/icurve'
-import {Point} from '../../math/geometry/point'
+﻿import {Point} from '../../math/geometry/point'
 import {Assert} from '../../utils/assert'
 import {CdtEdge} from './CdtEdge'
 import {CdtTriangle} from './CdtTriangle'

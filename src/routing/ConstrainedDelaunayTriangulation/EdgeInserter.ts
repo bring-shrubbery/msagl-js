@@ -53,7 +53,7 @@ export class EdgeInserter {
   UpdateFront() {
     const newFrontEdges = new Set<CdtEdge>()
     for (const t of this.addedTriangles) {
-      for (const e of t.Edges)
+      for (const e of t.TriEdges)
         if (e.CwTriangle == null || e.CcwTriangle == null) newFrontEdges.add(e)
 
       for (const e of newFrontEdges) this.AddEdgeToFront(e)

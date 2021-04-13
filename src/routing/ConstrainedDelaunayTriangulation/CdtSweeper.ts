@@ -20,7 +20,9 @@ import {EdgeInserter} from './EdgeInserter'
 import {PerimeterEdge} from './PerimeterEdge'
 // this class builds the triangulation by a sweep with a horizontal line
 export class CdtSweeper extends Algorithm {
-  front: RBTree<CdtFrontElement>
+  front: RBTree<CdtFrontElement> = new RBTree<CdtFrontElement>(
+    (a, b) => a.x - b.x,
+  )
 
   triangles: Set<CdtTriangle> = new Set<CdtTriangle>()
 
@@ -43,16 +45,19 @@ export class CdtSweeper extends Algorithm {
     if (this.listOfSites.length == 0) {
       return
     }
+    this.p_1 = p_1
+    this.p_2 = p_2
+    this.createEdgeDelegate = createEdgeDelegate
 
     const firstTriangle = CdtTriangle.mkSSSD(
-      this.p_1,
-      this.p_2,
+      p_1,
+      p_2,
       this.listOfSites[0],
       createEdgeDelegate,
     )
     this.triangles.add(firstTriangle)
     this.front.insert(
-      new CdtFrontElement(this.p_1, firstTriangle.TriEdges.getItem(2)),
+      new CdtFrontElement(p_1, firstTriangle.TriEdges.getItem(2)),
     )
     this.front.insert(
       new CdtFrontElement(
@@ -60,10 +65,7 @@ export class CdtSweeper extends Algorithm {
         firstTriangle.TriEdges.getItem(1),
       ),
     )
-    this.p_1 = this.p_1
-    this.p_2 = this.p_2
-    this.createEdgeDelegate = this.createEdgeDelegate
-    // ShowFront();
+    this.ShowFront()
   }
 
   run() {
@@ -401,14 +403,13 @@ export class CdtSweeper extends Algorithm {
 
   PointEvent(pi: CdtSite) {
     const hittedFrontElementNode = this.ProjectToFront(pi)
-    let rightSite: CdtSite
-    let t: {rightSite: CdtSite}
+    const t: {rightSite: CdtSite} = {rightSite: null}
     const leftSite: CdtSite =
       hittedFrontElementNode.item.x + GeomConstants.distanceEpsilon < pi.point.x
         ? this.MiddleCase(pi, hittedFrontElementNode, t)
         : this.LeftCase(pi, hittedFrontElementNode, t)
 
-    let piNode = this.InsertSiteIntoFront(leftSite, pi, rightSite)
+    let piNode = this.InsertSiteIntoFront(leftSite, pi, t.rightSite)
     this.TriangulateEmptySpaceToTheRight(piNode)
     piNode = CdtSweeper.FindNodeInFrontBySite(this.front, leftSite)
     this.TriangulateEmptySpaceToTheLeft(piNode)
