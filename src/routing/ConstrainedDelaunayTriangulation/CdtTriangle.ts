@@ -1,9 +1,9 @@
-﻿import {Point, TriangleOrientation} from '../../math/geometry/point'
-import {Rectangle} from '../../math/geometry/rectangle'
-import {Assert} from '../../utils/assert'
-import {CdtEdge} from './CdtEdge'
-import {CdtSite} from './CdtSite'
-import {ThreeArray} from './ThreeArray'
+﻿import { Point, TriangleOrientation } from '../../math/geometry/point'
+import { Rectangle } from '../../math/geometry/rectangle'
+import { Assert } from '../../utils/assert'
+import { CdtEdge } from './CdtEdge'
+import { CdtSite } from './CdtSite'
+import { ThreeArray } from './ThreeArray'
 
 //  a trianlge oriented counterclockwise
 export class CdtTriangle {
@@ -44,36 +44,30 @@ export class CdtTriangle {
     edge: CdtEdge,
     createEdgeDelegate: (a: CdtSite, b: CdtSite) => CdtEdge,
   ) {
-    let tri: CdtTriangle
+    const tri = new CdtTriangle()
     switch (
-      Point.getTriangleOrientationWithNoEpsilon(
-        edge.upperSite.point,
-        edge.lowerSite.point,
-        pi.point,
-      )
+    Point.getTriangleOrientationWithNoEpsilon(
+      edge.upperSite.point,
+      edge.lowerSite.point,
+      pi.point,
+    )
     ) {
       case TriangleOrientation.Counterclockwise:
-        tri = CdtTriangle.mkSSSD(
-          edge.upperSite,
-          edge.lowerSite,
-          pi,
-          createEdgeDelegate,
-        )
+        edge.CcwTriangle = tri;
+        tri.Sites.setItem(0, edge.upperSite)
+        tri.Sites.setItem(1, edge.lowerSite)
         break
       case TriangleOrientation.Clockwise:
-        tri = CdtTriangle.mkSSSD(
-          edge.lowerSite,
-          edge.upperSite,
-          pi,
-          createEdgeDelegate,
-        )
+        edge.CwTriangle = tri;
+        tri.Sites.setItem(0, edge.lowerSite)
+        tri.Sites.setItem(1, edge.upperSite)
         break
       default:
         throw new Error()
     }
-    edge.CcwTriangle = tri
 
     tri.TriEdges.setItem(0, edge)
+    tri.Sites.setItem(2, pi)
     tri.CreateEdge(1, createEdgeDelegate)
     tri.CreateEdge(2, createEdgeDelegate)
     return tri
@@ -90,7 +84,7 @@ export class CdtTriangle {
   ) {
     Assert.assert(
       Point.getTriangleOrientation(aLeft.point, aRight.point, bRight.point) ==
-        TriangleOrientation.Counterclockwise,
+      TriangleOrientation.Counterclockwise,
     )
     const tri = CdtTriangle.mkSSSD(aLeft, aRight, bRight, createEdgeDelegate)
     tri.TriEdges.setItem(0, a)

@@ -168,7 +168,7 @@ export class CdtSweeper extends Algorithm {
 
   static FindNextEdgeOnPerimeter(e: CdtEdge): CdtEdge {
     let t
-    e.CcwTriangle
+    e.CcwTriangle // bug!!!
     e = t.Edges[t.Edges.Index(e) + 2]
     while (e.CwTriangle != null && e.CcwTriangle != null) {
       t = e.GetOtherTriangle_c(t)
