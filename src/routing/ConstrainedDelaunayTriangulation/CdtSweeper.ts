@@ -65,7 +65,7 @@ export class CdtSweeper extends Algorithm {
         firstTriangle.TriEdges.getItem(1),
       ),
     )
-    this.ShowFront()
+    this.ShowFront('/tmp/front.svg')
   }
 
   run() {
@@ -167,14 +167,12 @@ export class CdtSweeper extends Algorithm {
   }
 
   static FindNextEdgeOnPerimeter(e: CdtEdge): CdtEdge {
-    let t
-    e.CcwTriangle // bug!!!
-    e = t.Edges[t.Edges.Index(e) + 2]
+    let t: CdtTriangle = e.CwTriangle ?? e.CcwTriangle
+    e = t.TriEdges.getItem(t.TriEdges.index(e) + 2)
     while (e.CwTriangle != null && e.CcwTriangle != null) {
-      t = e.GetOtherTriangle_c(t)
-      e = t.Edges[t.Edges.Index(e) + 2]
+      t = e.GetOtherTriangle_T(t)
+      e = t.TriEdges.getItem(t.TriEdges.index(e) + 2)
     }
-
     return e
   }
 
@@ -333,11 +331,17 @@ export class CdtSweeper extends Algorithm {
       )
     }
 
-    SvgDebugWriter.dumpDebugCurves('/tmp/curvers.svg', ls)
+    SvgDebugWriter.dumpDebugCurves('/tmp/frontWithSite.svg', ls)
   }
 
-  ShowFront() {
-    CdtSweeper.ShowFront([...this.triangles.values()], this.front, null, null)
+  ShowFront(fn: string) {
+    CdtSweeper.ShowFront(
+      [...this.triangles.values()],
+      this.front,
+      null,
+      null,
+      fn,
+    )
   }
 
   static ShowFront(
@@ -345,17 +349,18 @@ export class CdtSweeper extends Algorithm {
     cdtFrontElements: RBTree<CdtFrontElement>,
     redCurves: IEnumerable<ICurve>,
     blueCurves: IEnumerable<ICurve>,
+    fn: string,
   ) {
     const ls: Array<DebugCurve> = new Array<DebugCurve>()
     if (redCurves != null) {
       for (const c of redCurves) {
-        ls.push(DebugCurve.mkDebugCurveTWCI(100, 0.5, 'red', c))
+        ls.push(DebugCurve.mkDebugCurveTWCI(100, 0.5, 'Red', c))
       }
     }
 
     if (blueCurves != null) {
       for (const c of blueCurves) {
-        ls.push(DebugCurve.mkDebugCurveTWCI(100, 2, 'blue', c))
+        ls.push(DebugCurve.mkDebugCurveTWCI(100, 2, 'Blue', c))
       }
     }
 
@@ -365,7 +370,7 @@ export class CdtSweeper extends Algorithm {
           DebugCurve.mkDebugCurveTWCI(
             100,
             0.001,
-            'green',
+            'Green',
             LineSegment.mkPP(
               frontElement.Edge.upperSite.point,
               frontElement.Edge.lowerSite.point,
@@ -382,7 +387,7 @@ export class CdtSweeper extends Algorithm {
       }
     }
 
-    SvgDebugWriter.dumpDebugCurves('c:\\tmp\\t.svg', ls)
+    SvgDebugWriter.dumpDebugCurves(fn, ls)
   }
 
   static GetDebugCurveOfCdtEdge(e: CdtEdge): DebugCurve {
@@ -390,13 +395,13 @@ export class CdtSweeper extends Algorithm {
       return DebugCurve.mkDebugCurveTWCI(
         255,
         4,
-        e.Constrained ? 'brown' : 'blue',
+        e.Constrained ? 'Brown' : 'Yellow',
         LineSegment.mkPP(e.upperSite.point, e.lowerSite.point),
       )
     return DebugCurve.mkDebugCurveTWCI(
-      100,
-      e.Constrained ? 0.002 : 0.001,
-      e.Constrained ? 'pink' : 'navy',
+      200,
+      e.Constrained ? 0.2 : 0.1,
+      e.Constrained ? 'Pink' : 'Navy',
       LineSegment.mkPP(e.upperSite.point, e.lowerSite.point),
     )
   }
@@ -508,7 +513,7 @@ export class CdtSweeper extends Algorithm {
   ShortcutTwoListElements(a: PerimeterEdge): PerimeterEdge {
     const b = a.Next
     Assert.assert(a.End == b.Start)
-    const t = CdtTriangle.mkSSSEE(
+    let t = CdtTriangle.mkSSSEE(
       a.Start,
       a.End,
       b.End,
@@ -520,9 +525,11 @@ export class CdtSweeper extends Algorithm {
     const newEdge = t.TriEdges.getItem(2)
     Assert.assert(newEdge.IsAdjacent(a.Start) && newEdge.IsAdjacent(b.End))
     this.LegalizeEdge(a.Start, t.OppositeEdge(a.Start))
-    newEdge.CwTriangle
+    t = newEdge.CcwTriangle ?? newEdge.CwTriangle
     this.LegalizeEdge(b.End, t.OppositeEdge(b.End))
     const c = new PerimeterEdge(newEdge)
+    c.Start = a.Start
+    c.End = b.End
     a.Prev.Next = c
     c.Prev = a.Prev
     c.Next = b.Next

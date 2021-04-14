@@ -1,8 +1,12 @@
 import {from} from 'linq-to-typescript'
+import {LineSegment} from '../../../math/geometry/lineSegment'
 import {Point} from '../../../math/geometry/point'
 import {Cdt} from '../../../routing/ConstrainedDelaunayTriangulation/Cdt'
 import {CdtSite} from '../../../routing/ConstrainedDelaunayTriangulation/CdtSite'
-import {InCircle} from '../../../routing/ConstrainedDelaunayTriangulation/CdtSweeper'
+import {
+  CdtSweeper,
+  InCircle,
+} from '../../../routing/ConstrainedDelaunayTriangulation/CdtSweeper'
 import {CdtTriangle} from '../../../routing/ConstrainedDelaunayTriangulation/CdtTriangle'
 import {SymmetricTuple} from '../../../structs/SymmetricTuple'
 
@@ -117,6 +121,13 @@ test('SmallTriangulation', () => {
     ]),
   )
   cdt.run()
+  CdtSweeper.ShowFront(
+    [...cdt.GetTriangles().values()],
+    null,
+    from(Segments()).select((s) => LineSegment.mkPP(s.A, s.B)),
+    null,
+    '/tmp/smallTriangulationTest.svg',
+  )
 })
 
 function* Points() {
