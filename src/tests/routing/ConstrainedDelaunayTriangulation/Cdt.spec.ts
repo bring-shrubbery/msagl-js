@@ -126,8 +126,9 @@ test('SmallTriangulation', () => {
     null,
     from(Segments()).select((s) => LineSegment.mkPP(s.A, s.B)),
     null,
-    '/tmp/smallTriangulationTest.svg',
+    'c:/tmp/smallTriangulationTest.svg',
   )
+  expect(1).toBe(0)
 })
 
 function* Points() {

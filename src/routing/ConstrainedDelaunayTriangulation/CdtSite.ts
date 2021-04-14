@@ -5,14 +5,14 @@ import {CdtTriangle} from './CdtTriangle'
 import {Cdt} from './Cdt'
 export class CdtSite {
   //  Object to which this site refers to.
-  Owner: unknown
+  Owner = null
 
   point: Point
 
   //  each CdtSite points to the edges for which it is the upper virtex ( for horizontal edges it is the left point)
   public Edges: Array<CdtEdge>
 
-  InEdges: Array<CdtEdge>
+  InEdges = new Array<CdtEdge>()
 
   public constructor(isolatedSite: Point) {
     this.point = isolatedSite

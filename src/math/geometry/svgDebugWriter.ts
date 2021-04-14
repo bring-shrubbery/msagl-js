@@ -13,6 +13,7 @@ import {allVerticesOfParall} from './parallelogram'
 import {GeomEdge} from './../../layout/core/geomEdge'
 import {GeomGraph} from '../../layout/core/GeomGraph'
 import {GeomLabel} from './../../layout/core/geomLabel'
+import {PlaneTransformation} from './planeTransformation'
 
 export class SvgDebugWriter {
   // Here we import the File System module of node
@@ -251,6 +252,7 @@ export class SvgDebugWriter {
   }
 
   writeDebugCurves(dcurves: DebugCurve[]) {
+    flipDebugCurvesByY(dcurves)
     this.open(SvgDebugWriter.getBoundingBox(dcurves))
     for (const c of dcurves) {
       this.writeDebugCurve(c)
@@ -332,5 +334,11 @@ export class SvgDebugWriter {
     this.xw.writeAttribute('fill', 'none')
     this.xw.writeAttribute('points', this.pointsToString(points))
     this.xw.endElement()
+  }
+}
+function flipDebugCurvesByY(dcurves: DebugCurve[]) {
+  const matrix = new PlaneTransformation(1, 0, 0, 0, -1, 0)
+  for (const dc of dcurves) {
+    dc.icurve = dc.icurve.transform(matrix)
   }
 }

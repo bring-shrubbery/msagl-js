@@ -236,7 +236,7 @@ export class CdtSweeper extends Algorithm {
 
   ProcessSite(site: CdtSite) {
     this.PointEvent(site)
-    // ShowFrontWithSite(site);
+    this.ShowFrontWithSite(site)
     for (let i = 0; i < site.Edges.length; i++) {
       const edge = site.Edges[i]
       if (edge.Constrained) {
@@ -276,7 +276,7 @@ export class CdtSweeper extends Algorithm {
     return edge.CwTriangle != null || edge.CcwTriangle != null
   }
 
-  ShowFrontWithSite(site: CdtSite, redCurves: ICurve[]) {
+  ShowFrontWithSite(site: CdtSite, redCurves: ICurve[] = null) {
     const ls = new Array<DebugCurve>()
     if (site.Edges != null) {
       for (const e of site.Edges) {

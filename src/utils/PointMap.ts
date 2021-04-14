@@ -5,7 +5,7 @@ export class PointMap<T> {
     this.delete(point.x, point.y)
   }
   mapOfMaps: Map<number, Map<number, T>>
-  size_: number
+  size_ = 0
   get size(): number {
     return this.size_
   }

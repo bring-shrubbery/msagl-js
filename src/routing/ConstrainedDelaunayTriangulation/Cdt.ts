@@ -96,7 +96,7 @@ export class Cdt extends Algorithm {
       // set the owner anyway
     } else {
       site = CdtSite.mkSO(point, relatedObject)
-      this.PointsToSites.setP(point, new CdtSite(point))
+      this.PointsToSites.setP(point, site)
     }
     return site
   }
@@ -140,6 +140,7 @@ export class Cdt extends Algorithm {
 
     const edge = Cdt.CreateEdgeOnOrderedCouple(upperPoint, lowerPoint)
     edge.Constrained = true
+    Assert.assert(this.EdgeIsCorrect(edge))
   }
 
   static GetOrCreateEdge(a: CdtSite, b: CdtSite): CdtEdge {
@@ -267,7 +268,21 @@ export class Cdt extends Algorithm {
         ),
       )
     }
-
     return this.cdtTree
+  }
+  EdgeIsCorrect(edge: CdtEdge): boolean {
+    const us = edge.upperSite
+    let edgeIsThere = false
+    for (const e of us.Edges) {
+      if (e == edge) {
+        edgeIsThere = true
+        break
+      }
+    }
+    if (!edgeIsThere) {
+      return false
+      const usShouldBe = this.PointsToSites.getP(us.point)
+      return usShouldBe == us
+    }
   }
 }
