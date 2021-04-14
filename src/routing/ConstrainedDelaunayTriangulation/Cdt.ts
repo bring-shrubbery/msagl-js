@@ -281,8 +281,8 @@ export class Cdt extends Algorithm {
     }
     if (!edgeIsThere) {
       return false
-      const usShouldBe = this.PointsToSites.getP(us.point)
-      return usShouldBe == us
     }
+    const usShouldBe = this.PointsToSites.getP(us.point)
+    return usShouldBe == us
   }
 }
