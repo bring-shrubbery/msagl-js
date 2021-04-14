@@ -295,7 +295,7 @@ export class CdtSweeper extends Algorithm {
       DebugCurve.mkDebugCurveTWCI(
         100,
         0.01,
-        'brown',
+        'Brown',
         Ellipse.mkFullEllipseNNP(0.5, 0.5, site.point),
       ),
     )
@@ -306,16 +306,17 @@ export class CdtSweeper extends Algorithm {
           DebugCurve.mkDebugCurveTWCI(
             e.Constrained ? 150 : 50,
             e.Constrained ? 0.002 : 0.001,
-            e.Constrained ? 'pink' : 'navy',
+            e.Constrained ? 'Pink' : 'Navy',
             LineSegment.mkPP(e.upperSite.point, e.lowerSite.point),
           ),
         )
       }
     }
 
-    for (const c of redCurves) {
-      ls.push(DebugCurve.mkDebugCurveTWCI(100, 0.005, 'red', c))
-    }
+    if (redCurves != null)
+      for (const c of redCurves) {
+        ls.push(DebugCurve.mkDebugCurveTWCI(100, 0.005, 'Red', c))
+      }
 
     for (const frontElement of this.front) {
       ls.push(
