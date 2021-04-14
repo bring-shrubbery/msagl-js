@@ -3,7 +3,10 @@
 //  The paper has two serious bugs that this code resolves.
 
 import {TopologicalSort} from '../../math/graphAlgorithms/topologicalSort'
-import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
+import {
+  BasicGraphOnEdges,
+  mkGraphOnEdgesN,
+} from '../../structs/basicGraphOnEdges'
 import {IntPair} from '../../utils/IntPair'
 import {IntPairSet} from '../../utils/IntPairSet'
 import {Anchor} from './anchor'
@@ -643,7 +646,7 @@ export class XCoordsWithAlignment {
       }
     }
 
-    const blockGraph: BasicGraphOnEdges<PolyIntEdge> = new BasicGraphOnEdges<PolyIntEdge>().mkGraphOnEdgesN(
+    const blockGraph: BasicGraphOnEdges<PolyIntEdge> = mkGraphOnEdgesN(
       edges,
       this.nOfVertices,
     )
