@@ -10,7 +10,7 @@ function checkPair(p: [number, number], order: number[]) {
   expect(sourceIndex < targetIndex).toBe(true)
 }
 
-test('topo sort', () => {
+xtest('topo sort', () => {
   const pairs: [number, number][] = [
     [0, 1],
     [1, 2],
@@ -23,7 +23,7 @@ test('topo sort', () => {
   }
 })
 
-test('topo sort rev', () => {
+xtest('topo sort rev', () => {
   const pairs: [number, number][] = [
     [0, 1],
     [1, 2],
@@ -53,7 +53,7 @@ function mkPairs(n: number) {
   return pairs
 }
 
-test('topo sort larger', () => {
+xtest('topo sort larger', () => {
   const n = 200
   const pairs: [number, number][] = mkPairs(n)
   const order = TopologicalSort.getOrder(n, pairs)

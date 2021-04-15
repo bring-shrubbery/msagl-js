@@ -93,4 +93,7 @@ export class CdtSite {
       } while (true) // we will hit a null triangle for the convex hull border edge
     }
   }
+  toString(): string {
+    return this.point.toString()
+  }
 }

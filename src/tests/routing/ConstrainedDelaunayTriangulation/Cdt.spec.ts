@@ -10,7 +10,7 @@ import {
 import {CdtTriangle} from '../../../routing/ConstrainedDelaunayTriangulation/CdtTriangle'
 import {SymmetricTuple} from '../../../structs/SymmetricTuple'
 
-test('cdt inCircle ', () => {
+xtest('cdt inCircle ', () => {
   let a = new CdtSite(new Point(0, 0))
   let b = new CdtSite(new Point(2, 0))
   let c = new CdtSite(new Point(1, 2))
@@ -76,7 +76,7 @@ function MoveSites(a: CdtSite, b: CdtSite, c: CdtSite, s: CdtSite) {
   s.point = s.point.add(del)
 }
 
-test('TriangleCreationTest', () => {
+xtest('TriangleCreationTest', () => {
   const a = new CdtSite(new Point(0, 0))
   const b = new CdtSite(new Point(2, 0))
   const c = new CdtSite(new Point(1, 2))

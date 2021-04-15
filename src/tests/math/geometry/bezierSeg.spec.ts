@@ -3,7 +3,7 @@ import {BezierSeg} from '../../../math/geometry/bezierSeg'
 import {DebugCurve} from '../../../math/geometry/debugCurve'
 import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
 describe('bezier', () => {
-  test('bezier control points', () => {
+  xtest('bezier control points', () => {
     const b = [
       new Point(0, 0),
       new Point(1, 0),
@@ -42,7 +42,7 @@ describe('bezier', () => {
     expect(approx_val_at_t_plus_dx.sub(val_t_plus_dx).length < dx).toBe(true)
   })
 
-  test('bezier length', () => {
+  xtest('bezier length', () => {
     const b = [
       new Point(0, 0),
       new Point(100, 100),
@@ -56,7 +56,7 @@ describe('bezier', () => {
     ).toBe(true)
   })
 
-  test('trim', () => {
+  xtest('trim', () => {
     const b = [
       new Point(0, 0),
       new Point(100, 100),

@@ -243,7 +243,7 @@ export class CdtSweeper extends Algorithm {
         this.EdgeEvent(edge)
       }
     }
-
+    //throw new Error()
     //  TestThatFrontIsConnected();
   }
 
@@ -282,9 +282,9 @@ export class CdtSweeper extends Algorithm {
       for (const e of site.Edges) {
         ls.push(
           DebugCurve.mkDebugCurveTWCI(
-            100,
-            0.001,
-            'pink',
+            200,
+            0.8,
+            e.Constrained ? 'Pink' : 'Brown',
             LineSegment.mkPP(e.upperSite.point, e.lowerSite.point),
           ),
         )
@@ -293,8 +293,8 @@ export class CdtSweeper extends Algorithm {
 
     ls.push(
       DebugCurve.mkDebugCurveTWCI(
-        100,
-        0.01,
+        200,
+        1,
         'Brown',
         Ellipse.mkFullEllipseNNP(0.5, 0.5, site.point),
       ),
@@ -304,8 +304,8 @@ export class CdtSweeper extends Algorithm {
         const e = t.TriEdges.getItem(i)
         ls.push(
           DebugCurve.mkDebugCurveTWCI(
-            e.Constrained ? 150 : 50,
-            e.Constrained ? 0.002 : 0.001,
+            e.Constrained ? 155 : 100,
+            e.Constrained ? 0.8 : 0.4,
             e.Constrained ? 'Pink' : 'Navy',
             LineSegment.mkPP(e.upperSite.point, e.lowerSite.point),
           ),
@@ -315,15 +315,15 @@ export class CdtSweeper extends Algorithm {
 
     if (redCurves != null)
       for (const c of redCurves) {
-        ls.push(DebugCurve.mkDebugCurveTWCI(100, 0.005, 'Red', c))
+        ls.push(DebugCurve.mkDebugCurveTWCI(100, 0.5, 'Red', c))
       }
 
     for (const frontElement of this.front) {
       ls.push(
         DebugCurve.mkDebugCurveTWCI(
           100,
-          0.005,
-          'green',
+          5.5,
+          'Green',
           LineSegment.mkPP(
             frontElement.Edge.upperSite.point,
             frontElement.Edge.lowerSite.point,
@@ -332,7 +332,10 @@ export class CdtSweeper extends Algorithm {
       )
     }
 
-    SvgDebugWriter.dumpDebugCurves('/tmp/frontWithSite.svg', ls)
+    SvgDebugWriter.dumpDebugCurves(
+      '/tmp/frontWithSite' + site.point.x + '_' + site.point.y + '.svg',
+      ls,
+    )
   }
 
   ShowFront(fn: string) {
@@ -355,13 +358,13 @@ export class CdtSweeper extends Algorithm {
     const ls: Array<DebugCurve> = new Array<DebugCurve>()
     if (redCurves != null) {
       for (const c of redCurves) {
-        ls.push(DebugCurve.mkDebugCurveTWCI(100, 0.5, 'Red', c))
+        ls.push(DebugCurve.mkDebugCurveTWCI(200, 0.5, 'Red', c))
       }
     }
 
     if (blueCurves != null) {
       for (const c of blueCurves) {
-        ls.push(DebugCurve.mkDebugCurveTWCI(100, 2, 'Blue', c))
+        ls.push(DebugCurve.mkDebugCurveTWCI(200, 2, 'Blue', c))
       }
     }
 
@@ -369,8 +372,8 @@ export class CdtSweeper extends Algorithm {
       for (const frontElement of cdtFrontElements) {
         ls.push(
           DebugCurve.mkDebugCurveTWCI(
-            100,
-            0.001,
+            200,
+            0.1,
             'Green',
             LineSegment.mkPP(
               frontElement.Edge.upperSite.point,
@@ -395,13 +398,13 @@ export class CdtSweeper extends Algorithm {
     if (e.CcwTriangle == null || e.CwTriangle == null)
       return DebugCurve.mkDebugCurveTWCI(
         255,
-        4,
-        e.Constrained ? 'Brown' : 'Yellow',
+        3,
+        e.Constrained ? 'Brown' : 'Black',
         LineSegment.mkPP(e.upperSite.point, e.lowerSite.point),
       )
     return DebugCurve.mkDebugCurveTWCI(
       200,
-      e.Constrained ? 0.2 : 0.1,
+      e.Constrained ? 0.8 : 0.4,
       e.Constrained ? 'Pink' : 'Navy',
       LineSegment.mkPP(e.upperSite.point, e.lowerSite.point),
     )
@@ -774,9 +777,41 @@ export class CdtSweeper extends Algorithm {
     }
 
     if (edge.CcwTriangle.Contains(pi)) {
-      this.LegalizeEdgeForOtherCcwTriangle(pi, edge)
+      this.LegalizeEdgeForOtherCwTriangle(pi, edge)
     } else {
       this.LegalizeEdgeForOtherCcwTriangle(pi, edge)
+    }
+  }
+
+  LegalizeEdgeForOtherCwTriangle(pi: CdtSite, edge: CdtEdge) {
+    const i = edge.CwTriangle.TriEdges.index(edge)
+    //            if (i == -1)
+    //            {
+    //                List<DebugCurve> ls = new List<DebugCurve>();
+    //                ls.Add(new DebugCurve(new Ellipse(2, 2, pi.Point)));
+    //                for (int j = 0; j < 3; j++)
+    //                {
+    //                    var ee = edge.CwTriangle.Edges[j];
+    //                    ls.Add(new DebugCurve(100,1, j == i ? "red" : "blue", new LineSegment(ee.upperSite.Point, ee.lowerSite.Point)));
+    //                }
+    //                ls.Add(new DebugCurve("purple", new LineSegment(edge.upperSite.Point, edge.lowerSite.Point)));
+    //
+    //                LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(ls);
+    //            }
+    Assert.assert(i >= 0)
+    if (
+      IsIllegal(
+        pi,
+        edge.upperSite,
+        edge.CwTriangle.Sites.getItem(i + 2),
+        edge.lowerSite,
+      )
+    ) {
+      //ShowIllegalEdge(edge, i, pi);
+
+      const e = Flip(pi, edge)
+      this.LegalizeEdge(pi, e.CwTriangle.OppositeEdge(pi))
+      this.LegalizeEdge(pi, e.CcwTriangle.OppositeEdge(pi))
     }
   }
 
@@ -822,6 +857,7 @@ export class CdtSweeper extends Algorithm {
     return this.front.findLast((s) => s.x <= site.point.x)
   }
 }
+
 function removeFromArray<T>(arr: T[], item: T) {
   const i = arr.findIndex((e) => item == e)
   if (i > 0) arr.splice(i, 1)

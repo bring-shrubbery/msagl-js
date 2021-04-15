@@ -23,7 +23,7 @@ function createGeometry(g: Graph) {
 
 type P = [number, number]
 
-test('map test', () => {
+xtest('map test', () => {
   const m = new Map<number, string>()
   m.set(1, '1')
   m.set(2.1, '2')
@@ -55,7 +55,7 @@ xtest('layered layout glued graph', () => {
     expect(e.weight).toBe(2)
   }
 })
-test('sorted map', () => {
+xtest('sorted map', () => {
   const m = SortedMap<number, number>()
   m.set(0, 0)
   m.set(-1, -1)

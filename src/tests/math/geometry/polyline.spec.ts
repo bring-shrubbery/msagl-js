@@ -6,7 +6,7 @@ import {PlaneTransformation} from './../../../math/geometry/planeTransformation'
 import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
 import {DebugCurve} from './../../../math/geometry/debugCurve'
 import {CurveFactory} from './../../../math/geometry/curveFactory'
-test('polyline test iterator', () => {
+xtest('polyline test iterator', () => {
   const poly = new Polyline()
   const ps = [
     new Point(0, 0),
@@ -22,7 +22,7 @@ test('polyline test iterator', () => {
     expect(pp.point.equal(ps[--i])).toBe(true) // the points are added at the start of the polyline
   }
 })
-test('polyline test skip', () => {
+xtest('polyline test skip', () => {
   const poly = new Polyline()
   const ps = [
     new Point(0, 0),
@@ -40,7 +40,7 @@ test('polyline test skip', () => {
   }
 })
 
-test('polyline test intersection one', () => {
+xtest('polyline test intersection one', () => {
   const poly = new Polyline()
   const ps = [
     new Point(0, 0),
@@ -56,7 +56,7 @@ test('polyline test intersection one', () => {
   expect(x != undefined).toBe(true)
 })
 
-test('polyline test all intersection', () => {
+xtest('polyline test all intersection', () => {
   const poly = new Polyline()
   const ps = [
     new Point(0, 0),
@@ -79,7 +79,7 @@ test('polyline test all intersection', () => {
   }
 })
 
-test('polyline test all intersection with polyline', () => {
+xtest('polyline test all intersection with polyline', () => {
   const poly = new Polyline()
   const points = [
     new Point(0, 0),

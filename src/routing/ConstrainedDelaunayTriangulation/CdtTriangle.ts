@@ -36,6 +36,7 @@ export class CdtTriangle {
         throw new Error()
         break
     }
+    console.log(r.toString())
     return r
   }
 
@@ -70,6 +71,7 @@ export class CdtTriangle {
     tri.Sites.setItem(2, pi)
     tri.CreateEdge(1, createEdgeDelegate)
     tri.CreateEdge(2, createEdgeDelegate)
+    console.log(tri.toString())
     return tri
   }
 
@@ -92,6 +94,7 @@ export class CdtTriangle {
     tri.BindEdgeToTriangle(aLeft, a)
     tri.BindEdgeToTriangle(aRight, b)
     tri.CreateEdge(2, createEdgeDelegate)
+    console.log(tri.toString())
     return tri
   }
 
@@ -179,6 +182,16 @@ export class CdtTriangle {
     t.BindEdgeToTriangle(aLeft, a)
     t.BindEdgeToTriangle(aRight, b)
     t.CreateEdge(2, createEdgeDelegate)
+    console.log(t.toString())
     return t
+  }
+  toString(): string {
+    return (
+      this.Sites.getItem(0).toString() +
+      ',' +
+      this.Sites.getItem(1).toString() +
+      ',' +
+      this.Sites.getItem(2).toString()
+    )
   }
 }
