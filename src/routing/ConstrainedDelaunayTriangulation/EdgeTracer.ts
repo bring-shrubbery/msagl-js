@@ -98,11 +98,10 @@ export class EdgeTracer {
 
   FindPiercedTriangle(v: RBNode<CdtFrontElement>) {
     const e = v.item.Edge
-    let t
-    e.CwTriangle
-    const eIndex = t.Edges.index(e)
+    const t = e.CcwTriangle ?? e.CwTriangle
+    const eIndex = t.TriEdges.index(e)
     for (let i = 1; i <= 2; i++) {
-      const ei = t.Edges[i + eIndex]
+      const ei = t.TriEdges.getItem(i + eIndex)
       const signedArea0 = RealNumberSpan.sign(
         Point.signedDoubledTriangleArea(
           ei.lowerSite.point,

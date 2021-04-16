@@ -69,7 +69,7 @@
 //         }
 //     }
 
-//         static internal HitTestBehavior xtest(Point pnt, CdtTriangle t) {
+//         static internal HitTestBehavior test(Point pnt, CdtTriangle t) {
 //         return Cdt.PointIsInsideOfTriangle(pnt, t) ? HitTestBehavior.Stop : HitTestBehavior.Continue;
 //     }
 

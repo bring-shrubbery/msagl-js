@@ -38,7 +38,6 @@ function paddingIsCorrectOnLineSeg(
 
 function withinPadding(a: number, b: number, padding: number) {
   const d = b - a
-  if (d < padding - GeomConstants.intersectionEpsilon) console.log(d)
   expect(d >= padding - GeomConstants.intersectionEpsilon).toBe(true)
   expect(d <= 3 * padding).toBe(true)
 }
@@ -73,7 +72,7 @@ function paddingIsCorrect(anchor: Anchor) {
   for (let i = 0; i < 180; i++) paddingIsCorrectForDirection(i, anchor)
 }
 
-xtest('anchor poly', () => {
+test('anchor poly', () => {
   const boundary = CurveFactory.mkRectangleWithRoundedCorners(
     100,
     50,
@@ -90,7 +89,7 @@ xtest('anchor poly', () => {
   SvgDebugWriter.dumpICurves('/tmp/anchorBound.svg', [poly, n.boundaryCurve])
 })
 
-xtest('anchor poly padded', () => {
+test('anchor poly padded', () => {
   const boundary = CurveFactory.mkRectangleWithRoundedCorners(
     100,
     50,
@@ -112,7 +111,7 @@ xtest('anchor poly padded', () => {
   paddingIsCorrect(anchor)
 })
 
-xtest('anchor poly cw padded', () => {
+test('anchor poly cw padded', () => {
   // clockwise triangle
   const boundary = Polyline.mkFromPoints([
     new Point(0, 0),

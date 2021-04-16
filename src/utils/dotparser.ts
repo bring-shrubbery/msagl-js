@@ -30,7 +30,6 @@ function parseNode(o: any, graph: Graph) {
   graph.nodeCollection.addNode(node)
 }
 function parseUnderGraph(children: any, graph: Graph) {
-  //console.log(ast)
   for (const o of children) {
     switch (o.type) {
       case 'node_stmt':

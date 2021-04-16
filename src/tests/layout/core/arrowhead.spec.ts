@@ -13,7 +13,7 @@ import {LineSegment} from './../../../math/geometry/lineSegment'
 import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
 
 describe('arrowhead', () => {
-  xtest('trim edge no arrowheads', () => {
+  test('trim edge no arrowheads', () => {
     const a = new Node('a')
     const ga = new GeomNode(a)
     ga.boundaryCurve = CurveFactory.mkCircle(20, new Point(0, 0))
@@ -31,7 +31,7 @@ describe('arrowhead', () => {
       gb.boundaryCurve,
     ])
   })
-  xtest('trim edge with arrowheads', () => {
+  test('trim edge with arrowheads', () => {
     const a = new Node('a')
     const ga = new GeomNode(a)
     ga.boundaryCurve = CurveFactory.mkCircle(20, new Point(0, 0))

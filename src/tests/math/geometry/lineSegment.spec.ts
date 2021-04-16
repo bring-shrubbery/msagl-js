@@ -5,7 +5,7 @@ import {Point} from '../../../math/geometry/point'
 import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
 import {DebugCurve} from '../../../math/geometry/debugCurve'
 
-xtest('lineSegment basic case', () => {
+test('lineSegment basic case', () => {
   const a = new LineSegment(0, 0, 1, 1)
 
   expect(a.value(0)).toStrictEqual(new Point(0, 0))
@@ -36,7 +36,7 @@ xtest('lineSegment basic case', () => {
   const inters0 = LineSegment.IntersectPPPP(new Point(1, 1.1), p1, p0, p2)
   expect(inters0).toBe(undefined)
 })
-xtest('lineSegment mindist test 0', () => {
+test('lineSegment mindist test 0', () => {
   const a = new Point(0, 0)
   const b = new Point(2, 4)
   const perp = b.sub(a).rotate(Math.PI / 2)
@@ -56,7 +56,7 @@ xtest('lineSegment mindist test 0', () => {
   expect(Point.closeD(md.parab, t)).toBeTruthy()
   expect(Point.closeD(md.parcd, 0)).toBeTruthy()
 })
-xtest('lineSegment mindist test1', () => {
+test('lineSegment mindist test1', () => {
   const a = new Point(0, 0)
   const b = new Point(2, 4)
   const perp = b.sub(a).rotate(Math.PI / 2)
@@ -99,7 +99,7 @@ function getUniformMd(a: Point, b: Point, c: Point, d: Point): number {
   return dist
 }
 
-xtest('lineSegment mindist uniform', () => {
+test('lineSegment mindist uniform', () => {
   const a = new Point(0, 0)
   const b = new Point(2, 4.2)
   const c = new Point(1, 0)
@@ -109,7 +109,7 @@ xtest('lineSegment mindist uniform', () => {
   expect(md.dist <= uniformMd + GeomConstants.tolerance).toBeTruthy()
 })
 
-xtest('lineSegment mindist parallel', () => {
+test('lineSegment mindist parallel', () => {
   const a = new Point(0, 0)
   const b = new Point(2, 4)
   const c = new Point(1, 1)
@@ -119,7 +119,7 @@ xtest('lineSegment mindist parallel', () => {
   expect(md.dist <= uniformMd + GeomConstants.tolerance).toBeTruthy()
 })
 
-xtest('lineSegment mindist parallel 0', () => {
+test('lineSegment mindist parallel 0', () => {
   const a = new Point(0, 0)
   const b = new Point(2, 4)
   const c = new Point(1, 1)
@@ -129,7 +129,7 @@ xtest('lineSegment mindist parallel 0', () => {
   expect(md.dist <= uniformMd + GeomConstants.tolerance).toBeTruthy()
 })
 
-xtest('lineSegment mindist overlap', () => {
+test('lineSegment mindist overlap', () => {
   const a = new Point(0, 0)
   const b = new Point(100, 100)
   const c = new Point(1, 2)

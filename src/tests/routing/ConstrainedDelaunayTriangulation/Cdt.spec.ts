@@ -10,7 +10,7 @@ import {
 import {CdtTriangle} from '../../../routing/ConstrainedDelaunayTriangulation/CdtTriangle'
 import {SymmetricTuple} from '../../../structs/SymmetricTuple'
 
-xtest('cdt inCircle ', () => {
+test('cdt inCircle ', () => {
   let a = new CdtSite(new Point(0, 0))
   let b = new CdtSite(new Point(2, 0))
   let c = new CdtSite(new Point(1, 2))
@@ -76,7 +76,7 @@ function MoveSites(a: CdtSite, b: CdtSite, c: CdtSite, s: CdtSite) {
   s.point = s.point.add(del)
 }
 
-xtest('TriangleCreationTest', () => {
+test('TriangleCreationTest', () => {
   const a = new CdtSite(new Point(0, 0))
   const b = new CdtSite(new Point(2, 0))
   const c = new CdtSite(new Point(1, 2))
@@ -112,23 +112,19 @@ test('SmallTriangulation', () => {
   // #if TEST_MSAGL&& TEST_MSAGL
   //             GraphViewerGdi.DisplayGeometryGraph.SetShowFunctions();
   // #endif
-  const cdt = new Cdt(
-    from(Points()),
-    null,
-    from([
-      new SymmetricTuple<Point>(new Point(109, 202), new Point(506, 135)),
-      new SymmetricTuple<Point>(new Point(139, 96), new Point(452, 96)),
-    ]),
-  )
+  const isolatedObstacles = [
+    new SymmetricTuple<Point>(new Point(109, 202), new Point(506, 135)),
+    new SymmetricTuple<Point>(new Point(139, 96), new Point(452, 96)),
+  ]
+  const cdt = new Cdt(from(Points()), null, from(isolatedObstacles))
   cdt.run()
   CdtSweeper.ShowFront(
     [...cdt.GetTriangles().values()],
     null,
-    from(Segments()).select((s) => LineSegment.mkPP(s.A, s.B)),
+    from(isolatedObstacles).select((s) => LineSegment.mkPP(s.A, s.B)),
     null,
-    'c:/tmp/smallTriangulationTest.svg',
+    '/tmp/smallTriangulationTest.svg',
   )
-  expect(1).toBe(0)
 })
 
 function* Points() {
