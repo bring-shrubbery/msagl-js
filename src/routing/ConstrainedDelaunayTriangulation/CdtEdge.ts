@@ -74,10 +74,8 @@ export class CdtEdge {
     return this.ccwTriangle == triangle ? this.cwTriangle : this.ccwTriangle
   }
 
-  //  Returns a string that represents the current object.
   //  A string that represents the current object.
-  //  <filterpriority>2</filterpriority>
-  public /* override */ ToString(): string {
+  public toString(): string {
     return String.Format('({0},{1})', this.upperSite, this.lowerSite)
   }
 

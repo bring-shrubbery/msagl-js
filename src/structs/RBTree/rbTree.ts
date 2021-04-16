@@ -197,8 +197,6 @@ export class RBTree<T> {
     if (y != z) z.item = y.item
     if (y.color == RBColor.Black) this.deleteFixup(x)
 
-    //	checkTheTree();
-
     return this.toNull(z)
   }
 
@@ -305,7 +303,7 @@ export class RBTree<T> {
     for (const node of this.allNodes()) {
       ret += node.toString()
       if (i != this.count - 1) {
-        ret += ','
+        ret += '\n'
       }
       i++
     }

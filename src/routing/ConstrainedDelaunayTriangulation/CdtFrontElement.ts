@@ -28,4 +28,15 @@ export class CdtFrontElement {
     this.LeftSite = leftSite
     this.Edge = edge
   }
+  toString() {
+    return (
+      '(' +
+      this.LeftSite.toString() +
+      ', ' +
+      this.Edge.toString() +
+      ',' +
+      this.RightSite.toString() +
+      ')'
+    )
+  }
 }
