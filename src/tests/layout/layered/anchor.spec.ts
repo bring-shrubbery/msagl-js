@@ -93,7 +93,6 @@ test('anchor poly', () => {
     anchorPolyDC,
     anchorBC,
   ])
-  expect(0).toBe(1)
 })
 
 test('anchor poly padded', () => {

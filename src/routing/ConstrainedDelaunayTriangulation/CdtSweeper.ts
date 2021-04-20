@@ -65,7 +65,7 @@ export class CdtSweeper extends Algorithm {
         firstTriangle.TriEdges.getItem(1),
       ),
     )
-    this.ShowFront('/tmp/front.svg')
+    this.Show('/tmp/front.svg')
   }
 
   run() {
@@ -338,17 +338,11 @@ export class CdtSweeper extends Algorithm {
     )
   }
 
-  ShowFront(fn: string) {
-    CdtSweeper.ShowFront(
-      [...this.triangles.values()],
-      this.front,
-      null,
-      null,
-      fn,
-    )
+  Show(fn: string) {
+    CdtSweeper.ShowCdt([...this.triangles.values()], this.front, null, null, fn)
   }
 
-  static ShowFront(
+  static ShowCdt(
     cdtTriangles: CdtTriangle[],
     cdtFrontElements: RBTree<CdtFrontElement>,
     redCurves: IEnumerable<ICurve>,
