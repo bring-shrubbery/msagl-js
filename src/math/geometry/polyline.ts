@@ -256,6 +256,7 @@ export class Polyline implements ICurve {
     for (const p of this.polylinePoints()) {
       ret.addPoint(transformation.multiplyPoint(p.point))
     }
+    ret.closed = this.closed
     return ret
   }
   closestParameterWithinBounds(

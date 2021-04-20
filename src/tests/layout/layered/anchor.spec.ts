@@ -9,6 +9,7 @@ import {Curve} from './../../../math/geometry/curve'
 import {IntersectionInfo} from './../../../math/geometry/intersectionInfo'
 import {Node} from './../../../structs/node'
 import {GeomConstants} from '../../../math/geometry/geomConstants'
+import {DebugCurve} from '../../../math/geometry/debugCurve'
 
 function paddingIsCorrectOnLineSeg(
   ls: LineSegment,
@@ -86,7 +87,13 @@ test('anchor poly', () => {
   const anchor = Anchor.mkAnchor(w, w, h, h, n, 0)
   const poly = anchor.polygonalBoundary
   expect(poly == null).toBe(false)
-  SvgDebugWriter.dumpICurves('/tmp/anchorBound.svg', [poly, n.boundaryCurve])
+  const anchorPolyDC = DebugCurve.mkDebugCurveTWCI(200, 2, 'Green', poly)
+  const anchorBC = DebugCurve.mkDebugCurveTWCI(200, 1, 'Brown', n.boundaryCurve)
+  SvgDebugWriter.dumpDebugCurves('/tmp/anchorBound.svg', [
+    anchorPolyDC,
+    anchorBC,
+  ])
+  expect(0).toBe(1)
 })
 
 test('anchor poly padded', () => {
