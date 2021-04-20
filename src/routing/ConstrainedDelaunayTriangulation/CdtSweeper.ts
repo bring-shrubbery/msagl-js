@@ -543,7 +543,7 @@ export class CdtSweeper extends Algorithm {
     const aElem = aNode.item
     const bElem = bNode.item
     Assert.assert(aElem.RightSite == bElem.LeftSite)
-    const t: CdtTriangle = CdtTriangle.mkSSSEED(
+    let t: CdtTriangle = CdtTriangle.mkSSSEED(
       aElem.LeftSite,
       aElem.RightSite,
       bElem.RightSite,
@@ -560,7 +560,7 @@ export class CdtSweeper extends Algorithm {
       newEdge.IsAdjacent(aElem.LeftSite) && newEdge.IsAdjacent(bElem.RightSite),
     )
     this.LegalizeEdge(aElem.LeftSite, t.OppositeEdge(aElem.LeftSite))
-    newEdge.CwTriangle
+    t = newEdge.CcwTriangle ?? newEdge.CwTriangle
     this.LegalizeEdge(bElem.RightSite, t.OppositeEdge(bElem.RightSite))
     return this.front.insert(new CdtFrontElement(aElem.LeftSite, newEdge))
   }
