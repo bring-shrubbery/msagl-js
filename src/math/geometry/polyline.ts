@@ -237,7 +237,16 @@ export class Polyline implements ICurve {
     return this.closed ? this.startPoint.point : this.endPoint.point
   }
   reverse(): ICurve {
-    throw new Error('Method not implemented.')
+    const r = new Polyline()
+    r.closed = this.closed
+
+    let p = this.endPoint
+    do {
+      r.addPoint(p.point)
+      if (p == this.startPoint) break
+      p = p.getPrev()
+    } while (true)
+    return r
   }
   offsetCurve(offset: number, dir: Point): ICurve {
     throw new Error('Method not implemented.')
