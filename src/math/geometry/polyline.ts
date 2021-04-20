@@ -225,7 +225,13 @@ export class Polyline implements ICurve {
     throw new Error('Method not implemented.')
   }
   translate(delta: Point): void {
-    throw new Error('Method not implemented.')
+    let p = this.startPoint
+    do {
+      p.point = p.point.add(delta)
+      if (p == this.endPoint) break
+      p = p.getNext()
+    } while (true)
+    this.requireInit()
   }
   scaleFromOrigin(xScale: number, yScale: number): ICurve {
     throw new Error('Method not implemented.')
@@ -279,7 +285,15 @@ export class Polyline implements ICurve {
     throw new Error('Method not implemented.')
   }
   clone(): ICurve {
-    throw new Error('Method not implemented.')
+    const r = new Polyline()
+    r.closed = this.closed
+    let p = this.startPoint
+    do {
+      r.addPoint(p.point)
+      if (p == this.endPoint) break
+      p = p.getNext()
+    } while (true)
+    return r
   }
   leftDerivative(t: number): Point {
     throw new Error('Method not implemented.')

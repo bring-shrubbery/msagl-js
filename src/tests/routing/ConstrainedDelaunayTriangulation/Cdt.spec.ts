@@ -1,6 +1,6 @@
 import {from} from 'linq-to-typescript'
 import {LineSegment} from '../../../math/geometry/lineSegment'
-import {Point, TriangleOrientation} from '../../../math/geometry/point'
+import {Point} from '../../../math/geometry/point'
 import {Polyline} from '../../../math/geometry/polyline'
 import {Rectangle} from '../../../math/geometry/rectangle'
 import {Cdt} from '../../../routing/ConstrainedDelaunayTriangulation/Cdt'
@@ -177,5 +177,37 @@ test('two holes and one isolated segment', () => {
     from(holes),
     from(cut).select((c) => LineSegment.mkPP(c.A, c.B)),
     '/tmp/twoHoles.svg',
+  )
+})
+test('three holes and two isolated segments', () => {
+  const corners = [
+    new Point(0, 0),
+    new Point(100, 0),
+    new Point(100, 100),
+    new Point(0, 100),
+  ]
+  const triangle = new Polyline()
+  triangle.addPointXY(35.0, 50)
+  triangle.addPointXY(40, 31)
+  triangle.addPointXY(30, 30)
+  triangle.closed = true
+
+  const rect = Rectangle.mkPP(new Point(10, 10), new Point(20, 20)).perimeter()
+  const anotherRect = (rect.clone() as unknown) as Polyline
+  anotherRect.translate(new Point(-1, -20))
+
+  const holes = [rect, triangle, anotherRect]
+  const cut = [
+    new SymmetricTuple<Point>(new Point(80, 80), new Point(90, 75)),
+    new SymmetricTuple<Point>(new Point(80, 75), new Point(90, 70)),
+  ]
+  const cdt = new Cdt(from(corners), from(holes), from(cut))
+  cdt.run()
+  CdtSweeper.ShowCdt(
+    [...cdt.GetTriangles()],
+    null,
+    from(holes),
+    from(cut).select((c) => LineSegment.mkPP(c.A, c.B)),
+    '/tmp/threeHoles.svg',
   )
 })
