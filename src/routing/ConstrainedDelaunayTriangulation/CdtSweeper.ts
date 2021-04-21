@@ -95,7 +95,7 @@ export class CdtSweeper extends Algorithm {
     const firstSite = firstPerimeterEdge.Start
     let a = firstPerimeterEdge
     let b: PerimeterEdge
-    for (; a.End != firstSite; ) {
+    do {
       b = a.Next
       if (
         Point.getTriangleOrientationWithNoEpsilon(
@@ -119,26 +119,23 @@ export class CdtSweeper extends Algorithm {
             break
           }
         }
-      } else {
-        a = b
-      }
-    }
+      } else a = b
+    } while (a.End != firstSite)
   }
 
   static FindPivot(firstPerimeterEdge: PerimeterEdge): PerimeterEdge {
+    // eslint-disable-next-line no-var
     let pivot = firstPerimeterEdge
     let e = firstPerimeterEdge
-    for (; e != firstPerimeterEdge; ) {
+    do {
       e = e.Next
       if (
         e.Start.point.x < pivot.Start.point.x ||
         (e.Start.point.x == pivot.Start.point.x &&
           e.Start.point.y < pivot.Start.point.y)
-      ) {
+      )
         pivot = e
-      }
-    }
-
+    } while (e != firstPerimeterEdge)
     return pivot
   }
 
@@ -782,13 +779,13 @@ export class CdtSweeper extends Algorithm {
     //            if (i == -1)
     //            {
     //                List<DebugCurve> ls = new List<DebugCurve>();
-    //                ls.Add(new DebugCurve(new Ellipse(2, 2, pi.Point)));
+    //                ls.Add(new DebugCurve(new Ellipse(2, 2, pi.point)));
     //                for (int j = 0; j < 3; j++)
     //                {
     //                    var ee = edge.CwTriangle.Edges[j];
-    //                    ls.Add(new DebugCurve(100,1, j == i ? "red" : "blue", new LineSegment(ee.upperSite.Point, ee.lowerSite.Point)));
+    //                    ls.Add(new DebugCurve(100,1, j == i ? "red" : "blue", new LineSegment(ee.upperSite.point, ee.lowerSite.point)));
     //                }
-    //                ls.Add(new DebugCurve("purple", new LineSegment(edge.upperSite.Point, edge.lowerSite.Point)));
+    //                ls.Add(new DebugCurve("purple", new LineSegment(edge.upperSite.point, edge.lowerSite.point)));
     //
     //                LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(ls);
     //            }
@@ -980,17 +977,17 @@ function Flip(pi: CdtSite, edge: CdtEdge): CdtEdge {
 // #if TEST_MSAGL && TEST_MSAGL
 //     static void ShowFlip(CdtSite pi, CdtTriangle t, CdtTriangle ot) {
 //         List<DebugCurve> ls=new List<DebugCurve>();
-//         ls.Add(new DebugCurve(new Ellipse(2,2, pi.Point)));
+//         ls.Add(new DebugCurve(new Ellipse(2,2, pi.point)));
 //         for(int i=0;i<3;i++) {
 //             var e=t.Edges[i];
-//             ls.Add(new DebugCurve(100, 1, "red", new LineSegment(e.upperSite.Point,e.lowerSite.Point)));
+//             ls.Add(new DebugCurve(100, 1, "red", new LineSegment(e.upperSite.point,e.lowerSite.point)));
 //         }
 //         for (int i = 0; i < 3; i++)
 //         {
 //             var e = ot.Edges[i];
-//             ls.Add(new DebugCurve(100, 1, "blue", new LineSegment(e.upperSite.Point, e.lowerSite.Point)));
+//             ls.Add(new DebugCurve(100, 1, "blue", new LineSegment(e.upperSite.point, e.lowerSite.point)));
 //         }
-//         ls.Add(new DebugCurve(Circumcircle(t.Sites.getItem(0].Point, t.Sites[1].Point, t.Sites[2).Point)));
+//         ls.Add(new DebugCurve(Circumcircle(t.Sites.getItem(0].point, t.Sites[1].point, t.Sites[2).point)));
 //         LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(ls);
 //     }
 // #endif

@@ -229,7 +229,7 @@ test('grid rotated', () => {
   const ang = Math.PI / 6
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
-      corners.push(new Point(10 * Math.cos(ang), 10 * j * Math.sin(ang)))
+      corners.push(new Point(10 * i, 10 * j).rotate(ang))
     }
   }
   const cdt = new Cdt(from(corners), null, null)
