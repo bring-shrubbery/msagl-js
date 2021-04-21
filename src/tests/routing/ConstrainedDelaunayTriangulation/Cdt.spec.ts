@@ -179,6 +179,7 @@ test('two holes and one isolated segment', () => {
     '/tmp/twoHoles.svg',
   )
 })
+
 test('three holes and two isolated segments', () => {
   const corners = [
     new Point(0, 0),
@@ -209,5 +210,35 @@ test('three holes and two isolated segments', () => {
     from(holes),
     from(cut).select((c) => LineSegment.mkPP(c.A, c.B)),
     '/tmp/threeHoles.svg',
+  )
+})
+test('grid', () => {
+  const corners = []
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+      corners.push(new Point(10 * i, 10 * j))
+    }
+  }
+  const cdt = new Cdt(from(corners), null, null)
+  cdt.run()
+  CdtSweeper.ShowCdt([...cdt.GetTriangles()], null, null, null, '/tmp/grid.svg')
+})
+
+test('grid rotated', () => {
+  const corners = []
+  const ang = Math.PI / 6
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+      corners.push(new Point(10 * Math.cos(ang), 10 * j * Math.sin(ang)))
+    }
+  }
+  const cdt = new Cdt(from(corners), null, null)
+  cdt.run()
+  CdtSweeper.ShowCdt(
+    [...cdt.GetTriangles()],
+    null,
+    null,
+    null,
+    '/tmp/gridRotated.svg',
   )
 })
