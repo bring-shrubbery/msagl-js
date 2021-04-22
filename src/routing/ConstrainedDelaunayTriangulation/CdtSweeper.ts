@@ -98,11 +98,8 @@ export class CdtSweeper extends Algorithm {
     do {
       b = a.Next
       if (
-        Point.getTriangleOrientationWithNoEpsilon(
-          a.Start.point,
-          a.End.point,
-          b.End.point,
-        ) == TriangleOrientation.Counterclockwise
+        Point.getTriangleOrientation(a.Start.point, a.End.point, b.End.point) ==
+        TriangleOrientation.Counterclockwise
       ) {
         a = this.ShortcutTwoListElements(a)
         while (a.Start != firstSite) {
