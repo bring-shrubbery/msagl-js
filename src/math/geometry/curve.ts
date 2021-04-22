@@ -1066,8 +1066,6 @@ export class Curve implements ICurve {
       poly1.addPoint(p)
     }
     poly1.closed = true
-    const l0 = nl0.node as PNLeaf
-    const l1 = nl1.node as PNLeaf
 
     const dc = [
       DebugCurve.mkDebugCurveTWCI(100, 0.1, 'Black', nl0.seg),
@@ -1419,7 +1417,7 @@ export class Curve implements ICurve {
     if (Point.closeDistEps(x, pseg.end)) {
       // so pseg enters the spline
       let exitSeg: ICurve = null
-      for (let i: number = 0; i < polygon.segs.length; i++) {
+      for (let i = 0; i < polygon.segs.length; i++) {
         if (polygon.segs[i] == pseg) {
           exitSeg = polygon.segs[(i + 1) % polygon.segs.length]
           break
@@ -1441,7 +1439,7 @@ export class Curve implements ICurve {
     if (Point.closeDistEps(x, pseg.start)) {
       // so pseg exits the spline
       let enterSeg: ICurve = null
-      for (let i: number = 0; i < polygon.segs.length; i++) {
+      for (let i = 0; i < polygon.segs.length; i++) {
         if (polygon.segs[i] == pseg) {
           enterSeg = polygon.segs[i > 0 ? i - 1 : polygon.segs.length - 1]
 

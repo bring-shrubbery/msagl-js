@@ -212,33 +212,25 @@ test('three holes and two isolated segments', () => {
     '/tmp/threeHoles.svg',
   )
 })
-test('grid', () => {
-  const corners = []
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      corners.push(new Point(10 * i, 10 * j))
-    }
-  }
-  const cdt = new Cdt(from(corners), null, null)
-  cdt.run()
-  CdtSweeper.ShowCdt([...cdt.GetTriangles()], null, null, null, '/tmp/grid.svg')
-})
 
 test('grid rotated', () => {
-  const corners = []
-  const ang = Math.PI / 6
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      corners.push(new Point(10 * i, 10 * j).rotate(ang))
+  for (let k = 0; k < 6; k++) {
+    const corners = []
+
+    const ang = (k * Math.PI) / 6
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        corners.push(new Point(10 * i, 10 * j).rotate(ang))
+      }
     }
+    const cdt = new Cdt(from(corners), null, null)
+    cdt.run()
+    CdtSweeper.ShowCdt(
+      [...cdt.GetTriangles()],
+      null,
+      null,
+      null,
+      '/tmp/gridRotated' + k + '.svg',
+    )
   }
-  const cdt = new Cdt(from(corners), null, null)
-  cdt.run()
-  CdtSweeper.ShowCdt(
-    [...cdt.GetTriangles()],
-    null,
-    null,
-    null,
-    '/tmp/gridRotated.svg',
-  )
 })

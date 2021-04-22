@@ -65,7 +65,7 @@ export class CdtSweeper extends Algorithm {
         firstTriangle.TriEdges.getItem(1),
       ),
     )
-    this.Show('/tmp/front.svg')
+    //this.Show('/tmp/front.svg')
   }
 
   run() {
