@@ -4,8 +4,6 @@ import {Point} from './../../../math/geometry/point'
 import {Curve} from './../../../math/geometry/curve'
 import {PlaneTransformation} from './../../../math/geometry/planeTransformation'
 import {CurveFactory} from './../../../math/geometry/curveFactory'
-import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
-import {DebugCurve} from './../../../math/geometry/debugCurve'
 import {BezierSeg} from './../../../math/geometry/bezierSeg'
 import {ICurve} from './../../../math/geometry/icurve'
 import {Rectangle} from './../../../math/geometry/rectangle'
@@ -79,14 +77,14 @@ test('box translate behavior', () => {
 
 function intersectTwoRoundedRects(rr: Curve, rr0: Curve, i: number): void {
   const xx = Curve.getAllIntersections(rr, rr0, true)
-  const xxD = xx.map((x) =>
-    DebugCurve.mkDebugCurveWCI(0.5, 'Red', CurveFactory.mkCircle(3, x.x)),
-  )
-  xxD.push(DebugCurve.mkDebugCurveI(rr))
-  xxD.push(DebugCurve.mkDebugCurveI(rr0))
-  const svgW = new SvgDebugWriter('/tmp/rr' + i + '.svg')
-  svgW.writeDebugCurves(xxD)
-  svgW.close()
+  // const xxD = xx.map((x) =>
+  //   DebugCurve.mkDebugCurveWCI(0.5, 'Red', CurveFactory.mkCircle(3, x.x)),
+  // )
+  // xxD.push(DebugCurve.mkDebugCurveI(rr))
+  // xxD.push(DebugCurve.mkDebugCurveI(rr0))
+  // const svgW = new SvgDebugWriter('/tmp/rr' + i + '.svg')
+  // svgW.writeDebugCurves(xxD)
+  // svgW.close()
   expect(xx.length % 2).toBe(0)
 }
 

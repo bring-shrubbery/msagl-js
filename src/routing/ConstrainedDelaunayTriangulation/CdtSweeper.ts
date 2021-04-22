@@ -230,7 +230,6 @@ export class CdtSweeper extends Algorithm {
 
   ProcessSite(site: CdtSite) {
     this.PointEvent(site)
-    this.ShowFrontWithSite(site)
     for (let i = 0; i < site.Edges.length; i++) {
       const edge = site.Edges[i]
       if (edge.Constrained) {
