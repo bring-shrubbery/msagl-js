@@ -85,14 +85,19 @@ export class CdtSweeper extends Algorithm {
   }
 
   FinalizeTriangulation() {
-    const list = this.CreateDoubleLinkedListOfPerimeter()
-    this.MakePerimeterConvex(list)
     this.RemoveP1AndP2Triangles()
+    const firstPerimeterEdge = this.CreateDoubleLinkedListOfPerimeter()
+    this.MakePerimeterConvex(firstPerimeterEdge)
   }
 
   MakePerimeterConvex(firstPerimeterEdge: PerimeterEdge) {
-    firstPerimeterEdge = CdtSweeper.FindPivot(firstPerimeterEdge)
-    const firstSite = firstPerimeterEdge.Start
+    do {
+      const concaveEdge = this.FindConcaveEdge(firstPerimeterEdge)
+      if (concaveEdge == null) return
+      firstPerimeterEdge = this.ShortcutTwoListElements(concaveEdge)
+    } while (true)
+  }
+  FindConcaveEdge(firstPerimeterEdge: PerimeterEdge): PerimeterEdge {
     let a = firstPerimeterEdge
     let b: PerimeterEdge
     do {
@@ -101,23 +106,10 @@ export class CdtSweeper extends Algorithm {
         Point.getTriangleOrientation(a.Start.point, a.End.point, b.End.point) ==
         TriangleOrientation.Counterclockwise
       ) {
-        a = this.ShortcutTwoListElements(a)
-        while (a.Start != firstSite) {
-          const c = a.Prev
-          if (
-            Point.getTriangleOrientationWithNoEpsilon(
-              c.Start.point,
-              c.End.point,
-              a.End.point,
-            ) == TriangleOrientation.Counterclockwise
-          ) {
-            a = this.ShortcutTwoListElements(c)
-          } else {
-            break
-          }
-        }
+        return a
       } else a = b
-    } while (a.End != firstSite)
+    } while (b != firstPerimeterEdge)
+    return null
   }
 
   static FindPivot(firstPerimeterEdge: PerimeterEdge): PerimeterEdge {
@@ -136,14 +128,25 @@ export class CdtSweeper extends Algorithm {
     return pivot
   }
 
+  FindFirsePerimeterEdge() {
+    for (const t of this.triangles) {
+      for (const e of t.TriEdges) {
+        if (e.GetOtherTriangle_T(t) == null) return e
+      }
+    }
+    return null
+  }
+
   CreateDoubleLinkedListOfPerimeter(): PerimeterEdge {
-    const firstEdge = from(this.front.allNodes()).first().Edge
+    const firstEdge = this.FindFirsePerimeterEdge()
     let edge = firstEdge
     let listStart: PerimeterEdge = null
     let pe: PerimeterEdge
     let prevPe: PerimeterEdge = null
+    const debugDC = new Array<ICurve>()
     do {
       pe = CdtSweeper.CreatePerimeterElementFromEdge(edge)
+      debugDC.push(LineSegment.mkPP(pe.Start.point, pe.End.point))
       edge = CdtSweeper.FindNextEdgeOnPerimeter(edge)
       if (prevPe != null) {
         pe.Prev = prevPe
@@ -157,6 +160,9 @@ export class CdtSweeper extends Algorithm {
 
     listStart.Prev = pe
     pe.Next = listStart
+
+    SvgDebugWriter.dumpICurves('/tmp/dc.svg', debugDC)
+
     return listStart
   }
 

@@ -152,32 +152,44 @@ function* Segments() {
 }
 
 test('two holes and one isolated segment', () => {
-  const corners = [
-    new Point(0, 0),
-    new Point(100, 0),
-    new Point(100, 100),
-    new Point(0, 100),
-  ]
-  const triangle = new Polyline()
-  triangle.addPointXY(35.0, 50)
-  triangle.addPointXY(40, 31)
-  triangle.addPointXY(30, 30)
-  triangle.closed = true
+  for (let i = 0; i < 90; i++) {
+    // i < 90 todo
+    const ang = (Math.PI / 360) * i
+    const corners = [
+      new Point(0, 0).rotate(ang),
+      new Point(100, 0).rotate(ang),
+      new Point(100, 100).rotate(ang),
+      new Point(0, 100).rotate(ang),
+    ]
+    const triangle = new Polyline()
+    triangle.addPoint(new Point(35.0, 50).rotate(ang))
+    triangle.addPoint(new Point(40, 31).rotate(ang))
+    triangle.addPoint(new Point(30, 30).rotate(ang))
+    triangle.closed = true
 
-  const holes = [
-    Rectangle.mkPP(new Point(10, 10), new Point(20, 20)).perimeter(),
-    triangle,
-  ]
-  const cut = [new SymmetricTuple<Point>(new Point(80, 80), new Point(90, 75))]
-  const cdt = new Cdt(from(corners), from(holes), from(cut))
-  cdt.run()
-  CdtSweeper.ShowCdt(
-    [...cdt.GetTriangles()],
-    null,
-    from(holes),
-    from(cut).select((c) => LineSegment.mkPP(c.A, c.B)),
-    '/tmp/twoHoles.svg',
-  )
+    const holes = [
+      Rectangle.mkPP(
+        new Point(10, 10).rotate(ang),
+        new Point(20, 20).rotate(ang),
+      ).perimeter(),
+      triangle,
+    ]
+    const cut = [
+      new SymmetricTuple<Point>(
+        new Point(80, 80).rotate(ang),
+        new Point(90, 75).rotate(ang),
+      ),
+    ]
+    const cdt = new Cdt(from(corners), from(holes), from(cut))
+    cdt.run()
+    // CdtSweeper.ShowCdt(
+    //   [...cdt.GetTriangles()],
+    //   null,
+    //   from(holes),
+    //   from(cut).select((c) => LineSegment.mkPP(c.A, c.B)),
+    //   '/tmp/twoHoles' + i + '.svg',
+    // )
+  }
 })
 
 test('three holes and two isolated segments', () => {

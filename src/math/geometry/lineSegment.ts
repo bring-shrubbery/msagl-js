@@ -190,7 +190,7 @@ return xx;
   }
 
   // Return the transformed curve
-  transform(transformation: PlaneTransformation) {
+  transform(transformation: PlaneTransformation): ICurve {
     return LineSegment.mkPP(
       transformation.multiplyPoint(this.start),
       transformation.multiplyPoint(this.end),
