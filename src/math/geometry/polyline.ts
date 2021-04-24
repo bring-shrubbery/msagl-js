@@ -44,9 +44,9 @@ export class Polyline implements ICurve {
   }
 
   addPoint(p: Point) {
-    Assert.assert(
-      this.endPoint == null || !Point.closeDistEps(p, this.endPoint.point),
-    )
+    // Assert.assert(
+    //   this.endPoint == null || !Point.closeDistEps(p, this.endPoint.point),
+    // )
     const pp = new PolylinePoint()
     pp.polyline = this
     pp.point = p.clone()

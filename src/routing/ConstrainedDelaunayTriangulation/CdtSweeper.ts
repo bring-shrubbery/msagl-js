@@ -1,4 +1,4 @@
-﻿import {from, IEnumerable} from 'linq-to-typescript'
+﻿import {IEnumerable} from 'linq-to-typescript'
 import {Stack} from 'stack-typescript'
 import {DebugCurve} from '../../math/geometry/debugCurve'
 import {Ellipse} from '../../math/geometry/ellipse'
