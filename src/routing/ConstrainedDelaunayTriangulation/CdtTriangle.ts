@@ -19,11 +19,7 @@ export class CdtTriangle {
     c: CdtSite,
     createEdgeDelegate: (a: CdtSite, b: CdtSite) => CdtEdge,
   ) {
-    const orientation = Point.getTriangleOrientationWithNoEpsilon(
-      a.point,
-      b.point,
-      c.point,
-    )
+    const orientation = Point.getTriangleOrientation(a.point, b.point, c.point)
     const r = new CdtTriangle()
     switch (orientation) {
       case TriangleOrientation.Counterclockwise:
@@ -46,7 +42,7 @@ export class CdtTriangle {
   ) {
     const tri = new CdtTriangle()
     switch (
-      Point.getTriangleOrientationWithNoEpsilon(
+      Point.getTriangleOrientation(
         edge.upperSite.point,
         edge.lowerSite.point,
         pi.point,

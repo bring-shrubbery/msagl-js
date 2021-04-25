@@ -581,7 +581,7 @@ export class CdtSweeper extends Algorithm {
       }
 
       if (
-        Point.getTriangleOrientationWithNoEpsilon(
+        Point.getTriangleOrientation(
           prev.item.LeftSite.point,
           leftLegNode.item.LeftSite.point,
           leftLegNode.item.RightSite.point,
@@ -677,7 +677,7 @@ export class CdtSweeper extends Algorithm {
       }
 
       if (
-        Point.getTriangleOrientationWithNoEpsilon(
+        Point.getTriangleOrientation(
           piNode.item.LeftSite.point,
           piNode.item.RightSite.point,
           next.item.RightSite.point,
@@ -719,7 +719,7 @@ export class CdtSweeper extends Algorithm {
 
   InsertAndLegalizeTriangle(pi: CdtSite, frontElement: CdtFrontElement) {
     if (
-      Point.getTriangleOrientationWithNoEpsilon(
+      Point.getTriangleOrientation(
         pi.point,
         frontElement.LeftSite.point,
         frontElement.RightSite.point,
@@ -862,14 +862,14 @@ function IsIllegal(pi: CdtSite, a: CdtSite, b: CdtSite, c: CdtSite): boolean {
 
 function InCone(pi: CdtSite, a: CdtSite, b: CdtSite, c: CdtSite): boolean {
   Assert.assert(
-    Point.getTriangleOrientationWithNoEpsilon(a.point, b.point, c.point) ==
+    Point.getTriangleOrientation(a.point, b.point, c.point) ==
       TriangleOrientation.Counterclockwise,
   )
 
   return (
-    Point.getTriangleOrientationWithNoEpsilon(a.point, pi.point, b.point) ==
+    Point.getTriangleOrientation(a.point, pi.point, b.point) ==
       TriangleOrientation.Clockwise &&
-    Point.getTriangleOrientationWithNoEpsilon(b.point, pi.point, c.point) ==
+    Point.getTriangleOrientation(b.point, pi.point, c.point) ==
       TriangleOrientation.Clockwise
   )
 }
@@ -884,7 +884,7 @@ export function InCircle(
   c: CdtSite,
 ): boolean {
   Assert.assert(
-    Point.getTriangleOrientationWithNoEpsilon(a.point, b.point, c.point) ==
+    Point.getTriangleOrientation(a.point, b.point, c.point) ==
       TriangleOrientation.Counterclockwise,
   )
   const axdx = a.point.x - d.point.x
@@ -906,7 +906,7 @@ export function InCircle(
 
 function TriangleIsCorrect(t: CdtTriangle) {
   if (
-    Point.getTriangleOrientationWithNoEpsilon(
+    Point.getTriangleOrientation(
       t.Sites.getItem(0).point,
       t.Sites.getItem(1).point,
       t.Sites.getItem(2).point,
