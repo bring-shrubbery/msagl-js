@@ -1,3 +1,4 @@
+import {from} from 'linq-to-typescript'
 import {
   BasicGraphOnEdges,
   mkGraphOnEdges,

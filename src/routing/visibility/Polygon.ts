@@ -1,216 +1,206 @@
-// export class Polygon
+import { DebugCurve } from "../../math/geometry/debugCurve";
+import { LineSegment } from "../../math/geometry/lineSegment";
+import { Point, TriangleOrientation } from "../../math/geometry/point";
+import { Polyline } from "../../math/geometry/polyline";
+import { PolylinePoint } from "../../math/geometry/polylinePoint";
+import { Assert } from "../../utils/assert";
+import { BimodalSequence } from "./BimodalSequence";
 
-// using System;
-// using System.IO;
-// using System.Linq;
-// using System.Runtime.Serialization.Formatters.Binary;
-// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Core.Geometry.Curves;
-// using Microsoft.Msagl.Core.Layout;
-// using Microsoft.Msagl.DebugHelpers;
+class Polygon {
 
-// #if TEST_MSAGL
+  polyline: Polyline;
 
-// #endif
-// namespace Microsoft.Msagl.Routing.Visibility {
-//     // <summary>
-//     // the polygon is going clockwise
-//     // </summary>
+    get Polyline(): Polyline {
+    return this.polyline;
+  }
 
-// #if TEST_MSAGL
-//     [Serializable]
-// #endif
-//     internal class Polygon {
-//         Polyline polyline;
+  points: PolylinePoint[];
 
-//         internal Polyline Polyline {
-//         get { return polyline; }
-// #if TEST_MSAGL
-//         set { polyline = value; }
-// #endif
-//     }
+  constructor(polyline: Polyline) {
+    this.polyline = this.polyline;
+    this.points = new Array(this.polyline.count);
+    let i: number = 0;
+    let pp: PolylinePoint = this.polyline.startPoint;
+    for (; i < this.polyline.count; i++,pp = pp.next)
+      this.points[i] = pp;
+  }
 
-//         readonly PolylinePoint[] points;
+    Next(i: number): number {
+    return this.Module((i + 1));
+  }
 
-//     internal Polygon(Polyline polyline) {
-//         this.polyline = polyline;
-//         points = new PolylinePoint[polyline.Count];
-//         int i = 0;
-//         PolylinePoint pp = polyline.startPoint;
-//         for (; i < polyline.Count; i++, pp = pp.next)
-//             points[i] = pp;
+    Prev(i: number): number {
+    return this.Module((i - 1));
+  }
 
-//     }
+    get count(): number {
+    return this.Polyline.count;
+  }
 
-//     internal int Next(int i) {
-//         return Module(i + 1);
-//     }
+    Module(i: number): number {
+    if ((i < 0)) {
+      return (i + this.count);
+    }
 
-//     internal int Prev(int i) {
-//         return Module(i - 1);
-//     }
+    if ((i < this.count)) {
+      return i;
+    }
 
-//     internal int Count { get { return Polyline.Count; } }
+    return (i - this.count);
+  }
 
-//     internal int Module(int i) {
-//         if (i < 0)
-//             return i + Count;
-//         if (i < Count)
-//             return i;
-//         return i - Count;
-//     }
+    get Item(i: number): PolylinePoint {
+    return this.points[this.Module(i)];
+  }
 
-//     internal PolylinePoint this[int i] {
-//         get {
-//             return points[Module(i)];
-//         }
-//     }
+  //  LineSegment ls(Point pivot, int p) {
+  //     return new LineSegment(pivot, Pnt(p));
+  // }
+    Pnt(i: number): Point {
+    return this[i].point;
+  }
 
-//     //private LineSegment ls(Point pivot, int p) {
-//     //    return new LineSegment(pivot, Pnt(p));
-//     //}
+  public  toString(): string {
+    return this.polyline.toString();
+  }
 
-//     internal Point Pnt(int i) {
-//         return this[i].point;
-//     }
+  //  the median of a chunk going clockwise from p1 to p2
+    Median(p1: number, p2: number): number {
+    Assert.assert((p1 != p2));
+    // otherwise we do not know what arc is mean: the whole one or just the point
+    if ((p2 > p1)) {
+      return ((p2 + p1)
+        / 2);
+    }
 
-//         public override string ToString() {
-//         return polyline.ToString();
-//     }
+    return this.Module(((p2
+      + (this.count + p1))
+      / 2));
+  }
 
-//     // <summary>
-//     // the median of a chunk going clockwise from p1 to p2
-//     // </summary>
-//     // <param name="p1"></param>
-//     // <param name="p2"></param>
-//     // <returns></returns>
-//     internal int Median(int p1, int p2) {
-//         Assert.assert(p1 != p2);//otherwise we do not know what arc is mean: the whole one or just the point
-//         if (p2 > p1)
-//             return (p2 + p1) / 2;
+  //  p1 and p2 represent the closest feature. Two cases are possible p1=p2, or p1 and p2 share an edge going from p1 to p2
+  //  Remind that the polygons are oriented clockwise
+    FindTheFurthestVertexFromBisector(p1: number, p2: number, bisectorPivot: Point, bisectorRay: Point): number {
+    let directionToTheHill: Point = bisectorRay.rotate((Math.PI / 2));
+    if (this.polyline.startPoint.point.sub(bisectorPivot).dot(directionToTheHill)
+      < 0) {
+      directionToTheHill = directionToTheHill.mul(-1)
+    }
 
-//         return Module((p2 + Count + p1) / 2);
-//     }
+    if (p1 == p2) {
+      p2 = this.Next(p1);
+    }
 
-//     // <summary>
-//     // p1 and p2 represent the closest feature. Two cases are possible p1=p2, or p1 and p2 share an edge going from p1 to p2
-//     // Remind that the polygons are oriented clockwise
-//     // </summary>
-//     // <param name="p1"></param>
-//     // <param name="p2"></param>
-//     // <param name="bisectorPivot"></param>
-//     // <param name="bisectorRay"></param>
-//     // <returns></returns>
-//     internal int FindTheFurthestVertexFromBisector(int p1, int p2, Point bisectorPivot, Point bisectorRay) {
-//         Point directionToTheHill = bisectorRay.rotate(Math.PI / 2);
-//         if ((polyline.startPoint.point - bisectorPivot) * directionToTheHill < 0)
-//             directionToTheHill = -directionToTheHill;
-//         if (p1 == p2)
-//             p2 = Next(p1);
-//         //binary search
-//         do {
-//             int m = Median(p2, p1); //now the chunk goes clockwise from p2 to p1
-//             Point mp = Pnt(m);
+    // binary search
+    do
+    {
+      let m: number = this.Median(p2, p1);
+      // now the chunk goes clockwise from p2 to p1
+      let mp: Point = this.Pnt(m);
+      if (this.Pnt(this.Next(m)).sub(mp).dot(directionToTheHill)
+        >= 0) {
+        p2 = this.Next(m);
+      }
+      else if (this.Pnt(this.Prev(m)).sub(mp).dot(directionToTheHill)
+        >= 0) {
+        p1 = this.Prev(m);
+      }
+      else {
+        p2 = m;
+      }
 
-//             if ((Pnt(Next(m)) - mp) * directionToTheHill >= 0)
-//                 p2 = Next(m);
-//             else if ((Pnt(Prev(m)) - mp) * directionToTheHill >= 0)
-//                 p1 = Prev(m);
-//             else
-//                 p1 = p2 = m;
-//         }
-//         while (p1 != p2);
+      p1 = m;
+    } while     (p1 != p2)
+    
 
-//         return p1;
-//     }
-// #if TEST_MSAGL
-//     // ReSharper disable UnusedMember.Local
-//     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         static double TestPolygonDist(Polygon a, Polygon b) {
-//         // ReSharper restore UnusedMember.Local
-//         double ret = double.PositiveInfinity, u, v;
-//         for (int i = 0; i < a.Count; i++)
-//         for (int j = 0; j < b.Count; j++)
-//         ret = Math.Min(ret, LineSegment.MinDistBetweenLineSegments(a.Pnt(i), a.Pnt(i + 1), b.Pnt(j),
-//             b.Pnt(j + 1), out u, out v));
+    return p1;
+  }
 
-//         return ret;
-//     }
-// #endif
+  static TestPolygonDist(a: Polygon, b: Polygon): number {
+    let ret: number = Number.MAX_SAFE_INTEGER
+    for (let i: number = 0; (i < a.count); i++) {
+      for (let j: number = 0; (j < b.count); j++) {
+        const t = LineSegment.minDistBetweenLineSegments(a.Pnt(i), a.Pnt((i + 1)), b.Pnt(j), b.Pnt((j + 1)))
+        ret = Math.min(ret, t.dist);
+      }
+   }
+ return ret;
+  }
 
-//         // <summary>
-//         // Distance between two polygons
-//         // p and q are the closest points
-//         // The function doesn't work if the polygons intersect each other
-//         // </summary>
-//         static public double Distance(Polygon a, Polygon b, out Point p, out Point q) {
-//         var tp = new TangentPair(a, b);
-//         tp.FindClosestPoints(out p, out q);
-// #if TEST_MSAGL
-//         if (!Point.closeDistEps((p - q).length, TestPolygonDist(a, b))) {
-//             using(var stream = File.Open(@"c:\tmp\polygonBug", FileMode.Create)) {
-//                 var bf = new BinaryFormatter();
-//                 bf.Serialize(stream, a);
-//                 bf.Serialize(stream, b);
-//             }
+  //  Distance between two polygons
+  //  p and q are the closest points
+  //  The function doesn't work if the polygons intersect each other
+  static Distance(a: Polygon, b: Polygon, t: {p: Point, q: Point}): number {
+    let tp = new TangentPair(a, b);
+    tp.FindClosestPoints(/* out */p, /* out */q);
+        #if(TEST_MSAGL)
+    if (!Point.closeDistEps((p - q).length, Polygon.TestPolygonDist(a, b))) {
+      let stream = File.Open("c:\tmp\polygonBug", FileMode.Create);
+      let bf = new BinaryFormatter();
+      bf.Serialize(stream, a);
+      bf.Serialize(stream, b);
+      LayoutAlgorithmSettings.ShowDebugCurves(new DebugCurve(100, 0.1, "red", a.Polyline), new DebugCurve(100, 0.1, "blue", b.Polyline), new DebugCurve(100, 0.1, "black", new LineSegment(p, q)));
+      System.Diagnostics.Debug.Fail("wrong distance between two polygons");
+    }
+        
+        #endif
+    return (p - q).length;
+  }
 
-//             LayoutAlgorithmSettings.ShowDebugCurves(
-//                 new DebugCurve(100, 0.1, "red", a.Polyline),
-//                 new DebugCurve(100, 0.1, "blue", b.Polyline),
-//                 new DebugCurve(100, 0.1, "black", new LineSegment(p, q)));
-//             System.Diagnostics.Debug.Fail("wrong distance between two polygons");
-//         }
-// #endif
-//         return (p - q).length;
-//     }
+  //  Distance between two polygons
+  public static Distance(a: Polygon, b: Polygon): number {
+    Assert.assert(Polygon.PolygonIsLegalDebug(a));
+    Assert.assert(Polygon.PolygonIsLegalDebug(b));
+    let q: Point;
+    let p: Point;
+    return Polygon.Distance(a, b, /* out */p, /* out */q);
+  }
 
-//         // <summary>
-//         // Distance between two polygons
-//         // </summary>
-//         static public double Distance(Polygon a, Polygon b) {
-//         Assert.assert(PolygonIsLegalDebug(a));
-//         Assert.assert(PolygonIsLegalDebug(b));
+   static PolygonIsLegalDebug(a: Polygon): boolean {
+    let poly = a.Polyline;
+    for (let p = poly.startPoint; ((p.next != null)
+      && (p.next.next != null)); p = p.next) {
+      if ((Point.getTriangleOrientation(p.point, p.next.point, p.next.next.point) == TriangleOrientation.Collinear)) {
+        return false;
+      }
 
-//         Point p, q;
-//         return Distance(a, b, out p, out q);
-//     }
+    }
 
-//         private static bool PolygonIsLegalDebug(Polygon a)
-//     {
-//         var poly = a.Polyline;
-//         for (var p = poly.startPoint; p.next != null && p.next.next != null; p = p.next)
-//             if (Point.getTriangleOrientation(p.point, p.next.point, p.next.next.point) ==
-//                 TriangleOrientation.Collinear)
-//                 return false;
-//         return true;
-//     }
+    return true;
+  }
 
-//         // <summary>
-//         // Distance between polygon and point
-//         // </summary>
-//         static public double Distance(Polygon poly, Point b)
-//     {
-//         double res = double.PositiveInfinity;
-//         for (int i = 0; i < poly.Count; i++) {
-//             double par;
-//             double dist = Point.DistToLineSegment(b, poly.points[i].point, poly.points[(i + 1) % poly.Count].point, out par);
-//             res = Math.Min(res, dist);
-//         }
-//         return res;
-//     }
+  //  Distance between polygon and point
+  public static Distance(poly: Polygon, b: Point): number {
+    let res: number = double.PositiveInfinity;
+    for (let i: number = 0; (i < poly.count); i++) {
+      let par: number;
+      let dist: number = Point.DistToLineSegment(b, poly.points[i].point, poly.points[((i + 1)
+        % poly.count)].point, /* out */par);
+      res = Math.min(res, dist);
+    }
 
-//     internal void GetTangentPoints(out int leftTangentPoint, out int rightTangentPoint, Point point) {
-//         var bimodalSequence = new BimodalSequence(GetSequenceDelegate(point), Count);
-//         leftTangentPoint = bimodalSequence.FindMaximum();
-//         rightTangentPoint = bimodalSequence.FindMinimum();
-//     }
+    return res;
+  }
 
-//         private Func < int, double > GetSequenceDelegate(Point point) {
-//         Point pointOfP = Pnt(0);
-//         return delegate(int i) {
-//             double d = Point.Angle(pointOfP, point, Pnt(i));
-//             return d < Math.PI ? d : d - 2 * Math.PI;
-//         };
-//     }
-// }
-// }
+    GetTangentPoints(/* out */leftTangentPoint: number, /* out */rightTangentPoint: number, point: Point) {
+    let bimodalSequence = new BimodalSequence(this.GetSequenceDelegate(point), this.count);
+    leftTangentPoint = bimodalSequence.FindMaximum();
+    rightTangentPoint = bimodalSequence.FindMinimum();
+  }
+
+   GetSequenceDelegate(point: Point): Func<number, number> {
+    let pointOfP: Point = this.Pnt(0);
+    return;
+    int;
+    i;
+    let d: number = Point.Angle(pointOfP, point, this.Pnt(i));
+    if ((d < Math.PI)) {
+      return d;
+    }
+    else {
+      return (d - (2 * Math.PI));
+    }
+
+
+  }
+}

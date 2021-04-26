@@ -3,10 +3,10 @@
 //  MSAGL Shape class for Rectilinear Edge Routing.
 //
 //  Copyright Microsoft Corporation.
-import {Queue} from 'queue-typescript'
-import {Port} from '../core/layout/Port'
-import {ICurve} from '../math/geometry/icurve'
-import {Rectangle} from '../math/geometry/rectangle'
+import { Queue } from 'queue-typescript'
+import { Port } from '../core/layout/Port'
+import { ICurve } from '../math/geometry/icurve'
+import { Rectangle } from '../math/geometry/rectangle'
 
 //  A shape wrapping an ICurve, providing additional information.
 export class Shape {
@@ -51,7 +51,7 @@ export class Shape {
 
   //  Constructor taking the ID and the curve of the shape.
   //  <param name="boundaryCurve"></param>
-  constructor(boundaryCurve: ICurve) {
+  constructor(boundaryCurve: ICurve = null) {
     this.boundaryCurve = boundaryCurve
     //  RelativeShape throws an exception on BoundaryCurve_set so set _boundaryCurve directly.
   }
