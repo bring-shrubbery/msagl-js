@@ -1,5 +1,6 @@
 // calculates the pair of tangent line segments between two convex non-intersecting polygons H and Q
 
+import { GeomConstants } from '../../math/geometry/geomConstants'
 import { LineSegment } from '../../math/geometry/lineSegment'
 import { Point, TriangleOrientation } from '../../math/geometry/point'
 import { Assert } from '../../utils/assert'
@@ -337,46 +338,43 @@ export class TangentPair {
     const mQ = this.Q[mq].point;
 
 
-    const l: {
+    const angles: {
       a1: number, a2: number,
       b1: number, b2: number
     }
-    this.GetAnglesAtTheMedian(mp, mq, mP, mQ, l);
+    this.GetAnglesAtTheMedian(mp, mq, mP, mQ, angles);
     //            Core.Layout.LayoutAlgorithmSettings.Show(new LineSegment(P.Pnt(t.p2), Q.Pnt(t.t.q2)), new LineSegment(P.Pnt(t.p1), Q.Pnt(t.q1)), new LineSegment(P.Pnt(mp),Q.Pnt( mq)), P.Polyline, Q.Polyline);
     //if (MovingAlongHiddenSide(ref t.p1, ref t.p2, ref t.q1, ref t.q2, mp, mq, a1, a2, b1, b2)) {
     //  //  SugiyamaLayoutSettings.Show(ls(t.p2, t.q2), ls(t.p1, t.q1), ls(mp, mq), P.Polyline, Q.Polyline);
     //    return;
     //}
 
-    if (this.InternalCut(t, mp, mq, l.a1, l.a2, l.b1, l.b2)) {
+    if (this.InternalCut(t, mp, mq, angles.a1, angles.a2, angles.b1, angles.b2)) {
       //               if(debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(t.p1, q1), Ls(t.p2,q2));
       return;
     }
 
     //case 1
-    if (TangentPair.OneOfChunksContainsOnlyOneVertex(ref t.p2, ref t.p1, ref q2, ref q1, mp, mq, a1, b1))
+    if (TangentPair.OneOfChunksContainsOnlyOneVertex(t, mp, mq, angles.a1, angles.b1))
       return;
     //case 2
-    if (this.OnlyOneChunkContainsExactlyTwoVertices(ref t.p2, ref t.p1, ref q2, ref q1, mp, mq, a1, b1, a2, b2))
+    if (this.OnlyOneChunkContainsExactlyTwoVertices(t, {mp:mp, mq:mq}, angles))
       return;
 
     // the case where we have exactly two vertices in each chunk
-    if (t.p2 == this.P.next(t.p1) && q1 == this.Q.next(q2)) {
-      number psol, qsol;
-
-      LineSegment.MinDistBetweenLineSegments(this.P.Pnt(t.p1), this.P.Pnt(t.p2), this.Q.Pnt(q1), this.Q.Pnt(q2), out psol,
-        out qsol);
+    if (t.p2 == this.P.Next(t.p1) && t.q1 == this.Q.Next(t.q2)) {
+      const md = LineSegment.minDistBetweenLineSegments(this.P.Pnt(t.p1), this.P.Pnt(t.p2), this.Q.Pnt(t.q1), this.Q.Pnt(t.q2));
       //Assert.assert(res);
-      if (psol == 0)
+      if (md.parab == 0)
         t.p2 = t.p1;
-      else if (psol == 1)
+      else if (md.parab == 1)
         t.p1 = t.p2;
-      else if (qsol == 0)
-        q2 = q1;
-      else if (qsol == 1)
-        q1 = q2;
+      else if (md.parcd == 0)
+        t.q2 = t.q1;
+      else if (md.parcd == 1)
+        t.q1 = t.q2;
 
-      Assert.assert(t.p1 == t.p2 || q1 == q2);
+      Assert.assert(t.p1 == t.p2 || t.q1 == t.q2);
       return;
       //we have trapeze {t.p1,t.p2,q2,q1} here
       //let t.p1,t.p2 be the low base of the trapes
@@ -392,29 +390,29 @@ export class TangentPair {
     }
 
     //case 3
-    if (a1 <= Math.PI && a2 <= Math.PI && b1 <= Math.PI && b2 <= Math.PI) {
-      if (a1 + b1 > Math.PI) {
-        if (a1 >= Math.PI / 2)
+    if (angles.a1 <= Math.PI && angles.a2 <= Math.PI && angles.b1 <= Math.PI && angles.b2 <= Math.PI) {
+      if (angles.a1 + angles.b1 > Math.PI) {
+        if (angles.a1 >= Math.PI / 2)
           t.p1 = mp;
         else
-          q1 = mq;
+          t.q1 = mq;
       } else {
-        Assert.assert(a2 + b2 >= Math.PI - ApproximateComparer.Tolerance);
-        if (a2 >= Math.PI / 2)
+        Assert.assert(angles.a2 + angles.b2 >= Math.PI - GeomConstants.tolerance);
+        if (angles.a2 >= Math.PI / 2)
           t.p2 = mp;
         else
-          q2 = mq;
+          t.q2 = mq;
       }
     } else {
-      if (a1 > Math.PI)
+      if (angles.a1 > Math.PI)
         t.p1 = mp;
-      else if (a2 > Math.PI)
+      else if (angles.a2 > Math.PI)
         t.p2 = mp;
-      else if (b1 > Math.PI)
-        q1 = mq;
+      else if (angles.b1 > Math.PI)
+        t.q1 = mq;
       else {
-        Assert.assert(b2 > Math.PI);
-        q2 = mq;
+        Assert.assert(angles.b2 > Math.PI);
+        t.q2 = mq;
       }
     }
   }
@@ -429,12 +427,12 @@ export class TangentPair {
       //                if(debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(p1, q1), Ls(p2, q2), Ls(mp, mq));
       Point mpp = this.P[mp].point;
       Point mqp = this.Q[mq].point;
-      Point mpnp = this.P[this.P.next(mp)].point;
+      Point mpnp = this.P[this.P.Next(mp)].point;
       TriangleOrientation orientation = Point.getTriangleOrientation(mpp, mqp, this.Q[0].point);
       TriangleOrientation nextOrientation = Point.getTriangleOrientation(mpp, mqp, mpnp);
 
       if (orientation == nextOrientation)
-        p1 = this.P.next(mp);
+        p1 = this.P.Next(mp);
       else
         p2 = this.P.Prev(mp);
       ret = true;
@@ -445,11 +443,11 @@ export class TangentPair {
       //                if (debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(p1, q1), Ls(p2, q2), Ls(mp, mq));
       Point mpp = this.P[mp].point;
       Point mqp = this.Q[mq].point;
-      Point mqnp = this.Q[this.Q.next(mq)].point;
+      Point mqnp = this.Q[this.Q.Next(mq)].point;
       TriangleOrientation orientation = Point.getTriangleOrientation(mpp, mqp, this.P[0].point);
       TriangleOrientation nextOrientation = Point.getTriangleOrientation(mpp, mqp, mqnp);
       if (orientation == nextOrientation)
-        q2 = this.Q.next(mq);
+        q2 = this.Q.Next(mq);
       else
         q1 = this.Q.Prev(mq);
       ret = true;
@@ -495,9 +493,9 @@ export class TangentPair {
 
   // we know here that p1!=p2 and q1!=q2
   OnlyOneChunkContainsExactlyTwoVertices(t: { p2: number, p1: number, q2: number, q1: number },
-    mp: number, mq: number, a1: number, b1: number, a2: number, b2: number): boolean {
-    bool pSideIsShort = p2 == this.P.next(p1);
-    bool qSideIsShort = q1 == this.Q.next(q2);
+    l:{mp: number, mq: number}, angles:{a1: number, b1: number, a2: number, b2: number}): boolean {
+    const pSideIsShort = t.p2 == this.P.Next(t.p1);
+    const qSideIsShort = t.q1 == this.Q.Next(t.q2);
     if (pSideIsShort && !qSideIsShort) {
       this.ProcessShortSide(ref p2, ref p1, ref q2, ref q1, mp, mq, a1, b1, a2, b2);
       return true;
