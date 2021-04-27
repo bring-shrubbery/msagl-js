@@ -497,12 +497,12 @@ export class TangentPair {
     const pSideIsShort = t.p2 == this.P.Next(t.p1);
     const qSideIsShort = t.q1 == this.Q.Next(t.q2);
     if (pSideIsShort && !qSideIsShort) {
-      this.ProcessShortSide(ref p2, ref p1, ref q2, ref q1, mp, mq, a1, b1, a2, b2);
+      this.ProcessShortSide(t, l.mp, l.mq, angles.a1, angles.b1, angles.a2, angles.b2);
       return true;
     }
 
     if (qSideIsShort && !pSideIsShort) {
-      this.SwapEverything(ref p2, ref p1, ref q2, ref q1, ref mp, ref mq, ref a1, ref b1, ref a2, ref b2);
+      this.SwapEverything(t, l, angles);
       this.ProcessShortSide(ref p2, ref p1, ref q2, ref q1, mp, mq, a1, b1, a2, b2);
       this.SwapEverything(ref p2, ref p1, ref q2, ref q1, ref mp, ref mq, ref a1, ref b1, ref a2, ref b2);
       return true;
@@ -511,24 +511,32 @@ export class TangentPair {
     return false;
   }
 
-  SwapEverything(t: {
-    p2: number, p1: number, q2: number, q1: number, mp: number, mq: number, a1: number,
-    b1: number, a2: number, b2: number
-  }) {
+  SwapEverything(t: { p2: number, p1: number, q2: number, q1: number },
+    l:{mp: number, mq: number}, angles:{a1: number, b1: number, a2: number, b2: number}
+  ) {
     this.SwapPq();
-    TangentPair.Swap(ref q1, ref p2);
-    TangentPair.Swap(ref q2, ref p1);
-    TangentPair.Swap(ref mp, ref mq);
-    TangentPair.Swap(ref b1, ref a2);
-    TangentPair.Swap(ref a1, ref b2);
+    let u = t.p2
+    t.p2 = t.p1
+    t.p1 = u
+   
+    u = t.q2
+    t.q2 = t.q1
+    t.q1 = u
+   
+    u = l.mq
+    l.mq = l.mp
+    l.mp = u
+
+    u = angles.a2
+    angles.a2 = angles.b1
+    angles.b1 = u
+    
+    u = angles.b2
+    angles.b2=angles.a1
+    angles.a1 = u
   }
 
-  static Swap(t: { a1: number, a2: number }) {
-    const l = t.a1;
-    t.a1 = t.a2;
-    t.a2 = l;
-  }
-
+ 
 
   ProcessShortSide(t: { p2: number, p1: number, q2: number, q1: number }, mp: number, mq: number, a1: number, b1: number,
     a2: number, b2: number) {
