@@ -6,7 +6,7 @@ import { PolylinePoint } from "../../math/geometry/polylinePoint";
 import { Assert } from "../../utils/assert";
 import { BimodalSequence } from "./BimodalSequence";
 
-class Polygon {
+export class Polygon {
 
   polyline: Polyline;
 
@@ -182,25 +182,19 @@ class Polygon {
     return res;
   }
 
-    GetTangentPoints(/* out */leftTangentPoint: number, /* out */rightTangentPoint: number, point: Point) {
-    let bimodalSequence = new BimodalSequence(this.GetSequenceDelegate(point), this.count);
-    leftTangentPoint = bimodalSequence.FindMaximum();
-    rightTangentPoint = bimodalSequence.FindMinimum();
+  GetTangentPoints(t:{leftTangentPoint: number, rightTangentPoint: number}, point: Point) {
+    const bimodalSequence = new BimodalSequence(this.GetSequenceDelegate(point), this.count);
+    t.leftTangentPoint = bimodalSequence.FindMaximum();
+    t.rightTangentPoint = bimodalSequence.FindMinimum();
   }
 
-   GetSequenceDelegate(point: Point): Func<number, number> {
-    let pointOfP: Point = this.Pnt(0);
-    return;
-    int;
-    i;
-    let d: number = Point.Angle(pointOfP, point, this.Pnt(i));
-    if ((d < Math.PI)) {
-      return d;
-    }
-    else {
-      return (d - (2 * Math.PI));
-    }
+   GetSequenceDelegate(point: Point): (u:number)=> number {
+    
+            const pointOfP = this.Pnt(0);
+            return (i:number) => {
+                const d = Point.anglePCP(pointOfP, point, this.Pnt(i));
+                return d < Math.PI ? d : d - 2 * Math.PI;
+            };
 
-
-  }
+    }
 }

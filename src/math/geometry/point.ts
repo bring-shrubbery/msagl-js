@@ -177,6 +177,10 @@ export class Point {
     return a.add(b.sub(a).mul(x))
   }
 
+  static anglePCP(point1: Point, center: Point, point3: Point) {
+    return Point.angle(point1.sub(center), point3.sub(center))
+  }
+
   // The angle you need to turn "side0" counterclockwise to make it collinear with "side1"
   static angle(side0: Point, side1: Point): number {
     const ax = side0.x
