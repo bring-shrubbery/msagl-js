@@ -303,7 +303,7 @@ export class TangentPair {
     } else {
       Assert.assert(t.q1 == t.q2);
       t.qClosest = this.Q[t.q1].point;
-      t.pClosest = Point.ClosestPointAtLineSegment(t.qClosest, this.P[t.p1].point, this.P[p2].point);
+      t.pClosest = Point.ClosestPointAtLineSegment(t.qClosest, this.P[t.p1].point, this.P[t.p2].point);
       if (Point.closeDistEps(t.pClosest, this.P.Pnt(t.p1)))
         t.p2 = t.p1;
       else if (Point.closeDistEps(t.qClosest, this.P.Pnt(t.p2)))
@@ -336,19 +336,19 @@ export class TangentPair {
     const mP = this.P[mp].point;
     const mQ = this.Q[mq].point;
 
-    a1: number;
-    a2: number;
-    b1: number;
-    b2: number;
 
-    this.GetAnglesAtTheMedian(mp, mq, ref mP, ref mQ, out a1, out a2, out b1, out b2);
+    const l: {
+      a1: number, a2: number,
+      b1: number, b2: number
+    }
+    this.GetAnglesAtTheMedian(mp, mq, mP, mQ, l);
     //            Core.Layout.LayoutAlgorithmSettings.Show(new LineSegment(P.Pnt(t.p2), Q.Pnt(t.t.q2)), new LineSegment(P.Pnt(t.p1), Q.Pnt(t.q1)), new LineSegment(P.Pnt(mp),Q.Pnt( mq)), P.Polyline, Q.Polyline);
     //if (MovingAlongHiddenSide(ref t.p1, ref t.p2, ref t.q1, ref t.q2, mp, mq, a1, a2, b1, b2)) {
     //  //  SugiyamaLayoutSettings.Show(ls(t.p2, t.q2), ls(t.p1, t.q1), ls(mp, mq), P.Polyline, Q.Polyline);
     //    return;
     //}
 
-    if (this.InternalCut(ref t.p1, ref t.p2, ref q1, ref q2, mp, mq, a1, a2, b1, b2)) {
+    if (this.InternalCut(t, mp, mq, l.a1, l.a2, l.b1, l.b2)) {
       //               if(debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(t.p1, q1), Ls(t.p2,q2));
       return;
     }
@@ -482,14 +482,15 @@ export class TangentPair {
   //}
 
   GetAnglesAtTheMedian(mp: number, mq: number,
+    mP: Point, mQ: Point,
     t: {
-      mP: Point, mQ: Point, a1: number, a2: number,
+      a1: number, a2: number,
       b1: number, b2: number
     }) {
-    t.a1 = Point.anglePointCenterPoint(t.mQ, t.mP, this.P.Pnt(this.P.Prev(mp)));
-    t.a2 = Point.anglePointCenterPoint(this.P.Pnt(this.P.Next(mp)), t.mP, t.mQ);
-    t.b1 = Point.anglePointCenterPoint(this.Q.Pnt(this.Q.Next(mq)), t.mQ, t.mP);
-    t.b2 = Point.anglePointCenterPoint(t.mP, t.mQ, this.Q.Pnt(this.Q.Prev(mq)));
+    t.a1 = Point.anglePointCenterPoint(mQ, mP, this.P.Pnt(this.P.Prev(mp)));
+    t.a2 = Point.anglePointCenterPoint(this.P.Pnt(this.P.Next(mp)), mP, mQ);
+    t.b1 = Point.anglePointCenterPoint(this.Q.Pnt(this.Q.Next(mq)), mQ, mP);
+    t.b2 = Point.anglePointCenterPoint(mP, mQ, this.Q.Pnt(this.Q.Prev(mq)));
   }
 
   // we know here that p1!=p2 and q1!=q2
@@ -589,19 +590,19 @@ export class TangentPair {
 
   static OneOfChunksContainsOnlyOneVertex(t: { p2: number, p1: number, q2: number, q1: number }, mp: number, mq: number,
     a1: number, b1: number): boolean {
-    if (p1 == p2) {
+    if (t.p1 == t.p2) {
       if (b1 >= Math.PI / 2)
-        q1 = mq;
+        t.q1 = mq;
       else
-        q2 = mq;
+        t.q2 = mq;
 
       return true;
     }
-    if (q1 == q2) {
+    if (t.q1 == t.q2) {
       if (a1 >= Math.PI / 2)
-        p1 = mp;
+        t.p1 = mp;
       else
-        p2 = mp;
+        t.p2 = mp;
       return true;
     }
     return false;
