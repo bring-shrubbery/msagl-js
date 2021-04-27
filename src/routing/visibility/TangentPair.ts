@@ -237,23 +237,17 @@ export class TangentPair {
     //  #endif
   }
 
-  FindClosestPoints(t: {pClosest: Point; qClosest: Point}) {
-    const m: {
+  FindClosestPoints() {
+    let m: {
       q2: number
       p1: number
       p2: number
       q1: number
       pClosest: Point
       qClosest: Point
-    } = {
-      q2: 0,
-      p1: 0,
-      p2: 0,
-      q1: 0,
-      pClosest: undefined,
-      qClosest: undefined,
     }
     this.FindClosestFeatures(m)
+    return {pClosest: m.pClosest, qClosest: m.qClosest}
   }
 
   FindClosestFeatures(m: {
@@ -281,7 +275,7 @@ export class TangentPair {
       l.leftTangentPoint = l.leftTangentPoint + this.Q.count
     }
 
-    this.FindClosestPoints(m)
+    this.FindClosestPoints_(m)
   }
 
   //chunks go clockwise from p1 to p2 and from q2 to q1
