@@ -1,5 +1,5 @@
-import { LinearSystem2 } from './linearSystem'
-import { GeomConstants } from './geomConstants'
+import {LinearSystem2} from './linearSystem'
+import {GeomConstants} from './geomConstants'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,
@@ -275,19 +275,41 @@ export class Point {
     return Point.signedDoubledTriangleArea(linePoint0, linePoint1, point) < 0
   }
 
-  static canProject(point: Point, segmentStart: Point, segmentEnd: Point): boolean {
-    const bc = segmentEnd.sub(segmentStart);
+  static canProject(
+    point: Point,
+    segmentStart: Point,
+    segmentEnd: Point,
+  ): boolean {
+    const bc = segmentEnd.sub(segmentStart)
 
-    const ba = point.sub(segmentStart);
+    const ba = point.sub(segmentStart)
 
-    if (ba.dot(bc) < 0) // point belongs to the halfplane before the segment
-      return false;
+    if (ba.dot(bc) < 0)
+      // point belongs to the halfplane before the segment
+      return false
 
-    const ca = point.sub(segmentEnd);
-    if (ca.dot(bc) > 0) //point belongs to the halfplane after the segment
-      return false;
+    const ca = point.sub(segmentEnd)
+    if (ca.dot(bc) > 0)
+      //point belongs to the halfplane after the segment
+      return false
 
-    return true;
+    return true
   }
-
+  static distToLineSegment(
+    a: Point,
+    b: Point,
+    c: Point,
+  ): {par: number; dist: number} {
+    const bc = c.sub(b)
+    const ba = a.sub(b)
+    let c1: number, c2: number
+    if ((c1 = bc.dot(ba)) <= GeomConstants.tolerance) {
+      return {par: 0, dist: ba.length}
+    }
+    if ((c2 = bc.dot(bc)) <= c1 + GeomConstants.tolerance) {
+      return {par: 1, dist: a.sub(c).length}
+    }
+    const p = c1 / c2
+    return {par: p, dist: b.add(bc.mul(p)).length}
+  }
 }
