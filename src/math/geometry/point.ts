@@ -1,5 +1,5 @@
-import {LinearSystem2} from './linearSystem'
-import {GeomConstants} from './geomConstants'
+import { LinearSystem2 } from './linearSystem'
+import { GeomConstants } from './geomConstants'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,
@@ -274,4 +274,20 @@ export class Point {
   ): boolean {
     return Point.signedDoubledTriangleArea(linePoint0, linePoint1, point) < 0
   }
+
+  static canProject(point: Point, segmentStart: Point, segmentEnd: Point): boolean {
+    const bc = segmentEnd.sub(segmentStart);
+
+    const ba = point.sub(segmentStart);
+
+    if (ba.dot(bc) < 0) // point belongs to the halfplane before the segment
+      return false;
+
+    const ca = point.sub(segmentEnd);
+    if (ca.dot(bc) > 0) //point belongs to the halfplane after the segment
+      return false;
+
+    return true;
+  }
+
 }

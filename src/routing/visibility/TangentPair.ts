@@ -1,10 +1,10 @@
 // calculates the pair of tangent line segments between two convex non-intersecting polygons H and Q
 
-import { GeomConstants } from '../../math/geometry/geomConstants'
-import { LineSegment } from '../../math/geometry/lineSegment'
-import { Point, TriangleOrientation } from '../../math/geometry/point'
-import { Assert } from '../../utils/assert'
-import { Polygon } from './Polygon'
+import {GeomConstants} from '../../math/geometry/geomConstants'
+import {LineSegment} from '../../math/geometry/lineSegment'
+import {Point, TriangleOrientation} from '../../math/geometry/point'
+import {Assert} from '../../utils/assert'
+import {Polygon} from './Polygon'
 
 // we suppose that polygons are clockwise oriented
 export class TangentPair {
@@ -237,7 +237,7 @@ export class TangentPair {
     //  #endif
   }
 
-  FindClosestPoints(t: { pClosest: Point, qClosest: Point }) {
+  FindClosestPoints(t: {pClosest: Point; qClosest: Point}) {
     const m: {
       q2: number
       p1: number
@@ -257,14 +257,14 @@ export class TangentPair {
   }
 
   FindClosestFeatures(m: {
-    p1: number,
-    p2: number,
-    q1: number,
-    q2: number,
-    pClosest: Point,
+    p1: number
+    p2: number
+    q1: number
+    q2: number
+    pClosest: Point
     qClosest: Point
   }) {
-    const r: { leftTangentPoint: number; rightTangentPoint: number } = {
+    const r: {leftTangentPoint: number; rightTangentPoint: number} = {
       leftTangentPoint: undefined,
       rightTangentPoint: undefined,
     }
@@ -274,7 +274,7 @@ export class TangentPair {
     if (r.rightTangentPoint == r.rightTangentPoint) {
       r.rightTangentPoint += this.P.count
     }
-    let l: { leftTangentPoint: number, rightTangentPoint: number }
+    let l: {leftTangentPoint: number; rightTangentPoint: number}
     this.Q.GetTangentPoints(l, this.P[0].point)
     // LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(0, q1), Ls(0, q2));
     if (l.rightTangentPoint == l.leftTangentPoint) {
@@ -285,97 +285,119 @@ export class TangentPair {
   }
 
   //chunks go clockwise from p1 to p2 and from q2 to q1
-  FindClosestPoints_(t: { p1: number, p2: number, q2: number, q1: number, pClosest: Point, qClosest: Point }) {
-    while (this.ChunksAreLong(t.p2, t.p1, t.q2, t.q1))
-      this.ShrinkChunks(t);
+  FindClosestPoints_(t: {
+    p1: number
+    p2: number
+    q2: number
+    q1: number
+    pClosest: Point
+    qClosest: Point
+  }) {
+    while (this.ChunksAreLong(t.p2, t.p1, t.q2, t.q1)) this.ShrinkChunks(t)
 
     if (t.p1 == t.p2) {
-      t.pClosest = this.P[t.p2].point;
-      if (t.q1 == t.q2)
-        t.qClosest = this.Q[t.q1].point;
+      t.pClosest = this.P[t.p2].point
+      if (t.q1 == t.q2) t.qClosest = this.Q[t.q1].point
       else {
         //                    if(debug) LayoutAlgorithmSettings.Show(new LineSegment(P.Pnt(p2), Q.Pnt(q2)), new LineSegment(P.Pnt(p1), Q.Pnt(q1)), P.Polyline, Q.Polyline);
-        t.qClosest = Point.ClosestPointAtLineSegment(t.pClosest, this.Q[t.q1].point, this.Q[t.q2].point);
-        if (Point.closeDistEps(t.qClosest, this.Q.Pnt(t.q1)))
-          t.q2 = t.q1;
-        else if (Point.closeDistEps(t.qClosest, this.Q.Pnt(t.q2)))
-          t.q1 = t.q2;
+        t.qClosest = Point.ClosestPointAtLineSegment(
+          t.pClosest,
+          this.Q[t.q1].point,
+          this.Q[t.q2].point,
+        )
+        if (Point.closeDistEps(t.qClosest, this.Q.Pnt(t.q1))) t.q2 = t.q1
+        else if (Point.closeDistEps(t.qClosest, this.Q.Pnt(t.q2))) t.q1 = t.q2
       }
     } else {
-      Assert.assert(t.q1 == t.q2);
-      t.qClosest = this.Q[t.q1].point;
-      t.pClosest = Point.ClosestPointAtLineSegment(t.qClosest, this.P[t.p1].point, this.P[t.p2].point);
-      if (Point.closeDistEps(t.pClosest, this.P.Pnt(t.p1)))
-        t.p2 = t.p1;
-      else if (Point.closeDistEps(t.qClosest, this.P.Pnt(t.p2)))
-        t.p1 = t.p2;
+      Assert.assert(t.q1 == t.q2)
+      t.qClosest = this.Q[t.q1].point
+      t.pClosest = Point.ClosestPointAtLineSegment(
+        t.qClosest,
+        this.P[t.p1].point,
+        this.P[t.p2].point,
+      )
+      if (Point.closeDistEps(t.pClosest, this.P.Pnt(t.p1))) t.p2 = t.p1
+      else if (Point.closeDistEps(t.qClosest, this.P.Pnt(t.p2))) t.p1 = t.p2
     }
   }
 
   ChunksAreLong(p2: number, p1: number, q2: number, q1: number): boolean {
-    let pLength: number = (this.P.Module((p2 - p1)) + 1);
-    if ((pLength > 2)) {
-      return true;
+    const pLength: number = this.P.Module(p2 - p1) + 1
+    if (pLength > 2) {
+      return true
     }
 
-    let qLength: number = (this.Q.Module((q1 - q2)) + 1);
-    if ((qLength > 2)) {
-      return true;
+    const qLength: number = this.Q.Module(q1 - q2) + 1
+    if (qLength > 2) {
+      return true
     }
 
-    if (((pLength == 2)
-      && (qLength == 2))) {
-      return true;
+    if (pLength == 2 && qLength == 2) {
+      return true
     }
 
-    return false;
+    return false
   }
 
-  ShrinkChunks(t: { p2: number, p1: number, q2: number, q1: number }) {
-    const mp = t.p1 == t.p2 ? t.p1 : this.P.Median(t.p1, t.p2);
-    const mq = t.q1 == t.q2 ? t.q1 : this.Q.Median(t.q2, t.q1);
-    const mP = this.P[mp].point;
-    const mQ = this.Q[mq].point;
+  ShrinkChunks(t: {p2: number; p1: number; q2: number; q1: number}) {
+    const mp = t.p1 == t.p2 ? t.p1 : this.P.Median(t.p1, t.p2)
+    const mq = t.q1 == t.q2 ? t.q1 : this.Q.Median(t.q2, t.q1)
+    const mP = this.P[mp].point
+    const mQ = this.Q[mq].point
 
-
-    const angles: {
-      a1: number, a2: number,
-      b1: number, b2: number
+    let angles: {
+      a1: number
+      a2: number
+      b1: number
+      b2: number
     }
-    this.GetAnglesAtTheMedian(mp, mq, mP, mQ, angles);
+    this.GetAnglesAtTheMedian(mp, mq, mP, mQ, angles)
     //            Core.Layout.LayoutAlgorithmSettings.Show(new LineSegment(P.Pnt(t.p2), Q.Pnt(t.t.q2)), new LineSegment(P.Pnt(t.p1), Q.Pnt(t.q1)), new LineSegment(P.Pnt(mp),Q.Pnt( mq)), P.Polyline, Q.Polyline);
     //if (MovingAlongHiddenSide(ref t.p1, ref t.p2, ref t.q1, ref t.q2, mp, mq, a1, a2, b1, b2)) {
     //  //  SugiyamaLayoutSettings.Show(ls(t.p2, t.q2), ls(t.p1, t.q1), ls(mp, mq), P.Polyline, Q.Polyline);
     //    return;
     //}
 
-    if (this.InternalCut(t, mp, mq, angles.a1, angles.a2, angles.b1, angles.b2)) {
+    if (
+      this.InternalCut(t, mp, mq, angles.a1, angles.a2, angles.b1, angles.b2)
+    ) {
       //               if(debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(t.p1, q1), Ls(t.p2,q2));
-      return;
+      return
     }
 
     //case 1
-    if (TangentPair.OneOfChunksContainsOnlyOneVertex(t, mp, mq, angles.a1, angles.b1))
-      return;
+    if (
+      TangentPair.OneOfChunksContainsOnlyOneVertex(
+        t,
+        mp,
+        mq,
+        angles.a1,
+        angles.b1,
+      )
+    )
+      return
     //case 2
-    if (this.OnlyOneChunkContainsExactlyTwoVertices(t, {mp:mp, mq:mq}, angles))
-      return;
+    if (
+      this.OnlyOneChunkContainsExactlyTwoVertices(t, {mp: mp, mq: mq}, angles)
+    )
+      return
 
     // the case where we have exactly two vertices in each chunk
     if (t.p2 == this.P.Next(t.p1) && t.q1 == this.Q.Next(t.q2)) {
-      const md = LineSegment.minDistBetweenLineSegments(this.P.Pnt(t.p1), this.P.Pnt(t.p2), this.Q.Pnt(t.q1), this.Q.Pnt(t.q2));
+      const md = LineSegment.minDistBetweenLineSegments(
+        this.P.Pnt(t.p1),
+        this.P.Pnt(t.p2),
+        this.Q.Pnt(t.q1),
+        this.Q.Pnt(t.q2),
+      )
       //Assert.assert(res);
-      if (md.parab == 0)
-        t.p2 = t.p1;
-      else if (md.parab == 1)
-        t.p1 = t.p2;
-      else if (md.parcd == 0)
-        t.q2 = t.q1;
-      else if (md.parcd == 1)
-        t.q1 = t.q2;
+      if (md.parab == 0) t.p2 = t.p1
+      else if (md.parab == 1) t.p1 = t.p2
+      else if (md.parcd == 0) t.q2 = t.q1
+      else if (md.parcd == 1) t.q1 = t.q2
 
-      Assert.assert(t.p1 == t.p2 || t.q1 == t.q2);
-      return;
+      Assert.assert(t.p1 == t.p2 || t.q1 == t.q2)
+      return
       //we have trapeze {t.p1,t.p2,q2,q1} here
       //let t.p1,t.p2 be the low base of the trapes
       //where is the closest vertex , on the left side or on the rigth side?
@@ -390,69 +412,85 @@ export class TangentPair {
     }
 
     //case 3
-    if (angles.a1 <= Math.PI && angles.a2 <= Math.PI && angles.b1 <= Math.PI && angles.b2 <= Math.PI) {
+    if (
+      angles.a1 <= Math.PI &&
+      angles.a2 <= Math.PI &&
+      angles.b1 <= Math.PI &&
+      angles.b2 <= Math.PI
+    ) {
       if (angles.a1 + angles.b1 > Math.PI) {
-        if (angles.a1 >= Math.PI / 2)
-          t.p1 = mp;
-        else
-          t.q1 = mq;
+        if (angles.a1 >= Math.PI / 2) t.p1 = mp
+        else t.q1 = mq
       } else {
-        Assert.assert(angles.a2 + angles.b2 >= Math.PI - GeomConstants.tolerance);
-        if (angles.a2 >= Math.PI / 2)
-          t.p2 = mp;
-        else
-          t.q2 = mq;
+        Assert.assert(
+          angles.a2 + angles.b2 >= Math.PI - GeomConstants.tolerance,
+        )
+        if (angles.a2 >= Math.PI / 2) t.p2 = mp
+        else t.q2 = mq
       }
     } else {
-      if (angles.a1 > Math.PI)
-        t.p1 = mp;
-      else if (angles.a2 > Math.PI)
-        t.p2 = mp;
-      else if (angles.b1 > Math.PI)
-        t.q1 = mq;
+      if (angles.a1 > Math.PI) t.p1 = mp
+      else if (angles.a2 > Math.PI) t.p2 = mp
+      else if (angles.b1 > Math.PI) t.q1 = mq
       else {
-        Assert.assert(angles.b2 > Math.PI);
-        t.q2 = mq;
+        Assert.assert(angles.b2 > Math.PI)
+        t.q2 = mq
       }
     }
   }
 
-  InternalCut(t: { p1: number, p2: number, q1: number, q2: number }, mp: number, mq: number, a1: number, a2: number, b1: number,
-    b2: number): boolean {
-    bool ret = false;
+  InternalCut(
+    t: {
+      p1: number
+      p2: number
+      q1: number
+      q2: number
+    },
+    mp: number,
+    mq: number,
+    a1: number,
+    a2: number,
+    b1: number,
+    b2: number,
+  ): boolean {
+    let ret = false
     if (a1 >= Math.PI && a2 >= Math.PI) {
       //Find out who is on the same side from [mq,mp] as Q[0], the next or the prev. Remember that we found the first chunk from Q[0]
 
       //System.Diagnostics.Debug.WriteLine("cutting P");
       //                if(debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(p1, q1), Ls(p2, q2), Ls(mp, mq));
-      Point mpp = this.P[mp].point;
-      Point mqp = this.Q[mq].point;
-      Point mpnp = this.P[this.P.Next(mp)].point;
-      TriangleOrientation orientation = Point.getTriangleOrientation(mpp, mqp, this.Q[0].point);
-      TriangleOrientation nextOrientation = Point.getTriangleOrientation(mpp, mqp, mpnp);
+      const mpp = this.P[mp].point
+      const mqp = this.Q[mq].point
+      const mpnp = this.P[this.P.Next(mp)].point
+      const orientation = Point.getTriangleOrientation(
+        mpp,
+        mqp,
+        this.Q[0].point,
+      )
+      const nextOrientation = Point.getTriangleOrientation(mpp, mqp, mpnp)
 
-      if (orientation == nextOrientation)
-        p1 = this.P.Next(mp);
-      else
-        p2 = this.P.Prev(mp);
-      ret = true;
+      if (orientation == nextOrientation) t.p1 = this.P.Next(mp)
+      else t.p2 = this.P.Prev(mp)
+      ret = true
     }
     if (b1 >= Math.PI && b2 >= Math.PI) {
       //Find out who is on the same side from [mq,mp] as P[0], the next or the prev. Remember that we found the first chunk from P[0]
       //System.Diagnostics.Debug.WriteLine("cutting Q");
       //                if (debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(p1, q1), Ls(p2, q2), Ls(mp, mq));
-      Point mpp = this.P[mp].point;
-      Point mqp = this.Q[mq].point;
-      Point mqnp = this.Q[this.Q.Next(mq)].point;
-      TriangleOrientation orientation = Point.getTriangleOrientation(mpp, mqp, this.P[0].point);
-      TriangleOrientation nextOrientation = Point.getTriangleOrientation(mpp, mqp, mqnp);
-      if (orientation == nextOrientation)
-        q2 = this.Q.Next(mq);
-      else
-        q1 = this.Q.Prev(mq);
-      ret = true;
+      const mpp = this.P[mp].point
+      const mqp = this.Q[mq].point
+      const mqnp = this.Q[this.Q.Next(mq)].point
+      const orientation = Point.getTriangleOrientation(
+        mpp,
+        mqp,
+        this.P[0].point,
+      )
+      const nextOrientation = Point.getTriangleOrientation(mpp, mqp, mqnp)
+      if (orientation == nextOrientation) t.q2 = this.Q.Next(mq)
+      else t.q1 = this.Q.Prev(mq)
+      ret = true
     }
-    return ret;
+    return ret
   }
 
   // void ProcessLeftSideOfTrapez(ref number p1, ref number p2, ref number q2, ref number q1) {
@@ -479,50 +517,77 @@ export class TangentPair {
   //    }
   //}
 
-  GetAnglesAtTheMedian(mp: number, mq: number,
-    mP: Point, mQ: Point,
+  GetAnglesAtTheMedian(
+    mp: number,
+    mq: number,
+    mP: Point,
+    mQ: Point,
     t: {
-      a1: number, a2: number,
-      b1: number, b2: number
-    }) {
-    t.a1 = Point.anglePointCenterPoint(mQ, mP, this.P.Pnt(this.P.Prev(mp)));
-    t.a2 = Point.anglePointCenterPoint(this.P.Pnt(this.P.Next(mp)), mP, mQ);
-    t.b1 = Point.anglePointCenterPoint(this.Q.Pnt(this.Q.Next(mq)), mQ, mP);
-    t.b2 = Point.anglePointCenterPoint(mP, mQ, this.Q.Pnt(this.Q.Prev(mq)));
+      a1: number
+      a2: number
+      b1: number
+      b2: number
+    },
+  ) {
+    t.a1 = Point.anglePointCenterPoint(mQ, mP, this.P.Pnt(this.P.Prev(mp)))
+    t.a2 = Point.anglePointCenterPoint(this.P.Pnt(this.P.Next(mp)), mP, mQ)
+    t.b1 = Point.anglePointCenterPoint(this.Q.Pnt(this.Q.Next(mq)), mQ, mP)
+    t.b2 = Point.anglePointCenterPoint(mP, mQ, this.Q.Pnt(this.Q.Prev(mq)))
   }
 
   // we know here that p1!=p2 and q1!=q2
-  OnlyOneChunkContainsExactlyTwoVertices(t: { p2: number, p1: number, q2: number, q1: number },
-    l:{mp: number, mq: number}, angles:{a1: number, b1: number, a2: number, b2: number}): boolean {
-    const pSideIsShort = t.p2 == this.P.Next(t.p1);
-    const qSideIsShort = t.q1 == this.Q.Next(t.q2);
+  OnlyOneChunkContainsExactlyTwoVertices(
+    t: {p2: number; p1: number; q2: number; q1: number},
+    l: {mp: number; mq: number},
+    angles: {a1: number; b1: number; a2: number; b2: number},
+  ): boolean {
+    const pSideIsShort = t.p2 == this.P.Next(t.p1)
+    const qSideIsShort = t.q1 == this.Q.Next(t.q2)
     if (pSideIsShort && !qSideIsShort) {
-      this.ProcessShortSide(t, l.mp, l.mq, angles.a1, angles.b1, angles.a2, angles.b2);
-      return true;
+      this.ProcessShortSide(
+        t,
+        l.mp,
+        l.mq,
+        angles.a1,
+        angles.b1,
+        angles.a2,
+        angles.b2,
+      )
+      return true
     }
 
     if (qSideIsShort && !pSideIsShort) {
-      this.SwapEverything(t, l, angles);
-      this.ProcessShortSide(ref p2, ref p1, ref q2, ref q1, mp, mq, a1, b1, a2, b2);
-      this.SwapEverything(ref p2, ref p1, ref q2, ref q1, ref mp, ref mq, ref a1, ref b1, ref a2, ref b2);
-      return true;
+      this.SwapEverything(t, l, angles)
+      this.ProcessShortSide(
+        t,
+        l.mp,
+        l.mq,
+        angles.a1,
+        angles.b1,
+        angles.a2,
+        angles.b2,
+      )
+      this.SwapEverything(t, l, angles)
+      return true
     }
 
-    return false;
+    return false
   }
 
-  SwapEverything(t: { p2: number, p1: number, q2: number, q1: number },
-    l:{mp: number, mq: number}, angles:{a1: number, b1: number, a2: number, b2: number}
+  SwapEverything(
+    t: {p2: number; p1: number; q2: number; q1: number},
+    l: {mp: number; mq: number},
+    angles: {a1: number; b1: number; a2: number; b2: number},
   ) {
-    this.SwapPq();
+    this.SwapPq()
     let u = t.p2
     t.p2 = t.p1
     t.p1 = u
-   
+
     u = t.q2
     t.q2 = t.q1
     t.q1 = u
-   
+
     u = l.mq
     l.mq = l.mp
     l.mp = u
@@ -530,108 +595,144 @@ export class TangentPair {
     u = angles.a2
     angles.a2 = angles.b1
     angles.b1 = u
-    
+
     u = angles.b2
-    angles.b2=angles.a1
+    angles.b2 = angles.a1
     angles.a1 = u
   }
 
- 
-
-  ProcessShortSide(t: { p2: number, p1: number, q2: number, q1: number }, mp: number, mq: number, a1: number, b1: number,
-    a2: number, b2: number) {
+  ProcessShortSide(
+    t: {p2: number; p1: number; q2: number; q1: number},
+    mp: number,
+    mq: number,
+    a1: number,
+    b1: number,
+    a2: number,
+    b2: number,
+  ) {
     //case 2.1
-    if (mp == p2)
-      this.ProcessSide(ref p2, ref p1, ref q2, ref q1, mq, a1, b1, b2);
+    if (mp == t.p2) this.ProcessSide(t, mq, a1, b1, b2)
     else {
       if (a2 <= Math.PI) {
         if (a2 + b2 >= Math.PI) {
-          if (a2 >= Math.PI / 2) p2 = p1;
-          else q2 = mq;
+          if (a2 >= Math.PI / 2) t.p2 = t.p1
+          else t.q2 = mq
         } else {
-          if (b1 >= Math.PI / 2) q1 = mq;
+          if (b1 >= Math.PI / 2) t.q1 = mq
           else if (a2 < b2) {
             //SugiyamaLayoutSettings.Show(new LineSegment(P.Pnt(p2), Q.Pnt(q2)), new LineSegment(P.Pnt(p1), Q.Pnt(q1)), new LineSegment(P.Pnt(p1), Q.Pnt(mq)), P.Polyline, Q.Polyline);
-            if (Ponumber.CanProject(this.Q.Pnt(mq), this.P[p1].ponumber, this.P[p2].ponumber)) q1 = mq;
-            else p1 = p2;
+            if (
+              Point.canProject(
+                this.Q.Pnt(mq),
+                this.P[t.p1].Point,
+                this.P[t.p2].Point,
+              )
+            )
+              t.q1 = mq
+            else t.p1 = t.p2
           }
         }
       } else {
         //a2>Pi , case 2.2
-        if (a1 + b1 <= Math.PI)
-          p1 = p2;
-        else
-          p2 = p1;
+        if (a1 + b1 <= Math.PI) t.p1 = t.p2
+        else t.p2 = t.p1
       }
     }
   }
 
   SwapPq() {
-    Polygon t = this.P;
-    this.P = this.Q;
-    this.Q = t;
+    const t = this.P
+    this.P = this.Q
+    this.Q = t
   }
 
-  ProcessSide(t: { p2: number, p1: number, q2: number, q1: number }, mq: number, a1: number, b1: number, b2: number) {
+  ProcessSide(
+    t: {p2: number; p1: number; q2: number; q1: number},
+    mq: number,
+    a1: number,
+    b1: number,
+    b2: number,
+  ) {
     //SugiyamaLayoutSettings.Show(new LineSegment(P.Pnt(p2), Q.Pnt(q2)), new LineSegment(P.Pnt(p1), Q.Pnt(q1)),new LineSegment(P.Pnt(p1), Q.Pnt(mq)), P.Polyline, Q.Polyline);
-    Ponumber mQ = this.Q.Pnt(mq);
+    const mQ = this.Q.Pnt(mq)
     if (a1 <= Math.PI) {
       if (a1 + b1 >= Math.PI) {
-        if (a1 >= Math.PI / 2) p1 = p2;
-        else q1 = mq;
-      } else if (b2 >= Math.PI / 2) q2 = mq;
+        if (a1 >= Math.PI / 2) t.p1 = t.p2
+        else t.q1 = mq
+      } else if (b2 >= Math.PI / 2) t.q2 = mq
       else if (a1 < b2) {
-        if (Ponumber.CanProject(mQ, this.P[p1].ponumber, this.P[p2].ponumber)) q2 = mq;
-        else p2 = p1;
+        if (Point.canProject(mQ, this.P[t.p1].Point, this.P[t.p2].Point))
+          t.q2 = mq
+        else t.p2 = t.p1
       }
     } else {
       //a1>Pi , case 2.2
-      p2 = p1;
-      if (b1 >= Math.PI)
-        q1 = mq;
-      else if (b2 >= Math.PI)
-        q2 = mq;
+      t.p2 = t.p1
+      if (b1 >= Math.PI) t.q1 = mq
+      else if (b2 >= Math.PI) t.q2 = mq
     }
   }
 
-  static OneOfChunksContainsOnlyOneVertex(t: { p2: number, p1: number, q2: number, q1: number }, mp: number, mq: number,
-    a1: number, b1: number): boolean {
+  static OneOfChunksContainsOnlyOneVertex(
+    t: {p2: number; p1: number; q2: number; q1: number},
+    mp: number,
+    mq: number,
+    a1: number,
+    b1: number,
+  ): boolean {
     if (t.p1 == t.p2) {
-      if (b1 >= Math.PI / 2)
-        t.q1 = mq;
-      else
-        t.q2 = mq;
+      if (b1 >= Math.PI / 2) t.q1 = mq
+      else t.q2 = mq
 
-      return true;
+      return true
     }
     if (t.q1 == t.q2) {
-      if (a1 >= Math.PI / 2)
-        t.p1 = mp;
-      else
-        t.p2 = mp;
-      return true;
+      if (a1 >= Math.PI / 2) t.p1 = mp
+      else t.p2 = mp
+      return true
     }
-    return false;
+    return false
   }
 
   CalculateLeftTangents() {
-    Point bisectorPivot;
-    Point bisectorRay;
-    number p1;
-    number p2;
-    number q1;
-    number q2;
+    let t: {
+      bisectorPivot: Point
+      bisectorRay: Point
+      p1: number
+      p2: number
+      q1: number
+      q2: number
+    }
 
-    this.FindDividingBisector(out bisectorPivot, out bisectorRay,
-      out p1, out p2, out q1, out q2);
-    number pFurthest = this.P.FindTheFurthestVertexFromBisector(p1, p2, bisectorPivot, bisectorRay);
-    number qFurthest = this.Q.FindTheFurthestVertexFromBisector(q2, q1, bisectorPivot, bisectorRay);
+    this.FindDividingBisector(t)
+    const pFurthest = this.P.FindTheFurthestVertexFromBisector(
+      t.p1,
+      t.p2,
+      t.bisectorPivot,
+      t.bisectorRay,
+    )
+    const qFurthest = this.Q.FindTheFurthestVertexFromBisector(
+      t.q2,
+      t.q1,
+      t.bisectorPivot,
+      t.bisectorRay,
+    )
 
-    this.upperBranchOnP = false;
-    this.lowerBranchOnQ = true;
-    this.leftPLeftQ = this.TangentBetweenBranches(pFurthest, p1, qFurthest, q1); //we need to take maximally wide branches
-    this.lowerBranchOnQ = false;
-    this.leftPRightQ = this.TangentBetweenBranches(pFurthest, p1, qFurthest, q2);
+    this.upperBranchOnP = false
+    this.lowerBranchOnQ = true
+    this.leftPLeftQ = this.TangentBetweenBranches(
+      pFurthest,
+      t.p1,
+      qFurthest,
+      t.q1,
+    ) //we need to take maximally wide branches
+    this.lowerBranchOnQ = false
+    this.leftPRightQ = this.TangentBetweenBranches(
+      pFurthest,
+      t.p1,
+      qFurthest,
+      t.q2,
+    )
   }
 
   // bool QContains(number x ,number y) {
@@ -651,24 +752,44 @@ export class TangentPair {
   //}
 
   CalculateRightTangents() {
-    Point bisectorPivot;
-    Point bisectorRay;
-    number p1;
-    number p2;
-    number q1;
-    number q2;
+    let t: {
+      bisectorPivot: Point
+      bisectorRay: Point
+      p1: number
+      p2: number
+      q1: number
+      q2: number
+    }
+    this.FindDividingBisector(t)
 
-    this.FindDividingBisector(out bisectorPivot, out bisectorRay, out p1, out p2, out q1, out q2);
-
-    number pFurthest = this.P.FindTheFurthestVertexFromBisector(p1, p2, bisectorPivot, bisectorRay);
-    number qFurthest = this.Q.FindTheFurthestVertexFromBisector(q2, q1, bisectorPivot, bisectorRay);
+    const pFurthest = this.P.FindTheFurthestVertexFromBisector(
+      t.p1,
+      t.p2,
+      t.bisectorPivot,
+      t.bisectorRay,
+    )
+    const qFurthest = this.Q.FindTheFurthestVertexFromBisector(
+      t.q2,
+      t.q1,
+      t.bisectorPivot,
+      t.bisectorRay,
+    )
     //SugiyamaLayoutSettings.Show(ls(p1, q1), ls(p2, q2), ls(pFurthest, qFurthest), P.Polyline, Q.Polyline);
 
-    this.upperBranchOnP = true;
-    this.lowerBranchOnQ = true;
-    this.rightPLeftQ = this.TangentBetweenBranches(pFurthest, p2, qFurthest, q1);
-    this.lowerBranchOnQ = false;
-    this.rightPRightQ = this.TangentBetweenBranches(pFurthest, p2, qFurthest, q2);
+    this.upperBranchOnP = true
+    this.lowerBranchOnQ = true
+    this.rightPLeftQ = this.TangentBetweenBranches(
+      pFurthest,
+      t.p2,
+      qFurthest,
+      t.q1,
+    )
+    this.lowerBranchOnQ = false
+    this.rightPRightQ = this.TangentBetweenBranches(
+      pFurthest,
+      t.p2,
+      qFurthest,
+      t.q2,
+    )
   }
-
 }
