@@ -17,9 +17,9 @@ test('polyline test iterator', () => {
   for (const p of ps) {
     poly.addPoint(p)
   }
-  let i = ps.length
+  let i = 0
   for (const pp of poly.polylinePoints()) {
-    expect(pp.point.equal(ps[--i])).toBe(true) // the points are added at the start of the polyline
+    expect(pp.point.equal(ps[i++])).toBe(true) // the points are added at the start of the polyline
   }
 })
 test('polyline test skip', () => {
@@ -34,9 +34,9 @@ test('polyline test skip', () => {
     poly.addPoint(p)
   }
   const skip = 2
-  let i = ps.length - skip
+  let i = skip
   for (const pp of poly.skip(skip)) {
-    expect(pp.point.equal(ps[--i])).toBe(true) // the points are added at the start of the polyline, skipping first two
+    expect(pp.point.equal(ps[i++])).toBe(true) // the points are added at the start of the polyline, skipping first two
   }
 })
 
@@ -93,8 +93,8 @@ test('polyline test all intersection with polyline', () => {
 
   const trans = new PlaneTransformation(1, 0, 0, 0, -1, 5)
   const polyFlipped = poly.transform(trans)
-  expect(polyFlipped.end.x == poly.start.x).toBeTruthy()
-  expect(polyFlipped.end.y == 5 - poly.start.y).toBeTruthy()
+  expect(polyFlipped.end.x == poly.end.x).toBeTruthy()
+  expect(polyFlipped.end.y == 5 - poly.end.y).toBeTruthy()
   const xx = Curve.getAllIntersections(poly, polyFlipped, false)
   const dc = [
     DebugCurve.mkDebugCurveTWCI(90, 0.1, 'Black', poly),

@@ -51,12 +51,12 @@ export class Polyline implements ICurve {
     const pp = new PolylinePoint()
     pp.polyline = this
     pp.point = p.clone()
-    if (this.startPoint != null) {
-      if (!Point.closeDistEps(p, this.startPoint.point)) {
-        this.startPoint.prev = pp
-        pp.next = this.startPoint
-        this.startPoint = pp
-      }
+    if (this.endPoint != null) {
+      // if (!ApproximateComparer.Close(point, EndPoint.Point)) {
+      this.endPoint.next = pp
+      pp.prev = this.endPoint
+      this.endPoint = pp
+      // }
     } else {
       this.startPoint = this.endPoint = pp
     }
