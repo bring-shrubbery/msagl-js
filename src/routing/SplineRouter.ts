@@ -1,37 +1,25 @@
-import { from, IEnumerable, IGrouping } from 'linq-to-typescript'
-import { Queue } from 'queue-typescript'
-import { Algorithm } from '../../src/utils/algorithm'
-import { RectangleNode } from '../core/geometry/RTree/RectangleNode'
-import { RTree } from '../core/geometry/RTree/RTree'
-import { Port } from '../core/layout/Port'
-import { BundlingSettings } from '../core/routing/BundlingSettings'
-import { EdgeRoutingSettings } from '../core/routing/EdgeRoutingSettings'
-import { GeomEdge } from '../layout/core/geomEdge'
-import { GeomGraph } from '../layout/core/GeomGraph'
-import { Curve } from '../math/geometry/curve'
-import { CurveFactory } from '../math/geometry/curveFactory'
-import { DebugCurve } from '../math/geometry/debugCurve'
-import { ICurve } from '../math/geometry/icurve'
-import { LineSegment } from '../math/geometry/lineSegment'
-import { Point } from '../math/geometry/point'
-import { Polyline } from '../math/geometry/polyline'
-import { PolylinePoint } from '../math/geometry/polylinePoint'
-import { Rectangle } from '../math/geometry/rectangle'
-import { SmoothedPolyline } from '../math/geometry/smoothedPolyline'
-import { Edge } from '../structs/edge'
-import { PointMap } from '../utils/PointMap'
-import { Shape } from './Shape'
-import { TightLooseCouple } from './TightLooseCouple'
-import { VisibilityEdge } from './visibility/VisibilityEdge'
-import { VisibilityGraph } from './visibility/VisibilityGraph'
-import { EdgeGeometry } from './../layout/core/edgeGeometry'
-import { CancelToken } from '../utils/cancelToken'
-import { Assert } from '../utils/assert'
-import { List } from 'lodash'
-import { ShapeCreator } from './ShapeCreator'
-import { RelativeFloatingPort } from '../core/layout/RelativeFloatingPort'
-import { ClusterBoundaryPort } from './ClusterBoundaryPort'
-import { ShapeObstacleCalculator } from './ShapeObstacleCalculator'
+import {from, IEnumerable} from 'linq-to-typescript'
+import {Algorithm} from '../../src/utils/algorithm'
+import {RTree} from '../core/geometry/RTree/RTree'
+import {Port} from '../core/layout/Port'
+import {BundlingSettings} from '../core/routing/BundlingSettings'
+import {EdgeRoutingSettings} from '../core/routing/EdgeRoutingSettings'
+import {GeomEdge} from '../layout/core/geomEdge'
+import {GeomGraph} from '../layout/core/GeomGraph'
+import {Point} from '../math/geometry/point'
+import {Polyline} from '../math/geometry/polyline'
+import {Edge} from '../structs/edge'
+import {PointMap} from '../utils/PointMap'
+import {Shape} from './Shape'
+import {TightLooseCouple} from './TightLooseCouple'
+import {VisibilityGraph} from './visibility/VisibilityGraph'
+import {EdgeGeometry} from './../layout/core/edgeGeometry'
+import {CancelToken} from '../utils/cancelToken'
+import {Assert} from '../utils/assert'
+import {List} from 'lodash'
+import {ShapeCreator} from './ShapeCreator'
+import {ClusterBoundaryPort} from './ClusterBoundaryPort'
+import {ShapeObstacleCalculator} from './ShapeObstacleCalculator'
 
 function insertRange<T>(collection: Set<T>, elems: IEnumerable<T>) {
   for (const e of elems) collection.add(e)
@@ -269,15 +257,15 @@ export class SplineRouter extends Algorithm {
   }
 
   SetLoosePolylinesForAnywherePorts() {
-    for (const [shape, val] of this.shapesToTightLooseCouples) {
-      for (const port of shape.Ports) {
-        if (port.hasOwnProperty('LoosePolyline')) {
-          ; (port as ClusterBoundaryPort).LoosePolyline = <Polyline>(
-            val.LooseShape.BoundaryCurve
-          )
-        }
-      }
-    }
+    // for (const [shape, val] of this.shapesToTightLooseCouples) {
+    //   for (const port of shape.Ports) {
+    //     if (port.hasOwnProperty('LoosePolyline')) {
+    //       ;(port as ClusterBoundaryPort).LoosePolyline = <Polyline>(
+    //         val.LooseShape.BoundaryCurve
+    //       )
+    //     }
+    //   }
+    // }
   }
 
   BindLooseShapes() {
