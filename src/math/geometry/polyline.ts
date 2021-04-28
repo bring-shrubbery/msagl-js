@@ -161,7 +161,7 @@ export class Polyline implements ICurve {
   }
 
   get count() {
-    if (this.requireInit_) this.updateCount()
+    if (this.requireInit_) this.init()
     return this.count_
   }
 

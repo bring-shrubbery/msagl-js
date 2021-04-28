@@ -54,8 +54,8 @@ export class Polygon {
   //  LineSegment ls(Point pivot, int p) {
   //     return new LineSegment(pivot, Pnt(p));
   // }
-  Pnt(i: number): Point {
-    return this[i].point
+  pnt(i: number): Point {
+    return this.pp(i).point
   }
 
   public toString(): string {
@@ -98,10 +98,10 @@ export class Polygon {
     do {
       const m: number = this.Median(p2, p1)
       // now the chunk goes clockwise from p2 to p1
-      const mp: Point = this.Pnt(m)
-      if (this.Pnt(this.Next(m)).sub(mp).dot(directionToTheHill) >= 0) {
+      const mp: Point = this.pnt(m)
+      if (this.pnt(this.Next(m)).sub(mp).dot(directionToTheHill) >= 0) {
         p2 = this.Next(m)
-      } else if (this.Pnt(this.Prev(m)).sub(mp).dot(directionToTheHill) >= 0) {
+      } else if (this.pnt(this.Prev(m)).sub(mp).dot(directionToTheHill) >= 0) {
         p1 = this.Prev(m)
       } else {
         p2 = m
@@ -118,10 +118,10 @@ export class Polygon {
     for (let i = 0; i < a.count; i++) {
       for (let j = 0; j < b.count; j++) {
         const t = LineSegment.minDistBetweenLineSegments(
-          a.Pnt(i),
-          a.Pnt(i + 1),
-          b.Pnt(j),
-          b.Pnt(j + 1),
+          a.pnt(i),
+          a.pnt(i + 1),
+          b.pnt(j),
+          b.pnt(j + 1),
         )
         ret = Math.min(ret, t.dist)
       }
@@ -210,9 +210,9 @@ export class Polygon {
   }
 
   GetSequenceDelegate(point: Point): (u: number) => number {
-    const pointOfP = this.Pnt(0)
+    const pointOfP = this.pnt(0)
     return (i: number) => {
-      const d = Point.anglePCP(pointOfP, point, this.Pnt(i))
+      const d = Point.anglePCP(pointOfP, point, this.pnt(i))
       return d < Math.PI ? d : d - 2 * Math.PI
     }
   }
