@@ -18,10 +18,9 @@ export class Polygon {
 
   constructor(polyline: Polyline) {
     this.polyline = polyline
-    this.points = new Array(this.polyline.count)
-    let i = 0
-    let pp: PolylinePoint = this.polyline.startPoint
-    for (; i < this.polyline.count; i++, pp = pp.next) this.points[i] = pp
+    this.points = new Array<PolylinePoint>()
+    for (let pp = this.polyline.startPoint; pp; pp = pp.next)
+      this.points.push(pp)
   }
 
   Next(i: number): number {
@@ -48,7 +47,7 @@ export class Polygon {
     return i - this.count
   }
 
-  Item(i: number): PolylinePoint {
+  pp(i: number): PolylinePoint {
     return this.points[this.Module(i)]
   }
 

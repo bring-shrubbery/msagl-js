@@ -23,7 +23,7 @@ export class Polyline implements ICurve {
   private isClosed_: boolean
   pBNode: PN
   bBox: Rectangle
-  count: number
+  private count_: number
   requireInit() {
     this.requireInit_ = true
   }
@@ -146,9 +146,23 @@ export class Polyline implements ICurve {
       this.bBox.add(p.point)
     }
 
+    this.updateCount()
+
     this.calculatePbNode()
 
     this.requireInit_ = false
+  }
+
+  updateCount(): void {
+    this.count_ = 0
+    for (let pp = this.startPoint; pp != null; pp = pp.next) {
+      this.count_++
+    }
+  }
+
+  get count() {
+    if (this.requireInit_) this.updateCount()
+    return this.count_
   }
 
   get closed() {
@@ -217,7 +231,7 @@ export class Polyline implements ICurve {
   }
   get parEnd(): number {
     if (this.requireInit_) this.init()
-    return this.closed ? this.count : this.count - 1
+    return this.closed ? this.count_ : this.count_ - 1
   }
   trim(start: number, end: number): ICurve {
     throw new Error('Method not implemented.')

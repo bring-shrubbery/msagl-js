@@ -263,13 +263,13 @@ export class TangentPair {
       rightTangentPoint: undefined,
     }
 
-    this.P.GetTangentPoints(r, this.Q[0].point)
+    this.P.GetTangentPoints(r, this.Q.pp(0).point)
     //  LayoutAlgorithmSettings.ShowDebugCurves(new DebugCurve(P.Polyline), new DebugCurve(Q.Polyline), new DebugCurve("red",Ls(p2, 0)), new DebugCurve("blue",Ls(p1, 0)));
     if (r.rightTangentPoint == r.rightTangentPoint) {
       r.rightTangentPoint += this.P.count
     }
     let l: {leftTangentPoint: number; rightTangentPoint: number}
-    this.Q.GetTangentPoints(l, this.P[0].point)
+    this.Q.GetTangentPoints(l, this.P.pp(0).point)
     // LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(0, q1), Ls(0, q2));
     if (l.rightTangentPoint == l.leftTangentPoint) {
       l.leftTangentPoint = l.leftTangentPoint + this.Q.count
@@ -290,25 +290,25 @@ export class TangentPair {
     while (this.ChunksAreLong(t.p2, t.p1, t.q2, t.q1)) this.ShrinkChunks(t)
 
     if (t.p1 == t.p2) {
-      t.pClosest = this.P[t.p2].point
-      if (t.q1 == t.q2) t.qClosest = this.Q[t.q1].point
+      t.pClosest = this.P.pp(t.p2).point
+      if (t.q1 == t.q2) t.qClosest = this.Q.pp(t.q1).point
       else {
         //                    if(debug) LayoutAlgorithmSettings.Show(new LineSegment(P.Pnt(p2), Q.Pnt(q2)), new LineSegment(P.Pnt(p1), Q.Pnt(q1)), P.Polyline, Q.Polyline);
         t.qClosest = Point.ClosestPointAtLineSegment(
           t.pClosest,
-          this.Q[t.q1].point,
-          this.Q[t.q2].point,
+          this.Q.pp(t.q1).point,
+          this.Q.pp(t.q2).point,
         )
         if (Point.closeDistEps(t.qClosest, this.Q.Pnt(t.q1))) t.q2 = t.q1
         else if (Point.closeDistEps(t.qClosest, this.Q.Pnt(t.q2))) t.q1 = t.q2
       }
     } else {
       Assert.assert(t.q1 == t.q2)
-      t.qClosest = this.Q[t.q1].point
+      t.qClosest = this.Q.pp(t.q1).point
       t.pClosest = Point.ClosestPointAtLineSegment(
         t.qClosest,
-        this.P[t.p1].point,
-        this.P[t.p2].point,
+        this.P.pp(t.p1).point,
+        this.P.pp(t.p2).point,
       )
       if (Point.closeDistEps(t.pClosest, this.P.Pnt(t.p1))) t.p2 = t.p1
       else if (Point.closeDistEps(t.qClosest, this.P.Pnt(t.p2))) t.p1 = t.p2
@@ -336,8 +336,8 @@ export class TangentPair {
   ShrinkChunks(t: {p2: number; p1: number; q2: number; q1: number}) {
     const mp = t.p1 == t.p2 ? t.p1 : this.P.Median(t.p1, t.p2)
     const mq = t.q1 == t.q2 ? t.q1 : this.Q.Median(t.q2, t.q1)
-    const mP = this.P[mp].point
-    const mQ = this.Q[mq].point
+    const mP = this.P.pp(mp).point
+    const mQ = this.Q.pp(mq).point
 
     let angles: {
       a1: number
@@ -453,13 +453,13 @@ export class TangentPair {
 
       //System.Diagnostics.Debug.WriteLine("cutting P");
       //                if(debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(p1, q1), Ls(p2, q2), Ls(mp, mq));
-      const mpp = this.P[mp].point
-      const mqp = this.Q[mq].point
-      const mpnp = this.P[this.P.Next(mp)].point
+      const mpp = this.P.pp(mp).point
+      const mqp = this.Q.pp(mq).point
+      const mpnp = this.P.pp(this.P.Next(mp)).point
       const orientation = Point.getTriangleOrientation(
         mpp,
         mqp,
-        this.Q[0].point,
+        this.Q.pp(0).point,
       )
       const nextOrientation = Point.getTriangleOrientation(mpp, mqp, mpnp)
 
@@ -471,13 +471,13 @@ export class TangentPair {
       //Find out who is on the same side from [mq,mp] as P[0], the next or the prev. Remember that we found the first chunk from P[0]
       //System.Diagnostics.Debug.WriteLine("cutting Q");
       //                if (debug) LayoutAlgorithmSettings.Show(P.Polyline, Q.Polyline, Ls(p1, q1), Ls(p2, q2), Ls(mp, mq));
-      const mpp = this.P[mp].point
-      const mqp = this.Q[mq].point
-      const mqnp = this.Q[this.Q.Next(mq)].point
+      const mpp = this.P.pp(mp).point
+      const mqp = this.Q.pp(mq).point
+      const mqnp = this.Q.pp(this.Q.Next(mq)).point
       const orientation = Point.getTriangleOrientation(
         mpp,
         mqp,
-        this.P[0].point,
+        this.P.pp(0).point,
       )
       const nextOrientation = Point.getTriangleOrientation(mpp, mqp, mqnp)
       if (orientation == nextOrientation) t.q2 = this.Q.Next(mq)
@@ -618,8 +618,8 @@ export class TangentPair {
             if (
               Point.canProject(
                 this.Q.Pnt(mq),
-                this.P[t.p1].Point,
-                this.P[t.p2].Point,
+                this.P.pp(t.p1).point,
+                this.P.pp(t.p2).point,
               )
             )
               t.q1 = mq
@@ -655,7 +655,7 @@ export class TangentPair {
         else t.q1 = mq
       } else if (b2 >= Math.PI / 2) t.q2 = mq
       else if (a1 < b2) {
-        if (Point.canProject(mQ, this.P[t.p1].Point, this.P[t.p2].Point))
+        if (Point.canProject(mQ, this.P.pp(t.p1).point, this.P.pp(t.p2).point))
           t.q2 = mq
         else t.p2 = t.p1
       }
