@@ -2,7 +2,7 @@
 
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {LineSegment} from '../../math/geometry/lineSegment'
-import {Point, TriangleOrientation} from '../../math/geometry/point'
+import {Point} from '../../math/geometry/point'
 import {Assert} from '../../utils/assert'
 import {Polygon} from './Polygon'
 
@@ -581,12 +581,12 @@ export class TangentPair {
   ) {
     this.SwapPq()
     let u = t.p2
-    t.p2 = t.p1
-    t.p1 = u
+    t.p2 = t.q1
+    t.q1 = u
 
     u = t.q2
-    t.q2 = t.q1
-    t.q1 = u
+    t.q2 = t.p1
+    t.p1 = u
 
     u = l.mq
     l.mq = l.mp

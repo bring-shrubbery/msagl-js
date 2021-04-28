@@ -8,11 +8,88 @@ test('more polygon dist', () => {
   const ls = LineSegment.mkPP(point, new Point(314, 303))
   const pl5 = Polyline.mkFromPoints([ls.start, ls.end])
   //LayoutAlgorithmSettings.Show(pl0);
-  let dist = Polygon.Distance(new Polygon(pl5), new Polygon(pls[0]))
-  dist = Polygon.Distance(new Polygon(pl5), new Polygon(pls[1]))
-  dist = Polygon.Distance(new Polygon(pl5), new Polygon(pls[2]))
-  dist = Polygon.Distance(new Polygon(pl5), new Polygon(pls[3]))
+  for (const poly of pls) {
+    const distInfo = Polygon.Distance(new Polygon(pl5), new Polygon(poly))
+    const testDist = Polygon.TestPolygonDist(
+      new Polygon(pl5),
+      new Polygon(poly),
+    )
+    expect(Math.abs(testDist - distInfo.dist) < 0.0001).toBe(true)
+  }
 })
+test('PolygonPolygonDistanceTest2', () => {
+  const a = Polyline.mkFromPoints([
+    new Point(-3397.10020369428, 993.94470736826),
+    new Point(-3426.74057842555, 1014.3329144183),
+    new Point(-3426.74057842555, 1045.96907990543),
+    new Point(-3397.10020369428, 1066.35728695547),
+    new Point(-3357.98527032, 1066.35728695547),
+    new Point(-3328.34489558873, 1045.96907990543),
+    new Point(-3328.34489558873, 1014.3329144183),
+    new Point(-3357.98527032, 993.94470736826),
+  ])
+
+  const b = Polyline.mkFromPoints([
+    new Point(-2588.08967113495, 1130.55203056335),
+    new Point(-3327.46492624868, 1013.85788393446),
+  ])
+
+  //DisplayGeometryGraph.ShowDebugCurves(new DebugCurve(100,1,"red",a),new DebugCurve(100,1,"blue",b));
+  const pa = new Polygon(a)
+  const pb = new Polygon(b)
+  const dist0 = Polygon.Distance(pb, pa)
+  TestDist(pb, pa, dist0.dist)
+  const dist = Polygon.Distance(pa, pb)
+  TestDist(pa, pb, dist.dist)
+})
+test(' PolygonPolygonDistanceTest()', () => {
+  const a = new Polygon(
+    Polyline.mkFromPoints([
+      new Point(0, 0),
+      new Point(0, 100),
+      new Point(42, 109),
+      new Point(100, 100),
+      new Point(100, 0),
+    ]),
+  )
+  let b = new Polygon(
+    Polyline.mkFromPoints([new Point(-2, 105), new Point(50, 130)]),
+  )
+  let di = Polygon.Distance(a, b)
+  TestDist(a, b, di.dist)
+
+  // LayoutAlgorithmSettings.ShowDebugCurves(new DebugCurve(new LineSegment(p0,p1)), new DebugCurve("blue", poly0.Polyline), new DebugCurve("red",poly1.Polyline));
+  b = new Polygon(
+    Polyline.mkFromPoints([new Point(159, 60), new Point(91, 118)]),
+  )
+  di = Polygon.Distance(b, a)
+  TestDist(a, b, di.dist)
+
+  b = new Polygon(
+    Polyline.mkFromPoints([
+      new Point(159, 60),
+      new Point(140, 50),
+      new Point(91, 118),
+    ]),
+  )
+  di = Polygon.Distance(b, a)
+  //  LayoutAlgorithmSettings.ShowDebugCurves(new DebugCurve(new LineSegment(p0, p1)),
+  //    new DebugCurve("blue", a.Polyline), new DebugCurve("red", b.Polyline));
+
+  TestDist(a, b, di.dist)
+})
+function TestDist(a: Polygon, b: Polygon, dist: number) {
+  for (let i = 0; i < a.count; i++)
+    for (let j = 0; j < b.count; j++) {
+      const d = LineSegment.minDistBetweenLineSegments(
+        a.pnt(i),
+        a.pnt(i + 1),
+        b.pnt(j),
+        b.pnt(j + 1),
+      )
+      expect(d.dist >= dist - 0.0000001).toBe(true)
+    }
+}
 test('polygon dist', () => {
   const points = [
     new Point(0, 0),
@@ -53,7 +130,7 @@ function GetPolylines(): Polyline[] {
 function PointsFromData(coords: number[]): Point[] {
   const r: Point[] = []
   for (let i = 0; i < coords.length - 1; i += 2) {
-    r.push(new Point(coords[i], coords[i + 1]))
+    r.push(new Point(coords[i], -coords[i + 1]))
   }
   return r
 }
