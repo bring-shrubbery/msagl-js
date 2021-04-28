@@ -1,4 +1,3 @@
-import {DebugCurve} from '../../math/geometry/debugCurve'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
@@ -43,7 +42,6 @@ export class Polygon {
     if (i < this.count) {
       return i
     }
-
     return i - this.count
   }
 
