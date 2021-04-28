@@ -67,10 +67,10 @@ export class Polygon {
     Assert.assert(p1 != p2)
     // otherwise we do not know what arc is mean: the whole one or just the point
     if (p2 > p1) {
-      return (p2 + p1) / 2
+      return Math.floor((p2 + p1) / 2)
     }
 
-    return this.Module((p2 + (this.count + p1)) / 2)
+    return this.Module(p2 + Math.floor((this.count + p1) / 2))
   }
 
   //  p1 and p2 represent the closest feature. Two cases are possible p1=p2, or p1 and p2 share an edge going from p1 to p2
