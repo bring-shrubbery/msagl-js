@@ -17,6 +17,33 @@ test('more polygon dist', () => {
     expect(Math.abs(testDist - distInfo.dist) < 0.0001).toBe(true)
   }
 })
+test('almost two circles', () => {
+  const rad = 10
+  const n_corners = 20
+  const center_a = new Point(0, 0)
+  const center_b = new Point(2 * rad + 1, 0)
+  let a = createCircle(center_a, rad, n_corners)
+  let b = createCircle(center_b, rad, n_corners)
+  let di = Polygon.Distance(a, b)
+  TestDist(a, b, di.dist)
+  const pts = circlePoints(n_corners, rad, center_a)
+  const pa = new Polyline()
+  for (let i = 0; i < pts.length; i++) {
+    if (i == 3 || i == 9) continue
+    pa.addPoint(pts[i])
+  }
+  a = new Polygon(pa)
+  const pb = new Polyline()
+  for (let i = 0; i < pts.length; i++) {
+    if (i == 1 || i == 15) continue
+    pb.addPoint(
+      pts[i].add(new Point(2 * rad + 1, 2 * rad + 1).rotate(Math.PI / 10)),
+    )
+  }
+  b = new Polygon(pb)
+  di = Polygon.Distance(a, b)
+  TestDist(a, b, di.dist)
+})
 test('PolygonPolygonDistanceTest2', () => {
   const a = Polyline.mkFromPoints([
     new Point(-3397.10020369428, 993.94470736826),
@@ -133,4 +160,23 @@ function PointsFromData(coords: number[]): Point[] {
     r.push(new Point(coords[i], -coords[i + 1]))
   }
   return r
+}
+
+function createCircle(
+  center: Point,
+  radius: number,
+  numOfPoints: number,
+): Polygon {
+  const pts = circlePoints(numOfPoints, radius, center)
+  return Polygon.mkFromPoints(pts)
+}
+
+function circlePoints(numOfPoints: number, radius: number, center: Point) {
+  const angle = Math.PI / numOfPoints
+  const pts = []
+  for (let i = 0; i < numOfPoints; i++) {
+    const a = -i * angle
+    pts.push(new Point(radius, 0).rotate(a).add(center))
+  }
+  return pts
 }

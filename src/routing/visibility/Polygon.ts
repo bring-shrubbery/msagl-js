@@ -8,6 +8,9 @@ import {TangentPair} from './TangentPair'
 
 export class Polygon {
   polyline: Polyline
+  static mkFromPoints(pts: Point[]): Polygon {
+    return new Polygon(Polyline.mkFromPoints(pts))
+  }
 
   get Polyline(): Polyline {
     return this.polyline
@@ -20,6 +23,11 @@ export class Polygon {
     this.points = new Array<PolylinePoint>()
     for (let pp = this.polyline.startPoint; pp; pp = pp.next)
       this.points.push(pp)
+    Assert.assert(
+      polyline.count < 3 ||
+        Point.getTriangleOrientation(this.pnt(0), this.pnt(1), this.pnt(2)) !=
+          TriangleOrientation.Counterclockwise,
+    )
   }
 
   Next(i: number): number {

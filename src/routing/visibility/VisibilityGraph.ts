@@ -4,14 +4,10 @@ import {Polyline} from '../../math/geometry/polyline'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
 import {Assert} from '../../utils/assert'
 import {PointMap} from '../../utils/PointMap'
+import {Polygon} from './Polygon'
 import {VisibilityEdge} from './VisibilityEdge'
 import {VisibilityKind} from './VisibilityKind'
 import {VisibilityVertex} from './VisibilityVertex'
-class Polygon {
-  constructor(hole: unknown) {
-    throw new Error('not implemented')
-  }
-}
 class TangentVisibilityGraphCalculator {
   static AddTangentVisibilityEdgesToGraph(
     polygons: Polygon[],
