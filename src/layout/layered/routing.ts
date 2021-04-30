@@ -68,7 +68,7 @@ export class Routing extends Algorithm {
   }
 
   RouteFlatEdges() {
-    throw new Error('not implemented')
+    //  throw new Error('not implemented')
     // const flatEdgeRouter = new FlatEdgeRouter(this.settings, this)
     // flatEdgeRouter.run()
   }
