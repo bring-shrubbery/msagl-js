@@ -35,16 +35,16 @@ export class HierarchyCalculator {
     // Finding the seeds
     const b0: Parallelogram = nodes[0].parallelogram
     // the first seed
-    const seed0 = 1
-    const area: number = Parallelogram.parallelogramOfTwo(
+    let seed0 = 1
+    let area: number = Parallelogram.parallelogramOfTwo(
       b0,
       nodes[seed0].parallelogram,
-    ).Area
-    for (const i = 2; i < nodes.length; i++) {
+    ).area
+    for (let i = 2; i < nodes.length; i++) {
       const area0: number = Parallelogram.parallelogramOfTwo(
         b0,
         nodes[i].parallelogram,
-      ).Area
+      ).area
       if (area0 > area) {
         seed0 = i
         area = area0
@@ -53,10 +53,10 @@ export class HierarchyCalculator {
 
     // Got the first seed seed0
     // Now looking for a seed for the second group
-    const seed1 = 0
+    let seed1: number
     // the compiler forces me to init it
     // init seed1
-    for (const i = 0; i < nodes.length; i++) {
+    for (let i = 0; i < nodes.length; i++) {
       if (i != seed0) {
         seed1 = i
         break
@@ -65,17 +65,17 @@ export class HierarchyCalculator {
     area = Parallelogram.parallelogramOfTwo(
       nodes[seed0].parallelogram,
       nodes[seed1].parallelogram,
-    ).Area
+    ).area
     // Now try to improve the second seed
-    for (const i = 0; i < nodes.length; i++) {
+    for (let i = 0; i < nodes.length; i++) {
       if (i == seed0) {
-        // TODO: Warning!!! continue If
+        continue
       }
 
       const area1: number = Parallelogram.parallelogramOfTwo(
         nodes[seed0].parallelogram,
         nodes[i].parallelogram,
-      ).Area
+      ).area
       if (area1 > area) {
         seed1 = i
         area = area1
@@ -90,7 +90,7 @@ export class HierarchyCalculator {
     let box0: Parallelogram = nodes[seed0].parallelogram
     let box1: Parallelogram = nodes[seed1].parallelogram
     // divide nodes on two groups
-    for (const i = 0; i < nodes.length; i++) {
+    for (let i = 0; i < nodes.length; i++) {
       if (i == seed0 || i == seed1) {
         continue
       }
@@ -99,12 +99,12 @@ export class HierarchyCalculator {
         box0,
         nodes[i].parallelogram,
       )
-      const delta0: number = box0_.Area - box0.Area
+      const delta0: number = box0_.area - box0.area
       const box1_: Parallelogram = Parallelogram.parallelogramOfTwo(
         box1,
         nodes[i].parallelogram,
       )
-      const delta1: number = box1_.Area - box1.Area
+      const delta1: number = box1_.area - box1.area
       // keep the tree roughly balanced
       if (gr0.length * this.groupSplitThreshold < gr1.length) {
         gr0.push(nodes[i])

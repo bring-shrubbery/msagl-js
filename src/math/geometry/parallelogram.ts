@@ -252,10 +252,6 @@ export class Parallelogram {
     const result = new Parallelogram()
 
     result.corner = corner
-    Assert.assert(
-      sideA.length > GeomConstants.intersectionEpsilon &&
-        sideB.length > GeomConstants.intersectionEpsilon,
-    )
     result.a = sideA
     result.b = sideB
 

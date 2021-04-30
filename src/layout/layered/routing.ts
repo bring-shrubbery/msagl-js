@@ -45,7 +45,7 @@ export class Routing extends Algorithm {
     intGraph: BasicGraph<GeomNode, PolyIntEdge>,
   ) {
     super(null) // todo: init with the not null canceltoken
-    this.settings = this.settings
+    this.settings = settings
     this.OriginalGraph = originalGraph
     this.Database = dbP
     this.ProperLayeredGraph = properLayeredGraph

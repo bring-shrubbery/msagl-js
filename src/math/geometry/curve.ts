@@ -1992,7 +1992,7 @@ export class Curve implements ICurve {
     const xs: IntersectionInfo[] = []
     for (let i = 0; i < 4; i++) {
       const t = a + (i * Math.PI) / 2 // parameter
-      const p = ellipse[t] //point on the ellipse
+      const p = ellipse.value(t) //point on the ellipse
       const tan = ellipse.derivative(t).normalize().mul(l) //make it long enough
 
       const ls = LineSegment.mkPP(p.sub(tan), p.add(tan))

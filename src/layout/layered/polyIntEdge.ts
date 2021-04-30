@@ -28,7 +28,7 @@ export class PolyIntEdge implements IIntEdge {
   IsVirtualEdge: boolean
   LayerEdges: LayerEdge[]
   // the original edge
-  geomEdge: GeomEdge
+  edge: GeomEdge
 
   constructor(
     source: number,
@@ -40,7 +40,7 @@ export class PolyIntEdge implements IIntEdge {
     Assert.assert(source != target)
     this.source = source
     this.target = target
-    this.geomEdge = geomEdge
+    this.edge = geomEdge
     this.weight = weight
     this.separation = separation
   }
@@ -61,9 +61,6 @@ export class PolyIntEdge implements IIntEdge {
     this.target = t
     this.reversed = !this.reversed
   }
-
-  // The original edge corresponding to the PolyIntEdge
-  edge: GeomEdge
 
   toString(): string {
     return 'edge(' + this.source + '->' + this.target + ')'

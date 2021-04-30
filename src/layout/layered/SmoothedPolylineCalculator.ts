@@ -69,7 +69,7 @@ export class SmoothedPolylineCalculator {
     this.anchors = anchorsP
     this.layerArrays = la
     this.originalGraph = origGraph
-    this.settings = this.settings
+    this.settings = settings
     this.layeredGraph = layerGraph
     this.rightHierarchy = this.BuildRightHierarchy()
     this.leftHierarchy = this.BuildLeftHierarchy()
@@ -929,8 +929,8 @@ export class SmoothedPolylineCalculator {
 
   EdgePathNode(i: number): number {
     return i == this.edgePath.count
-      ? this.edgePath[this.edgePath.count - 1].Target
-      : this.edgePath[i].Source
+      ? this.edgePath.LayerEdges[this.edgePath.count - 1].Target
+      : this.edgePath.LayerEdges[i].Source
   }
 
   CreateSmoothedPolyline(): Curve {

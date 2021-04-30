@@ -266,7 +266,7 @@ export class RefinerBetweenTwoLayers {
     for (const node of this.LeftFromTheNode(
       this.NodeLayer(this.bottomNode),
       bottomPosition,
-      NodeKind.bottom,
+      NodeKind.Bottom,
       leftMost,
       rightMost,
     )) {
@@ -288,7 +288,7 @@ export class RefinerBetweenTwoLayers {
     for (const node of this.LeftFromTheNode(
       this.NodeLayer(this.topNode),
       topPosition,
-      NodeKind.top,
+      NodeKind.Top,
       leftMost,
       rightMost,
     )) {
@@ -310,7 +310,7 @@ export class RefinerBetweenTwoLayers {
     for (const node of this.RightFromTheNode(
       this.NodeLayer(this.bottomNode),
       bottomPosition,
-      NodeKind.bottom,
+      NodeKind.Bottom,
       leftMost,
       rightMost,
     )) {
@@ -332,7 +332,7 @@ export class RefinerBetweenTwoLayers {
     for (const node of this.RightFromTheNode(
       this.NodeLayer(this.topNode),
       topPosition,
-      NodeKind.top,
+      NodeKind.Top,
       leftMost,
       rightMost,
     )) {
@@ -430,12 +430,12 @@ export class RefinerBetweenTwoLayers {
   ): IterableIterator<number> {
     let b = 0
     let t = 0
-    if (nodeKind == NodeKind.bottom) {
+    if (nodeKind == NodeKind.Bottom) {
       b = Number.MAX_VALUE
     }
 
     // we don't have bottom boundaries here since they will be cut off
-    if (nodeKind == NodeKind.top) {
+    if (nodeKind == NodeKind.Top) {
       t = Number.MAX_VALUE
     }
 
@@ -473,12 +473,12 @@ export class RefinerBetweenTwoLayers {
   ): IterableIterator<number> {
     let b = 0
     let t = 0
-    if (nodeKind == NodeKind.bottom) {
+    if (nodeKind == NodeKind.Bottom) {
       b = Number.MAX_VALUE
     }
 
     // we don't have bottom boundaries here since they will be cut off
-    if (nodeKind == NodeKind.top) {
+    if (nodeKind == NodeKind.Top) {
       t = Number.MAX_VALUE
     }
 

@@ -12,7 +12,6 @@ import {Point} from '../math/geometry/point'
 import {Rectangle} from '../math/geometry/rectangle'
 import {SmoothedPolyline} from '../math/geometry/smoothedPolyline'
 import {Algorithm} from '../utils/algorithm'
-import {SplineRouter} from './SplineRouter'
 
 export class StraightLineEdges extends Algorithm {
   private edges: IEnumerable<GeomEdge>
@@ -27,7 +26,7 @@ export class StraightLineEdges extends Algorithm {
   }
 
   //  Executes the algorithm.
-  protected run() {
+  run() {
     SplineRouter.CreatePortsIfNeeded(this.edges)
     for (const geomedge: GeomEdge of this.edges) {
       StraightLineEdges.RouteEdge(geomedge, this.padding)

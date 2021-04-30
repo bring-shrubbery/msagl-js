@@ -150,7 +150,7 @@ export class VerticalConstraintsForSugiyama {
   gluedIntEdge(intEdge: PolyIntEdge) {
     const sourceRepr: number = this.nodeToRepr(intEdge.source)
     const targetRepr: number = this.nodeToRepr(intEdge.target)
-    const ie = new PolyIntEdge(sourceRepr, targetRepr, intEdge.geomEdge)
+    const ie = new PolyIntEdge(sourceRepr, targetRepr, intEdge.edge)
     ie.separation = intEdge.separation
     ie.weight = 0
     return ie

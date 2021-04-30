@@ -36,7 +36,6 @@ import {NetworkSimplex} from './layering/NetworkSimplex'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {EdgeRoutingMode} from '../../core/routing/EdgeRoutingMode'
 import {EdgeRoutingSettings} from '../../core/routing/EdgeRoutingSettings'
-import {StraightLineEdges} from '../../routing/StraightLineEdges'
 import {Routing} from './routing'
 
 export class LayeredLayout extends Algorithm {
@@ -129,9 +128,11 @@ export class LayeredLayout extends Algorithm {
         this.CalculateEdgeSplines()
         break
       case EdgeRoutingMode.StraightLine:
-        StraightLineEdges.SetStraightLineEdgesWithUnderlyingPolylines(
-          this.originalGraph,
-        )
+        throw new Error('not implemented')
+
+        // StraightLineEdges.SetStraightLineEdgesWithUnderlyingPolylines(
+        //   this.originalGraph,
+        // )
         this.SetLabels()
         break
       case EdgeRoutingMode.Spline:
