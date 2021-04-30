@@ -417,8 +417,8 @@ export class Ordering extends Algorithm {
 
     let i = 0
     if (theMedianGoingDown)
-      for (const e of edges) parray[i++] = this.x[e.Target]
-    else for (const e of edges) parray[i++] = this.x[e.Source]
+      for (const e of edges) parray[i++] = this.X[e.Target]
+    else for (const e of edges) parray[i++] = this.X[e.Source]
 
     parray.sort((a, b) => a - b)
 
@@ -467,7 +467,7 @@ export class Ordering extends Algorithm {
         }
     }
 
-    this.x = this.layerArrays.x
+    this.X = this.layerArrays.x
   }
 
   predecessors: number[][]
@@ -598,8 +598,8 @@ export class Ordering extends Algorithm {
     let j = -1 //the right most position of vnbs to the left from the current u neighbor
     let vnbsSeenAlready = 0
     for (const uNeighbor of unbs) {
-      const xu = this.x[uNeighbor]
-      for (; j < vl && this.x[vnbs[j + 1]] < xu; j++) vnbsSeenAlready++
+      const xu = this.X[uNeighbor]
+      for (; j < vl && this.X[vnbs[j + 1]] < xu; j++) vnbsSeenAlready++
       ret += vnbsSeenAlready
     }
     return ret
@@ -618,9 +618,9 @@ export class Ordering extends Algorithm {
 
     let vCrossingNumberSeenAlready = 0
     for (const uNeib of unbs) {
-      const xu = this.x[uNeib]
+      const xu = this.X[uNeib]
       let vnb: number
-      for (; j < vl && this.x[(vnb = vnbs[j + 1])] < xu; j++)
+      for (; j < vl && this.X[(vnb = vnbs[j + 1])] < xu; j++)
         vCrossingNumberSeenAlready += vCrossingCount[vnb]
       ret += vCrossingNumberSeenAlready * uCrossingCounts[uNeib]
     }
@@ -640,16 +640,16 @@ export class Ordering extends Algorithm {
 
   //in this routine u and v are adjacent, and u is to the left of v before the swap
   Swap(u: number, v: number) {
-    const left = this.x[u]
-    const right = this.x[v]
+    const left = this.X[u]
+    const right = this.X[v]
     const ln = this.layering[u] //layer number
     const layer = this.layers[ln]
 
     layer[left] = v
     layer[right] = u
 
-    this.x[u] = right
-    this.x[v] = left
+    this.X[u] = right
+    this.X[v] = left
 
     //update sorted arrays POrders and SOrders
     //an array should be updated only in case it contains both u and v.
@@ -803,8 +803,8 @@ export class Ordering extends Algorithm {
       return false
 
     return (
-      this.x[this.successors[u][uCount >> 1]] <
-      this.x[this.successors[v][vCount >> 1]]
+      this.X[this.successors[u][uCount >> 1]] <
+      this.X[this.successors[v][vCount >> 1]]
     )
   }
 
@@ -814,8 +814,8 @@ export class Ordering extends Algorithm {
     if (uCount == 0 || vCount == 0) return false
 
     return (
-      this.x[this.predecessors[u][uCount >> 1]] <
-      this.x[this.predecessors[v][vCount >> 1]]
+      this.X[this.predecessors[u][uCount >> 1]] <
+      this.X[this.predecessors[v][vCount >> 1]]
     )
   }
 

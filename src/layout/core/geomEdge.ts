@@ -11,6 +11,9 @@ export class GeomEdge extends GeomObject {
   underlyingPolyline: SmoothedPolyline
   edgeGeometry = new EdgeGeometry()
   label: GeomLabel
+  get labelBBox() {
+    return this.label.boundingBox
+  }
   get edge(): Edge {
     return this.attrCont as Edge
   }

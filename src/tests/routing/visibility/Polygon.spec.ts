@@ -1,3 +1,4 @@
+import {GeomConstants} from '../../../math/geometry/geomConstants'
 import {LineSegment} from '../../../math/geometry/lineSegment'
 import {Point} from '../../../math/geometry/point'
 import {Polyline} from '../../../math/geometry/polyline'
@@ -43,6 +44,9 @@ test('almost two circles', () => {
   b = new Polygon(pb)
   di = Polygon.Distance(a, b)
   TestDist(a, b, di.dist)
+  expect(
+    Math.abs(di.p.sub(di.q).length - di.dist) < GeomConstants.distanceEpsilon,
+  ).toBe(true)
 })
 test('PolygonPolygonDistanceTest2', () => {
   const a = Polyline.mkFromPoints([

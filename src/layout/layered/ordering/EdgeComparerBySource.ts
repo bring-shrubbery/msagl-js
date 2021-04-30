@@ -1,7 +1,7 @@
 import {LayerEdge} from '../LayerEdge'
 
 export class EdgeComparerBySource {
-  X: number[]
+  x: number[]
   constructor(X: number[]) {
     this.x = X
   }

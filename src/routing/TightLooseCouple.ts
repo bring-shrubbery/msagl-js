@@ -1,4 +1,3 @@
-import {Error} from 'linq-to-typescript'
 import {Polyline} from '../math/geometry/polyline'
 import {Shape} from './Shape'
 
@@ -22,14 +21,6 @@ export class TightLooseCouple {
   Distance: number
   //  compare just by TightPolyline
   //  <returns></returns>
-  public /* override */ GetHashCode(): number {
-    if (this.TightPolyline == null) {
-      throw new Error()
-    }
-
-    return this.TightPolyline.GetHashCode()
-  }
-
   //  compare just by TightPolyline
   //  <param name="obj"></param>
   //  <returns></returns>
@@ -41,13 +32,15 @@ export class TightLooseCouple {
     return this.TightPolyline == couple.TightPolyline
   }
 
-  public /* override */ ToString(): string {
-    return 'null' + (',' + 'null')
-    // TODO: Warning!!!, inline IF is not supported ?
-    this.TightPolyline == null
-    this.TightPolyline.ToString().Substring(0, 5)
-    // TODO: Warning!!!, inline IF is not supported ?
-    this.LooseShape == null
-    this.LooseShape.ToString().Substring(0, 5)
+  public toString(): string {
+    return (
+      (this.TightPolyline == null
+        ? 'null'
+        : this.TightPolyline.toString().substring(0, 5)) +
+      ',' +
+      (this.LooseShape == null
+        ? 'null'
+        : this.LooseShape.toString().substring(0, 5))
+    )
   }
 }

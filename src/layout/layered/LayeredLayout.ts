@@ -34,10 +34,8 @@ import {XLayoutGraph} from './XLayoutGraph'
 import {Rectangle} from '../../math/geometry/rectangle'
 import {NetworkSimplex} from './layering/NetworkSimplex'
 import {GeomConstants} from '../../math/geometry/geomConstants'
-import {BundlingSettings} from '../../core/routing/BundlingSettings'
 import {EdgeRoutingMode} from '../../core/routing/EdgeRoutingMode'
 import {EdgeRoutingSettings} from '../../core/routing/EdgeRoutingSettings'
-import {SplineRouter} from '../../routing/SplineRouter'
 import {StraightLineEdges} from '../../routing/StraightLineEdges'
 import {Routing} from './routing'
 
@@ -137,42 +135,11 @@ export class LayeredLayout extends Algorithm {
         this.SetLabels()
         break
       case EdgeRoutingMode.Spline:
-        let padding: number = this.sugiyamaSettings.NodeSeparation / 4
-        let loosePadding: number = SplineRouter.ComputeLooseSplinePadding(
-          sugiyamaSettings.NodeSeparation,
-          padding,
-        )
-        const router = new SplineRouter(
-          originalGraph,
-          padding,
-          loosePadding,
-          Math.PI / 6,
-          null,
-        )
-        router.Run()
-        SetLabels()
+        throw new Error('not implemented')
+
         break
       case EdgeRoutingMode.SplineBundling:
-        const coneAngle: number = routingSettings.ConeAngle
-        padding = sugiyamaSettings.NodeSeparation / 20
-        loosePadding =
-          SplineRouter.ComputeLooseSplinePadding(
-            sugiyamaSettings.NodeSeparation,
-            padding,
-          ) * 2
-        if (sugiyamaSettings.EdgeRoutingSettings.BundlingSettings == null) {
-          sugiyamaSettings.EdgeRoutingSettings.BundlingSettings = new BundlingSettings()
-        }
-
-        const br = new SplineRouter(
-          this.originalGraph,
-          padding,
-          loosePadding,
-          coneAngle,
-          sugiyamaSettings.EdgeRoutingSettings.BundlingSettings,
-        )
-        br.run()
-        SetLabels()
+        throw new Error('not implemented')
         break
       case EdgeRoutingMode.Rectilinear:
       case EdgeRoutingMode.RectilinearToCenter:
@@ -187,8 +154,9 @@ export class LayeredLayout extends Algorithm {
   }
 
   SetLabels() {
-    const edgeLabeller = new EdgeLabelPlacement(originalGraph)
-    edgeLabeller.run()
+    throw new Error('not implementedt')
+    // const edgeLabeller = new EdgeLabelPlacement(originalGraph)
+    // edgeLabeller.run()
   }
 
   cycleRemoval() {
@@ -1231,11 +1199,11 @@ function MakeVirtualNodesTall(
 }
 
 function NeedToSnapTopsToGrid(settings: SugiyamaLayoutSettings) {
-  return settings.SnapToGridByY == SnapToGridByY.top
+  return settings.SnapToGridByY == SnapToGridByY.Top
 }
 
 function NeedToSnapBottomsToGrid(settings: SugiyamaLayoutSettings) {
-  return settings.SnapToGridByY == SnapToGridByY.bottom
+  return settings.SnapToGridByY == SnapToGridByY.Bottom
 }
 
 function TryToPutLabelOutsideOfAngle(

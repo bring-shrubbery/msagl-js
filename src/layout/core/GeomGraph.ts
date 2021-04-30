@@ -3,9 +3,11 @@ import {Rectangle} from '../../math/geometry/rectangle'
 import {GeomObject} from './geomObject'
 import {GeomNode} from './geomNode'
 import {GeomEdge} from './geomEdge'
-import {Point} from '../../math/geometry/point'
 
 export class GeomGraph extends GeomObject {
+  pumpTheBoxToTheGraphWithMargins(): Rectangle {
+    throw new Error('Method not implemented.')
+  }
   get left() {
     return this.boundingBox.left
   }

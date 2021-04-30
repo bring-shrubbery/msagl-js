@@ -1,4 +1,3 @@
-import {Edge} from 'graphlib'
 import {Curve} from '../../math/geometry/curve'
 import {ICurve} from '../../math/geometry/icurve'
 import {LineSegment} from '../../math/geometry/lineSegment'
@@ -19,6 +18,10 @@ import {SugiyamaLayoutSettings} from './SugiyamaLayoutSettings'
 import {CornerSite} from '../../math/geometry/cornerSite'
 import {NodeKind} from './NodeKind'
 import {Arrowhead} from '../core/arrowhead'
+import {GeomNode} from '../core/geomNode'
+import {SmoothedPolylineCalculator} from './SmoothedPolylineCalculator'
+import {GeomEdge} from '../core/geomEdge'
+import {Assert} from '../../utils/assert'
 //  The class responsible for the routing of splines
 export class Routing extends Algorithm {
   settings: SugiyamaLayoutSettings
@@ -65,8 +68,9 @@ export class Routing extends Algorithm {
   }
 
   RouteFlatEdges() {
-    const flatEdgeRouter = new FlatEdgeRouter(this.settings, this)
-    flatEdgeRouter.run()
+    throw new Error('not implemented')
+    // const flatEdgeRouter = new FlatEdgeRouter(this.settings, this)
+    // flatEdgeRouter.run()
   }
 
   CreateRegularSplines() {
@@ -94,16 +98,14 @@ export class Routing extends Algorithm {
 
   CreateSelfSplines() {
     for (const [k, v] of this.Database.Multiedges.keyValues()) {
-      this.ProgressStep()
       const ip: IntPair = k
       if (ip.x == ip.y) {
         const anchor: Anchor = this.Database.Anchors[ip.x]
         let offset: number = anchor.leftAnchor
         for (const intEdge of v) {
-          this.ProgressStep()
           const dx: number =
             this.settings.NodeSeparation + (this.settings.MinNodeWidth + offset)
-          const dy: number = anchor.BottomAnchor / 2
+          const dy: number = anchor.bottomAnchor / 2
           const p0: Point = anchor.Origin
           const p1: Point = p0.add(new Point(0, dy))
           const p2: Point = p0.add(new Point(dx, dy))
@@ -123,21 +125,21 @@ export class Routing extends Algorithm {
           if (intEdge.edge.label != null) {
             offset += intEdge.edge.label.width
             const center = (intEdge.edge.label.center = new Point(
-              c.value((c.parStart + c.parEnd) / 2).x + intEdge.LabelWidth / 2,
+              c.value((c.parStart + c.parEnd) / 2).x + intEdge.labelWidth / 2,
               anchor.y,
             ))
             const del = new Point(
-              intEdge.Edge.Label.Width / 2,
-              intEdge.Edge.Label.Height / 2,
+              intEdge.edge.label.width / 2,
+              intEdge.edge.label.height / 2,
             )
             const box = Rectangle.mkPP(center.add(del), center.sub(del))
-            intEdge.Edge.Label.BoundingBox = box
+            intEdge.edge.label.boundingBox = box
           }
 
           Arrowhead.trimSplineAndCalculateArrowheadsII(
-            intEdge.Edge.EdgeGeometry,
-            intEdge.Edge.source.BoundaryCurve,
-            intEdge.Edge.target.BoundaryCurve,
+            intEdge.edge.edgeGeometry,
+            intEdge.edge.source.boundaryCurve,
+            intEdge.edge.target.boundaryCurve,
             c,
             false,
           )
@@ -147,7 +149,6 @@ export class Routing extends Algorithm {
   }
 
   CreateSplineForNonSelfEdge(es: PolyIntEdge, optimizeShortEdges: boolean) {
-    this.ProgressStep()
     if (es.LayerEdges != null) {
       this.DrawSplineBySmothingThePolyline(es, optimizeShortEdges)
       if (!es.IsVirtualEdge) {
@@ -177,12 +178,12 @@ export class Routing extends Algorithm {
       this.Database,
     )
     const spline: ICurve = smoothedPolyline.GetSpline(optimizeShortEdges)
-    if (edgePath.Reversed) {
-      edgePath.Curve = spline.Reverse()
-      edgePath.UnderlyingPolyline = smoothedPolyline.Reverse().GetPolyline
+    if (edgePath.reversed) {
+      edgePath.curve = spline.reverse()
+      edgePath.underlyingPolyline = smoothedPolyline.Reverse().GetPolyline
     } else {
-      edgePath.Curve = spline
-      edgePath.UnderlyingPolyline = smoothedPolyline.GetPolyline
+      edgePath.curve = spline
+      edgePath.underlyingPolyline = smoothedPolyline.GetPolyline
     }
   }
 
@@ -193,114 +194,104 @@ export class Routing extends Algorithm {
   //         UpdateLabel(e, labelNodeIndex, db.Anchors);
   //     }
   // }
-  static UpdateLabel(e: Edge, anchor: Anchor) {
-    const labelSide: LineSegment = null
-    if (anchor.LabelToTheRightOfAnchorCenter) {
-      e.Label.Center = new Point(anchor.x + anchor.rightAnchor / 2, anchor.y)
-      labelSide = new LineSegment(e.LabelBBox.leftTop, e.LabelBBox.leftBottom)
-    } else if (anchor.LabelToTheLeftOfAnchorCenter) {
-      e.Label.Center = new Point(anchor.x - anchor.leftAnchor / 2, anchor.y)
-      labelSide = new LineSegment(e.LabelBBox.rightTop, e.LabelBBox.rightBottom)
+  static UpdateLabel(e: GeomEdge, anchor: Anchor) {
+    let labelSide: LineSegment = null
+    if (anchor.labelToTheRightOfAnchorCenter) {
+      e.label.center = new Point(anchor.x + anchor.rightAnchor / 2, anchor.y)
+      labelSide = LineSegment.mkPP(e.labelBBox.leftTop, e.labelBBox.leftBottom)
+    } else if (anchor.labelToTheLeftOfAnchorCenter) {
+      e.label.center = new Point(anchor.x - anchor.leftAnchor / 2, anchor.y)
+      labelSide = LineSegment.mkPP(
+        e.labelBBox.rightTop,
+        e.labelBBox.rightBottom,
+      )
     }
 
     const segmentInFrontOfLabel: ICurve = Routing.GetSegmentInFrontOfLabel(
-      e.Curve,
-      e.Label.Center.y,
+      e.curve,
+      e.label.center.y,
     )
     if (segmentInFrontOfLabel == null) {
       return
     }
 
     if (
-      Curve.GetAllIntersections(e.Curve, Curve.PolyFromBox(e.LabelBBox), false)
+      Curve.getAllIntersections(e.curve, Curve.polyFromBox(e.labelBBox), false)
         .length == 0
     ) {
-      const curveClosestPoint: Point
-      const labelSideClosest: Point
-      if (
-        Routing.FindClosestPoints(
-          /* out */ curveClosestPoint,
-          /* out */ labelSideClosest,
-          segmentInFrontOfLabel,
-          labelSide,
-        )
-      ) {
+      const t: {curveClosestPoint: Point; labelSideClosest: Point} = {
+        curveClosestPoint: undefined,
+        labelSideClosest: undefined,
+      }
+      let labelSideClosest: Point
+      if (Routing.FindClosestPoints(t, segmentInFrontOfLabel, labelSide)) {
         // shift the label if needed
-        Routing.ShiftLabel(
-          e,
-          /* ref */ curveClosestPoint,
-          /* ref */ labelSideClosest,
-        )
+        Routing.ShiftLabel(e, t)
       } else {
         // assume that the distance is reached at the ends of labelSideClosest
-        const u: number = segmentInFrontOfLabel.ClosestParameter(
+        const u: number = segmentInFrontOfLabel.closestParameter(
           labelSide.start,
         )
-        const v: number = segmentInFrontOfLabel.ClosestParameter(labelSide.End)
+        const v: number = segmentInFrontOfLabel.closestParameter(labelSide.end)
         if (
-          (segmentInFrontOfLabel[u] - labelSide.start).length <
-          (segmentInFrontOfLabel[v] - labelSide.End).length
+          segmentInFrontOfLabel.value(u).sub(labelSide.start).length <
+          segmentInFrontOfLabel.value(v).sub(labelSide.end).length
         ) {
-          curveClosestPoint = segmentInFrontOfLabel[u]
-          labelSideClosest = labelSide.start
+          t.curveClosestPoint = segmentInFrontOfLabel[u]
+          t.labelSideClosest = labelSide.start
         } else {
-          curveClosestPoint = segmentInFrontOfLabel[v]
-          labelSideClosest = labelSide.End
+          t.curveClosestPoint = segmentInFrontOfLabel[v]
+          t.labelSideClosest = labelSide.end
         }
 
-        Routing.ShiftLabel(
-          e,
-          /* ref */ curveClosestPoint,
-          /* ref */ labelSideClosest,
-        )
+        Routing.ShiftLabel(e, t)
       }
     }
   }
 
   static ShiftLabel(
-    e: Edge,
-    /* ref */ curveClosestPoint: Point,
-    /* ref */ labelSideClosest: Point,
+    e: GeomEdge,
+    t: {curveClosestPoint: Point; labelSideClosest: Point},
   ) {
-    const w: number = e.LineWidth / 2
-    const shift: Point = curveClosestPoint - labelSideClosest
+    const w: number = e.lineWidth / 2
+    const shift: Point = t.curveClosestPoint.sub(t.labelSideClosest)
     const shiftLength: number = shift.length
     //    SugiyamaLayoutSettings.Show(e.Curve, shiftLength > 0 ? new LineSegment(curveClosestPoint, labelSideClosest) : null, PolyFromBox(e.LabelBBox));
     if (shiftLength > w) {
-      e.Label.Center =
-        e.Label.Center + shift / (shiftLength * (shiftLength - w))
+      e.label.center = e.label.center.add(
+        shift.div(shiftLength * (shiftLength - w)),
+      )
     }
   }
 
   static FindClosestPoints(
-    /* out */ curveClosestPoint: Point,
-    /* out */ labelSideClosest: Point,
+    t: {curveClosestPoint: Point; labelSideClosest: Point},
     segmentInFrontOfLabel: ICurve,
     labelSide: LineSegment,
   ): boolean {
-    const v: number
-    const u: number
-    return Curve.MinDistWithinIntervals(
+    const di = Curve.minDistWithinIntervals(
       segmentInFrontOfLabel,
       labelSide,
-      segmentInFrontOfLabel.ParStart,
-      segmentInFrontOfLabel.ParEnd,
-      labelSide.ParStart,
-      labelSide.ParEnd,
-      (segmentInFrontOfLabel.ParStart + segmentInFrontOfLabel.ParEnd) / 2,
-      (labelSide.ParStart + labelSide.ParEnd) / 2,
-      /* out */ u,
-      /* out */ v,
-      /* out */ curveClosestPoint,
-      /* out */ labelSideClosest,
+      segmentInFrontOfLabel.parStart,
+      segmentInFrontOfLabel.parEnd,
+      labelSide.parStart,
+      labelSide.parEnd,
+      (segmentInFrontOfLabel.parStart + segmentInFrontOfLabel.parEnd) / 2,
+      (labelSide.parStart + labelSide.parEnd) / 2,
     )
+    if (di) {
+      t.curveClosestPoint = di.aX
+      t.labelSideClosest = di.bX
+      return true
+    }
+    return false
   }
 
   static GetSegmentInFrontOfLabel(edgeCurve: ICurve, labelY: number): ICurve {
     const curve = <Curve>edgeCurve
     if (curve != null) {
-      for (const seg: ICurve of curve.segs) {
-        if ((seg.start.y - labelY) * (seg.End.y - labelY) <= 0) {
+      for (const seg of curve.segs) {
+        if ((seg.start.y - labelY) * (seg.end.y - labelY) <= 0) {
           return seg
         }
       }
@@ -314,9 +305,9 @@ export class Routing extends Algorithm {
 
   static GetNodeKind(vertexOffset: number, edgePath: PolyIntEdge): NodeKind {
     return vertexOffset == 0
-      ? NodeKind.top
+      ? NodeKind.Top
       : vertexOffset < edgePath.count
       ? NodeKind.Internal
-      : NodeKind.bottom
+      : NodeKind.Bottom
   }
 }

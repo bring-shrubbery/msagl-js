@@ -156,7 +156,7 @@ export class Arrowhead {
   }
 
   // trim the edge curve with the node boundaries
-  private static trimSplineAndCalculateArrowheadsII(
+  static trimSplineAndCalculateArrowheadsII(
     edgeGeometry: EdgeGeometry,
     sourceBoundary: ICurve,
     targetBoundary: ICurve,
