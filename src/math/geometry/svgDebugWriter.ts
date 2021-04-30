@@ -292,10 +292,12 @@ export class SvgDebugWriter {
   }
 
   private writeEdge(edge: GeomEdge) {
+    const icurve = edge.curve
+    if (icurve == null) return
     this.xw.startElement('path')
     this.xw.writeAttribute('fill', 'none')
     this.xw.writeAttribute('stroke', 'Black')
-    const icurve = edge.curve
+
     this.xw.writeAttribute('d', this.curveString(icurve))
     this.xw.endElement()
     if (edge.edgeGeometry != null && edge.edgeGeometry.sourceArrowhead != null)

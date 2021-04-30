@@ -10,6 +10,7 @@ import {Point} from '../../../math/geometry/point'
 import {CancelToken} from '../../../utils/cancelToken'
 import {GeomGraph} from '../../../layout/core/GeomGraph'
 import {GeomObject} from '../../../layout/core/geomObject'
+import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
 function createGeometry(g: Graph) {
   for (const n of g.nodes) {
     const gn = new GeomNode(n)
@@ -74,12 +75,18 @@ test('sorted map', () => {
 test('layered layout hookup', () => {
   const g = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(g)
+  const ss = new SugiyamaLayoutSettings()
+  ss.layeringOnly = true
   const ll = new LayeredLayout(
     GeomObject.getGeom(g) as GeomGraph,
-    new SugiyamaLayoutSettings(),
+    ss,
     new CancelToken(),
   )
+
   expect(ll.IntGraph.nodeCount).toBe(47)
   expect(ll.IntGraph.edges.length).toBe(68)
   ll.run()
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/ll.svg')
+  t.writeGraph(GeomObject.getGeom(g) as GeomGraph)
+  expect(0).toBe(1)
 })
