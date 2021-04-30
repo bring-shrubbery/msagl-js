@@ -5,8 +5,37 @@ import {GeomNode} from './geomNode'
 import {GeomEdge} from './geomEdge'
 
 export class GeomGraph extends GeomObject {
+  MinimalWidth: number
+  MinimalHeight: number
   pumpTheBoxToTheGraphWithMargins(): Rectangle {
-    throw new Error('Method not implemented.')
+    const b = Rectangle.mkEmpty()
+    this.pumpTheBoxToTheGraph(b)
+    b.pad(this.Margins)
+    b.width = Math.max(b.width, this.MinimalWidth)
+    b.height = Math.max(b.height, this.MinimalHeight)
+
+    return b
+  }
+  pumpTheBoxToTheGraph(b: Rectangle) {
+    for (const e of this.edges()) {
+      if (e.underCollapsedCluster()) continue
+      if (e.curve != null) {
+        const cb = e.curve.boundingBox
+        cb.pad(e.lineWidth)
+        b.addRec(cb)
+      }
+      if (e.label != null) b.addRec(e.label.boundingBox)
+    }
+
+    for (const n of this.nodes()) {
+      if (n.underCollapsedCluster()) continue
+      b.addRec(n.boundingBox)
+    }
+
+    for (const gr of this.graph.graphs()) {
+      const gg = (GeomObject.getGeom(gr) as unknown) as GeomGraph
+      gg.pumpTheBoxToTheGraph(b)
+    }
   }
   get left() {
     return this.boundingBox.left

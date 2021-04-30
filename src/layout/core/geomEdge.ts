@@ -231,13 +231,10 @@ export class GeomEdge extends GeomObject {
       add { edgeGeometry.LayoutChangeEvent += value; }
       remove { edgeGeometry.LayoutChangeEvent -= value; }
     }
-    
-    internal bool UnderCollapsedCluster() {
-      return Source.UnderCollapsedCluster() || Target.UnderCollapsedCluster();
-    }
-    }
-    
-    
-    }
-    */
+  */
+  underCollapsedCluster(): boolean {
+    return (
+      this.source.underCollapsedCluster() || this.target.underCollapsedCluster()
+    )
+  }
 }
