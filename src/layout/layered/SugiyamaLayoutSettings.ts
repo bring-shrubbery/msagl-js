@@ -33,7 +33,7 @@ export class SugiyamaLayoutSettings {
   layeringOnly: boolean
   NoGainAdjacentSwapStepsBound = 5
   RepetitionCoefficientForOrdering = 1
-  AspectRatio: number
+  AspectRatio = 0
   MaxNumberOfPassesInOrdering = 24
   // When the number of vertices in the proper layered graph
   // is at least threshold  we switch to the faster, but not so accurate,
@@ -42,7 +42,7 @@ export class SugiyamaLayoutSettings {
   LabelCornersPreserveCoefficient = 0.1
   MinNodeHeight = (72 * 0.5) / 4
   MinNodeWidth = (72 * 0.75) / 4
-  NodeSeparation: 10
+  NodeSeparation = 10
   SnapToGridByY = SnapToGridByY.None
   yLayerSep = 10 * 3
   get LayerSeparation() {

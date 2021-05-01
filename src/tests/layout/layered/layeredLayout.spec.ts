@@ -88,5 +88,4 @@ test('layered layout hookup', () => {
   ll.run()
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/ll.svg')
   t.writeGraph(GeomObject.getGeom(g) as GeomGraph)
-  expect(0).toBe(1)
 })
