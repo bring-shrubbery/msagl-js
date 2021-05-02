@@ -112,6 +112,14 @@ export class PolyIntEdge implements IIntEdge {
     return this.LayerEdges.length
   }
 
+  getNode(i: number): number {
+    if (i >= 0) {
+      if (i < this.LayerEdges.length) return this.LayerEdges[i].Source
+      if (i == this.LayerEdges.length) return this.LayerEdges[i - 1].Target
+    }
+    throw new Error('wrong index ' + i)
+  }
+
   updateEdgeLabelPosition(anchors: Anchor[]) {
     if (this.edge.label != null) {
       const m = this.LayerEdges.length / 2
@@ -122,6 +130,7 @@ export class PolyIntEdge implements IIntEdge {
   [Symbol.iterator]() {
     return this.nodes()
   }
+
   // enumerates over virtual virtices corresponding to the original edge
   *nodes(): IterableIterator<number> {
     yield this.LayerEdges[0].Source

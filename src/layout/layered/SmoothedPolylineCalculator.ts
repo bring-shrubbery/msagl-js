@@ -949,7 +949,19 @@ export class SmoothedPolylineCalculator {
       )
     }
 
+    // Assert.assert(this.CurveIsLegal(curve))
     return curve
+  }
+
+  CurveIsLegal(curve: Curve): boolean {
+    for (const n of this.layeredGraph.BaseGraph.nodes) {
+      let i = this.edgePath.getNode(0)
+      if (n == this.layeredGraph.BaseGraph.nodes[i]) continue
+      i = this.edgePath.getNode(this.edgePath.LayerEdges.length)
+      if (n == this.layeredGraph.BaseGraph.nodes[i]) continue
+      const nc = n.boundaryCurve
+      return !Curve.CurvesIntersect(nc, curve)
+    }
   }
 
   private RemoveVerticesWithNoTurns() {

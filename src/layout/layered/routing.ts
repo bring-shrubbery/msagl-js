@@ -168,7 +168,7 @@ export class Routing extends Algorithm {
     edgePath: PolyIntEdge,
     optimizeShortEdges: boolean,
   ) {
-    const smoothedPolyline = new SmoothedPolylineCalculator(
+    const scalc = new SmoothedPolylineCalculator(
       edgePath,
       this.Database.Anchors,
       this.OriginalGraph,
@@ -177,13 +177,13 @@ export class Routing extends Algorithm {
       this.ProperLayeredGraph,
       this.Database,
     )
-    const spline: ICurve = smoothedPolyline.GetSpline(optimizeShortEdges)
+    const spline: ICurve = scalc.GetSpline(optimizeShortEdges)
     if (edgePath.reversed) {
       edgePath.curve = spline.reverse()
-      edgePath.underlyingPolyline = smoothedPolyline.Reverse().GetPolyline
+      edgePath.underlyingPolyline = scalc.Reverse().GetPolyline
     } else {
       edgePath.curve = spline
-      edgePath.underlyingPolyline = smoothedPolyline.GetPolyline
+      edgePath.underlyingPolyline = scalc.GetPolyline
     }
   }
 
