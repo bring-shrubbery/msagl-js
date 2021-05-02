@@ -23,14 +23,14 @@ function isGraph(n: Node) {
   return n.hasOwnProperty('isCollapsed')
 }
 
-test('inh', () => {
+xtest('inh', () => {
   const b = new B()
   expect(foo(b)).toBe('BBB')
   const c = new Graph()
   expect(isGraph(c)).toBe(true)
 })
 
-test('dot parser', () => {
+xtest('dot parser', () => {
   const g = parseDotGraph('src/tests/data/graphvis/clust4.gv')
   expect(g == null).toBe(false)
 })

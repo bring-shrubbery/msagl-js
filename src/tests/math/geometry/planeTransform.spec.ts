@@ -1,7 +1,7 @@
 import {PlaneTransformation} from './../../../math/geometry/planeTransformation'
 import {Point} from './../../../math/geometry/point'
 import {GeomConstants} from './../../../math/geometry/geomConstants'
-test('mult point test', () => {
+xtest('mult point test', () => {
   const m = PlaneTransformation.rotation(Math.PI / 2)
   const p = new Point(1, 0)
   const mp = m.multiplyPoint(p)
@@ -9,7 +9,7 @@ test('mult point test', () => {
   expect(Point.close(pr, mp, GeomConstants.distanceEpsilon)).toBeTruthy()
 })
 
-test('plane transform test', () => {
+xtest('plane transform test', () => {
   const m = PlaneTransformation.getIdentity()
 
   expect(m.isIdentity()).toBe(true)

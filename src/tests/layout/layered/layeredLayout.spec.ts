@@ -24,7 +24,7 @@ function createGeometry(g: Graph) {
 
 type P = [number, number]
 
-test('map test', () => {
+xtest('map test', () => {
   const m = new Map<number, string>()
   m.set(1, '1')
   m.set(2.1, '2')
@@ -42,7 +42,7 @@ test('map test', () => {
 
   expect(mi.get(ip1)).toBe(undefined)
 })
-test('layered layout glued graph', () => {
+xtest('layered layout glued graph', () => {
   const graphString = 'digraph G {\n' + 'a -> b\n' + 'a -> b}'
   const g = parseDotString(graphString)
   createGeometry(g)
@@ -56,7 +56,7 @@ test('layered layout glued graph', () => {
     expect(e.weight).toBe(2)
   }
 })
-test('sorted map', () => {
+xtest('sorted map', () => {
   const m = SortedMap<number, number>()
   m.set(0, 0)
   m.set(-1, -1)
@@ -87,4 +87,4 @@ test('layered layout hookup', () => {
   ll.run()
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/ll.svg')
   t.writeGraph(GeomObject.getGeom(g) as GeomGraph)
-}, 10000)
+})

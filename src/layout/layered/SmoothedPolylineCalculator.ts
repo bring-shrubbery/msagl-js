@@ -1009,13 +1009,14 @@ export class SmoothedPolylineCalculator {
       }
     }
   }
-
+  static ccc = 0
   private AddSmoothedCorner(
     a: CornerSite,
     b: CornerSite,
     c: CornerSite,
     curve: Curve,
   ) {
+    console.log(++SmoothedPolylineCalculator.ccc)
     let k = 0.5
     let seg: BezierSeg
     do {
@@ -1023,10 +1024,10 @@ export class SmoothedPolylineCalculator {
       // if (Routing.db)
       //     LayoutAlgorithmSettings .Show(seg, CreatePolyTest());
       b.previouisBezierCoefficient = k
-      2
+      k /= 2
     } while (this.BezierSegIntersectsBoundary(seg))
 
-    k = k * 2
+    k *= 2
     // that was the last k
     if (k < 0.5) {
       // one time try a smoother seg

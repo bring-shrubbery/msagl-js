@@ -3,7 +3,7 @@ import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
 import {Polyline} from '../../../math/geometry/polyline'
 import {Point} from '../../../math/geometry/point'
 
-test('smooth test', () => {
+xtest('smooth test', () => {
   const ps = [
     new Point(0, 100),
     new Point(100, 100),

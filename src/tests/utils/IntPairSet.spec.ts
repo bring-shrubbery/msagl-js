@@ -2,7 +2,7 @@ import {Assert} from '../../utils/assert'
 import {IntPairSet} from '../../utils/IntPairSet'
 import {randomInt} from '../../utils/random'
 
-test('IntPairSet', () => {
+xtest('IntPairSet', () => {
   const m = new IntPairSet(3)
   m.addNN(0, 0)
   m.addNN(1, 1)
@@ -14,7 +14,7 @@ test('IntPairSet', () => {
   expect(p[0].y < 3).toBe(true)
 })
 
-test('IntPairSet perf', () => {
+xtest('IntPairSet perf', () => {
   const n = 10000
   const m = new IntPairSet(n)
   for (let i = 0; i < n; i++) {

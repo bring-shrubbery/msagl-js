@@ -5,7 +5,7 @@ import {Rectangle} from './../../../math/geometry/rectangle'
 import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
 import {DebugCurve} from './../../../math/geometry/debugCurve'
 import {Node} from './../../../structs/node'
-test('node fit', () => {
+xtest('node fit', () => {
   const boundary = CurveFactory.mkRectangleWithRoundedCorners(
     100,
     50,
