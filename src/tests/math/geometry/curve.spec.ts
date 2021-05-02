@@ -44,6 +44,21 @@ function bbIsOk(s: ICurve) {
   expect(rect.contains(bbox.rightTop)).toBe(true)
 }
 
+test('trim', () => {
+  const curve = new Curve()
+  const a = new Point(0, 0)
+  const b = new Point(1, 0)
+  const c = new Point(4, 0)
+  const d = new Point(4, 2)
+  const e = new Point(5, 5)
+  curve.addSegment(LineSegment.mkPP(a, b))
+  curve.addSegment(LineSegment.mkPP(b, c))
+  curve.addSegment(LineSegment.mkPP(c, d))
+  curve.addSegment(LineSegment.mkPP(d, e))
+  const t = curve.trim(0.5, 3.5)
+  expect((t as Curve).segs.length).toBe(4)
+})
+
 test('box translate behavior', () => {
   const ell = new Ellipse(
     Math.PI / 3,

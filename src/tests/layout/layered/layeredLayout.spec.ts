@@ -76,7 +76,6 @@ test('layered layout hookup', () => {
   const g = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(g)
   const ss = new SugiyamaLayoutSettings()
-  ss.layeringOnly = true
   const ll = new LayeredLayout(
     GeomObject.getGeom(g) as GeomGraph,
     ss,
@@ -88,4 +87,4 @@ test('layered layout hookup', () => {
   ll.run()
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/ll.svg')
   t.writeGraph(GeomObject.getGeom(g) as GeomGraph)
-})
+}, 10000)

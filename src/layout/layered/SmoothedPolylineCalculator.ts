@@ -565,9 +565,9 @@ export class SmoothedPolylineCalculator {
     ) {
       return false
     }
-
-    const n = hierarchy.node as PNInternal
-    if (n != null) {
+    const nInternal = hierarchy.node.hasOwnProperty('children')
+    if (nInternal) {
+      const n = hierarchy.node as PNInternal
       return (
         SmoothedPolylineCalculator.CurveIntersectsHierarchy(
           lineSeg,
@@ -1076,19 +1076,17 @@ export class SmoothedPolylineCalculator {
         tree.parallelogram,
       )
     ) {
-      const n = tree
-      if (n != null) {
+      const isInternal = tree.node.hasOwnProperty('children')
+      if (isInternal) {
+        const n = tree.node as PNInternal
         return (
-          this.BezierSegIntersectsTree(
-            seg,
-            (n.node as PNInternal).children[0],
-          ) ||
-          this.BezierSegIntersectsTree(seg, (n.node as PNInternal).children[1])
+          this.BezierSegIntersectsTree(seg, n.children[0]) ||
+          this.BezierSegIntersectsTree(seg, n.children[1])
         )
       } else {
         return SmoothedPolylineCalculator.BezierSegIntersectsBoundary(
           seg,
-          (tree as PN).seg,
+          tree.seg,
         )
       }
     } else {

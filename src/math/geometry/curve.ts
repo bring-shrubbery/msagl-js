@@ -156,7 +156,7 @@ export class Curve implements ICurve {
     return c
   }
 
-  // Returns the trim curve
+  // Returns the trimmed curve
   trim(start: number, end: number): ICurve {
     const params = {
       start: start,
@@ -178,7 +178,7 @@ export class Curve implements ICurve {
         this.segs[s.segIndex].trim(s.par, this.segs[s.segIndex].parEnd),
       )
 
-    for (let i = e.segIndex + 1; i < e.segIndex; i++)
+    for (let i = s.segIndex + 1; i < e.segIndex; i++)
       c = c.addSegment(this.segs[i])
 
     if (this.segs[e.segIndex].parStart < e.par)
