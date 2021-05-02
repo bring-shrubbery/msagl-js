@@ -1,6 +1,6 @@
 import {Interval} from '../../../core/geometry/Interval'
 
-xtest('interval add', () => {
+test('interval add', () => {
   const i = new Interval(0, 1)
   const j = new Interval(1, 2)
   expect(i.contains_d(0.5)).toBeTruthy()

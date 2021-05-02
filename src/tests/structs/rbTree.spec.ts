@@ -2,7 +2,7 @@ import {RBTree} from './../../structs/RBTree/rbTree'
 import {RbTreeUtils} from './../testUtils/rbTreeUtils'
 import {Assert} from './../../utils/assert'
 
-xtest('check if has correct in-order-traversal', () => {
+test('check if has correct in-order-traversal', () => {
   const comparer = (a: number, b: number) => a - b
   const vals: number[] = RbTreeUtils.getRandomArray(10, 100)
   const tree: RBTree<number> = RbTreeUtils.buildTreeWithNums(vals, comparer)
@@ -14,7 +14,7 @@ xtest('check if has correct in-order-traversal', () => {
     i++
   }
 })
-xtest('check if the iterator works', () => {
+test('check if the iterator works', () => {
   const comparer = (a: number, b: number) => a - b
   const vals = [0, 1, 2]
   const tree: RBTree<number> = RbTreeUtils.buildTreeWithNums(vals, comparer)
@@ -27,7 +27,7 @@ xtest('check if the iterator works', () => {
   }
 })
 
-xtest('check black height(s) are equal', () => {
+test('check black height(s) are equal', () => {
   const comparer = (a: number, b: number) => a - b
   const vals: number[] = RbTreeUtils.getRandomArray(50, 100)
   const tree: RBTree<number> = RbTreeUtils.buildTreeWithNums(vals, comparer)
@@ -37,7 +37,7 @@ xtest('check black height(s) are equal', () => {
   //    'difference in black height of left and right branch of a subtree',
 })
 
-xtest('check removal', () => {
+test('check removal', () => {
   const comparer = (a: number, b: number) => a - b
   const tree: RBTree<number> = new RBTree<number>(comparer)
   for (let i = 1; i <= 20; i++) {

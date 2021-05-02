@@ -44,7 +44,7 @@ function bbIsOk(s: ICurve) {
   expect(rect.contains(bbox.rightTop)).toBe(true)
 }
 
-xtest('trim', () => {
+test('trim', () => {
   const curve = new Curve()
   const a = new Point(0, 0)
   const b = new Point(1, 0)
@@ -59,7 +59,7 @@ xtest('trim', () => {
   expect((t as Curve).segs.length).toBe(4)
 })
 
-xtest('box translate behavior', () => {
+test('box translate behavior', () => {
   const ell = new Ellipse(
     Math.PI / 3,
     Math.PI / 2,
@@ -104,7 +104,7 @@ function intersectTwoRoundedRects(rr: Curve, rr0: Curve, i: number): void {
   expect(xx.length % 2).toBe(0)
 }
 
-xtest('intersect rounded rect rotated', () => {
+test('intersect rounded rect rotated', () => {
   const rr: Curve = CurveFactory.mkRectangleWithRoundedCorners(
     100,
     52,
@@ -123,7 +123,7 @@ xtest('intersect rounded rect rotated', () => {
   }
 })
 
-xtest('curve intersect line circle', () => {
+test('curve intersect line circle', () => {
   const a = new Point(1, 0)
   const b = new Point(2, 0)
   intersectOnDiameter(a, b)
@@ -137,7 +137,7 @@ xtest('curve intersect line circle', () => {
   }
 })
 
-xtest('bezier rounded rect intersections', () => {
+test('bezier rounded rect intersections', () => {
   const rr: Curve = CurveFactory.mkRectangleWithRoundedCorners(
     100,
     52,
@@ -168,7 +168,7 @@ xtest('bezier rounded rect intersections', () => {
   }
 }, 10)
 
-xtest('bezier bezier rect intersections', () => {
+test('bezier bezier rect intersections', () => {
   const a = new Point(0, 0)
   const b = new Point(122, 100)
   const dir = b.sub(a)

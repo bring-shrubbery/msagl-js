@@ -1009,14 +1009,12 @@ export class SmoothedPolylineCalculator {
       }
     }
   }
-  static ccc = 0
   private AddSmoothedCorner(
     a: CornerSite,
     b: CornerSite,
     c: CornerSite,
     curve: Curve,
   ) {
-    console.log(++SmoothedPolylineCalculator.ccc)
     let k = 0.5
     let seg: BezierSeg
     do {

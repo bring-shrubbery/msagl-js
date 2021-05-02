@@ -11,7 +11,7 @@ class myedge implements IEdge {
     this.target = b
   }
 }
-xtest('bgoe', () => {
+test('bgoe', () => {
   const edges = [
     new myedge(0, 1),
     new myedge(1, 2),

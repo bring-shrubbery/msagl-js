@@ -13,7 +13,7 @@ import {
 import {CdtTriangle} from '../../../routing/ConstrainedDelaunayTriangulation/CdtTriangle'
 import {SymmetricTuple} from '../../../structs/SymmetricTuple'
 
-xtest('cdt inCircle ', () => {
+test('cdt inCircle ', () => {
   let a = new CdtSite(new Point(0, 0))
   let b = new CdtSite(new Point(2, 0))
   let c = new CdtSite(new Point(1, 2))
@@ -79,7 +79,7 @@ function MoveSites(a: CdtSite, b: CdtSite, c: CdtSite, s: CdtSite) {
   s.point = s.point.add(del)
 }
 
-xtest('TriangleCreationTest', () => {
+test('TriangleCreationTest', () => {
   const a = new CdtSite(new Point(0, 0))
   const b = new CdtSite(new Point(2, 0))
   const c = new CdtSite(new Point(1, 2))
@@ -111,7 +111,7 @@ xtest('TriangleCreationTest', () => {
   ).toBe(true)
 })
 
-xtest('SmallTriangulation', () => {
+test('SmallTriangulation', () => {
   // #if TEST_MSAGL&& TEST_MSAGL
   //             GraphViewerGdi.DisplayGeometryGraph.SetShowFunctions();
   // #endif
@@ -152,7 +152,7 @@ function* Segments() {
   yield new SymmetricTuple<Point>(new Point(515, 228), new Point(666, 258))
 }
 
-xtest('two holes and one isolated segment', () => {
+test('two holes and one isolated segment', () => {
   for (let i = 0; i < 90; i++) {
     // i < 90 todo
     const ang = (Math.PI / 360) * i
@@ -193,7 +193,7 @@ xtest('two holes and one isolated segment', () => {
   }
 })
 
-xtest('three holes and two isolated segments', () => {
+test('three holes and two isolated segments', () => {
   for (let i = 0; i <= 90; i++) {
     const ang = (Math.PI / 360) * i
     const corners = [
@@ -239,7 +239,7 @@ xtest('three holes and two isolated segments', () => {
   }
 })
 
-xtest('grid rotated', () => {
+test('grid rotated', () => {
   for (let k = 0; k < 6; k++) {
     const corners = []
 

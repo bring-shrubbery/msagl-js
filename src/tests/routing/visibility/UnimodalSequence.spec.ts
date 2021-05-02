@@ -1,5 +1,5 @@
 import {UnimodalSequence} from './../../../routing/visibility/UnimodalSequence'
-xtest('unimodal sequence', () => {
+test('unimodal sequence', () => {
   const t = [0, 1, 2, 3, 1, 0]
   const f = (m: number) => t[m]
   let us = new UnimodalSequence(f, t.length)

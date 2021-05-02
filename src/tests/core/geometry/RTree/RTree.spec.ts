@@ -4,7 +4,7 @@ import {Point} from '../../../../math/geometry/point'
 import {Rectangle} from '../../../../math/geometry/rectangle'
 import {randomInt} from '../../../../utils/random'
 
-xtest('RTreeQuery_IncrementalRectangles', () => {
+test('RTreeQuery_IncrementalRectangles', () => {
   const RectsCount = 1000
   const RegionSize = 1000
   const RectSize = 10

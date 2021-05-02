@@ -1,7 +1,7 @@
 import {Node} from './../../structs/node'
 import {Graph} from './../../structs/graph'
 import {from} from 'linq-to-typescript'
-xtest('entity graphs', () => {
+test('entity graphs', () => {
   const a = Graph.mkGraph('a')
   const b = Graph.mkGraph('b')
   const c = Graph.mkGraph('c')
@@ -14,7 +14,7 @@ xtest('entity graphs', () => {
   expect(e.isDescendantOf(b)).toBe(false)
 })
 
-xtest('test attrs', () => {
+test('test attrs', () => {
   const a = new Node('a')
   a.setAttr(2, '2')
   expect(a.getAttr(0)).toBe(null)
