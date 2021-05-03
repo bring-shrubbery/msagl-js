@@ -1,4 +1,4 @@
-import {AttrContainer} from '../structs/attrContainer'
+import {AttrContainer} from '../layoutPlatform/structs/attrContainer'
 
 export abstract class DrawingObject {
   attrCont: AttrContainer // this is the field from the
