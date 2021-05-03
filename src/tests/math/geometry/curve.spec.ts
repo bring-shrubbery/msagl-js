@@ -1,12 +1,12 @@
-import {LineSegment} from '../../../math/geometry/lineSegment'
-import {Ellipse} from '../../../math/geometry/ellipse'
-import {Point} from './../../../math/geometry/point'
-import {Curve} from './../../../math/geometry/curve'
-import {PlaneTransformation} from './../../../math/geometry/planeTransformation'
-import {CurveFactory} from './../../../math/geometry/curveFactory'
-import {BezierSeg} from './../../../math/geometry/bezierSeg'
-import {ICurve} from './../../../math/geometry/icurve'
-import {Rectangle} from './../../../math/geometry/rectangle'
+import {LineSegment} from '../../../layoutPlatform/math/geometry/lineSegment'
+import {Ellipse} from '../../../layoutPlatform/math/geometry/ellipse'
+import {Point} from './../../../layoutPlatform/math/geometry/point'
+import {Curve} from './../../../layoutPlatform/math/geometry/curve'
+import {PlaneTransformation} from './../../../layoutPlatform/math/geometry/planeTransformation'
+import {CurveFactory} from './../../../layoutPlatform/math/geometry/curveFactory'
+import {BezierSeg} from './../../../layoutPlatform/math/geometry/bezierSeg'
+import {ICurve} from './../../../layoutPlatform/math/geometry/icurve'
+import {Rectangle} from './../../../layoutPlatform/math/geometry/rectangle'
 
 function intersectOnDiameter(a: Point, b: Point) {
   const ls = LineSegment.mkPP(a, b)

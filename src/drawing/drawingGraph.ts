@@ -1,4 +1,4 @@
-import {Graph} from '../structs/graph'
+import {Graph} from '../layoutPlatform/structs/graph'
 import {DrawingObject} from './drawingObject'
 
 type GraphVisData = {

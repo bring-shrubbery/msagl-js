@@ -1,4 +1,4 @@
-import {IntPairMap} from '../../utils/IntPairMap'
+import {IntPairMap} from '../../layoutPlatform/utils/IntPairMap'
 
 test('IntPairMap', () => {
   const m = new IntPairMap<number>(3)

@@ -1,10 +1,9 @@
 import parse = require('dotparser')
 import {readFileSync} from 'fs'
 import {DrawingGraph} from '../drawing/DrawingGraph'
-import {DrawingObject} from '../drawing/drawingObject'
-import {Edge} from '../structs/edge'
-import {Graph} from '../structs/graph'
-import {Node} from '../structs/node'
+import {Edge} from '../layoutPlatform/structs/edge'
+import {Graph} from '../layoutPlatform/structs/graph'
+import {Node} from '../layoutPlatform/structs/node'
 
 function parseEdge(s: string, t: string, dg: DrawingGraph) {
   let sn: Node

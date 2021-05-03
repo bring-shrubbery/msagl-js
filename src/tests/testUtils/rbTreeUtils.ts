@@ -1,7 +1,7 @@
-import {randomInt} from './../../utils/random'
-import {RBTree} from './../../structs/RBTree/rbTree'
-import {RBNode} from './../../structs/RBTree/rbNode'
-import {RBColor} from '../../structs/RBTree/rbColor'
+import {randomInt} from './../../layoutPlatform/utils/random'
+import {RBTree} from './../../layoutPlatform/structs/RBTree/rbTree'
+import {RBNode} from './../../layoutPlatform/structs/RBTree/rbNode'
+import {RBColor} from '../../layoutPlatform/structs/RBTree/rbColor'
 
 export class RbTreeUtils {
   static getRandomArray(size: number, upperBound = 1000): number[] {

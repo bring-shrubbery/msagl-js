@@ -1,5 +1,5 @@
 import {Graph} from 'graphlib'
-import {runLayout} from '../../../layout/assaf'
+import {runLayout} from '../../../layoutPlatform/layout/assaf'
 
 test('Test layout cases', () => {
   const g = new Graph({multigraph: true})

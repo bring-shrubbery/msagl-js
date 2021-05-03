@@ -1,6 +1,6 @@
-import {RBTree} from './../../structs/RBTree/rbTree'
+import {RBTree} from './../../layoutPlatform/structs/RBTree/rbTree'
 import {RbTreeUtils} from './../testUtils/rbTreeUtils'
-import {Assert} from './../../utils/assert'
+import {Assert} from './../../layoutPlatform/utils/assert'
 
 test('check if has correct in-order-traversal', () => {
   const comparer = (a: number, b: number) => a - b

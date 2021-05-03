@@ -1,5 +1,5 @@
-import {Node} from './../../structs/node'
-import {Graph} from './../../structs/graph'
+import {Node} from './../../layoutPlatform/structs/node'
+import {Graph} from './../../layoutPlatform/structs/graph'
 import {from} from 'linq-to-typescript'
 test('entity graphs', () => {
   const a = Graph.mkGraph('a')

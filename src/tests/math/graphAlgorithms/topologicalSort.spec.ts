@@ -1,4 +1,4 @@
-import {TopologicalSort} from './../../../math/graphAlgorithms/topologicalSort'
+import {TopologicalSort} from './../../../layoutPlatform/math/graphAlgorithms/topologicalSort'
 function checkPair(p: [number, number], order: number[]) {
   const sourceIndex = order.indexOf(p[0])
   const targetIndex = order.indexOf(p[1])

@@ -1,7 +1,6 @@
-import {Graph} from './../../structs/graph'
-import {Node} from './../../structs/node'
-
-import {parseDotGraph} from './../../utils/dotparser'
+import {parseDotGraph} from '../../tools/dotparser'
+import {Graph} from './../../layoutPlatform/structs/graph'
+import {Node} from './../../layoutPlatform/structs/node'
 
 class A {
   get prop() {

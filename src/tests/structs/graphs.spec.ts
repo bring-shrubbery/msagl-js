@@ -1,7 +1,7 @@
-import {Graph} from './../../structs/graph'
-import {Edge} from './../../structs/edge'
-import {Node} from './../../structs/node'
-import {Rectangle} from './../../math/geometry/rectangle'
+import {Graph} from './../../layoutPlatform/structs/graph'
+import {Edge} from './../../layoutPlatform/structs/edge'
+import {Node} from './../../layoutPlatform/structs/node'
+import {Rectangle} from './../../layoutPlatform/math/geometry/rectangle'
 test('graph create', () => {
   const g = new Graph()
   expect(g.nodeCount).toBe(0)

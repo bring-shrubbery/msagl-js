@@ -1,16 +1,16 @@
-import {parseDotGraph, parseDotString} from '../../../utils/dotparser'
-import {SugiyamaLayoutSettings} from '../../../layout/layered/SugiyamaLayoutSettings'
+import {SugiyamaLayoutSettings} from '../../../layoutPlatform/layout/layered/SugiyamaLayoutSettings'
 import SortedMap = require('collections/sorted-map')
-import {LayeredLayout} from '../../../layout/layered/LayeredLayout'
-import {Graph} from '../../../structs/graph'
-import {GeomNode} from '../../../layout/core/geomNode'
-import {GeomEdge} from '../../../layout/core/geomEdge'
-import {CurveFactory} from '../../../math/geometry/curveFactory'
-import {Point} from '../../../math/geometry/point'
-import {CancelToken} from '../../../utils/cancelToken'
-import {GeomGraph} from '../../../layout/core/GeomGraph'
-import {GeomObject} from '../../../layout/core/geomObject'
-import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
+import {LayeredLayout} from '../../../layoutPlatform/layout/layered/LayeredLayout'
+import {Graph} from '../../../layoutPlatform/structs/graph'
+import {GeomNode} from '../../../layoutPlatform/layout/core/geomNode'
+import {GeomEdge} from '../../../layoutPlatform/layout/core/geomEdge'
+import {CurveFactory} from '../../../layoutPlatform/math/geometry/curveFactory'
+import {Point} from '../../../layoutPlatform/math/geometry/point'
+import {CancelToken} from '../../../layoutPlatform/utils/cancelToken'
+import {GeomGraph} from '../../../layoutPlatform/layout/core/GeomGraph'
+import {GeomObject} from '../../../layoutPlatform/layout/core/geomObject'
+import {SvgDebugWriter} from '../../../layoutPlatform/math/geometry/svgDebugWriter'
+import {parseDotGraph, parseDotString} from '../../../tools/dotparser'
 function createGeometry(g: Graph) {
   for (const n of g.nodes) {
     const gn = new GeomNode(n)

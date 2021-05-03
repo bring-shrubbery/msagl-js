@@ -1,5 +1,5 @@
-import {Rectangle} from './../../../math/geometry/rectangle'
-import {Point} from './../../../math/geometry/point'
+import {Rectangle} from './../../../layoutPlatform/math/geometry/rectangle'
+import {Point} from './../../../layoutPlatform/math/geometry/point'
 
 test('rectangle test', () => {
   const r = new Rectangle({left: 0, right: 1, top: 1, bottom: 0})

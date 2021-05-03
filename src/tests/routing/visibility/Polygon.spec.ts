@@ -1,8 +1,8 @@
-import {GeomConstants} from '../../../math/geometry/geomConstants'
-import {LineSegment} from '../../../math/geometry/lineSegment'
-import {Point} from '../../../math/geometry/point'
-import {Polyline} from '../../../math/geometry/polyline'
-import {Polygon} from '../../../routing/visibility/Polygon'
+import {GeomConstants} from '../../../layoutPlatform/math/geometry/geomConstants'
+import {LineSegment} from '../../../layoutPlatform/math/geometry/lineSegment'
+import {Point} from '../../../layoutPlatform/math/geometry/point'
+import {Polyline} from '../../../layoutPlatform/math/geometry/polyline'
+import {Polygon} from '../../../layoutPlatform/routing/visibility/Polygon'
 test('more polygon dist', () => {
   const pls = GetPolylines()
   const point = new Point(373, 274)

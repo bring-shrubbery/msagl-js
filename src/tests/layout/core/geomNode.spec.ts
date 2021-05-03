@@ -1,10 +1,10 @@
-import {GeomNode} from './../../../layout/core/geomNode'
-import {CurveFactory} from './../../../math/geometry/curveFactory'
-import {Point} from './../../../math/geometry/point'
-import {Rectangle} from './../../../math/geometry/rectangle'
-import {SvgDebugWriter} from './../../../math/geometry/svgDebugWriter'
-import {DebugCurve} from './../../../math/geometry/debugCurve'
-import {Node} from './../../../structs/node'
+import {GeomNode} from './../../../layoutPlatform/layout/core/geomNode'
+import {CurveFactory} from './../../../layoutPlatform/math/geometry/curveFactory'
+import {Point} from './../../../layoutPlatform/math/geometry/point'
+import {Rectangle} from './../../../layoutPlatform/math/geometry/rectangle'
+import {SvgDebugWriter} from './../../../layoutPlatform/math/geometry/svgDebugWriter'
+import {DebugCurve} from './../../../layoutPlatform/math/geometry/debugCurve'
+import {Node} from './../../../layoutPlatform/structs/node'
 test('node fit', () => {
   const boundary = CurveFactory.mkRectangleWithRoundedCorners(
     100,

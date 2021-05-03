@@ -1,17 +1,17 @@
 import {from} from 'linq-to-typescript'
-import {LineSegment} from '../../../math/geometry/lineSegment'
-import {PlaneTransformation} from '../../../math/geometry/planeTransformation'
-import {Point} from '../../../math/geometry/point'
-import {Polyline} from '../../../math/geometry/polyline'
-import {Rectangle} from '../../../math/geometry/rectangle'
-import {Cdt} from '../../../routing/ConstrainedDelaunayTriangulation/Cdt'
-import {CdtSite} from '../../../routing/ConstrainedDelaunayTriangulation/CdtSite'
+import {LineSegment} from '../../../layoutPlatform/math/geometry/lineSegment'
+import {PlaneTransformation} from '../../../layoutPlatform/math/geometry/planeTransformation'
+import {Point} from '../../../layoutPlatform/math/geometry/point'
+import {Polyline} from '../../../layoutPlatform/math/geometry/polyline'
+import {Rectangle} from '../../../layoutPlatform/math/geometry/rectangle'
+import {Cdt} from '../../../layoutPlatform/routing/ConstrainedDelaunayTriangulation/Cdt'
+import {CdtSite} from '../../../layoutPlatform/routing/ConstrainedDelaunayTriangulation/CdtSite'
 import {
   CdtSweeper,
   InCircle,
-} from '../../../routing/ConstrainedDelaunayTriangulation/CdtSweeper'
-import {CdtTriangle} from '../../../routing/ConstrainedDelaunayTriangulation/CdtTriangle'
-import {SymmetricTuple} from '../../../structs/SymmetricTuple'
+} from '../../../layoutPlatform/routing/ConstrainedDelaunayTriangulation/CdtSweeper'
+import {CdtTriangle} from '../../../layoutPlatform/routing/ConstrainedDelaunayTriangulation/CdtTriangle'
+import {SymmetricTuple} from '../../../layoutPlatform/structs/SymmetricTuple'
 
 test('cdt inCircle ', () => {
   let a = new CdtSite(new Point(0, 0))

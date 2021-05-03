@@ -1,6 +1,6 @@
-import {Assert} from '../../utils/assert'
-import {IntPairSet} from '../../utils/IntPairSet'
-import {randomInt} from '../../utils/random'
+import {Assert} from '../../layoutPlatform/utils/assert'
+import {IntPairSet} from '../../layoutPlatform/utils/IntPairSet'
+import {randomInt} from '../../layoutPlatform/utils/random'
 
 test('IntPairSet', () => {
   const m = new IntPairSet(3)
