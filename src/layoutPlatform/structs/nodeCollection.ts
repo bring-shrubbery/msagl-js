@@ -14,6 +14,10 @@ export class NodeCollection {
     }
   }
 
+  find(id: string): Node {
+    return this.nodeMap.get(id)
+  }
+
   get nodes(): IterableIterator<Node> {
     return this.nodes_()
   }

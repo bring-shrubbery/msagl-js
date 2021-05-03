@@ -15,6 +15,9 @@ export class Graph extends Node {
     g.id = id
     return g
   }
+  findNode(id: string): Node {
+    return this.nodeCollection.find(id)
+  }
   get Edges() {
     return this.nodeCollection.edges
   }

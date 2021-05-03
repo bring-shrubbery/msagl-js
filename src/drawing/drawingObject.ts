@@ -1,7 +1,11 @@
 import {AttrContainer} from '../layoutPlatform/structs/attrContainer'
+import {Color} from './color'
+import {LineStyle} from './lineStyle'
 
 export abstract class DrawingObject {
-  attrCont: AttrContainer // this is the field from the
+  color: Color
+  lineStyle: LineStyle
+  attrCont: AttrContainer // this is the field from main graph
   bind() {
     this.attrCont.setAttr(1, this) // the attribute at 0 is for geometry, at 1 is for drawing
   }
