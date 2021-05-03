@@ -1,6 +1,6 @@
 digraph if
 {
-rankdir=LR;
+rankdir=TB;
   {rank=same;b;c;}
   a->b;
   c->b[label="long long long"];

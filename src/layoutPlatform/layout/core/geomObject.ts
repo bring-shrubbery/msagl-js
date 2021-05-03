@@ -3,13 +3,13 @@ import {Rectangle} from './../../math/geometry/rectangle'
 export abstract class GeomObject {
   abstract boundingBox: Rectangle
   attrCont: AttrContainer
-  bindWithGeom() {
+  bind() {
     this.attrCont.setAttr(0, this)
   }
 
   constructor(attrCont: AttrContainer) {
     this.attrCont = attrCont
-    this.bindWithGeom()
+    this.bind()
   }
 
   static getGeom(attrCont: AttrContainer): GeomObject {

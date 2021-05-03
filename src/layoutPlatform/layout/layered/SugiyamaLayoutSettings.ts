@@ -7,18 +7,15 @@ export enum SnapToGridByY {
   Top,
   Bottom,
 }
-
-export class SugiyamaLayoutSettings {
-  // The resulting layout should be at list this wide
+export class LayoutSettings {
   minimalWidth = 0
-  EdgeRoutingSettings = new EdgeRoutingSettings()
+  // The resulting layout should be at list this wide
   get MinimalWidth(): number {
     return this.minimalWidth
   }
   set MinimalWidth(value: number) {
     this.minimalWidth = Math.max(value, 0)
   }
-
   minimalHeight = 0
   // The resulting layout should be at least this tall
   get MinimalHeight(): number {
@@ -27,6 +24,11 @@ export class SugiyamaLayoutSettings {
   set MinimalHeight(value: number) {
     this.minimalHeight = Math.max(value, 0)
   }
+}
+
+export class SugiyamaLayoutSettings extends LayoutSettings {
+  sameRanks = new Array<string[]>()
+  EdgeRoutingSettings = new EdgeRoutingSettings()
 
   verticalConstraints = new VerticalConstraintsForSugiyama()
   horizontalConstraints = new HorizontalConstraintsForSugiyama()

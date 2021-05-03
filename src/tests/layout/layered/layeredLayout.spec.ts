@@ -45,9 +45,9 @@ test('map test', () => {
 test('layered layout glued graph', () => {
   const graphString = 'digraph G {\n' + 'a -> b\n' + 'a -> b}'
   const g = parseDotString(graphString)
-  createGeometry(g)
+  createGeometry(g.graph)
   const ll = new LayeredLayout(
-    GeomObject.getGeom(g) as GeomGraph,
+    GeomObject.getGeom(g.graph) as GeomGraph,
     new SugiyamaLayoutSettings(),
     new CancelToken(),
   )
@@ -72,12 +72,12 @@ test('sorted map', () => {
   expect(m.size == 3)
 })
 
-test('layered layout hookup', () => {
-  const g = parseDotGraph('src/tests/data/graphvis/abstract.gv')
-  createGeometry(g)
+test('layered layout hookup abstract', () => {
+  const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
+  createGeometry(dg.graph)
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(
-    GeomObject.getGeom(g) as GeomGraph,
+    GeomObject.getGeom(dg.graph) as GeomGraph,
     ss,
     new CancelToken(),
   )
@@ -86,5 +86,19 @@ test('layered layout hookup', () => {
   expect(ll.IntGraph.edges.length).toBe(68)
   ll.run()
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/ll.svg')
-  t.writeGraph(GeomObject.getGeom(g) as GeomGraph)
+  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+})
+test('layered layout hookup longflat', () => {
+  const dg = parseDotGraph('src/tests/data/graphvis/longflat.gv')
+  createGeometry(dg.graph)
+  const ss = new SugiyamaLayoutSettings()
+  const ll = new LayeredLayout(
+    GeomObject.getGeom(dg.graph) as GeomGraph,
+    ss,
+    new CancelToken(),
+  )
+
+  ll.run()
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/longflat.svg')
+  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })

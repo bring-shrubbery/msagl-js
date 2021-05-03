@@ -949,7 +949,7 @@ export class SmoothedPolylineCalculator {
       )
     }
 
-    // Assert.assert(this.CurveIsLegal(curve))
+    Assert.assert(this.CurveIsLegal(curve))
     return curve
   }
 
