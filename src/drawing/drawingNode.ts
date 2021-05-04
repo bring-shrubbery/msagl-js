@@ -1,10 +1,11 @@
 import {DrawingObject} from './drawingObject'
 import {Node} from '../layoutPlatform/structs/node'
 import {Color} from './color'
-import {Shape} from './shape'
+import {ShapeEnum} from './shapeEnum'
 import {DrawingLabel} from './drawingLabel'
 
-export class NodeAttr {
+export class DrawingNode extends DrawingObject {
+  label: DrawingLabel
   padding = 2
   fillColor: Color
   get Padding(): number {
@@ -42,10 +43,10 @@ export class NodeAttr {
   ///  the default fill color
 
   static get DefaultFillColor(): Color {
-    return NodeAttr.defaultFillColor
+    return DrawingNode.defaultFillColor
   }
   static set DefaultFillColor(value: Color) {
-    NodeAttr.defaultFillColor = value
+    DrawingNode.defaultFillColor = value
   }
 
   private fillcolor: Color = Color.Transparent
@@ -60,14 +61,14 @@ export class NodeAttr {
     //RaiseVisualsChangedEvent(this, null);
   }
 
-  private shape: Shape = Shape.Box
+  private shape: ShapeEnum = ShapeEnum.Box
 
   ///  Node shape.
 
-  get Shape(): Shape {
+  get ShapeEnum(): ShapeEnum {
     return this.shape
   }
-  set Shape(value: Shape) {
+  set ShapeEnum(value: ShapeEnum) {
     this.shape = value
     //RaiseVisualsChangedEvent(this, null);
   }
@@ -83,14 +84,11 @@ export class NodeAttr {
     this.labelMargin = value
     //RaiseVisualsChangedEvent(this, null);
   }
-}
-
-export class DrawingNode extends DrawingObject {
-  label: DrawingLabel
-  attr: NodeAttr
   constructor(n: Node) {
     super(n)
-    this.label = new DrawingLabel(n.id)
+    if (n != null) {
+      this.label = new DrawingLabel(n.id)
+    }
   }
   ///  the non adgjacent edges should avoid being closer to the node than Padding
 

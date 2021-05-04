@@ -2,12 +2,15 @@ import parse = require('dotparser')
 import {readFileSync} from 'fs'
 import {Color} from '../drawing/color'
 import {DrawingGraph} from '../drawing/DrawingGraph'
-import {DrawingNode, NodeAttr} from '../drawing/drawingNode'
+import {DrawingNode} from '../drawing/drawingNode'
 import {Edge} from '../layoutPlatform/structs/edge'
 import {Graph} from '../layoutPlatform/structs/graph'
 import {Node} from '../layoutPlatform/structs/node'
 
 import colorParser = require('parse-color')
+import {Assert} from '../layoutPlatform/utils/assert'
+import {StyleEnum} from '../drawing/styleEnum'
+import {ShapeEnum} from '../drawing/shapeEnum'
 
 function parseEdge(s: string, t: string, dg: DrawingGraph) {
   let sn: Node
@@ -44,7 +47,7 @@ function parseNode(o: any, dg: DrawingGraph) {
           drawingNode.label.fontColor = parseColor(attr.eq)
           break
         case 'fillcolor':
-          drawingNode.attr.fillColor = parseColor(attr.eq)
+          drawingNode.fillColor = parseColor(attr.eq)
           break
       }
     } else {
@@ -124,9 +127,30 @@ function parseColor(s: string): Color {
   return Color.mkRGB(p[0], p[1], p[2])
 }
 function parseGraphAttr(o: any, dg: DrawingGraph) {
-  if (dg.defaultNodeAttr == null) dg.defaultNodeAttr = new NodeAttr()
-  parseNodeAttr(o, dg.defaultNodeAttr)
+  if (dg.defaultNode == null) dg.defaultNode = new DrawingNode(null)
+  parseNodeAttr(o, dg.defaultNode)
 }
-function parseNodeAttr(o: any, defaultNodeAttr: NodeAttr) {
+function parseNodeAttr(o: any, dn: DrawingNode) {
+  Assert.assert(o.type == 'attr_stmt')
+  for (const attr of o.attr_list) {
+    switch (attr.id) {
+      case 'style':
+        dn.styleEnum = styleEnumFromString(attr.eq)
+        break
+      case 'shape':
+        dn.ShapeEnum = shapeEnumFromString(attr.eq)
+        break
+      default:
+        throw new Error('not implemented case for ' + attr.id)
+    }
+  }
   throw new Error('Function not implemented.')
+}
+function styleEnumFromString(t: string): StyleEnum {
+  const typedStyleString = t as keyof typeof StyleEnum
+  return StyleEnum[typedStyleString]
+}
+function shapeEnumFromString(t: string): ShapeEnum {
+  const typedStyleString = t as keyof typeof ShapeEnum
+  return ShapeEnum[typedStyleString]
 }
