@@ -2,11 +2,11 @@ import {DrawingObject} from './drawingObject'
 import {Node} from '../layoutPlatform/structs/node'
 import {Color} from './color'
 import {Shape} from './shape'
+import {DrawingLabel} from './drawingLabel'
 
-export class DrawingNode extends DrawingObject {
+export class NodeAttr {
   padding = 2
-
-  ///  the non adgjacent edges should avoid being closer to the node than Padding
+  fillColor: Color
   get Padding(): number {
     return this.padding
   }
@@ -14,7 +14,6 @@ export class DrawingNode extends DrawingObject {
     this.padding = Math.max(0, value)
     // //RaiseVisualsChangedEvent(this, null);
   }
-
   xRad = 3
 
   /// x radius of the rectangle box
@@ -43,10 +42,10 @@ export class DrawingNode extends DrawingObject {
   ///  the default fill color
 
   static get DefaultFillColor(): Color {
-    return DrawingNode.defaultFillColor
+    return NodeAttr.defaultFillColor
   }
   static set DefaultFillColor(value: Color) {
-    DrawingNode.defaultFillColor = value
+    NodeAttr.defaultFillColor = value
   }
 
   private fillcolor: Color = Color.Transparent
@@ -84,6 +83,16 @@ export class DrawingNode extends DrawingObject {
     this.labelMargin = value
     //RaiseVisualsChangedEvent(this, null);
   }
+}
+
+export class DrawingNode extends DrawingObject {
+  label: DrawingLabel
+  attr: NodeAttr
+  constructor(n: Node) {
+    super(n)
+    this.label = new DrawingLabel(n.id)
+  }
+  ///  the non adgjacent edges should avoid being closer to the node than Padding
 
   private labelWidthToHeightRatio = 1
 

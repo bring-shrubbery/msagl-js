@@ -1,9 +1,13 @@
 import parse = require('dotparser')
 import {readFileSync} from 'fs'
+import {Color} from '../drawing/color'
 import {DrawingGraph} from '../drawing/DrawingGraph'
+import {DrawingNode, NodeAttr} from '../drawing/drawingNode'
 import {Edge} from '../layoutPlatform/structs/edge'
 import {Graph} from '../layoutPlatform/structs/graph'
 import {Node} from '../layoutPlatform/structs/node'
+
+import colorParser = require('parse-color')
 
 function parseEdge(s: string, t: string, dg: DrawingGraph) {
   let sn: Node
@@ -26,9 +30,27 @@ function parseGraph(o: any, dg: DrawingGraph) {
   parseUnderGraph(o.children, dg)
 }
 
-function parseNode(o: any, graph: DrawingGraph) {
-  const node = new Node(o.id)
-  graph.graph.nodeCollection.addNode(node)
+function parseNode(o: any, dg: DrawingGraph) {
+  const node = new Node(o.node_id.id)
+  dg.graph.nodeCollection.addNode(node)
+  const drawingNode = new DrawingNode(node)
+  for (const attr of o.attr_list) {
+    if (attr.type == 'attr') {
+      switch (attr.id) {
+        case 'color':
+          drawingNode.color = parseColor(attr.eq)
+          break
+        case 'fontcolor':
+          drawingNode.label.fontColor = parseColor(attr.eq)
+          break
+        case 'fillcolor':
+          drawingNode.attr.fillColor = parseColor(attr.eq)
+          break
+      }
+    } else {
+      throw new Error('unexpected type ' + attr.type)
+    }
+  }
 }
 function parseUnderGraph(children: any, dg: DrawingGraph) {
   for (const o of children) {
@@ -49,6 +71,11 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
           const sdg = new DrawingGraph(subg)
           parseGraph(o, sdg)
         }
+      case 'attr_stmt':
+        parseGraphAttr(o, dg)
+        break
+      default:
+        throw new Error('not implemented')
     }
   }
 }
@@ -88,4 +115,18 @@ function process_same_rank(o: any, dg: DrawingGraph): boolean {
   dg.graphVisData.sameRanks.push(sameRankIds)
 
   return true
+}
+function parseColor(s: string): Color {
+  const p = colorParser(s)
+  if (p.rgba != null) {
+    return new Color(p[3] * 255, p[0], p[1], p[2])
+  }
+  return Color.mkRGB(p[0], p[1], p[2])
+}
+function parseGraphAttr(o: any, dg: DrawingGraph) {
+  if (dg.defaultNodeAttr == null) dg.defaultNodeAttr = new NodeAttr()
+  parseNodeAttr(o, dg.defaultNodeAttr)
+}
+function parseNodeAttr(o: any, defaultNodeAttr: NodeAttr) {
+  throw new Error('Function not implemented.')
 }

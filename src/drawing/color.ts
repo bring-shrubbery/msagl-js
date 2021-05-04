@@ -11,11 +11,8 @@ export class Color {
 
   ///  opaque color
 
-  mkRGB(r: number, g: number, b: number) {
-    this.a = 255
-    this.r = r
-    this.g = g
-    this.b = b
+  static mkRGB(r: number, g: number, b: number): Color {
+    return new Color(255, r, g, b)
   }
 
   ///  alpha - transparency

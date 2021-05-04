@@ -28,6 +28,7 @@
     "linq-to-typescript": "^8.0.0",
     "lodash": "4.17.19",
     "npm": "^7.6.0",
+    "parse-color": "^1.0.0",
     "queue-typescript": "^1.0.1",
     "stack-typescript": "^1.0.4",
     "tsc": "1.20150623.0",
