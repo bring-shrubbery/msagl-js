@@ -7,7 +7,6 @@ import {DrawingLabel} from './drawingLabel'
 export class DrawingNode extends DrawingObject {
   label: DrawingLabel
   padding = 2
-  fillColor: Color
   get Padding(): number {
     return this.padding
   }

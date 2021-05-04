@@ -8,11 +8,12 @@ import {Graph} from '../layoutPlatform/structs/graph'
 import {Node} from '../layoutPlatform/structs/node'
 
 import colorParser = require('parse-color')
-import {Assert} from '../layoutPlatform/utils/assert'
 import {StyleEnum} from '../drawing/styleEnum'
 import {ShapeEnum} from '../drawing/shapeEnum'
+import {DrawingObject} from '../drawing/drawingObject'
+import {DrawingEdge} from '../drawing/drawingEdge'
 
-function parseEdge(s: string, t: string, dg: DrawingGraph) {
+function parseEdge(s: string, t: string, dg: DrawingGraph, o: any) {
   let sn: Node
   const nc = dg.graph.nodeCollection
   if (!nc.hasNode(s)) {
@@ -26,7 +27,10 @@ function parseEdge(s: string, t: string, dg: DrawingGraph) {
   } else {
     tn = nc.getNode(t)
   }
-  nc.addEdge(new Edge(sn, tn))
+  const geomEdge = new Edge(sn, tn)
+  nc.addEdge(geomEdge)
+  const drawingEdge = new DrawingEdge(geomEdge)
+  fillDrawingObjectAttrs(o, drawingEdge)
 }
 
 function parseGraph(o: any, dg: DrawingGraph) {
@@ -37,24 +41,52 @@ function parseNode(o: any, dg: DrawingGraph) {
   const node = new Node(o.node_id.id)
   dg.graph.nodeCollection.addNode(node)
   const drawingNode = new DrawingNode(node)
+  fillDrawingObjectAttrs(o, drawingNode)
+}
+function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
   for (const attr of o.attr_list) {
     if (attr.type == 'attr') {
+      const str = attr.eq
       switch (attr.id) {
         case 'color':
-          drawingNode.color = parseColor(attr.eq)
+          drawingObj.color = parseColor(str)
+          break
+        case 'pencolor':
+          drawingObj.pencolor = parseColor(str)
+          break
+        case 'labelfontcolor':
+          drawingObj.labelfontcolor = parseColor(str)
           break
         case 'fontcolor':
-          drawingNode.label.fontColor = parseColor(attr.eq)
+          drawingObj.fontColor = parseColor(str)
           break
         case 'fillcolor':
-          drawingNode.fillColor = parseColor(attr.eq)
+          drawingObj.fillColor = parseColor(str)
           break
+        case 'style':
+          drawingObj.styleEnum = styleEnumFromString(str)
+          break
+        case 'shape':
+          drawingObj.shapeEnum = shapeEnumFromString(str)
+          break
+        case 'peripheries':
+          drawingObj.peripheries = parseInt(str)
+          break
+        case 'headlabel':
+          drawingObj.headlabel = str
+          break
+        case 'label':
+          drawingObj.labelText = str
+          break
+        default:
+          throw new Error('not implemented for ' + attr.id)
       }
     } else {
       throw new Error('unexpected type ' + attr.type)
     }
   }
 }
+
 function parseUnderGraph(children: any, dg: DrawingGraph) {
   for (const o of children) {
     switch (o.type) {
@@ -64,7 +96,7 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
       case 'edge_stmt':
         const edgeList: any[] = o.edge_list
         for (let i = 0; i < edgeList.length - 1; i++)
-          parseEdge(edgeList[i].id, edgeList[i + 1].id, dg)
+          parseEdge(edgeList[i].id, edgeList[i + 1].id, dg, o)
         break
       case 'subgraph':
         // is it really a subgraph?
@@ -122,30 +154,19 @@ function process_same_rank(o: any, dg: DrawingGraph): boolean {
 function parseColor(s: string): Color {
   const p = colorParser(s)
   if (p.rgba != null) {
-    return new Color(p[3] * 255, p[0], p[1], p[2])
+    return new Color(p.rgba[3] * 255, p.rgba[0], p.rgba[1], p.rgba[2])
   }
-  return Color.mkRGB(p[0], p[1], p[2])
+  return Color.mkRGB(p.rgb[0], p.rgb[1], p.rgb[2])
 }
 function parseGraphAttr(o: any, dg: DrawingGraph) {
-  if (dg.defaultNode == null) dg.defaultNode = new DrawingNode(null)
-  parseNodeAttr(o, dg.defaultNode)
-}
-function parseNodeAttr(o: any, dn: DrawingNode) {
-  Assert.assert(o.type == 'attr_stmt')
-  for (const attr of o.attr_list) {
-    switch (attr.id) {
-      case 'style':
-        dn.styleEnum = styleEnumFromString(attr.eq)
-        break
-      case 'shape':
-        dn.ShapeEnum = shapeEnumFromString(attr.eq)
-        break
-      default:
-        throw new Error('not implemented case for ' + attr.id)
-    }
+  if (dg.defaultNode == null && o.target == 'node') {
+    dg.defaultNode = new DrawingNode(null)
+    fillDrawingObjectAttrs(o, dg.defaultNode)
+  } else if (o.target == 'graph') {
+    fillDrawingObjectAttrs(o, dg)
   }
-  throw new Error('Function not implemented.')
 }
+
 function styleEnumFromString(t: string): StyleEnum {
   const typedStyleString = t as keyof typeof StyleEnum
   return StyleEnum[typedStyleString]

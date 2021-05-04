@@ -11,7 +11,7 @@ import {GeomGraph} from '../../../../layoutPlatform/layout/core/GeomGraph'
 import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
-function createGeometry(g: Graph) {
+function createGeometry(g: Graph): GeomGraph {
   for (const n of g.nodes) {
     const gn = new GeomNode(n)
     gn.boundaryCurve = CurveFactory.mkCircle(10, new Point(0, 0))
@@ -19,7 +19,7 @@ function createGeometry(g: Graph) {
   for (const e of g.Edges) {
     new GeomEdge(e)
   }
-  const geomGraph = new GeomGraph(g)
+  return new GeomGraph(g)
 }
 
 type P = [number, number]
