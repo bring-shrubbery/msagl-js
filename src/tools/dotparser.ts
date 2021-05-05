@@ -13,6 +13,8 @@ import {ShapeEnum} from '../drawing/shapeEnum'
 import {DrawingObject} from '../drawing/drawingObject'
 import {DrawingEdge} from '../drawing/drawingEdge'
 import {RankDirEnum} from '../drawing/rankDirEnum'
+import {RankEnum} from '../drawing/rankEnum'
+import {ArrowTypeEnum} from '../drawing/arrowTypeEnum'
 
 function parseEdge(s: string, t: string, dg: DrawingGraph, o: any) {
   let sn: Node
@@ -85,6 +87,58 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
         case 'rankdir':
           drawingObj.rankdir = rankDirEnumFromString(str)
           break
+        case 'fontname':
+          drawingObj.fontname = str
+          break
+        case 'fontsize':
+          drawingObj.fontsize = parseFloat(str)
+          break
+        case 'width':
+          drawingObj.width = parseFloat(str)
+          break
+        case 'height':
+          drawingObj.height = parseFloat(str)
+          break
+        case 'margin':
+          drawingObj.margin = parseFloat(str)
+          break
+        case 'len':
+          drawingObj.len = parseFloat(str)
+          break
+        case 'minlen':
+          drawingObj.minlen = parseFloat(str)
+          break
+        case 'rank':
+          drawingObj.rank = rankEnumFromString(str)
+          break
+        case 'charset':
+          drawingObj.charset = str
+          break
+        case 'orientation':
+          drawingObj.orientation = str
+          break
+        case 'ratio':
+          drawingObj.ratio = str
+          break
+        case 'weight':
+          drawingObj.weight = parseFloat(str)
+          break
+        case 'ranksep':
+          drawingObj.ranksep = parseFloat(str)
+          break
+        case 'splines':
+          drawingObj.splines = str == 'true'
+          break
+        case 'height':
+          drawingObj.height = parseFloat(str)
+          break
+        case 'overlap':
+          drawingObj.overlap = str == 'true'
+          break
+        case 'arrowtail':
+          drawingObj.arrowtail = arrowTypeEnumFromString(str)
+          break
+
         default:
           throw new Error('not implemented for ' + attr.id)
       }
@@ -190,4 +244,12 @@ function parseSize(str: string): [number, number] {
 function rankDirEnumFromString(t: string): RankDirEnum {
   const typedStyleString = t as keyof typeof RankDirEnum
   return RankDirEnum[typedStyleString]
+}
+function rankEnumFromString(t: string): RankEnum {
+  const typedStyleString = t as keyof typeof RankEnum
+  return RankEnum[typedStyleString]
+}
+function arrowTypeEnumFromString(t: string): ArrowTypeEnum {
+  const typedStyleString = t as keyof typeof RankEnum
+  return ArrowTypeEnum[typedStyleString]
 }

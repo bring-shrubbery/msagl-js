@@ -1,5 +1,7 @@
 import {AttrContainer} from '../layoutPlatform/structs/attrContainer'
 import {Color} from './color'
+import {RankDirEnum} from './rankDirEnum'
+import {RankEnum} from './rankEnum'
 import {ShapeEnum} from './shapeEnum'
 import {StyleEnum} from './styleEnum'
 
@@ -18,7 +20,22 @@ export abstract class DrawingObject {
   pencolor: Color
   peripheries: number
   size: [number, number]
-  rankdir: import('/home/lev/dev/jagl/src/drawing/rankDirEnum').RankDirEnum
+  rankdir: RankDirEnum
+  fontname: any
+  width: number
+  height: number
+  margin: number
+  len: number
+  fontsize: number
+  minlen: number
+  rank: RankEnum
+  charset: any
+  orientation: any
+  ratio: any
+  weight: number
+  ranksep: number
+  splines: boolean
+  overlap: boolean
 
   bind() {
     if (this.attrCont != null) {

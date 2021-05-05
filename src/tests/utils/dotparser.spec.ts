@@ -1,34 +1,23 @@
 import {Color} from '../../drawing/color'
 import {DrawingNode} from '../../drawing/drawingNode'
 import {parseDotGraph, parseDotString} from '../../tools/dotparser'
-import {Graph} from './../../layoutPlatform/structs/graph'
-import {Node} from './../../layoutPlatform/structs/node'
+import {readdir} from 'fs'
+import {join} from 'path'
 
-class A {
-  get prop() {
-    return 'aaa'
-  }
-}
-
-class B extends A {
-  get prop() {
-    return 'BBB'
-  }
-}
-
-function foo(a: A) {
-  return a.prop
-}
-
-function isGraph(n: Node) {
-  return n.hasOwnProperty('isCollapsed')
-}
-
-test('inh', () => {
-  const b = new B()
-  expect(foo(b)).toBe('BBB')
-  const c = new Graph()
-  expect(isGraph(c)).toBe(true)
+test('all gv files', () => {
+  const path = 'src/tests/data/graphvis/'
+  readdir(path, (err, files) => {
+    expect(err).toBe(null)
+    for (const f of files) {
+      if (f.match('(.*).gv')) {
+        const g = parseDotGraph(join(path, f))
+        expect(g != null).toBe(true)
+      } else {
+        expect(1).toBe(0)
+      }
+    }
+  })
+  expect(1).toBe(0)
 })
 
 test('dot parser', () => {
