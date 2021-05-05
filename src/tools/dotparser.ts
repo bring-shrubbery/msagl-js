@@ -1,7 +1,7 @@
 import parse = require('dotparser')
 import {readFileSync} from 'fs'
 import {Color} from '../drawing/color'
-import {DrawingGraph} from '../drawing/DrawingGraph'
+import {DrawingGraph} from '../drawing/drawingGraph'
 import {DrawingNode} from '../drawing/drawingNode'
 import {Edge} from '../layoutPlatform/structs/edge'
 import {Graph} from '../layoutPlatform/structs/graph'
@@ -12,6 +12,7 @@ import {StyleEnum} from '../drawing/styleEnum'
 import {ShapeEnum} from '../drawing/shapeEnum'
 import {DrawingObject} from '../drawing/drawingObject'
 import {DrawingEdge} from '../drawing/drawingEdge'
+import {RankDirEnum} from '../drawing/rankDirEnum'
 
 function parseEdge(s: string, t: string, dg: DrawingGraph, o: any) {
   let sn: Node
@@ -77,6 +78,12 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
           break
         case 'label':
           drawingObj.labelText = str
+          break
+        case 'size':
+          drawingObj.size = parseSize(str)
+          break
+        case 'rankdir':
+          drawingObj.rankdir = rankDirEnumFromString(str)
           break
         default:
           throw new Error('not implemented for ' + attr.id)
@@ -174,4 +181,13 @@ function styleEnumFromString(t: string): StyleEnum {
 function shapeEnumFromString(t: string): ShapeEnum {
   const typedStyleString = t as keyof typeof ShapeEnum
   return ShapeEnum[typedStyleString]
+}
+function parseSize(str: string): [number, number] {
+  const p = str.split(',')
+  return [parseFloat(p[0]), parseFloat(p[1])]
+}
+
+function rankDirEnumFromString(t: string): RankDirEnum {
+  const typedStyleString = t as keyof typeof RankDirEnum
+  return RankDirEnum[typedStyleString]
 }

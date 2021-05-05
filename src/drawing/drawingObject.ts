@@ -17,6 +17,8 @@ export abstract class DrawingObject {
   shapeEnum: ShapeEnum
   pencolor: Color
   peripheries: number
+  size: [number, number]
+  rankdir: import('/home/lev/dev/jagl/src/drawing/rankDirEnum').RankDirEnum
 
   bind() {
     if (this.attrCont != null) {
