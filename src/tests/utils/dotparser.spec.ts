@@ -17,7 +17,6 @@ test('all gv files', () => {
       }
     }
   })
-  expect(1).toBe(0)
 })
 
 test('dot parser', () => {

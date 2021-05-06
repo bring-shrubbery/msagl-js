@@ -1,4 +1,6 @@
 import {AttrContainer} from '../layoutPlatform/structs/attrContainer'
+import {OrderingEnum, DirTypeEnum} from '../tools/dotparser'
+import {ArrowTypeEnum} from './arrawTypeEnum'
 import {Color} from './color'
 import {RankDirEnum} from './rankDirEnum'
 import {RankEnum} from './rankEnum'
@@ -36,11 +38,11 @@ export abstract class DrawingObject {
   ranksep: number
   splines: boolean
   overlap: boolean
-  arrowtail: import('/home/lev/dev/jagl/src/drawing/arrawTypeEnum').ArrowTypeEnum
-  arrowhead: import('/home/lev/dev/jagl/src/drawing/arrawTypeEnum').ArrowTypeEnum
-  ordering: import('/home/lev/dev/jagl/src/tools/dotparser').OrderingEnum
-  URL: any
-  dir: import('/home/lev/dev/jagl/src/tools/dotparser').DirTypeEnum
+  arrowtail: ArrowTypeEnum
+  arrowhead: ArrowTypeEnum
+  ordering: OrderingEnum
+  URL: string
+  dir: DirTypeEnum
 
   bind() {
     if (this.attrCont != null) {
