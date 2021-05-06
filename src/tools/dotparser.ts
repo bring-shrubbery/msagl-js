@@ -12,9 +12,24 @@ import {StyleEnum} from '../drawing/styleEnum'
 import {ShapeEnum} from '../drawing/shapeEnum'
 import {DrawingObject} from '../drawing/drawingObject'
 import {DrawingEdge} from '../drawing/drawingEdge'
+import {ArrowTypeEnum} from '../drawing/arrawTypeEnum'
 import {RankDirEnum} from '../drawing/rankDirEnum'
 import {RankEnum} from '../drawing/rankEnum'
-import {ArrowTypeEnum} from '../drawing/arrowTypeEnum'
+
+export enum OrderingEnum {
+  in,
+  out,
+}
+
+export enum DirTypeEnum {
+  forward,
+
+  back,
+
+  both,
+
+  none,
+}
 
 function parseEdge(s: string, t: string, dg: DrawingGraph, o: any) {
   let sn: Node
@@ -138,6 +153,21 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
         case 'arrowtail':
           drawingObj.arrowtail = arrowTypeEnumFromString(str)
           break
+        case 'taillabel':
+          drawingObj.taillabel = str
+          break
+        case 'arrowhead':
+          drawingObj.arrowhead = arrowTypeEnumFromString(str)
+          break
+        case 'ordering':
+          drawingObj.ordering = orderingEnumFromString(str)
+          break
+        case 'URL':
+          drawingObj.URL = str
+          break
+        case 'dir':
+          drawingObj.dir = dirTypeEnumFromString(str)
+          break
 
         default:
           throw new Error('not implemented for ' + attr.id)
@@ -250,6 +280,15 @@ function rankEnumFromString(t: string): RankEnum {
   return RankEnum[typedStyleString]
 }
 function arrowTypeEnumFromString(t: string): ArrowTypeEnum {
-  const typedStyleString = t as keyof typeof RankEnum
+  const typedStyleString = t as keyof typeof ArrowTypeEnum
   return ArrowTypeEnum[typedStyleString]
+}
+
+function orderingEnumFromString(t: string): OrderingEnum {
+  const typedStyleString = t as keyof typeof OrderingEnum
+  return OrderingEnum[typedStyleString]
+}
+function dirTypeEnumFromString(t: string): DirTypeEnum {
+  const typedStyleString = t as keyof typeof DirTypeEnum
+  return DirTypeEnum[typedStyleString]
 }

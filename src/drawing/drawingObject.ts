@@ -36,6 +36,11 @@ export abstract class DrawingObject {
   ranksep: number
   splines: boolean
   overlap: boolean
+  arrowtail: import('/home/lev/dev/jagl/src/drawing/arrawTypeEnum').ArrowTypeEnum
+  arrowhead: import('/home/lev/dev/jagl/src/drawing/arrawTypeEnum').ArrowTypeEnum
+  ordering: import('/home/lev/dev/jagl/src/tools/dotparser').OrderingEnum
+  URL: any
+  dir: import('/home/lev/dev/jagl/src/tools/dotparser').DirTypeEnum
 
   bind() {
     if (this.attrCont != null) {
