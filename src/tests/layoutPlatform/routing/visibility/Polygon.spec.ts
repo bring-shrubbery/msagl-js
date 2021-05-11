@@ -3,7 +3,7 @@ import {LineSegment} from '../../../../layoutPlatform/math/geometry/lineSegment'
 import {Point} from '../../../../layoutPlatform/math/geometry/point'
 import {Polyline} from '../../../../layoutPlatform/math/geometry/polyline'
 import {Polygon} from '../../../../layoutPlatform/routing/visibility/Polygon'
-test('more polygon dist', () => {
+xtest('more polygon dist', () => {
   const pls = GetPolylines()
   const point = new Point(373, 274)
   const ls = LineSegment.mkPP(point, new Point(314, 303))
@@ -18,7 +18,7 @@ test('more polygon dist', () => {
     expect(Math.abs(testDist - distInfo.dist) < 0.0001).toBe(true)
   }
 })
-test('almost two circles', () => {
+xtest('almost two circles', () => {
   const rad = 10
   const n_corners = 20
   const center_a = new Point(0, 0)
@@ -48,7 +48,7 @@ test('almost two circles', () => {
     Math.abs(di.p.sub(di.q).length - di.dist) < GeomConstants.distanceEpsilon,
   ).toBe(true)
 })
-test('PolygonPolygonDistanceTest2', () => {
+xtest('PolygonPolygonDistanceTest2', () => {
   const a = Polyline.mkFromPoints([
     new Point(-3397.10020369428, 993.94470736826),
     new Point(-3426.74057842555, 1014.3329144183),
@@ -73,7 +73,7 @@ test('PolygonPolygonDistanceTest2', () => {
   const dist = Polygon.Distance(pa, pb)
   TestDist(pa, pb, dist.dist)
 })
-test(' PolygonPolygonDistanceTest()', () => {
+xtest(' PolygonPolygonDistancextest()', () => {
   const a = new Polygon(
     Polyline.mkFromPoints([
       new Point(0, 0),
@@ -121,7 +121,7 @@ function TestDist(a: Polygon, b: Polygon, dist: number) {
       expect(d.dist >= dist - 0.0000001).toBe(true)
     }
 }
-test('polygon dist', () => {
+xtest('polygon dist', () => {
   const points = [
     new Point(0, 0),
     new Point(1, 1),

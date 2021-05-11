@@ -101,7 +101,10 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
           drawingObj.labelText = str
           break
         case 'size':
-          drawingObj.size = parseSize(str)
+          drawingObj.size = parseDoubleTuple(str)
+          break
+        case 'pos':
+          drawingObj.pos = parseDoubleTuple(str)
           break
         case 'rankdir':
           drawingObj.rankdir = rankDirEnumFromString(str)
@@ -142,6 +145,15 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
         case 'weight':
           drawingObj.weight = parseFloat(str)
           break
+        case 'nodesep':
+          drawingObj.nodesep = parseFloat(str)
+          break
+        case 'arrowsize':
+          drawingObj.arrowsize = parseFloat(str)
+          break
+        case 'rotate':
+          drawingObj.rotate = parseFloat(str)
+          break
         case 'ranksep':
           drawingObj.ranksep = parseFloat(str)
           break
@@ -174,6 +186,24 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
           break
         case 'compound':
           drawingObj.compound = str == 'true'
+          break
+        case 'lhead':
+          drawingObj.lhead = str
+          break
+        case 'ltail':
+          drawingObj.ltail = str
+          break
+        case 'bgcolor':
+          drawingObj.bgcolor = parseColor(str)
+          break
+        case 'center':
+          drawingObj.center = str == true || parseInt(str) == 1
+          break
+        case 'colorscheme':
+          drawingObj.colorscheme = str
+          break
+        case 'sides':
+          drawingObj.sides = parseInt(str)
           break
         default:
           throw new Error('not implemented for ' + attr.id)
@@ -238,18 +268,49 @@ function process_same_rank(o: any, dg: DrawingGraph): boolean {
   const attr_0 = attr_list[0]
   if (attr_0.type != 'attr') return false
   if (attr_0.id != 'rank') return false
-  if (attr_0.eq != 'same') {
-    throw new Error('not implemented')
-  }
+  switch (attr_0.eq) {
+    case 'min':
+      for (let i = 1; i < o.children.length; i++) {
+        const e = o.children[i]
+        dg.graphVisData.minRanks.push(e.id)
+      }
+      return true
 
-  const sameRankIds = []
-  for (let i = 1; i < o.children.length; i++) {
-    const e = o.children[i]
-    sameRankIds.push(e.id)
-  }
-  dg.graphVisData.sameRanks.push(sameRankIds)
+    case 'max':
+      for (let i = 1; i < o.children.length; i++) {
+        const e = o.children[i]
+        dg.graphVisData.maxRanks.push(e.id)
+      }
+      return true
 
-  return true
+    case 'same': {
+      const sameRankIds = []
+      for (let i = 1; i < o.children.length; i++) {
+        const e = o.children[i]
+        sameRankIds.push(e.id)
+      }
+      dg.graphVisData.sameRanks.push(sameRankIds)
+      return true
+    }
+    case 'source': {
+      for (let i = 1; i < o.children.length; i++) {
+        const e = o.children[i]
+        dg.graphVisData.sourceRanks.push(e.id)
+      }
+      return true
+    }
+    case 'sink':
+      {
+        for (let i = 1; i < o.children.length; i++) {
+          const e = o.children[i]
+          dg.graphVisData.sinkRanks.push(e.id)
+        }
+      }
+      return true
+    default:
+      throw new Error('incorrect rank')
+      return false
+  }
 }
 function parseColor(s: string): Color {
   const p = colorParser(s)
@@ -283,7 +344,7 @@ function shapeEnumFromString(t: string): ShapeEnum {
   const typedStyleString = t as keyof typeof ShapeEnum
   return ShapeEnum[typedStyleString]
 }
-function parseSize(str: string): [number, number] {
+function parseDoubleTuple(str: string): [number, number] {
   const p = str.split(',')
   return [parseFloat(p[0]), parseFloat(p[1])]
 }

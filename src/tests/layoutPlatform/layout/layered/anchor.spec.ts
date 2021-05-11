@@ -73,7 +73,7 @@ function paddingIsCorrect(anchor: Anchor) {
   for (let i = 0; i < 180; i++) paddingIsCorrectForDirection(i, anchor)
 }
 
-test('anchor poly', () => {
+xtest('anchor poly', () => {
   const boundary = CurveFactory.mkRectangleWithRoundedCorners(
     100,
     50,
@@ -95,7 +95,7 @@ test('anchor poly', () => {
   ])
 })
 
-test('anchor poly padded', () => {
+xtest('anchor poly padded', () => {
   const boundary = CurveFactory.mkRectangleWithRoundedCorners(
     100,
     50,
@@ -117,7 +117,7 @@ test('anchor poly padded', () => {
   paddingIsCorrect(anchor)
 })
 
-test('anchor poly cw padded', () => {
+xtest('anchor poly cw padded', () => {
   // clockwise triangle
   const boundary = Polyline.mkFromPoints([
     new Point(0, 0),

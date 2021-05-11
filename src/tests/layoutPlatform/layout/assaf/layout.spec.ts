@@ -1,7 +1,7 @@
 import {Graph} from 'graphlib'
 import {runLayout} from '../../../../layoutPlatform/layout/assaf'
 
-test('Test layout cases', () => {
+xtest('Test layout cases', () => {
   const g = new Graph({multigraph: true})
   g.setNode('1', {layer: undefined, width: 30, height: 30})
   g.setNode('2', {layer: undefined, width: 30, height: 30})

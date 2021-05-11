@@ -1,6 +1,6 @@
 import {IntPairMap} from '../../layoutPlatform/utils/IntPairMap'
 
-test('IntPairMap', () => {
+xtest('IntPairMap', () => {
   const m = new IntPairMap<number>(3)
   m.set(0, 0, 0)
   m.set(1, 1, 2)

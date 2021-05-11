@@ -47,7 +47,7 @@ function createGeometry(g: Graph): GeomGraph {
 
 type P = [number, number]
 
-test('map test', () => {
+xtest('map test', () => {
   const m = new Map<number, string>()
   m.set(1, '1')
   m.set(2.1, '2')
@@ -65,7 +65,7 @@ test('map test', () => {
 
   expect(mi.get(ip1)).toBe(undefined)
 })
-test('layered layout glued graph', () => {
+xtest('layered layout glued graph', () => {
   const graphString = 'digraph G {\n' + 'a -> b\n' + 'a -> b}'
   const g = parseDotString(graphString)
   createGeometry(g.graph)
@@ -79,7 +79,7 @@ test('layered layout glued graph', () => {
     expect(e.weight).toBe(2)
   }
 })
-test('sorted map', () => {
+xtest('sorted map', () => {
   const m = SortedMap<number, number>()
   m.set(0, 0)
   m.set(-1, -1)
@@ -95,7 +95,7 @@ test('sorted map', () => {
   expect(m.size == 3)
 })
 
-test('layered layout hookup abstract', () => {
+xtest('layered layout hookup abstract', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(dg.graph)
   const ss = new SugiyamaLayoutSettings()
@@ -113,7 +113,7 @@ test('layered layout hookup abstract', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   // expect(0).toBe(1)
 })
-test('layered layout hookup longflat', () => {
+xtest('layered layout hookup longflat', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/longflat.gv')
   createGeometry(dg.graph)
   const ss = new SugiyamaLayoutSettings()

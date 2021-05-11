@@ -48,6 +48,16 @@ export abstract class DrawingObject {
   dir: DirTypeEnum
   concentrate: boolean
   compound: boolean
+  lhead: string
+  bgcolor: Color
+  center: boolean
+  pos: [number, number]
+  nodesep: number
+  rotate: number
+  arrowsize: number
+  colorscheme: string
+  ltail: string
+  sides: number
 
   bind() {
     if (this.attrCont != null) {

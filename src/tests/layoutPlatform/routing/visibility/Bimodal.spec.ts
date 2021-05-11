@@ -1,5 +1,5 @@
 import {BimodalSequence} from './../../../../layoutPlatform/routing/visibility/BimodalSequence'
-test('unimodal sequence', () => {
+xtest('unimodal sequence', () => {
   let t = [0, 1, 2, 3, 1, 0, -1, -2, -3, -4, -2]
   const f = (m: number) => t[m]
   let us = new BimodalSequence(f, t.length)

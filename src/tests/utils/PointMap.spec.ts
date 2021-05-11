@@ -1,6 +1,6 @@
 import {PointMap} from '../../layoutPlatform/utils/PointMap'
 
-test('PointMap', () => {
+xtest('PointMap', () => {
   const m = new PointMap<number>()
   m.set(0, 0, 0)
   m.set(1.3, 1, 2)
