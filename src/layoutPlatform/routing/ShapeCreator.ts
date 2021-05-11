@@ -1,4 +1,5 @@
-﻿import {Edge} from 'graphlib'
+﻿/*
+import {Edge} from 'graphlib'
 import {from, IEnumerable} from 'linq-to-typescript'
 import {Port} from '../core/layout/Port'
 import {GeomGraph} from '../layout/core/GeomGraph'
@@ -49,90 +50,91 @@ export class ShapeCreator {
 
     for (const edge of graph.Edges) {
       const shape: Shape
-      if (nodesToShapes.TryGetValue(edge.Source, /* out */ shape)) {
-        if (edge.SourcePort != null) {
-          shape.Ports.Insert(edge.SourcePort)
-        }
-      }
+      if (nodesToShapes.TryGetValue(edge.Source, TODOOUT shape)) {
+  if (edge.SourcePort != null) {
+    shape.Ports.Insert(edge.SourcePort)
+  }
+}
 
-      if (nodesToShapes.TryGetValue(edge.Target, /* out */ shape)) {
-        if (edge.TargetPort != null) {
-          shape.Ports.Insert(edge.TargetPort)
-        }
-      }
+if (nodesToShapes.TryGetValue(edge.Target, TODOOUT shape)) {
+  if (edge.TargetPort != null) {
+    shape.Ports.Insert(edge.TargetPort)
+  }
+}
     }
 
-    return nodesToShapes.Values
+return nodesToShapes.Values
   }
 
   //  Creates a shape with a RelativeFloatingPort for the node center, attaches it to the shape and all edges
   //  <param name="node"></param>
   //  <returns>Shape obstacle for the node with simple port</returns>
   static CreateShapeWithCenterPort(node: Node): Shape {
-    //  Assert.assert(Point.closeDistEps(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
-    const shape = new RelativeShape((node) => node.BoundaryCurve)
-    const port = new RelativeFloatingPort(
-      (node) => node.BoundaryCurve,
-      (node) => node.Center,
-    )
-    shape.Ports.Insert(port)
-    for (const e of node.InEdges) {
-      ShapeCreator.FixPortAtTarget(shape, port, e)
-    }
-
-    for (const e of node.OutEdges) {
-      ShapeCreator.FixPortAtSource(shape, port, e)
-    }
-
-    for (const e of node.SelfEdges) {
-      ShapeCreator.FixPortAtSource(shape, port, e)
-      ShapeCreator.FixPortAtTarget(shape, port, e)
-    }
-
-    return shape
+  //  Assert.assert(Point.closeDistEps(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
+  const shape = new RelativeShape((node) => node.BoundaryCurve)
+  const port = new RelativeFloatingPort(
+    (node) => node.BoundaryCurve,
+    (node) => node.Center,
+  )
+  shape.Ports.Insert(port)
+  for (const e of node.InEdges) {
+    ShapeCreator.FixPortAtTarget(shape, port, e)
   }
+
+  for (const e of node.OutEdges) {
+    ShapeCreator.FixPortAtSource(shape, port, e)
+  }
+
+  for (const e of node.SelfEdges) {
+    ShapeCreator.FixPortAtSource(shape, port, e)
+    ShapeCreator.FixPortAtTarget(shape, port, e)
+  }
+
+  return shape
+}
 
   //  Creates a ClusterBoundaryPort for the cluster boundary, attaches it to the shape and all edges
   //  <param name="node"></param>
   //  <returns>Shape obstacle for the node with simple port</returns>
   static CreateShapeWithClusterBoundaryPort(node: Node): Shape {
-    //  Assert.assert(Point.closeDistEps(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
-    Assert.assert(node instanceof Cluster)
-    const shape = new RelativeShape((node) => node.BoundaryCurve)
-    const port = new ClusterBoundaryPort(
-      (node) => node.BoundaryCurve,
-      (node) => node.Center,
-    )
-    shape.Ports.Insert(port)
-    for (const e of node.InEdges) {
-      ShapeCreator.FixPortAtTarget(shape, port, e)
-    }
-
-    for (const e of node.OutEdges) {
-      ShapeCreator.FixPortAtSource(shape, port, e)
-    }
-
-    for (const e of node.SelfEdges) {
-      ShapeCreator.FixPortAtSource(shape, port, e)
-      ShapeCreator.FixPortAtTarget(shape, port, e)
-    }
-
-    return shape
+  //  Assert.assert(Point.closeDistEps(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
+  Assert.assert(node instanceof Cluster)
+  const shape = new RelativeShape((node) => node.BoundaryCurve)
+  const port = new ClusterBoundaryPort(
+    (node) => node.BoundaryCurve,
+    (node) => node.Center,
+  )
+  shape.Ports.Insert(port)
+  for (const e of node.InEdges) {
+    ShapeCreator.FixPortAtTarget(shape, port, e)
   }
+
+  for (const e of node.OutEdges) {
+    ShapeCreator.FixPortAtSource(shape, port, e)
+  }
+
+  for (const e of node.SelfEdges) {
+    ShapeCreator.FixPortAtSource(shape, port, e)
+    ShapeCreator.FixPortAtTarget(shape, port, e)
+  }
+
+  return shape
+}
 
   static FixPortAtSource(shape: Shape, port: Port, e: Edge) {
-    if (e.SourcePort == null) {
-      e.SourcePort = port
-    } else {
-      shape.Ports.Insert(e.SourcePort)
-    }
-  }
-
-  static FixPortAtTarget(shape: Shape, port: Port, e: Edge) {
-    if (e.TargetPort == null) {
-      e.TargetPort = port
-    } else {
-      shape.Ports.Insert(e.TargetPort)
-    }
+  if (e.SourcePort == null) {
+    e.SourcePort = port
+  } else {
+    shape.Ports.Insert(e.SourcePort)
   }
 }
+
+  static FixPortAtTarget(shape: Shape, port: Port, e: Edge) {
+  if (e.TargetPort == null) {
+    e.TargetPort = port
+  } else {
+    shape.Ports.Insert(e.TargetPort)
+  }
+}
+}
+*/

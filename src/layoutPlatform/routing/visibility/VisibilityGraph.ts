@@ -1,3 +1,4 @@
+/*
 import {IEnumerable, from} from 'linq-to-typescript'
 import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
@@ -68,8 +69,8 @@ export class VisibilityGraph {
     pathStart: Point,
     pathEnd: Point,
     obstacles: IEnumerable<Polyline>,
-    /* out */ sourceVertex: VisibilityVertex,
-    /* out */ targetVertex: VisibilityVertex,
+    TODOOUT sourceVertex: VisibilityVertex,
+    TODOOUT targetVertex: VisibilityVertex,
   ): VisibilityGraph {
     const holes = [...OrientHolesClockwise(obstacles)]
     const visibilityGraph = VisibilityGraph.CalculateGraphOfBoundaries(holes)
@@ -83,14 +84,14 @@ export class VisibilityGraph {
       visibilityGraph,
       pathStart,
       VisibilityKind.Tangent,
-      /* out */ sourceVertex,
+      TODOOUT sourceVertex,
     )
     PointVisibilityCalculator.CalculatePointVisibilityGraph(
       holes,
       visibilityGraph,
       pathEnd,
       VisibilityKind.Tangent,
-      /* out */ targetVertex,
+      TODOOUT targetVertex,
     )
     return visibilityGraph
   }
@@ -410,3 +411,4 @@ function* OrientHolesClockwise(
     }
   }
 }
+*/

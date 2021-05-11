@@ -124,7 +124,7 @@ export class ConstrainedOrdering {
   //  Calculate() {
   //   this.AllocateXPositions();
   //   let originalGraph = (<GeomGraph>(this.intGraph.Nodes[0].GeometryParent));
-  //   LayeredLayoutEngine.CalculateAnchorSizes(this.database, /* out */this.database.anchors, this.ProperLayeredGraph, originalGraph, this.intGraph, this.settings);
+  //   LayeredLayoutEngine.CalculateAnchorSizes(this.database, TODOOUTthis.database.anchors, this.ProperLayeredGraph, originalGraph, this.intGraph, this.settings);
   //   LayeredLayoutEngine.CalcInitialYAnchorLocations(this.LayerArrays, 500, this.geometryGraph, this.database, this.intGraph, this.settings, this.LayersAreDoubled);
   //   this.Order();
   // }
@@ -286,7 +286,7 @@ export class ConstrainedOrdering {
 
   // EnumerateVertComponent(componentRootsToComponents: Dictionary<number, Array<number>>, vertCompRoot: number): IEnumerable<number> {
   //   let compList: Array<number>;
-  //   if (componentRootsToComponents.TryGetValue(vertCompRoot, /* out */compList)) {
+  //   if (componentRootsToComponents.TryGetValue(vertCompRoot, TODOOUTcompList)) {
   //     for (let i of compList) {
   //       yield;
   //     }
@@ -318,7 +318,7 @@ export class ConstrainedOrdering {
   //   layer[xIndex++] = i;
   //   alreadyInLayers[i] = true;
   //   let block: Array<number>;
-  //   if (this.horizontalConstraints.BlockRootToBlock.TryGetValue(i, /* out */block)) {
+  //   if (this.horizontalConstraints.BlockRootToBlock.TryGetValue(i, TODOOUTblock)) {
   //     for (let v of block) {
   //       if (alreadyInLayers[v]) {
   //         // TODO: Warning!!! continue If
@@ -339,7 +339,7 @@ export class ConstrainedOrdering {
   //     let i: number = kv.Key;
   //     let root = kv.Value;
   //     let component: Array<number>;
-  //     if (!d.TryGetValue(root, /* out */component)) {
+  //     if (!d.TryGetValue(root, TODOOUTcomponent)) {
   //       component = new Array<number>();
   //       d[root] = new Array<number>();
   //     }
@@ -365,7 +365,7 @@ export class ConstrainedOrdering {
 
   // static GetFromDictionaryOrIdentical(d: Dictionary<number, number>, key: number): number {
   //   let i: number;
-  //   if (d.TryGetValue(key, /* out */i)) {
+  //   if (d.TryGetValue(key, TODOOUTi)) {
   //     return i;
   //   }
 
@@ -442,7 +442,7 @@ export class ConstrainedOrdering {
 
   // static NodeToBlockRootSoftOnLayerInfo(layerInfo: LayerInfo, node: number): number {
   //   let root: number;
-  //   return layerInfo.nodeToBlockRoot.TryGetValue(node, /* out */root);
+  //   return layerInfo.nodeToBlockRoot.TryGetValue(node, TODOOUTroot);
   //   // TODO: Warning!!!, inline IF is not supported ?
   //   // TODO: Warning!!!! NULL EXPRESSION DETECTED...
   //   ;
@@ -548,7 +548,7 @@ export class ConstrainedOrdering {
   //   for (let layerInfo: LayerInfo of this.layerInfos) {
   //     for (let v: number of ConstrainedOrdering.VertConstrainedNodesOfLayer(layerInfo)) {
   //       let blockRoot: number;
-  //       if (ConstrainedOrdering.TryGetBlockRoot(v, /* out */blockRoot, layerInfo)) {
+  //       if (ConstrainedOrdering.TryGetBlockRoot(v, TODOOUTblockRoot, layerInfo)) {
   //         layerInfo.blockRootToVertConstrainedNodeOfBlock[blockRoot] = v;
   //       }
 
@@ -558,8 +558,8 @@ export class ConstrainedOrdering {
 
   // }
 
-  // static TryGetBlockRoot(v: number, /* out */blockRoot: number, layerInfo: LayerInfo): boolean {
-  //   if (layerInfo.nodeToBlockRoot.TryGetValue(v, /* out */blockRoot)) {
+  // static TryGetBlockRoot(v: number, TODOOUTblockRoot: number, layerInfo: LayerInfo): boolean {
+  //   if (layerInfo.nodeToBlockRoot.TryGetValue(v, TODOOUTblockRoot)) {
   //     return true;
   //   }
 

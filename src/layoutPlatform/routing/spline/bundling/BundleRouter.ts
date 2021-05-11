@@ -1,5 +1,5 @@
 //  The class is responsible for general edge bundling with ordered bundles.
-
+/*
 import {IEnumerable} from 'linq-to-typescript'
 import {Dictionary} from 'lodash'
 import {RectangleNode} from '../../../core/geometry/RTree/RectangleNode'
@@ -99,7 +99,7 @@ export class BundleRouter extends Algorithm {
   //  1. route edges with bundling
   //  2. nudge bundles and hubs
   //  3. order paths
-  protected /* override */ RunInternal() {
+  protected  RunInternal() {
     // TimeMeasurer.DebugOutput("edge bundling started");
     if (this.ThereAreOverlaps(this.TightHierarchy)) {
       this.Status = BundlingStatus.Overlaps
@@ -446,7 +446,7 @@ export class BundleRouter extends Algorithm {
       edge.Curve = GeomEdge.RouteSelfEdge(
         edge.Source.BoundaryCurve,
         this.LoosePadding * 2,
-        /* out */ sp,
+       TODOOUT sp, 
       )
     }
   }
@@ -464,3 +464,4 @@ export class BundleRouter extends Algorithm {
     }
   }
 }
+*/

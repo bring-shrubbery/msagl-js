@@ -1,5 +1,5 @@
 ﻿//  Basic geomedge router for producing straight edges.
-
+/*
 import {IEnumerable} from 'linq-to-typescript'
 import {EdgeGeometry} from '../layout/core/edgeGeometry'
 import {GeomEdge} from '../layout/core/geomEdge'
@@ -21,8 +21,8 @@ export class StraightLineEdges extends Algorithm {
   //  Constructs a basic straight geomedge router.
   public constructor(edges: IEnumerable<GeomEdge>, padding: number) {
     super(null)
-    this.edges = this.edges
-    this.padding = this.padding
+    this.edges = edges
+    this.padding = padding
   }
 
   //  Executes the algorithm.
@@ -229,7 +229,7 @@ export class StraightLineEdges extends Algorithm {
     )
   }
 
-  private static /*  */ CreateUnderlyingPolylineForSelfEdge(
+  private static CreateUnderlyingPolylineForSelfEdge(
     p0: Point,
     dx: number,
     dy: number,
@@ -255,3 +255,4 @@ export class StraightLineEdges extends Algorithm {
     }
   }
 }
+*/

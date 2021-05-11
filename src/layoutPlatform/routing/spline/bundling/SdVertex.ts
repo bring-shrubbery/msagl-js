@@ -1,4 +1,5 @@
-﻿import {VisibilityVertex} from '../../visibility/VisibilityVertex'
+﻿/*
+import {VisibilityVertex} from '../../visibility/VisibilityVertex'
 
 export class SdVertex {
   VisibilityVertex: VisibilityVertex
@@ -45,3 +46,4 @@ export class SdVertex {
     this.PrevEdge = null
   }
 }
+*/

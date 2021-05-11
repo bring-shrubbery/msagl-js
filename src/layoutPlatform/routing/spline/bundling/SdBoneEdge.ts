@@ -1,4 +1,5 @@
-﻿import {Point} from '../../../math/geometry/point'
+﻿/*
+import {Point} from '../../../math/geometry/point'
 import {Assert} from '../../../utils/assert'
 import {CdtEdge} from '../../ConstrainedDelaunayTriangulation/CdtEdge'
 import {VisibilityEdge} from '../../visibility/VisibilityEdge'
@@ -56,3 +57,4 @@ export class SdBoneEdge {
     Assert.assert(this.numberOfPassedPaths >= 0)
   }
 }
+*/

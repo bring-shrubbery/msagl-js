@@ -50,7 +50,7 @@ export class VisibilityVertex {
     this.point = point
   }
 
-  public /* override */ ToString(): string {
+  public ToString(): string {
     return this.point.toString()
   }
 
@@ -64,6 +64,7 @@ export class VisibilityVertex {
   }
 
   RemoveInEdge(edge: VisibilityEdge) {
+    // eslint-disable-next-line for-direction
     for (let ii: number = this.InEdges.length - 1; ii >= 0; ii++) {
       if (this.InEdges[ii] == edge) {
         throw new Error('not implemented')

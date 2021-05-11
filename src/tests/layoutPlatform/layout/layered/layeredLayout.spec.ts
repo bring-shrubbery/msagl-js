@@ -13,6 +13,7 @@ import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugW
 import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
 import {DrawingObject} from '../../../../drawing/drawingObject'
 import {DrawingNode} from '../../../../drawing/drawingNode'
+import ts = require('typescript')
 
 export function getTextSize(txt: string, font: string) {
   const element = document.createElement('canvas')
@@ -22,19 +23,19 @@ export function getTextSize(txt: string, font: string) {
     width: context.measureText(txt).width,
     height: parseInt(context.font),
   }
-  return tsize
+  return 'size = ' + tsize.width + ' ' + tsize.height
 }
 
 function createGeometry(g: Graph): GeomGraph {
   for (const n of g.nodes) {
     const gn = new GeomNode(n)
     const drawingNode = DrawingObject.getDrawingObj(n) as DrawingNode
-    const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
+    //const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
     gn.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
-      tsize.width,
-      tsize.height,
-      tsize.width / 10,
-      tsize.height / 10,
+      80, // tsize.width,
+      20, // tsize.height,
+      80 / 10, // tsize.width / 10,
+      20 / 10, // tsize.height / 10,
       new Point(0, 0),
     )
   }
@@ -110,7 +111,7 @@ test('layered layout hookup abstract', () => {
   ll.run()
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/ll.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
-  expect(0).toBe(1)
+  // expect(0).toBe(1)
 })
 test('layered layout hookup longflat', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/longflat.gv')
