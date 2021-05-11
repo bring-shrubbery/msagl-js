@@ -1,3 +1,4 @@
+/*
 import {ICurve} from '../../math/geometry/icurve'
 import {Point} from '../../math/geometry/point'
 import {IPortEntry} from './IPortEntry'
@@ -21,3 +22,4 @@ export abstract class Port {
     return this.Location.toString()
   }
 }
+*/

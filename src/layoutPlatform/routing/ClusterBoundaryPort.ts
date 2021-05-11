@@ -1,4 +1,5 @@
-﻿import {RelativeFloatingPort} from '../core/layout/RelativeFloatingPort'
+﻿/*
+import {RelativeFloatingPort} from '../core/layout/RelativeFloatingPort'
 import {ICurve} from '../math/geometry/icurve'
 import {Point} from '../math/geometry/point'
 import {Polyline} from '../math/geometry/polyline'
@@ -22,3 +23,5 @@ export class ClusterBoundaryPort extends RelativeFloatingPort {
     super(curveDelegate, centerDelegate, locationOffset)
   }
 }
+
+*/

@@ -49,7 +49,7 @@ export class AdjacentSwapsWithConstraints {
     properLayeredGraph: ProperLayeredGraph,
     layerInfos: LayerInfo[],
   ) {
-    this.x = layerArray.x
+    this.X = layerArray.x
     this.layering = layerArray.y
     this.layers = layerArray.Layers
     this.properLayeredGraph = properLayeredGraph
@@ -168,8 +168,8 @@ export class AdjacentSwapsWithConstraints {
     // the right most position of vnbs to the left from the current u neighbor
     let vnbsSeenAlready = 0
     for (const uNeighbor of unbs) {
-      const xu: number = this.x[uNeighbor]
-      for (; j < vl && this.x[vnbs[j + 1]] < xu; j++) {
+      const xu: number = this.X[uNeighbor]
+      for (; j < vl && this.X[vnbs[j + 1]] < xu; j++) {
         vnbsSeenAlready++
       }
 
@@ -198,9 +198,9 @@ export class AdjacentSwapsWithConstraints {
     // the right most position of vnbs to the left from the current u neighbor
     let vCrossingNumberSeenAlready = 0
     for (const uNeib of unbs) {
-      const xu: number = this.x[uNeib]
+      const xu: number = this.X[uNeib]
       let vnb: number
-      for (; j < vl && this.x[(vnb = vnbs[j + 1])] < xu; j++) {
+      for (; j < vl && this.X[(vnb = vnbs[j + 1])] < xu; j++) {
         vCrossingNumberSeenAlready =
           vCrossingNumberSeenAlready + vCrossingCount[vnb]
       }
@@ -216,15 +216,15 @@ export class AdjacentSwapsWithConstraints {
     Assert.assert(this.UAndVAreOnSameLayer(u, v))
     Assert.assert(this.UIsToTheLeftOfV(u, v))
     Assert.assert(this.CanSwap(u, v))
-    const left: number = this.x[u]
-    const right: number = this.x[v]
+    const left: number = this.X[u]
+    const right: number = this.X[v]
     const ln: number = this.layering[u]
     // layer number
     const layer: number[] = this.layers[ln]
     layer[left] = v
     layer[right] = u
-    this.x[u] = right
-    this.x[v] = left
+    this.X[u] = right
+    this.X[v] = left
     // update sorted arrays POrders and SOrders
     // an array should be updated only in case it contains both u and v.
     //  More than that, v has to follow u in an the array.
@@ -511,6 +511,6 @@ export class AdjacentSwapsWithConstraints {
   }
 
   private UIsToTheLeftOfV(u: number, v: number): boolean {
-    return this.x[u] < this.x[v]
+    return this.X[u] < this.X[v]
   }
 }

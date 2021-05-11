@@ -6,6 +6,6 @@ export abstract class SegmentBase {
   abstract get End(): Point
 
   get Direction(): Point {
-    return this.End.sub(this.start)
+    return this.End.sub(this.Start)
   }
 }

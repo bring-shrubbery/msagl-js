@@ -1,3 +1,4 @@
+/*
 //  floating port: specifies that the edge is routed to the Location
 
 import {ICurve} from '../../math/geometry/icurve'
@@ -39,3 +40,4 @@ export class FloatingPort extends Port {
     return this.Location.toString()
   }
 }
+*/

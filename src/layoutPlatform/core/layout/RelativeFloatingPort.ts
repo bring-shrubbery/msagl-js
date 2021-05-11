@@ -1,3 +1,4 @@
+/*
 import {ICurve} from '../../math/geometry/icurve'
 import {Point} from '../../math/geometry/point'
 import {FloatingPort} from './FloatingPort'
@@ -31,3 +32,4 @@ export class RelativeFloatingPort extends FloatingPort {
     return this.CurveDelegate()
   }
 }
+*/

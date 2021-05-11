@@ -1,3 +1,4 @@
+/*
 import {IComparer} from 'linq-to-typescript'
 import {result} from 'lodash'
 import {GeomConstants} from '../../math/geometry/geomConstants'
@@ -87,3 +88,4 @@ export class ActiveEdgeComparerWithRay implements IComparer<PolylinePoint> {
     return r
   }
 }
+*/

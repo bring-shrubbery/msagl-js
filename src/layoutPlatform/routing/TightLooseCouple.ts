@@ -1,3 +1,4 @@
+/*
 import {Polyline} from '../math/geometry/polyline'
 import {Shape} from './Shape'
 
@@ -24,7 +25,7 @@ export class TightLooseCouple {
   //  compare just by TightPolyline
   //  <param name="obj"></param>
   //  <returns></returns>
-  public /* override */ Equals(couple: TightLooseCouple): boolean {
+  public Equals(couple: TightLooseCouple): boolean {
     if (couple == null) {
       return false
     }
@@ -44,3 +45,4 @@ export class TightLooseCouple {
     )
   }
 }
+*/

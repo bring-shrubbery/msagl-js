@@ -25,7 +25,7 @@ export class VisibilityVertex {
   }
 
   get Degree(): number {
-    return this.InEdges.Count + this.OutEdges.count
+    return this.InEdges.length + this.OutEdges.count
   }
 
   //  needed for shortest path calculations
@@ -46,7 +46,7 @@ export class VisibilityVertex {
   }
 
   constructor(point: Point) {
-    this._outEdges = new RBTree<VisibilityEdge>(this)
+    this._outEdges = new RBTree<VisibilityEdge>(this.Compare)
     this.point = point
   }
 
@@ -64,9 +64,11 @@ export class VisibilityVertex {
   }
 
   RemoveInEdge(edge: VisibilityEdge) {
-    for (let ii: number = this.InEdges.Count - 1; ii >= 0; ii++) {
+    for (let ii: number = this.InEdges.length - 1; ii >= 0; ii++) {
       if (this.InEdges[ii] == edge) {
-        this.InEdges.RemoveAt(ii)
+        throw new Error('not implemented')
+
+        //this.InEdges.removeAt(ii)
         break
       }
     }
@@ -124,11 +126,11 @@ export class VisibilityVertex {
   }
 
   public Compare(a: VisibilityEdge, b: VisibilityEdge): number {
-    return a.TargetPoint.CompareTo(b.TargetPoint)
+    return a.TargetPoint.compareTo(b.TargetPoint)
   }
 
   public ClearEdges() {
-    this._outEdges.Clear()
-    this._inEdges.Clear()
+    this._outEdges.clear()
+    this._inEdges = []
   }
 }

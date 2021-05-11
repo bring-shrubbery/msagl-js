@@ -36,12 +36,16 @@ function parseEdge(s: string, t: string, dg: DrawingGraph, o: any) {
   const nc = dg.graph.nodeCollection
   if (!nc.hasNode(s)) {
     nc.addNode((sn = new Node(s)))
+    const dn = new DrawingNode(sn)
+    dn.labelText = s
   } else {
     sn = nc.getNode(s)
   }
   let tn: Node
   if (!nc.hasNode(t)) {
     nc.addNode((tn = new Node(t)))
+    const dn = new DrawingNode(tn)
+    dn.labelText = t
   } else {
     tn = nc.getNode(t)
   }

@@ -1,3 +1,4 @@
+/*
 //
 //  Shape.cs
 //  MSAGL Shape class for Rectilinear Edge Routing.
@@ -28,7 +29,7 @@ export class Shape {
   public get BoundaryCurve(): ICurve {
     return this.boundaryCurve
   }
-  public set /* virtual */ BoundaryCurve(value: ICurve) {
+  public set  BoundaryCurve(value: ICurve) {
     this.boundaryCurve = value
   }
 
@@ -129,3 +130,4 @@ export class Shape {
     return this.UserData == null ? 'null' : this.UserData.toString()
   }
 }
+*/

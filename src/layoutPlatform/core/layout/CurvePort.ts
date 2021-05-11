@@ -1,3 +1,4 @@
+/*
 import {ICurve} from '../../math/geometry/icurve'
 import {Port} from './Port'
 export class CurvePort extends Port {
@@ -5,7 +6,7 @@ export class CurvePort extends Port {
 
   static constructor_(curve: ICurve, parameter: number) {
     const p = new CurvePort()
-    p.curve = curve
+    p.Curve = curve
     p.parameter = parameter
     return p
   }
@@ -23,3 +24,4 @@ export class CurvePort extends Port {
     return this.Curve.value(this.parameter)
   }
 }
+*/

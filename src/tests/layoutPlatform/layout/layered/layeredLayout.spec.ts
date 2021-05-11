@@ -11,10 +11,32 @@ import {GeomGraph} from '../../../../layoutPlatform/layout/core/GeomGraph'
 import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
+import {DrawingObject} from '../../../../drawing/drawingObject'
+import {DrawingNode} from '../../../../drawing/drawingNode'
+
+export function getTextSize(txt: string, font: string) {
+  const element = document.createElement('canvas')
+  const context = element.getContext('2d')
+  // context.font = font
+  const tsize = {
+    width: context.measureText(txt).width,
+    height: parseInt(context.font),
+  }
+  return tsize
+}
+
 function createGeometry(g: Graph): GeomGraph {
   for (const n of g.nodes) {
     const gn = new GeomNode(n)
-    gn.boundaryCurve = CurveFactory.mkCircle(10, new Point(0, 0))
+    const drawingNode = DrawingObject.getDrawingObj(n) as DrawingNode
+    const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
+    gn.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
+      tsize.width,
+      tsize.height,
+      tsize.width / 10,
+      tsize.height / 10,
+      new Point(0, 0),
+    )
   }
   for (const e of g.Edges) {
     new GeomEdge(e)
@@ -84,9 +106,11 @@ test('layered layout hookup abstract', () => {
 
   expect(ll.IntGraph.nodeCount).toBe(47)
   expect(ll.IntGraph.edges.length).toBe(68)
+
   ll.run()
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/ll.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  expect(0).toBe(1)
 })
 test('layered layout hookup longflat', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/longflat.gv')

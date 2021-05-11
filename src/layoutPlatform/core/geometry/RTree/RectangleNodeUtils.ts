@@ -98,7 +98,7 @@ function HandleEqualityCheck<T, P>(
 }
 
 // we need to avoid calling action twice for the same pair
-function HandleEquality<T>(
+function HandleEquality<T, P>(
   a: RectangleNode<T, P>,
   action: (u: T, v: T) => void,
 ) {

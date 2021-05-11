@@ -9,6 +9,9 @@ import {StyleEnum} from './styleEnum'
 
 export abstract class DrawingObject {
   // not all attributes can be used in derived classes
+  static defaultLabelFontName = 'Times-Roman'
+  static defaultLabelFontSize = 12
+
   color: Color
   fillColor: Color
   labelfontcolor: Color
