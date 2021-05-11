@@ -148,9 +148,6 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
         case 'splines':
           drawingObj.splines = str == 'true'
           break
-        case 'height':
-          drawingObj.height = parseFloat(str)
-          break
         case 'overlap':
           drawingObj.overlap = str == 'true'
           break
@@ -189,9 +186,11 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
         parseNode(o, dg)
         break
       case 'edge_stmt':
-        const edgeList: any[] = o.edge_list
-        for (let i = 0; i < edgeList.length - 1; i++)
-          parseEdge(edgeList[i].id, edgeList[i + 1].id, dg, o)
+        {
+          const edgeList: any[] = o.edge_list
+          for (let i = 0; i < edgeList.length - 1; i++)
+            parseEdge(edgeList[i].id, edgeList[i + 1].id, dg, o)
+        }
         break
       case 'subgraph':
         // is it really a subgraph?
@@ -201,6 +200,7 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
           const sdg = new DrawingGraph(subg)
           parseGraph(o, sdg)
         }
+        break
       case 'attr_stmt':
         parseGraphAttr(o, dg)
         break
@@ -251,7 +251,10 @@ function parseColor(s: string): Color {
   if (p.rgba != null) {
     return new Color(p.rgba[3] * 255, p.rgba[0], p.rgba[1], p.rgba[2])
   }
-  return Color.mkRGB(p.rgb[0], p.rgb[1], p.rgb[2])
+  if (p.rdg != null) {
+    return Color.mkRGB(p.rgb[0], p.rgb[1], p.rgb[2])
+  }
+  return Color.Black
 }
 function parseGraphAttr(o: any, dg: DrawingGraph) {
   if (dg.defaultNode == null && o.target == 'node') {
