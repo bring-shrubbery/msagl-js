@@ -1,4 +1,7 @@
 export class Color {
+  static fromColorKeyword(keyword: string): Color {
+    return Color.Black //TODO implement
+  }
   a: number
 
   ///  constructor with alpha and red, green, bluee components

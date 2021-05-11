@@ -169,7 +169,12 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
         case 'dir':
           drawingObj.dir = dirTypeEnumFromString(str)
           break
-
+        case 'concentrate':
+          drawingObj.concentrate = str == 'true'
+          break
+        case 'compound':
+          drawingObj.compound = str == 'true'
+          break
         default:
           throw new Error('not implemented for ' + attr.id)
       }
@@ -256,6 +261,9 @@ function parseColor(s: string): Color {
       return Color.mkRGB(p.rgb[0], p.rgb[1], p.rgb[2])
     }
   }
+  if (p.keyword != null) {
+    return Color.fromColorKeyword(p.keyword)
+  }
   return Color.Black
 }
 function parseGraphAttr(o: any, dg: DrawingGraph) {
@@ -300,4 +308,7 @@ function orderingEnumFromString(t: string): OrderingEnum {
 function dirTypeEnumFromString(t: string): DirTypeEnum {
   const typedStyleString = t as keyof typeof DirTypeEnum
   return DirTypeEnum[typedStyleString]
+}
+function parseColorKeyword(keyword: any): Color {
+  throw new Error('Function not implemented.')
 }

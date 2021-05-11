@@ -46,6 +46,8 @@ export abstract class DrawingObject {
   ordering: OrderingEnum
   URL: string
   dir: DirTypeEnum
+  concentrate: boolean
+  compound: boolean
 
   bind() {
     if (this.attrCont != null) {
