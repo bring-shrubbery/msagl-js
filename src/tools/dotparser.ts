@@ -248,11 +248,13 @@ function process_same_rank(o: any, dg: DrawingGraph): boolean {
 }
 function parseColor(s: string): Color {
   const p = colorParser(s)
-  if (p.rgba != null) {
-    return new Color(p.rgba[3] * 255, p.rgba[0], p.rgba[1], p.rgba[2])
-  }
-  if (p.rdg != null) {
-    return Color.mkRGB(p.rgb[0], p.rgb[1], p.rgb[2])
+  if (p != null) {
+    if (p.rgba != null) {
+      return new Color(p.rgba[3] * 255, p.rgba[0], p.rgba[1], p.rgba[2])
+    }
+    if (p.rdg != null) {
+      return Color.mkRGB(p.rgb[0], p.rgb[1], p.rgb[2])
+    }
   }
   return Color.Black
 }
