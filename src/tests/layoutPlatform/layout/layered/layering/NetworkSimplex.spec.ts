@@ -6,7 +6,7 @@ import {
 } from '../../../../../layoutPlatform/structs/basicGraphOnEdges'
 import {CancelToken} from '../../../../../layoutPlatform/utils/cancelToken'
 
-xtest('network simplex', () => {
+test('network simplex', () => {
   // This is the example from North, Gansnern etc. 1993 paper
   // (ab)(bc)(cd)(dh)(af)(fg)(ae)(eg)(gh)
   const a = 0

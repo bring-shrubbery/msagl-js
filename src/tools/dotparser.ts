@@ -15,6 +15,7 @@ import {DrawingEdge} from '../drawing/drawingEdge'
 import {ArrowTypeEnum} from '../drawing/arrawTypeEnum'
 import {RankDirEnum} from '../drawing/rankDirEnum'
 import {RankEnum} from '../drawing/rankEnum'
+import {tokenToString} from 'typescript'
 
 export enum OrderingEnum {
   in,
@@ -101,10 +102,10 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
           drawingObj.labelText = str
           break
         case 'size':
-          drawingObj.size = parseDoubleTuple(str)
+          drawingObj.size = parseFloatTuple(str)
           break
         case 'pos':
-          drawingObj.pos = parseDoubleTuple(str)
+          drawingObj.pos = parseFloatTuple(str)
           break
         case 'rankdir':
           drawingObj.rankdir = rankDirEnumFromString(str)
@@ -147,6 +148,9 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
           break
         case 'nodesep':
           drawingObj.nodesep = parseFloat(str)
+          break
+        case 'layersep':
+          drawingObj.layersep = parseFloat(str)
           break
         case 'arrowsize':
           drawingObj.arrowsize = parseFloat(str)
@@ -204,6 +208,120 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
           break
         case 'sides':
           drawingObj.sides = parseInt(str)
+          break
+        case 'distortion':
+          drawingObj.distortion = parseFloat(str)
+          break
+        case 'skew':
+          drawingObj.skew = parseFloat(str)
+          break
+        case 'bb':
+          drawingObj.bb = parseFloatQuatriple(str)
+          break
+        case 'labelloc':
+          drawingObj.labelloc = str
+          break
+        case 'decorate':
+          drawingObj.decorate = str == 'true'
+          break
+        case 'tailclip':
+          drawingObj.tailclip = str == 'true'
+          break
+        case 'headclip':
+          drawingObj.headclip = str == 'true'
+          break
+        case 'constraint':
+          drawingObj.constraint = str == 'true'
+          break
+        case 'gradientangle':
+          drawingObj.gradientangle = parseFloat(str)
+          break
+        case 'samehead':
+          drawingObj.samehead = str
+          break
+        case 'href':
+          drawingObj.href = str
+          break
+        case 'imagepath':
+          drawingObj.imagepath = str
+          break
+        case 'image':
+          drawingObj.image = str
+          break
+        case 'labeljust':
+          drawingObj.labejust = str
+          break
+        case 'layers':
+          drawingObj.layers = str.split(',')
+          break
+        case 'layer':
+          drawingObj.layer = str
+          break
+        case 'f':
+          drawingObj.f = parseFloat(str)
+          break
+        case 'nojustify':
+          drawingObj.nojustify = str == 'true'
+          break
+        case 'root':
+          drawingObj.root = str == 'true'
+          break
+        case 'page':
+          drawingObj.page = parseFloatTuple(str)
+          break
+        case 'pname':
+          drawingObj.pname = str
+          break
+        case 'kind':
+          drawingObj.kind = str
+          break
+        case 'fname':
+          drawingObj.fname = str
+          break
+        case 'subkind':
+          drawingObj.subkind = str
+          break
+        case 'area':
+          drawingObj.area = parseFloat(str)
+          break
+        case 'tailport':
+          drawingObj.tailport = str
+          break
+        case 'headport':
+          drawingObj.headport = str
+          break
+        case 'wt':
+          drawingObj.wt = str
+          break
+        case 'id':
+          drawingObj.id = str
+          break
+        case 'edgetooltip':
+          drawingObj.edgetooltip = str
+          break
+        case 'headtooltip':
+          drawingObj.headtooltip = str
+          break
+        case 'tailtooltip':
+          drawingObj.tailtooltip = str
+          break
+        case 'headURL':
+          drawingObj.headURL = str
+          break
+        case 'tailURL':
+          drawingObj.tailURL = str
+          break
+        case 'labelURL':
+          drawingObj.labelURL = str
+          break
+        case 'edgeurl':
+          drawingObj.edgeurl = str
+          break
+        case 'shapefile':
+          drawingObj.shapefile = str
+          break
+        case 'xlabel':
+          drawingObj.xlabel = str
           break
         default:
           throw new Error('not implemented for ' + attr.id)
@@ -344,7 +462,7 @@ function shapeEnumFromString(t: string): ShapeEnum {
   const typedStyleString = t as keyof typeof ShapeEnum
   return ShapeEnum[typedStyleString]
 }
-function parseDoubleTuple(str: string): [number, number] {
+function parseFloatTuple(str: string): [number, number] {
   const p = str.split(',')
   return [parseFloat(p[0]), parseFloat(p[1])]
 }
@@ -372,4 +490,13 @@ function dirTypeEnumFromString(t: string): DirTypeEnum {
 }
 function parseColorKeyword(keyword: any): Color {
   throw new Error('Function not implemented.')
+}
+function parseFloatQuatriple(str: any): any {
+  const p = str.split(',')
+  return [
+    parseFloat(p[0]),
+    parseFloat(p[1]),
+    parseFloat(p[2]),
+    parseFloat(p[3]),
+  ]
 }

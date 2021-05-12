@@ -58,6 +58,45 @@ export abstract class DrawingObject {
   colorscheme: string
   ltail: string
   sides: number
+  distortion: number
+  skew: number
+  bb: [number, number, number, number]
+  labelloc: string
+  decorate: boolean
+  tailclip: boolean
+  headclip: boolean
+  constraint: boolean
+  gradientangle: number
+  samehead: string
+  href: string
+  imagepath: string
+  image: string
+  labejust: string
+  layers: string[]
+  layer: string
+  layersep: number
+  f: number
+  nojustify: boolean
+  root: boolean
+  page: [number, number]
+  pname: any
+  kind: any
+  fname: any
+  subkind: any
+  area: number
+  tailport: string
+  headport: string
+  wt: any
+  id: any
+  edgetooltip: any
+  headURL: any
+  tailURL: any
+  labelURL: any
+  edgeurl: any
+  tailtooltip: any
+  headtooltip: any
+  shapefile: any
+  xlabel: any
 
   bind() {
     if (this.attrCont != null) {

@@ -2,7 +2,7 @@ import {Assert} from '../../layoutPlatform/utils/assert'
 import {IntPairSet} from '../../layoutPlatform/utils/IntPairSet'
 import {randomInt} from '../../layoutPlatform/utils/random'
 
-xtest('IntPairSet', () => {
+test('IntPairSet', () => {
   const m = new IntPairSet(3)
   m.addNN(0, 0)
   m.addNN(1, 1)
@@ -14,7 +14,7 @@ xtest('IntPairSet', () => {
   expect(p[0].y < 3).toBe(true)
 })
 
-xtest('IntPairSet perf', () => {
+test('IntPairSet perf', () => {
   const n = 10000
   const m = new IntPairSet(n)
   for (let i = 0; i < n; i++) {

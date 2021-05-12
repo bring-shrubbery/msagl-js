@@ -1,7 +1,7 @@
 import {Rectangle} from './../../../../layoutPlatform/math/geometry/rectangle'
 import {Point} from './../../../../layoutPlatform/math/geometry/point'
 
-xtest('rectangle test', () => {
+test('rectangle test', () => {
   const r = new Rectangle({left: 0, right: 1, top: 1, bottom: 0})
   const p = new Point(0.3, 0.3)
   expect(r.contains(p)).toBe(true)

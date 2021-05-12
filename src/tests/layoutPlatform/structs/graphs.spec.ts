@@ -2,7 +2,7 @@ import {Graph} from './../../../layoutPlatform/structs/graph'
 import {Edge} from './../../../layoutPlatform/structs/edge'
 import {Node} from './../../../layoutPlatform/structs/node'
 import {Rectangle} from './../../../layoutPlatform/math/geometry/rectangle'
-xtest('graph create', () => {
+test('graph create', () => {
   const g = new Graph()
   expect(g.nodeCount).toBe(0)
   expect(g.edgeCount).toBe(0)
@@ -36,7 +36,7 @@ xtest('graph create', () => {
   expect(g.isConsistent()).toBe(true)
 })
 
-xtest('node add graph', () => {
+test('node add graph', () => {
   const g = new Graph()
   const n = Graph.mkGraph('g0')
   const m = new Node('m')
@@ -53,7 +53,7 @@ xtest('node add graph', () => {
   expect(graphs.length).toBe(2)
 })
 
-xtest('graph delete node', () => {
+test('graph delete node', () => {
   const g = new Graph()
   const n = new Node('n')
   g.addNode(n)
@@ -83,7 +83,7 @@ xtest('graph delete node', () => {
   expect(g.edgeCount).toBe(0)
 })
 
-xtest('graph attr', () => {
+test('graph attr', () => {
   const g = new Graph()
   const rect = new Rectangle({left: 0, right: 1, bottom: 0, top: 1})
   g.setAttr(0, rect)

@@ -10,7 +10,7 @@ import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugW
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Ellipse} from '../../../../layoutPlatform/math/geometry/ellipse'
 import {GeomConstants} from '../../../../layoutPlatform/math/geometry/geomConstants'
-xtest('ellipse value test', () => {
+test('ellipse value test', () => {
   const a = new Point(100, 0)
   const b = new Point(0, 200)
   const cen = new Point(-100, 0)
@@ -25,7 +25,7 @@ xtest('ellipse value test', () => {
   ).toBeTruthy
 })
 
-xtest('intersect quarters', () => {
+test('intersect quarters', () => {
   const rr = new Ellipse(
     0,
     Math.PI / 2,

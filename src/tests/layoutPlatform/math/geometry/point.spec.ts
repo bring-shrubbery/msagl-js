@@ -6,7 +6,7 @@ import {
 } from './../../../../layoutPlatform/math/geometry/parallelogram'
 import {GeomConstants} from './../../../../layoutPlatform/math/geometry/geomConstants'
 
-xtest('angle test', () => {
+test('angle test', () => {
   const eps = 0.00001
   for (const ang of [
     0,
@@ -52,7 +52,7 @@ function testOnPointAngle(p: Point, ang: number) {
   expect(res).toBeTruthy()
 }
 
-xtest('point test', () => {
+test('point test', () => {
   const a = 1
   const b = 2
   const c = 3.1
@@ -76,7 +76,7 @@ xtest('point test', () => {
   expect(resultPoint.y).toBe(b * 2)
 })
 
-xtest('parallelogram intersect test', () => {
+test('parallelogram intersect test', () => {
   const pr0 = Parallelogram.parallelogramByCornerSideSide(
     new Point(0, 0),
     new Point(1, 0),
@@ -105,7 +105,7 @@ xtest('parallelogram intersect test', () => {
   expect(Parallelogram.intersect(pr1, pr3)).toBe(false)
 })
 
-xtest('parallelogram contains test', () => {
+test('parallelogram contains test', () => {
   const par = Parallelogram.parallelogramByCornerSideSide(
     new Point(0, 0),
     new Point(1, 0),
@@ -131,7 +131,7 @@ xtest('parallelogram contains test', () => {
     expect(parTwo.contains(par0.vertex(i))).toBe(true)
   }
 })
-xtest('parallelogram seg case', () => {
+test('parallelogram seg case', () => {
   const par = Parallelogram.parallelogramByCornerSideSide(
     new Point(0, 0),
     new Point(1, 0),
@@ -162,7 +162,7 @@ xtest('parallelogram seg case', () => {
   expect(Parallelogram.intersect(par, par2)).toBe(true)
   expect(Parallelogram.intersect(par2, par3)).toBe(true)
 })
-xtest('distToLineSegment', () => {
+test('distToLineSegment', () => {
   let a = new Point(1, 1)
   const b = new Point(0, 0)
   const c = new Point(2, 0)

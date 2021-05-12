@@ -109,7 +109,7 @@ test('all gv files list ', () => {
     'hashtable.gv',
     'Heawood.gv',
     'Helvetica.gv',
-    'honda - tokoro.gv',
+    'honda-tokoro.gv',
     'html.gv',
     'html2.gv',
     'in.gv',
@@ -120,54 +120,54 @@ test('all gv files list ', () => {
     'jcctree.gv',
     'jsort.gv',
     'KW91.gv',
-    'labelclust - fbc.gv',
-    'labelclust - fbd.gv',
-    'labelclust - fbl.gv',
-    'labelclust - fbr.gv',
-    'labelclust - fdc.gv',
-    'labelclust - fdd.gv',
-    'labelclust - fdl.gv',
-    'labelclust - fdr.gv',
-    'labelclust - ftc.gv',
-    'labelclust - ftd.gv',
-    'labelclust - ftl.gv',
-    'labelclust - ftr.gv',
-    'labelclust - nbc.gv',
-    'labelclust - nbd.gv',
-    'labelclust - nbl.gv',
-    'labelclust - nbr.gv',
-    'labelclust - ndc.gv',
-    'labelclust - ndd.gv',
-    'labelclust - ndl.gv',
-    'labelclust - ndr.gv',
-    'labelclust - ntc.gv',
-    'labelclust - ntd.gv',
-    'labelclust - ntl.gv',
-    'labelclust - ntr.gv',
-    'labelroot - fbc.gv',
-    'labelroot - fbd.gv',
-    'labelroot - fbl.gv',
-    'labelroot - fbr.gv',
-    'labelroot - fdc.gv',
-    'labelroot - fdd.gv',
-    'labelroot - fdl.gv',
-    'labelroot - fdr.gv',
-    'labelroot - ftc.gv',
-    'labelroot - ftd.gv',
-    'labelroot - ftl.gv',
-    'labelroot - ftr.gv',
-    'labelroot - nbc.gv',
-    'labelroot - nbd.gv',
-    'labelroot - nbl.gv',
-    'labelroot - nbr.gv',
-    'labelroot - ndc.gv',
-    'labelroot - ndd.gv',
-    'labelroot - ndl.gv',
-    'labelroot - ndr.gv',
-    'labelroot - ntc.gv',
-    'labelroot - ntd.gv',
-    'labelroot - ntl.gv',
-    'labelroot - ntr.gv',
+    'labelclust-fbc.gv',
+    'labelclust-fbd.gv',
+    'labelclust-fbl.gv',
+    'labelclust-fbr.gv',
+    'labelclust-fdc.gv',
+    'labelclust-fdd.gv',
+    'labelclust-fdl.gv',
+    'labelclust-fdr.gv',
+    'labelclust-ftc.gv',
+    'labelclust-ftd.gv',
+    'labelclust-ftl.gv',
+    'labelclust-ftr.gv',
+    'labelclust-nbc.gv',
+    'labelclust-nbd.gv',
+    'labelclust-nbl.gv',
+    'labelclust-nbr.gv',
+    'labelclust-ndc.gv',
+    'labelclust-ndd.gv',
+    'labelclust-ndl.gv',
+    'labelclust-ndr.gv',
+    'labelclust-ntc.gv',
+    'labelclust-ntd.gv',
+    'labelclust-ntl.gv',
+    'labelclust-ntr.gv',
+    'labelroot-fbc.gv',
+    'labelroot-fbd.gv',
+    'labelroot-fbl.gv',
+    'labelroot-fbr.gv',
+    'labelroot-fdc.gv',
+    'labelroot-fdd.gv',
+    'labelroot-fdl.gv',
+    'labelroot-fdr.gv',
+    'labelroot-ftc.gv',
+    'labelroot-ftd.gv',
+    'labelroot-ftl.gv',
+    'labelroot-ftr.gv',
+    'labelroot-nbc.gv',
+    'labelroot-nbd.gv',
+    'labelroot-nbl.gv',
+    'labelroot-nbr.gv',
+    'labelroot-ndc.gv',
+    'labelroot-ndd.gv',
+    'labelroot-ndl.gv',
+    'labelroot-ndr.gv',
+    'labelroot-ntc.gv',
+    'labelroot-ntd.gv',
+    'labelroot-ntl.gv',
+    'labelroot-ntr.gv',
     'Latin1.gv',
     'layer.gv',
     'layer2.gv',
@@ -268,8 +268,7 @@ test('all gv files list ', () => {
   ]
   const path = 'src/tests/data/graphvis/'
   for (const f of list) {
-    if (f.match('big(.*).gv')) continue
-    console.log(f)
+    if (f.match('big(.*).gv')) continue // the parser bug
     const g = parseDotGraph(join(path, f))
     expect(g != null).toBe(true)
   }
@@ -288,17 +287,17 @@ xtest('all gv files', () => {
   })
 })
 
-xtest('dot parser', () => {
+test('dot parser', () => {
   const g = parseDotGraph('src/tests/data/graphvis/clust4.gv')
   expect(g == null).toBe(false)
 })
 
-xtest('dot parser big.gv', () => {
+test('dot parser big.gv', () => {
   const g = parseDotGraph('src/tests/data/graphvis/big.gv')
   expect(g == null).toBe(false)
 })
 
-xtest('parse with colors ', () => {
+test('parse with colors ', () => {
   const dotString =
     'digraph G {\n' +
     'node [style=filled, shape=box]\n' +
