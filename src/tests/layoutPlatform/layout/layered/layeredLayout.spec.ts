@@ -97,9 +97,7 @@ test('sorted map', () => {
 test('show API', () => {
   // Create a new geometry graph
   const g = GeomGraph.mk()
-  // Add nodes to the graph. The first argument is the node id. The second is
-  // metadata about the node. In this case we're going to add labels to each of
-  // our nodes.
+  // Add nodes to the graph. The first argument is the node id. The second is the size string
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
   g.setNode('bpitt', {width: 108, height: 100})
