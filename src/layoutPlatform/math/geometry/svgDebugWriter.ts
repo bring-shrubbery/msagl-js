@@ -67,15 +67,19 @@ export class SvgDebugWriter {
     )
   }
 
-  pointToString(start: Point) {
-    return this.doubleToString(start.x) + ' ' + this.doubleToString(start.y)
+  static pointToString(start: Point) {
+    return (
+      SvgDebugWriter.doubleToString(start.x) +
+      ' ' +
+      SvgDebugWriter.doubleToString(start.y)
+    )
   }
 
-  doubleToString(d: number) {
+  static doubleToString(d: number) {
     return Math.abs(d) < 1e-11 ? '0' : d.toString() //formatForDoubleString, CultureInfo.InvariantCulture);
   }
 
-  segmentString(c: ICurve): string {
+  static segmentString(c: ICurve): string {
     const isls = c instanceof LineSegment
     if (isls) return this.lineSegmentString(c as LineSegment)
 
@@ -88,20 +92,20 @@ export class SvgDebugWriter {
     throw new Error('NotImplementedException')
   }
 
-  lineSegmentString(ls: LineSegment): string {
-    return 'L ' + this.pointToString(ls.end)
+  static lineSegmentString(ls: LineSegment): string {
+    return 'L ' + SvgDebugWriter.pointToString(ls.end)
   }
 
-  pointsToString(points: Point[]) {
+  static pointsToString(points: Point[]) {
     return String.Join(
       ' ',
       from(points)
-        .select((p) => this.pointToString(p))
+        .select((p) => SvgDebugWriter.pointToString(p))
         .toArray(),
     )
   }
 
-  bezierSegToString(cubic: BezierSeg): string {
+  static bezierSegToString(cubic: BezierSeg): string {
     return 'C' + this.pointsToString([cubic.B(1), cubic.B(2), cubic.B(3)])
   }
 
@@ -109,7 +113,7 @@ export class SvgDebugWriter {
     return ell.parEnd == Math.PI * 2 && ell.parStart == 0
   }
 
-  ellipseToString(ellipse: Ellipse): string {
+  static ellipseToString(ellipse: Ellipse): string {
     const largeArc =
       Math.abs(ellipse.parEnd - ellipse.parStart) >= Math.PI ? '1' : '0'
     const sweepFlag = ellipse.orientedCounterclockwise() ? '1' : '0'
@@ -118,38 +122,41 @@ export class SvgDebugWriter {
       ' ',
       'A',
       this.ellipseRadiuses(ellipse),
-      this.doubleToString(
+      SvgDebugWriter.doubleToString(
         Point.angle(new Point(1, 0), ellipse.aAxis) / (Math.PI / 180.0),
       ),
       largeArc,
       sweepFlag,
-      this.pointToString(ellipse.end),
+      SvgDebugWriter.pointToString(ellipse.end),
     )
   }
-  ellipseRadiuses(ellipse: Ellipse): string {
+  static ellipseRadiuses(ellipse: Ellipse): string {
     return (
-      this.doubleToString(ellipse.aAxis.length) +
+      SvgDebugWriter.doubleToString(ellipse.aAxis.length) +
       ',' +
-      this.doubleToString(ellipse.bAxis.length)
+      SvgDebugWriter.doubleToString(ellipse.bAxis.length)
     )
   }
 
-  curveString(iCurve: ICurve): string {
-    return String.Join(' ', Array.from(this.curveStringTokens(iCurve)))
+  static curveString(iCurve: ICurve): string {
+    return String.Join(
+      ' ',
+      Array.from(SvgDebugWriter.curveStringTokens(iCurve)),
+    )
   }
 
-  *curveStringTokens(iCurve: ICurve): IterableIterator<string> {
+  static *curveStringTokens(iCurve: ICurve): IterableIterator<string> {
     yield 'M'
-    yield this.pointToString(iCurve.start)
+    yield SvgDebugWriter.pointToString(iCurve.start)
     const iscurve = iCurve instanceof Curve
     if (iscurve)
       for (const segment of (iCurve as Curve).segs)
-        yield this.segmentString(segment)
+        yield SvgDebugWriter.segmentString(segment)
     else {
       const islineSeg = iCurve instanceof LineSegment
       if (islineSeg) {
         yield 'L'
-        yield this.pointToString(iCurve.end)
+        yield SvgDebugWriter.pointToString(iCurve.end)
       } else {
         const isbezier = iCurve instanceof BezierSeg
         if (isbezier) {
@@ -160,11 +167,11 @@ export class SvgDebugWriter {
             const poly = iCurve as Polyline
             for (const p of poly.skip(1)) {
               yield 'L'
-              yield this.pointToString(p.point)
+              yield SvgDebugWriter.pointToString(p.point)
             }
             if (poly.closed) {
               yield 'L'
-              yield this.pointToString(poly.start)
+              yield SvgDebugWriter.pointToString(poly.start)
             }
           } else {
             const isellipse = iCurve instanceof Ellipse
@@ -228,7 +235,7 @@ export class SvgDebugWriter {
     this.xw.writeAttribute('fill', 'none')
     const iCurve = c.icurve
     this.writeStroke(c)
-    this.xw.writeAttribute('d', this.curveString(iCurve))
+    this.xw.writeAttribute('d', SvgDebugWriter.curveString(iCurve))
     if (c.dashArray != null)
       this.xw.writeAttribute('style', this.dashArrayString(c.dashArray))
     this.xw.endElement()
@@ -244,7 +251,7 @@ export class SvgDebugWriter {
       }
       poly.closed = true
       this.writeStroke(c, 2)
-      this.xw.writeAttribute('d', this.curveString(poly))
+      this.xw.writeAttribute('d', SvgDebugWriter.curveString(poly))
       if (c.dashArray != null)
         this.xw.writeAttribute('style', this.dashArrayString(c.dashArray))
       this.xw.endElement()
@@ -298,7 +305,7 @@ export class SvgDebugWriter {
     this.xw.writeAttribute('fill', 'none')
     this.xw.writeAttribute('stroke', 'Black')
 
-    this.xw.writeAttribute('d', this.curveString(icurve))
+    this.xw.writeAttribute('d', SvgDebugWriter.curveString(icurve))
     this.xw.endElement()
     if (edge.edgeGeometry != null && edge.edgeGeometry.sourceArrowhead != null)
       this.addArrow(icurve.start, edge.edgeGeometry.sourceArrowhead.tipPosition)
@@ -326,7 +333,7 @@ export class SvgDebugWriter {
     this.xw.writeStartElement('polygon')
     this.xw.writeAttribute('stroke', 'Black')
     this.xw.writeAttribute('fill', 'none')
-    this.xw.writeAttribute('points', this.pointsToString(points))
+    this.xw.writeAttribute('points', SvgDebugWriter.pointsToString(points))
     this.xw.endElement()
   }
 
@@ -334,7 +341,7 @@ export class SvgDebugWriter {
     this.xw.startElement('polygon')
     this.xw.writeAttribute('stroke', 'Black')
     this.xw.writeAttribute('fill', 'none')
-    this.xw.writeAttribute('points', this.pointsToString(points))
+    this.xw.writeAttribute('points', SvgDebugWriter.pointsToString(points))
     this.xw.endElement()
   }
 }

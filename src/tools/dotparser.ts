@@ -1,5 +1,5 @@
 import parse = require('dotparser')
-import {readFileSync} from 'fs'
+import fs = require('fs')
 import {Color} from '../drawing/color'
 import {DrawingGraph} from '../drawing/drawingGraph'
 import {DrawingNode} from '../drawing/drawingNode'
@@ -15,7 +15,6 @@ import {DrawingEdge} from '../drawing/drawingEdge'
 import {ArrowTypeEnum} from '../drawing/arrawTypeEnum'
 import {RankDirEnum} from '../drawing/rankDirEnum'
 import {RankEnum} from '../drawing/rankEnum'
-import {tokenToString} from 'typescript'
 
 export enum OrderingEnum {
   in,
@@ -372,7 +371,7 @@ export function parseDotString(graphStr: string): DrawingGraph {
   return drawingGraph
 }
 export function parseDotGraph(fileName: string): DrawingGraph {
-  const graphStr = readFileSync(fileName, 'utf-8')
+  const graphStr = fs.readFileSync(fileName, 'utf-8')
   return parseDotString(graphStr)
 }
 

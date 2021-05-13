@@ -1,9 +1,8 @@
 import {Color} from '../../drawing/color'
 import {DrawingNode} from '../../drawing/drawingNode'
 import {parseDotGraph, parseDotString} from '../../tools/dotparser'
-import {readdir} from 'fs'
 import {join} from 'path'
-
+import fs = require('fs')
 test('all gv files list ', () => {
   const list: string[] = [
     'a.gv',
@@ -273,9 +272,9 @@ test('all gv files list ', () => {
     expect(g != null).toBe(true)
   }
 })
-xtest('all gv files', () => {
+test('all gv files', () => {
   const path = 'src/tests/data/graphvis/'
-  readdir(path, (err, files) => {
+  fs.readdir(path, (err, files) => {
     expect(err).toBe(null)
     for (const f of files) {
       if (!f.match('(.*).gv')) continue
@@ -292,7 +291,7 @@ test('dot parser', () => {
   expect(g == null).toBe(false)
 })
 
-test('dot parser big.gv', () => {
+xtest('dot parser big.gv', () => {
   const g = parseDotGraph('src/tests/data/graphvis/big.gv')
   expect(g == null).toBe(false)
 })

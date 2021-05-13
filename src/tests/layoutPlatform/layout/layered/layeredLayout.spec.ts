@@ -13,7 +13,7 @@ import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugW
 import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
 import {DrawingObject} from '../../../../drawing/drawingObject'
 import {DrawingNode} from '../../../../drawing/drawingNode'
-import ts = require('typescript')
+import {StringBuilder} from 'typescript-string-operations'
 
 export function getTextSize(txt: string, font: string) {
   const element = document.createElement('canvas')
@@ -29,7 +29,6 @@ export function getTextSize(txt: string, font: string) {
 function createGeometry(g: Graph): GeomGraph {
   for (const n of g.nodes) {
     const gn = new GeomNode(n)
-    const drawingNode = DrawingObject.getDrawingObj(n) as DrawingNode
     //const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
     gn.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
       80, // tsize.width,
@@ -95,6 +94,42 @@ test('sorted map', () => {
   expect(m.size == 3)
 })
 
+test('show API', () => {
+  // Create a new geometry graph
+  const g = GeomGraph.mk()
+  // Add nodes to the graph. The first argument is the node id. The second is
+  // metadata about the node. In this case we're going to add labels to each of
+  // our nodes.
+  g.setNode('kspacey', {width: 144, height: 100})
+  g.setNode('swilliams', {width: 160, height: 100})
+  g.setNode('bpitt', {width: 108, height: 100})
+  g.setNode('hford', {width: 168, height: 100})
+  g.setNode('lwilson', {width: 144, height: 100})
+  g.setNode('kbacon', {width: 121, height: 100})
+
+  // Add edges to the graph.
+  g.setEdge('kspacey', 'swilliams')
+  g.setEdge('swilliams', 'kbacon')
+  g.setEdge('bpitt', 'kbacon')
+  g.setEdge('hford', 'lwilson')
+  g.setEdge('lwilson', 'kbacon')
+  const ss = new SugiyamaLayoutSettings()
+  const ll = new LayeredLayout(g, ss, new CancelToken())
+  ll.run()
+  const strB = new StringBuilder()
+  for (const n of g.nodes()) {
+    const s = n.id + ', center = ' + n.center
+    strB.AppendLine(s)
+  }
+  for (const e of g.edges()) {
+    strB.AppendLine(edgeString(e))
+  }
+
+  console.log(strB.ToString())
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/api.svg')
+  t.writeGraph(g)
+})
+
 test('layered layout hookup abstract', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(dg.graph)
@@ -111,7 +146,6 @@ test('layered layout hookup abstract', () => {
   ll.run()
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/ll.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
-  // expect(0).toBe(1)
 })
 test('layered layout hookup longflat', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/longflat.gv')
@@ -127,3 +161,13 @@ test('layered layout hookup longflat', () => {
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/longflat.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
+function edgeString(e: GeomEdge): string {
+  const s =
+    e.source.id +
+    '->' +
+    e.target.id +
+    ', curve(' +
+    SvgDebugWriter.curveString(e.curve) +
+    ')'
+  return s
+}
