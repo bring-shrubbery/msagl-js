@@ -4,7 +4,7 @@ import {parseDotGraph, parseDotString} from '../../tools/dotparser'
 import {readdir} from 'fs'
 import {join} from 'path'
 
-test('all gv files list ', () => {
+test('all gv files list', () => {
   const list: string[] = [
     'a.gv',
     'abstract.gv',
@@ -268,7 +268,7 @@ test('all gv files list ', () => {
   ]
   const path = 'src/tests/data/graphvis/'
   for (const f of list) {
-    if (f.match('big(.*).gv')) continue // the parser bug
+    //    if (f.match('big(.*).gv')) continue // the parser bug
     const g = parseDotGraph(join(path, f))
     expect(g != null).toBe(true)
   }
@@ -289,11 +289,6 @@ xtest('all gv files', () => {
 
 test('dot parser', () => {
   const g = parseDotGraph('src/tests/data/graphvis/clust4.gv')
-  expect(g == null).toBe(false)
-})
-
-test('dot parser big.gv', () => {
-  const g = parseDotGraph('src/tests/data/graphvis/big.gv')
   expect(g == null).toBe(false)
 })
 

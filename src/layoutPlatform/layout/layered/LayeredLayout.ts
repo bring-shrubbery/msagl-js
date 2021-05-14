@@ -108,14 +108,14 @@ export class LayeredLayout extends Algorithm {
     if (this.originalGraph.nodeCount > 0) {
       this.engineLayerArrays = this.calculateLayers()
       if (!this.sugiyamaSettings.layeringOnly) {
-        this.RunPostLayering()
+        this.runPostLayering()
       }
     } else {
       this.originalGraph.boundingBox.setToEmpty()
     }
   }
 
-  RunPostLayering() {
+  runPostLayering() {
     const routingSettings: EdgeRoutingSettings = this.sugiyamaSettings
       .EdgeRoutingSettings
     const mode =
@@ -125,7 +125,7 @@ export class LayeredLayout extends Algorithm {
 
     switch (mode) {
       case EdgeRoutingMode.SugiyamaSplines:
-        this.CalculateEdgeSplines()
+        this.calculateEdgeSplines()
         break
       case EdgeRoutingMode.StraightLine:
         throw new Error('not implemented')
@@ -325,7 +325,7 @@ export class LayeredLayout extends Algorithm {
     for (let i = 0; i < p.length; i++) p[i] = p[vc.nodeToRepr(i)]
     return p
   }
-  CalculateEdgeSplines() {
+  calculateEdgeSplines() {
     const routing = new Routing(
       this.sugiyamaSettings,
       this.originalGraph,

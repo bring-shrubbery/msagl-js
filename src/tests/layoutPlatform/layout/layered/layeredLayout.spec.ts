@@ -109,7 +109,7 @@ test('layered layout hookup abstract', () => {
   expect(ll.IntGraph.edges.length).toBe(68)
 
   ll.run()
-  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/ll.svg')
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/abstract.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   // expect(0).toBe(1)
 })

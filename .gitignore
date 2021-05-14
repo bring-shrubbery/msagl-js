@@ -1,7 +1,7 @@
-/node_modules
-/dist
+node_modules
+dist
 *~
-/coverage
+coverage
 .vscode
 vscode-profile-2021-02-11-12-04-00.cpuprofile
 vscode-profile-2021-02-11-13-14-10.cpuprofile
