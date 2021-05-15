@@ -12,7 +12,6 @@ import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
 import {DrawingObject} from '../../../../drawing/drawingObject'
-import {DrawingNode} from '../../../../drawing/drawingNode'
 import {StringBuilder} from 'typescript-string-operations'
 
 export function getTextSize(txt: string, font: string) {
