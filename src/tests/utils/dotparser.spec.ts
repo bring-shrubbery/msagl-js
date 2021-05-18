@@ -1,10 +1,9 @@
 import {Color} from '../../drawing/color'
 import {DrawingNode} from '../../drawing/drawingNode'
 import {parseDotGraph, parseDotString} from '../../tools/dotparser'
-import {readdir} from 'fs'
 import {join} from 'path'
-
-test('all gv files list', () => {
+import fs = require('fs')
+test('all gv files list ', () => {
   const list: string[] = [
     'a.gv',
     'abstract.gv',
@@ -275,7 +274,7 @@ test('all gv files list', () => {
 })
 test('all gv files', () => {
   const path = 'src/tests/data/graphvis/'
-  readdir(path, (err, files) => {
+  fs.readdir(path, (err, files) => {
     expect(err).toBe(null)
     for (const f of files) {
       if (!f.match('(.*).gv')) continue

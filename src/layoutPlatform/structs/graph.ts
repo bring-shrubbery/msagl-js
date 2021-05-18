@@ -3,6 +3,15 @@ import {Node} from './node'
 import {NodeCollection} from './nodeCollection'
 
 export class Graph extends Node {
+  setEdge(sourceId: string, targetId: string): Edge {
+    const s = this.nodeCollection.find(sourceId)
+    if (s == null) return
+    const t = this.nodeCollection.find(targetId)
+    if (t == null) return
+    const e = new Edge(s, t)
+    this.addEdge(e)
+    return e
+  }
   isCollapsed = false
   get nodes(): IterableIterator<Node> {
     return this.nodeCollection.nodes

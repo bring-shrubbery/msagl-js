@@ -36,7 +36,6 @@ export class Node extends Entity {
   *graphs(): IterableIterator<Graph> {
     if (this.isGraph) {
       const nc: NodeCollection = ((this as unknown) as Graph).nodeCollection
-      expect(nc == null).toBe(false)
       for (const g of nc.graphs) {
         yield g
       }

@@ -4,6 +4,9 @@ import {GeomObject} from './geomObject'
 import {GeomNode} from './geomNode'
 import {GeomEdge} from './geomEdge'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
+import {Node} from '../../structs/node'
+import {CurveFactory} from '../../math/geometry/curveFactory'
+import {Point} from '../../math/geometry/point'
 
 export class GeomGraph extends GeomObject {
   transform(matrix: PlaneTransformation) {
@@ -13,6 +16,25 @@ export class GeomGraph extends GeomObject {
     for (const e of this.edges()) {
       e.edgeGeometry.curve = e.edgeGeometry.curve.transform(matrix)
     }
+  }
+  setEdge(s: string, t: string): GeomEdge {
+    const structEdge = this.graph.setEdge(s, t)
+    return new GeomEdge(structEdge)
+  }
+  setNode(id: string, size: {width: number; height: number}): GeomNode {
+    let node = this.graph.findNode(id)
+    if (node == null) {
+      this.graph.addNode((node = new Node(id)))
+    }
+    const geomNode = new GeomNode(node)
+    geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
+      size.width,
+      size.height,
+      size.width / 10,
+      size.height / 10,
+      new Point(0, 0),
+    )
+    return geomNode
   }
   MinimalWidth: number
   MinimalHeight: number
@@ -74,6 +96,10 @@ export class GeomGraph extends GeomObject {
   }
 
   boundingBox = Rectangle.mkEmpty()
+
+  static mk(): GeomGraph {
+    return new GeomGraph(new Graph())
+  }
 
   constructor(graph: Graph) {
     super(graph)
