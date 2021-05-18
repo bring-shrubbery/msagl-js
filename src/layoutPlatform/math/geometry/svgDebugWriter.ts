@@ -14,6 +14,8 @@ import {GeomEdge} from './../../layout/core/geomEdge'
 import {GeomGraph} from '../../layout/core/GeomGraph'
 import {GeomLabel} from './../../layout/core/geomLabel'
 import {PlaneTransformation} from './planeTransformation'
+import {Color} from '../../../drawing/color'
+import {SmoothedPolyline} from './smoothedPolyline'
 
 export class SvgDebugWriter {
   // Here we import the File System module of node
@@ -72,7 +74,7 @@ export class SvgDebugWriter {
   }
 
   doubleToString(d: number) {
-    return Math.abs(d) < 1e-11 ? '0' : d.toString() //formatForDoubleString, CultureInfo.InvariantCulture);
+    return Math.abs(d) < 1e-11 ? '0' : d.toString() //formatForDoubleString, CultureInfo.InconstiantCulture);
   }
 
   segmentString(c: ICurve): string {
@@ -275,24 +277,52 @@ export class SvgDebugWriter {
   static dumpDebugCurves(fileName: string, debugCurves: DebugCurve[]) {
     const w = new SvgDebugWriter(fileName)
     w.writeDebugCurves(debugCurves)
-    w.close()
   }
 
-  writeGraph(gg: GeomGraph) {
-    gg.updateBoundingBox()
-    this.open(gg.boundingBox)
-    for (const e of gg.edges()) {
+  writeGraph(g: GeomGraph) {
+    const matrix = new PlaneTransformation(1, 0, 0, 0, -1, 0)
+    g.transform(matrix)
+    g.updateBoundingBox()
+    this.open(g.boundingBox)
+    for (const e of g.edges()) {
       this.writeEdge(e)
     }
-    for (const n of gg.nodes()) {
+    for (const n of g.nodes()) {
       this.writeDebugCurve(DebugCurve.mkDebugCurveI(n.boundaryCurve))
+      const box = n.boundingBox
+      this.writeNodeLabel(n.id, box)
     }
-
+    g.transform(matrix)
     this.close()
   }
 
+  writeLabelText(text: string, xContainer: number) {
+    this.xw.startElement('tspan')
+    this.xw.writeAttribute('x', xContainer)
+    this.xw.writeAttribute('dy', 0)
+
+    this.xw.writeRaw(text)
+    this.xw.endElement()
+  }
+
+  writeNodeLabel(id: string, label: Rectangle) {
+    const yScaleAdjustment = 1.5
+
+    const x = label.center.x - label.width / 2
+    const y = label.center.y + label.height / (2 * yScaleAdjustment)
+    const fontSize = 16
+    this.xw.startElement('text')
+    this.xw.writeAttribute('x', x)
+    this.xw.writeAttribute('y', y)
+    this.xw.writeAttribute('font-family', 'Arial')
+    this.xw.writeAttribute('font-size', fontSize)
+    this.xw.writeAttribute('fill', 'Black')
+    this.writeLabelText(id, x)
+    this.xw.endElement()
+  }
+
   private writeEdge(edge: GeomEdge) {
-    const icurve = edge.curve
+    const icurve = edge.curve // mkFromeSmothPolyline(edge.underlyingPolyline)
     if (icurve == null) return
     this.xw.startElement('path')
     this.xw.writeAttribute('fill', 'none')
@@ -343,4 +373,11 @@ function flipDebugCurvesByY(dcurves: DebugCurve[]) {
   for (const dc of dcurves) {
     dc.icurve = dc.icurve.transform(matrix)
   }
+}
+function mkFromeSmothPolyline(underlyingPolyline: SmoothedPolyline) {
+  const ret = new Polyline()
+  for (const p of underlyingPolyline.points()) {
+    ret.addPoint(p)
+  }
+  return ret
 }

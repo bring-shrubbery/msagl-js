@@ -3,8 +3,11 @@ import {Curve} from '../../math/geometry/curve'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {ICurve} from '../../math/geometry/icurve'
 import {LineSegment} from '../../math/geometry/lineSegment'
-import {Parallelogram} from '../../math/geometry/parallelogram'
-import {PN, PNInternal} from '../../math/geometry/parallelogramNode'
+import {
+  allVerticesOfParall,
+  Parallelogram,
+} from '../../math/geometry/parallelogram'
+import {PN, PNInternal, PNLeaf} from '../../math/geometry/parallelogramNode'
 import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
 import {SmoothedPolyline} from '../../math/geometry/smoothedPolyline'
@@ -21,7 +24,12 @@ import {BezierSeg} from '../../math/geometry/bezierSeg'
 import {Routing} from './routing'
 import {NodeKind} from './NodeKind'
 import {Assert} from '../../utils/assert'
-import {RefinerBetweenTwoLayers} from './RefinerBetweenTwoLayers'
+import {
+  getAnchorDebugCurve,
+  RefinerBetweenTwoLayers,
+} from './RefinerBetweenTwoLayers'
+import {SvgDebugWriter} from '../../math/geometry/svgDebugWriter'
+import {DebugCurve} from '../../math/geometry/debugCurve'
 export class SmoothedPolylineCalculator {
   headSite: CornerSite
 
@@ -32,17 +40,17 @@ export class SmoothedPolylineCalculator {
 
   originalGraph: GeomGraph
 
-  rightHierarchy: PN
+  eastHierarchy: PN
 
-  leftHierarchy: PN
+  westHierarchy: PN
 
-  thinRightHierarchy: PN
+  thinEastHierarchy: PN
 
-  thinLeftHierarchy: PN
+  thinWestHierarchy: PN
 
   thinRightNodes = new Array<PN>()
 
-  thinLefttNodes = new Array<PN>()
+  thinWestNodes = new Array<PN>()
 
   database: Database
 
@@ -71,8 +79,8 @@ export class SmoothedPolylineCalculator {
     this.originalGraph = origGraph
     this.settings = settings
     this.layeredGraph = layerGraph
-    this.rightHierarchy = this.BuildRightHierarchy()
-    this.leftHierarchy = this.BuildLeftHierarchy()
+    this.eastHierarchy = this.BuildRightHierarchy()
+    this.westHierarchy = this.BuildLeftHierarchy()
   }
 
   private BuildRightHierarchy(): PN {
@@ -82,7 +90,7 @@ export class SmoothedPolylineCalculator {
       l.push(c.pNodeOverICurve())
     }
 
-    this.thinRightHierarchy = HierarchyCalculator.Calculate(this.thinRightNodes)
+    this.thinEastHierarchy = HierarchyCalculator.Calculate(this.thinRightNodes)
     return HierarchyCalculator.Calculate(l)
   }
 
@@ -93,7 +101,7 @@ export class SmoothedPolylineCalculator {
       l.push(a.pNodeOverICurve())
     }
 
-    this.thinLeftHierarchy = HierarchyCalculator.Calculate(this.thinLefttNodes)
+    this.thinWestHierarchy = HierarchyCalculator.Calculate(this.thinWestNodes)
     return HierarchyCalculator.Calculate(l)
   }
 
@@ -102,7 +110,7 @@ export class SmoothedPolylineCalculator {
     let uOffset = 0
     for (const u of this.edgePath) {
       let rightMostAnchor: Anchor = null
-      for (const v of this.LeftBoundaryNodesOfANode(
+      for (const v of this.RightBoundaryNodesOfANode(
         u,
         Routing.GetNodeKind(uOffset, this.edgePath),
       )) {
@@ -146,7 +154,7 @@ export class SmoothedPolylineCalculator {
     let uOffset = 0
     for (const u of this.edgePath.nodes()) {
       let leftMost = -1
-      for (const v of this.RightBoundaryNodesOfANode(
+      for (const v of this.LeftBoundaryNodesOfANode(
         u,
         Routing.GetNodeKind(uOffset, this.edgePath),
       )) {
@@ -162,7 +170,7 @@ export class SmoothedPolylineCalculator {
 
       if (leftMost != -1) {
         const a: Anchor = this.anchors[leftMost]
-        this.thinLefttNodes.push(
+        this.thinWestNodes.push(
           LineSegment.mkLinePXY(
             a.Origin,
             this.originalGraph.right,
@@ -396,13 +404,11 @@ export class SmoothedPolylineCalculator {
     )
   }
 
-  GetSpline(optimizeShortEdges: boolean): ICurve {
-    this.CreateRefinedPolyline(optimizeShortEdges)
-    return this.CreateSmoothedPolyline()
+  getSpline(optimizeShortEdges: boolean): ICurve {
+    this.createRefinedPolyline(optimizeShortEdges)
+    return this.createSmoothedPolyline()
   }
 
-  //    static int calls;
-  //  bool debug { get { return calls == 5;} }
   Poly(): Curve {
     const c: Curve = new Curve()
     for (let s = this.headSite; s.next != null; s = s.next) {
@@ -429,113 +435,63 @@ export class SmoothedPolylineCalculator {
     return (
       SmoothedPolylineCalculator.CurveIntersectsHierarchy(
         l,
-        this.leftHierarchy,
+        this.westHierarchy,
       ) ||
       SmoothedPolylineCalculator.CurveIntersectsHierarchy(
         l,
-        this.thinLeftHierarchy,
+        this.thinWestHierarchy,
       ) ||
       SmoothedPolylineCalculator.CurveIntersectsHierarchy(
         l,
-        this.rightHierarchy,
+        this.eastHierarchy,
       ) ||
       SmoothedPolylineCalculator.CurveIntersectsHierarchy(
         l,
-        this.thinRightHierarchy,
+        this.thinEastHierarchy,
       )
     )
   }
 
-  SegIntersectRightBound(a: CornerSite, b: CornerSite): boolean {
+  SegIntersectWestBound(a: CornerSite, b: CornerSite): boolean {
     return (
-      SmoothedPolylineCalculator.SegIntersectsBound(a, b, this.leftHierarchy) ||
+      SmoothedPolylineCalculator.SegIntersectsBound(a, b, this.westHierarchy) ||
       SmoothedPolylineCalculator.SegIntersectsBound(
         a,
         b,
-        this.thinLeftHierarchy,
+        this.thinWestHierarchy,
       )
     )
   }
 
-  SegIntersectLeftBound(a: CornerSite, b: CornerSite): boolean {
+  SegIntersectEastBound(a: CornerSite, b: CornerSite): boolean {
     return (
+      SmoothedPolylineCalculator.SegIntersectsBound(a, b, this.eastHierarchy) ||
       SmoothedPolylineCalculator.SegIntersectsBound(
         a,
         b,
-        this.rightHierarchy,
-      ) ||
-      SmoothedPolylineCalculator.SegIntersectsBound(
-        a,
-        b,
-        this.thinRightHierarchy,
+        this.thinEastHierarchy,
       )
     )
   }
 
-  private TryToRemoveInflectionEdge(/* ref */ s: CornerSite): boolean {
-    if (s.next.next == null) {
-      return false
+  private TryToRemoveInflectionEdge(t: {s: CornerSite; cut: boolean}) {
+    if (
+      !t.s.next ||
+      !t.s.prev ||
+      (t.s.turn > 0 && this.SegIntersectEastBound(t.s.prev, t.s.next)) ||
+      (t.s.turn < 0 && this.SegIntersectWestBound(t.s.prev, t.s.next))
+    ) {
+      t.cut = false
+      t.s = t.s.next
+      return
     }
-
-    if (s.prev == null) {
-      return false
-    }
-
-    if (s.turn < 0) {
-      // left turn at s
-      if (
-        !this.SegIntersectRightBound(s, s.next.next) &&
-        !this.SegIntersectLeftBound(s, s.next.next)
-      ) {
-        const n: CornerSite = s.next.next
-        s.next = n
-        // forget about s.next
-        n.prev = s
-        s = n
-        return true
-      }
-
-      if (
-        !this.SegIntersectLeftBound(s.prev, s.next) &&
-        !this.SegIntersectRightBound(s.prev, s.next)
-      ) {
-        const a: CornerSite = s.prev
-        // forget s
-        const b: CornerSite = s.next
-        a.next = b
-        b.prev = a
-        s = b
-        return true
-      }
-    } else {
-      // right turn at s
-      if (
-        !this.SegIntersectLeftBound(s, s.next.next) &&
-        !this.SegIntersectRightBound(s, s.next.next)
-      ) {
-        const n: CornerSite = s.next.next
-        s.next = n
-        // forget about s.next
-        n.prev = s
-        s = n
-        return true
-      }
-
-      if (
-        !this.SegIntersectRightBound(s.prev, s.next) &&
-        this.SegIntersectLeftBound(s.prev, s.next)
-      ) {
-        const a: CornerSite = s.prev
-        // forget s
-        const b: CornerSite = s.next
-        a.next = b
-        b.prev = a
-        s = b
-        return true
-      }
-    }
-
-    return false
+    // we have a cut
+    const nextS = t.s.next
+    t.s.prev.next = nextS
+    // forget about s
+    nextS.prev = t.s.prev
+    t.s = nextS
+    t.cut = true
   }
 
   static SegIntersectsBound(
@@ -556,7 +512,6 @@ export class SmoothedPolylineCalculator {
     if (hierarchy == null) {
       return false
     }
-
     if (
       !Parallelogram.intersect(
         lineSeg.pNodeOverICurve().parallelogram,
@@ -568,7 +523,7 @@ export class SmoothedPolylineCalculator {
     const nInternal = hierarchy.node.hasOwnProperty('children')
     if (nInternal) {
       const n = hierarchy.node as PNInternal
-      return (
+      const ret =
         SmoothedPolylineCalculator.CurveIntersectsHierarchy(
           lineSeg,
           n.children[0],
@@ -577,9 +532,8 @@ export class SmoothedPolylineCalculator {
           lineSeg,
           n.children[1],
         )
-      )
+      return ret
     }
-
     return Curve.intersectionOne(lineSeg, hierarchy.seg, false) != null
   }
 
@@ -616,7 +570,7 @@ export class SmoothedPolylineCalculator {
     return ret
   }
 
-  private CreateRefinedPolyline(optimizeShortEdges: boolean) {
+  private createRefinedPolyline(optimizeShortEdges: boolean) {
     this.CreateInitialListOfSites()
     let topSite: CornerSite = this.headSite
     let bottomSite: CornerSite
@@ -897,8 +851,10 @@ export class SmoothedPolylineCalculator {
     let progress = true
     while (progress) {
       progress = false
-      for (let s = this.headSite; s != null && s.next != null; s = s.next) {
-        progress = this.TryToRemoveInflectionEdge(/* ref */ s) || progress
+
+      for (const t = {s: this.headSite, cut: false}; t.s; ) {
+        this.TryToRemoveInflectionEdge(t)
+        progress = t.cut || progress
       }
     }
   }
@@ -933,7 +889,7 @@ export class SmoothedPolylineCalculator {
       : this.edgePath.LayerEdges[i].Source
   }
 
-  CreateSmoothedPolyline(): Curve {
+  createSmoothedPolyline(): Curve {
     this.RemoveVerticesWithNoTurns()
     let curve = new Curve()
     const a: CornerSite = this.headSite
@@ -941,7 +897,7 @@ export class SmoothedPolylineCalculator {
 
     // the corner other end
     if (t != undefined) {
-      this.CreateFilletCurve(curve, {a: a, b: t.b, c: t.c})
+      this.createFittedCurve(curve, {a: a, b: t.b, c: t.c})
       curve = this.ExtendCurveToEndpoints(curve)
     } else {
       curve.addSegment(
@@ -949,11 +905,11 @@ export class SmoothedPolylineCalculator {
       )
     }
 
-    Assert.assert(this.CurveIsLegal(curve))
+    Assert.assert(this.curveIsLegal(curve))
     return curve
   }
 
-  CurveIsLegal(curve: Curve): boolean {
+  curveIsLegal(curve: Curve): boolean {
     for (const n of this.layeredGraph.BaseGraph.nodes) {
       let i = this.edgePath.getNode(0)
       if (n == this.layeredGraph.BaseGraph.nodes[i]) continue
@@ -1002,7 +958,7 @@ export class SmoothedPolylineCalculator {
     return curve
   }
 
-  private CreateFilletCurve(
+  private createFittedCurve(
     curve: Curve,
     t: {
       a: CornerSite
@@ -1065,13 +1021,13 @@ export class SmoothedPolylineCalculator {
     )
     if (side > 0) {
       return (
-        this.BezierSegIntersectsTree(seg, this.thinLeftHierarchy) ||
-        this.BezierSegIntersectsTree(seg, this.leftHierarchy)
+        this.BezierSegIntersectsTree(seg, this.thinWestHierarchy) ||
+        this.BezierSegIntersectsTree(seg, this.westHierarchy)
       )
     } else {
       return (
-        this.BezierSegIntersectsTree(seg, this.thinRightHierarchy) ||
-        this.BezierSegIntersectsTree(seg, this.rightHierarchy)
+        this.BezierSegIntersectsTree(seg, this.thinEastHierarchy) ||
+        this.BezierSegIntersectsTree(seg, this.eastHierarchy)
       )
     }
   }

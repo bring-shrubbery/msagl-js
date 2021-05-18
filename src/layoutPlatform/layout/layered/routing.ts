@@ -22,6 +22,7 @@ import {GeomNode} from '../core/geomNode'
 import {SmoothedPolylineCalculator} from './SmoothedPolylineCalculator'
 import {GeomEdge} from '../core/geomEdge'
 import {Assert} from '../../utils/assert'
+import {SvgDebugWriter} from '../../math/geometry/svgDebugWriter'
 //  The class responsible for the routing of splines
 export class Routing extends Algorithm {
   settings: SugiyamaLayoutSettings
@@ -55,13 +56,13 @@ export class Routing extends Algorithm {
 
   //  Executes the actual algorithm.
   run() {
-    this.CreateSplines()
+    this.createSplines()
   }
 
   //  The method does the main work.
-  CreateSplines() {
-    this.CreateRegularSplines()
-    this.CreateSelfSplines()
+  createSplines() {
+    this.createRegularSplines()
+    this.createSelfSplines()
     if (this.IntGraph != null) {
       this.RouteFlatEdges()
     }
@@ -73,18 +74,18 @@ export class Routing extends Algorithm {
     // flatEdgeRouter.run()
   }
 
-  CreateRegularSplines() {
+  createRegularSplines() {
     for (const intEdgeList of this.Database.RegularMultiedges()) {
       // Here we try to optimize multi-edge routing
       const m = intEdgeList.length
       const optimizeShortEdges: boolean =
         m == 1 && !this.FanAtSourceOrTarget(intEdgeList[0])
       for (let i: number = Math.floor(m / 2); i < m; i++) {
-        this.CreateSplineForNonSelfEdge(intEdgeList[i], optimizeShortEdges)
+        this.createSplineForNonSelfEdge(intEdgeList[i], optimizeShortEdges)
       }
 
       for (let i = Math.floor(m / 2) - 1; i >= 0; i--) {
-        this.CreateSplineForNonSelfEdge(intEdgeList[i], optimizeShortEdges)
+        this.createSplineForNonSelfEdge(intEdgeList[i], optimizeShortEdges)
       }
     }
   }
@@ -96,7 +97,7 @@ export class Routing extends Algorithm {
     )
   }
 
-  CreateSelfSplines() {
+  createSelfSplines() {
     for (const [k, v] of this.Database.Multiedges.keyValues()) {
       const ip: IntPair = k
       if (ip.x == ip.y) {
@@ -148,9 +149,9 @@ export class Routing extends Algorithm {
     }
   }
 
-  CreateSplineForNonSelfEdge(es: PolyIntEdge, optimizeShortEdges: boolean) {
+  createSplineForNonSelfEdge(es: PolyIntEdge, optimizeShortEdges: boolean) {
     if (es.LayerEdges != null) {
-      this.DrawSplineBySmothingThePolyline(es, optimizeShortEdges)
+      this.drawSplineBySmothingThePolyline(es, optimizeShortEdges)
       if (!es.IsVirtualEdge) {
         es.updateEdgeLabelPosition(this.Database.Anchors)
         Arrowhead.trimSplineAndCalculateArrowheadsII(
@@ -164,7 +165,7 @@ export class Routing extends Algorithm {
     }
   }
 
-  DrawSplineBySmothingThePolyline(
+  drawSplineBySmothingThePolyline(
     edgePath: PolyIntEdge,
     optimizeShortEdges: boolean,
   ) {
@@ -177,7 +178,7 @@ export class Routing extends Algorithm {
       this.ProperLayeredGraph,
       this.Database,
     )
-    const spline: ICurve = scalc.GetSpline(optimizeShortEdges)
+    const spline: ICurve = scalc.getSpline(optimizeShortEdges)
     if (edgePath.reversed) {
       edgePath.curve = spline.reverse()
       edgePath.underlyingPolyline = scalc.Reverse().GetPolyline

@@ -73,7 +73,7 @@ test('PolygonPolygonDistanceTest2', () => {
   const dist = Polygon.Distance(pa, pb)
   TestDist(pa, pb, dist.dist)
 })
-test(' PolygonPolygonDistancextest()', () => {
+test(' PolygonPolygonDistancexxtest()', () => {
   const a = new Polygon(
     Polyline.mkFromPoints([
       new Point(0, 0),

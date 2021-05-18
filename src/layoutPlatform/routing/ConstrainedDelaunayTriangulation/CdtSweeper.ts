@@ -161,8 +161,6 @@ export class CdtSweeper extends Algorithm {
     listStart.Prev = pe
     pe.Next = listStart
 
-    SvgDebugWriter.dumpICurves('/tmp/dc.svg', debugDC)
-
     return listStart
   }
 
@@ -330,11 +328,6 @@ export class CdtSweeper extends Algorithm {
         ),
       )
     }
-
-    SvgDebugWriter.dumpDebugCurves(
-      '/tmp/frontWithSite' + site.point.x + '_' + site.point.y + '.svg',
-      ls,
-    )
   }
 
   Show(fn: string) {

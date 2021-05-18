@@ -32,9 +32,9 @@ function createGeometry(g: Graph): GeomGraph {
     const drawingNode = DrawingObject.getDrawingObj(n) as DrawingNode
     //const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
     gn.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
-      80, // tsize.width,
+      20, // tsize.width,
       20, // tsize.height,
-      80 / 10, // tsize.width / 10,
+      20 / 10, // tsize.width / 10,
       20 / 10, // tsize.height / 10,
       new Point(0, 0),
     )

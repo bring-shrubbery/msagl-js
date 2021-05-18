@@ -273,7 +273,7 @@ test('all gv files list', () => {
     expect(g != null).toBe(true)
   }
 })
-xtest('all gv files', () => {
+test('all gv files', () => {
   const path = 'src/tests/data/graphvis/'
   readdir(path, (err, files) => {
     expect(err).toBe(null)

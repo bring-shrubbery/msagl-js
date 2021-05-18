@@ -1,5 +1,7 @@
 import {from, IEnumerable} from 'linq-to-typescript'
 import {CornerSite} from '../../math/geometry/cornerSite'
+import {CurveFactory} from '../../math/geometry/curveFactory'
+import {DebugCurve} from '../../math/geometry/debugCurve'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {Point} from '../../math/geometry/point'
 import {randomInt} from '../../utils/random'
@@ -120,12 +122,11 @@ export class RefinerBetweenTwoLayers {
   //  <returns></returns>
   CalculateNewBottomSite(): boolean {
     const mainSeg = this.currentBottomSite.point.sub(this.currentTopSite.point)
-    let cotan: number = RefinerBetweenTwoLayers.AbsCotan(mainSeg)
+    let cotan: number = RefinerBetweenTwoLayers.absCotan(mainSeg)
     let vOfNewSite: Point
-    // to silence the compiler
-    let someBottomCorners: boolean
+    let someBottomCorners = false
     for (const p of this.bottomCorners()) {
-      const cornerCotan: number = RefinerBetweenTwoLayers.AbsCotan(
+      const cornerCotan: number = RefinerBetweenTwoLayers.absCotan(
         p.sub(this.currentBottomSite.point),
       )
       if (cornerCotan < cotan) {
@@ -139,7 +140,7 @@ export class RefinerBetweenTwoLayers {
       return false
     }
 
-    if (!Point.closeD(cotan, RefinerBetweenTwoLayers.AbsCotan(mainSeg))) {
+    if (!Point.closeD(cotan, RefinerBetweenTwoLayers.absCotan(mainSeg))) {
       this.currentBottomSite = CornerSite.mkSiteSPS(
         this.currentTopSite,
         this.FixCorner(
@@ -157,7 +158,7 @@ export class RefinerBetweenTwoLayers {
     // no progress
   }
 
-  private static AbsCotan(mainSeg: Point): number {
+  private static absCotan(mainSeg: Point): number {
     return Math.abs(mainSeg.x / mainSeg.y)
   }
 
@@ -165,11 +166,11 @@ export class RefinerBetweenTwoLayers {
     const mainSeg: Point = this.currentBottomSite.point.sub(
       this.currentTopSite.point,
     )
-    let cotan: number = RefinerBetweenTwoLayers.AbsCotan(mainSeg)
+    let cotan: number = RefinerBetweenTwoLayers.absCotan(mainSeg)
     let vOfNewSite: Point
-    let someTopCorners: boolean
+    let someTopCorners = false
     for (const p of this.topCorners()) {
-      const cornerCotan: number = RefinerBetweenTwoLayers.AbsCotan(
+      const cornerCotan: number = RefinerBetweenTwoLayers.absCotan(
         p.sub(this.currentTopSite.point),
       )
       if (cornerCotan < cotan) {
@@ -183,7 +184,7 @@ export class RefinerBetweenTwoLayers {
       return false
     }
 
-    if (!Point.closeD(cotan, RefinerBetweenTwoLayers.AbsCotan(mainSeg))) {
+    if (!Point.closeD(cotan, RefinerBetweenTwoLayers.absCotan(mainSeg))) {
       this.currentTopSite = CornerSite.mkSiteSPS(
         this.currentTopSite,
         this.FixCorner(
@@ -250,13 +251,9 @@ export class RefinerBetweenTwoLayers {
   }
 
   *NodeCorners(node: number): IterableIterator<Point> {
-    for (const p of this.NodeAnchor(node).polygonalBoundary.polylinePoints()) {
+    for (const p of this.anchors[node].polygonalBoundary.polylinePoints()) {
       yield p.point
     }
-  }
-
-  NodeAnchor(node: number): Anchor {
-    return this.anchors[node]
   }
 
   *CornersToTheLeftOfBottom(): IterableIterator<Point> {
@@ -359,12 +356,6 @@ export class RefinerBetweenTwoLayers {
     return this.layerArrays.Layers[this.layerArrays.y[j]]
   }
 
-  // private static bool CounterClockwise(ref Point topPoint, ref Point cornerPoint, ref Point p) {
-  //     return Point.getTriangleOrientation(topPoint, cornerPoint, p) == TriangleOrientation.Counterclockwise;
-  // }
-  // private static bool Clockwise(ref Point topPoint, ref Point cornerPoint, ref Point p) {
-  //     return Point.getTriangleOrientation(topPoint, cornerPoint, p) == TriangleOrientation.Clockwise;
-  // }
   IsLabel(u: number): boolean {
     return this.anchors[u].representsLabel
   }
@@ -506,4 +497,16 @@ export class RefinerBetweenTwoLayers {
       }
     }
   }
+}
+export function getAnchorDebugCurve(a: Anchor): any {
+  return DebugCurve.mkDebugCurveTWCI(100, 1, 'black', a.polygonalBoundary)
+}
+
+function getCornerDebugCurve(p: Point, color: string) {
+  return DebugCurve.mkDebugCurveTWCI(
+    200,
+    2,
+    color,
+    CurveFactory.mkCircle(10, p),
+  )
 }

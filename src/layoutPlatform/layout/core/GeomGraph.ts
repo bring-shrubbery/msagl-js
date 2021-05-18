@@ -3,8 +3,17 @@ import {Rectangle} from '../../math/geometry/rectangle'
 import {GeomObject} from './geomObject'
 import {GeomNode} from './geomNode'
 import {GeomEdge} from './geomEdge'
+import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 
 export class GeomGraph extends GeomObject {
+  transform(matrix: PlaneTransformation) {
+    for (const n of this.nodes()) {
+      n.boundaryCurve = n.boundaryCurve.transform(matrix)
+    }
+    for (const e of this.edges()) {
+      e.edgeGeometry.curve = e.edgeGeometry.curve.transform(matrix)
+    }
+  }
   MinimalWidth: number
   MinimalHeight: number
   pumpTheBoxToTheGraphWithMargins(): Rectangle {
