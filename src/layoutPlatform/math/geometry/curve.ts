@@ -2047,16 +2047,19 @@ function interpolate(
   bp: Point,
   s: ICurve,
   eps: number,
-): LineSegment[] {
+): Point[] {
   Assert.assert(Point.closeDistEps(s.value(a), ap))
   Assert.assert(Point.closeDistEps(s.value(b), bp))
-  const r = new Array<LineSegment>(0)
-  if (isCloseToLineSeg(a, ap, b, bp, s, eps)) r.push(LineSegment.mkPP(ap, bp))
-  else {
+  let r = []
+  if (isCloseToLineSeg(a, ap, b, bp, s, eps)) {
+    r.push(ap)
+    r.push(bp)
+  } else {
     const m = 0.5 * (a + b)
     const mp = s.value(m)
-    r.concat(interpolate(a, ap, m, mp, s, eps))
-    r.concat(interpolate(m, mp, b, bp, s, eps))
+    r = interpolate(a, ap, m, mp, s, eps)
+    const [, ...tail] = interpolate(m, mp, b, bp, s, eps)
+    r = r.concat(tail)
   }
   return r
 }
@@ -2078,7 +2081,6 @@ function interpolateWithAtLeastTwoSegs(
   return ret
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function interpolateICurve(s: ICurve, eps: number) {
+export function interpolateICurve(s: ICurve, eps: number): Point[] {
   return interpolate(s.parStart, s.start, s.parEnd, s.end, s, eps)
 }

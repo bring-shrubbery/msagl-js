@@ -11,8 +11,9 @@ import {GeomGraph} from '../../../../layoutPlatform/layout/core/GeomGraph'
 import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
-import {DrawingObject} from '../../../../drawing/drawingObject'
 import {StringBuilder} from 'typescript-string-operations'
+import {interpolateICurve} from '../../../../layoutPlatform/math/geometry/curve'
+import {ICurve} from '../../../../layoutPlatform/math/geometry/icurve'
 
 export function getTextSize(txt: string, font: string) {
   const element = document.createElement('canvas')
@@ -118,8 +119,9 @@ test('show API', () => {
     const s = n.id + ', center = ' + n.center
     strB.AppendLine(s)
   }
+  strB.AppendLine('edges')
   for (const e of g.edges()) {
-    strB.AppendLine(edgeString(e))
+    strB.AppendLine(edgeString(e, true)) // true to get an array of poins
   }
 
   console.log(strB.ToString())
@@ -158,13 +160,23 @@ test('layered layout hookup longflat', () => {
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/longflat.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
-function edgeString(e: GeomEdge): string {
-  const s =
-    e.source.id +
-    '->' +
-    e.target.id +
+
+function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
+  const s = e.source.id + '->' + e.target.id
+  return (
+    s +
     ', curve(' +
-    SvgDebugWriter.curveString(e.curve) +
-    ')'
-  return s
+    (edgesAsArrays
+      ? interpolateString(e.curve)
+      : SvgDebugWriter.curveString(e.curve) + ')')
+  )
+}
+
+function interpolateString(curve: ICurve) {
+  const ps = interpolateICurve(curve, curve.end.sub(curve.start).length / 20)
+  let s = '[' + ps[0].toString()
+  for (let i = 1; i < ps.length; i++) {
+    s += ' ' + ps[i].toString()
+  }
+  return s + ']'
 }

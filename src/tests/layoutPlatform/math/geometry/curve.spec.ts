@@ -1,12 +1,36 @@
 import {LineSegment} from '../../../../layoutPlatform/math/geometry/lineSegment'
 import {Ellipse} from '../../../../layoutPlatform/math/geometry/ellipse'
 import {Point} from './../../../../layoutPlatform/math/geometry/point'
-import {Curve} from './../../../../layoutPlatform/math/geometry/curve'
+import {
+  Curve,
+  interpolateICurve,
+} from './../../../../layoutPlatform/math/geometry/curve'
 import {PlaneTransformation} from './../../../../layoutPlatform/math/geometry/planeTransformation'
 import {CurveFactory} from './../../../../layoutPlatform/math/geometry/curveFactory'
 import {BezierSeg} from './../../../../layoutPlatform/math/geometry/bezierSeg'
 import {ICurve} from './../../../../layoutPlatform/math/geometry/icurve'
 import {Rectangle} from './../../../../layoutPlatform/math/geometry/rectangle'
+
+test('interpolate', () => {
+  const ls = LineSegment.mkPP(new Point(0, 0), new Point(100, 0))
+  let ps = interpolateICurve(ls, 1)
+  expect(ps.length).toBe(2)
+  expect(ps[0].equal(ls.start)).toBe(true)
+  expect(ps[1].equal(ls.end)).toBe(true)
+
+  const b = [
+    new Point(0, 100),
+    new Point(100, 100),
+    new Point(200, 10),
+    new Point(300, 0),
+  ]
+  const bezSeg = new BezierSeg(b[0], b[1], b[2], b[3])
+  ps = interpolateICurve(bezSeg, 1)
+  for (let i = 0; i < ps.length - 1; i++) {
+    expect(ps[i].equal(ps[i + 1])).toBe(false) // no duplicates
+  }
+  expect(ps[ps.length - 1].equal(b[3])).toBe(true)
+})
 
 function intersectOnDiameter(a: Point, b: Point) {
   const ls = LineSegment.mkPP(a, b)
