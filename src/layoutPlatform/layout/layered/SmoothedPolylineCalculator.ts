@@ -3,11 +3,8 @@ import {Curve} from '../../math/geometry/curve'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {ICurve} from '../../math/geometry/icurve'
 import {LineSegment} from '../../math/geometry/lineSegment'
-import {
-  allVerticesOfParall,
-  Parallelogram,
-} from '../../math/geometry/parallelogram'
-import {PN, PNInternal, PNLeaf} from '../../math/geometry/parallelogramNode'
+import {Parallelogram} from '../../math/geometry/parallelogram'
+import {PN, PNInternal} from '../../math/geometry/parallelogramNode'
 import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
 import {SmoothedPolyline} from '../../math/geometry/smoothedPolyline'
@@ -24,12 +21,7 @@ import {BezierSeg} from '../../math/geometry/bezierSeg'
 import {Routing} from './routing'
 import {NodeKind} from './NodeKind'
 import {Assert} from '../../utils/assert'
-import {
-  getAnchorDebugCurve,
-  RefinerBetweenTwoLayers,
-} from './RefinerBetweenTwoLayers'
-import {SvgDebugWriter} from '../../math/geometry/svgDebugWriter'
-import {DebugCurve} from '../../math/geometry/debugCurve'
+import {RefinerBetweenTwoLayers} from './RefinerBetweenTwoLayers'
 export class SmoothedPolylineCalculator {
   headSite: CornerSite
 
@@ -897,7 +889,7 @@ export class SmoothedPolylineCalculator {
 
     // the corner other end
     if (t != undefined) {
-      this.createFittedCurve(curve, {a: a, b: t.b, c: t.c})
+      this.createFilletCurve(curve, {a: a, b: t.b, c: t.c})
       curve = this.ExtendCurveToEndpoints(curve)
     } else {
       curve.addSegment(
@@ -958,7 +950,7 @@ export class SmoothedPolylineCalculator {
     return curve
   }
 
-  private createFittedCurve(
+  private createFilletCurve(
     curve: Curve,
     t: {
       a: CornerSite
@@ -1033,18 +1025,14 @@ export class SmoothedPolylineCalculator {
   }
 
   private BezierSegIntersectsTree(seg: BezierSeg, tree: PN): boolean {
-    if (tree == null) {
-      return false
-    }
-
+    if (tree == null) return false
     if (
       Parallelogram.intersect(
         seg.pNodeOverICurve().parallelogram,
         tree.parallelogram,
       )
     ) {
-      const isInternal = tree.node.hasOwnProperty('children')
-      if (isInternal) {
+      if (tree.node.hasOwnProperty('children')) {
         const n = tree.node as PNInternal
         return (
           this.BezierSegIntersectsTree(seg, n.children[0]) ||

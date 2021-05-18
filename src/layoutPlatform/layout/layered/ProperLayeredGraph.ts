@@ -70,25 +70,6 @@ export class ProperLayeredGraph {
     )
   }
 
-  // ProperLayeredGraph(BasicGraph<IntEdge> intGraph, number[]layering) {
-  //    this.baseGraph = intGraph;
-  //    this.totalNumberOfNodes = intGraph.Nodes.Count + VirtualnodeCount(layering);
-
-  //    this.virtualNodesToInEdges = new LayerEdge[totalNumberOfNodes - this.baseGraph.Nodes.Count];
-  //    virtualNodesToOutEdges = new LayerEdge[totalNumberOfNodes - this.baseGraph.Nodes.Count];
-  //    number currentVirtNode = intGraph.Nodes.Count;
-  //    for (IntEdge e of baseGraph.Edges) {
-  //        CreateLayerEdgesPath(e, layering, ref currentVirtNode);
-  //        if (e.LayerSpan > 1)
-  //            for (LayerEdge le of e.LayerEdges) {
-  //                if (le.target != e.target)
-  //                    this.virtualNodesToInEdges[le.target - NumOfOriginalNodes] = le;
-  //                if (le.source != e.source)
-  //                    virtualNodesToOutEdges[le.source - NumOfOriginalNodes] = le;
-  //            }
-  //    }
-  //}
-
   // enumerates over the graph edges
   *edges_(): IterableIterator<LayerEdge> {
     for (const ie of this.BaseGraph.edges) {
