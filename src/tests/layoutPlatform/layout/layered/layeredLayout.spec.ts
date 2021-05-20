@@ -161,7 +161,7 @@ test('layered layout hookup longflat', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
-function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
+export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   const s = e.source.id + '->' + e.target.id
   return (
     s +
