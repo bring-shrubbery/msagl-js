@@ -16,6 +16,7 @@ export class GeomGraph extends GeomObject {
     for (const e of this.edges()) {
       e.edgeGeometry.curve = e.edgeGeometry.curve.transform(matrix)
     }
+    this.pumpTheBoxToTheGraphWithMargins()
   }
   setEdge(s: string, t: string): GeomEdge {
     const structEdge = this.graph.setEdge(s, t)

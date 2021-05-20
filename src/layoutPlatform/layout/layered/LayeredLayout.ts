@@ -37,6 +37,7 @@ import {GeomConstants} from '../../math/geometry/geomConstants'
 import {EdgeRoutingMode} from '../../core/routing/EdgeRoutingMode'
 import {EdgeRoutingSettings} from '../../core/routing/EdgeRoutingSettings'
 import {Routing} from './routing'
+import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 
 export class LayeredLayout extends Algorithm {
   originalGraph: GeomGraph
@@ -110,6 +111,7 @@ export class LayeredLayout extends Algorithm {
       if (!this.sugiyamaSettings.layeringOnly) {
         this.runPostLayering()
       }
+      this.originalGraph.transform(new PlaneTransformation(1, 0, 0, 0, -1, 0)) // flip the y coordinate to according to the screen standard
     } else {
       this.originalGraph.boundingBox.setToEmpty()
     }

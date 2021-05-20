@@ -2,8 +2,8 @@ import {PlaneTransformation} from './planeTransformation'
 import {Point} from './point'
 import {PN} from './parallelogramNode'
 import {Rectangle} from './rectangle'
-// The interface for curves: instances of ICurve inside of GLEE
-// are BSpline,Curve,LineSeg, Ellipse,CubicBezierSeg and ArrowTipCurve.
+
+// The interface for curves
 export interface ICurve {
   // Returns the point on the curve corresponding to parameter t
   value(t: number): Point

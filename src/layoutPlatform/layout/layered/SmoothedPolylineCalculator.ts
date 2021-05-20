@@ -71,12 +71,12 @@ export class SmoothedPolylineCalculator {
     this.originalGraph = origGraph
     this.settings = settings
     this.layeredGraph = layerGraph
-    this.eastHierarchy = this.BuildRightHierarchy()
-    this.westHierarchy = this.BuildLeftHierarchy()
+    this.eastHierarchy = this.BuildEastHierarchy()
+    this.westHierarchy = this.BuildWestHierarchy()
   }
 
-  private BuildRightHierarchy(): PN {
-    const boundaryAnchorsCurves: Array<Polyline> = this.FindRightBoundaryAnchorCurves()
+  private BuildEastHierarchy(): PN {
+    const boundaryAnchorsCurves: Array<Polyline> = this.FindEastBoundaryAnchorCurves()
     const l = new Array<PN>()
     for (const c of boundaryAnchorsCurves) {
       l.push(c.pNodeOverICurve())
@@ -86,8 +86,8 @@ export class SmoothedPolylineCalculator {
     return HierarchyCalculator.Calculate(l)
   }
 
-  private BuildLeftHierarchy(): PN {
-    const boundaryAnchorCurves: Array<Polyline> = this.FindLeftBoundaryAnchorCurves()
+  private BuildWestHierarchy(): PN {
+    const boundaryAnchorCurves: Array<Polyline> = this.FindWestBoundaryAnchorCurves()
     const l = new Array<PN>()
     for (const a of boundaryAnchorCurves) {
       l.push(a.pNodeOverICurve())
@@ -97,29 +97,29 @@ export class SmoothedPolylineCalculator {
     return HierarchyCalculator.Calculate(l)
   }
 
-  FindRightBoundaryAnchorCurves(): Array<Polyline> {
+  FindEastBoundaryAnchorCurves(): Array<Polyline> {
     const ret: Array<Polyline> = new Array<Polyline>()
     let uOffset = 0
     for (const u of this.edgePath) {
-      let rightMostAnchor: Anchor = null
-      for (const v of this.RightBoundaryNodesOfANode(
+      let westMostAnchor: Anchor = null
+      for (const v of this.EastBoundaryNodesOfANode(
         u,
         Routing.GetNodeKind(uOffset, this.edgePath),
       )) {
         const a: Anchor = this.anchors[v]
-        if (rightMostAnchor == null || rightMostAnchor.Origin.x < a.Origin.x) {
-          rightMostAnchor = a
+        if (westMostAnchor == null || westMostAnchor.Origin.x > a.Origin.x) {
+          westMostAnchor = a
         }
 
         ret.push(a.polygonalBoundary)
       }
 
-      if (rightMostAnchor != null) {
+      if (westMostAnchor != null) {
         this.thinRightNodes.push(
           LineSegment.mkLinePXY(
-            rightMostAnchor.Origin,
-            this.originalGraph.left,
-            rightMostAnchor.y,
+            westMostAnchor.Origin,
+            this.originalGraph.right,
+            westMostAnchor.y,
           ).pNodeOverICurve(),
         )
       }
@@ -141,31 +141,31 @@ export class SmoothedPolylineCalculator {
     return ret
   }
 
-  private FindLeftBoundaryAnchorCurves(): Array<Polyline> {
-    const ret: Array<Polyline> = new Array<Polyline>()
+  private FindWestBoundaryAnchorCurves(): Polyline[] {
+    const ret = []
     let uOffset = 0
     for (const u of this.edgePath.nodes()) {
-      let leftMost = -1
+      let eastMost = -1
       for (const v of this.LeftBoundaryNodesOfANode(
         u,
         Routing.GetNodeKind(uOffset, this.edgePath),
       )) {
         if (
-          leftMost == -1 ||
-          this.layerArrays.x[v] < this.layerArrays.x[leftMost]
+          eastMost == -1 ||
+          this.layerArrays.x[v] > this.layerArrays.x[eastMost]
         ) {
-          leftMost = v
+          eastMost = v
         }
 
         ret.push(this.anchors[v].polygonalBoundary)
       }
 
-      if (leftMost != -1) {
-        const a: Anchor = this.anchors[leftMost]
+      if (eastMost != -1) {
+        const a: Anchor = this.anchors[eastMost]
         this.thinWestNodes.push(
           LineSegment.mkLinePXY(
             a.Origin,
-            this.originalGraph.right,
+            this.originalGraph.left,
             a.Origin.y,
           ).pNodeOverICurve(),
         )
@@ -370,7 +370,7 @@ export class SmoothedPolylineCalculator {
     return this.layeredGraph.OutEdgeOfVirtualNode(u)
   }
 
-  private RightBoundaryNodesOfANode(
+  private EastBoundaryNodesOfANode(
     i: number,
     nodeKind: NodeKind,
   ): IterableIterator<number> {
@@ -466,12 +466,14 @@ export class SmoothedPolylineCalculator {
     )
   }
 
-  private TryToRemoveInflectionEdge(t: {s: CornerSite; cut: boolean}) {
+  private TryToRemoveInflectionCorner(t: {s: CornerSite; cut: boolean}) {
     if (
       !t.s.next ||
       !t.s.prev ||
-      (t.s.turn > 0 && this.SegIntersectEastBound(t.s.prev, t.s.next)) ||
-      (t.s.turn < 0 && this.SegIntersectWestBound(t.s.prev, t.s.next))
+      (t.s.turn == TriangleOrientation.Counterclockwise &&
+        this.SegIntersectEastBound(t.s.prev, t.s.next)) ||
+      (t.s.turn == TriangleOrientation.Clockwise &&
+        this.SegIntersectWestBound(t.s.prev, t.s.next))
     ) {
       t.cut = false
       t.s = t.s.next
@@ -512,8 +514,7 @@ export class SmoothedPolylineCalculator {
     ) {
       return false
     }
-    const nInternal = hierarchy.node.hasOwnProperty('children')
-    if (nInternal) {
+    if (hierarchy.node.hasOwnProperty('children')) {
       const n = hierarchy.node as PNInternal
       const ret =
         SmoothedPolylineCalculator.CurveIntersectsHierarchy(
@@ -845,7 +846,7 @@ export class SmoothedPolylineCalculator {
       progress = false
 
       for (const t = {s: this.headSite, cut: false}; t.s; ) {
-        this.TryToRemoveInflectionEdge(t)
+        this.TryToRemoveInflectionCorner(t)
         progress = t.cut || progress
       }
     }
@@ -979,8 +980,10 @@ export class SmoothedPolylineCalculator {
     let seg: BezierSeg
     do {
       seg = Curve.createBezierSeg(k, k, a, b, c)
-      // if (Routing.db)
-      //     LayoutAlgorithmSettings .Show(seg, CreatePolyTest());
+      // SvgDebugWriter.dumpDebugCurves(
+      //   '/tmp/' + ++SmoothedPolylineCalculator.count + 'sm.svg',
+      //   this.getDebugCurvesForCorner(a, b, c),
+      // )
       b.previouisBezierCoefficient = k
       k /= 2
     } while (this.BezierSegIntersectsBoundary(seg))
@@ -1005,6 +1008,45 @@ export class SmoothedPolylineCalculator {
     curve.addSegment(seg)
   }
 
+  // getDebugCurvesForCorner(
+  //   a: CornerSite,
+  //   b: CornerSite,
+  //   c: CornerSite,
+  // ): import('../../math/geometry/debugCurve').DebugCurve[] {
+  //   let r = []
+  //   r = r.concat(getHierDC(this.thinWestHierarchy, 'Red'))
+  //   r = r.concat(getHierDC(this.westHierarchy, 'Orange'))
+  //   r = r.concat(getHierDC(this.eastHierarchy, 'Blue'))
+  //   r = r.concat(getHierDC(this.thinEastHierarchy, 'Green'))
+
+  //   for (const a of this.anchors) {
+  //     r.push(DebugCurve.mkDebugCurveTWCI(100, 0.3, 'Gray', a.polygonalBoundary))
+  //   }
+  //   r.push(
+  //     DebugCurve.mkDebugCurveTWCI(
+  //       100,
+  //       2,
+  //       'Blue',
+  //       LineSegment.mkPP(a.point, b.point),
+  //     ),
+  //   )
+  //   r.push(
+  //     DebugCurve.mkDebugCurveTWCI(
+  //       100,
+  //       2,
+  //       'Blue',
+  //       LineSegment.mkPP(b.point, c.point),
+  //     ),
+  //   )
+  //   const p = new Polyline()
+  //   for (let i = 0; i <= this.edgePath.count; i++) {
+  //     p.addPoint(this.EdgePathPoint(i))
+  //   }
+  //   r.push(DebugCurve.mkDebugCurveTWCI(100, 1, 'Yellow', p))
+
+  //   return r
+  // }
+
   private BezierSegIntersectsBoundary(seg: BezierSeg): boolean {
     const side: number = Point.signedDoubledTriangleArea(
       seg.B(0),
@@ -1024,6 +1066,7 @@ export class SmoothedPolylineCalculator {
     }
   }
 
+  // static count = 0
   private BezierSegIntersectsTree(seg: BezierSeg, tree: PN): boolean {
     if (tree == null) return false
     if (
@@ -1049,14 +1092,17 @@ export class SmoothedPolylineCalculator {
     }
   }
 
-  static BezierSegIntersectsBoundary(seg: BezierSeg, curve: ICurve): boolean {
-    for (const x of Curve.getAllIntersections(seg, curve, false)) {
-      const c: Curve = <Curve>curve
-      if (c != null) {
-        if (Curve.realCutWithClosedCurve(x, c, false)) {
-          return true
+  static BezierSegIntersectsBoundary(seg: BezierSeg, ic: ICurve): boolean {
+    for (const x of Curve.getAllIntersections(seg, ic, false)) {
+      if (ic instanceof Curve) {
+        const c: Curve = <Curve>ic
+        if (c != null) {
+          if (Curve.realCutWithClosedCurve(x, c, false)) {
+            return true
+          }
         }
       } else {
+        Assert.assert(ic instanceof LineSegment)
         // curve is a line from a thin hierarchy that's forbidden to touch
         return true
       }
@@ -1065,3 +1111,13 @@ export class SmoothedPolylineCalculator {
     return false
   }
 }
+// function getHierDC(hierarchy: PN, color: string): DebugCurve[] {
+//   if (hierarchy == null || hierarchy.node == null) return []
+//   if (hierarchy.node.hasOwnProperty('children')) {
+//     const n = hierarchy.node as PNInternal
+//     return getHierDC(n.children[0], color).concat(
+//       getHierDC(n.children[1], color),
+//     )
+//   }
+//   return [DebugCurve.mkDebugCurveTWCI(100, 0.5, color, hierarchy.seg)]
+// }

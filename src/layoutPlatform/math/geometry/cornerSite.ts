@@ -1,4 +1,4 @@
-import {Point} from './point'
+import {Point, TriangleOrientation} from './point'
 export class CornerSite {
   // the coeffiecient used to calculate the first and the second control points of the
   // Bezier segment for the fillet at the site
@@ -47,9 +47,9 @@ export class CornerSite {
     return s
   }
 
-  get turn(): number {
+  get turn(): TriangleOrientation {
     if (this.next == null || this.prev == null) return 0
-    return Point.signedDoubledTriangleArea(
+    return Point.getTriangleOrientation(
       this.prev.point,
       this.point,
       this.next.point,

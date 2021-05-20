@@ -11,6 +11,12 @@ import {BezierSeg} from './../../../../layoutPlatform/math/geometry/bezierSeg'
 import {ICurve} from './../../../../layoutPlatform/math/geometry/icurve'
 import {Rectangle} from './../../../../layoutPlatform/math/geometry/rectangle'
 
+test('tail', () => {
+  const a = [1, 2, 3]
+  const [, ...b] = a
+
+  expect(b[0]).toBe(a[1])
+})
 test('interpolate', () => {
   const ls = LineSegment.mkPP(new Point(0, 0), new Point(100, 0))
   let ps = interpolateICurve(ls, 1)
