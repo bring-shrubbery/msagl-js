@@ -661,16 +661,17 @@ export class NetworkSimplex implements LayerCalculator {
   }
 
   run() {
-    if (this.graph.edges.length == 0 && this.graph.nodeCount == 0)
+    if (this.graph.edges.length == 0 && this.graph.nodeCount == 0) {
       this.layers = []
+    } else {
+      this.feasibleTree()
 
-    this.feasibleTree()
+      let leaveEnter: {leaving: NetworkEdge; entering: NetworkEdge}
+      while ((leaveEnter = this.leaveEnterEdge()) != null) {
+        this.exchange(leaveEnter.leaving, leaveEnter.entering)
+      }
 
-    let leaveEnter: {leaving: NetworkEdge; entering: NetworkEdge}
-    while ((leaveEnter = this.leaveEnterEdge()) != null) {
-      this.exchange(leaveEnter.leaving, leaveEnter.entering)
+      this.shiftLayerToZero()
     }
-
-    this.shiftLayerToZero()
   }
 }

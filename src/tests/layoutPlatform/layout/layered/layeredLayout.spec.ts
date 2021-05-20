@@ -161,6 +161,28 @@ test('layered layout hookup longflat', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
+test('layered layout empty graph', () => {
+  const gg = GeomGraph.mk()
+  const ss = new SugiyamaLayoutSettings()
+  const ll = new LayeredLayout(gg, ss, new CancelToken())
+  ll.run()
+})
+
+test('layered layout nodes only', () => {
+  const g = new GeomGraph(new Graph())
+  g.setNode('kspacey', {width: 144, height: 100})
+  g.setNode('swilliams', {width: 160, height: 100})
+  g.setNode('bpitt', {width: 108, height: 100})
+  g.setNode('hford', {width: 168, height: 100})
+  g.setNode('lwilson', {width: 144, height: 100})
+  g.setNode('kbacon', {width: 121, height: 100})
+  const ss = new SugiyamaLayoutSettings()
+  const ll = new LayeredLayout(g, ss, new CancelToken())
+  ll.run()
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/nodes_only.svg')
+  t.writeGraph(g)
+})
+
 export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   const s = e.source.id + '->' + e.target.id
   return (
