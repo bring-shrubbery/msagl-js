@@ -16,7 +16,7 @@ export class GeomGraph extends GeomObject {
     for (const e of this.edges()) {
       e.edgeGeometry.curve = e.edgeGeometry.curve.transform(matrix)
     }
-    this.pumpTheBoxToTheGraphWithMargins()
+    this.updateBoundingBox()
   }
   setEdge(s: string, t: string): GeomEdge {
     const structEdge = this.graph.setEdge(s, t)
@@ -37,15 +37,16 @@ export class GeomGraph extends GeomObject {
     )
     return geomNode
   }
-  MinimalWidth: number
-  MinimalHeight: number
+  MinimalWidth = 0
+  MinimalHeight = 0
   pumpTheBoxToTheGraphWithMargins(): Rectangle {
     const b = Rectangle.mkEmpty()
     this.pumpTheBoxToTheGraph(b)
     b.pad(this.Margins)
-    b.width = Math.max(b.width, this.MinimalWidth)
-    b.height = Math.max(b.height, this.MinimalHeight)
-
+    if (this.MinimalWidth > 0) b.width = Math.max(b.width, this.MinimalWidth)
+    if (this.MinimalHeight > 0) {
+      b.height = Math.max(b.height, this.MinimalHeight)
+    }
     return b
   }
   pumpTheBoxToTheGraph(b: Rectangle) {

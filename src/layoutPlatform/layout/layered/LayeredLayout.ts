@@ -111,7 +111,16 @@ export class LayeredLayout extends Algorithm {
       if (!this.sugiyamaSettings.layeringOnly) {
         this.runPostLayering()
       }
-      this.originalGraph.transform(new PlaneTransformation(1, 0, 0, 0, -1, 0)) // flip the y coordinate to according to the screen standard
+      this.originalGraph.transform(
+        new PlaneTransformation(
+          1,
+          0,
+          -this.originalGraph.left,
+          0,
+          -1,
+          this.originalGraph.top,
+        ),
+      ) // flip the y coordinate to according to the screen standard and shift to origin
     } else {
       this.originalGraph.boundingBox.setToEmpty()
     }

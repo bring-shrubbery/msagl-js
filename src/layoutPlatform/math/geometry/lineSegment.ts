@@ -66,7 +66,7 @@ export class LineSegment implements ICurve {
     }
   }
 
-  normal() {
+  normal(): Point {
     let t = this.start.sub(this.end)
     t = t.div(t.length)
     return new Point(-t.y, t.x)

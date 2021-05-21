@@ -168,7 +168,7 @@ test('layered layout empty graph', () => {
   ll.run()
 })
 
-test('layered layout nodes only', () => {
+xtest('layered layout nodes only', () => {
   const g = new GeomGraph(new Graph())
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
