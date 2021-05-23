@@ -102,7 +102,9 @@ export class LayerArrays {
     //find the number of layers
     let nOfLayers = 0
 
-    for (const l of this.y) if (l + 1 > nOfLayers) nOfLayers = l + 1
+    for (const l of this.y) {
+      if (l + 1 > nOfLayers) nOfLayers = l + 1
+    }
 
     const counts = new Array<number>(nOfLayers).fill(0)
 

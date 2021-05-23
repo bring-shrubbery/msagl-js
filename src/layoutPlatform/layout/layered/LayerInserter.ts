@@ -213,12 +213,14 @@ export class LayerInserter {
             const l = new Array<number>()
             l.push(o)
             l.push(v)
-            sd[x] = l
+            sd.set(x, l)
           } else {
             const l = o as number[]
             l.push(v)
           }
-        } else sd[x] = v
+        } else {
+          sd.set(x, v)
+        }
       }
       //fill the layer according to this order
       let c = 0

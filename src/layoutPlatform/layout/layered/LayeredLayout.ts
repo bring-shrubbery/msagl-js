@@ -433,7 +433,7 @@ export class LayeredLayout extends Algorithm {
 
     const extendedVertexLayering = new Array<number>(
       this.originalGraph.nodeCount + nOfVV,
-    )
+    ).fill(0)
 
     for (const e of this.database.SkeletonEdges())
       if (e.LayerEdges != null) {

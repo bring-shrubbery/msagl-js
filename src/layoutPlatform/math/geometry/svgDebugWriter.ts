@@ -287,8 +287,6 @@ export class SvgDebugWriter {
   }
 
   writeGraph(g: GeomGraph) {
-    const matrix = new PlaneTransformation(1, 0, 0, 0, -1, 0)
-    g.transform(matrix)
     g.updateBoundingBox()
     this.open(g.boundingBox)
     for (const e of g.edges()) {
@@ -299,7 +297,6 @@ export class SvgDebugWriter {
       const box = n.boundingBox
       this.writeNodeLabel(n.id, box)
     }
-    g.transform(matrix)
     this.close()
   }
 

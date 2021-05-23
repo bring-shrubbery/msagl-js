@@ -78,6 +78,7 @@ test('layered layout glued graph', () => {
     expect(e.weight).toBe(2)
   }
 })
+
 test('sorted map', () => {
   const m = SortedMap<number, number>()
   m.set(0, 0)
@@ -87,6 +88,9 @@ test('sorted map', () => {
   for (const [k, v] of m.entries()) {
     expect(k).toBe(v)
     a.push(k)
+  }
+  for (const t of a) {
+    expect(m.get(t)).toBe(t)
   }
   expect(a[0]).toBe(-1)
   expect(a[1]).toBe(0)
@@ -168,7 +172,7 @@ test('layered layout empty graph', () => {
   ll.run()
 })
 
-xtest('layered layout nodes only', () => {
+test('layered layout nodes only', () => {
   const g = new GeomGraph(new Graph())
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})

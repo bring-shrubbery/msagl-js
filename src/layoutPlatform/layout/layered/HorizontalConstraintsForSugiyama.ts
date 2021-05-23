@@ -67,9 +67,9 @@ export class HorizontalConstraintsForSugiyama {
         ) {
           current = outEdges[0].y
           block.push(current)
-          this.nodeToBlockRoot[current] = root
+          this.nodeToBlockRoot.set(current, root)
         }
-        if (block.length > 0) this.BlockRootToBlock[root] = block
+        if (block.length > 0) this.BlockRootToBlock.set(root, block)
       }
   }
 

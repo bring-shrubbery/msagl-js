@@ -6,6 +6,7 @@ import {CancelToken} from '../../utils/cancelToken'
 import {IntPair} from '../../utils/IntPair'
 import {BasicGraphOnEdges as Graph} from '../../structs/basicGraphOnEdges'
 import {PolyIntEdge} from './polyIntEdge'
+import {Assert} from '../../utils/assert'
 
 // balances the layers by moving vertices with
 // the same number of input-output edges to feasible layers with fewer nodes
@@ -178,14 +179,17 @@ export class Balancing implements Algorithm {
       if (r > ret) ret = r
     }
 
-    if (ret == -Number.NEGATIVE_INFINITY) ret = this.layering[i] - 1
+    if (ret == Number.NEGATIVE_INFINITY) ret = this.layering[i] - 1
 
     return ret
   }
 
   CalculateLayerCounts() {
-    this.vertsCounts = new Array<number>(from(this.layering).max() + 1)
-    for (const r of this.layering) this.vertsCounts[r] += this.nodeCount[r]
+    Assert.assert(this.layering.length > 0)
+    this.vertsCounts = new Array<number>(from(this.layering).max() + 1).fill(0)
+    for (const r of this.layering) {
+      this.vertsCounts[r] += this.nodeCount[r]
+    }
   }
 
   ChooseJumper() {

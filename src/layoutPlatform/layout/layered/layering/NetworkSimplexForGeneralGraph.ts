@@ -89,6 +89,6 @@ function GetMapsToComponent(
 function MapForComp(comp: number[]): Map<number, number> {
   let i = 0
   const map = new Map<number, number>()
-  for (const v of comp) map[v] = i++
+  for (const v of comp) map.set(v, i++)
   return map
 }
