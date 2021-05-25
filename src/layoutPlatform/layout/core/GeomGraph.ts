@@ -11,10 +11,10 @@ import {Point} from '../../math/geometry/point'
 export class GeomGraph extends GeomObject {
   transform(matrix: PlaneTransformation) {
     for (const n of this.nodes()) {
-      n.boundaryCurve = n.boundaryCurve.transform(matrix)
+      n.transform(matrix)
     }
     for (const e of this.edges()) {
-      e.edgeGeometry.curve = e.edgeGeometry.curve.transform(matrix)
+      e.transform(matrix)
     }
     this.updateBoundingBox()
   }
@@ -94,7 +94,7 @@ export class GeomGraph extends GeomObject {
   }
 
   *edges(): IterableIterator<GeomEdge> {
-    for (const n of this.graph.Edges) yield GeomObject.getGeom(n) as GeomEdge
+    for (const n of this.graph.edges) yield GeomObject.getGeom(n) as GeomEdge
   }
 
   boundingBox = Rectangle.mkEmpty()
@@ -126,7 +126,7 @@ export class GeomGraph extends GeomObject {
   updateBoundingBox() {
     this.boundingBox = Rectangle.mkEmpty()
     let padding = 0
-    for (const e of this.graph.Edges) {
+    for (const e of this.graph.edges) {
       const ge = GeomObject.getGeom(e) as GeomEdge
       this.boundingBox.addRec(ge.boundingBox)
       padding = Math.max(padding, ge.lineWidth)

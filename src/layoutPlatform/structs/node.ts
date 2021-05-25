@@ -74,7 +74,7 @@ export class Node extends Entity {
     }
   }
 
-  get Edges(): IterableIterator<Edge> {
+  get edges(): IterableIterator<Edge> {
     return this._edges()
   }
 

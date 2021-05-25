@@ -1,5 +1,5 @@
 export {GeomGraph} from './layoutPlatform/layout/core/GeomGraph'
 export {SugiyamaLayoutSettings} from './layoutPlatform/layout/layered/SugiyamaLayoutSettings'
-export {LayeredLayout} from './layoutPlatform/layout/layered/LayeredLayout'
+export {LayeredLayout} from './layoutPlatform/layout/layered/layeredLayout'
 export {CancelToken} from './layoutPlatform/utils/cancelToken'
 export {interpolateICurve} from './layoutPlatform/math/geometry/curve'

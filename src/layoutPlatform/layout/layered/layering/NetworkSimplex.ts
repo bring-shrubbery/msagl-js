@@ -12,6 +12,7 @@ import {NetworkEdge} from './networkEdge'
 import {Stack} from 'stack-typescript'
 import {randomInt} from '../../../utils/random'
 import {PolyIntEdge} from '../polyIntEdge'
+import {GeomConstants} from '../../../math/geometry/geomConstants'
 
 function CreateGraphWithIEEdges(
   bg: BasicGraphOnEdges<PolyIntEdge>,
@@ -370,7 +371,10 @@ export class NetworkSimplex implements LayerCalculator {
 
   slack(e: NetworkEdge): number {
     const ret = this.layers[e.source] - this.layers[e.target] - e.separation
-    Assert.assert(ret >= 0, 'separation is not satisfied')
+    Assert.assert(
+      ret >= -GeomConstants.tolerance,
+      'separation is not satisfied',
+    )
     return ret
   }
 

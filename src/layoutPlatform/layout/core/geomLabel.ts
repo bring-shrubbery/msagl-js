@@ -5,8 +5,14 @@ export class GeomLabel extends GeomObject {
   get width() {
     return this.boundingBox.width
   }
+  set width(value) {
+    this.boundingBox.width = value
+  }
   get height() {
     return this.boundingBox.height
+  }
+  set height(value) {
+    this.boundingBox.height = value
   }
   get center() {
     return this.boundingBox.center

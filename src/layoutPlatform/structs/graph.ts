@@ -27,7 +27,7 @@ export class Graph extends Node {
   findNode(id: string): Node {
     return this.nodeCollection.find(id)
   }
-  get Edges() {
+  get edges() {
     return this.nodeCollection.edges
   }
   isConsistent(): boolean {

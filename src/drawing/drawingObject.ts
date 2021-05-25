@@ -2,10 +2,10 @@ import {AttrContainer} from '../layoutPlatform/structs/attrContainer'
 import {OrderingEnum, DirTypeEnum} from '../tools/dotparser'
 import {ArrowTypeEnum} from './arrawTypeEnum'
 import {Color} from './color'
-import {RankDirEnum} from './rankDirEnum'
-import {RankEnum} from './rankEnum'
+import {LayerDirectionEnum} from '../layoutPlatform/layout/layered/layerDirectionEnum'
 import {ShapeEnum} from './shapeEnum'
 import {StyleEnum} from './styleEnum'
+import {RankEnum} from './rankEnum'
 
 export abstract class DrawingObject {
   // not all attributes can be used in derived classes
@@ -25,7 +25,7 @@ export abstract class DrawingObject {
   pencolor: Color
   peripheries: number
   size: [number, number]
-  rankdir: RankDirEnum
+  rankdir: LayerDirectionEnum
   fontname: any
   width: number
   height: number

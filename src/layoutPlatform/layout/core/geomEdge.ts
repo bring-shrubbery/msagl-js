@@ -6,8 +6,31 @@ import {Rectangle} from './../../math/geometry/rectangle'
 import {ICurve} from './../../math/geometry/icurve'
 import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
 import {GeomLabel} from './geomLabel'
+import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 
 export class GeomEdge extends GeomObject {
+  transform(matrix: PlaneTransformation) {
+    if (this.curve == null) return
+    this.curve = this.curve.transform(matrix)
+    if (this.underlyingPolyline != null)
+      for (
+        let s = this.underlyingPolyline.headSite,
+          s0 = this.underlyingPolyline.headSite;
+        s != null;
+        s = s.next, s0 = s0.next
+      )
+        s.point = matrix.multiplyPoint(s.point)
+
+    const sourceArrow = this.edgeGeometry.sourceArrowhead
+    if (sourceArrow != null)
+      sourceArrow.tipPosition = matrix.multiplyPoint(sourceArrow.tipPosition)
+    const targetArrow = this.edgeGeometry.targetArrowhead
+    if (targetArrow != null)
+      targetArrow.tipPosition = matrix.multiplyPoint(targetArrow.tipPosition)
+
+    if (this.label != null)
+      this.label.center = matrix.multiplyPoint(this.label.center)
+  }
   underlyingPolyline: SmoothedPolyline
   edgeGeometry = new EdgeGeometry()
   label: GeomLabel

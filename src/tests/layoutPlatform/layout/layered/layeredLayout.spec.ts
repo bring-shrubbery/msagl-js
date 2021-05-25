@@ -1,6 +1,6 @@
 import {SugiyamaLayoutSettings} from '../../../../layoutPlatform/layout/layered/SugiyamaLayoutSettings'
 import SortedMap = require('collections/sorted-map')
-import {LayeredLayout} from '../../../../layoutPlatform/layout/layered/LayeredLayout'
+import {LayeredLayout} from '../../../../layoutPlatform/layout/layered/layeredLayout'
 import {Graph} from '../../../../layoutPlatform/structs/graph'
 import {GeomNode} from '../../../../layoutPlatform/layout/core/geomNode'
 import {GeomEdge} from '../../../../layoutPlatform/layout/core/geomEdge'
@@ -14,6 +14,7 @@ import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
 import {StringBuilder} from 'typescript-string-operations'
 import {interpolateICurve} from '../../../../layoutPlatform/math/geometry/curve'
 import {ICurve} from '../../../../layoutPlatform/math/geometry/icurve'
+import {LayerDirectionEnum} from '../../../../layoutPlatform/layout/layered/layerDirectionEnum'
 
 export function getTextSize(txt: string, font: string) {
   const element = document.createElement('canvas')
@@ -32,13 +33,13 @@ function createGeometry(g: Graph): GeomGraph {
     //const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
     gn.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
       20, // tsize.width,
-      20, // tsize.height,
+      30, // tsize.height,
       20 / 10, // tsize.width / 10,
-      20 / 10, // tsize.height / 10,
+      30 / 10, // tsize.height / 10,
       new Point(0, 0),
     )
   }
-  for (const e of g.Edges) {
+  for (const e of g.edges) {
     new GeomEdge(e)
   }
   return new GeomGraph(g)
@@ -118,6 +119,40 @@ test('show API', () => {
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(g, ss, new CancelToken())
   ll.run()
+  outputGraph(g, 'TB')
+  ss.layerDirection = LayerDirectionEnum.BT
+  ll.run()
+  outputGraph(g, 'BT')
+  ss.layerDirection = LayerDirectionEnum.LR
+  ll.run()
+  outputGraph(g, 'LR')
+  ss.layerDirection = LayerDirectionEnum.RL
+  ll.run()
+  outputGraph(g, 'RL')
+})
+
+test('disconnected comps', () => {
+  // Create a new geometry graph
+  const g = GeomGraph.mk()
+  // Add nodes to the graph. The first argument is the node id. The second is the size string
+  g.setNode('kspacey', {width: 144, height: 100})
+  g.setNode('swilliams', {width: 160, height: 100})
+  g.setNode('bpitt', {width: 108, height: 100})
+  g.setNode('hford', {width: 168, height: 100})
+  g.setNode('lwilson', {width: 144, height: 100})
+  g.setNode('kbacon', {width: 121, height: 100})
+
+  // Add edges to the graph.
+  g.setEdge('kspacey', 'swilliams')
+  g.setEdge('swilliams', 'kbacon')
+  g.setEdge('bpitt', 'kbacon')
+  g.setEdge('hford', 'lwilson')
+  g.setEdge('lwilson', 'kbacon')
+  duplicateDisconnected(g, '_')
+  duplicateDisconnected(g, '__')
+  const ss = new SugiyamaLayoutSettings()
+  const ll = new LayeredLayout(g, ss, new CancelToken())
+  ll.run()
   const strB = new StringBuilder()
   for (const n of g.nodes()) {
     const s = n.id + ', center = ' + n.center
@@ -129,7 +164,7 @@ test('show API', () => {
   }
 
   console.log(strB.ToString())
-  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/api.svg')
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/disconnected.svg')
   t.writeGraph(g)
 })
 
@@ -187,6 +222,22 @@ test('layered layout nodes only', () => {
   t.writeGraph(g)
 })
 
+function outputGraph(g: GeomGraph, name: string) {
+  const strB = new StringBuilder()
+  for (const n of g.nodes()) {
+    const s = n.id + ', center = ' + n.center
+    strB.AppendLine(s)
+  }
+  strB.AppendLine('edges')
+  for (const e of g.edges()) {
+    strB.AppendLine(edgeString(e, true)) // true to get an array of poins
+  }
+
+  console.log(strB.ToString())
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + name + '.svg')
+  t.writeGraph(g)
+}
+
 export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   const s = e.source.id + '->' + e.target.id
   return (
@@ -205,4 +256,14 @@ function interpolateString(curve: ICurve) {
     s += ' ' + ps[i].toString()
   }
   return s + ']'
+}
+function duplicateDisconnected(g: GeomGraph, suffix: string) {
+  const nodes: GeomNode[] = [...g.nodes()]
+  const edges: GeomEdge[] = [...g.edges()]
+  for (const n of nodes) {
+    g.setNode(n.node.id + suffix, {width: n.width, height: n.height})
+  }
+  for (const e of edges) {
+    g.setEdge(e.source.id + suffix, e.target.id + suffix)
+  }
 }

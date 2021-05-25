@@ -13,8 +13,8 @@ import {ShapeEnum} from '../drawing/shapeEnum'
 import {DrawingObject} from '../drawing/drawingObject'
 import {DrawingEdge} from '../drawing/drawingEdge'
 import {ArrowTypeEnum} from '../drawing/arrawTypeEnum'
-import {RankDirEnum} from '../drawing/rankDirEnum'
 import {RankEnum} from '../drawing/rankEnum'
+import {LayerDirectionEnum} from '../layoutPlatform/layout/layered/layerDirectionEnum'
 
 export enum OrderingEnum {
   in,
@@ -466,9 +466,9 @@ function parseFloatTuple(str: string): [number, number] {
   return [parseFloat(p[0]), parseFloat(p[1])]
 }
 
-function rankDirEnumFromString(t: string): RankDirEnum {
-  const typedStyleString = t as keyof typeof RankDirEnum
-  return RankDirEnum[typedStyleString]
+function rankDirEnumFromString(t: string): LayerDirectionEnum {
+  const typedStyleString = t as keyof typeof LayerDirectionEnum
+  return LayerDirectionEnum[typedStyleString]
 }
 function rankEnumFromString(t: string): RankEnum {
   const typedStyleString = t as keyof typeof RankEnum

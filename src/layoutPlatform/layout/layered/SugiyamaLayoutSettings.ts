@@ -1,7 +1,9 @@
 import {VerticalConstraintsForSugiyama} from './VerticalConstraintsForSugiyama'
 import {HorizontalConstraintsForSugiyama} from './HorizontalConstraintsForSugiyama'
 import {EdgeRoutingSettings} from '../../core/routing/EdgeRoutingSettings'
-
+import {LayerDirectionEnum} from './layerDirectionEnum'
+import {PlaneTransformation} from '../../math/geometry/planeTransformation'
+import {Point} from '../../math/geometry/point'
 export enum SnapToGridByY {
   None,
   Top,
@@ -27,6 +29,15 @@ export class LayoutSettings {
 }
 
 export class SugiyamaLayoutSettings extends LayoutSettings {
+  transformIsRotation(ang: number): boolean {
+    const p = PlaneTransformation.rotation(ang)
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < 3; j++)
+        if (!Point.closeD(p.elements[i][j], this.transform.elements[i][j]))
+          return false
+    }
+    return true
+  }
   sameRanks = new Array<string[]>()
   EdgeRoutingSettings = new EdgeRoutingSettings()
 
@@ -47,6 +58,7 @@ export class SugiyamaLayoutSettings extends LayoutSettings {
   NodeSeparation = 10
   SnapToGridByY = SnapToGridByY.None
   yLayerSep = 10 * 3
+  transform: PlaneTransformation = PlaneTransformation.getIdentity()
   get LayerSeparation() {
     return this.yLayerSep
   }
@@ -58,4 +70,28 @@ export class SugiyamaLayoutSettings extends LayoutSettings {
   }
   GridSizeByY = 0
   GridSizeByX = 0
+  get layerDirection() {
+    if (this.transformIsRotation(0)) return LayerDirectionEnum.TB
+    if (this.transformIsRotation(Math.PI / 2)) return LayerDirectionEnum.LR
+    if (this.transformIsRotation(-Math.PI / 2)) return LayerDirectionEnum.RL
+    if (this.transformIsRotation(Math.PI)) return LayerDirectionEnum.BT
+    return LayerDirectionEnum.None
+  }
+  set layerDirection(value: LayerDirectionEnum) {
+    switch (value) {
+      case LayerDirectionEnum.TB:
+        break
+      case LayerDirectionEnum.LR:
+        this.transform = PlaneTransformation.rotation(Math.PI / 2)
+        break
+      case LayerDirectionEnum.RL:
+        this.transform = PlaneTransformation.rotation(-Math.PI / 2)
+        break
+      case LayerDirectionEnum.BT:
+        this.transform = PlaneTransformation.rotation(Math.PI)
+        break
+      default:
+        throw new Error('unexpected layout direction')
+    }
+  }
 }

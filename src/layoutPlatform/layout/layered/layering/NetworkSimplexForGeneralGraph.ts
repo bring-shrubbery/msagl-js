@@ -13,22 +13,7 @@ export class NetworkSimplexForGeneralGraph implements LayerCalculator {
   Cancel: CancelToken
 
   GetLayers(): number[] {
-    const comps = from(GetConnectedComponents(this.graph)).toArray()
-    if (comps.length == 1) {
-      const ns = new NetworkSimplex(this.graph, this.Cancel)
-      return ns.GetLayers()
-    }
-
-    const mapToComponenents: Map<number, number>[] = GetMapsToComponent(comps)
-    const layerings = new Array<number[]>(comps.length)
-
-    for (let i = 0; i < comps.length; i++) {
-      const shrunkedComp = this.ShrunkComponent(mapToComponenents[i])
-      const ns = new NetworkSimplex(shrunkedComp, this.Cancel)
-      layerings[i] = ns.GetLayers()
-    }
-
-    return this.UniteLayerings(layerings, mapToComponenents)
+    return new NetworkSimplex(this.graph, this.Cancel).GetLayers()
   }
 
   ShrunkComponent(
