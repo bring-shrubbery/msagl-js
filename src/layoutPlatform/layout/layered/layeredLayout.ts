@@ -739,6 +739,7 @@ export class LayeredLayout extends Algorithm {
   }
 
   StraightensShortEdges() {
+    // eslint-disable-next-line no-empty
     for (; this.StraightenEdgePaths(); ) {}
   }
 

@@ -348,11 +348,16 @@ export class Rectangle implements IRectangle<Point> {
   }
 
   // Pad the rectangle by the given amount on each side
-  padEverywhere(left: number, bottom: number, right: number, top: number) {
-    this.left -= left
-    this.right += right
-    this.bottom -= bottom
-    this.top += top
+  padEverywhere(margins: {
+    left: number
+    bottom: number
+    right: number
+    top: number
+  }) {
+    this.left -= margins.left
+    this.right += margins.right
+    this.bottom -= margins.bottom
+    this.top += margins.top
   }
 
   // Returns the intersection of two rectangles.

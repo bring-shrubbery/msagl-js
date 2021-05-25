@@ -63,10 +63,10 @@ export class SvgDebugWriter {
     this.xw.writeAttribute('id', 'svg2')
     this.xw.writeAttribute('version', '1.1')
     this.xw.startElement('g')
-    this.xw.writeAttribute(
-      'transform',
-      'translate(' + -box.left + ',' + -box.bottom + ')',
-    )
+    // this.xw.writeAttribute(
+    //   'transform',
+    //   'translate(' + -box.left + ',' + -box.bottom + ')',
+    // )
   }
 
   static pointToString(start: Point) {
@@ -287,7 +287,6 @@ export class SvgDebugWriter {
   }
 
   writeGraph(g: GeomGraph) {
-    g.updateBoundingBox()
     this.open(g.boundingBox)
     for (const e of g.edges()) {
       this.writeEdge(e)
