@@ -1,6 +1,6 @@
 {
   "name": "msagl-js",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "MSAGL layout in js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,10 +34,10 @@
     "queue-typescript": "^1.0.1",
     "stack-typescript": "^1.0.4",
     "tsc": "1.20150623.0",
-    "typescript-string-operations": "^1.4.1"
+    "typescript-string-operations": "^1.4.1",
+    "xml-writer": "^1.7.0"
   },
   "devDependencies": {
-    "xml-writer": "^1.7.0",
     "parse-color": "^1.0.0",
     "dotparser": "^1.0.0",
     "@tsconfig/recommended": "^1.0.1",
