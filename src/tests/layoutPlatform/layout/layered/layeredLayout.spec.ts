@@ -167,6 +167,22 @@ test('disconnected comps', () => {
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/disconnected.svg')
   t.writeGraph(g)
 })
+test('margins', () => {
+  const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
+  createGeometry(dg.graph)
+  const ss = new SugiyamaLayoutSettings()
+  ss.margins = {left: 100, right: 10, top: 170, bottom: 50}
+  const ll = new LayeredLayout(
+    GeomObject.getGeom(dg.graph) as GeomGraph,
+    ss,
+    new CancelToken(),
+  )
+  ll.run()
+  const t: SvgDebugWriter = new SvgDebugWriter(
+    '/tmp/abstract_margins_' + ss.margins.left + '_' + ss.margins.top + '.svg',
+  )
+  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+})
 
 test('layer and node separation', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')

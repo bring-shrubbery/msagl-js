@@ -115,18 +115,26 @@ export class LayeredLayout extends Algorithm {
     if (!this.sugiyamaSettings.layeringOnly) {
       this.runPostLayering()
     }
-    postRunTransform(this.originalGraph, this.sugiyamaSettings.transform)
+    postRunTransform(
+      this.originalGraph,
+      this.sugiyamaSettings.transform,
+      this.sugiyamaSettings.margins,
+    )
     this.originalGraph.updateBoundingBox()
     this.originalGraph.transform(
       new PlaneTransformation(
         1,
         0,
-        -this.originalGraph.left,
+        -this.originalGraph.left + this.sugiyamaSettings.margins.left,
         0,
         -1,
-        this.originalGraph.top,
+        this.originalGraph.top + this.sugiyamaSettings.margins.top,
       ),
     ) // flip the y coordinate to according to the screen standard and shift to origin
+    this.originalGraph.boundingBox.right += this.sugiyamaSettings.margins.right
+    this.originalGraph.boundingBox.top += this.sugiyamaSettings.margins.bottom
+    this.originalGraph.boundingBox.left = 0
+    this.originalGraph.boundingBox.bottom = 0
   }
 
   runPostLayering() {
@@ -1382,27 +1390,28 @@ function preRunTransform(geomGraph: GeomGraph, m: PlaneTransformation) {
   }
 }
 
-function postRunTransform(geometryGraph: GeomGraph, m: PlaneTransformation) {
-  if (m.isIdentity()) return
+function postRunTransform(
+  geometryGraph: GeomGraph,
+  transform: PlaneTransformation,
+  margins: {left: number; right: number; top: number; bottom: number},
+) {
+  if (!transform.isIdentity()) return
   for (const n of geometryGraph.nodes()) {
-    n.transform(m)
+    n.transform(transform)
   }
 
   // restore labels widths and heights
   for (const e of geometryGraph.edges()) {
     if (e.label != null) {
       const r = Rectangle.mkPP(
-        m.multiplyPoint(new Point(0, 0)),
-        m.multiplyPoint(new Point(e.label.width, e.label.height)),
+        transform.multiplyPoint(new Point(0, 0)),
+        transform.multiplyPoint(new Point(e.label.width, e.label.height)),
       )
       e.label.width = r.width
       e.label.height = r.height
     }
   }
-
-  TransformCurves(geometryGraph, m)
-
-  geometryGraph.updateBoundingBox()
+  TransformCurves(geometryGraph, transform)
 }
 
 function TransformCurves(geometryGraph: GeomGraph, m: PlaneTransformation) {

@@ -29,6 +29,7 @@ export class LayoutSettings {
 }
 
 export class SugiyamaLayoutSettings extends LayoutSettings {
+  margins = {left: 0, top: 0, bottom: 0, right: 0}
   transformIsRotation(ang: number): boolean {
     const p = PlaneTransformation.rotation(ang)
     for (let i = 0; i < 2; i++) {
