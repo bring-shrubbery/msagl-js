@@ -7,7 +7,7 @@ export class EdgeGeometry {
 
   sourceArrowhead: Arrowhead
 
-  targetArrowhead: Arrowhead
+  targetArrowhead = new Arrowhead()
 
   lineWidth = 1
 

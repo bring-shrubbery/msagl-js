@@ -12,7 +12,7 @@ import {from} from 'linq-to-typescript'
 export class Arrowhead {
   static defaultArrowheadLength = 10
   length = Arrowhead.defaultArrowheadLength
-  width: number
+  width = 0
   tipPosition: Point
 
   clone(): Arrowhead {
@@ -121,9 +121,7 @@ export class Arrowhead {
     let intersections: IntersectionInfo[]
     let reps = 10
     let p: number
-    do {
-      reps--
-      if (reps == 0) return
+    while (--reps > 0) {
       intersections = Arrowhead.getIntersectionsWithArrowheadCircle(
         curve,
         arrowheadLength,
@@ -137,7 +135,7 @@ export class Arrowhead {
       // check that something is left from the curve
       if (newStart.sub(curve.end).lengthSquared >= eps) return p
       arrowheadLength /= 2
-    } while (true)
+    }
   }
 
   // trim the edge curve with the node boundaries
@@ -261,9 +259,7 @@ export class Arrowhead {
       maxArrowLength += edge.edgeGeometry.targetArrowhead.length
     }
     perp = perp.normalize().mul(1.5 * maxArrowLength)
-    const stop = 10000
-    let i = 1
-    do {
+    for (let i = 1; i < 10000; i = i * 2) {
       const seg = Curve.createBezierSegN(a, b, perp, i)
       if (
         Arrowhead.trimSplineAndCalculateArrowheadsII(
@@ -274,15 +270,10 @@ export class Arrowhead {
           false,
         )
       ) {
-        break
-      }
-
-      i *= 2
-      if (i >= stop) {
-        Arrowhead.createEdgeCurveWithNoTrimming(edge, a, b)
         return
       }
-    } while (true)
+    }
+    Arrowhead.createEdgeCurveWithNoTrimming(edge, a, b)
   }
 
   // this method should never be called!
