@@ -168,6 +168,33 @@ test('disconnected comps', () => {
   t.writeGraph(g)
 })
 
+test('layer and node separation', () => {
+  const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
+  createGeometry(dg.graph)
+  const ss = new SugiyamaLayoutSettings()
+  ss.LayerSeparation = 100
+  let ll = new LayeredLayout(
+    GeomObject.getGeom(dg.graph) as GeomGraph,
+    ss,
+    new CancelToken(),
+  )
+  ll.run()
+  let t: SvgDebugWriter = new SvgDebugWriter(
+    '/tmp/abstract' + ss.LayerSeparation + '_' + ss.NodeSeparation + '.svg',
+  )
+  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  ss.NodeSeparation = 60
+  ll = new LayeredLayout(
+    GeomObject.getGeom(dg.graph) as GeomGraph,
+    ss,
+    new CancelToken(),
+  )
+  ll.run()
+  t = new SvgDebugWriter(
+    '/tmp/abstract' + ss.LayerSeparation + '_' + ss.NodeSeparation + '.svg',
+  )
+  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+})
 test('layered layout hookup abstract', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(dg.graph)

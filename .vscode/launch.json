@@ -35,7 +35,7 @@
         "-i",
         "src/tests/layoutPlatform/layout/layered/layeredLayout.spec.ts",
         "-t",
-        "margins"
+        "layer separation"
       ],
       "console": "integratedTerminal"
     }

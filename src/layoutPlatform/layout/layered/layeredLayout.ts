@@ -49,7 +49,7 @@ export class LayeredLayout extends Algorithm {
   gluedDagSkeletonForLayering: BasicGraph<GeomNode, PolyIntEdge>
   constrainedOrdering: ConstrainedOrdering
   properLayeredGraph: ProperLayeredGraph
-  LayersAreDoubled: boolean
+  LayersAreDoubled = false
   Brandes: boolean
   anchors: Anchor[]
   xLayoutGraph: XLayoutGraph

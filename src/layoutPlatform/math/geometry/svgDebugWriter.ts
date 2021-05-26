@@ -60,7 +60,6 @@ export class SvgDebugWriter {
     this.xw.writeAttribute('xmlns', 'http://www.w3.org/2000/svg')
     this.xw.writeAttribute('width', box.width)
     this.xw.writeAttribute('height', box.height)
-    this.xw.writeAttribute('id', 'svg2')
     this.xw.writeAttribute('version', '1.1')
     this.xw.startElement('g')
     // this.xw.writeAttribute(
