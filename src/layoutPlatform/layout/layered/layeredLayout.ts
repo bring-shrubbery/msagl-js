@@ -115,11 +115,7 @@ export class LayeredLayout extends Algorithm {
     if (!this.sugiyamaSettings.layeringOnly) {
       this.runPostLayering()
     }
-    postRunTransform(
-      this.originalGraph,
-      this.sugiyamaSettings.transform,
-      this.sugiyamaSettings.margins,
-    )
+    postRunTransform(this.originalGraph, this.sugiyamaSettings.transform)
     this.originalGraph.updateBoundingBox()
     this.originalGraph.transform(
       new PlaneTransformation(
@@ -1393,7 +1389,6 @@ function preRunTransform(geomGraph: GeomGraph, m: PlaneTransformation) {
 function postRunTransform(
   geometryGraph: GeomGraph,
   transform: PlaneTransformation,
-  margins: {left: number; right: number; top: number; bottom: number},
 ) {
   if (!transform.isIdentity()) return
   for (const n of geometryGraph.nodes()) {

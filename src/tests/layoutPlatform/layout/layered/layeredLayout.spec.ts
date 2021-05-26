@@ -13,7 +13,6 @@ import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugW
 import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
 import {StringBuilder} from 'typescript-string-operations'
 import {interpolateICurve} from '../../../../layoutPlatform/math/geometry/curve'
-import {ICurve} from '../../../../layoutPlatform/math/geometry/icurve'
 import {LayerDirectionEnum} from '../../../../layoutPlatform/layout/layered/layerDirectionEnum'
 
 export function getTextSize(txt: string, font: string) {
@@ -287,19 +286,21 @@ export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
     s +
     ', curve(' +
     (edgesAsArrays
-      ? interpolateString(e.curve)
-      : SvgDebugWriter.curveString(e.curve) + ')')
+      ? interpolateEdgeAsString(e)
+      : SvgDebugWriter.curveString(e.curve)) +
+    ')'
   )
 }
 
-function interpolateString(curve: ICurve) {
-  const ps = interpolateICurve(curve, curve.end.sub(curve.start).length / 20)
+function interpolateEdgeAsString(e): string {
+  const ps = interpolateEdge(e)
   let s = '[' + ps[0].toString()
   for (let i = 1; i < ps.length; i++) {
     s += ' ' + ps[i].toString()
   }
   return s + ']'
 }
+
 function duplicateDisconnected(g: GeomGraph, suffix: string) {
   const nodes: GeomNode[] = [...g.nodes()]
   const edges: GeomEdge[] = [...g.edges()]
@@ -309,4 +310,34 @@ function duplicateDisconnected(g: GeomGraph, suffix: string) {
   for (const e of edges) {
     g.setEdge(e.source.id + suffix, e.target.id + suffix)
   }
+}
+function interpolateEdge(edge: GeomEdge): Point[] {
+  if (edge.edgeGeometry == null) return []
+  let ret = []
+  if (edge.edgeGeometry.sourceArrowhead != null)
+    ret = ret.concat(
+      addArrow(
+        edge.curve.start,
+        edge.edgeGeometry.sourceArrowhead.tipPosition,
+        25,
+      ),
+    )
+  ret = ret.concat(interpolateICurve(edge.curve, 1))
+  if (edge.edgeGeometry.targetArrowhead != null) {
+    ret = ret.concat(
+      addArrow(
+        edge.curve.end,
+        edge.edgeGeometry.targetArrowhead.tipPosition,
+        25,
+      ),
+    )
+  }
+  return ret
+}
+function addArrow(start: Point, end: Point, arrowAngle: number): Point[] {
+  let dir = end.sub(start)
+  const l = dir.length
+  dir = dir.div(l).rotate90Ccw()
+  dir = dir.mul(l * Math.tan(arrowAngle * 0.5 * (Math.PI / 180.0)))
+  return [start, start.add(dir), end, start.sub(dir), start]
 }

@@ -14,7 +14,6 @@ import {GeomEdge} from './../../layout/core/geomEdge'
 import {GeomGraph} from '../../layout/core/GeomGraph'
 import {GeomLabel} from './../../layout/core/geomLabel'
 import {PlaneTransformation} from './planeTransformation'
-import {Color} from '../../../drawing/color'
 import {SmoothedPolyline} from './smoothedPolyline'
 
 export class SvgDebugWriter {
