@@ -1,13 +1,12 @@
 import {Node} from './../../../layoutPlatform/structs/node'
 import {Graph} from './../../../layoutPlatform/structs/graph'
-import {from} from 'linq-to-typescript'
 test('entity graphs', () => {
   const a = Graph.mkGraph('a')
   const b = Graph.mkGraph('b')
   const c = Graph.mkGraph('c')
   a.graphParent = b
   b.graphParent = c
-  const bc = from(a.allGraphAncestors()).toArray()
+  const bc = [...a.allGraphAncestors()]
   expect(bc.length).toBe(2)
   expect(a.isDescendantOf(b) && a.isDescendantOf(c)).toBe(true)
   const e = Graph.mkGraph('e')

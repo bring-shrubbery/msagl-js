@@ -15,17 +15,6 @@ import {StringBuilder} from 'typescript-string-operations'
 import {interpolateICurve} from '../../../../layoutPlatform/math/geometry/curve'
 import {LayerDirectionEnum} from '../../../../layoutPlatform/layout/layered/layerDirectionEnum'
 
-export function getTextSize(txt: string, font: string) {
-  const element = document.createElement('canvas')
-  const context = element.getContext('2d')
-  // context.font = font
-  const tsize = {
-    width: context.measureText(txt).width,
-    height: parseInt(context.font),
-  }
-  return 'size = ' + tsize.width + ' ' + tsize.height
-}
-
 function createGeometry(g: Graph): GeomGraph {
   for (const n of g.nodes) {
     const gn = new GeomNode(n)
@@ -183,6 +172,20 @@ test('margins', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
+xtest('clusters', () => {
+  const dg = parseDotGraph('src/tests/data/graphvis/clust.gv')
+  createGeometry(dg.graph)
+  const ss = new SugiyamaLayoutSettings()
+  const ll = new LayeredLayout(
+    GeomObject.getGeom(dg.graph) as GeomGraph,
+    ss,
+    new CancelToken(),
+  )
+  ll.run()
+  const t = new SvgDebugWriter('/tmp/clust.gv' + '.svg')
+  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+})
+
 test('layer and node separation', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(dg.graph)
@@ -292,7 +295,7 @@ export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   )
 }
 
-function interpolateEdgeAsString(e): string {
+function interpolateEdgeAsString(e: GeomEdge): string {
   const ps = interpolateEdge(e)
   let s = '[' + ps[0].toString()
   for (let i = 1; i < ps.length; i++) {

@@ -71,13 +71,21 @@ export class LayeredLayout extends Algorithm {
     this.originalGraph = originalGraph
     this.sugiyamaSettings = settings
     //enumerate the nodes - maps node indices to strings
-    const nodes = from(originalGraph.nodes()).toArray()
+    const nodes = [...originalGraph.nodes()]
     this.nodeIdToIndex = new Map<string, number>()
 
     let index = 0
     for (const n of this.originalGraph.nodes()) {
       this.nodeIdToIndex.set(n.id, index++)
-      Assert.assert(!n.node.isGraph)
+      if (n.node.isGraph) {
+        // recursion!
+        const ll = new LayeredLayout(
+          (n as unknown) as GeomGraph,
+          settings,
+          cancelToken,
+        )
+        ll.run()
+      }
     }
 
     const intEdges = new Array<PolyIntEdge>(this.originalGraph.edgeCount)
