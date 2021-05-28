@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/layout/layered/layeredLayout.spec.ts",
+        "src/tests/layoutPlatform/layout/core/arrowhead.spec.ts",
         "-t",
-        "clusters"
+        "trim edge with arrowheads"
       ],
       "console": "integratedTerminal"
     }

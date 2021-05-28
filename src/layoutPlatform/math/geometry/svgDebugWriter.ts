@@ -285,7 +285,13 @@ export class SvgDebugWriter {
   }
 
   writeGraph(g: GeomGraph) {
-    this.open(g.boundingBox)
+    let box = g.boundingBox
+    if (box == undefined) {
+      box = Rectangle.mkEmpty()
+      for (const n of g.nodes()) box.addRec(n.boundingBox)
+      for (const e of g.edges()) box.addRec(e.boundingBox)
+    }
+    this.open(box)
     for (const e of g.edges()) {
       this.writeEdge(e)
     }

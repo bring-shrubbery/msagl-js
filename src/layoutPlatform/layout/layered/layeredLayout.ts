@@ -113,7 +113,7 @@ export class LayeredLayout extends Algorithm {
   }
   run() {
     if (this.originalGraph.nodeCount == 0) {
-      this.originalGraph.boundingBox.setToEmpty()
+      this.originalGraph.boundingBox = Rectangle.mkEmpty()
       return
     }
     preRunTransform(this.originalGraph, this.sugiyamaSettings.transform)
