@@ -30,7 +30,7 @@ export class Node extends Entity {
   }
 
   get isGraph(): boolean {
-    return this.hasOwnProperty('nodeCollection')
+    return Object.prototype.hasOwnProperty.call(this, 'nodeCollection')
   }
 
   *graphs(): IterableIterator<Graph> {

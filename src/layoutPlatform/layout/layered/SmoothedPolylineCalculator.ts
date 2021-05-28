@@ -313,27 +313,21 @@ export class SmoothedPolylineCalculator {
   }
 
   private IntersectBelow(u: number, v: number): boolean {
-    while (true) {
+    do {
       const eu: LayerEdge = this.OutcomingEdge(u)
       const ev: LayerEdge = this.OutcomingEdge(v)
       if (this.Intersect(eu, ev)) {
         return true
       }
-
       u = eu.Target
       v = ev.Target
-      if (!(this.IsVirtualVertex(u) && this.IsVirtualVertex(v))) {
-        if (v == u) {
-          return true
-        }
+    } while (this.IsVirtualVertex(u) && this.IsVirtualVertex(v))
 
-        return false
-      }
-    }
+    return u == v
   }
 
   private IntersectAbove(u: number, v: number): boolean {
-    while (true) {
+    do {
       const eu: LayerEdge = this.IncomingEdge(u)
       const ev: LayerEdge = this.IncomingEdge(v)
       if (this.Intersect(eu, ev)) {
@@ -342,14 +336,8 @@ export class SmoothedPolylineCalculator {
 
       u = eu.Source
       v = ev.Source
-      if (!(this.IsVirtualVertex(u) && this.IsVirtualVertex(v))) {
-        if (u == v) {
-          return true
-        }
-
-        return false
-      }
-    }
+    } while (this.IsVirtualVertex(u) && this.IsVirtualVertex(v))
+    return u == v
   }
 
   private Intersect(e: LayerEdge, m: LayerEdge): boolean {

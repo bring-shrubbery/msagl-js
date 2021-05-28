@@ -487,9 +487,6 @@ function dirTypeEnumFromString(t: string): DirTypeEnum {
   const typedStyleString = t as keyof typeof DirTypeEnum
   return DirTypeEnum[typedStyleString]
 }
-function parseColorKeyword(keyword: any): Color {
-  throw new Error('Function not implemented.')
-}
 function parseFloatQuatriple(str: any): any {
   const p = str.split(',')
   return [

@@ -14,18 +14,22 @@ import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
 import {StringBuilder} from 'typescript-string-operations'
 import {interpolateICurve} from '../../../../layoutPlatform/math/geometry/curve'
 import {LayerDirectionEnum} from '../../../../layoutPlatform/layout/layered/layerDirectionEnum'
+import {ICurve} from '../../../../layoutPlatform/math/geometry/icurve'
 
-function createGeometry(g: Graph): GeomGraph {
+function createGeometry(
+  g: Graph,
+  nodeBoundaryFunc: (string) => ICurve,
+): GeomGraph {
   for (const n of g.nodes) {
-    const gn = new GeomNode(n)
-    //const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
-    gn.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
-      20, // tsize.width,
-      30, // tsize.height,
-      20 / 10, // tsize.width / 10,
-      30 / 10, // tsize.height / 10,
-      new Point(0, 0),
-    )
+    if (n.isGraph) {
+      const subG = (n as unknown) as Graph
+      new GeomGraph(subG)
+      createGeometry(subG, nodeBoundaryFunc)
+    } else {
+      const gn = new GeomNode(n)
+      //const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
+      gn.boundaryCurve = nodeBoundaryFunc(n.id)
+    }
   }
   for (const e of g.edges) {
     new GeomEdge(e)
@@ -56,7 +60,7 @@ test('map test', () => {
 test('layered layout glued graph', () => {
   const graphString = 'digraph G {\n' + 'a -> b\n' + 'a -> b}'
   const g = parseDotString(graphString)
-  createGeometry(g.graph)
+  createGeometry(g.graph, nodeBoundaryFunc)
   const ll = new LayeredLayout(
     GeomObject.getGeom(g.graph) as GeomGraph,
     new SugiyamaLayoutSettings(),
@@ -157,7 +161,7 @@ test('disconnected comps', () => {
 })
 test('margins', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
-  createGeometry(dg.graph)
+  createGeometry(dg.graph, nodeBoundaryFunc)
   const ss = new SugiyamaLayoutSettings()
   ss.margins = {left: 100, right: 10, top: 170, bottom: 50}
   const ll = new LayeredLayout(
@@ -172,9 +176,9 @@ test('margins', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
-xtest('clusters', () => {
+test('clusters', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/clust.gv')
-  createGeometry(dg.graph)
+  createGeometry(dg.graph, nodeBoundaryFunc)
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(
     GeomObject.getGeom(dg.graph) as GeomGraph,
@@ -188,7 +192,7 @@ xtest('clusters', () => {
 
 test('layer and node separation', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
-  createGeometry(dg.graph)
+  createGeometry(dg.graph, nodeBoundaryFunc)
   const ss = new SugiyamaLayoutSettings()
   ss.LayerSeparation = 100
   let ll = new LayeredLayout(
@@ -215,7 +219,7 @@ test('layer and node separation', () => {
 })
 test('layered layout hookup abstract', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
-  createGeometry(dg.graph)
+  createGeometry(dg.graph, nodeBoundaryFunc)
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(
     GeomObject.getGeom(dg.graph) as GeomGraph,
@@ -232,7 +236,7 @@ test('layered layout hookup abstract', () => {
 })
 test('layered layout hookup longflat', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/longflat.gv')
-  createGeometry(dg.graph)
+  createGeometry(dg.graph, nodeBoundaryFunc)
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(
     GeomObject.getGeom(dg.graph) as GeomGraph,
@@ -343,4 +347,13 @@ function addArrow(start: Point, end: Point, arrowAngle: number): Point[] {
   dir = dir.div(l).rotate90Ccw()
   dir = dir.mul(l * Math.tan(arrowAngle * 0.5 * (Math.PI / 180.0)))
   return [start, start.add(dir), end, start.sub(dir), start]
+}
+function nodeBoundaryFunc(id: string): ICurve {
+  return CurveFactory.mkRectangleWithRoundedCorners(
+    20, // tsize.width,
+    30, // tsize.height,
+    20 / 10, // tsize.width / 10,
+    30 / 10, // tsize.height / 10,
+    new Point(0, 0),
+  )
 }

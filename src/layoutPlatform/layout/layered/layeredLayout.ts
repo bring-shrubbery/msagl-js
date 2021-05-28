@@ -77,14 +77,12 @@ export class LayeredLayout extends Algorithm {
     let index = 0
     for (const n of this.originalGraph.nodes()) {
       this.nodeIdToIndex.set(n.id, index++)
-      if (n.node.isGraph) {
+      if (n.isGraph()) {
         // recursion!
-        const ll = new LayeredLayout(
-          (n as unknown) as GeomGraph,
-          settings,
-          cancelToken,
-        )
-        ll.run()
+        const gGraph = (n as unknown) as GeomGraph
+        new LayeredLayout(gGraph, settings, cancelToken).run()
+        gGraph.updateBoundingBox()
+        gGraph.boundaryCurve = gGraph.boundingBox.perimeter()
       }
     }
 

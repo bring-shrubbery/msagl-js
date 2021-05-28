@@ -9,6 +9,9 @@ import {Node} from './../../structs/node'
 import {GeomObject} from './geomObject'
 
 export class GeomNode extends GeomObject {
+  isGraph(): boolean {
+    return false
+  }
   get node(): Node {
     return this.attrCont as Node
   }
@@ -70,6 +73,9 @@ export class GeomNode extends GeomObject {
       : Rectangle.mkEmpty()
   }
   set boundingBox(value: Rectangle) {
+    if (this.boundaryCurve == null) {
+      return
+    }
     if (
       Math.abs(value.width - this.width) < 0.0001 &&
       Math.abs(value.height - this.height) < 0.0001
@@ -88,7 +94,6 @@ export class GeomNode extends GeomObject {
   get height() {
     return this.boundaryCurve.boundingBox.height
   }
-
   transform(t: PlaneTransformation) {
     if (this.boundaryCurve != null)
       this.boundaryCurve = this.boundaryCurve.transform(t)

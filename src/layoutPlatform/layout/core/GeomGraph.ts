@@ -8,15 +8,20 @@ import {Node} from '../../structs/node'
 import {CurveFactory} from '../../math/geometry/curveFactory'
 import {Point} from '../../math/geometry/point'
 
-export class GeomGraph extends GeomObject {
+export class GeomGraph extends GeomNode {
+  isGraph(): boolean {
+    return true
+  }
   transform(matrix: PlaneTransformation) {
+    if (this.boundaryCurve != null)
+      this.boundaryCurve = this.boundaryCurve.transform(matrix)
+
     for (const n of this.nodes()) {
       n.transform(matrix)
     }
     for (const e of this.edges()) {
       e.transform(matrix)
     }
-    this.updateBoundingBox()
   }
   setEdge(s: string, t: string): GeomEdge {
     const structEdge = this.graph.setEdge(s, t)
@@ -96,8 +101,6 @@ export class GeomGraph extends GeomObject {
   *edges(): IterableIterator<GeomEdge> {
     for (const n of this.graph.edges) yield GeomObject.getGeom(n) as GeomEdge
   }
-
-  boundingBox = Rectangle.mkEmpty()
 
   static mk(): GeomGraph {
     return new GeomGraph(new Graph())
