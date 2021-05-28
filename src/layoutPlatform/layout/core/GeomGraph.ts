@@ -9,6 +9,13 @@ import {CurveFactory} from '../../math/geometry/curveFactory'
 import {Point} from '../../math/geometry/point'
 
 export class GeomGraph extends GeomNode {
+  private _boundingBox: Rectangle
+  public get boundingBox(): Rectangle {
+    return this._boundingBox
+  }
+  public set boundingBox(value: Rectangle) {
+    this._boundingBox = value
+  }
   isGraph(): boolean {
     return true
   }

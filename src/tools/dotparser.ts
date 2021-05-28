@@ -348,6 +348,7 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
         // is it really a subgraph?
         if (!process_same_rank(o, dg)) {
           const subg = Graph.mkGraph(o.id)
+          subg.graphParent = dg.graph
           dg.graph.nodeCollection.addNode(subg)
           const sdg = new DrawingGraph(subg)
           parseGraph(o, sdg)

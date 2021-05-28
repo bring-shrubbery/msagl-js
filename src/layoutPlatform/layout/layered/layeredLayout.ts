@@ -123,20 +123,26 @@ export class LayeredLayout extends Algorithm {
     }
     postRunTransform(this.originalGraph, this.sugiyamaSettings.transform)
     this.originalGraph.updateBoundingBox()
-    this.originalGraph.transform(
-      new PlaneTransformation(
-        1,
-        0,
-        -this.originalGraph.left + this.sugiyamaSettings.margins.left,
-        0,
-        -1,
-        this.originalGraph.top + this.sugiyamaSettings.margins.top,
-      ),
-    ) // flip the y coordinate to according to the screen standard and shift to origin
-    this.originalGraph.boundingBox.right += this.sugiyamaSettings.margins.right
-    this.originalGraph.boundingBox.top += this.sugiyamaSettings.margins.bottom
-    this.originalGraph.boundingBox.left = 0
-    this.originalGraph.boundingBox.bottom = 0
+    this.FlipYAndSetMargins()
+  }
+
+  private FlipYAndSetMargins() {
+    if (this.originalGraph.graph.graphParent == null) {
+      this.originalGraph.transform(
+        new PlaneTransformation(
+          1,
+          0,
+          -this.originalGraph.left + this.sugiyamaSettings.margins.left,
+          0,
+          -1,
+          this.originalGraph.top + this.sugiyamaSettings.margins.top,
+        ),
+      ) // flip the y coordinate to according to the screen standard and shift to origin
+      this.originalGraph.boundingBox.right += this.sugiyamaSettings.margins.right
+      this.originalGraph.boundingBox.top += this.sugiyamaSettings.margins.bottom
+      this.originalGraph.boundingBox.left = 0
+      this.originalGraph.boundingBox.bottom = 0
+    }
   }
 
   runPostLayering() {
@@ -1396,7 +1402,7 @@ function postRunTransform(
   geometryGraph: GeomGraph,
   transform: PlaneTransformation,
 ) {
-  if (!transform.isIdentity()) return
+  if (transform.isIdentity()) return
   for (const n of geometryGraph.nodes()) {
     n.transform(transform)
   }
