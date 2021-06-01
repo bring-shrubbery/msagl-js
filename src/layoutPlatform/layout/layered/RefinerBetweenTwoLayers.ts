@@ -409,7 +409,7 @@ export class RefinerBetweenTwoLayers {
   }
 
   IsVirtualVertex(v: number): boolean {
-    return v >= this.originalGraph.nodeCount
+    return v >= this.originalGraph.shallowNodeCount
   }
 
   *RightFromTheNode(

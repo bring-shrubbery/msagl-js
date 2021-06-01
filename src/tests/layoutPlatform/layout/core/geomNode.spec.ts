@@ -13,7 +13,7 @@ test('node fit', () => {
     30,
     new Point(12, 12),
   )
-  const n = GeomNode.mkNode(boundary, new Node('node'))
+  const n = GeomNode.mkNode(boundary, new Node('node', null))
   const rect = new Rectangle({left: 70, right: 111, top: 111, bottom: 0})
 
   n.boundingBox = rect

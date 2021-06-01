@@ -66,6 +66,10 @@ export class GeomEdge extends GeomObject {
     return rect
   }
 
+  isInterGraphEdge(): boolean {
+    return this.edge.isInterGraphEdge()
+  }
+
   get lineWidth() {
     return this.edgeGeometry.lineWidth
   }

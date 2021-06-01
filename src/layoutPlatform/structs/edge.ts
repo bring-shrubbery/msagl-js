@@ -1,10 +1,11 @@
 import {Entity} from './entity'
+import {Graph} from './graph'
 import {Node} from './node'
 export class Edge extends Entity {
   source: Node
   target: Node
-  constructor(s: Node, t: Node) {
-    super()
+  constructor(s: Node, t: Node, parent: Graph) {
+    super(parent)
     this.source = s
     this.target = t
     if (s != t) {
@@ -16,5 +17,8 @@ export class Edge extends Entity {
   }
   toString(): string {
     return '(' + this.source.toString() + '->' + this.target.toString() + ')'
+  }
+  isInterGraphEdge(): boolean {
+    return this.source.parent != this.target.parent
   }
 }

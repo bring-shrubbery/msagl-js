@@ -7,6 +7,7 @@ import {CurveFactory} from './../../math/geometry/curveFactory'
 import {PlaneTransformation} from './../../math/geometry/planeTransformation'
 import {Node} from './../../structs/node'
 import {GeomObject} from './geomObject'
+import {GeomEdge} from './geomEdge'
 
 export class GeomNode extends GeomObject {
   isGraph(): boolean {
@@ -66,12 +67,29 @@ export class GeomNode extends GeomObject {
     }
   }
 
+  *inEdges(): IterableIterator<GeomEdge> {
+    for (const e of this.node.inEdges) {
+      yield <GeomEdge>GeomObject.getGeom(e)
+    }
+  }
+  *outEdges(): IterableIterator<GeomEdge> {
+    for (const e of this.node.outEdges) {
+      yield <GeomEdge>GeomObject.getGeom(e)
+    }
+  }
+  *selfEdges(): IterableIterator<GeomEdge> {
+    for (const e of this.node.selfEdges) {
+      yield <GeomEdge>GeomObject.getGeom(e)
+    }
+  }
+
   // the bounding box of the node
   get boundingBox() {
     return this.boundaryCurve != null
       ? this.boundaryCurve.boundingBox
       : Rectangle.mkEmpty()
   }
+
   set boundingBox(value: Rectangle) {
     if (this.boundaryCurve == null) {
       return

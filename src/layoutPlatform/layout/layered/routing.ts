@@ -22,7 +22,7 @@ import {GeomNode} from '../core/geomNode'
 import {SmoothedPolylineCalculator} from './SmoothedPolylineCalculator'
 import {GeomEdge} from '../core/geomEdge'
 import {Assert} from '../../utils/assert'
-import {SvgDebugWriter} from '../../math/geometry/svgDebugWriter'
+//import {SvgDebugWriter} from '../../math/geometry/svgDebugWriter'
 //  The class responsible for the routing of splines
 export class Routing extends Algorithm {
   settings: SugiyamaLayoutSettings
@@ -224,7 +224,6 @@ export class Routing extends Algorithm {
         curveClosestPoint: undefined,
         labelSideClosest: undefined,
       }
-      let labelSideClosest: Point
       if (Routing.FindClosestPoints(t, segmentInFrontOfLabel, labelSide)) {
         // shift the label if needed
         Routing.ShiftLabel(e, t)

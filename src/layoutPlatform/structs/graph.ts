@@ -8,19 +8,23 @@ export class Graph extends Node {
     if (s == null) return
     const t = this.nodeCollection.find(targetId)
     if (t == null) return
-    const e = new Edge(s, t)
+    const e = new Edge(s, t, this)
     this.addEdge(e)
     return e
   }
   isCollapsed = false
-  get nodes(): IterableIterator<Node> {
-    return this.nodeCollection.nodes
+  get shallowNodes(): IterableIterator<Node> {
+    return this.nodeCollection.nodesShallow
   }
-  constructor() {
-    super('graph')
+  get deepNodes(): IterableIterator<Node> {
+    return this.nodeCollection.nodesDeep()
   }
-  static mkGraph(id: string): Graph {
-    const g = new Graph()
+
+  constructor(parent: Graph) {
+    super('graph', parent)
+  }
+  static mkGraph(id: string, parent: Graph): Graph {
+    const g = new Graph(parent)
     g.id = id
     return g
   }
@@ -46,9 +50,14 @@ export class Graph extends Node {
     this.nodeCollection.addEdge(n)
   }
   nodeCollection: NodeCollection = new NodeCollection()
-  get nodeCount() {
-    return this.nodeCollection.nodeCount
+  get shallowNodeCount() {
+    return this.nodeCollection.nodeShallowCount
   }
+
+  get nodeCountDeep() {
+    return this.nodeCollection.nodeDeepCount
+  }
+
   get edgeCount() {
     return this.nodeCollection.edgeCount
   }

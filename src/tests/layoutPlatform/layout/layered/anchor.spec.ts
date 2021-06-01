@@ -81,7 +81,7 @@ test('anchor poly', () => {
     30,
     new Point(12, 12),
   )
-  const n = GeomNode.mkNode(boundary, new Node('t'))
+  const n = GeomNode.mkNode(boundary, new Node('t', null))
   const w = n.width / 2
   const h = n.height / 2
   const anchor = Anchor.mkAnchor(w, w, h, h, n, 0)
@@ -103,7 +103,7 @@ test('anchor poly padded', () => {
     30,
     new Point(12, 12),
   )
-  const n = GeomNode.mkNode(boundary, new Node('t'))
+  const n = GeomNode.mkNode(boundary, new Node('t', null))
   const w = n.width / 2
   const h = n.height / 2
   const anchor = Anchor.mkAnchor(w, w, h, h, n, 0)
@@ -125,7 +125,7 @@ test('anchor poly cw padded', () => {
     new Point(100, 0),
   ])
   boundary.closed = true
-  const n = GeomNode.mkNode(boundary, new Node('n'))
+  const n = GeomNode.mkNode(boundary, new Node('n', null))
   const w = n.width / 2
   const h = n.height / 2
   const anchor = Anchor.mkAnchor(w, w, h, h, n, 0)

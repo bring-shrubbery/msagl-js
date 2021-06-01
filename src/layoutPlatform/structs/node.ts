@@ -9,8 +9,8 @@ export class Label extends Entity {
   toString() {
     return this.text
   }
-  constructor(t: string) {
-    super()
+  constructor(t: string, parent: Entity) {
+    super(parent)
     this.text = t
   }
 }
@@ -24,8 +24,8 @@ export class Node extends Entity {
   toString(): string {
     return this.id
   }
-  constructor(id: string) {
-    super()
+  constructor(id: string, parent: Graph) {
+    super(parent)
     this.id = id
   }
 
@@ -92,11 +92,16 @@ export class Node extends Entity {
     return this.outDegree + this.inDegree + this.selfDegree
   }
 
-  *allGraphAncestors(): IterableIterator<Graph> {
-    let parent: Graph = this.graphParent
-    while (parent != null) {
-      yield parent
-      parent = parent.graphParent
+  *getAncestors(): IterableIterator<Graph> {
+    let g: Graph = (this.parent as unknown) as Graph
+    while (g != null) {
+      yield g
+      g = (g.parent as unknown) as Graph
     }
+  }
+  isUnderCollapsedGraph(): boolean {
+    return (
+      this.parent != null && ((this.parent as unknown) as Graph).isCollapsed
+    )
   }
 }

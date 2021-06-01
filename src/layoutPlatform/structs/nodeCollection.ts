@@ -3,7 +3,7 @@ import {Edge} from './edge'
 import {Graph} from './graph'
 export class NodeCollection {
   private *nodes_(): IterableIterator<Node> {
-    for (const p of this.nodeMap) yield p[1]
+    for (const p of this.nodeMap.values()) yield p
   }
 
   private *graphs_(): IterableIterator<Graph> {
@@ -18,8 +18,19 @@ export class NodeCollection {
     return this.nodeMap.get(id)
   }
 
-  get nodes(): IterableIterator<Node> {
+  get nodesShallow(): IterableIterator<Node> {
     return this.nodes_()
+  }
+
+  *nodesDeep(): IterableIterator<Node> {
+    for (const n of this.nodes_()) {
+      yield n
+      if (n.isGraph) {
+        for (const nn of (<Graph>n).nodeCollection.nodesDeep()) {
+          yield nn
+        }
+      }
+    }
   }
 
   get graphs(): IterableIterator<Graph> {
@@ -29,12 +40,12 @@ export class NodeCollection {
   nodeMap: Map<string, Node> = new Map<string, Node>()
 
   private *_edges() {
-    // if we go over n.inEdges too then not self edges will be reported twice
-    for (const pair of this.nodeMap) {
-      for (const e of pair[1].outEdges) {
+    // if we go over node.inEdges too then not self edges will be reported twice
+    for (const node of this.nodeMap.values()) {
+      for (const e of node.outEdges) {
         yield e
       }
-      for (const e of pair[1].selfEdges) {
+      for (const e of node.selfEdges) {
         yield e
       }
     }
@@ -45,31 +56,59 @@ export class NodeCollection {
   }
 
   hasNode(id: string) {
-    return this.nodeMap.has(id)
+    if (this.nodeMap.has(id)) return true
+    for (const p of this.nodeMap) {
+      if (p[1].isGraph && (p[1] as Graph).nodeCollection.hasNode(id))
+        return true
+    }
+    return false
   }
 
   getNode(id: string): Node {
-    return this.nodeMap.get(id)
+    let r = this.nodeMap.get(id)
+    if (r != undefined) return r
+    for (const p of this.nodeMap) {
+      if (p[1].isGraph) {
+        r = (p[1] as Graph).nodeCollection.getNode(id)
+        if (r != undefined) {
+          return r
+        }
+      }
+    }
+    return undefined
   }
 
-  get nodeCount(): number {
+  get nodeShallowCount(): number {
     return this.nodeMap.size
   }
 
+  get nodeDeepCount(): number {
+    let count = this.nodeMap.size
+    for (const p of this.nodeMap.values()) {
+      if (p.isGraph) {
+        count += (<Graph>p).nodeCollection.nodeDeepCount
+      }
+    }
+    return count
+  }
   // caution: it is a linear by the number of nodes method
   get edgeCount(): number {
     let count = 0
-    for (const pair of this.nodeMap) {
-      count += pair[1].outDegree + pair[1].selfDegree
+    for (const p of this.nodeMap.values()) {
+      count += p.outDegree + p.selfDegree
     }
     return count
   }
 
+  // returns the edges of shallow nodes
   get edges(): IterableIterator<Edge> {
     return this._edges()
   }
+
   addNode(node: Node) {
-    this.nodeMap.set(node.id, node)
+    if (this.getNode(node.id) == null) {
+      this.nodeMap.set(node.id, node)
+    }
   }
 
   addEdge(edge: Edge): void {
@@ -90,6 +129,12 @@ export class NodeCollection {
       e.source.outEdges.delete(e)
     }
     this.nodeMap.delete(node.id)
+    for (const p of this.nodeMap.values()) {
+      if (p.isGraph) {
+        const t = p as Graph
+        t.nodeCollection.nodeMap.delete(node.id)
+      }
+    }
   }
 
   nodeIsConsistent(n: Node): boolean {

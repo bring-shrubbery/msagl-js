@@ -23,11 +23,17 @@ export class GeomGraph extends GeomNode {
     if (this.boundaryCurve != null)
       this.boundaryCurve = this.boundaryCurve.transform(matrix)
 
-    for (const n of this.nodes()) {
+    for (const n of this.shallowNodes()) {
       n.transform(matrix)
     }
     for (const e of this.edges()) {
       e.transform(matrix)
+    }
+    this.updateBoundingBox()
+  }
+  *deepNodes(): IterableIterator<GeomNode> {
+    for (const n of this.graph.deepNodes) {
+      yield (GeomObject.getGeom(n) as unknown) as GeomNode
     }
   }
   setEdge(s: string, t: string): GeomEdge {
@@ -37,7 +43,7 @@ export class GeomGraph extends GeomNode {
   setNode(id: string, size: {width: number; height: number}): GeomNode {
     let node = this.graph.findNode(id)
     if (node == null) {
-      this.graph.addNode((node = new Node(id)))
+      this.graph.addNode((node = new Node(id, this.graph)))
     }
     const geomNode = new GeomNode(node)
     geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
@@ -61,6 +67,18 @@ export class GeomGraph extends GeomNode {
     }
     return b
   }
+
+  // Fields which are set by Msagl
+  // return the center of the curve bounding box
+  get center() {
+    return this.boundingBox.center
+  }
+
+  set center(value: Point) {
+    const del = value.sub(this.center)
+    const t = new PlaneTransformation(1, 0, del.x, 0, 1, del.y)
+    this.transform(t)
+  }
   pumpTheBoxToTheGraph(b: Rectangle) {
     for (const e of this.edges()) {
       if (e.underCollapsedCluster()) continue
@@ -72,16 +90,12 @@ export class GeomGraph extends GeomNode {
       if (e.label != null) b.addRec(e.label.boundingBox)
     }
 
-    for (const n of this.nodes()) {
+    for (const n of this.shallowNodes()) {
       if (n.underCollapsedCluster()) continue
       b.addRec(n.boundingBox)
     }
-
-    for (const gr of this.graph.graphs()) {
-      const gg = (GeomObject.getGeom(gr) as unknown) as GeomGraph
-      gg.pumpTheBoxToTheGraph(b)
-    }
   }
+
   get left() {
     return this.boundingBox.left
   }
@@ -101,16 +115,18 @@ export class GeomGraph extends GeomNode {
   get edgeCount() {
     return this.graph.edgeCount
   }
-  *nodes(): IterableIterator<GeomNode> {
-    for (const n of this.graph.nodes) yield GeomObject.getGeom(n) as GeomNode
+
+  *shallowNodes(): IterableIterator<GeomNode> {
+    for (const n of this.graph.shallowNodes)
+      yield GeomObject.getGeom(n) as GeomNode
   }
 
   *edges(): IterableIterator<GeomEdge> {
     for (const n of this.graph.edges) yield GeomObject.getGeom(n) as GeomEdge
   }
 
-  static mk(): GeomGraph {
-    return new GeomGraph(new Graph())
+  static mk(parent: Graph): GeomGraph {
+    return new GeomGraph(new Graph(parent))
   }
 
   constructor(graph: Graph) {
@@ -125,8 +141,8 @@ export class GeomGraph extends GeomNode {
     return this.boundingBox.width
   }
 
-  get nodeCount() {
-    return this.graph.nodeCount
+  get shallowNodeCount() {
+    return this.graph.shallowNodeCount
   }
 
   get graph() {
@@ -138,11 +154,11 @@ export class GeomGraph extends GeomNode {
     let padding = 0
     for (const e of this.graph.edges) {
       const ge = GeomObject.getGeom(e) as GeomEdge
+      if (ge.curve == null) continue
       this.boundingBox.addRec(ge.boundingBox)
       padding = Math.max(padding, ge.lineWidth)
     }
-    for (const n of this.graph.nodes) {
-      const gn = GeomObject.getGeom(n) as GeomNode
+    for (const gn of this.shallowNodes()) {
       this.boundingBox.addRec(gn.boundingBox)
       padding = Math.max(padding, gn.padding)
     }

@@ -256,7 +256,7 @@ export class SmoothedPolylineCalculator {
   }
 
   IsVirtualVertex(v: number): boolean {
-    return v >= this.originalGraph.nodeCount
+    return v >= this.originalGraph.shallowNodeCount
   }
 
   IsLabel(u: number): boolean {

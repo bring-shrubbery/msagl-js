@@ -1,8 +1,5 @@
 export class AttrContainer {
-  private attrs: any[]
-  constructor() {
-    this.attrs = []
-  }
+  private attrs: any[] = []
 
   get length() {
     return this.attrs.length

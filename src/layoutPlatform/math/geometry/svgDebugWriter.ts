@@ -14,7 +14,6 @@ import {GeomEdge} from './../../layout/core/geomEdge'
 import {GeomGraph} from '../../layout/core/GeomGraph'
 import {GeomLabel} from './../../layout/core/geomLabel'
 import {PlaneTransformation} from './planeTransformation'
-import {SmoothedPolyline} from './smoothedPolyline'
 
 export class SvgDebugWriter {
   // Here we import the File System module of node
@@ -288,17 +287,20 @@ export class SvgDebugWriter {
     let box = g.boundingBox
     if (box == undefined) {
       box = Rectangle.mkEmpty()
-      for (const n of g.nodes()) box.addRec(n.boundingBox)
+      for (const n of g.shallowNodes()) box.addRec(n.boundingBox)
       for (const e of g.edges()) box.addRec(e.boundingBox)
     }
     this.open(box)
-    for (const e of g.edges()) {
-      this.writeEdge(e)
-    }
-    for (const n of g.nodes()) {
+    for (const n of g.deepNodes()) {
       this.writeDebugCurve(DebugCurve.mkDebugCurveI(n.boundaryCurve))
       const box = n.boundingBox
       this.writeNodeLabel(n.id, box)
+      for (const e of n.inEdges()) {
+        this.writeEdge(e)
+      }
+      for (const e of n.selfEdges()) {
+        this.writeEdge(e)
+      }
     }
     this.close()
   }
@@ -380,11 +382,4 @@ function flipDebugCurvesByY(dcurves: DebugCurve[]) {
   for (const dc of dcurves) {
     dc.icurve = dc.icurve.transform(matrix)
   }
-}
-function mkFromeSmothPolyline(underlyingPolyline: SmoothedPolyline) {
-  const ret = new Polyline()
-  for (const p of underlyingPolyline.points()) {
-    ret.addPoint(p)
-  }
-  return ret
 }

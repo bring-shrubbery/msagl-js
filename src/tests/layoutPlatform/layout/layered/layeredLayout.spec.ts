@@ -20,7 +20,7 @@ function createGeometry(
   g: Graph,
   nodeBoundaryFunc: (string) => ICurve,
 ): GeomGraph {
-  for (const n of g.nodes) {
+  for (const n of g.shallowNodes) {
     if (n.isGraph) {
       const subG = (n as unknown) as Graph
       new GeomGraph(subG)
@@ -93,7 +93,7 @@ test('sorted map', () => {
 
 test('show API', () => {
   // Create a new geometry graph
-  const g = GeomGraph.mk()
+  const g = GeomGraph.mk(null)
   // Add nodes to the graph. The first argument is the node id. The second is the size string
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
@@ -125,7 +125,7 @@ test('show API', () => {
 
 test('disconnected comps', () => {
   // Create a new geometry graph
-  const g = GeomGraph.mk()
+  const g = GeomGraph.mk(null)
   // Add nodes to the graph. The first argument is the node id. The second is the size string
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
@@ -146,7 +146,7 @@ test('disconnected comps', () => {
   const ll = new LayeredLayout(g, ss, new CancelToken())
   ll.run()
   const strB = new StringBuilder()
-  for (const n of g.nodes()) {
+  for (const n of g.shallowNodes()) {
     const s = n.id + ', center = ' + n.center
     strB.AppendLine(s)
   }
@@ -250,14 +250,14 @@ test('layered layout hookup longflat', () => {
 })
 
 test('layered layout empty graph', () => {
-  const gg = GeomGraph.mk()
+  const gg = GeomGraph.mk(null)
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(gg, ss, new CancelToken())
   ll.run()
 })
 
 test('layered layout nodes only', () => {
-  const g = new GeomGraph(new Graph())
+  const g = new GeomGraph(new Graph(null))
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
   g.setNode('bpitt', {width: 108, height: 100})
@@ -273,7 +273,7 @@ test('layered layout nodes only', () => {
 
 function outputGraph(g: GeomGraph, name: string) {
   const strB = new StringBuilder()
-  for (const n of g.nodes()) {
+  for (const n of g.shallowNodes()) {
     const s = n.id + ', center = ' + n.center
     strB.AppendLine(s)
   }
@@ -309,7 +309,7 @@ function interpolateEdgeAsString(e: GeomEdge): string {
 }
 
 function duplicateDisconnected(g: GeomGraph, suffix: string) {
-  const nodes: GeomNode[] = [...g.nodes()]
+  const nodes: GeomNode[] = [...g.shallowNodes()]
   const edges: GeomEdge[] = [...g.edges()]
   for (const n of nodes) {
     g.setNode(n.node.id + suffix, {width: n.width, height: n.height})
@@ -348,6 +348,7 @@ function addArrow(start: Point, end: Point, arrowAngle: number): Point[] {
   dir = dir.mul(l * Math.tan(arrowAngle * 0.5 * (Math.PI / 180.0)))
   return [start, start.add(dir), end, start.sub(dir), start]
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function nodeBoundaryFunc(id: string): ICurve {
   return CurveFactory.mkRectangleWithRoundedCorners(
     20, // tsize.width,

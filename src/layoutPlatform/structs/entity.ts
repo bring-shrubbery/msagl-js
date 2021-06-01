@@ -4,29 +4,29 @@ import {Assert} from './../utils/assert'
 import {AttrContainer} from './attrContainer'
 export abstract class Entity extends AttrContainer {
   parent: Entity = null
-  graphParent: Graph = null
+
+  constructor(parent: Entity) {
+    super()
+    this.parent = parent
+  }
 
   abstract toString(): string
 
-  setGraphParent(parent: Graph): void {
+  setParent(parent: Graph): void {
     Assert.assert(!Object.is(parent, this))
-    this.graphParent = parent
+    this.parent = parent
   }
 
-  *allGraphAncestors(): IterableIterator<Graph> {
-    let parent = this.graphParent
-    while (parent != null) {
-      yield parent
-      parent = parent.graphParent
+  *getAncestors(): IterableIterator<Entity> {
+    let p = this.parent
+    while (p != null) {
+      yield p
+      p = p.parent
     }
   }
 
   // Determines if this node is a descendant of the given graph.
   isDescendantOf(graph: Graph) {
-    return from(this.allGraphAncestors()).any((p) => p == graph)
-  }
-
-  isUnderCollapsedGraph(): boolean {
-    return this.graphParent != null && this.graphParent.isCollapsed
+    return from(this.getAncestors()).any((p) => p == graph)
   }
 }

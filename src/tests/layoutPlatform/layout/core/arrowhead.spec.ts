@@ -14,14 +14,14 @@ import {SvgDebugWriter} from './../../../../layoutPlatform/math/geometry/svgDebu
 
 describe('arrowhead', () => {
   test('trim edge no arrowheads', () => {
-    const a = new Node('a')
+    const a = new Node('a', null)
     const ga = new GeomNode(a)
     ga.boundaryCurve = CurveFactory.mkCircle(20, new Point(0, 0))
-    const b = new Node('b')
+    const b = new Node('b', null)
     const gb = new GeomNode(b)
     gb.boundaryCurve = CurveFactory.mkCircle(20, new Point(100, 100))
 
-    const ab = new Edge(a, b)
+    const ab = new Edge(a, b, null)
     const gab = new GeomEdge(ab)
     const curve = LineSegment.mkPP(ga.center, gb.center)
     Arrowhead.trimSplineAndCalculateArrowheads(gab, curve, true)
@@ -32,16 +32,16 @@ describe('arrowhead', () => {
     ])
   })
   test('trim edge with arrowheads', () => {
-    const a = new Node('a')
+    const a = new Node('a', null)
     const ga = new GeomNode(a)
     ga.boundaryCurve = CurveFactory.mkCircle(20, new Point(0, 0))
-    const b = new Node('b')
+    const b = new Node('b', null)
     const gb = new GeomNode(b)
     gb.boundaryCurve = CurveFactory.mkCircle(20, new Point(100, 100))
 
-    const ab = new Edge(a, b)
+    const ab = new Edge(a, b, null)
     const gab = new GeomEdge(ab)
-    const label = new Label('ab')
+    const label = new Label('ab', ab)
     label.parent = ab
     gab.label = new GeomLabel(label)
     const m = Point.middle(ga.center, gb.center)
@@ -51,7 +51,7 @@ describe('arrowhead', () => {
     gab.edgeGeometry.sourceArrowhead = new Arrowhead()
     gab.edgeGeometry.targetArrowhead = new Arrowhead()
     Arrowhead.trimSplineAndCalculateArrowheads(gab, curve, true)
-    const g = new Graph()
+    const g = new Graph(null)
     g.addEdge(ab)
     const gg = new GeomGraph(g)
     const xw = new SvgDebugWriter('/tmp/gg.svg')

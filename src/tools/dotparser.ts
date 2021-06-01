@@ -35,7 +35,7 @@ function parseEdge(s: string, t: string, dg: DrawingGraph, o: any) {
   let sn: Node
   const nc = dg.graph.nodeCollection
   if (!nc.hasNode(s)) {
-    nc.addNode((sn = new Node(s)))
+    nc.addNode((sn = new Node(s, dg.graph)))
     const dn = new DrawingNode(sn)
     dn.labelText = s
   } else {
@@ -43,13 +43,13 @@ function parseEdge(s: string, t: string, dg: DrawingGraph, o: any) {
   }
   let tn: Node
   if (!nc.hasNode(t)) {
-    nc.addNode((tn = new Node(t)))
+    nc.addNode((tn = new Node(t, dg.graph)))
     const dn = new DrawingNode(tn)
     dn.labelText = t
   } else {
     tn = nc.getNode(t)
   }
-  const geomEdge = new Edge(sn, tn)
+  const geomEdge = new Edge(sn, tn, dg.graph)
   nc.addEdge(geomEdge)
   const drawingEdge = new DrawingEdge(geomEdge)
   fillDrawingObjectAttrs(o, drawingEdge)
@@ -60,7 +60,7 @@ function parseGraph(o: any, dg: DrawingGraph) {
 }
 
 function parseNode(o: any, dg: DrawingGraph) {
-  const node = new Node(o.node_id.id)
+  const node = new Node(o.node_id.id, dg.graph)
   dg.graph.nodeCollection.addNode(node)
   const drawingNode = new DrawingNode(node)
   fillDrawingObjectAttrs(o, drawingNode)
@@ -347,8 +347,7 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
       case 'subgraph':
         // is it really a subgraph?
         if (!process_same_rank(o, dg)) {
-          const subg = Graph.mkGraph(o.id)
-          subg.graphParent = dg.graph
+          const subg = Graph.mkGraph(o.id, dg.graph)
           dg.graph.nodeCollection.addNode(subg)
           const sdg = new DrawingGraph(subg)
           parseGraph(o, sdg)
@@ -366,7 +365,7 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
 export function parseDotString(graphStr: string): DrawingGraph {
   const ast = parse(graphStr)
   if (ast == null) return null
-  const graph = new Graph()
+  const graph = new Graph(null)
   const drawingGraph = new DrawingGraph(graph)
   parseUnderGraph(ast[0].children, drawingGraph)
   return drawingGraph

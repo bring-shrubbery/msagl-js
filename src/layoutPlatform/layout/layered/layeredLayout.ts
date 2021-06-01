@@ -71,11 +71,11 @@ export class LayeredLayout extends Algorithm {
     this.originalGraph = originalGraph
     this.sugiyamaSettings = settings
     //enumerate the nodes - maps node indices to strings
-    const nodes = [...originalGraph.nodes()]
+    const nodeArray = [...originalGraph.shallowNodes()]
     this.nodeIdToIndex = new Map<string, number>()
 
     let index = 0
-    for (const n of this.originalGraph.nodes()) {
+    for (const n of nodeArray) {
       this.nodeIdToIndex.set(n.id, index++)
       if (n.isGraph()) {
         // recursion!
@@ -86,33 +86,36 @@ export class LayeredLayout extends Algorithm {
       }
     }
 
-    const intEdges = new Array<PolyIntEdge>(this.originalGraph.edgeCount)
-    let i = 0
+    const intEdges: PolyIntEdge[] = []
     for (const edge of this.originalGraph.edges()) {
       Assert.assert(!(edge.source == null || edge.target == null))
-
+      if (edge.isInterGraphEdge()) {
+        // we will route the integraph edges in a separate step with SplineRouter
+        continue
+      }
       const intEdge = new PolyIntEdge(
         this.nodeIdToIndex.get(edge.source.id),
         this.nodeIdToIndex.get(edge.target.id),
         edge,
       )
-
-      intEdges[i++] = intEdge
+      Assert.assert(intEdge.source != null && intEdge.target != null)
+      intEdges.push(intEdge)
     }
 
     this.IntGraph = new BasicGraph<GeomNode, PolyIntEdge>(
       intEdges,
-      originalGraph.nodeCount,
+      originalGraph.shallowNodeCount,
     )
-    this.IntGraph.nodes = nodes
-    this.database = new Database(nodes.length)
+    this.IntGraph.nodes = nodeArray
+    this.database = new Database(nodeArray.length)
     for (const e of this.IntGraph.edges)
       this.database.registerOriginalEdgeInMultiedges(e)
 
     this.cycleRemoval()
   }
+
   run() {
-    if (this.originalGraph.nodeCount == 0) {
+    if (this.originalGraph.shallowNodeCount == 0) {
       this.originalGraph.boundingBox = Rectangle.mkEmpty()
       return
     }
@@ -127,7 +130,7 @@ export class LayeredLayout extends Algorithm {
   }
 
   private FlipYAndSetMargins() {
-    if (this.originalGraph.graph.graphParent == null) {
+    if (this.originalGraph.graph.parent == null) {
       this.originalGraph.transform(
         new PlaneTransformation(
           1,
@@ -137,7 +140,7 @@ export class LayeredLayout extends Algorithm {
           -1,
           this.originalGraph.top + this.sugiyamaSettings.margins.top,
         ),
-      ) // flip the y coordinate to according to the screen standard and shift to origin
+      ) // flip the y coordinate according to the screen standard and shift to origin
       this.originalGraph.boundingBox.right += this.sugiyamaSettings.margins.right
       this.originalGraph.boundingBox.top += this.sugiyamaSettings.margins.bottom
       this.originalGraph.boundingBox.left = 0
@@ -217,7 +220,7 @@ export class LayeredLayout extends Algorithm {
       this.IntGraph.nodes[i].center = this.database.Anchors[i].Origin
 
     if (this.sugiyamaSettings.GridSizeByX > 0) {
-      for (let i = 0; i < this.originalGraph.nodeCount; i++) {
+      for (let i = 0; i < this.originalGraph.shallowNodeCount; i++) {
         this.SnapLeftSidesOfTheNodeToGrid(i, this.sugiyamaSettings.GridSizeByX)
       }
     }
@@ -267,7 +270,7 @@ export class LayeredLayout extends Algorithm {
   StretchWidth() {
     // calculate the desired span of the anchor centers and the current span of anchor center
     const desiredSpan = new RealNumberSpan()
-    for (const node of this.originalGraph.nodes()) {
+    for (const node of this.originalGraph.shallowNodes()) {
       desiredSpan.AddValue(node.boundingBox.width / 2)
       desiredSpan.AddValue(
         this.sugiyamaSettings.MinimalWidth - node.boundingBox.width / 2,
@@ -312,7 +315,7 @@ export class LayeredLayout extends Algorithm {
 
   StretchHeight() {
     const desiredSpan = new RealNumberSpan()
-    for (const node of this.originalGraph.nodes()) {
+    for (const node of this.originalGraph.shallowNodes()) {
       desiredSpan.AddValue(node.boundingBox.height / 2)
       desiredSpan.AddValue(
         this.sugiyamaSettings.MinimalHeight - node.boundingBox.height / 2,
@@ -449,7 +452,7 @@ export class LayeredLayout extends Algorithm {
     }
 
     const extendedVertexLayering = new Array<number>(
-      this.originalGraph.nodeCount + nOfVV,
+      this.originalGraph.shallowNodeCount + nOfVV,
     ).fill(0)
 
     for (const e of this.database.SkeletonEdges())
@@ -481,7 +484,7 @@ export class LayeredLayout extends Algorithm {
     Ordering.OrderLayers(
       this.properLayeredGraph,
       layerArrays,
-      this.originalGraph.nodeCount,
+      this.originalGraph.shallowNodeCount,
       this.sugiyamaSettings,
       this.cancelToken,
     )
@@ -920,7 +923,7 @@ export class LayeredLayout extends Algorithm {
     XCoordsWithAlignment.CalculateXCoordinates(
       layerArrays,
       this.properLayeredGraph,
-      this.originalGraph.nodeCount,
+      this.originalGraph.shallowNodeCount,
       this.database.Anchors,
       this.sugiyamaSettings.NodeSeparation,
     )
@@ -987,7 +990,7 @@ export class LayeredLayout extends Algorithm {
   CreateGluedDagSkeletonForLayering() {
     this.gluedDagSkeletonForLayering = new BasicGraph<GeomNode, PolyIntEdge>(
       this.GluedDagSkeletonEdges(),
-      this.originalGraph.nodeCount,
+      this.originalGraph.shallowNodeCount,
     )
     this.SetGluedEdgesWeights()
   }
@@ -1049,7 +1052,7 @@ function CalculateAnchorSizes(
     anchors[i] = new Anchor(settings.LabelCornersPreserveCoefficient)
 
   //go over the old vertices
-  for (let i = 0; i < originalGraph.nodeCount; i++)
+  for (let i = 0; i < originalGraph.shallowNodeCount; i++)
     LayeredLayout.CalcAnchorsForOriginalNode(
       i,
       intGraph,
@@ -1162,7 +1165,7 @@ function CalcInitialYAnchorLocations(
       yLayer,
       bottomAnchorMax,
       topAnchorMax,
-      originalGraph.nodeCount,
+      originalGraph.shallowNodeCount,
       database.Anchors,
     )
 
@@ -1381,7 +1384,7 @@ function preRunTransform(geomGraph: GeomGraph, m: PlaneTransformation) {
   }
 
   const matrixInverse = m.inverse()
-  for (const n of geomGraph.nodes()) {
+  for (const n of geomGraph.shallowNodes()) {
     n.transform(matrixInverse)
   }
 
@@ -1403,7 +1406,7 @@ function postRunTransform(
   transform: PlaneTransformation,
 ) {
   if (transform.isIdentity()) return
-  for (const n of geometryGraph.nodes()) {
+  for (const n of geometryGraph.shallowNodes()) {
     n.transform(transform)
   }
 
