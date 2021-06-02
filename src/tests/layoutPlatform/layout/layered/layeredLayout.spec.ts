@@ -20,6 +20,9 @@ import {
   Size,
 } from '../../../../layoutPlatform/math/geometry/rectangle'
 
+import {join} from 'path'
+import fs = require('fs')
+
 function createGeometry(
   g: Graph,
   nodeBoundaryFunc: (string) => ICurve,
@@ -61,6 +64,7 @@ test('map test', () => {
 
   expect(mi.get(ip1)).toBe(undefined)
 })
+
 test('layered layout glued graph', () => {
   const graphString = 'digraph G {\n' + 'a -> b\n' + 'a -> b}'
   const g = parseDotString(graphString)
@@ -159,7 +163,7 @@ test('disconnected comps', () => {
     strB.AppendLine(edgeString(e, true)) // true to get an array of poins
   }
 
-  console.log(strB.ToString())
+  //  console.log(strB.ToString())
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/disconnected.svg')
   t.writeGraph(g)
 })
@@ -221,6 +225,18 @@ test('layer and node separation', () => {
   )
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
+test('src/tests/data/graphvis/ER.gv', () => {
+  const dg = parseDotGraph('src/tests/data/graphvis/ER.gv')
+  if (dg == null) return
+  createGeometry(dg.graph, nodeBoundaryFunc)
+  const ss = new SugiyamaLayoutSettings()
+  const ll = new LayeredLayout(
+    GeomObject.getGeom(dg.graph) as GeomGraph,
+    ss,
+    new CancelToken(),
+  )
+})
+
 test('layered layout hookup abstract', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(dg.graph, nodeBoundaryFunc)
@@ -238,17 +254,9 @@ test('layered layout hookup abstract', () => {
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/abstract.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
-test('layered layout hookup longflat', () => {
-  const dg = parseDotGraph('src/tests/data/graphvis/longflat.gv')
-  createGeometry(dg.graph, nodeBoundaryFunc)
-  const ss = new SugiyamaLayoutSettings()
-  const ll = new LayeredLayout(
-    GeomObject.getGeom(dg.graph) as GeomGraph,
-    ss,
-    new CancelToken(),
-  )
 
-  ll.run()
+test('layered layout hookup longflat', () => {
+  const dg = runLayout('src/tests/data/graphvis/longflat.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/longflat.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
@@ -275,6 +283,22 @@ test('layered layout nodes only', () => {
   t.writeGraph(g)
 })
 
+function runLayout(fname: string) {
+  const dg = parseDotGraph(fname)
+  if (dg == null) return null
+  createGeometry(dg.graph, nodeBoundaryFunc)
+  const ss = new SugiyamaLayoutSettings()
+  const ll = new LayeredLayout(
+    GeomObject.getGeom(dg.graph) as GeomGraph,
+    ss,
+    new CancelToken(),
+  )
+
+  ll.run()
+
+  return dg
+}
+
 function outputGraph(g: GeomGraph, name: string) {
   const strB = new StringBuilder()
   for (const n of g.shallowNodes()) {
@@ -286,7 +310,7 @@ function outputGraph(g: GeomGraph, name: string) {
     strB.AppendLine(edgeString(e, true)) // true to get an array of poins
   }
 
-  console.log(strB.ToString())
+  //  console.log(strB.ToString())
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + name + '.svg')
   t.writeGraph(g)
 }
@@ -311,6 +335,32 @@ function interpolateEdgeAsString(e: GeomEdge): string {
   }
   return s + ']'
 }
+test('KW91', () => {
+  const fname = 'src/tests/data/graphvis/KW91.gv'
+  const dg = runLayout(fname)
+  if (dg != null) {
+    const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + 'kw91.svg')
+    t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  }
+})
+
+test('all gv files', () => {
+  const path = 'src/tests/data/graphvis/'
+  fs.readdir(path, (err, files) => {
+    expect(err).toBe(null)
+    for (const f of files) {
+      if (!f.match('(.*).gv')) continue
+      if (f.match('big.gv')) continue
+
+      const fname = join(path, f)
+      const dg = runLayout(fname)
+      if (dg != null) {
+        const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + f + '.svg')
+        t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+      }
+    }
+  })
+})
 
 function duplicateDisconnected(g: GeomGraph, suffix: string) {
   const nodes: GeomNode[] = [...g.shallowNodes()]

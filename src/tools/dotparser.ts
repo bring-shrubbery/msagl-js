@@ -365,6 +365,7 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
 export function parseDotString(graphStr: string): DrawingGraph {
   const ast = parse(graphStr)
   if (ast == null) return null
+  if (ast[0].type != 'digraph') return null
   const graph = new Graph(null)
   const drawingGraph = new DrawingGraph(graph)
   parseUnderGraph(ast[0].children, drawingGraph)

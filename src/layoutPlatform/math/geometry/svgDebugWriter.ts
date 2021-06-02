@@ -14,19 +14,20 @@ import {GeomEdge} from './../../layout/core/geomEdge'
 import {GeomGraph} from '../../layout/core/GeomGraph'
 import {GeomLabel} from './../../layout/core/geomLabel'
 import {PlaneTransformation} from './planeTransformation'
-
+import fs = require('fs')
+import xmlw = require('xml-writer')
 export class SvgDebugWriter {
   // Here we import the File System module of node
-  private fs = require('fs')
-  private xmlw = require('xml-writer')
+  //  private fs = require('fs')
+  //private xmlw = require('xml-writer')
   xw: any
   ws: any
   readonly arrowAngle = 25
 
   constructor(svgFileName: string) {
-    this.ws = this.fs.createWriteStream(svgFileName)
+    this.ws = fs.createWriteStream(svgFileName)
     const wsCapture = this.ws
-    this.xw = new this.xmlw(true, function (string: string, encoding) {
+    this.xw = new xmlw(true, function (string: string, encoding) {
       wsCapture.write(string, encoding)
     })
   }

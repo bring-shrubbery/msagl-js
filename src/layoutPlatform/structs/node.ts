@@ -26,6 +26,7 @@ export class Node extends Entity {
   }
   constructor(id: string, parent: Graph) {
     super(parent)
+    Assert.assert(id != null)
     this.id = id
   }
 
