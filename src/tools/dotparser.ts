@@ -31,7 +31,12 @@ export enum DirTypeEnum {
   none,
 }
 
-function parseEdge(s: string, t: string, dg: DrawingGraph, o: any) {
+function parseEdge(
+  s: string,
+  t: string,
+  dg: DrawingGraph,
+  o: any,
+): DrawingEdge {
   let sn: Node
   const nc = dg.graph.nodeCollection
   if (!nc.hasNode(s)) {
@@ -53,6 +58,7 @@ function parseEdge(s: string, t: string, dg: DrawingGraph, o: any) {
   nc.addEdge(geomEdge)
   const drawingEdge = new DrawingEdge(geomEdge)
   fillDrawingObjectAttrs(o, drawingEdge)
+  return drawingEdge
 }
 
 function parseGraph(o: any, dg: DrawingGraph) {
@@ -66,6 +72,7 @@ function parseNode(o: any, dg: DrawingGraph) {
   fillDrawingObjectAttrs(o, drawingNode)
 }
 function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
+  if (o.attr_list == null) return
   for (const attr of o.attr_list) {
     if (attr.type == 'attr') {
       const str = attr.eq
@@ -346,7 +353,11 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
         break
       case 'subgraph':
         // is it really a subgraph?
-        if (!process_same_rank(o, dg)) {
+        if (process_same_rank(o, dg)) {
+        } else if (o.id == null) {
+          const entities: DrawingObject[] = getEntitiesSubg(o, dg)
+          applyAttributesToEntities(o, dg, entities)
+        } else {
           const subg = Graph.mkGraph(o.id, dg.graph)
           dg.graph.nodeCollection.addNode(subg)
           const sdg = new DrawingGraph(subg)
@@ -496,4 +507,30 @@ function parseFloatQuatriple(str: any): any {
     parseFloat(p[2]),
     parseFloat(p[3]),
   ]
+}
+function getEntitiesSubg(o: any, dg: DrawingGraph): DrawingObject[] {
+  const ret = []
+  for (const ch of o.children) {
+    if (ch.type == 'edge_stmt') {
+      const edgeList: any[] = ch.edge_list
+      for (let i = 0; i < edgeList.length - 1; i++)
+        ret.push(parseEdge(edgeList[i].id, edgeList[i + 1].id, dg, ch))
+    } else if (ch.type == 'attr_stmt') {
+    } else {
+      throw new Error('Function not implemented.')
+    }
+  }
+  return ret
+}
+
+function applyAttributesToEntities(
+  o: any,
+  dg: DrawingGraph,
+  entities: DrawingObject[],
+) {
+  for (const ch of o.children) {
+    if (ch.type == 'attr_stmt') {
+      for (const ent of entities) fillDrawingObjectAttrs(ch, ent)
+    }
+  }
 }

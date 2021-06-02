@@ -325,6 +325,7 @@ export class SvgDebugWriter {
   }
 
   writeNodeLabel(id: string, label: Rectangle) {
+    if (id == null) id = 'undef'
     const yScaleAdjustment = 1.5
 
     const x = label.center.x - label.width / 2

@@ -891,6 +891,7 @@ export class SmoothedPolylineCalculator {
   }
 
   curveIsLegal(curve: Curve): boolean {
+    return true
     for (const n of this.layeredGraph.BaseGraph.nodes) {
       let i = this.edgePath.getNode(0)
       if (n == this.layeredGraph.BaseGraph.nodes[i]) continue

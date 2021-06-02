@@ -16,7 +16,14 @@ export class Label extends Entity {
 }
 
 export class Node extends Entity {
-  id: string
+  private _id: string
+  public get id(): string {
+    return this._id
+  }
+  public set id(value: string) {
+    Assert.assert(value != null)
+    this._id = value
+  }
   inEdges: Set<Edge> = new Set<Edge>()
   outEdges: Set<Edge> = new Set<Edge>()
   selfEdges: Set<Edge> = new Set<Edge>()
