@@ -172,7 +172,7 @@ export class LayerInserter {
           span = e.LayerSpan * 2
         }
         if (span > 0) {
-          e.LayerEdges = new LayerEdge[span]()
+          e.LayerEdges = new Array<LayerEdge>(span)
           for (let i = 0; i < span; i++) {
             const bT = {currentVV: this.totalNodes}
             const source = EdgePathsInserter.GetSource(bT, e, i)
@@ -208,7 +208,7 @@ export class LayerInserter {
         const x = this.Nla.x[predecessor] + this.Nla.x[successor]
 
         if (sd.has(x)) {
-          const o = sd[x]
+          const o = sd.get(x)
           if (typeof o === 'number') {
             const l = new Array<number>()
             l.push(o)
@@ -260,7 +260,7 @@ export class LayerInserter {
     const newLayers = new Array<Array<number>>(2 * this.la.Layers.length - 1)
 
     //count new layer widths
-    const counts = new Array<number>(newLayers.length)
+    const counts = new Array<number>(newLayers.length).fill(0)
 
     for (const l of this.NLayering) counts[l]++
 

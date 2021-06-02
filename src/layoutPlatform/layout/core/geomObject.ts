@@ -4,7 +4,7 @@ export abstract class GeomObject {
   abstract boundingBox: Rectangle
   attrCont: AttrContainer
   bind() {
-    this.attrCont.setAttr(0, this)
+    if (this.attrCont) this.attrCont.setAttr(0, this)
   }
 
   constructor(attrCont: AttrContainer) {

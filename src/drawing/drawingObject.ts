@@ -97,6 +97,7 @@ export abstract class DrawingObject {
   headtooltip: any
   shapefile: any
   xlabel: any
+  sametail: string
 
   bind() {
     if (this.attrCont != null) {

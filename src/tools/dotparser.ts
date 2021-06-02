@@ -329,6 +329,9 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
         case 'xlabel':
           drawingObj.xlabel = str
           break
+        case 'sametail':
+          drawingObj.sametail = str
+          break
         default:
           throw new Error('not implemented for ' + attr.id)
       }

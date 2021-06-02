@@ -335,11 +335,11 @@ function interpolateEdgeAsString(e: GeomEdge): string {
   }
   return s + ']'
 }
-test('KW91', () => {
-  const fname = 'src/tests/data/graphvis/KW91.gv'
+test('awilliams', () => {
+  const fname = 'src/tests/data/graphvis/awilliams.gv'
   const dg = runLayout(fname)
   if (dg != null) {
-    const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + 'kw91.svg')
+    const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + 'awilliams.svg')
     t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   }
 })
