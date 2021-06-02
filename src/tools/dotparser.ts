@@ -31,45 +31,79 @@ export enum DirTypeEnum {
   none,
 }
 
-function parseEdge(
-  s: string,
-  t: string,
-  dg: DrawingGraph,
-  o: any,
-): DrawingEdge {
-  let sn: Node
+function parseEdge(so: any, to: any, dg: DrawingGraph, o: any): DrawingEdge[] {
   const nc = dg.graph.nodeCollection
-  if (!nc.hasNode(s)) {
-    nc.addNode((sn = new Node(s, dg.graph)))
-    const dn = new DrawingNode(sn)
-    dn.labelText = s
-  } else {
-    sn = nc.getNode(s)
-  }
+  let sn: Node
   let tn: Node
-  if (!nc.hasNode(t)) {
-    nc.addNode((tn = new Node(t, dg.graph)))
-    const dn = new DrawingNode(tn)
-    dn.labelText = t
+  if (so.type == 'node_id') {
+    const s = so.id
+    if (!nc.hasNode(s)) {
+      nc.addNode((sn = new Node(s, dg.graph)))
+      const dn = new DrawingNode(sn)
+      dn.labelText = s
+    } else {
+      sn = nc.getNode(s)
+    }
   } else {
-    tn = nc.getNode(t)
+    const drObjs = []
+    for (const ch of so.children) {
+      if (ch.type === 'node_stmt') {
+        for (const e of parseEdge(ch.node_id, to, dg, o)) drObjs.push(e)
+      } else if (ch.type === 'attr_stmt') {
+      } else {
+        throw new Error('not implemented')
+      }
+    }
+    for (const ch of so.children) {
+      if (ch.type === 'attr_stmt') {
+        for (const drObj of drObjs) fillDrawingObjectAttrs(ch, drObj)
+      } // ignore anything else
+    }
+    return drObjs
+  }
+  if (to.type == 'node_id') {
+    const t = to.id
+    if (!nc.hasNode(t)) {
+      nc.addNode((tn = new Node(t, dg.graph)))
+      const dn = new DrawingNode(tn)
+      dn.labelText = t
+    } else {
+      tn = nc.getNode(t)
+    }
+  } else if (to.type == 'subgraph') {
+    const drObjs = []
+    for (const ch of to.children) {
+      if (ch.type === 'node_stmt') {
+        drObjs.push(parseEdge(so, ch.node_id, dg, o))
+      } else if (ch.type === 'attr_stmt') {
+      } else {
+        throw new Error('not implemented')
+      }
+    }
+    for (const ch of to.children) {
+      if (ch.type === 'attr_stmt') {
+        for (const drObj of drObjs) fillDrawingObjectAttrs(ch, drObj)
+      } // ignore anything else
+    }
+    return drObjs
   }
   const geomEdge = new Edge(sn, tn, dg.graph)
   nc.addEdge(geomEdge)
   const drawingEdge = new DrawingEdge(geomEdge)
   fillDrawingObjectAttrs(o, drawingEdge)
-  return drawingEdge
+  return [drawingEdge]
 }
 
 function parseGraph(o: any, dg: DrawingGraph) {
   parseUnderGraph(o.children, dg)
 }
 
-function parseNode(o: any, dg: DrawingGraph) {
+function parseNode(o: any, dg: DrawingGraph): DrawingNode {
   const node = new Node(o.node_id.id, dg.graph)
   dg.graph.nodeCollection.addNode(node)
   const drawingNode = new DrawingNode(node)
   fillDrawingObjectAttrs(o, drawingNode)
+  return drawingNode
 }
 function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
   if (o.attr_list == null) return
@@ -351,7 +385,7 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
         {
           const edgeList: any[] = o.edge_list
           for (let i = 0; i < edgeList.length - 1; i++)
-            parseEdge(edgeList[i].id, edgeList[i + 1].id, dg, o)
+            parseEdge(edgeList[i], edgeList[i + 1], dg, o)
         }
         break
       case 'subgraph':
@@ -512,13 +546,27 @@ function parseFloatQuatriple(str: any): any {
   ]
 }
 function getEntitiesSubg(o: any, dg: DrawingGraph): DrawingObject[] {
-  const ret = []
+  let ret = []
   for (const ch of o.children) {
     if (ch.type == 'edge_stmt') {
       const edgeList: any[] = ch.edge_list
-      for (let i = 0; i < edgeList.length - 1; i++)
-        ret.push(parseEdge(edgeList[i].id, edgeList[i + 1].id, dg, ch))
+      for (let i = 0; i < edgeList.length - 1; i++) {
+        for (const e of parseEdge(edgeList[i], edgeList[i + 1], dg, ch))
+          ret.push(e)
+      }
     } else if (ch.type == 'attr_stmt') {
+    } else if (ch.type == 'node_stmt') {
+      ret.push(parseNode(ch, dg))
+    } else if (ch.type === 'subgraph') {
+      if (ch.id != null) {
+        const subg = Graph.mkGraph(ch.id, dg.graph)
+        dg.graph.nodeCollection.addNode(subg)
+        const sdg = new DrawingGraph(subg)
+        parseGraph(ch, sdg)
+        ret.push(subg)
+      } else {
+        ret = ret.concat(getEntitiesSubg(ch, dg))
+      }
     } else {
       throw new Error('Function not implemented.')
     }
