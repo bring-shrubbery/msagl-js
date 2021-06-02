@@ -344,7 +344,7 @@ test('awilliams', () => {
   }
 })
 
-xtest('all gv files', () => {
+test('all gv files', () => {
   const path = 'src/tests/data/graphvis/'
   fs.readdir(path, (err, files) => {
     expect(err).toBe(null)
