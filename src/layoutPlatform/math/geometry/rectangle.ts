@@ -3,7 +3,7 @@ import {Polyline} from './polyline'
 import {GeomConstants} from './geomConstants'
 import {IRectangle} from '../../core/geometry/IRectangle'
 
-class Size {
+export class Size {
   width: number
   height: number
   constructor(width: number, height: number) {

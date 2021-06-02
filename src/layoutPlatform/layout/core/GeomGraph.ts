@@ -1,5 +1,5 @@
 import {Graph} from '../../structs/graph'
-import {Rectangle} from '../../math/geometry/rectangle'
+import {Rectangle, Size} from '../../math/geometry/rectangle'
 import {GeomObject} from './geomObject'
 import {GeomNode} from './geomNode'
 import {GeomEdge} from './geomEdge'
@@ -10,6 +10,7 @@ import {Point} from '../../math/geometry/point'
 
 export class GeomGraph extends GeomNode {
   private _boundingBox: Rectangle
+  labelSize: Size
   public get boundingBox(): Rectangle {
     return this._boundingBox
   }
@@ -125,12 +126,13 @@ export class GeomGraph extends GeomNode {
     for (const n of this.graph.edges) yield GeomObject.getGeom(n) as GeomEdge
   }
 
-  static mk(parent: Graph): GeomGraph {
-    return new GeomGraph(new Graph(parent))
+  static mk(parent: Graph, labelSize: Size): GeomGraph {
+    return new GeomGraph(new Graph(parent), labelSize)
   }
 
-  constructor(graph: Graph) {
+  constructor(graph: Graph, labelSize: Size) {
     super(graph)
+    this.labelSize = labelSize
   }
 
   get height() {
@@ -162,6 +164,11 @@ export class GeomGraph extends GeomNode {
       this.boundingBox.addRec(gn.boundingBox)
       padding = Math.max(padding, gn.padding)
     }
+    this.boundingBox.top += this.labelSize.height
+    if (this.boundingBox.width < this.labelSize.width) {
+      this.boundingBox.width = this.labelSize.width
+    }
+
     this.boundingBox.pad(padding)
   }
 }

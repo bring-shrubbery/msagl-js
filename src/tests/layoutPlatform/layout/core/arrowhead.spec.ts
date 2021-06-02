@@ -53,7 +53,7 @@ describe('arrowhead', () => {
     Arrowhead.trimSplineAndCalculateArrowheads(gab, curve, true)
     const g = new Graph(null)
     g.addEdge(ab)
-    const gg = new GeomGraph(g)
+    const gg = new GeomGraph(g, Rectangle.mkEmpty())
     const xw = new SvgDebugWriter('/tmp/gg.svg')
     xw.writeGraph(gg)
     xw.close()

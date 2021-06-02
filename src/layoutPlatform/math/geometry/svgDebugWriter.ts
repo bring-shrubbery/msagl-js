@@ -294,7 +294,16 @@ export class SvgDebugWriter {
     for (const n of g.deepNodes()) {
       this.writeDebugCurve(DebugCurve.mkDebugCurveI(n.boundaryCurve))
       const box = n.boundingBox
-      this.writeNodeLabel(n.id, box)
+      if (n.isGraph()) {
+        const gg = <GeomGraph>n
+        const labelBox = Rectangle.mkPP(
+          box.leftBottom,
+          new Point(box.right, box.bottom - gg.labelSize.height),
+        )
+        this.writeNodeLabel(n.id, labelBox)
+      } else {
+        this.writeNodeLabel(n.id, box)
+      }
       for (const e of n.inEdges()) {
         this.writeEdge(e)
       }

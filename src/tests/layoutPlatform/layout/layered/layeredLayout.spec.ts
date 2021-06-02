@@ -15,6 +15,10 @@ import {StringBuilder} from 'typescript-string-operations'
 import {interpolateICurve} from '../../../../layoutPlatform/math/geometry/curve'
 import {LayerDirectionEnum} from '../../../../layoutPlatform/layout/layered/layerDirectionEnum'
 import {ICurve} from '../../../../layoutPlatform/math/geometry/icurve'
+import {
+  Rectangle,
+  Size,
+} from '../../../../layoutPlatform/math/geometry/rectangle'
 
 function createGeometry(
   g: Graph,
@@ -23,7 +27,7 @@ function createGeometry(
   for (const n of g.shallowNodes) {
     if (n.isGraph) {
       const subG = (n as unknown) as Graph
-      new GeomGraph(subG)
+      new GeomGraph(subG, nodeBoundaryFunc(n.id).boundingBox.size)
       createGeometry(subG, nodeBoundaryFunc)
     } else {
       const gn = new GeomNode(n)
@@ -34,7 +38,7 @@ function createGeometry(
   for (const e of g.edges) {
     new GeomEdge(e)
   }
-  return new GeomGraph(g)
+  return new GeomGraph(g, nodeBoundaryFunc(g.id).boundingBox)
 }
 
 type P = [number, number]
@@ -93,7 +97,7 @@ test('sorted map', () => {
 
 test('show API', () => {
   // Create a new geometry graph
-  const g = GeomGraph.mk(null)
+  const g = GeomGraph.mk(null, {width: 0, height: 0})
   // Add nodes to the graph. The first argument is the node id. The second is the size string
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
@@ -125,7 +129,7 @@ test('show API', () => {
 
 test('disconnected comps', () => {
   // Create a new geometry graph
-  const g = GeomGraph.mk(null)
+  const g = GeomGraph.mk(null, Rectangle.mkEmpty())
   // Add nodes to the graph. The first argument is the node id. The second is the size string
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
@@ -250,14 +254,14 @@ test('layered layout hookup longflat', () => {
 })
 
 test('layered layout empty graph', () => {
-  const gg = GeomGraph.mk(null)
+  const gg = GeomGraph.mk(null, Rectangle.mkEmpty())
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(gg, ss, new CancelToken())
   ll.run()
 })
 
 test('layered layout nodes only', () => {
-  const g = new GeomGraph(new Graph(null))
+  const g = new GeomGraph(new Graph(null), new Size(0, 0))
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
   g.setNode('bpitt', {width: 108, height: 100})
@@ -351,9 +355,9 @@ function addArrow(start: Point, end: Point, arrowAngle: number): Point[] {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function nodeBoundaryFunc(id: string): ICurve {
   return CurveFactory.mkRectangleWithRoundedCorners(
-    20, // tsize.width,
+    40, // tsize.width,
     30, // tsize.height,
-    20 / 10, // tsize.width / 10,
+    40 / 10, // tsize.width / 10,
     30 / 10, // tsize.height / 10,
     new Point(0, 0),
   )
