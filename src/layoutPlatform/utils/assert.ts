@@ -3,9 +3,9 @@ export class Assert {
     if (!p) {
       if (s != null) {
         console.log(s)
-        throw s
+        throw new Error(s)
       }
-      throw 'condition does not hold'
+      throw new Error('condition does not hold')
     }
   }
 }

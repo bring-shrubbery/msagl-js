@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/utils/dotparser.spec.ts",
+        "src/tests/layoutPlatform/layout/layered/layeredLayout.spec.ts",
         "-t",
-        "all gv files list"
+        "layout all gv files from list"
       ],
       "console": "integratedTerminal"
     }
