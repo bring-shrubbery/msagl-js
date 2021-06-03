@@ -488,6 +488,24 @@ test('layer and node separation', () => {
   )
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
+test('arrowhead size', () => {
+  const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
+  const geomGraph = createGeometry(dg.graph, nodeBoundaryFunc)
+  for (const e of geomGraph.edges()) {
+    if (e.edgeGeometry.sourceArrowhead) {
+      e.edgeGeometry.sourceArrowhead.length /= 2
+    }
+    if (e.edgeGeometry.targetArrowhead) {
+      e.edgeGeometry.targetArrowhead.length /= 2
+    }
+  }
+  const ss = new SugiyamaLayoutSettings()
+  const ll = new LayeredLayout(geomGraph, ss, new CancelToken())
+  ll.run()
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/arrowheadLength.svg')
+  t.writeGraph(geomGraph)
+})
+
 test('src/tests/data/graphvis/ER.gv', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/ER.gv')
   if (dg == null) return
@@ -505,7 +523,7 @@ xtest('b100', () => {
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/b100.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
-test('pmpipe.gv', () => {
+xtest('pmpipe.gv', () => {
   const dg = runLayout('src/tests/data/graphvis/pmpipe.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pmpipe.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
@@ -620,7 +638,7 @@ test('awilliams', () => {
   }
 })
 
-test('brandes', () => {
+xtest('brandes', () => {
   const path = 'src/tests/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
@@ -649,7 +667,7 @@ test('layout all gv files from list', () => {
   for (const f of sortedList) {
     if (f.match('big(.*).gv')) continue // the parser bug
     //console.log(f)
-    if (i++ > 320) return
+    if (i++ > 160) return
     let dg: DrawingGraph
     try {
       dg = runLayout(join(path, f))
