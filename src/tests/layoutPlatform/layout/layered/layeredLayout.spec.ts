@@ -23,6 +23,7 @@ import {
 import {join} from 'path'
 import fs = require('fs')
 import {DrawingGraph} from '../../../../drawing/drawingGraph'
+import {Arrowhead} from '../../../../layoutPlatform/layout/core/arrowhead'
 
 const sortedList: string[] = [
   'ps_user_shapes.gv',
@@ -488,7 +489,19 @@ test('layer and node separation', () => {
   )
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
-test('arrowhead size', () => {
+
+test('arrowhead size default', () => {
+  const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
+  Arrowhead.defaultArrowheadLength *= 2
+  const geomGraph = createGeometry(dg.graph, nodeBoundaryFunc)
+  const ss = new SugiyamaLayoutSettings()
+  const ll = new LayeredLayout(geomGraph, ss, new CancelToken())
+  ll.run()
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/longArrows.svg')
+  t.writeGraph(geomGraph)
+})
+
+test('arrowhead size per edge', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   const geomGraph = createGeometry(dg.graph, nodeBoundaryFunc)
   for (const e of geomGraph.edges()) {
