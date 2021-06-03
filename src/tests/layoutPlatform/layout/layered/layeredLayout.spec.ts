@@ -244,6 +244,12 @@ test('b.gv', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
+test('b100', () => {
+  const dg = runLayout('src/tests/data/graphvis/b100.gv')
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/b100.svg')
+  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+})
+
 test('layered layout hookup abstract', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(dg.graph, nodeBoundaryFunc)

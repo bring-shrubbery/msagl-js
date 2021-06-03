@@ -143,7 +143,7 @@ export class XCoordsWithAlignment {
         predecessors[count++] = e.Source
       }
 
-      predecessors.sort(this.CompareByX)
+      predecessors.sort((a, b) => this.CompareByX(a, b))
       const m: number = count / 2
       if (m * 2 == count) {
         this.upperMedians[i] = new IntPair(predecessors[m - 1], predecessors[m])
@@ -171,7 +171,7 @@ export class XCoordsWithAlignment {
         successors[count++] = e.Target
       }
 
-      successors.sort(this.CompareByX)
+      successors.sort((a, b) => this.CompareByX(a, b))
       const m: number = count / 2
       if (m * 2 == count) {
         this.lowMedians[i] = new IntPair(successors[m - 1], successors[m])
