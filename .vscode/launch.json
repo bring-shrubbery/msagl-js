@@ -35,7 +35,7 @@
         "-i",
         "src/tests/layoutPlatform/layout/layered/layeredLayout.spec.ts",
         "-t",
-        "layout all gv files from list"
+        "pmpipe.gv"
       ],
       "console": "integratedTerminal"
     }

@@ -115,7 +115,7 @@ export class EdgePathsInserter {
             first = false
             span = e.LayerSpan
           } else {
-            e.LayerEdges = new LayerEdge[span]()
+            e.LayerEdges = new Array<LayerEdge>(span)
             if (span == 1)
               e.LayerEdges[0] = new LayerEdge(
                 e.source,
@@ -193,7 +193,7 @@ export class EdgePathsInserter {
     // number[][] newLayers = new number[la.Layers.length][];
     const newLayers = new Array<Array<number>>(this.la.Layers.length)
     //count new layer widths
-    const counts = new Array<number>(newLayers.length)
+    const counts = new Array<number>(newLayers.length).fill(0)
 
     for (const l of this.NLayering) counts[l]++
 
