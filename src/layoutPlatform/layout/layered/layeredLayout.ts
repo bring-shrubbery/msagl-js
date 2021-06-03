@@ -903,7 +903,7 @@ export class LayeredLayout extends Algorithm {
         const sep =
           sourceAnchor.leftAnchor +
           (targetAnchor.rightAnchor + this.sugiyamaSettings.NodeSeparation)
-        ie.separation = sep + 1
+        ie.separation = Math.ceil(sep + 0.5)
         edges.push(ie)
       }
     }
