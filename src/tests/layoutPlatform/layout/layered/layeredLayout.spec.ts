@@ -651,24 +651,25 @@ test('awilliams', () => {
   }
 })
 
-xtest('brandes', () => {
+test('brandes', () => {
   const path = 'src/tests/data/graphvis/'
-  let i = 0
-  for (const f of sortedList) {
+
+  for (let i = 0; i < sortedList.length && i < 217; i++) {
+    const f = sortedList[i]
     if (f.match('big(.*).gv')) continue // the parser bug
-    //console.log(f)
-    if (i++ > 320) return
+
+    // pmpipe.gv = sortedList[21] fails
     let dg: DrawingGraph
     try {
       const ss = new SugiyamaLayoutSettings()
-      //ss.BrandesThreshold = 1
+      ss.BrandesThreshold = 1
       dg = runLayout(join(path, f), ss)
     } catch (Error) {
       console.log('i = ' + i + ', file = ' + f + ' error:' + Error.message)
       expect(1).toBe(0)
     }
     if (dg != null) {
-      const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + f + '.svg')
+      const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + f + 'brandes.svg')
       t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
   }

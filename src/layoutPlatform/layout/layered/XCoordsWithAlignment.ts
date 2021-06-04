@@ -53,7 +53,7 @@ export class XCoordsWithAlignment {
   //  from bottom to top
   BT: boolean
 
-  get EnumRightUp(): number {
+  get CurrentEnumRightUp(): number {
     return (this.LR ? 0 : 1) + 2 * (this.BT ? 0 : 1)
   }
 
@@ -144,7 +144,7 @@ export class XCoordsWithAlignment {
       }
 
       predecessors.sort((a, b) => this.CompareByX(a, b))
-      const m: number = count / 2
+      const m: number = Math.floor(count / 2)
       if (m * 2 == count) {
         this.upperMedians[i] = new IntPair(predecessors[m - 1], predecessors[m])
       } else {
@@ -172,7 +172,7 @@ export class XCoordsWithAlignment {
       }
 
       successors.sort((a, b) => this.CompareByX(a, b))
-      const m: number = count / 2
+      const m: number = Math.floor(count / 2)
       if (m * 2 == count) {
         this.lowMedians[i] = new IntPair(successors[m - 1], successors[m])
       } else {
@@ -189,7 +189,7 @@ export class XCoordsWithAlignment {
     const b: number[] = new Array(4)
     let leastWidth = Number.MAX_VALUE
     for (let i = 0; i < 4; i++) {
-      let t: {a: number; b: number}
+      const t = {a: 0, b: 0}
       this.AssignmentBounds(i, t)
       a[i] = t.a
       b[i] = t.b
@@ -618,17 +618,14 @@ export class XCoordsWithAlignment {
     this.nodeSep = ns
   }
 
-  //  <summary>
-  // Calculate the alignment based on the marked edges and greedily resolving the remaining conflicts on the fly, without marking
-  //  </summary>
+  // Calculate the alignment based on the marked edges and greedily resolve the remaining conflicts on the fly, without marking
   Align() {
     this.CreateBlocks()
     this.AssignCoordinatesByLongestPath()
   }
 
   AssignCoordinatesByLongestPath() {
-    this.xCoords[this.EnumRightUp] = new Array(this.nOfVertices)
-    this.x = new Array(this.nOfVertices)
+    this.x = this.xCoords[this.CurrentEnumRightUp] = new Array(this.nOfVertices)
     // create the graph first
     const edges = new Array<PolyIntEdge>()
     for (let v = 0; v < this.nOfVertices; v++) {
