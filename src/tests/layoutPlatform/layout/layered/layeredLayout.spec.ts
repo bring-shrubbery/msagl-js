@@ -542,10 +542,11 @@ xtest('pmpipe.gv', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
-test('layered layout hookup abstract', () => {
+test('abstract', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(dg.graph, nodeBoundaryFunc)
   const ss = new SugiyamaLayoutSettings()
+  ss.BrandesThreshold = 1
   const ll = new LayeredLayout(
     GeomObject.getGeom(dg.graph) as GeomGraph,
     ss,
@@ -556,7 +557,7 @@ test('layered layout hookup abstract', () => {
   expect(ll.IntGraph.edges.length).toBe(68)
 
   ll.run()
-  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/abstract.svg')
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/abstractBr.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 

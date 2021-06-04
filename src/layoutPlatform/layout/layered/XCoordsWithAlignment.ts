@@ -630,16 +630,14 @@ export class XCoordsWithAlignment {
     const edges = new Array<PolyIntEdge>()
     for (let v = 0; v < this.nOfVertices; v++) {
       if (v == this.root[v]) {
-        let w: number = v
-        // w will be running over the block
-        for (; w != v; ) {
-          let rn: {neighbor: number}
-          if (this.TryToGetRightNeighbor(w, rn)) {
+        //v is a root
+        let w = v //w will be running over the block
+        do {
+          const rn = {neighbor: 0}
+          if (this.TryToGetRightNeighbor(w, rn))
             edges.push(new PolyIntEdge(v, this.root[rn.neighbor], null))
-          }
-
           w = this.align[w]
-        }
+        } while (w != v)
       }
     }
 
@@ -656,8 +654,8 @@ export class XCoordsWithAlignment {
         let vIsLeftMost = true
         let w: number = v
         // w is running over the block
-        for (; w != v; ) {
-          let wLn: {neighbor: number}
+        do {
+          const wLn = {neighbor: 0}
           if (this.TryToGetLeftNeighbor(w, wLn)) {
             if (vIsLeftMost) {
               vx =
@@ -673,7 +671,7 @@ export class XCoordsWithAlignment {
             }
           }
           w = this.align[w]
-        }
+        } while (w != v)
         this.x[v] = vx
       }
     }
@@ -689,8 +687,8 @@ export class XCoordsWithAlignment {
             XCoordsWithAlignment.infinity,
           )
           const xl: number = xLeftMost
-          for (; w != v; ) {
-            let wRn: {neighbor: number}
+          do {
+            const wRn = {neighbor: 0}
             if (this.TryToGetRightNeighbor(w, wRn)) {
               xLeftMost = this.LeftMost(
                 xLeftMost,
@@ -700,7 +698,7 @@ export class XCoordsWithAlignment {
             }
 
             w = this.align[w]
-          }
+          } while (w != v)
           if (xl != xLeftMost) {
             this.x[v] = xLeftMost
           }

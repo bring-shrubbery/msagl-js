@@ -1,7 +1,6 @@
 //  Follows the idea from Gansner etc 93, creating a special graph
 //  for x-coordinates calculation
 
-import {List} from 'lodash'
 import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
 import {Assert} from '../../utils/assert'
 import {LayerArrays} from './LayerArrays'
