@@ -536,7 +536,7 @@ test('fsm.gv', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
-test('process.gv', () => {
+xtest('process.gv', () => {
   const ss = new SugiyamaLayoutSettings()
   ss.BrandesThreshold = 1
   const dg = runLayout('src/tests/data/smallGraphs/process.gv', ss)
@@ -646,7 +646,7 @@ test('awilliams', () => {
   }
 })
 
-test('brandes', () => {
+xtest('brandes', () => {
   const path = 'src/tests/data/graphvis/'
 
   for (let i = 0; i < sortedList.length && i < 217; i++) {
