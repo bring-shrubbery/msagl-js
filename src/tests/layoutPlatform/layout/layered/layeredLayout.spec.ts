@@ -1,4 +1,7 @@
-import {SugiyamaLayoutSettings} from '../../../../layoutPlatform/layout/layered/SugiyamaLayoutSettings'
+import {
+  LayoutSettings,
+  SugiyamaLayoutSettings,
+} from '../../../../layoutPlatform/layout/layered/SugiyamaLayoutSettings'
 import SortedMap = require('collections/sorted-map')
 import {LayeredLayout} from '../../../../layoutPlatform/layout/layered/layeredLayout'
 import {Graph} from '../../../../layoutPlatform/structs/graph'
@@ -525,9 +528,19 @@ test('src/tests/data/graphvis/ER.gv', () => {
   createGeometry(dg.graph, nodeBoundaryFunc)
 })
 
-test('b.gv', () => {
-  const dg = runLayout('src/tests/data/graphvis/b.gv')
-  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/b.svg')
+test('fsm.gv', () => {
+  const ss = new SugiyamaLayoutSettings()
+  ss.BrandesThreshold = 1
+  const dg = runLayout('src/tests/data/graphvis/fsm.gv', ss)
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/fsmtest.svg')
+  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+})
+
+test('process.gv', () => {
+  const ss = new SugiyamaLayoutSettings()
+  ss.BrandesThreshold = 1
+  const dg = runLayout('src/tests/data/smallGraphs/process.gv', ss)
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/processBrandes.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
@@ -539,25 +552,6 @@ xtest('b100', () => {
 xtest('pmpipe.gv', () => {
   const dg = runLayout('src/tests/data/graphvis/pmpipe.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pmpipe.svg')
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
-})
-
-test('abstract', () => {
-  const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
-  createGeometry(dg.graph, nodeBoundaryFunc)
-  const ss = new SugiyamaLayoutSettings()
-  ss.BrandesThreshold = 1
-  const ll = new LayeredLayout(
-    GeomObject.getGeom(dg.graph) as GeomGraph,
-    ss,
-    new CancelToken(),
-  )
-
-  expect(ll.IntGraph.nodeCount).toBe(47)
-  expect(ll.IntGraph.edges.length).toBe(68)
-
-  ll.run()
-  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/abstractBr.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 

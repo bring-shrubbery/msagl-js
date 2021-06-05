@@ -1091,8 +1091,7 @@ export class SmoothedPolylineCalculator {
           }
         }
       } else {
-        Assert.assert(ic instanceof LineSegment)
-        // curve is a line from a thin hierarchy that's forbidden to touch
+        // curve is from a thin hierarchy that's forbidden to touch
         return true
       }
     }

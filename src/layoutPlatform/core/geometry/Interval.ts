@@ -10,7 +10,7 @@ export class Interval implements IRectangle<number> {
   //  <param name="end"></param>
   constructor(start: number, end: number) {
     this.start = start
-    this.End = end
+    this.end = end
   }
   area: number
   add(n: number): void {
@@ -34,7 +34,7 @@ export class Interval implements IRectangle<number> {
     const r = rectangle as Interval
     return new Interval(
       Math.max(this.start, r.start),
-      Math.min(this.End, r.End),
+      Math.min(this.end, r.end),
     )
   }
   intersects_rect(rectangle: IRectangle<number>): boolean {
@@ -50,9 +50,9 @@ export class Interval implements IRectangle<number> {
   //  <param name="a"></param>
   //  <param name="b"></param>
   static mkInterval(a: Interval, b: Interval) {
-    const i = new Interval(a.start, a.End)
+    const i = new Interval(a.start, a.end)
     i.add_d(b.start)
-    i.add_d(b.End)
+    i.add_d(b.end)
     return i
   }
 
@@ -63,8 +63,8 @@ export class Interval implements IRectangle<number> {
       this.start = v
     }
 
-    if (this.End < v) {
-      this.End = v
+    if (this.end < v) {
+      this.end = v
     }
   }
 
@@ -75,40 +75,32 @@ export class Interval implements IRectangle<number> {
     this.start = value
   }
 
-  //
-  get End(): number {
-    return this.end
-  }
-  set End(value: number) {
-    this.end = value
-  }
-
   //  the length
   get Length(): number {
-    return this.End - this.start
+    return this.end - this.start
   }
 
   //  return true if the value is inside the range
   //  <param name="v"></param>
   //  <returns></returns>
   contains_d(v: number): boolean {
-    return this.start <= v && v <= this.End
+    return this.start <= v && v <= this.end
   }
 
   //  bringe v into the range
   //  <param name="v"></param>
   //  <returns></returns>
   GetInRange(v: number): number {
-    return v < this.start ? this.start : v > this.End ? this.End : v
+    return v < this.start ? this.start : v > this.end ? this.end : v
   }
 
   //  returns true if and only if two intervals are intersecting
   //  <param name="other"></param>
   intersects(other: Interval): boolean {
-    if (other.start > this.End + GeomConstants.distanceEpsilon) {
+    if (other.start > this.end + GeomConstants.distanceEpsilon) {
       return false
     }
 
-    return !(other.End < this.start - GeomConstants.distanceEpsilon)
+    return !(other.end < this.start - GeomConstants.distanceEpsilon)
   }
 }

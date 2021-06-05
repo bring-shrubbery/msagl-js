@@ -239,8 +239,7 @@ export class XCoordsWithAlignment {
       t.b = 0
     } else {
       this.x = this.xCoords[i]
-      t.b = this.x[0]
-      t.a = this.x[0]
+      t.a = t.b = this.x[0]
       for (let j = 1; j < this.nOfVertices; j++) {
         const r: number = this.x[j]
         if (r < t.a) {
@@ -415,7 +414,9 @@ export class XCoordsWithAlignment {
 
       // now targetPos points to the right of the innerEdge target at lowerLayer
       if (innerEdge != null) {
-        let positionOfInnerEdgeSource: number = this.Pos(this.Source(innerEdge))
+        const positionOfInnerEdgeSource: number = this.Pos(
+          this.Source(innerEdge),
+        )
         // We are still not in the main loop.
         // We mark conflicting edges with targets to the left of targetPos,
         // That of course means
@@ -466,7 +467,6 @@ export class XCoordsWithAlignment {
           }
         }
 
-        positionOfInnerEdgeSource = this.Pos(this.Source(innerEdge))
         // look for conflicting edges with targets to the right from the target of innerEdge
         for (
           let k: number = this.NextRight(this.Pos(this.Target(innerEdge)));
@@ -721,7 +721,6 @@ export class XCoordsWithAlignment {
       t.neighbor = layer[neighborPos]
       return true
     } else {
-      t.neighbor = 0
       return false
     }
   }
@@ -734,7 +733,6 @@ export class XCoordsWithAlignment {
       t.neighbor = layer[neighborPos]
       return true
     } else {
-      t.neighbor = 0
       return false
     }
   }
@@ -798,11 +796,8 @@ export class XCoordsWithAlignment {
     this.markedEdges.addNN(ie.Source, ie.Target)
   }
 
-  //  <summary>
   //  Assigning xcoords starting from roots
-  //  </summary>
-  /* const */
-  static infinity: number = Number.MAX_VALUE
+  static infinity = 10000000
 
   //  <summary>
   //  Calculates the minimum separation between two neighboring vertices: if u is to the left of v on the same layer return positive
@@ -812,17 +807,15 @@ export class XCoordsWithAlignment {
   //  <param name="v"></param>
   //  <returns></returns>
   DeltaBetweenVertices(u: number, v: number): number {
-    let sign = 1
     if (this.Pos(u) > this.Pos(v)) {
       // swap u and v
       const t: number = u
       u = v
       v = t
-      sign = -1
     }
 
     const anchorSepar: number =
       this.anchors[u].rightAnchor + this.anchors[v].leftAnchor
-    return (anchorSepar + this.nodeSep) * sign
+    return anchorSepar + this.nodeSep
   }
 }

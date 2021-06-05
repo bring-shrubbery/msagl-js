@@ -6,6 +6,7 @@ import {LayerArrays} from './LayerArrays'
 import {LayerEdge} from './LayerEdge'
 import {PolyIntEdge} from './polyIntEdge'
 import {ProperLayeredGraph} from './ProperLayeredGraph'
+import SortedMap = require('collections/sorted-map')
 
 // Preparing the graph for x-coordinate calculation by inserting dummy nodes into the layers
 export class LayerInserter {
@@ -196,7 +197,7 @@ export class LayerInserter {
   // dummy nodes.
   SortNewOddLayers() {
     for (let i = 1; i < this.Nla.Layers.length; i += 2) {
-      const sd = new Map<number, number | number[]>()
+      const sd = new SortedMap<number, number | number[]>()
       const layer = this.Nla.Layers[i]
       for (const v of layer) {
         //find unique predecessor and successor
