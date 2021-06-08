@@ -36,7 +36,8 @@ export class LayerArrays {
     //copy the layers itself
     const nls = new Array<number[]>(this.layers.length - dropVal)
     for (let i = 0; i < this.layers.length; i++) {
-      if (this.layers[i].length > 0) nls[i - drop[i]] = [...this.layers[i]]
+      if (this.layers[i].length > 0)
+        nls[i - drop[i]] = Array.from(this.layers[i])
     }
 
     const la = new LayerArrays(ny)

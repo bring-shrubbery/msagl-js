@@ -331,7 +331,13 @@ export class CdtSweeper extends Algorithm {
   }
 
   Show(fn: string) {
-    CdtSweeper.ShowCdt([...this.triangles.values()], this.front, null, null, fn)
+    CdtSweeper.ShowCdt(
+      Array.from(this.triangles.values()),
+      this.front,
+      null,
+      null,
+      fn,
+    )
   }
 
   static ShowCdt(

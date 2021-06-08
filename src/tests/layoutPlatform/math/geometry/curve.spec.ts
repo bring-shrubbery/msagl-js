@@ -13,7 +13,7 @@ import {Rectangle} from './../../../../layoutPlatform/math/geometry/rectangle'
 
 test('tail', () => {
   const a = [1, 2, 3]
-  const [, ...b] = a
+  const b = a.slice(1)
 
   expect(b[0]).toBe(a[1])
 })

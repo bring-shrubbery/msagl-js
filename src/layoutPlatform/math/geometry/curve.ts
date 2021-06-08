@@ -2058,7 +2058,7 @@ function interpolate(
     const m = 0.5 * (a + b)
     const mp = s.value(m)
     r = interpolate(a, ap, m, mp, s, eps)
-    const [, ...tail] = interpolate(m, mp, b, bp, s, eps)
+    const tail = interpolate(m, mp, b, bp, s, eps).slice(1)
     r = r.concat(tail)
   }
   return r

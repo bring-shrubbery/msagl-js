@@ -4,7 +4,7 @@ test('entity graphs', () => {
   const c = Graph.mkGraph('c', null)
   const b = Graph.mkGraph('b', c)
   const a = Graph.mkGraph('a', b)
-  const bc = [...a.getAncestors()]
+  const bc = Array.from(a.getAncestors())
   expect(bc.length).toBe(2)
   expect(a.isDescendantOf(b) && a.isDescendantOf(c)).toBe(true)
   const e = Graph.mkGraph('e', null)

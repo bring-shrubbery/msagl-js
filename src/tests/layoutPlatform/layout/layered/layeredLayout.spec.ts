@@ -742,8 +742,8 @@ xtest('layout all gv files', () => {
 })
 
 function duplicateDisconnected(g: GeomGraph, suffix: string) {
-  const nodes: GeomNode[] = [...g.shallowNodes()]
-  const edges: GeomEdge[] = [...g.edges()]
+  const nodes: GeomNode[] = Array.from(g.shallowNodes())
+  const edges: GeomEdge[] = Array.from(g.edges())
   for (const n of nodes) {
     g.setNode(n.node.id + suffix, {width: n.width, height: n.height})
   }

@@ -218,7 +218,9 @@ export class RTree<T, P> {
   public GetAllIntersecting(queryRegion: IRectangle<P>): T[] {
     return this._rootNode == null || this.Count == 0
       ? []
-      : [...this._rootNode.GetNodeItemsIntersectingRectangle(queryRegion)]
+      : Array.from(
+          this._rootNode.GetNodeItemsIntersectingRectangle(queryRegion),
+        )
   }
 
   public OneIntersecting(queryRegion: IRectangle<P>): {intersectedLeaf: T} {
