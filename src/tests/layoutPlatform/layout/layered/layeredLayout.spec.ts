@@ -573,7 +573,7 @@ xtest('b100', () => {
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/b100.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
-xtest('pmpipe.gv', () => {
+test('pmpipe.gv', () => {
   const dg = runLayout('src/tests/data/graphvis/pmpipe.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pmpipe.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)

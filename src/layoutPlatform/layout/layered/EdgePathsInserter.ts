@@ -1,9 +1,10 @@
 // This class is used of the case when there are multiple edges, but there is no need to duplicate layers.
 
 import {BasicGraph} from '../../structs/BasicGraph'
+import {Assert} from '../../utils/assert'
 import {GeomNode} from '../core/geomNode'
 import {Database} from './Database'
-import {LayerArrays} from './LayerArrays'
+import {LayerArrays, layersAreCorrect} from './LayerArrays'
 import {LayerEdge} from './LayerEdge'
 import {LayerInserter} from './LayerInserter'
 import {PolyIntEdge} from './polyIntEdge'
@@ -50,13 +51,12 @@ export class EdgePathsInserter {
   }
 
   InsertPaths() {
+    Assert.assert(layersAreCorrect(this.la))
     this.CreateFullLayeredGraph()
-
     this.InitNewLayering()
-
     this.MapVirtualNodesToEdges()
-
     this.WidenOriginalLayers()
+    Assert.assert(layersAreCorrect(this.la))
   }
 
   WidenOriginalLayers() {
@@ -100,7 +100,9 @@ export class EdgePathsInserter {
         if (!this.EdgeIsFlat(e))
           //the edge is not flat
           for (const le of e.LayerEdges)
-            if (le.Target != e.target) this.virtNodesToIntEdges[le.Target] = e
+            if (le.Target != e.target) {
+              this.virtNodesToIntEdges.set(le.Target, e)
+            }
   }
 
   private CreateFullLayeredGraph() {

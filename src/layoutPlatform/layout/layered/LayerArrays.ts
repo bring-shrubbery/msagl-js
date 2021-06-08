@@ -128,16 +128,19 @@ export class LayerArrays {
 export function layersAreCorrect(layerArrays: LayerArrays): boolean {
   if (layerArrays.layers == null) return true
   for (const layer of layerArrays.layers) {
-    if (layerHasDublicates(layer)) {
+    if (layerHasDublicatesOrUndef(layer)) {
       return false
     }
   }
   return true
 }
 
-export function layerHasDublicates(layer: number[]) {
+export function layerHasDublicatesOrUndef(layer: number[]) {
   const s = new Set<number>()
   for (const v of layer) {
+    if (v == undefined) {
+      return true
+    }
     if (s.has(v)) return true
     s.add(v)
   }
