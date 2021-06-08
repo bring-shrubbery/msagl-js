@@ -472,6 +472,7 @@ test('clusters', () => {
   new Edge(a, bcd, root) // a->bc
   new Edge(bcd, efg, root)
   new Edge(efg, a, root)
+  new Edge(a, b, root) // the layout for this edge is not implemented yet, so it will not appear in the SVG file
   // Now we create geometry data neccessary for layout
   const rootGeom = createGeometry(root, nodeBoundaryFunc, labelRectFunc)
 
