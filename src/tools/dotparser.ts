@@ -15,6 +15,8 @@ import {DrawingEdge} from '../drawing/drawingEdge'
 import {ArrowTypeEnum} from '../drawing/arrawTypeEnum'
 import {RankEnum} from '../drawing/rankEnum'
 import {LayerDirectionEnum} from '../layoutPlatform/layout/layered/layerDirectionEnum'
+import {Label} from '../layoutPlatform/structs/label'
+import {DrawingLabel} from '../drawing/drawingLabel'
 
 export enum OrderingEnum {
   in,
@@ -87,10 +89,14 @@ function parseEdge(so: any, to: any, dg: DrawingGraph, o: any): DrawingEdge[] {
     }
     return drObjs
   }
-  const geomEdge = new Edge(sn, tn, dg.graph)
-  nc.addEdge(geomEdge)
-  const drawingEdge = new DrawingEdge(geomEdge)
+  const edge = new Edge(sn, tn, dg.graph)
+  nc.addEdge(edge)
+  const drawingEdge = new DrawingEdge(edge)
   fillDrawingObjectAttrs(o, drawingEdge)
+  if (drawingEdge.labelText) {
+    edge.label = new Label(edge, drawingEdge.labelText)
+    drawingEdge.label = new DrawingLabel(drawingEdge.labelText)
+  }
   return [drawingEdge]
 }
 

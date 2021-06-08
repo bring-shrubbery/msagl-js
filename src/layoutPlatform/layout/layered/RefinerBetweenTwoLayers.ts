@@ -357,7 +357,7 @@ export class RefinerBetweenTwoLayers {
   }
 
   IsLabel(u: number): boolean {
-    return this.anchors[u].representsLabel
+    return this.anchors[u].hasLabel
   }
 
   private NodeUCanBeCrossedByNodeV(u: number, v: number): boolean {

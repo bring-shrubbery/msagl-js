@@ -1,4 +1,5 @@
-import {Node, Label} from './../../../../layoutPlatform/structs/node'
+import {Node} from './../../../../layoutPlatform/structs/node'
+
 import {Edge} from './../../../../layoutPlatform/structs/edge'
 import {Graph} from './../../../../layoutPlatform/structs/graph'
 import {GeomNode} from './../../../../layoutPlatform/layout/core/geomNode'
@@ -11,6 +12,7 @@ import {CurveFactory} from './../../../../layoutPlatform/math/geometry/curveFact
 import {Point} from './../../../../layoutPlatform/math/geometry/point'
 import {LineSegment} from './../../../../layoutPlatform/math/geometry/lineSegment'
 import {SvgDebugWriter} from './../../../../layoutPlatform/math/geometry/svgDebugWriter'
+import {Label} from '../../../../layoutPlatform/structs/label'
 
 describe('arrowhead', () => {
   test('trim edge no arrowheads', () => {
@@ -41,9 +43,12 @@ describe('arrowhead', () => {
 
     const ab = new Edge(a, b, null)
     const gab = new GeomEdge(ab)
-    const label = new Label('ab', ab)
+    const label = new Label(ab, 'ab')
     label.parent = ab
-    gab.label = new GeomLabel(label)
+    gab.label = new GeomLabel(
+      Rectangle.mkPP(new Point(0, 0), new Point(10, 5)),
+      label,
+    )
     const m = Point.middle(ga.center, gb.center)
 
     gab.label.boundingBox = Rectangle.mkPP(m, m.add(new Point(10, 10)))

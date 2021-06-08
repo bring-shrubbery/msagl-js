@@ -107,7 +107,7 @@ export class Routing extends Algorithm {
           const dx: number =
             this.settings.NodeSeparation + (this.settings.MinNodeWidth + offset)
           const dy: number = anchor.bottomAnchor / 2
-          const p0: Point = anchor.Origin
+          const p0: Point = anchor.origin
           const p1: Point = p0.add(new Point(0, dy))
           const p2: Point = p0.add(new Point(dx, dy))
           const p3: Point = p0.add(new Point(dx, dy * -1))
@@ -197,10 +197,10 @@ export class Routing extends Algorithm {
   // }
   static UpdateLabel(e: GeomEdge, anchor: Anchor) {
     let labelSide: LineSegment = null
-    if (anchor.labelToTheRightOfAnchorCenter) {
+    if (anchor.labelIsToTheRightOfTheSpline) {
       e.label.center = new Point(anchor.x + anchor.rightAnchor / 2, anchor.y)
       labelSide = LineSegment.mkPP(e.labelBBox.leftTop, e.labelBBox.leftBottom)
-    } else if (anchor.labelToTheLeftOfAnchorCenter) {
+    } else if (anchor.labelIsToTheLeftOfTheSpline) {
       e.label.center = new Point(anchor.x - anchor.leftAnchor / 2, anchor.y)
       labelSide = LineSegment.mkPP(
         e.labelBBox.rightTop,

@@ -1,6 +1,17 @@
 import {GeomObject} from './geomObject'
 import {Rectangle} from './../../math/geometry/rectangle'
+import {AttrContainer} from '../../structs/attrContainer'
+import {Label} from '../../structs/label'
+import {Assert} from '../../utils/assert'
 export class GeomLabel extends GeomObject {
+  constructor(boundingBox: Rectangle, label: Label) {
+    super(label)
+    Assert.assert(label instanceof Label)
+    this.boundingBox = boundingBox
+  }
+  get label() {
+    return <Label>this.attrCont
+  }
   boundingBox: Rectangle
   get width() {
     return this.boundingBox.width

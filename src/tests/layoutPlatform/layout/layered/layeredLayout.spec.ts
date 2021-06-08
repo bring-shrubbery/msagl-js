@@ -27,6 +27,10 @@ import {join} from 'path'
 import fs = require('fs')
 import {DrawingGraph} from '../../../../drawing/drawingGraph'
 import {Arrowhead} from '../../../../layoutPlatform/layout/core/arrowhead'
+import {DrawingEdge} from '../../../../drawing/drawingEdge'
+import {DrawingObject} from '../../../../drawing/drawingObject'
+import {GeomLabel} from '../../../../layoutPlatform/layout/core/geomLabel'
+import {Assert} from '../../../../layoutPlatform/utils/assert'
 
 const sortedList: string[] = [
   'ps_user_shapes.gv',
@@ -293,12 +297,13 @@ const sortedList: string[] = [
 function createGeometry(
   g: Graph,
   nodeBoundaryFunc: (string) => ICurve,
+  labelRect: (string) => Rectangle,
 ): GeomGraph {
   for (const n of g.shallowNodes) {
     if (n.isGraph) {
       const subG = (n as unknown) as Graph
       new GeomGraph(subG, nodeBoundaryFunc(n.id).boundingBox.size)
-      createGeometry(subG, nodeBoundaryFunc)
+      createGeometry(subG, nodeBoundaryFunc, labelRect)
     } else {
       const gn = new GeomNode(n)
       //const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
@@ -306,7 +311,12 @@ function createGeometry(
     }
   }
   for (const e of g.edges) {
-    new GeomEdge(e)
+    const ge = new GeomEdge(e)
+    const de: DrawingEdge = <DrawingEdge>DrawingObject.getDrawingObj(e)
+    if (de.label) {
+      Assert.assert(e.label != null)
+      ge.label = new GeomLabel(labelRect(de.labelText), e.label)
+    }
   }
   return new GeomGraph(g, nodeBoundaryFunc(g.id).boundingBox)
 }
@@ -335,7 +345,7 @@ test('map test', () => {
 test('layered layout glued graph', () => {
   const graphString = 'digraph G {\n' + 'a -> b\n' + 'a -> b}'
   const g = parseDotString(graphString)
-  createGeometry(g.graph, nodeBoundaryFunc)
+  createGeometry(g.graph, nodeBoundaryFunc, labelRectFunc)
   const ll = new LayeredLayout(
     GeomObject.getGeom(g.graph) as GeomGraph,
     new SugiyamaLayoutSettings(),
@@ -436,7 +446,7 @@ test('disconnected comps', () => {
 })
 test('margins', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
-  createGeometry(dg.graph, nodeBoundaryFunc)
+  createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const ss = new SugiyamaLayoutSettings()
   ss.margins = {left: 100, right: 10, top: 170, bottom: 50}
   const ll = new LayeredLayout(
@@ -453,7 +463,7 @@ test('margins', () => {
 
 test('clusters', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/clust.gv')
-  createGeometry(dg.graph, nodeBoundaryFunc)
+  createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(
     GeomObject.getGeom(dg.graph) as GeomGraph,
@@ -467,7 +477,7 @@ test('clusters', () => {
 
 test('layer and node separation', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
-  createGeometry(dg.graph, nodeBoundaryFunc)
+  createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const ss = new SugiyamaLayoutSettings()
   ss.LayerSeparation = 100
   let ll = new LayeredLayout(
@@ -496,7 +506,7 @@ test('layer and node separation', () => {
 test('arrowhead size default', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   Arrowhead.defaultArrowheadLength *= 2
-  const geomGraph = createGeometry(dg.graph, nodeBoundaryFunc)
+  const geomGraph = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(geomGraph, ss, new CancelToken())
   ll.run()
@@ -506,7 +516,7 @@ test('arrowhead size default', () => {
 
 test('arrowhead size per edge', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
-  const geomGraph = createGeometry(dg.graph, nodeBoundaryFunc)
+  const geomGraph = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   for (const e of geomGraph.edges()) {
     if (e.edgeGeometry.sourceArrowhead) {
       e.edgeGeometry.sourceArrowhead.length /= 2
@@ -525,18 +535,32 @@ test('arrowhead size per edge', () => {
 test('src/tests/data/graphvis/ER.gv', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/ER.gv')
   if (dg == null) return
-  createGeometry(dg.graph, nodeBoundaryFunc)
+  createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
 })
 
-test('fsm.gv', () => {
+test('b.gv', () => {
+  const ss = new SugiyamaLayoutSettings()
+  ss.BrandesThreshold = 1
+  const dg = runLayout('src/tests/data/graphvis/b.gv', ss)
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/btest.svg')
+  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+})
+test('fsm.gv brandes', () => {
   const ss = new SugiyamaLayoutSettings()
   ss.BrandesThreshold = 1
   const dg = runLayout('src/tests/data/graphvis/fsm.gv', ss)
-  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/fsmtest.svg')
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/fsmbrandes.svg')
+  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+})
+test('fsm.gv', () => {
+  const ss = new SugiyamaLayoutSettings()
+  const dg = runLayout('src/tests/data/graphvis/fsm.gv', ss)
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/fsmNetworkSimplex.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
 xtest('process.gv', () => {
+  // this is not a directed graph:todo fix the parser
   const ss = new SugiyamaLayoutSettings()
   ss.BrandesThreshold = 1
   const dg = runLayout('src/tests/data/smallGraphs/process.gv', ss)
@@ -589,7 +613,7 @@ function runLayout(
 ) {
   const dg = parseDotGraph(fname)
   if (dg == null) return null
-  createGeometry(dg.graph, nodeBoundaryFunc)
+  createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const ll = new LayeredLayout(
     GeomObject.getGeom(dg.graph) as GeomGraph,
     ss,
@@ -758,4 +782,7 @@ function nodeBoundaryFunc(id: string): ICurve {
     30.2 / 10, // tsize.height / 10,
     new Point(0, 0),
   )
+}
+function labelRectFunc(text: string): Rectangle {
+  return Rectangle.mkPP(new Point(0, 0), new Point(text.length * 5, 10.5))
 }

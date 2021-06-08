@@ -107,7 +107,7 @@ export class SmoothedPolylineCalculator {
         Routing.GetNodeKind(uOffset, this.edgePath),
       )) {
         const a: Anchor = this.anchors[v]
-        if (westMostAnchor == null || westMostAnchor.Origin.x > a.Origin.x) {
+        if (westMostAnchor == null || westMostAnchor.origin.x > a.origin.x) {
           westMostAnchor = a
         }
 
@@ -117,7 +117,7 @@ export class SmoothedPolylineCalculator {
       if (westMostAnchor != null) {
         this.thinRightNodes.push(
           LineSegment.mkLinePXY(
-            westMostAnchor.Origin,
+            westMostAnchor.origin,
             this.originalGraph.right,
             westMostAnchor.y,
           ).pNodeOverICurve(),
@@ -164,9 +164,9 @@ export class SmoothedPolylineCalculator {
         const a: Anchor = this.anchors[eastMost]
         this.thinWestNodes.push(
           LineSegment.mkLinePXY(
-            a.Origin,
+            a.origin,
             this.originalGraph.left,
-            a.Origin.y,
+            a.origin.y,
           ).pNodeOverICurve(),
         )
       }
@@ -260,7 +260,7 @@ export class SmoothedPolylineCalculator {
   }
 
   IsLabel(u: number): boolean {
-    return this.anchors[u].representsLabel
+    return this.anchors[u].hasLabel
   }
 
   private NodeUCanBeCrossedByNodeV(u: number, v: number): boolean {
@@ -728,7 +728,7 @@ export class SmoothedPolylineCalculator {
 
   private OriginToOriginSegCrossesAnchorSide(a: Anchor, b: Anchor): boolean {
     Assert.assert(a.y > b.y)
-    const seg = LineSegment.mkPP(a.Origin, b.Origin)
+    const seg = LineSegment.mkPP(a.origin, b.origin)
     return (
       (a.x < b.x &&
         Curve.CurvesIntersect(
@@ -861,7 +861,7 @@ export class SmoothedPolylineCalculator {
   }
 
   EdgePathPoint(i: number): Point {
-    return this.anchors[this.EdgePathNode(i)].Origin
+    return this.anchors[this.EdgePathNode(i)].origin
   }
 
   EdgePathNode(i: number): number {

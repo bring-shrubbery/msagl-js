@@ -50,7 +50,6 @@ export class LayeredLayout extends Algorithm {
   constrainedOrdering: ConstrainedOrdering
   properLayeredGraph: ProperLayeredGraph
   LayersAreDoubled = false
-  Brandes: boolean
   anchors: Anchor[]
   xLayoutGraph: XLayoutGraph
 
@@ -217,7 +216,7 @@ export class LayeredLayout extends Algorithm {
       i < this.IntGraph.nodeCount && i < this.database.Anchors.length;
       i++
     )
-      this.IntGraph.nodes[i].center = this.database.Anchors[i].Origin
+      this.IntGraph.nodes[i].center = this.database.Anchors[i].origin
 
     if (this.sugiyamaSettings.GridSizeByX > 0) {
       for (let i = 0; i < this.originalGraph.shallowNodeCount; i++) {
@@ -594,9 +593,8 @@ export class LayeredLayout extends Algorithm {
     }
   }
 
-  DecideIfUsingFastXCoordCalculation(layerArrays: LayerArrays) {
-    if (layerArrays.x.length >= this.sugiyamaSettings.BrandesThreshold)
-      this.Brandes = true
+  UseBrandesXCalculations(layerArrays: LayerArrays): boolean {
+    return layerArrays.x.length >= this.sugiyamaSettings.BrandesThreshold
   }
 
   CalculateAnchorsAndYPositions(layerArrays: LayerArrays) {
@@ -627,13 +625,13 @@ export class LayeredLayout extends Algorithm {
         const sp = this.GetSuccessorAndPredecessor(i)
         if (!TryToPutLabelOutsideOfAngle(a, sp.predecessor, sp.successor)) {
           const sumNow =
-            sp.predecessor.Origin.sub(a.Origin).length +
-            sp.successor.Origin.sub(a.Origin).length
+            sp.predecessor.origin.sub(a.origin).length +
+            sp.successor.origin.sub(a.origin).length
           const nx = a.right - a.leftAnchor //new potential anchor center
           const xy = new Point(nx, a.y)
           const sumWouldBe =
-            sp.predecessor.Origin.sub(xy).length +
-            sp.successor.Origin.sub(xy).length
+            sp.predecessor.origin.sub(xy).length +
+            sp.successor.origin.sub(xy).length
           if (sumWouldBe < sumNow)
             //we need to swap
             PutLabelToTheLeft(a)
@@ -663,11 +661,9 @@ export class LayeredLayout extends Algorithm {
     const layerArrays = this.CalculateYLayers()
 
     if (this.constrainedOrdering == null) {
-      this.DecideIfUsingFastXCoordCalculation(layerArrays)
-
       this.CalculateAnchorsAndYPositions(layerArrays)
-
-      if (this.Brandes) this.CalculateXPositionsByBrandes(layerArrays)
+      if (this.UseBrandesXCalculations(layerArrays))
+        this.CalculateXPositionsByBrandes(layerArrays)
       else this.CalculateXLayersByGansnerNorth(layerArrays)
     } else this.anchors = this.database.Anchors
 
@@ -1247,9 +1243,9 @@ function TryToPutLabelOutsideOfAngle(
   if (a.labelIsToTheRightOfTheSpline) {
     if (
       Point.getTriangleOrientation(
-        predecessor.Origin,
-        a.Origin,
-        successor.Origin,
+        predecessor.origin,
+        a.origin,
+        successor.origin,
       ) == TriangleOrientation.Clockwise
     )
       return true
@@ -1260,9 +1256,9 @@ function TryToPutLabelOutsideOfAngle(
     PutLabelToTheLeft(a)
     if (
       Point.getTriangleOrientation(
-        predecessor.Origin,
-        a.Origin,
-        successor.Origin,
+        predecessor.origin,
+        a.origin,
+        successor.origin,
       ) == TriangleOrientation.Counterclockwise
     )
       return true

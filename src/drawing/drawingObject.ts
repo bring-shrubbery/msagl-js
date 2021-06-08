@@ -8,6 +8,8 @@ import {StyleEnum} from './styleEnum'
 import {RankEnum} from './rankEnum'
 
 export abstract class DrawingObject {
+  attrCont: AttrContainer // this is the field from main graph - keep the connection with the underlying graph
+
   // not all attributes can be used in derived classes
   static defaultLabelFontName = 'Times-Roman'
   static defaultLabelFontSize = 12
@@ -20,7 +22,6 @@ export abstract class DrawingObject {
   taillabel: string
   fontColor: Color
   styleEnum: StyleEnum
-  attrCont: AttrContainer // this is the field from main graph
   shapeEnum: ShapeEnum
   pencolor: Color
   peripheries: number

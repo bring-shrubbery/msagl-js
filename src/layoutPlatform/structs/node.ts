@@ -4,17 +4,6 @@ import {Graph} from './graph'
 import {Assert} from './../utils/assert'
 import {NodeCollection} from './nodeCollection'
 
-export class Label extends Entity {
-  text: string
-  toString() {
-    return this.text
-  }
-  constructor(t: string, parent: Entity) {
-    super(parent)
-    this.text = t
-  }
-}
-
 export class Node extends Entity {
   private _id: string
   public get id(): string {

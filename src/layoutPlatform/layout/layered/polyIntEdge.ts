@@ -1,14 +1,104 @@
-import {IEdge} from './../../structs/iedge'
 import {IIntEdge} from './iIntEdge'
 import {GeomEdge} from './../core/geomEdge'
 import {ICurve} from './../../math/geometry/icurve'
 import {LayerEdge} from './LayerEdge'
 import {Anchor} from './anchor'
 import {Assert} from '../../utils/assert'
+import {LineSegment} from '../../math/geometry/lineSegment'
+import {Curve} from '../../math/geometry/curve'
+import {Point} from '../../math/geometry/point'
 
 class Routing {
-  static updateLabel(edge: GeomEdge, anchor: Anchor) {
-    throw new Error()
+  static FindClosestPoints(
+    segmentInFrontOfLabel: ICurve,
+    labelSide: LineSegment,
+  ): {curveClosestPoint: Point; labelSideClosest: Point} {
+    const minDistOutput = Curve.minDistWithinIntervals(
+      segmentInFrontOfLabel,
+      labelSide,
+      segmentInFrontOfLabel.parStart,
+      segmentInFrontOfLabel.parEnd,
+      labelSide.parStart,
+      labelSide.parEnd,
+      (segmentInFrontOfLabel.parStart + segmentInFrontOfLabel.parEnd) / 2,
+      (labelSide.parStart + labelSide.parEnd) / 2,
+    )
+    if (minDistOutput) {
+      return {
+        curveClosestPoint: minDistOutput.aX,
+        labelSideClosest: minDistOutput.bX,
+      }
+    }
+    return
+  }
+
+  static GetSegmentInFrontOfLabel(edgeCurve: ICurve, labelY: number): ICurve {
+    if (edgeCurve instanceof Curve) {
+      for (const seg of (<Curve>edgeCurve).segs)
+        if ((seg.start.y - labelY) * (seg.end.y - labelY) <= 0) return seg
+    } else {
+      Assert.assert(false)
+    }
+    return null
+  }
+
+  static ShiftLabel(
+    e: GeomEdge,
+    curveClosestPoint: Point,
+    labelSideClosest: Point,
+  ) {
+    const w = e.lineWidth / 2
+    const shift = curveClosestPoint.sub(labelSideClosest)
+    const shiftLength = shift.length
+    //   SugiyamaLayoutSettings.Show(e.Curve, shiftLength > 0 ? new LineSegment(curveClosestPoint, labelSideClosest) : null, PolyFromBox(e.LabelBBox));
+    if (shiftLength > w)
+      e.label.center = e.label.center.add(
+        shift.div(shiftLength * (shiftLength - w)),
+      )
+  }
+
+  static updateLabel(e: GeomEdge, anchor: Anchor) {
+    let labelSide: LineSegment = null
+    if (anchor.labelIsToTheRightOfTheSpline) {
+      e.label.center = new Point(anchor.x + anchor.rightAnchor / 2, anchor.y)
+      labelSide = LineSegment.mkPP(e.labelBBox.leftTop, e.labelBBox.leftBottom)
+    } else if (anchor.labelIsToTheLeftOfTheSpline) {
+      e.label.center = new Point(anchor.x - anchor.leftAnchor / 2, anchor.y)
+      labelSide = LineSegment.mkPP(
+        e.labelBBox.rightTop,
+        e.labelBBox.rightBottom,
+      )
+    }
+    const segmentInFrontOfLabel = Routing.GetSegmentInFrontOfLabel(
+      e.curve,
+      e.label.center.y,
+    )
+    if (segmentInFrontOfLabel == null) return
+    if (
+      Curve.getAllIntersections(e.curve, Curve.polyFromBox(e.labelBBox), false)
+        .length == 0
+    ) {
+      const t = Routing.FindClosestPoints(segmentInFrontOfLabel, labelSide)
+      if (t) {
+        //shift the label if needed
+        Routing.ShiftLabel(e, t.curveClosestPoint, t.labelSideClosest)
+      } else {
+        //assume that the distance is reached at the ends of labelSideClosest
+        const u = segmentInFrontOfLabel.closestParameter(labelSide.start)
+        const v = segmentInFrontOfLabel.closestParameter(labelSide.end)
+        if (
+          segmentInFrontOfLabel.value(u).sub(labelSide.start).length <
+          segmentInFrontOfLabel.value(v).sub(labelSide.end).length
+        ) {
+          t.curveClosestPoint = segmentInFrontOfLabel.value(u)
+          t.labelSideClosest = labelSide.start
+        } else {
+          t.curveClosestPoint = segmentInFrontOfLabel.value(v)
+          t.labelSideClosest = labelSide.end
+        }
+        Routing.ShiftLabel(e, t.curveClosestPoint, t.labelSideClosest)
+      }
+    }
   }
 }
 
@@ -45,7 +135,9 @@ export class PolyIntEdge implements IIntEdge {
     this.separation = separation
   }
 
-  hasLabel: boolean
+  get hasLabel(): boolean {
+    return this.edge.label != null
+  }
 
   get labelWidth() {
     return this.edge.label.width

@@ -807,15 +807,22 @@ export class XCoordsWithAlignment {
   //  <param name="v"></param>
   //  <returns></returns>
   DeltaBetweenVertices(u: number, v: number): number {
+    let sign: number
     if (this.Pos(u) > this.Pos(v)) {
       // swap u and v
       const t: number = u
       u = v
       v = t
+      sign = -1
+    } else {
+      sign = 1
     }
 
-    const anchorSepar: number =
-      this.anchors[u].rightAnchor + this.anchors[v].leftAnchor
-    return anchorSepar + this.nodeSep
+    return (
+      (this.anchors[u].rightAnchor +
+        this.anchors[v].leftAnchor +
+        this.nodeSep) *
+      sign
+    )
   }
 }

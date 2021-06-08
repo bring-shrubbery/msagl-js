@@ -1,5 +1,6 @@
 import {Entity} from './entity'
 import {Graph} from './graph'
+import {Label} from './label'
 import {Node} from './node'
 export class Edge extends Entity {
   source: Node
@@ -21,4 +22,5 @@ export class Edge extends Entity {
   isInterGraphEdge(): boolean {
     return this.source.parent != this.target.parent
   }
+  label: Label
 }

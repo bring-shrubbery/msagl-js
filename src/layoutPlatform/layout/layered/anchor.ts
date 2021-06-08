@@ -14,14 +14,6 @@ import {GeomConstants} from './../../math/geometry/geomConstants'
 import {GeomNode} from './../core/geomNode'
 import {Assert} from './../../utils/assert'
 export class Anchor {
-  labelToTheRightOfAnchorCenter: boolean
-  labelToTheLeftOfAnchorCenter: boolean
-  get representsLabel(): boolean {
-    return (
-      this.labelToTheRightOfAnchorCenter || this.labelToTheLeftOfAnchorCenter
-    )
-  }
-
   // ToString
   toString() {
     return (
@@ -49,14 +41,14 @@ export class Anchor {
   polygonalBoundary_: Polyline
   labelCornersPreserveCoefficient: number
   node_: GeomNode
+  padding = 0
   alreadySitsOnASpline = false
   // An anchor for an edge label with the label to the left of the spline has its height equal to the one of the label
   // Its rightAnchor is a reserved space for the spline and the leftAnchor is equal to the label width.
-  labelIsToTheLeftOfTheSpline: boolean
-  padding = 0
+  labelIsToTheLeftOfTheSpline = false
   // An anchor for an edge label with the label to the right of the spline has its height equal to the one of the label
   // Its leftAnchor is a reserved space for the spline and the rightAnchor is equal to the label width.
-  labelIsToTheRightOfTheSpline: boolean
+  labelIsToTheRightOfTheSpline = false
   // distance for the center of the node to its left boundary
   get leftAnchor() {
     return this.la
@@ -199,7 +191,7 @@ export class Anchor {
   }
 
   // Center of the node
-  get Origin() {
+  get origin() {
     return new Point(this.x, this.y)
   }
 
@@ -212,7 +204,7 @@ export class Anchor {
   }
   // set to true if the anchor has been introduced for a label
 
-  get HasLabel() {
+  get hasLabel() {
     return this.labelIsToTheLeftOfTheSpline || this.labelIsToTheLeftOfTheSpline
   }
 
@@ -358,7 +350,7 @@ export class Anchor {
   //}
 
   creatPolygonalBoundaryWithoutPadding(): Polyline {
-    if (this.HasLabel)
+    if (this.hasLabel)
       return this.labelIsToTheLeftOfTheSpline
         ? this.polygonOnLeftLabel()
         : this.polygonOnRightLabel()

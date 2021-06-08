@@ -16,6 +16,7 @@ import {GeomLabel} from './../../layout/core/geomLabel'
 import {PlaneTransformation} from './planeTransformation'
 import fs = require('fs')
 import xmlw = require('xml-writer')
+import {Label} from '../../structs/label'
 export class SvgDebugWriter {
   // Here we import the File System module of node
   //  private fs = require('fs')
@@ -301,9 +302,9 @@ export class SvgDebugWriter {
           box.leftBottom,
           new Point(box.right, box.bottom - gg.labelSize.height),
         )
-        this.writeNodeLabel(n.id, labelBox)
+        this.writeLabel(n.id, labelBox)
       } else {
-        this.writeNodeLabel(n.id, box)
+        this.writeLabel(n.id, box)
       }
       for (const e of n.inEdges()) {
         this.writeEdge(e)
@@ -324,7 +325,7 @@ export class SvgDebugWriter {
     this.xw.endElement()
   }
 
-  writeNodeLabel(id: string, label: Rectangle) {
+  writeLabel(id: string, label: Rectangle) {
     if (id == null) id = 'undef'
     const yScaleAdjustment = 1.5
 
@@ -354,15 +355,17 @@ export class SvgDebugWriter {
       this.addArrow(icurve.start, edge.edgeGeometry.sourceArrowhead.tipPosition)
     if (edge.edgeGeometry != null && edge.edgeGeometry.targetArrowhead != null)
       this.addArrow(icurve.end, edge.edgeGeometry.targetArrowhead.tipPosition)
-    if (edge.label != null) this.writeLabel(edge.label)
+    if (edge.label != null) {
+      this.writeLabel(edge.label.label.text, edge.label.boundingBox)
+    }
   }
 
-  writeLabel(label: GeomLabel) {
-    const dc = DebugCurve.mkDebugCurveI(label.boundingBox.perimeter())
-    dc.transparency = 124
-    dc.width /= 2
-    this.writeDebugCurve(dc)
-  }
+  // writeLabel(label: GeomLabel) {
+  //   const dc = DebugCurve.mkDebugCurveI(label.boundingBox.perimeter())
+  //   dc.transparency = 124
+  //   dc.width /= 2
+  //   this.writeDebugCurve(dc)
+  // }
 
   addArrow(start: Point, end: Point) {
     let dir = end.sub(start)
