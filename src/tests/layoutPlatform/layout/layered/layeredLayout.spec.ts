@@ -784,5 +784,5 @@ function nodeBoundaryFunc(id: string): ICurve {
   )
 }
 function labelRectFunc(text: string): Rectangle {
-  return Rectangle.mkPP(new Point(0, 0), new Point(text.length * 5, 10.5))
+  return Rectangle.mkPP(new Point(0, 0), new Point(text.length * 10, 10.5))
 }
