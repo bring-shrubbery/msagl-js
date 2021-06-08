@@ -10,7 +10,7 @@ import {Assert} from './../../utils/assert'
 import {GeomEdge} from './geomEdge'
 import {from} from 'linq-to-typescript'
 export class Arrowhead {
-  static defaultArrowheadLength = 10
+  static defaultArrowheadLength = 5
   length = Arrowhead.defaultArrowheadLength
   width = 0
   tipPosition: Point

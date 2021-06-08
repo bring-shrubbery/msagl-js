@@ -57,6 +57,9 @@ export class GeomEdge extends GeomObject {
       if (this.edgeGeometry.targetArrowhead != null)
         rect.add(this.edgeGeometry.targetArrowhead.tipPosition)
     }
+    if (this.edge.label) {
+      rect.addRec(this.label.boundingBox)
+    }
 
     const del = this.lineWidth
     rect.left -= del
