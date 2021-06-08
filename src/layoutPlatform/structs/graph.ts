@@ -20,8 +20,8 @@ export class Graph extends Node {
     return this.nodeCollection.nodesDeep()
   }
 
-  constructor(parent: Graph) {
-    super('graph', parent)
+  constructor(parent: Graph, id = '__graph__') {
+    super(id, parent)
   }
   static mkGraph(id: string, parent: Graph): Graph {
     const g = new Graph(parent)

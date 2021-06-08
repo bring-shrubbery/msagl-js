@@ -31,6 +31,8 @@ import {DrawingEdge} from '../../../../drawing/drawingEdge'
 import {DrawingObject} from '../../../../drawing/drawingObject'
 import {GeomLabel} from '../../../../layoutPlatform/layout/core/geomLabel'
 import {Assert} from '../../../../layoutPlatform/utils/assert'
+import {Node} from '../../../../layoutPlatform/structs/node'
+import {Edge} from '../../../../layoutPlatform/structs/edge'
 
 const sortedList: string[] = [
   'ps_user_shapes.gv',
@@ -294,33 +296,6 @@ const sortedList: string[] = [
   'b100.gv',
 ]
 
-function createGeometry(
-  g: Graph,
-  nodeBoundaryFunc: (string) => ICurve,
-  labelRect: (string) => Rectangle,
-): GeomGraph {
-  for (const n of g.shallowNodes) {
-    if (n.isGraph) {
-      const subG = (n as unknown) as Graph
-      new GeomGraph(subG, nodeBoundaryFunc(n.id).boundingBox.size)
-      createGeometry(subG, nodeBoundaryFunc, labelRect)
-    } else {
-      const gn = new GeomNode(n)
-      //const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
-      gn.boundaryCurve = nodeBoundaryFunc(n.id)
-    }
-  }
-  for (const e of g.edges) {
-    const ge = new GeomEdge(e)
-    const de: DrawingEdge = <DrawingEdge>DrawingObject.getDrawingObj(e)
-    if (de.label) {
-      Assert.assert(e.label != null)
-      ge.label = new GeomLabel(labelRect(de.labelText), e.label)
-    }
-  }
-  return new GeomGraph(g, nodeBoundaryFunc(g.id).boundingBox)
-}
-
 type P = [number, number]
 
 test('map test', () => {
@@ -462,17 +437,49 @@ test('margins', () => {
 })
 
 test('clusters', () => {
-  const dg = parseDotGraph('src/tests/data/graphvis/clust.gv')
-  createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
+  // First we create connections without any geometry data yet
+  // create the root graph
+  const root = new Graph(null) // null is for the parent
+  // add node 'a' to root
+  const a = new Node('a', root)
+  root.addNode(a)
+  //create cluster 'bcd' with nodes 'b',c', and 'd', and add it to bcd
+  const bcd = new Graph(root, 'bcd')
+  root.addNode(bcd)
+  // add nodes 'b', 'c', and 'd' to 'bcd'
+  const b = new Node('b', bcd)
+  bcd.addNode(b)
+  const c = new Node('c', bcd)
+  bcd.addNode(c)
+  const d = new Node('d', bcd)
+  bcd.addNode(d)
+  new Edge(b, c, bcd) // b->c
+  new Edge(b, d, bcd) // b->d
+  //create cluster 'efg' with nodes 'b','f', and 'g', and add it to efg
+  const efg = new Graph(root, 'efg')
+  root.addNode(efg)
+  // add nodes 'e', 'f', and 'g' to 'efg'
+  const e = new Node('e', efg)
+  efg.addNode(e)
+  const f = new Node('f', efg)
+  efg.addNode(f)
+  const g = new Node('g', efg)
+  efg.addNode(g)
+  new Edge(e, f, efg) // e->f
+  new Edge(e, g, efg) // e->g
+
+  // add edges
+  new Edge(a, bcd, root) // a->bc
+  new Edge(bcd, efg, root)
+  new Edge(efg, a, root)
+  // Now we create geometry data neccessary for layout
+  const rootGeom = createGeometry(root, nodeBoundaryFunc, labelRectFunc)
+
   const ss = new SugiyamaLayoutSettings()
-  const ll = new LayeredLayout(
-    GeomObject.getGeom(dg.graph) as GeomGraph,
-    ss,
-    new CancelToken(),
-  )
+  const ll = new LayeredLayout(rootGeom, ss, new CancelToken())
   ll.run()
-  const t = new SvgDebugWriter('/tmp/clust.gv' + '.svg')
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  const t = new SvgDebugWriter('/tmp/clustabc' + '.svg')
+  t.writeGraph(rootGeom)
 })
 
 test('layer and node separation', () => {
@@ -785,4 +792,29 @@ function nodeBoundaryFunc(id: string): ICurve {
 }
 function labelRectFunc(text: string): Rectangle {
   return Rectangle.mkPP(new Point(0, 0), new Point(text.length * 10, 10.5))
+}
+function createGeometry(
+  g: Graph,
+  nodeBoundaryFunc: (string) => ICurve,
+  labelRect: (string) => Rectangle,
+): GeomGraph {
+  for (const n of g.shallowNodes) {
+    if (n.isGraph) {
+      const subG = (n as unknown) as Graph
+      new GeomGraph(subG, nodeBoundaryFunc(n.id).boundingBox.size)
+      createGeometry(subG, nodeBoundaryFunc, labelRect)
+    } else {
+      const gn = new GeomNode(n)
+      //const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
+      gn.boundaryCurve = nodeBoundaryFunc(n.id)
+    }
+  }
+  for (const e of g.edges) {
+    const ge = new GeomEdge(e)
+    if (e.label) {
+      Assert.assert(e.label != null)
+      ge.label = new GeomLabel(labelRect(e.label.text), e.label)
+    }
+  }
+  return new GeomGraph(g, nodeBoundaryFunc(g.id).boundingBox)
 }
