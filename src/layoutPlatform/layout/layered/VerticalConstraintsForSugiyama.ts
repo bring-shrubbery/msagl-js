@@ -197,19 +197,23 @@ export class VerticalConstraintsForSugiyama {
       let representative = -1
       if (this.componentsIsMaxLayer(sameLayerNodes)) {
         for (const v of sameLayerNodes)
-          this.sameLayerDictionaryOfRepresentatives[v] = representative = this
-            .maxRepresentative
+          this.sameLayerDictionaryOfRepresentatives.set(
+            v,
+            (representative = this.maxRepresentative),
+          )
       } else if (this.componentIsMinLayer(sameLayerNodes)) {
         for (const v of sameLayerNodes)
-          this.sameLayerDictionaryOfRepresentatives[v] = representative = this
-            .minRepresentative
+          this.sameLayerDictionaryOfRepresentatives.set(
+            v,
+            (representative = this.minRepresentative),
+          )
       } else {
         for (const v of sameLayerNodes) {
           if (representative == -1) representative = v
-          this.sameLayerDictionaryOfRepresentatives[v] = representative
+          this.sameLayerDictionaryOfRepresentatives.set(v, representative)
         }
       }
-      this.representativeToItsLayer[representative] = sameLayerNodes
+      this.representativeToItsLayer.set(representative, sameLayerNodes)
     }
   }
 

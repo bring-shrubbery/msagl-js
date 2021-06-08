@@ -58,7 +58,7 @@ export class Balancing implements Algorithm {
 
   Jump(jumper: number) {
     this.jumpers.delete(jumper)
-    const upLow = this.possibleJumperFeasibleIntervals[jumper]
+    const upLow = this.possibleJumperFeasibleIntervals.get(jumper)
     const ji = this.CalcJumpInfo(upLow.x, upLow.y, jumper)
     if (ji == undefined) return
     this.layering[jumper] = ji.layerToJumpTo
@@ -120,7 +120,7 @@ export class Balancing implements Algorithm {
 
   CalculateRegionAndInsertJumper(i: number) {
     const ip = new IntPair(this.Up(i), this.Down(i))
-    this.possibleJumperFeasibleIntervals[i] = ip
+    this.possibleJumperFeasibleIntervals.set(i, ip)
 
     this.InsertJumper(ip.x, ip.y, i)
   }
