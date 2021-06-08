@@ -83,6 +83,8 @@ class Routing {
         //shift the label if needed
         Routing.ShiftLabel(e, t.curveClosestPoint, t.labelSideClosest)
       } else {
+        let curveClosestPoint: Point
+        let labelSideClosest: Point
         //assume that the distance is reached at the ends of labelSideClosest
         const u = segmentInFrontOfLabel.closestParameter(labelSide.start)
         const v = segmentInFrontOfLabel.closestParameter(labelSide.end)
@@ -90,13 +92,13 @@ class Routing {
           segmentInFrontOfLabel.value(u).sub(labelSide.start).length <
           segmentInFrontOfLabel.value(v).sub(labelSide.end).length
         ) {
-          t.curveClosestPoint = segmentInFrontOfLabel.value(u)
-          t.labelSideClosest = labelSide.start
+          curveClosestPoint = segmentInFrontOfLabel.value(u)
+          labelSideClosest = labelSide.start
         } else {
-          t.curveClosestPoint = segmentInFrontOfLabel.value(v)
-          t.labelSideClosest = labelSide.end
+          curveClosestPoint = segmentInFrontOfLabel.value(v)
+          labelSideClosest = labelSide.end
         }
-        Routing.ShiftLabel(e, t.curveClosestPoint, t.labelSideClosest)
+        Routing.ShiftLabel(e, curveClosestPoint, labelSideClosest)
       }
     }
   }
