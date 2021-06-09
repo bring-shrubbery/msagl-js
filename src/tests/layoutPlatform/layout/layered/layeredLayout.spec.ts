@@ -608,7 +608,6 @@ export function qualityMetric(gg: GeomGraph): number {
   for (const e of gg.edges()) {
     r += e.source.center.sub(e.target.center).length
   }
-  console.log('sum ' + r)
   const internsectionWeight = 100
   for (const e of gg.edges()) {
     for (const u of gg.edges()) {
