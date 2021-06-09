@@ -33,6 +33,7 @@ import {GeomLabel} from '../../../../layoutPlatform/layout/core/geomLabel'
 import {Assert} from '../../../../layoutPlatform/utils/assert'
 import {Node} from '../../../../layoutPlatform/structs/node'
 import {Edge} from '../../../../layoutPlatform/structs/edge'
+import {LineSegment} from '../../../../layoutPlatform/math/geometry/lineSegment'
 
 const sortedList: string[] = [
   'ps_user_shapes.gv',
@@ -559,6 +560,7 @@ test('fsm.gv brandes', () => {
   const dg = runLayout('src/tests/data/graphvis/fsm.gv', ss)
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/fsmbrandes.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  console.log(qualityMetric(GeomObject.getGeom(dg.graph) as GeomGraph))
 })
 test('fsm.gv', () => {
   const ss = new SugiyamaLayoutSettings()
@@ -599,6 +601,25 @@ test('layered layout empty graph', () => {
   const ll = new LayeredLayout(gg, ss, new CancelToken())
   ll.run()
 })
+
+// the smaller number the better layout
+export function qualityMetric(gg: GeomGraph): number {
+  let r = 0 // the sum of edges length
+  for (const e of gg.edges()) {
+    r += e.source.center.sub(e.target.center).length
+  }
+  console.log('sum ' + r)
+  const internsectionWeight = 100
+  for (const e of gg.edges()) {
+    for (const u of gg.edges()) {
+      if (e == u) continue
+      if (crossed(e, u)) {
+        r += internsectionWeight
+      }
+    }
+  }
+  return r
+}
 
 test('layered layout nodes only', () => {
   const g = new GeomGraph(new Graph(null), new Size(0, 0))
@@ -818,4 +839,16 @@ function createGeometry(
     }
   }
   return new GeomGraph(g, nodeBoundaryFunc(g.id).boundingBox)
+}
+function crossed(u: GeomEdge, v: GeomEdge): boolean {
+  const r = LineSegment.IntersectPPPP(
+    u.source.center,
+    u.target.center,
+    v.source.center,
+    v.target.center,
+  )
+  if (r) {
+    return LineSegment.xIsBetweenPoints(u.source.center, u.target.center, r)
+  }
+  return false
 }
