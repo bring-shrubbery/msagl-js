@@ -318,6 +318,23 @@ test('map test', () => {
   expect(mi.get(ip1)).toBe(undefined)
 })
 
+test('self on node', () => {
+  const g = GeomGraph.mk(null, Rectangle.mkEmpty())
+  g.setNode('a', {width: 10, height: 10})
+  g.setEdge('a', 'a')
+  const ll = new LayeredLayout(
+    g,
+    new SugiyamaLayoutSettings(),
+    new CancelToken(),
+  )
+  ll.run()
+  for (const e of g.edges()) {
+    expect(e.curve == null).toBe(false)
+  }
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/self.svg')
+  t.writeGraph(g)
+})
+
 test('layered layout glued graph', () => {
   const graphString = 'digraph G {\n' + 'a -> b\n' + 'a -> b}'
   const g = parseDotString(graphString)
@@ -470,7 +487,7 @@ test('clusters', () => {
   new Edge(e, g, efg) // e->g
 
   // add edges
-  new Edge(a, bcd, root) // a->bc
+  new Edge(a, bcd, root) // a->bcd
   new Edge(bcd, efg, root)
   new Edge(efg, a, root)
   new Edge(a, b, root) // the layout for this edge is not implemented yet, so it will not appear in the SVG file

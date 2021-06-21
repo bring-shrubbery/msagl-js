@@ -4,6 +4,7 @@ digraph automata_0 {
 	0 [ style = filled, color=lightgrey ];
 	2 [ shape = doublecircle ];
 	0 -> 2 [ label = "a " ];
+	0 -> 0 [ label = "self " ];
 	0 -> 1 [ label = "other " ];
 	1 -> 2 [ label = "a " ];
 	1 -> 1 [ label = "other " ];

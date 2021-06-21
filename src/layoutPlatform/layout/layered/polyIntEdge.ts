@@ -129,7 +129,6 @@ export class PolyIntEdge implements IIntEdge {
     weight = 1,
     separation = 1,
   ) {
-    Assert.assert(source != target)
     this.source = source
     this.target = target
     this.edge = geomEdge

@@ -88,8 +88,8 @@ export class LayeredLayout extends Algorithm {
     const intEdges: PolyIntEdge[] = []
     for (const edge of this.originalGraph.edges()) {
       Assert.assert(!(edge.source == null || edge.target == null))
-      if (edge.isInterGraphEdge() || edge.source == edge.target) {
-        // we will route the integraph and self edges in separate steps
+      if (edge.isInterGraphEdge()) {
+        // we will route the integraph in a separate step
         continue
       }
       const intEdge = new PolyIntEdge(
@@ -97,7 +97,6 @@ export class LayeredLayout extends Algorithm {
         this.nodeIdToIndex.get(edge.target.id),
         edge,
       )
-      Assert.assert(intEdge.source != null && intEdge.target != null)
       intEdges.push(intEdge)
     }
 
