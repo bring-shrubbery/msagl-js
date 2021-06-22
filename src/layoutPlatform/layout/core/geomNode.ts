@@ -22,6 +22,11 @@ export class GeomNode extends GeomObject {
   get id(): string {
     return this.node.id
   }
+
+  toString(): string {
+    return this.id
+  }
+
   // Creates a Node instance
   static mkNode(curve: ICurve, node: Node) {
     const n = new GeomNode(node)

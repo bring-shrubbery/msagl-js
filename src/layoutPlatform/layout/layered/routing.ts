@@ -67,8 +67,14 @@ export class Routing extends Algorithm {
     if (this.IntGraph != null) {
       this.RouteFlatEdges()
     }
-    // TODO: just create straigh line edges for missing ones
-    for (const n of this.IntGraph.nodes) {
+    if (this.OriginalGraph.graph.parent == null) {
+      // TODO: just creating straigh line edges for missing ones, hook up SplineRouter
+      this.RouteUnroutedEdges()
+    }
+  }
+
+  RouteUnroutedEdges() {
+    for (const n of this.OriginalGraph.deepNodes()) {
       for (const e of n.outEdges()) {
         if (!e.curve)
           StraightLineEdges.RouteEdge(
