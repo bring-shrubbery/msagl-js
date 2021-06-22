@@ -7,8 +7,21 @@ import {ICurve} from './../../math/geometry/icurve'
 import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
 import {GeomLabel} from './geomLabel'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
+import {Port} from './port'
 
 export class GeomEdge extends GeomObject {
+  get sourcePort(): Port {
+    return this.edgeGeometry.sourcePort
+  }
+  set sourcePort(value: Port) {
+    this.edgeGeometry.sourcePort = value
+  }
+  get targetPort(): Port {
+    return this.edgeGeometry.targetPort
+  }
+  set targetPort(value: Port) {
+    this.edgeGeometry.targetPort = value
+  }
   transform(matrix: PlaneTransformation) {
     if (this.curve == null) return
     this.curve = this.curve.transform(matrix)

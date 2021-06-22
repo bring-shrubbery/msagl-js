@@ -1,10 +1,14 @@
 ﻿//  Basic geomedge router for producing straight edges.
-/*
-import {IEnumerable} from 'linq-to-typescript'
+
+import {from, IEnumerable} from 'linq-to-typescript'
+import {GeomGraph} from '../..'
+import {Arrowhead} from '../layout/core/arrowhead'
 import {EdgeGeometry} from '../layout/core/edgeGeometry'
 import {GeomEdge} from '../layout/core/geomEdge'
-import {GeomGraph} from '../layout/core/GeomGraph'
+import {RelativeFloatingPort} from '../layout/core/relativeFloatingPort'
+import {CornerSite} from '../math/geometry/cornerSite'
 import {Curve} from '../math/geometry/curve'
+import {GeomConstants} from '../math/geometry/geomConstants'
 import {ICurve} from '../math/geometry/icurve'
 import {IntersectionInfo} from '../math/geometry/intersectionInfo'
 import {LineSegment} from '../math/geometry/lineSegment'
@@ -12,6 +16,7 @@ import {Point} from '../math/geometry/point'
 import {Rectangle} from '../math/geometry/rectangle'
 import {SmoothedPolyline} from '../math/geometry/smoothedPolyline'
 import {Algorithm} from '../utils/algorithm'
+import {SplineRouter} from './splineRouter'
 
 export class StraightLineEdges extends Algorithm {
   private edges: IEnumerable<GeomEdge>
@@ -28,7 +33,7 @@ export class StraightLineEdges extends Algorithm {
   //  Executes the algorithm.
   run() {
     SplineRouter.CreatePortsIfNeeded(this.edges)
-    for (const geomedge: GeomEdge of this.edges) {
+    for (const geomedge of this.edges) {
       StraightLineEdges.RouteEdge(geomedge, this.padding)
     }
   }
@@ -38,52 +43,51 @@ export class StraightLineEdges extends Algorithm {
   //  size of the loop.
   static RouteEdge(geomedge: GeomEdge, padding: number) {
     const eg = geomedge.edgeGeometry
-    if (eg.SourcePort == null) {
-      new RelativeFloatingPort(
-        (eg) => eg.Source.BoundaryCurve,
-        (eg) => eg.Source.Center,
+    if (eg.sourcePort == null) {
+      eg.sourcePort = RelativeFloatingPort.mk(
+        () => geomedge.source.boundaryCurve,
+        () => geomedge.source.center,
       )
     }
 
-    if (eg.TargetPort == null) {
-      new RelativeFloatingPort(
-        (eg) => eg.Target.BoundaryCurve,
-        (eg) => eg.Target.Center,
+    if (eg.targetPort == null) {
+      RelativeFloatingPort.mk(
+        () => geomedge.target.boundaryCurve,
+        () => geomedge.target.center,
       )
     }
 
-    if (!StraightLineEdges.ContainmentLoop(eg, this.padding)) {
-      eg.Curve = StraightLineEdges.GetEdgeLine(geomedge)
+    if (!StraightLineEdges.ContainmentLoop(eg, padding)) {
+      eg.curve = StraightLineEdges.GetEdgeLine(geomedge)
     }
 
-    Arrowheads.TrimSplineAndCalculateArrowheads(
+    Arrowhead.trimSplineAndCalculateArrowheadsII(
       eg,
-      eg.SourcePort.Curve,
-      eg.TargetPort.Curve,
-      geomedge.Curve,
-      false,
+      eg.sourcePort.Curve,
+      eg.targetPort.Curve,
+      geomedge.curve,
       false,
     )
   }
 
   static ContainmentLoop(eg: EdgeGeometry, padding: number): boolean {
-    const sourceCurve = eg.SourcePort.Curve
-    const targetCurve = eg.TargetPort.Curve
+    const sourceCurve = eg.sourcePort.Curve
+    const targetCurve = eg.targetPort.Curve
     if (sourceCurve == null || targetCurve == null) {
       return false
     }
 
-    const targetBox: Rectangle = sourceCurve.BoundingBox
-    const sourceBox: Rectangle = targetCurve.BoundingBox
-    const targetInSource: boolean = targetBox.Contains(sourceBox)
+    const targetBox: Rectangle = sourceCurve.boundingBox
+    const sourceBox: Rectangle = targetCurve.boundingBox
+    const targetInSource: boolean = targetBox.containsRect(sourceBox)
     const sourceInTarget: boolean =
-      !targetInSource && sourceBox.Contains(targetBox)
+      !targetInSource && sourceBox.containsRect(targetBox)
     if (targetInSource || sourceInTarget) {
-      eg.Curve = StraightLineEdges.CreateLoop(
+      eg.curve = StraightLineEdges.CreateLoop(
         targetBox,
         sourceBox,
         sourceInTarget,
-        this.padding,
+        padding,
       )
       return true
     }
@@ -109,85 +113,80 @@ export class StraightLineEdges extends Algorithm {
     howMuchToStickOut: number,
     reverse: boolean,
   ): Curve {
-    const center = sourceBox.Center
+    const center = sourceBox.center
     const closestPoint = StraightLineEdges.FindClosestPointOnBoxBoundary(
-      sourceBox.Center,
+      sourceBox.center,
       targetBox,
     )
-    const dir = closestPoint - center
-    const vert = Math.Abs(dir.x) < GeomConstants.distanceEpsilon
+    let dir = closestPoint.sub(center)
+    const vert = Math.abs(dir.x) < GeomConstants.distanceEpsilon
     const maxWidth =
       (vert
-        ? Math.Min(center.y - targetBox.bottom, targetBox.top - center.y)
-        : Math.Min(center.x - targetBox.Left, targetBox.Right - center.x)) / 2 //divide over 2 to not miss the rect
+        ? Math.min(center.y - targetBox.bottom, targetBox.top - center.y)
+        : Math.min(center.x - targetBox.left, targetBox.right - center.x)) / 2 //divide over 2 to not miss the rect
 
-    const width = Math.Min(howMuchToStickOut, maxWidth)
+    const width = Math.min(howMuchToStickOut, maxWidth)
     if (dir.length <= GeomConstants.distanceEpsilon) {
       dir = new Point(1, 0)
     }
 
     const hookDir = dir.normalize()
     const hookPerp = hookDir.rotate(Math.PI / 2)
-    const p1 = closestPoint + hookDir * howMuchToStickOut
-    const p2 = p1 + hookPerp * width
-    const p3 = closestPoint + hookPerp * width
-    const end = center + hookPerp * width
+    const p1 = closestPoint.add(hookDir.mul(howMuchToStickOut))
+    const p2 = p1.add(hookPerp.mul(width))
+    const p3 = closestPoint.add(hookPerp.mul(width))
+    const end = center.add(hookPerp.mul(width))
     const smoothedPoly = reverse
-      ? SmoothedPolyline.FromPoints([end, p3, p2, p1, closestPoint, center])
-      : SmoothedPolyline.FromPoints([center, closestPoint, p1, p2, p3, end])
-    return smoothedPoly.CreateCurve()
+      ? SmoothedPolyline.mkFromPoints([end, p3, p2, p1, closestPoint, center])
+      : SmoothedPolyline.mkFromPoints([center, closestPoint, p1, p2, p3, end])
+    return smoothedPoly.createCurve()
   }
 
   static FindClosestPointOnBoxBoundary(c: Point, targetBox: Rectangle): Point {
     const x =
-      c.x - targetBox.Left < targetBox.Right - c.x
-        ? targetBox.Left
-        : targetBox.Right
+      c.x - targetBox.left < targetBox.right - c.x
+        ? targetBox.left
+        : targetBox.right
     const y =
       c.y - targetBox.bottom < targetBox.top - c.y
         ? targetBox.bottom
         : targetBox.top
-    return Math.Abs(x - c.x) < Math.Abs(y - c.y)
+    return Math.abs(x - c.x) < Math.abs(y - c.y)
       ? new Point(x, c.y)
       : new Point(c.x, y)
   }
 
   //  Returns a line segment for the given geomedge.
-  public static GetEdgeLine(geomedge: GeomEdge): LineSegment {
-    ValidateArg.IsNotNull(geomedge, 'geomedge')
-    const sourcePoint: Point
-    const sourceBox: ICurve
-    if (geomedge.SourcePort == null) {
-      sourcePoint = geomedge.Source.Center
-      sourceBox = geomedge.Source.BoundaryCurve
+  static GetEdgeLine(geomedge: GeomEdge): LineSegment {
+    let sourcePoint: Point
+    let sourceBox: ICurve
+    if (geomedge.sourcePort == null) {
+      sourcePoint = geomedge.source.center
+      sourceBox = geomedge.source.boundaryCurve
     } else {
-      sourcePoint = geomedge.SourcePort.Location
-      sourceBox = geomedge.SourcePort.Curve
+      sourcePoint = geomedge.sourcePort.Location
+      sourceBox = geomedge.sourcePort.Curve
     }
 
-    const targetPoint: Point
-    const targetBox: ICurve
-    if (geomedge.TargetPort == null) {
-      targetPoint = geomedge.Target.Center
-      targetBox = geomedge.Target.BoundaryCurve
+    let targetPoint: Point
+    let targetBox: ICurve
+    if (geomedge.targetPort == null) {
+      targetPoint = geomedge.target.center
+      targetBox = geomedge.target.boundaryCurve
     } else {
-      targetPoint = geomedge.TargetPort.Location
-      targetBox = geomedge.TargetPort.Curve
+      targetPoint = geomedge.targetPort.Location
+      targetBox = geomedge.targetPort.Curve
     }
 
-    const line: LineSegment = new LineSegment(sourcePoint, targetPoint)
-    const intersects: IList<IntersectionInfo> = Curve.GetAllIntersections(
-      sourceBox,
-      line,
-      false,
-    )
-    if (intersects.Count > 0) {
-      const trimmedLine = <LineSegment>line.Trim(intersects[0].Par1, 1)
+    let line: LineSegment = LineSegment.mkPP(sourcePoint, targetPoint)
+    let intersects = Curve.getAllIntersections(sourceBox, line, false)
+    if (intersects.length > 0) {
+      let trimmedLine = <LineSegment>line.trim(intersects[0].par1, 1)
       if (trimmedLine != null) {
         line = trimmedLine
-        intersects = Curve.GetAllIntersections(targetBox, line, false)
-        if (intersects.Count > 0) {
-          trimmedLine = <LineSegment>line.Trim(0, intersects[0].Par1)
+        intersects = Curve.getAllIntersections(targetBox, line, false)
+        if (intersects.length > 0) {
+          trimmedLine = <LineSegment>line.trim(0, intersects[0].par1)
           if (trimmedLine != null) {
             line = trimmedLine
           }
@@ -202,29 +201,27 @@ export class StraightLineEdges extends Algorithm {
   public static CreateSimpleEdgeCurveWithUnderlyingPolyline(
     geomedge: GeomEdge,
   ) {
-    ValidateArg.IsNotNull(geomedge, 'geomedge')
-    const a = geomedge.Source.Center
-    const b = geomedge.Target.Center
-    if (geomedge.Source == geomedge.Target) {
-      const dx = 2 / (3 * geomedge.Source.BoundaryCurve.BoundingBox.Width)
-      const dy = geomedge.Source.BoundingBox.Height / 4
-      geomedge.UnderlyingPolyline = StraightLineEdges.CreateUnderlyingPolylineForSelfEdge(
+    const a = geomedge.source.center
+    const b = geomedge.target.center
+    if (geomedge.source == geomedge.target) {
+      const dx = 2 / (3 * geomedge.source.boundaryCurve.boundingBox.width)
+      const dy = geomedge.source.boundingBox.height / 4
+      geomedge.underlyingPolyline = StraightLineEdges.CreateUnderlyingPolylineForSelfEdge(
         a,
         dx,
         dy,
       )
-      geomedge.Curve = geomedge.UnderlyingPolyline.CreateCurve()
+      geomedge.curve = geomedge.underlyingPolyline.createCurve()
     } else {
-      geomedge.UnderlyingPolyline = SmoothedPolyline.FromPoints([a, b])
-      geomedge.Curve = geomedge.UnderlyingPolyline.CreateCurve()
+      geomedge.underlyingPolyline = SmoothedPolyline.mkFromPoints([a, b])
+      geomedge.curve = geomedge.underlyingPolyline.createCurve()
     }
 
-    Arrowheads.TrimSplineAndCalculateArrowheads(
-      geomedge.EdgeGeometry,
-      geomedge.Source.BoundaryCurve,
-      geomedge.Target.BoundaryCurve,
-      geomedge.Curve,
-      false,
+    Arrowhead.trimSplineAndCalculateArrowheadsII(
+      geomedge.edgeGeometry,
+      geomedge.source.boundaryCurve,
+      geomedge.target.boundaryCurve,
+      geomedge.curve,
       false,
     )
   }
@@ -234,25 +231,24 @@ export class StraightLineEdges extends Algorithm {
     dx: number,
     dy: number,
   ): SmoothedPolyline {
-    const p1 = p0 + new Point(0, dy)
-    const p2 = p0 + new Point(dx, dy)
-    const p3 = p0 + new Point(dx, dy * -1)
-    const p4 = p0 + new Point(0, dy * -1)
-    let site = new Site(p0)
+    const p1 = p0.add(new Point(0, dy))
+    const p2 = p0.add(new Point(dx, dy))
+    const p3 = p0.add(new Point(dx, dy * -1))
+    const p4 = p0.add(new Point(0, dy * -1))
+    let site = CornerSite.mkSiteP(p0)
     const polyline = new SmoothedPolyline(site)
-    site = new Site(site, p1)
-    site = new Site(site, p2)
-    site = new Site(site, p3)
-    site = new Site(site, p4)
-    new Site(site, p0)
+    site = CornerSite.mkSiteSP(site, p1)
+    site = CornerSite.mkSiteSP(site, p2)
+    site = CornerSite.mkSiteSP(site, p3)
+    site = CornerSite.mkSiteSP(site, p4)
+    CornerSite.mkSiteSP(site, p0)
     return polyline
   }
 
   static SetStraightLineEdgesWithUnderlyingPolylines(graph: GeomGraph) {
-    SplineRouter.CreatePortsIfNeeded(graph.Edges)
-    for (const geomedge: GeomEdge of graph.Edges) {
+    SplineRouter.CreatePortsIfNeeded(from(graph.edges()))
+    for (const geomedge of graph.edges()) {
       StraightLineEdges.CreateSimpleEdgeCurveWithUnderlyingPolyline(geomedge)
     }
   }
 }
-*/

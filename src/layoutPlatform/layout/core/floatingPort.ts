@@ -1,0 +1,48 @@
+import {ICurve} from '../../math/geometry/icurve'
+import {Point} from '../../math/geometry/point'
+import {Port} from './port'
+
+export class FloatingPort extends Port {
+  curve: ICurve
+
+  // a curve associated with the port
+  ///  <summary>
+  ///  constructor
+  ///  </summary>
+  ///  <param name="location"></param>
+  ///  <param name="curve">the port curve, can be null</param>
+  public constructor(curve: ICurve, location: Point) {
+    super()
+    this.curve = this.curve
+    this.location = location.clone()
+  }
+
+  location: Point
+
+  ///  <summary>
+  ///  the location of the port
+  ///  </summary>
+  get Location(): Point {
+    return this.location
+  }
+  set Location(value: Point) {
+    this.location = value
+  }
+  ///  <summary>
+  ///  translate the port location by delta
+  ///  </summary>
+  ///  <param name="delta"></param>
+  public /* virtual */ Translate(delta: Point) {
+    this.location = this.location.add(delta)
+  }
+
+  ///  <summary>
+  ///  the port's curve
+  ///  </summary>
+  public get /* override */ Curve(): ICurve {
+    return this.curve
+  }
+  public set /* override */ Curve(value: ICurve) {
+    this.curve = value
+  }
+}

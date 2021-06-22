@@ -1,7 +1,10 @@
 import {ICurve} from './../../math/geometry/icurve'
 import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
 import {Arrowhead} from './arrowhead'
+import {Port} from './port'
 export class EdgeGeometry {
+  sourcePort: Port
+  targetPort: Port
   curve: ICurve
   smoothedPolyline: SmoothedPolyline
 

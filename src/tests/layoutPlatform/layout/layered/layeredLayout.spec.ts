@@ -1,7 +1,4 @@
-import {
-  LayoutSettings,
-  SugiyamaLayoutSettings,
-} from '../../../../layoutPlatform/layout/layered/SugiyamaLayoutSettings'
+import {SugiyamaLayoutSettings} from '../../../../layoutPlatform/layout/layered/SugiyamaLayoutSettings'
 import SortedMap = require('collections/sorted-map')
 import {LayeredLayout} from '../../../../layoutPlatform/layout/layered/layeredLayout'
 import {Graph} from '../../../../layoutPlatform/structs/graph'
@@ -27,8 +24,6 @@ import {join} from 'path'
 import fs = require('fs')
 import {DrawingGraph} from '../../../../drawing/drawingGraph'
 import {Arrowhead} from '../../../../layoutPlatform/layout/core/arrowhead'
-import {DrawingEdge} from '../../../../drawing/drawingEdge'
-import {DrawingObject} from '../../../../drawing/drawingObject'
 import {GeomLabel} from '../../../../layoutPlatform/layout/core/geomLabel'
 import {Assert} from '../../../../layoutPlatform/utils/assert'
 import {Node} from '../../../../layoutPlatform/structs/node'
@@ -577,7 +572,7 @@ test('fsm.gv brandes', () => {
   const dg = runLayout('src/tests/data/graphvis/fsm.gv', ss)
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/fsmbrandes.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
-  console.log(qualityMetric(GeomObject.getGeom(dg.graph) as GeomGraph))
+  // console.log(qualityMetric(GeomObject.getGeom(dg.graph) as GeomGraph))
 })
 test('fsm.gv', () => {
   const ss = new SugiyamaLayoutSettings()
