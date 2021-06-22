@@ -51,7 +51,7 @@ export class StraightLineEdges extends Algorithm {
     }
 
     if (eg.targetPort == null) {
-      RelativeFloatingPort.mk(
+      eg.targetPort = RelativeFloatingPort.mk(
         () => geomedge.target.boundaryCurve,
         () => geomedge.target.center,
       )

@@ -22,6 +22,7 @@ import {GeomNode} from '../core/geomNode'
 import {SmoothedPolylineCalculator} from './SmoothedPolylineCalculator'
 import {GeomEdge} from '../core/geomEdge'
 import {Assert} from '../../utils/assert'
+import {StraightLineEdges} from '../../routing/StraightLineEdges'
 //import {SvgDebugWriter} from '../../math/geometry/svgDebugWriter'
 //  The class responsible for the routing of splines
 export class Routing extends Algorithm {
@@ -69,7 +70,11 @@ export class Routing extends Algorithm {
     // TODO: just create straigh line edges for missing ones
     for (const n of this.IntGraph.nodes) {
       for (const e of n.outEdges()) {
-        if (e.curve) continue
+        if (!e.curve)
+          StraightLineEdges.RouteEdge(
+            e,
+            Math.max(e.source.padding, e.target.padding),
+          )
       }
     }
   }
