@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/layout/layered/layeredLayout.spec.ts",
+        "src/tests/layoutPlatform/structs/genericBinaryHeapPriorityQueue.spec.ts",
         "-t",
-        "clust3"
+        "push many"
       ],
       "console": "integratedTerminal"
     }
