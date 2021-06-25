@@ -53,3 +53,57 @@ test('single source distances', () => {
   expect(res[2]).toBe(1.5)
   expect(res[3]).toBe(1)
 })
+
+test('ss distances with decrease', () => {
+  const graph = new Graph(null)
+  // make a trapeze (abcd), with sides ab = 1, bc = 0.5, cd = 1, da = 1
+  const a = new Node('a', graph)
+  const b = new Node('b', graph)
+  const c = new Node('c', graph)
+  const d = new Node('d', graph)
+  const e = new Node('e', graph)
+  const f = new Node('f', graph)
+  graph.addNode(a)
+  graph.addNode(b)
+  graph.addNode(c)
+  graph.addNode(d)
+  graph.addNode(e)
+  graph.addNode(f)
+  new Edge(a, b, graph)
+  new Edge(b, c, graph)
+
+  new Edge(c, d, graph)
+  new Edge(d, a, graph)
+  const ae = new Edge(a, e, graph)
+  const ef = new Edge(f, e, graph)
+  const cf = new Edge(c, f, graph)
+  const nodes = []
+  for (const n of graph.shallowNodes) {
+    nodes.push(n)
+  }
+
+  // make sure that we iterate the nodes in the order abcd
+  for (let i = 0; i < nodes.length; i++)
+    expect(nodes[i].id.charAt(0)).toBe('abcdef'.charAt(i))
+
+  const geomGraph = createGeometry(
+    graph,
+    () => CurveFactory.createRectangle(10, 10, new Point(0, 0)),
+    () => null,
+  )
+  const length = (e: GeomEdge) => {
+    if (e.edge == ae || e.edge == ef || e.edge == cf) return 0.1
+    return 1
+  }
+  const ss = new SingleSourceDistances(
+    geomGraph,
+    <GeomNode>GeomObject.getGeom(a),
+    length,
+  )
+  ss.run()
+  const res = ss.Result
+  expect(res[0]).toBe(0)
+  expect(res[1]).toBe(1)
+  expect(Point.closeD(res[2], 0.3)).toBe(true)
+  expect(res[3]).toBe(1)
+})
