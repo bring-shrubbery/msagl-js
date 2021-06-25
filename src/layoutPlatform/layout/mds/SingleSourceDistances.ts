@@ -8,7 +8,9 @@ export class SingleSourceDistances extends Algorithm {
   private graph: GeomGraph
 
   private source: GeomNode
-  length: (e: GeomEdge) => number
+  private: number[]
+  private length: (e: GeomEdge) => number
+  private result: number[]
 
   //  Dijkstra algorithm. Computes graph-theoretic distances from a node to
   //  all other nodes in a graph with nonnegative edge lengths.
@@ -24,27 +26,22 @@ export class SingleSourceDistances extends Algorithm {
     this.source = source
     this.length = length
   }
-  result: number[]
   //  An array of distances from the source node to all shallow nodes.
   //  Nodes are indexed when iterating over them.
   public get Result(): number[] {
     return this.result
   }
-  public set Result(value: number[]) {
-    this.result = value
-  }
 
   //  Executes the algorithm.
   run() {
-    this.Result = new Array(this.graph.shallowNodeCount)
-    const q = new GenericBinaryHeapPriorityQueue<GeomNode>((a, b) => b - a)
+    const q = new GenericBinaryHeapPriorityQueue<GeomNode>((a, b) => a - b)
     const d: Map<GeomNode, number> = new Map<GeomNode, number>()
     for (const node of this.graph.shallowNodes()) {
-      q.Enqueue(node, Number.POSITIVE_INFINITY)
-      d.set(node, Number.POSITIVE_INFINITY)
+      const dist = node == this.source ? 0 : Number.POSITIVE_INFINITY
+      q.Enqueue(node, dist)
+      d.set(node, dist)
     }
 
-    q.DecreasePriority(this.source, 0)
     while (q.count > 0) {
       const t = {priority: 0}
       const u: GeomNode = q.DequeueAndGetPriority(t)
@@ -70,11 +67,11 @@ export class SingleSourceDistances extends Algorithm {
         }
       }
     }
-
+    this.result = new Array(this.graph.shallowNodeCount)
     let i = 0
     for (const v of this.graph.shallowNodes()) {
       const dist = d.get(v)
-      if (dist) {
+      if (dist != undefined) {
         this.result[i++] = dist
       } else {
         this.result[i++] = Number.POSITIVE_INFINITY

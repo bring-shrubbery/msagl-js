@@ -836,7 +836,7 @@ function nodeBoundaryFunc(id: string): ICurve {
 function labelRectFunc(text: string): Rectangle {
   return Rectangle.mkPP(new Point(0, 0), new Point(text.length * 10, 10.5))
 }
-function createGeometry(
+export function createGeometry(
   g: Graph,
   nodeBoundaryFunc: (string) => ICurve,
   labelRect: (string) => Rectangle,
