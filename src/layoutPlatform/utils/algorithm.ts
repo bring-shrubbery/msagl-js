@@ -1,4 +1,3 @@
-import {isThisTypeNode} from 'typescript'
 import {CancelToken} from './cancelToken'
 
 export abstract class Algorithm {

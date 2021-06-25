@@ -6,8 +6,6 @@ export class Interval implements IRectangle<number> {
   end: number
 
   //  constructor
-  //  <param name="start"></param>
-  //  <param name="end"></param>
   constructor(start: number, end: number) {
     this.start = start
     this.end = end
@@ -47,8 +45,6 @@ export class Interval implements IRectangle<number> {
   }
 
   //
-  //  <param name="a"></param>
-  //  <param name="b"></param>
   static mkInterval(a: Interval, b: Interval) {
     const i = new Interval(a.start, a.end)
     i.add_d(b.start)
@@ -57,7 +53,6 @@ export class Interval implements IRectangle<number> {
   }
 
   //  expanding the range to hold v
-  //  <param name="v"></param>
   add_d(v: number) {
     if (this.start > v) {
       this.start = v
@@ -81,21 +76,16 @@ export class Interval implements IRectangle<number> {
   }
 
   //  return true if the value is inside the range
-  //  <param name="v"></param>
-  //  <returns></returns>
   contains_d(v: number): boolean {
     return this.start <= v && v <= this.end
   }
 
   //  bringe v into the range
-  //  <param name="v"></param>
-  //  <returns></returns>
   GetInRange(v: number): number {
     return v < this.start ? this.start : v > this.end ? this.end : v
   }
 
   //  returns true if and only if two intervals are intersecting
-  //  <param name="other"></param>
   intersects(other: Interval): boolean {
     if (other.start > this.end + GeomConstants.distanceEpsilon) {
       return false
