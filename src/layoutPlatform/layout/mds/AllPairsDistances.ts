@@ -10,16 +10,16 @@ export class AllPairsDistances extends Algorithm {
 
   result: Array<number[]>
   //  The resulting distances between every pair of nodes in the graph.
-  public get Result(): Array<number[]> {
+  get Result(): Array<number[]> {
     return this.result
   }
-  public set Result(value: Array<number[]>) {
+  set Result(value: Array<number[]>) {
     this.result = value
   }
 
   //  Computes distances between every pair of nodes in a graph.
   //  Distances are symmetric if the graph is undirected.
-  public constructor(graph: GeomGraph, length: (e: GeomEdge) => number) {
+  constructor(graph: GeomGraph, length: (e: GeomEdge) => number) {
     super(null)
     this.graph = graph
     this.length = length
@@ -42,22 +42,19 @@ export class AllPairsDistances extends Algorithm {
 
   //  Computes the "stress" of the current layout of the given graph:
   //
-  //    stress = sum_{(u,v) in V} D(u,v)^(-2) (d(u,v) - D(u,v))^2
+  //    stress = sum_{(u,v) in V}  (d(u,v) - D(u,v))^2/(D(u,v)^2)
   //
   //  where:
   //    V is the set of nodes
   //    d(u,v) is the euclidean distance between the centers of nodes u and v
   //    D(u,v) is the graph-theoretic path length between u and v - scaled by average edge length.
   //
-  //  The idea of stress in graph layout is that nodes that are immediate neighbors should be closer
+  //  Small stress in graph layout correlated with immediate neighbors to be closer
   //  together than nodes that are a few hops apart (i.e. that have path length>1).  More generally
   //  the distance between nodes in the drawing should be proportional to the path length between them.
-  //  The lower the stress score of a particular graph layout the better it conforms to this ideal.
+  //  The lower the stress of a particular graph layout the better it conforms to this ideal.
   //
-  public static Stress(
-    graph: GeomGraph,
-    length: (e: GeomEdge) => number,
-  ): number {
+  static Stress(graph: GeomGraph, length: (e: GeomEdge) => number): number {
     let stress = 0
     if (graph.edgeCount == 0) {
       return stress
