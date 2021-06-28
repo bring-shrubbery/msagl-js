@@ -1,70 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿import {Algorithm} from '../../utils/algorithm'
+import {GeomEdge} from '../core/geomEdge'
+import {GeomGraph} from '../core/GeomGraph'
+import {SingleSourceDistances} from './SingleSourceDistances'
+//  An algorithm for computing the distances between a selected set of nodes and all nodes.
+export class PivotDistances extends Algorithm {
+  private graph: GeomGraph
+  private length: (e: GeomEdge) => number
+  private pivotArray: number[]
+  private result: number[][]
+  //  A square matrix with shortest path distances.
+  get Result(): number[][] {
+    return this.result
+  }
 
-using Microsoft.Msagl.Core;
-using Microsoft.Msagl.Core.Layout;
+  //  Computes distances between a selected set of nodes and all nodes.
+  //  Pivot nodes are selected with maxmin strategy (first at random, later
+  //  ones to maximize distances to all previously selected ones).
+  constructor(
+    graph: GeomGraph,
+    pivotArray: number[],
+    length: (e: GeomEdge) => number,
+  ) {
+    super(null) // todo: pass the canceltoken
+    this.graph = graph
+    this.pivotArray = pivotArray
+    this.length = length
+  }
 
-namespace Microsoft.Msagl.Layout.MDS
-{
-    // An algorithm for computing the distances between a selected set of nodes and all nodes.
-    public class PivotDistances : AlgorithmBase
-    {
-        private GeometryGraph graph;
+  //  Executes the algorithm.
+  run() {
+    this.result = new Array(this.pivotArray.length)
+    const nodes = Array.from(this.graph.shallowNodes())
+    const min = new Array(this.graph.shallowNodeCount).fill(
+      Number.POSITIVE_INFINITY,
+    )
 
-        private bool directed;
-
-        private int[] pivotArray;
-
-        // A square matrix with shortest path distances.
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "This is performance critical.  Copying the array would be slow.")]
-        public double[][] Result { get; private set; }
-
-        // Computes distances between a selected set of nodes and all nodes.
-        // Pivot nodes are selected with maxmin strategy (first at random, later
-        // ones to maximize distances to all previously selected ones).
-        public PivotDistances(GeometryGraph graph, bool directed, int[] pivotArray)
-        {
-            this.graph = graph;
-            this.directed = directed;
-            this.pivotArray = pivotArray;
+    let pivot = nodes[0]
+    this.pivotArray[0] = 0
+    for (let i = 0; ; i++) {
+      const ssd = new SingleSourceDistances(this.graph, pivot, this.length)
+      ssd.run()
+      this.Result[i] = ssd.Result
+      if (i + 1 < this.pivotArray.length) {
+        // looking for the next pivot
+        let argmax = 0
+        for (let j = 0; j < this.Result[i].length; j++) {
+          min[j] = Math.min(min[j], this.Result[i][j])
+          if (min[j] > min[argmax]) {
+            argmax = j
+          }
         }
 
-        // Executes the algorithm.
-        protected override void  RunInternal()
-        {
-            Result = new double[pivotArray.Length][];
-
-            Node[] nodes = new Node[graph.Nodes.Count];
-            graph.Nodes.CopyTo(nodes, 0);
-            double[] min = new double[graph.Nodes.Count];
-            for (int i = 0; i < min.Length; i++)
-            {
-                min[i] = Double.PositiveInfinity;
-            }
-            Node pivot = nodes[0];
-            pivotArray[0] = 0;
-            for (int i = 0; ; i++) {
-                var ssd = new SingleSourceDistances(graph, pivot, directed);
-                ssd.Run();
-                Result[i] = ssd.Result;
-                if (i + 1 < pivotArray.Length)
-                {//looking for the next pivot
-                    int argmax = 0;
-                    for (int j = 0; j < Result[i].Length; j++)
-                    {
-                        min[j] = Math.Min(min[j], Result[i][j]);
-                        if (min[j] > min[argmax])
-                            argmax = j;
-                    }
-                    pivot = nodes[argmax];
-                    pivotArray[i + 1] = argmax;
-                }
-                else
-                    break;
-            }
-
-        }
+        pivot = nodes[argmax]
+        this.pivotArray[i + 1] = argmax
+      } else {
+        break
+      }
     }
+  }
 }

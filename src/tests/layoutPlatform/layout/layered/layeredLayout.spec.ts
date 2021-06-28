@@ -824,7 +824,7 @@ function addArrow(start: Point, end: Point, arrowAngle: number): Point[] {
   return [start, start.add(dir), end, start.sub(dir), start]
 }
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function nodeBoundaryFunc(id: string): ICurve {
+export function nodeBoundaryFunc(id: string): ICurve {
   return CurveFactory.mkRectangleWithRoundedCorners(
     40.1, // tsize.width,
     30.2, // tsize.height,
@@ -833,7 +833,7 @@ function nodeBoundaryFunc(id: string): ICurve {
     new Point(0, 0),
   )
 }
-function labelRectFunc(text: string): Rectangle {
+export function labelRectFunc(text: string): Rectangle {
   return Rectangle.mkPP(new Point(0, 0), new Point(text.length * 10, 10.5))
 }
 export function createGeometry(
