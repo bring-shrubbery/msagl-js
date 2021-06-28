@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/layout/mds/AllPairsDistances.spec.ts",
+        "src/tests/layoutPlatform/layout/mds/Transform.spec.ts",
         "-t",
-        "all pairs distances"
+        "transform.rotate"
       ],
       "console": "integratedTerminal"
     }
