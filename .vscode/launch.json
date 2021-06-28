@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/structs/genericBinaryHeapPriorityQueue.spec.ts",
+        "src/tests/layoutPlatform/layout/mds/AllPairsDistances.spec.ts",
         "-t",
-        "push many"
+        "all pairs distances"
       ],
       "console": "integratedTerminal"
     }

@@ -1,4 +1,6 @@
 import {GeomEdge} from '../../../../layoutPlatform/layout/core/geomEdge'
+import {GeomNode} from '../../../../layoutPlatform/layout/core/geomNode'
+import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {AllPairsDistances} from '../../../../layoutPlatform/layout/mds/AllPairsDistances'
 import {CurveFactory} from '../../../../layoutPlatform/math/geometry/curveFactory'
 import {Point} from '../../../../layoutPlatform/math/geometry/point'
@@ -58,4 +60,19 @@ test('all pairs distances', () => {
   expect(res[3][1]).toBe(res[1][3])
   expect(res[3][2]).toBe(res[2][3])
   expect(res[3][3]).toBe(res[3][3])
+
+  const stress0 = AllPairsDistances.Stress(geomGraph, length)
+  // position the nodes somehow reasonable as a trapeze
+  // leave 'a' at (0,0)
+  const gb = <GeomNode>GeomObject.getGeom(b)
+  gb.center = new Point(0.5, 0.5)
+  const gc = <GeomNode>GeomObject.getGeom(c)
+  gc.center = new Point(1.5, 0.5)
+
+  const gd = <GeomNode>GeomObject.getGeom(d)
+  gd.center = new Point(2, 0)
+  const stress1 = AllPairsDistances.Stress(geomGraph, length)
+
+  //(<GeomNode>GeomObject.getGeom(c)).center = new Point(0.5, 0.5)
+  expect(stress0 > stress1).toBe(true)
 })
