@@ -26,6 +26,14 @@ export class LayoutSettings {
   set MinimalHeight(value: number) {
     this.minimalHeight = Math.max(value, 0)
   }
+  NodeSeparation = 10
+  packingAspectRatio = 0
+  get PackingAspectRatio() {
+    return this.packingAspectRatio
+  }
+  set PackingAspectRatio(value: number) {
+    this.packingAspectRatio = value
+  }
 }
 
 export class SugiyamaLayoutSettings extends LayoutSettings {
@@ -56,7 +64,6 @@ export class SugiyamaLayoutSettings extends LayoutSettings {
   LabelCornersPreserveCoefficient = 0.1
   MinNodeHeight = (72 * 0.5) / 4
   MinNodeWidth = (72 * 0.75) / 4
-  NodeSeparation = 10
   SnapToGridByY = SnapToGridByY.None
   yLayerSep = 10 * 3
   transform: PlaneTransformation = PlaneTransformation.getIdentity()
