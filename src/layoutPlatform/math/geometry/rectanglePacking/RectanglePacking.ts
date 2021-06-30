@@ -22,7 +22,7 @@ export class RectanglePacking extends Packing {
     this.rectanglesByDescendingHeight = rectanglesPresorted
       ? rectangles
       : RectanglePacking.SortRectangles(rectangles)
-    this.wrapWidth = this.wrapWidth
+    this.wrapWidth = wrapWidth
   }
 
   //  Sort rectangles by height

@@ -9,6 +9,10 @@ import {CurveFactory} from '../../math/geometry/curveFactory'
 import {Point} from '../../math/geometry/point'
 
 export class GeomGraph extends GeomNode {
+  translate(delta: Point) {
+    const m = new PlaneTransformation(1, 0, delta.x, 0, 1, delta.y)
+    this.transform(m)
+  }
   private _boundingBox: Rectangle
   labelSize: Size
   public get boundingBox(): Rectangle {

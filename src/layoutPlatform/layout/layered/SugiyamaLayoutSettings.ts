@@ -26,7 +26,14 @@ export class LayoutSettings {
   set MinimalHeight(value: number) {
     this.minimalHeight = Math.max(value, 0)
   }
-  NodeSeparation = 10
+
+  private nodeSeparation = 10
+  public get NodeSeparation() {
+    return this.nodeSeparation
+  }
+  public set NodeSeparation(value) {
+    this.nodeSeparation = value
+  }
   packingAspectRatio = 0
   get PackingAspectRatio() {
     return this.packingAspectRatio

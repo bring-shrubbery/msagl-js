@@ -106,7 +106,7 @@ export abstract class OptimalPacking extends Algorithm {
   //  else if f(x2) \lt f(x4) we search in the range [x1, x4]
   //  else
   //  f(x2)==f(x4) and we know that f is only weakly unimodal (not strongly unimodal) and we must search both branches.
-  private static GoldenSectionSearch(
+  static GoldenSectionSearch(
     f: (x: number) => number,
     x1: number,
     x2: number,
