@@ -31,7 +31,7 @@ export class OptimalRectanglePacking extends OptimalPacking {
       Assert.assert(r.width > 0, 'Width must be greater than 0')
       Assert.assert(r.height > 0, 'Height must be greater than 0')
       const width: number = r.width
-      totalWidth = totalWidth + width
+      totalWidth += width
       minRectWidth = Math.min(minRectWidth, width)
       maxRectWidth = Math.max(maxRectWidth, width)
     }

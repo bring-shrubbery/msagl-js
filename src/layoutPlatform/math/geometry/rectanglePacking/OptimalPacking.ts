@@ -19,7 +19,7 @@ export abstract class OptimalPacking extends Algorithm {
 
   constructor(rectangles: Rectangle[], aspectRatio: number) {
     super(null)
-    this.rectangles = this.rectangles
+    this.rectangles = rectangles
     this.desiredAspectRatio = aspectRatio
   }
 
@@ -58,8 +58,8 @@ export abstract class OptimalPacking extends Algorithm {
       minGranularity / 10,
       (upperBound - lowerBound) / OptimalPacking.MaxSteps,
     )
-    //  need to overshoot upperbound in case upperbound is actually optimal
-    upperBound = upperBound + precision
+    //  need to overshoot upperbound when it is optimal
+    upperBound += precision
     this.bestPackingCost = Number.MAX_VALUE
     if (this.rectangles.length == 1) {
       //  the trivial solution for just one rectangle is widthLowerBound
@@ -113,14 +113,9 @@ export abstract class OptimalPacking extends Algorithm {
     x3: number,
     precision: number,
   ): number {
-    Assert.assert(
-      (Math.abs(x3 - x1) - precision) / precision <=
-        OptimalPacking.MaxSteps + 0.1,
-      'precision would violate the limit imposed by MaxSteps',
-    )
     //  check termination
     if (Math.abs(x1 - x3) < precision) {
-      f(x1) < f(x3) ? x1 : x3
+      return f(x1) < f(x3) ? x1 : x3
     }
 
     //  x2 must be between x1 and x3

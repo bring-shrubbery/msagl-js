@@ -162,7 +162,7 @@ test('PowerLawRandomRectangles', () => {
 
 //Description("test golden section algorithm with f(x) = x^2")
 test('GoldenSectionTest', () => {
-  const Precision = 0.01
+  const Precision = 0.001
   const xopt: number = OptimalRectanglePacking.GoldenSectionSearch(
     (x) => x * x,
     -1,
