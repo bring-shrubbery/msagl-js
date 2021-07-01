@@ -4,13 +4,9 @@ import {Rectangle} from '../rectangle'
 import {Packing} from './Packing'
 
 //  Greedily pack rectangles (without rotation) into a given aspect ratio
-export class RectanglePacking extends Packing {
+export class GreedyRectanglePacking extends Packing {
   rectanglesByDescendingHeight: Rectangle[]
-  originalRects: Rectangle[]
 
-  getRects() {
-    return this.rectanglesByDescendingHeight
-  }
   wrapWidth: number
 
   //  Constructor for packing, call Run to do the actual pack.
@@ -23,10 +19,10 @@ export class RectanglePacking extends Packing {
     rectanglesPresorted = false,
   ) {
     super(null)
-    this.originalRects = rectangles
+    this.rectsToCenters = new Map<Rectangle, Point>()
     this.rectanglesByDescendingHeight = rectanglesPresorted
-      ? rectangles.map((r) => r.clone())
-      : RectanglePacking.SortRectangles(rectangles).map((r) => r.clone())
+      ? rectangles
+      : GreedyRectanglePacking.SortRectangles(rectangles)
     this.wrapWidth = wrapWidth
   }
 
@@ -56,7 +52,7 @@ export class RectanglePacking extends Packing {
     let packedHeight = 0
     const rects = this.rectanglesByDescendingHeight
     for (let i = 0; wrap || i < rects.length; ) {
-      let r = rects[i]
+      const r = rects[i]
       const parent = stack.length > 0 ? stack.top : null
       if (
         parent == null ||
@@ -67,11 +63,9 @@ export class RectanglePacking extends Packing {
           parent ? parent.right : 0,
           verticalPosition,
         )
-        r = rects[i] = Rectangle.rectangleFromLeftBottomAndSize(
-          leftBottom.x,
-          leftBottom.y,
-          new Point(r.width, r.height),
-        )
+        const center = leftBottom.add(new Point(r.width / 2, r.height / 2))
+        r.center = center
+        this.rectsToCenters.set(r, center)
 
         packedWidth = Math.max(packedWidth, r.right)
         packedHeight = Math.max(packedHeight, r.top)
@@ -87,8 +81,5 @@ export class RectanglePacking extends Packing {
 
     this.PackedWidth = packedWidth
     this.PackedHeight = packedHeight
-    for (let i = 0; i < this.originalRects.length; i++) {
-      this.originalRects[i] = this.rectanglesByDescendingHeight[i]
-    }
   }
 }

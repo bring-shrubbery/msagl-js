@@ -2,7 +2,7 @@
 import {Assert} from '../../../utils/assert'
 import {Rectangle} from '../rectangle'
 import {OptimalPacking} from './OptimalPacking'
-import {RectanglePacking} from './RectanglePacking'
+import {GreedyRectanglePacking} from './RectanglePacking'
 
 //  Pack rectangles (without rotation) into a given aspect ratio
 export class OptimalRectanglePacking extends OptimalPacking {
@@ -11,13 +11,14 @@ export class OptimalRectanglePacking extends OptimalPacking {
   //  Performs a Golden Section Search on packing width for the
   //  closest aspect ratio to the specified desired aspect ratio
   public constructor(rectangles: Rectangle[], aspectRatio: number) {
-    super(RectanglePacking.SortRectangles(rectangles), aspectRatio)
+    super(GreedyRectanglePacking.SortRectangles(rectangles), aspectRatio)
     Assert.assert(
       rectangles.length > 0,
       'Expected more than one rectangle in rectangles',
     )
     Assert.assert(aspectRatio > 0, 'aspect ratio should be greater than 0')
-    this.createPacking = (rs, width) => new RectanglePacking(rs, width, true)
+    this.createPacking = (rs, width) =>
+      new GreedyRectanglePacking(rs, width, true)
   }
 
   //  Performs a Golden Section Search on packing width for the

@@ -29,18 +29,17 @@ export class ColumnPacking extends Packing {
     let columnPosition = 0
     let columnHeight = 0
     for (let i = 0; i < this.orderedRectangles.length; i++) {
-      let r = this.orderedRectangles[i]
+      const r = this.orderedRectangles[i]
       if (columnHeight + r.height > this.maxHeight) {
         columnPosition = this.PackedWidth
         columnHeight = 0
       }
 
       const leftBottom = new Point(columnPosition, columnHeight)
-      r = this.orderedRectangles[i] = Rectangle.rectangleFromLeftBottomAndSize(
-        leftBottom.x,
-        leftBottom.y,
-        new Point(r.width, r.height),
-      )
+      const center = leftBottom.add(new Point(r.width / 2, r.height / 2))
+      r.center = center
+      this.rectsToCenters.set(r, center)
+
       this.PackedWidth = Math.max(this.PackedWidth, columnPosition + r.width)
       columnHeight = columnHeight + r.height
       this.PackedHeight = Math.max(this.PackedHeight, columnHeight)

@@ -1,8 +1,12 @@
 ﻿import {Algorithm} from '../../../utils/algorithm'
+import {Point} from '../point'
 import {Rectangle} from '../rectangle'
 
 //  Algorithm to pack rectangles
 export abstract class Packing extends Algorithm {
+  // rectsToCenters defines the positions of the rectangles
+  rectsToCenters: Map<Rectangle, Point>
+
   //  The width of the widest row in the packed solution
   private packedWidth: number
   public get PackedWidth(): number {
@@ -26,5 +30,12 @@ export abstract class Packing extends Algorithm {
     return this.PackedWidth / this.PackedHeight
   }
 
-  abstract getRects(): Rectangle[]
+  getRects(): Rectangle[] {
+    const ret = []
+    for (const [r, center] of this.rectsToCenters) {
+      r.center = center
+      ret.push(r)
+    }
+    return ret
+  }
 }

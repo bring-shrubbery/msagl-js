@@ -2,7 +2,7 @@ import {Point} from '../../../../../layoutPlatform/math/geometry/point'
 import {Rectangle} from '../../../../../layoutPlatform/math/geometry/rectangle'
 import {OptimalRectanglePacking} from '../../../../../layoutPlatform/math/geometry/rectanglePacking/OptimalRectanglePacking'
 import {PackingConstants} from '../../../../../layoutPlatform/math/geometry/rectanglePacking/PackingConstants'
-import {RectanglePacking} from '../../../../../layoutPlatform/math/geometry/rectanglePacking/RectanglePacking'
+import {GreedyRectanglePacking} from '../../../../../layoutPlatform/math/geometry/rectanglePacking/RectanglePacking'
 import {SvgDebugWriter} from '../../../../../layoutPlatform/math/geometry/svgDebugWriter'
 
 test('RectanglePackingTwoSquares', () => {
@@ -28,7 +28,7 @@ test('RectanglePackingNineSquares', () => {
     rectangles[i] = Rectangle.mkPP(new Point(0, 0), new Point(1, 1))
   }
 
-  const rectanglePacking = new RectanglePacking(rectangles, 3)
+  const rectanglePacking = new GreedyRectanglePacking(rectangles, 3)
   rectanglePacking.run()
   expect(3).toBe(rectanglePacking.PackedWidth)
   expect(3).toBe(rectanglePacking.PackedHeight)
@@ -42,7 +42,7 @@ test('RectanglePackingTallRectAndTwoSquares', () => {
   rectangles[0] = Rectangle.mkPP(new Point(0, 0), new Point(1, 2))
   rectangles[1] = Rectangle.mkPP(new Point(0, 0), new Point(1, 1))
   rectangles[2] = Rectangle.mkPP(new Point(0, 0), new Point(1, 1))
-  const rectanglePacking = new RectanglePacking(rectangles, 2)
+  const rectanglePacking = new GreedyRectanglePacking(rectangles, 2)
   rectanglePacking.run()
   expect(2).toBe(rectanglePacking.PackedWidth)
   expect(2).toBe(rectanglePacking.PackedHeight)
@@ -57,7 +57,7 @@ function ShowDebugView(rectangles: Rectangle[], fn: string) {
   )
 }
 
-// @Description("Five rectangles of different heights that should fit into 3x3 bounding box")
+// "Five rectangles of different heights that should fit into 3x3 bounding box"
 test('SimpleRectanglesDifferentHeights', () => {
   let rectangles = []
   rectangles.push(Rectangle.mkPP(new Point(0, 0), new Point(1, 1)))
@@ -74,7 +74,7 @@ test('SimpleRectanglesDifferentHeights', () => {
     ),
   )
 
-  const rectanglePacking = new RectanglePacking(rectangles, 3 * scale)
+  const rectanglePacking = new GreedyRectanglePacking(rectangles, 3 * scale)
   rectanglePacking.run()
   expect(3 * scale).toBe(rectanglePacking.PackedWidth)
   expect(3 * scale).toBe(rectanglePacking.PackedHeight)
@@ -96,7 +96,7 @@ test('RandomRectangles', () => {
   }
 
   const maxWidth = Math.sqrt(area)
-  const rectanglePacking: RectanglePacking = new RectanglePacking(
+  const rectanglePacking: GreedyRectanglePacking = new GreedyRectanglePacking(
     rectangles,
     maxWidth,
   )
@@ -135,7 +135,7 @@ test('PowerLawRandomRectangles', () => {
   }
 
   const maxWidth: number = Math.sqrt(area)
-  const rectanglePacking: RectanglePacking = new RectanglePacking(
+  const rectanglePacking: GreedyRectanglePacking = new GreedyRectanglePacking(
     rectangles,
     maxWidth,
   )
