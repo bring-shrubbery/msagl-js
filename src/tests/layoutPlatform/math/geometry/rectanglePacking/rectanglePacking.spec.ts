@@ -157,7 +157,7 @@ test('PowerLawRandomRectangles', () => {
     Math.abs(appoxAspectRatio - desiredAspectRatio) >
       Math.abs(optimalAspectRatio - desiredAspectRatio),
   ).toBe(true)
-  expect(AreOverlapping(rectangles)).toBe(true)
+  expect(AreOverlapping(rectangles)).toBe(false)
 })
 
 //Description("test golden section algorithm with f(x) = x^2")
