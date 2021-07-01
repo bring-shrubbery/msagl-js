@@ -1,3 +1,4 @@
+import {DebugCurve} from '../../../../../layoutPlatform/math/geometry/debugCurve'
 import {Point} from '../../../../../layoutPlatform/math/geometry/point'
 import {Rectangle} from '../../../../../layoutPlatform/math/geometry/rectangle'
 import {OptimalRectanglePacking} from '../../../../../layoutPlatform/math/geometry/rectanglePacking/OptimalRectanglePacking'
@@ -51,9 +52,12 @@ test('RectanglePackingTallRectAndTwoSquares', () => {
 })
 
 function ShowDebugView(rectangles: Rectangle[], fn: string) {
-  SvgDebugWriter.dumpICurves(
+  SvgDebugWriter.dumpDebugCurves(
     fn,
-    rectangles.map((r) => r.perimeter()),
+
+    rectangles.map((r) =>
+      DebugCurve.mkDebugCurveWCI(r.width / 10, 'black', r.perimeter()),
+    ),
   )
 }
 
