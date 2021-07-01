@@ -6,7 +6,9 @@ import {Packing} from './Packing'
 //  Greedily pack rectangles (without rotation) into a given aspect ratio
 export class RectanglePacking extends Packing {
   rectanglesByDescendingHeight: Rectangle[]
-
+  getRects() {
+    return this.rectanglesByDescendingHeight
+  }
   wrapWidth: number
 
   //  Constructor for packing, call Run to do the actual pack.
@@ -20,16 +22,15 @@ export class RectanglePacking extends Packing {
   ) {
     super(null)
     this.rectanglesByDescendingHeight = rectanglesPresorted
-      ? rectangles
-      : RectanglePacking.SortRectangles(rectangles)
+      ? rectangles.map((r) => r.clone())
+      : RectanglePacking.SortRectangles(rectangles).map((r) => r.clone())
     this.wrapWidth = wrapWidth
   }
 
   //  Sort rectangles by height
   public static SortRectangles(rectangles: Rectangle[]): Rectangle[] {
-    const ret = rectangles.slice()
-    ret.sort((a, b) => a.height - b.height)
-    return ret
+    rectangles.sort((a, b) => a.height - b.height)
+    return rectangles
   }
 
   //  Pack rectangles tallest to shortest, left to right until wrapWidth is reached,
@@ -51,14 +52,22 @@ export class RectanglePacking extends Packing {
     let packedWidth = 0
     let packedHeight = 0
     for (let i = 0; wrap || i < rects.length; ) {
-      const r = rects[i]
+      let r = rects[i]
       const parent = stack.length > 0 ? stack.top : null
       if (
         parent == null ||
         (parent.right + r.width <= this.wrapWidth &&
           verticalPosition + r.height <= parent.top)
       ) {
-        r.leftBottom = new Point(parent ? parent.right : 0, verticalPosition)
+        const leftBottom = new Point(
+          parent ? parent.right : 0,
+          verticalPosition,
+        )
+        r = rects[i] = Rectangle.rectangleFromLeftBottomAndSize(
+          leftBottom.x,
+          leftBottom.y,
+          new Point(r.width, r.height),
+        )
 
         packedWidth = Math.max(packedWidth, r.right)
         packedHeight = Math.max(packedHeight, r.top)

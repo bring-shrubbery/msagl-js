@@ -1,4 +1,5 @@
 ﻿import {Algorithm} from '../../../utils/algorithm'
+import {Rectangle} from '../rectangle'
 
 //  Algorithm to pack rectangles
 export abstract class Packing extends Algorithm {
@@ -24,4 +25,6 @@ export abstract class Packing extends Algorithm {
   public get PackedAspectRatio(): number {
     return this.PackedWidth / this.PackedHeight
   }
+
+  abstract getRects(): Rectangle[]
 }

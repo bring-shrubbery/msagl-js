@@ -6,7 +6,9 @@ import {Packing} from './Packing'
 
 export class ColumnPacking extends Packing {
   orderedRectangles: Rectangle[]
-
+  getRects() {
+    return this.orderedRectangles
+  }
   maxHeight: number
 
   //  Constructor for packing, call Run to do the actual pack.
@@ -26,13 +28,19 @@ export class ColumnPacking extends Packing {
     this.PackedHeight = 0
     let columnPosition = 0
     let columnHeight = 0
-    for (const r of this.orderedRectangles) {
+    for (let i = 0; i < this.orderedRectangles.length; i++) {
+      let r = this.orderedRectangles[i]
       if (columnHeight + r.height > this.maxHeight) {
         columnPosition = this.PackedWidth
         columnHeight = 0
       }
 
-      r.leftBottom = new Point(columnPosition, columnHeight)
+      const leftBottom = new Point(columnPosition, columnHeight)
+      r = this.orderedRectangles[i] = Rectangle.rectangleFromLeftBottomAndSize(
+        leftBottom.x,
+        leftBottom.y,
+        new Point(r.width, r.height),
+      )
       this.PackedWidth = Math.max(this.PackedWidth, columnPosition + r.width)
       columnHeight = columnHeight + r.height
       this.PackedHeight = Math.max(this.PackedHeight, columnHeight)

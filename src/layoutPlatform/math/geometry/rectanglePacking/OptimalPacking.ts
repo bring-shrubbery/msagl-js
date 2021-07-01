@@ -77,9 +77,9 @@ export abstract class OptimalPacking extends Algorithm {
         precision,
       )
     }
-
-    //  packing works on the rectangles in place, so we need to rerun to get back the best packing.
-    this.bestPacking.run()
+    const newRects = this.bestPacking.getRects()
+    for (let i = 0; i < this.rectangles.length; i++)
+      this.rectangles[i] = newRects[i]
   }
 
   PackLimit(limit: number): number {
@@ -87,9 +87,9 @@ export abstract class OptimalPacking extends Algorithm {
     if (cost == undefined) {
       const packing = this.createPacking(this.rectangles, limit)
       packing.run()
-      cost = Math.abs(packing.PackedAspectRatio - this.desiredAspectRatio)
-      this.cachedCosts[limit] = Math.abs(
-        packing.PackedAspectRatio - this.desiredAspectRatio,
+      this.cachedCosts.set(
+        limit,
+        (cost = Math.abs(packing.PackedAspectRatio - this.desiredAspectRatio)),
       )
       if (cost < this.bestPackingCost) {
         this.bestPackingCost = cost

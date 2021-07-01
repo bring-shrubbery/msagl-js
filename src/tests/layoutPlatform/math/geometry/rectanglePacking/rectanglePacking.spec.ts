@@ -174,7 +174,8 @@ test('GoldenSectionTest', () => {
 })
 
 //  fool-proof overlap test
-function AreOverlapping(rs: Rectangle[]): boolean {
+function AreOverlapping(rects: Rectangle[]): boolean {
+  const rs = rects.map((r) => r.clone())
   for (let i = 0; i < rs.length; i++) {
     rs[i].pad(-0.01)
   }

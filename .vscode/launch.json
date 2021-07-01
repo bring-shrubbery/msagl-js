@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/layout/mds/PivotDistances.spec.ts",
+        "src/tests/layoutPlatform/math/geometry/rectanglePacking/rectanglePacking.spec.ts",
         "-t",
-        "pivot distances"
+        "RectanglePackingTwoSquares"
       ],
       "console": "integratedTerminal"
     }
