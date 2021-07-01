@@ -70,7 +70,7 @@ export abstract class OptimalPacking extends Algorithm {
       this.PackLimit(upperBound)
     } else if (this.rectangles.length > 2) {
       OptimalPacking.GoldenSectionSearch(
-        this.PackLimit,
+        (l) => this.PackLimit(l),
         lowerBound,
         c0,
         upperBound,

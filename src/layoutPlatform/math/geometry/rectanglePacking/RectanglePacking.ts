@@ -6,6 +6,8 @@ import {Packing} from './Packing'
 //  Greedily pack rectangles (without rotation) into a given aspect ratio
 export class RectanglePacking extends Packing {
   rectanglesByDescendingHeight: Rectangle[]
+  originalRects: Rectangle[]
+
   getRects() {
     return this.rectanglesByDescendingHeight
   }
@@ -21,6 +23,7 @@ export class RectanglePacking extends Packing {
     rectanglesPresorted = false,
   ) {
     super(null)
+    this.originalRects = rectangles
     this.rectanglesByDescendingHeight = rectanglesPresorted
       ? rectangles.map((r) => r.clone())
       : RectanglePacking.SortRectangles(rectangles).map((r) => r.clone())
@@ -29,20 +32,20 @@ export class RectanglePacking extends Packing {
 
   //  Sort rectangles by height
   public static SortRectangles(rectangles: Rectangle[]): Rectangle[] {
-    rectangles.sort((a, b) => a.height - b.height)
+    rectangles.sort((a, b) => b.height - a.height)
     return rectangles
   }
 
   //  Pack rectangles tallest to shortest, left to right until wrapWidth is reached,
   //  then wrap to right-most rectangle still with vertical space to fit the next rectangle
   run() {
-    this.Pack(this.rectanglesByDescendingHeight)
+    this.Pack()
   }
 
   //  Traverses the rectangleEnumerator and places rectangles at the next available slot beneath the current parent,
   //  until the parent is filled or until maxRowWidth is reached.  Each successfully placed rectangle is pushed onto
   //  a stack, when there is no room for the rectangle we pop the stack for a new parent and try again.
-  Pack(rects: Rectangle[]) {
+  Pack() {
     this.PackedWidth = 0
     this.PackedHeight = 0
     //  get next rectangle
@@ -51,6 +54,7 @@ export class RectanglePacking extends Packing {
     let verticalPosition = 0
     let packedWidth = 0
     let packedHeight = 0
+    const rects = this.rectanglesByDescendingHeight
     for (let i = 0; wrap || i < rects.length; ) {
       let r = rects[i]
       const parent = stack.length > 0 ? stack.top : null
@@ -83,5 +87,8 @@ export class RectanglePacking extends Packing {
 
     this.PackedWidth = packedWidth
     this.PackedHeight = packedHeight
+    for (let i = 0; i < this.originalRects.length; i++) {
+      this.originalRects[i] = this.rectanglesByDescendingHeight[i]
+    }
   }
 }
