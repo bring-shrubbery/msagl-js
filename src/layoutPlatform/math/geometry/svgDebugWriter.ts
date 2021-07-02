@@ -62,10 +62,10 @@ export class SvgDebugWriter {
     this.xw.writeAttribute('height', box.height)
     this.xw.writeAttribute('version', '1.1')
     this.xw.startElement('g')
-    // this.xw.writeAttribute(
-    //   'transform',
-    //   'translate(' + -box.left + ',' + -box.bottom + ')',
-    // )
+    this.xw.writeAttribute(
+      'transform',
+      'translate(' + -box.left + ',' + -box.bottom + ')',
+    )
   }
 
   static pointToString(start: Point) {
