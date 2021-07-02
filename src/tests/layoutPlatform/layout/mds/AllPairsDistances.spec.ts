@@ -10,12 +10,12 @@ import {Node} from '../../../../layoutPlatform/structs/node'
 import {createGeometry} from '../layered/layeredLayout.spec'
 
 test('all pairs distances', () => {
-  const graph = new Graph(null)
+  const graph = new Graph()
   // make a trapeze (abcd), with sides ab = 1, bc = 0.5, cd = 1, da = 1
-  const a = new Node('a', graph)
-  const b = new Node('b', graph)
-  const c = new Node('c', graph)
-  const d = new Node('d', graph)
+  const a = new Node('a')
+  const b = new Node('b')
+  const c = new Node('c')
+  const d = new Node('d')
   graph.addNode(a)
   graph.addNode(b)
   graph.addNode(c)

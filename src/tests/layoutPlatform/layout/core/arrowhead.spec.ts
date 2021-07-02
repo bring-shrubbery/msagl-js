@@ -16,10 +16,10 @@ import {Label} from '../../../../layoutPlatform/structs/label'
 
 describe('arrowhead', () => {
   test('trim edge no arrowheads', () => {
-    const a = new Node('a', null)
+    const a = new Node('a')
     const ga = new GeomNode(a)
     ga.boundaryCurve = CurveFactory.mkCircle(20, new Point(0, 0))
-    const b = new Node('b', null)
+    const b = new Node('b')
     const gb = new GeomNode(b)
     gb.boundaryCurve = CurveFactory.mkCircle(20, new Point(100, 100))
 
@@ -34,10 +34,10 @@ describe('arrowhead', () => {
     ])
   })
   test('trim edge with arrowheads', () => {
-    const a = new Node('a', null)
+    const a = new Node('a')
     const ga = new GeomNode(a)
     ga.boundaryCurve = CurveFactory.mkCircle(20, new Point(0, 0))
-    const b = new Node('b', null)
+    const b = new Node('b')
     const gb = new GeomNode(b)
     gb.boundaryCurve = CurveFactory.mkCircle(20, new Point(100, 100))
 
@@ -56,7 +56,7 @@ describe('arrowhead', () => {
     gab.edgeGeometry.sourceArrowhead = new Arrowhead()
     gab.edgeGeometry.targetArrowhead = new Arrowhead()
     Arrowhead.trimSplineAndCalculateArrowheads(gab, curve, true)
-    const g = new Graph(null)
+    const g = new Graph()
     g.addEdge(ab)
     const gg = new GeomGraph(g, Rectangle.mkEmpty())
     const xw = new SvgDebugWriter('/tmp/gg.svg')

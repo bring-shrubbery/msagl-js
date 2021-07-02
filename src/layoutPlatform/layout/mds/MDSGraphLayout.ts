@@ -1,6 +1,3 @@
-import {IEnumerable, from} from 'linq-to-typescript'
-import {HitTestBehavior} from '../../core/geometry/RTree/HitTestBehavior'
-import {RectangleNode} from '../../core/geometry/RTree/RectangleNode'
 import {Point} from '../../math/geometry/point'
 import {Rectangle} from '../../math/geometry/rectangle'
 import {GeomGraph} from '../core/GeomGraph'
@@ -14,9 +11,13 @@ import {GeomNode} from '../core/geomNode'
 import {GeomEdge} from '../core/geomEdge'
 import {MultidimensionalScaling} from './MultiDimensionalScaling'
 import {LayoutSettings} from '../layered/SugiyamaLayoutSettings'
+import {OptimalRectanglePacking} from '../../math/geometry/rectanglePacking/OptimalRectanglePacking'
 
 class GTreeOverlapRemoval {
-  RemoveOverlaps(nodes: GeomNode[], separation: number) {}
+  static RemoveOverlaps: any
+  RemoveOverlaps(nodes: GeomNode[], separation: number) {
+    throw new Error('not implemented')
+  }
 }
 
 //  Class for graph layout with multidimensional scaling.
@@ -40,7 +41,7 @@ export class MdsGraphLayout extends Algorithm {
 
   //  Executes the algorithm
   run() {
-    this.LayoutConnectedComponents()
+    this.LayoutConnectedGraphWithMds()
     this.SetGraphBoundingBox()
   }
 
@@ -138,73 +139,37 @@ export class MdsGraphLayout extends Algorithm {
     }
   }
 
-  // //  class GeometryGraphComparer : IComparer<GeomGraph> {
-  // //     public int Compare(GeomGraph g1, GeomGraph g2) {
-  // //         return g2.Nodes.Count.CompareTo(g1.Nodes.Count);
-  // //     }
-  // // }
-  // //  Computes layout for possibly disconnected graphs by putting
-  // //  the layouts for connected components together.
-  // private  LayoutConnectedComponents() {
-  //     let graphs: GeomGraph[] = GetConnectedComponents(this.graph.node, this.graph.edges).ToArray();
-  //     //  layout components, compute bounding boxes
-  //     if (this.settings.RunInParallel) {
-  //         let options: ParallelOptions = new ParallelOptions();
-  //         #if (PPC)
-  //         if ((this.cancelToken != null)) {
-  //             options.CancellationToken = this.cancelToken.CancellationToken;
-  //         }
-
-  //         #endif
-  //         System.Threading.Tasks.Parallel.ForEach(graphs, options, LayoutConnectedGraphWithMds);
-  //     }
-  //     else {
-  //         for (let i: number = 0; (i < graphs.length); i++) {
-  //             this.LayoutConnectedGraphWithMds(graphs[i]);
-  //         }
-
-  //     }
-
-  //     if ((graphs.length > 1)) {
-  //         MdsGraphLayout.PackGraphs(graphs, this.settings);
-  //         // restore the parents
-  //         for (let node in graphs.SelectMany(() => {  }, g.Nodes)) {
-  //             node.GeometryParent = this.graph;
-  //         }
-
-  //     }
-
-  // }
-
-  LayoutConnectedGraphWithMds(compGraph: GeomGraph) {
-    let y: number[]
-    let x: number[]
+  LayoutConnectedGraphWithMds() {
+    const arrays: {x: number[]; y: number[]} = {x: [], y: []}
     MdsGraphLayout.LayoutGraphWithMds(
-      compGraph,
+      this.graph,
       this.settings,
-      /* out */ x,
-      /* out */ y,
+      arrays,
+      this.length,
     )
     if (this.settings.RotationAngle != 0) {
-      Transform.Rotate(x, y, this.settings.RotationAngle)
+      Transform.Rotate(arrays.x, arrays.y, this.settings.RotationAngle)
     }
 
     const scaleX: number = this.settings.ScaleX
     const scaleY: number = this.settings.ScaleY
     let index = 0
-    for (const node of compGraph.shallowNodes()) {
-      node.center = new Point(x[index] * scaleX, y[index] * scaleY)
+    for (const node of this.graph.shallowNodes()) {
+      node.center = new Point(
+        arrays.x[index] * scaleX,
+        arrays.y[index] * scaleY,
+      )
       index++
     }
 
     if (this.settings.RemoveOverlaps) {
       GTreeOverlapRemoval.RemoveOverlaps(
-        Array.from(compGraph.shallowNodes()),
+        Array.from(this.graph.shallowNodes()),
         this.settings.NodeSeparation,
       )
     }
 
-    compGraph.boundingBox = compGraph.pumpTheBoxToTheGraphWithMargins()
+    this.graph.pumpTheBoxToTheGraphWithMargins()
   }
 
   ScaleNodes(nodes: GeomNode[], scale: number) {
@@ -280,16 +245,21 @@ export class MdsGraphLayout extends Algorithm {
     for (const g of graphs) {
       originalLeftBottoms.push({g: g, lb: g.boundingBox.leftBottom.clone()})
     }
-    const packing = new OptimalRectanglePacking<GeomGraph>(
+    const packing = new OptimalRectanglePacking(
       rectangles,
       settings.PackingAspectRatio,
     )
-    packing.Run()
+    packing.run()
     for (const {g, lb} of originalLeftBottoms) {
       const delta = g.boundingBox.leftBottom.sub(lb)
       g.translate(delta)
     }
 
-    return new Rectangle(0, 0, packing.PackedWidth, packing.PackedHeight)
+    return new Rectangle({
+      left: 0,
+      bottom: 0,
+      right: packing.PackedWidth,
+      top: packing.PackedHeight,
+    })
   }
 }

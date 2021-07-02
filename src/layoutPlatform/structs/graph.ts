@@ -1,3 +1,4 @@
+import {Assert} from '../utils/assert'
 import {Edge} from './edge'
 import {Node} from './node'
 import {NodeCollection} from './nodeCollection'
@@ -20,13 +21,8 @@ export class Graph extends Node {
     return this.nodeCollection.nodesDeep()
   }
 
-  constructor(parent: Graph, id = '__graph__') {
-    super(id, parent)
-  }
-  static mkGraph(id: string, parent: Graph): Graph {
-    const g = new Graph(parent)
-    g.id = id
-    return g
+  constructor(id = '__graph__') {
+    super(id)
   }
   findNode(id: string): Node {
     return this.nodeCollection.find(id)
@@ -44,6 +40,8 @@ export class Graph extends Node {
     this.nodeCollection.removeNode(n)
   }
   addNode(n: Node) {
+    Assert.assert(n.parent == null || n.parent == this)
+    n.parent = this
     this.nodeCollection.addNode(n)
   }
   addEdge(n: Edge) {
@@ -60,5 +58,12 @@ export class Graph extends Node {
 
   get edgeCount() {
     return this.nodeCollection.edgeCount
+  }
+
+  // if n belongs to this graph then return it,
+  // otherwise set n = n.parent and repeat
+  liftNode(n: Node): Node {
+    while (n.parent != this) n = <Node>n.parent
+    return n
   }
 }

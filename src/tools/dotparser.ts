@@ -40,7 +40,7 @@ function parseEdge(so: any, to: any, dg: DrawingGraph, o: any): DrawingEdge[] {
   if (so.type == 'node_id') {
     const s = so.id
     if (!nc.hasNode(s)) {
-      nc.addNode((sn = new Node(s, dg.graph)))
+      dg.graph.addNode((sn = new Node(s)))
       const dn = new DrawingNode(sn)
       dn.labelText = s
     } else {
@@ -66,7 +66,7 @@ function parseEdge(so: any, to: any, dg: DrawingGraph, o: any): DrawingEdge[] {
   if (to.type == 'node_id') {
     const t = to.id
     if (!nc.hasNode(t)) {
-      nc.addNode((tn = new Node(t, dg.graph)))
+      dg.graph.addNode((tn = new Node(t)))
       const dn = new DrawingNode(tn)
       dn.labelText = t
     } else {
@@ -105,8 +105,8 @@ function parseGraph(o: any, dg: DrawingGraph) {
 }
 
 function parseNode(o: any, dg: DrawingGraph): DrawingNode {
-  const node = new Node(o.node_id.id, dg.graph)
-  dg.graph.nodeCollection.addNode(node)
+  const node = new Node(o.node_id.id)
+  dg.graph.addNode(node)
   const drawingNode = new DrawingNode(node)
   fillDrawingObjectAttrs(o, drawingNode)
   return drawingNode
@@ -401,8 +401,8 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
           const entities: DrawingObject[] = getEntitiesSubg(o, dg)
           applyAttributesToEntities(o, dg, entities)
         } else {
-          const subg = Graph.mkGraph(o.id, dg.graph)
-          dg.graph.nodeCollection.addNode(subg)
+          const subg = new Graph(o.id)
+          dg.graph.addNode(subg)
           const sdg = new DrawingGraph(subg)
           parseGraph(o, sdg)
         }
@@ -420,7 +420,7 @@ export function parseDotString(graphStr: string): DrawingGraph {
   const ast = parse(graphStr)
   if (ast == null) return null
   if (ast[0].type != 'digraph') return null
-  const graph = new Graph(null)
+  const graph = new Graph()
   const drawingGraph = new DrawingGraph(graph)
   parseUnderGraph(ast[0].children, drawingGraph)
   return drawingGraph
@@ -565,8 +565,8 @@ function getEntitiesSubg(o: any, dg: DrawingGraph): DrawingObject[] {
       ret.push(parseNode(ch, dg))
     } else if (ch.type === 'subgraph') {
       if (ch.id != null) {
-        const subg = Graph.mkGraph(ch.id, dg.graph)
-        dg.graph.nodeCollection.addNode(subg)
+        const subg = new Graph(ch.id)
+        dg.graph.addNode(subg)
         const sdg = new DrawingGraph(subg)
         parseGraph(ch, sdg)
         ret.push(subg)

@@ -5,11 +5,6 @@ import {AttrContainer} from './attrContainer'
 export abstract class Entity extends AttrContainer {
   parent: Entity = null
 
-  constructor(parent: Entity) {
-    super()
-    this.parent = parent
-  }
-
   abstract toString(): string
 
   setParent(parent: Graph): void {

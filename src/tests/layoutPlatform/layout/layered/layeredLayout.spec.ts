@@ -314,7 +314,7 @@ test('map test', () => {
 })
 
 test('self on node', () => {
-  const g = GeomGraph.mk(null, Rectangle.mkEmpty())
+  const g = GeomGraph.mk('graph', Rectangle.mkEmpty())
   g.setNode('a', {width: 10, height: 10})
   g.setEdge('a', 'a')
   const ll = new LayeredLayout(
@@ -366,7 +366,7 @@ test('sorted map', () => {
 
 test('show API', () => {
   // Create a new geometry graph
-  const g = GeomGraph.mk(null, {width: 0, height: 0})
+  const g = GeomGraph.mk('graph', {width: 0, height: 0})
   // Add nodes to the graph. The first argument is the node id. The second is the size string
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
@@ -398,7 +398,7 @@ test('show API', () => {
 
 test('disconnected comps', () => {
   // Create a new geometry graph
-  const g = GeomGraph.mk(null, Rectangle.mkEmpty())
+  const g = GeomGraph.mk('graph', Rectangle.mkEmpty())
   // Add nodes to the graph. The first argument is the node id. The second is the size string
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
@@ -452,31 +452,31 @@ test('margins', () => {
 test('clusters', () => {
   // First we create connections without any geometry data yet
   // create the root graph
-  const root = new Graph(null) // null is for the parent
+  const root = new Graph()
   // add node 'a' to root
-  const a = new Node('a', root)
+  const a = new Node('a')
   root.addNode(a)
   //create cluster 'bcd' with nodes 'b',c', and 'd', and add it to bcd
-  const bcd = new Graph(root, 'bcd')
+  const bcd = new Graph('bcd')
   root.addNode(bcd)
   // add nodes 'b', 'c', and 'd' to 'bcd'
-  const b = new Node('b', bcd)
+  const b = new Node('b')
   bcd.addNode(b)
-  const c = new Node('c', bcd)
+  const c = new Node('c')
   bcd.addNode(c)
-  const d = new Node('d', bcd)
+  const d = new Node('d')
   bcd.addNode(d)
   new Edge(b, c, bcd) // b->c
   new Edge(b, d, bcd) // b->d
   //create cluster 'efg' with nodes 'b','f', and 'g', and add it to efg
-  const efg = new Graph(root, 'efg')
+  const efg = new Graph('efg')
   root.addNode(efg)
   // add nodes 'e', 'f', and 'g' to 'efg'
-  const e = new Node('e', efg)
+  const e = new Node('e')
   efg.addNode(e)
-  const f = new Node('f', efg)
+  const f = new Node('f')
   efg.addNode(f)
-  const g = new Node('g', efg)
+  const g = new Node('g')
   efg.addNode(g)
   new Edge(e, f, efg) // e->f
   new Edge(e, g, efg) // e->g
@@ -618,7 +618,7 @@ test('layered layout hookup longflat', () => {
 })
 
 test('layered layout empty graph', () => {
-  const gg = GeomGraph.mk(null, Rectangle.mkEmpty())
+  const gg = GeomGraph.mk('graph', Rectangle.mkEmpty())
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(gg, ss, new CancelToken())
   ll.run()
@@ -643,7 +643,7 @@ export function qualityMetric(gg: GeomGraph): number {
 }
 
 test('layered layout nodes only', () => {
-  const g = new GeomGraph(new Graph(null), new Size(0, 0))
+  const g = new GeomGraph(new Graph('graph'), new Size(0, 0))
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
   g.setNode('bpitt', {width: 108, height: 100})

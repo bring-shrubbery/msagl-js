@@ -3,10 +3,10 @@ import {Edge} from './../../../layoutPlatform/structs/edge'
 import {Node} from './../../../layoutPlatform/structs/node'
 import {Rectangle} from './../../../layoutPlatform/math/geometry/rectangle'
 test('graph create', () => {
-  const g = new Graph(null)
+  const g = new Graph()
   expect(g.shallowNodeCount).toBe(0)
   expect(g.edgeCount).toBe(0)
-  const n = new Node('n', g)
+  const n = new Node('n')
   g.addNode(n)
   expect(g.shallowNodeCount).toBe(1)
   expect(g.edgeCount).toBe(0)
@@ -15,7 +15,7 @@ test('graph create', () => {
   g.addEdge(e)
   expect(g.edgeCount).toBe(1)
 
-  const a = new Node('a', g)
+  const a = new Node('a')
   e = new Edge(a, n, g)
   g.addEdge(e)
   expect(g.shallowNodeCount).toBe(2)
@@ -27,7 +27,7 @@ test('graph create', () => {
 
   expect(g.isConsistent()).toBe(true)
 
-  const b = new Node('b', g)
+  const b = new Node('b')
   e = new Edge(a, b, g)
   // at this point the edge does not belong to this.nodes
   expect(g.isConsistent()).toBe(false)
@@ -37,36 +37,37 @@ test('graph create', () => {
 })
 
 test('node add graph', () => {
-  const g = new Graph(null)
-  const n = Graph.mkGraph('g0', g)
-  const m = new Node('m', g)
-  g.addNode(n)
+  const g = new Graph()
+  const g0 = new Graph('g0')
+  const m = new Node('m')
+  g.addNode(g0)
   g.addNode(m)
   const graphs = new Array<Graph>()
   for (const gr of g.graphs()) {
     graphs.push(gr)
   }
   expect(graphs.length).toBe(1)
-  const p = Graph.mkGraph('g1', g)
-  n.addNode(p)
-  for (const gr of n.graphs()) graphs.push(gr)
+  const g1 = new Graph('g1')
+  g0.addNode(g1)
+  for (const gr of g0.graphs()) graphs.push(gr)
   expect(graphs.length).toBe(2)
+  expect(g0.liftNode(g1)).toBe(g1)
 })
 
 test('graph delete node', () => {
-  const g = new Graph(null)
-  const n = new Node('n', g)
+  const g = new Graph()
+  const n = new Node('n')
   g.addNode(n)
 
   let e = new Edge(n, n, g)
   g.addEdge(e)
   expect(g.edgeCount).toBe(1)
-  const a = new Node('a', g)
+  const a = new Node('a')
   e = new Edge(a, n, g)
   g.addEdge(e)
   expect(g.isConsistent()).toBe(true)
 
-  const b = new Node('b', g)
+  const b = new Node('b')
   e = new Edge(a, b, g)
   // at this point the edge does not belong to this.nodes
   expect(g.isConsistent()).toBe(false)
@@ -84,7 +85,7 @@ test('graph delete node', () => {
 })
 
 test('graph attr', () => {
-  const g = new Graph(null)
+  const g = new Graph()
   const rect = new Rectangle({left: 0, right: 1, bottom: 0, top: 1})
   g.setAttr(0, rect)
   let r = g.getAttr(0) as Rectangle

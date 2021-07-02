@@ -1,48 +1,48 @@
-using System.Diagnostics;
-using System.Linq;
-
-using Microsoft.Msagl.Core;
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Core.Geometry.Curves;
-using Microsoft.Msagl.Core.Layout;
-
-namespace Microsoft.Msagl.Layout.MDS
-{
-    // Initial layout using PivotMDS method for FastIncrementalLayout
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "MDS")]
-    public class PivotMDS : AlgorithmBase
-    {
-        class PivotMDSNodeWrap
+    import {Algorithm} from '../../utils/algorithm'
+import { GeomGraph } from '../core/GeomGraph'
+import { GeomNode } from '../core/geomNode'
+import { MdsGraphLayout } from './MDSGraphLayout'
+    class PivotMDSNodeWrap
         {
-            internal Node node;
-            internal PivotMDSNodeWrap(Node node)
+            node: GeomNode 
+            constructor(node:GeomNode)
             {
                 this.node = node;
             }
         }
 
-        private GeometryGraph graph;
+    // Initial layout using PivotMDS method for FastIncrementalLayout
+    export class PivotMDS extends Algorithm
+    {
+        
+        private graph:GeomGraph
 
         // scales the final layout by the specified factor
-        public double Scale { get; set; }
+        private _scale: number
+        public get scale(): number {
+            return this._scale
+        }
+        public set scale(value: number) {
+            this._scale = value
+        }
+        
 
         // Layout graph by the PivotMds method.  Uses spectral techniques to obtain a layout in
-        // O(n^2) time.
-        public PivotMDS(GeometryGraph graph)
+        // O(n^2) time when iterations with majorization are used, otherwise it is more like O(PivotNumber*n).
+        public PivotMDS(graph:GeomGraph)
         {
             this.graph = graph;
-            this.Scale = 1;
+            this.scale = 1;
         }
 
-        // Executes the algorithm.
         // Executes the actual algorithm.
-        protected override void RunInternal()
+        run()
         {
-            var g = new GeometryGraph();
+            var g = CreateLiftedGraph(this.graph)
             foreach (var v in graph.Nodes)
             {
                 Debug.Assert(!(v is Cluster));
-                var u = new Node(v.BoundaryCurve.Clone())
+                var u = new GeomNode(v.BoundaryCurve.Clone())
                 {
                     UserData = v
                 };
@@ -76,12 +76,12 @@ namespace Microsoft.Msagl.Layout.MDS
             {
                 if (c == graph.RootCluster) continue;
 
-                var u = new Node(CurveFactory.CreateRectangle(10, 10, new Point()));
+                var u = new GeomNode(CurveFactory.CreateRectangle(10, 10, new Point()));
                 u.UserData = c;
                 c.AlgorithmData = new PivotMDSNodeWrap(u);
                 g.Nodes.Add(u);
                     
-                foreach (var v in c.Nodes.Concat(from cc in c.Clusters select (Node)cc))
+                foreach (var v in c.Nodes.Concat(from cc in c.Clusters select (GeomNode)cc))
                 {
                     var vv = v.AlgorithmData as PivotMDSNodeWrap;
                     g.Edges.Add(new Edge(u, vv.node)
@@ -109,8 +109,8 @@ namespace Microsoft.Msagl.Layout.MDS
             // with 0 majorization iterations we just do PivotMDS
             MdsLayoutSettings settings = new MdsLayoutSettings
             {
-                ScaleX = this.Scale,
-                ScaleY = this.Scale,
+                ScaleX = this.scale,
+                ScaleY = this.scale,
                 IterationsWithMajorization = 0,
                 RemoveOverlaps = false,
                 AdjustScale = false
@@ -128,3 +128,7 @@ namespace Microsoft.Msagl.Layout.MDS
         }
     }
 }
+ function CreateLiftedGraph(graph: GeomGraph):GeomGraph {
+    throw new Error('Function not implemented.')
+}
+

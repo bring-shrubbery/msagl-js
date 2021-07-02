@@ -48,7 +48,7 @@ export class GeomGraph extends GeomNode {
   setNode(id: string, size: {width: number; height: number}): GeomNode {
     let node = this.graph.findNode(id)
     if (node == null) {
-      this.graph.addNode((node = new Node(id, this.graph)))
+      this.graph.addNode((node = new Node(id)))
     }
     const geomNode = new GeomNode(node)
     geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
@@ -130,8 +130,8 @@ export class GeomGraph extends GeomNode {
     for (const n of this.graph.edges) yield GeomObject.getGeom(n) as GeomEdge
   }
 
-  static mk(parent: Graph, labelSize: Size): GeomGraph {
-    return new GeomGraph(new Graph(parent), labelSize)
+  static mk(id: string, labelSize: Size): GeomGraph {
+    return new GeomGraph(new Graph(id), labelSize)
   }
 
   constructor(graph: Graph, labelSize: Size) {

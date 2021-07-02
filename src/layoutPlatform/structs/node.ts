@@ -20,8 +20,8 @@ export class Node extends Entity {
   toString(): string {
     return this.id
   }
-  constructor(id: string, parent: Graph) {
-    super(parent)
+  constructor(id: string) {
+    super()
     Assert.assert(id != null)
     this.id = id
   }
