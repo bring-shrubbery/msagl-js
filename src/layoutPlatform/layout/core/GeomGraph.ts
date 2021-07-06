@@ -155,6 +155,21 @@ export class GeomGraph extends GeomNode {
     return this.attrCont as Graph
   }
 
+  liftNode(n: GeomNode): GeomNode {
+    return <GeomNode>GeomObject.getGeom(this.graph.liftNode(n.node))
+  }
+
+  findNode(id: string): GeomNode {
+    const n = this.graph.findNode(id)
+    if (!n) return null
+    return <GeomNode>GeomObject.getGeom(n)
+  }
+
+  addNode(gn: GeomNode): GeomNode {
+    this.graph.addNode(gn.node)
+    return gn
+  }
+
   updateBoundingBox() {
     this.boundingBox = Rectangle.mkEmpty()
     let padding = 0

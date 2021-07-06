@@ -1,8 +1,15 @@
-    import {Algorithm} from '../../utils/algorithm'
+    import { Edge } from '../../structs/edge'
+import { Graph } from '../../structs/graph'
+    import { Node } from '../../structs/node'
+import {Algorithm} from '../../utils/algorithm'
+import { Assert } from '../../utils/assert'
+import { GeomEdge } from '../core/geomEdge'
 import { GeomGraph } from '../core/GeomGraph'
 import { GeomNode } from '../core/geomNode'
+import { LayoutSettings } from '../layered/SugiyamaLayoutSettings'
 import { MdsGraphLayout } from './MDSGraphLayout'
-    class PivotMDSNodeWrap
+import { MdsLayoutSettings } from './MDSLayoutSettings'
+    class PiUotMDSNodeWrap
         {
             node: GeomNode 
             constructor(node:GeomNode)
@@ -17,13 +24,23 @@ import { MdsGraphLayout } from './MDSGraphLayout'
         
         private graph:GeomGraph
 
-        // scales the final layout by the specified factor
-        private _scale: number
-        public get scale(): number {
-            return this._scale
+        // scales the final layout by the specified factor on X
+        private _scaleX: number
+        iterationsWithMajorization: number
+        public get scaleX(): number {
+            return this._scaleX
         }
-        public set scale(value: number) {
-            this._scale = value
+        public set scaleX(value: number) {
+            this._scaleX = value
+        }
+        
+        // scales the final layout by the specified factor on Y
+        private _scaleY: number
+        public get scaleY(): number {
+            return this._scaleY
+        }
+        public set scaleY(value: number) {
+            this._scaleY = value
         }
         
 
@@ -32,39 +49,30 @@ import { MdsGraphLayout } from './MDSGraphLayout'
         public PivotMDS(graph:GeomGraph)
         {
             this.graph = graph;
-            this.scale = 1;
+            this.scaleX = 1;
         }
 
         // Executes the actual algorithm.
         run()
         {
-            var g = CreateLiftedGraph(this.graph)
-            foreach (var v in graph.Nodes)
+            const liftedData = {liftedGraph:GeomGraph.mk("tmpmds", null), liftedToOriginalNodes:new Map<GeomNode, GeomNode>(), liftedToOriginalEdges:new Map<GeomEdge, GeomEdge>()}
+            var g = CreateLiftedGraph(this.graph, liftedData)
+            const SVGLength = 0;
+            for (var e  of Graph.Edges)
             {
-                Debug.Assert(!(v is Cluster));
-                var u = new GeomNode(v.BoundaryCurve.Clone())
-                {
-                    UserData = v
-                };
-                v.AlgorithmData = new PivotMDSNodeWrap(u);
-                g.Nodes.Add(u);
-            }
-            double avgLength = 0;
-            foreach (var e in graph.Edges)
-            {
-                avgLength += e.Length;
+                SVGLength += e.length;
                 if (e.Source is Cluster || e.Target is Cluster) continue;
                 var u = e.Source.AlgorithmData as PivotMDSNodeWrap;
                 var v = e.Target.AlgorithmData as PivotMDSNodeWrap;
                 var ee = new Edge(u.node, v.node)
                 {
-                    Length = e.Length
+                    Length = e.length
                 };
                 g.Edges.Add(ee);
             }
-            if (graph.Edges.Count != 0)
+            if (Graph.Edges.Count != 0)
             {
-                avgLength /= graph.Edges.Count;
+                avgLength /= Graph.Edges.Count;
             }
             else
             {
@@ -72,16 +80,16 @@ import { MdsGraphLayout } from './MDSGraphLayout'
             }
 
             // create edges from the children of each parent cluster to the parent cluster node
-            foreach (var c in graph.RootCluster.AllClustersDepthFirst())
+            for (var c  of Graph.RootCluster.AllClustersDepthFirst())
             {
-                if (c == graph.RootCluster) continue;
+                if (c == Graph.RootCluster) continue;
 
                 var u = new GeomNode(CurveFactory.CreateRectangle(10, 10, new Point()));
                 u.UserData = c;
                 c.AlgorithmData = new PivotMDSNodeWrap(u);
                 g.Nodes.Add(u);
                     
-                foreach (var v in c.Nodes.Concat(from cc in c.Clusters select (GeomNode)cc))
+                for (var v  of c.Nodes.Concat(from cc  of c.Clusters select (GeomNode)cc))
                 {
                     var vv = v.AlgorithmData as PivotMDSNodeWrap;
                     g.Edges.Add(new Edge(u, vv.node)
@@ -92,7 +100,7 @@ import { MdsGraphLayout } from './MDSGraphLayout'
             }
 
             // create edges between clusters
-            foreach (var e in graph.Edges)
+            for (const e of Graph.Edges)
             {
                 if (e.Source is Cluster || e.Target is Cluster)
                 {
@@ -107,28 +115,58 @@ import { MdsGraphLayout } from './MDSGraphLayout'
             }
 
             // with 0 majorization iterations we just do PivotMDS
-            MdsLayoutSettings settings = new MdsLayoutSettings
-            {
-                ScaleX = this.scale,
-                ScaleY = this.scale,
-                IterationsWithMajorization = 0,
-                RemoveOverlaps = false,
-                AdjustScale = false
-            };
+            const settings = new MdsLayoutSettings()
+            
+            
+                this._scaleX = this.scaleX,
+                this._scaleY = this.scaleY
+                this.iterationsWithMajorization = 0,
+                this.removeOverlaps = false
+                
+            
 
             MdsGraphLayout mdsLayout = new MdsGraphLayout(settings, g);
             this.RunChildAlgorithm(mdsLayout, 1.0);
 
             g.UpdateBoundingBox();
-            foreach (var v in graph.Nodes)
+            for (var v  of Graph.Nodes)
             {
                 var m = v.AlgorithmData as PivotMDSNodeWrap;
-                v.Center = m.node.Center;
+                v.Center = m.node.center;
             }
         }
     }
-}
- function CreateLiftedGraph(graph: GeomGraph):GeomGraph {
-    throw new Error('Function not implemented.')
-}
+
+ function CreateLiftedGraph(geomGraph: GeomGraph, 
+    t:{liftedGraph:GeomGraph, 
+        liftedToOriginalNodes:Map<GeomNode, GeomNode>,
+     liftedToOriginalEdges:Map<GeomEdge, GeomEdge>}) 
+     {
+         for (const u of geomGraph.deepNodes()) {
+            const origLiftedU = geomGraph.liftNode(u)
+            const newLiftedU = getNewLifted(u, origLiftedU)
+
+            for (const uv of u.outEdges()) {
+                const liftedV = geomGraph.liftNode(uv.target)
+               if (liftedV == origLiftedU) continue
+                
+               const newLiftedV= getNewLifted(uv.target, liftedV) 
+               const uvL = new Edge(newLiftedV.node, newLiftedV.node)
+               const uvGeomEdge = new GeomEdge(uvL)
+               t.liftedToOriginalEdges.set(uvGeomEdge, uv )
+            }
+        }   
+    
+     function getNewLifted(v: GeomNode, vLifted:GeomNode):GeomNode {
+         let newLifted = t.liftedGraph.findNode(vLifted.id)
+         if (!newLifted) {
+             newLifted = GeomNode.mkNode(vLifted.boundaryCurve.clone(), new Node(vLifted.id))
+             t.liftedGraph.addNode(newLifted)
+             t.liftedToOriginalNodes.set(newLifted, v)
+         }
+         return newLifted
+     }
+    }
+
+
 
