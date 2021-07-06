@@ -23,7 +23,7 @@ describe('arrowhead', () => {
     const gb = new GeomNode(b)
     gb.boundaryCurve = CurveFactory.mkCircle(20, new Point(100, 100))
 
-    const ab = new Edge(a, b, null)
+    const ab = new Edge(a, b)
     const gab = new GeomEdge(ab)
     const curve = LineSegment.mkPP(ga.center, gb.center)
     Arrowhead.trimSplineAndCalculateArrowheads(gab, curve, true)
@@ -41,9 +41,9 @@ describe('arrowhead', () => {
     const gb = new GeomNode(b)
     gb.boundaryCurve = CurveFactory.mkCircle(20, new Point(100, 100))
 
-    const ab = new Edge(a, b, null)
+    const ab = new Edge(a, b)
     const gab = new GeomEdge(ab)
-    const label = new Label(ab, 'ab')
+    const label = new Label('ab')
     label.parent = ab
     gab.label = new GeomLabel(
       Rectangle.mkPP(new Point(0, 0), new Point(10, 5)),

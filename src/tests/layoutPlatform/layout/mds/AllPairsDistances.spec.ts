@@ -20,10 +20,10 @@ test('all pairs distances', () => {
   graph.addNode(b)
   graph.addNode(c)
   graph.addNode(d)
-  new Edge(a, b, graph)
-  const bc = new Edge(b, c, graph)
-  new Edge(c, d, graph)
-  new Edge(d, a, graph)
+  new Edge(a, b)
+  const bc = new Edge(b, c)
+  new Edge(c, d)
+  new Edge(d, a)
 
   const nodes = []
   for (const n of graph.shallowNodes) {

@@ -89,12 +89,12 @@ function parseEdge(so: any, to: any, dg: DrawingGraph, o: any): DrawingEdge[] {
     }
     return drObjs
   }
-  const edge = new Edge(sn, tn, dg.graph)
+  const edge = new Edge(sn, tn)
   nc.addEdge(edge)
   const drawingEdge = new DrawingEdge(edge)
   fillDrawingObjectAttrs(o, drawingEdge)
   if (drawingEdge.labelText) {
-    edge.label = new Label(edge, drawingEdge.labelText)
+    edge.label = new Label(drawingEdge.labelText)
     drawingEdge.label = new DrawingLabel(drawingEdge.labelText)
   }
   return [drawingEdge]

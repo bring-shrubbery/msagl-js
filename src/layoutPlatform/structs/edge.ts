@@ -1,12 +1,11 @@
 import {Entity} from './entity'
-import {Graph} from './graph'
 import {Label} from './label'
 import {Node} from './node'
 export class Edge extends Entity {
   source: Node
   target: Node
-  constructor(s: Node, t: Node, parent: Graph) {
-    super(parent)
+  constructor(s: Node, t: Node) {
+    super()
     this.source = s
     this.target = t
     if (s != t) {

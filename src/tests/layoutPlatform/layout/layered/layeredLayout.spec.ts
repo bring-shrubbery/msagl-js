@@ -466,8 +466,8 @@ test('clusters', () => {
   bcd.addNode(c)
   const d = new Node('d')
   bcd.addNode(d)
-  new Edge(b, c, bcd) // b->c
-  new Edge(b, d, bcd) // b->d
+  new Edge(b, c) // b->c
+  new Edge(b, d) // b->d
   //create cluster 'efg' with nodes 'b','f', and 'g', and add it to efg
   const efg = new Graph('efg')
   root.addNode(efg)
@@ -478,14 +478,14 @@ test('clusters', () => {
   efg.addNode(f)
   const g = new Node('g')
   efg.addNode(g)
-  new Edge(e, f, efg) // e->f
-  new Edge(e, g, efg) // e->g
+  new Edge(e, f) // e->f
+  new Edge(e, g) // e->g
 
   // add edges
-  new Edge(a, bcd, root) // a->bcd
-  new Edge(bcd, efg, root)
-  new Edge(efg, a, root)
-  new Edge(a, b, root) // the layout for this edge is not implemented yet, so it will not appear in the SVG file
+  new Edge(a, bcd) // a->bcd
+  new Edge(bcd, efg)
+  new Edge(efg, a)
+  new Edge(a, b) // the layout for this edge is not implemented yet, so it will not appear in the SVG file
   // Now we create geometry data neccessary for layout
   const rootGeom = createGeometry(root, nodeBoundaryFunc, labelRectFunc)
 

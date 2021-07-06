@@ -9,7 +9,7 @@ export class Graph extends Node {
     if (s == null) return
     const t = this.nodeCollection.find(targetId)
     if (t == null) return
-    const e = new Edge(s, t, this)
+    const e = new Edge(s, t)
     this.addEdge(e)
     return e
   }

@@ -2,8 +2,8 @@ import {Entity} from './entity'
 
 export class Label extends Entity {
   text: string
-  constructor(parent: Entity, text: string) {
-    super(parent)
+  constructor(text: string) {
+    super()
     this.text = text
   }
   toString() {

@@ -20,10 +20,10 @@ test('single source distances', () => {
   graph.addNode(b)
   graph.addNode(c)
   graph.addNode(d)
-  new Edge(a, b, graph)
-  const bc = new Edge(b, c, graph)
-  new Edge(c, d, graph)
-  new Edge(d, a, graph)
+  new Edge(a, b)
+  const bc = new Edge(b, c)
+  new Edge(c, d)
+  new Edge(d, a)
 
   const nodes = []
   for (const n of graph.shallowNodes) {
@@ -69,14 +69,14 @@ test('ss distances with decrease', () => {
   graph.addNode(d)
   graph.addNode(e)
   graph.addNode(f)
-  new Edge(a, b, graph)
-  new Edge(b, c, graph)
+  new Edge(a, b)
+  new Edge(b, c)
 
-  new Edge(c, d, graph)
-  new Edge(d, a, graph)
-  const ae = new Edge(a, e, graph)
-  const ef = new Edge(f, e, graph)
-  const cf = new Edge(c, f, graph)
+  new Edge(c, d)
+  new Edge(d, a)
+  const ae = new Edge(a, e)
+  const ef = new Edge(f, e)
+  const cf = new Edge(c, f)
   const nodes = []
   for (const n of graph.shallowNodes) {
     nodes.push(n)
