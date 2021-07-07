@@ -1,5 +1,4 @@
 export class MultidimensionalScaling {
-  MultidimensionalScaling() {} //suppressing the creation of the public constructor
   // Double-centers a matrix of such a way that the center of gravity is zero.
   // After number-centering, each row and each column sums up to zero.
   static DoubleCenter(matrix: number[][]) {
@@ -27,7 +26,7 @@ export class MultidimensionalScaling {
   // Squares all entries of a matrix.
   public static SquareEntries(matrix: number[][]) {
     for (let i = 0; i < matrix.length; i++) {
-      for (let j = 0; j < matrix[0].length; j++) {
+      for (let j = i; j < matrix[0].length; j++) {
         matrix[i][j] = Math.pow(matrix[i][j], 2)
       }
     }
@@ -285,7 +284,7 @@ export class MultidimensionalScaling {
   static ExponentialWeightMatrix(d: number[][], exponent: number): number[][] {
     const w = new Array<number[]>(d.length)
     for (let i = 0; i < d.length; i++) {
-      w[i] = new Number[d[i].length]()
+      w[i] = new Array<number>(d[i].length)
       for (let j = 0; j < d[i].length; j++) {
         if (d[i][j] > 0) w[i][j] = Math.pow(d[i][j], exponent)
       }
@@ -322,7 +321,7 @@ export class MultidimensionalScaling {
       }
     }
     MultidimensionalScaling.SquareEntries(c)
-    const mean = new Array<number>(d.length)
+    const mean = new Array<number>(d.length).fill(0)
     for (let i = 0; i < d.length; i++) {
       for (let j = 0; j < d.length; j++) {
         mean[i] += c[i][j]

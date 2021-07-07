@@ -14,9 +14,8 @@ import {LayoutSettings} from '../layered/SugiyamaLayoutSettings'
 import {OptimalRectanglePacking} from '../../math/geometry/rectanglePacking/OptimalRectanglePacking'
 
 class GTreeOverlapRemoval {
-  static RemoveOverlaps: any
-  RemoveOverlaps(nodes: GeomNode[], separation: number) {
-    throw new Error('not implemented')
+  static RemoveOverlaps(nodes: GeomNode[], separation: number) {
+    // throw new Error('not implemented')
   }
 }
 

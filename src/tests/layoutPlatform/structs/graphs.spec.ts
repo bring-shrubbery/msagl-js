@@ -11,24 +11,24 @@ test('graph create', () => {
   expect(g.shallowNodeCount).toBe(1)
   expect(g.edgeCount).toBe(0)
 
-  let e = new Edge(n, n, g)
+  let e = new Edge(n, n)
   g.addEdge(e)
   expect(g.edgeCount).toBe(1)
 
   const a = new Node('a')
-  e = new Edge(a, n, g)
+  e = new Edge(a, n)
   g.addEdge(e)
   expect(g.shallowNodeCount).toBe(2)
   expect(g.edgeCount).toBe(2)
 
-  e = new Edge(n, a, g)
+  e = new Edge(n, a)
   expect(g.shallowNodeCount).toBe(2)
   expect(g.edgeCount).toBe(3)
 
   expect(g.isConsistent()).toBe(true)
 
   const b = new Node('b')
-  e = new Edge(a, b, g)
+  e = new Edge(a, b)
   // at this point the edge does not belong to this.nodes
   expect(g.isConsistent()).toBe(false)
 
@@ -59,16 +59,16 @@ test('graph delete node', () => {
   const n = new Node('n')
   g.addNode(n)
 
-  let e = new Edge(n, n, g)
+  let e = new Edge(n, n)
   g.addEdge(e)
   expect(g.edgeCount).toBe(1)
   const a = new Node('a')
-  e = new Edge(a, n, g)
+  e = new Edge(a, n)
   g.addEdge(e)
   expect(g.isConsistent()).toBe(true)
 
   const b = new Node('b')
-  e = new Edge(a, b, g)
+  e = new Edge(a, b)
   // at this point the edge does not belong to this.nodes
   expect(g.isConsistent()).toBe(false)
 

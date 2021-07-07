@@ -8,6 +8,11 @@
     "debug.javascript.unmapMissingSources": true,
     "json.maxItemsComputed": 50000,
     "eslint.alwaysShowStatus": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "workbench.preferredDarkColorTheme": "Visual Studio Dark",
+    "workbench.preferredLightColorTheme": "Default Dark+",
+    "workbench.colorCustomizations": {},
+    "window.autoDetectColorScheme": true,
+    "workbench.colorTheme": "Default Dark+"
   }
 }
