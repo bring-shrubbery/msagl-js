@@ -2,8 +2,8 @@ export class MultidimensionalScaling {
   // Double-centers a matrix of such a way that the center of gravity is zero.
   // After number-centering, each row and each column sums up to zero.
   static DoubleCenter(matrix: number[][]) {
-    const rowMean = new Array<number>(matrix.length)
-    const colMean = new Array<number>(matrix[0].length)
+    const rowMean = new Array<number>(matrix.length).fill(0)
+    const colMean = new Array<number>(matrix[0].length).fill(0)
     let mean = 0
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[0].length; j++) {
@@ -26,7 +26,7 @@ export class MultidimensionalScaling {
   // Squares all entries of a matrix.
   public static SquareEntries(matrix: number[][]) {
     for (let i = 0; i < matrix.length; i++) {
-      for (let j = i; j < matrix[0].length; j++) {
+      for (let j = 0; j < matrix[0].length; j++) {
         matrix[i][j] = Math.pow(matrix[i][j], 2)
       }
     }
@@ -46,7 +46,7 @@ export class MultidimensionalScaling {
   // have to be equal, otherwise null is returned.
   static MultiplyX(A: number[][], x: number[]): number[] {
     if (A[0].length != x.length) return null
-    const y = new Array<number>(x.length)
+    const y = new Array<number>(x.length).fill(0)
     for (let i = 0; i < A.length; i++) {
       for (let j = 0; j < A[0].length; j++) {
         y[i] += A[i][j] * x[j]
@@ -62,8 +62,7 @@ export class MultidimensionalScaling {
     for (let i = 0; i < x.length; i++) {
       norm += Math.pow(x[i], 2)
     }
-    norm = Math.sqrt(norm)
-    return norm
+    return Math.sqrt(norm)
   }
 
   // Normalizes a vector to unit length (1.0) in
@@ -79,7 +78,7 @@ export class MultidimensionalScaling {
   }
 
   // Gives a random unit Euclidean length vector of a given size.
-  static RandomUnitLengthVector(n: number, seed: number): number[] {
+  static RandomUnitLengthVector(n: number): number[] {
     const result = new Array<number>(n)
     for (let i = 0; i < n; i++) {
       result[i] = Math.random()
@@ -116,9 +115,9 @@ export class MultidimensionalScaling {
     epsilon: number,
   ) {
     const n: number = A[0].length
-    t.u1 = MultidimensionalScaling.RandomUnitLengthVector(n, 0)
+    t.u1 = MultidimensionalScaling.RandomUnitLengthVector(n)
     t.lambda1 = 0
-    t.u2 = MultidimensionalScaling.RandomUnitLengthVector(n, 1)
+    t.u2 = MultidimensionalScaling.RandomUnitLengthVector(n)
     t.lambda2 = 0
     let r = 0
     const limit = 1.0 - epsilon
@@ -212,7 +211,7 @@ export class MultidimensionalScaling {
       }
     }
 
-    const wSum = new Array<number>(k)
+    const wSum = new Array<number>(k).fill(0)
     for (let i = 0; i < k; i++) {
       for (let j = 0; j < n; j++) {
         if (index[i] != j) {
@@ -252,7 +251,7 @@ export class MultidimensionalScaling {
     iter: number,
   ) {
     const n = x.length
-    const wSum = new Array<number>(n)
+    const wSum = new Array<number>(n).fill(0)
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         if (i != j) wSum[i] += w[i][j]
@@ -284,7 +283,7 @@ export class MultidimensionalScaling {
   static ExponentialWeightMatrix(d: number[][], exponent: number): number[][] {
     const w = new Array<number[]>(d.length)
     for (let i = 0; i < d.length; i++) {
-      w[i] = new Array<number>(d[i].length)
+      w[i] = new Array<number>(d[i].length).fill(0)
       for (let j = 0; j < d[i].length; j++) {
         if (d[i][j] > 0) w[i][j] = Math.pow(d[i][j], exponent)
       }
@@ -336,8 +335,8 @@ export class MultidimensionalScaling {
     tt.lambda2 = Math.sqrt(Math.abs(tt.lambda2))
 
     // place non-pivots by weighted barycenter
-    t.x = new Array<number>(d[0].length)
-    t.y = new Array<number>(d[0].length)
+    t.x = new Array<number>(d[0].length).fill(0)
+    t.y = new Array<number>(d[0].length).fill(0)
     for (let i = 0; i < t.x.length; i++) {
       for (let j = 0; j < c.length; j++) {
         const c = (Math.pow(d[j][i], 2) - mean[j]) / 2

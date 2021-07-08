@@ -16,7 +16,7 @@ export class MdsLayoutSettings extends LayoutSettings {
 
   private exponent = -2
 
-  private rotationAngle: number
+  private rotationAngle = 0
 
   removeOverlaps = true
 

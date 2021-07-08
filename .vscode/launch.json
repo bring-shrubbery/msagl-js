@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/math/geometry/rectanglePacking/rectanglePacking.spec.ts",
+        "src/tests/layoutPlatform/layout/mds/PivotDistances.spec.ts",
         "-t",
-        "RectanglePackingTwoSquares"
+        "MDSGraphLayout - lay out a flat graph, no subgraphs"
       ],
       "console": "integratedTerminal"
     }
