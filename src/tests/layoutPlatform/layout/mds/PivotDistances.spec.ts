@@ -41,5 +41,6 @@ test('MDSGraphLayout - lay out a flat graph, no subgraphs', () => {
   const ss = new MdsLayoutSettings()
   const layout = new MdsGraphLayout(ss, gg, null, () => 1)
   layout.run()
+  // test
   new SvgDebugWriter('/tmp/abstractMDS.svg').writeGraph(gg)
 })
