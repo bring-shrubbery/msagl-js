@@ -12,6 +12,7 @@ import {GeomEdge} from '../core/geomEdge'
 import {MultidimensionalScaling} from './MultiDimensionalScaling'
 import {LayoutSettings} from '../layered/SugiyamaLayoutSettings'
 import {OptimalRectanglePacking} from '../../math/geometry/rectanglePacking/OptimalRectanglePacking'
+import {StraightLineEdges} from '../../routing/StraightLineEdges'
 
 class GTreeOverlapRemoval {
   static RemoveOverlaps(nodes: GeomNode[], separation: number) {
@@ -41,6 +42,9 @@ export class MdsGraphLayout extends Algorithm {
   //  Executes the algorithm
   run() {
     this.LayoutConnectedGraphWithMds()
+    // for the time being use straight lines routing
+    const slr = new StraightLineEdges(Array.from(this.graph.edges()), 0)
+    slr.run()
     this.SetGraphBoundingBox()
   }
 

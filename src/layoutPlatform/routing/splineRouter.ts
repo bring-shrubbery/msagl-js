@@ -1130,7 +1130,7 @@ export class SplineRouter extends Algorithm {
   // return ret;
   //     }
 
-  static CreatePortsIfNeeded(edges: IEnumerable<GeomEdge>) {
+  static CreatePortsIfNeeded(edges: GeomEdge[]) {
     for (const edge of edges) {
       if (edge.sourcePort == null) {
         const ed = edge

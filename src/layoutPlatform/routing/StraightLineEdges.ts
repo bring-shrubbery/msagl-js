@@ -10,7 +10,6 @@ import {CornerSite} from '../math/geometry/cornerSite'
 import {Curve} from '../math/geometry/curve'
 import {GeomConstants} from '../math/geometry/geomConstants'
 import {ICurve} from '../math/geometry/icurve'
-import {IntersectionInfo} from '../math/geometry/intersectionInfo'
 import {LineSegment} from '../math/geometry/lineSegment'
 import {Point} from '../math/geometry/point'
 import {Rectangle} from '../math/geometry/rectangle'
@@ -19,12 +18,12 @@ import {Algorithm} from '../utils/algorithm'
 import {SplineRouter} from './splineRouter'
 
 export class StraightLineEdges extends Algorithm {
-  private edges: IEnumerable<GeomEdge>
+  private edges: GeomEdge[]
 
   private padding: number
 
   //  Constructs a basic straight geomedge router.
-  public constructor(edges: IEnumerable<GeomEdge>, padding: number) {
+  public constructor(edges: GeomEdge[], padding: number) {
     super(null)
     this.edges = edges
     this.padding = padding
@@ -246,7 +245,7 @@ export class StraightLineEdges extends Algorithm {
   }
 
   static SetStraightLineEdgesWithUnderlyingPolylines(graph: GeomGraph) {
-    SplineRouter.CreatePortsIfNeeded(from(graph.edges()))
+    SplineRouter.CreatePortsIfNeeded(Array.from(graph.edges()))
     for (const geomedge of graph.edges()) {
       StraightLineEdges.CreateSimpleEdgeCurveWithUnderlyingPolyline(geomedge)
     }
