@@ -60,10 +60,13 @@ export class Graph extends Node {
     return this.nodeCollection.edgeCount
   }
 
-  // if n belongs to this graph then return it,
-  // otherwise set n = n.parent and repeat
+  // If n has the graph as the parent then return n,
+  // otherwise set n = n.parent and repeat.
+  // Return null if the node parent is above the graph.
   liftNode(n: Node): Node {
-    while (n.parent != this) n = <Node>n.parent
+    while (n != null && n.parent != this) {
+      n = <Node>n.parent
+    }
     return n
   }
 }

@@ -42,9 +42,6 @@ export class MdsGraphLayout extends Algorithm {
   //  Executes the algorithm
   run() {
     this.LayoutConnectedGraphWithMds()
-    // for the time being use straight lines routing
-    const slr = new StraightLineEdges(Array.from(this.graph.edges()), 0)
-    slr.run()
     this.SetGraphBoundingBox()
   }
 
@@ -154,13 +151,11 @@ export class MdsGraphLayout extends Algorithm {
       Transform.Rotate(arrays.x, arrays.y, this.settings.RotationAngle)
     }
 
-    const scaleX: number = this.settings.ScaleX
-    const scaleY: number = this.settings.ScaleY
     let index = 0
     for (const node of this.graph.shallowNodes()) {
       node.center = new Point(
-        arrays.x[index] * scaleX,
-        arrays.y[index] * scaleY,
+        arrays.x[index] * this.settings.ScaleX,
+        arrays.y[index] * this.settings.ScaleY,
       )
       index++
     }

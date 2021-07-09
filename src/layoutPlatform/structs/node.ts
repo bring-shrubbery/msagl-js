@@ -67,7 +67,18 @@ export class Node extends Entity {
     } else if (this == e.target) {
       this.addInEdge(e)
     } else {
-      Assert.assert(false, 'attaching an edge to a wrong node')
+      Assert.assert(false, 'attaching an edge to non adjacent node')
+    }
+  }
+
+  removeEdde(e: Edge) {
+    if (this == e.source) {
+      if (e.target == this) this.selfEdges.delete(e)
+      else this.outEdges.delete(e)
+    } else if (this == e.target) {
+      this.inEdges.delete(e)
+    } else {
+      Assert.assert(false, 'removind an edge from a not adjacent node')
     }
   }
 

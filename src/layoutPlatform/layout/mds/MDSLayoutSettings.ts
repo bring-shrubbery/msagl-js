@@ -1,3 +1,4 @@
+import {Assert} from '../../utils/assert'
 import {EdgeConstraints} from '../edgeConstraints'
 import {LayoutSettings} from '../layered/SugiyamaLayoutSettings'
 
@@ -60,6 +61,7 @@ export class MdsLayoutSettings extends LayoutSettings {
     return this.scaleY
   }
   set ScaleY(value: number) {
+    Assert.assert(!isNaN(value))
     this.scaleY = value
   }
 

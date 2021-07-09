@@ -1,6 +1,9 @@
+import {CurveFactory} from '../../math/geometry/curveFactory'
 import {Edge} from '../../structs/edge'
 import {Node} from '../../structs/node'
 import {Algorithm} from '../../utils/algorithm'
+import {Assert} from '../../utils/assert'
+import {CancelToken} from '../../utils/cancelToken'
 import {GeomEdge} from '../core/geomEdge'
 import {GeomGraph} from '../core/GeomGraph'
 import {GeomNode} from '../core/geomNode'
@@ -19,6 +22,7 @@ export class PivotMDS extends Algorithm {
     return this._scaleX
   }
   public set scaleX(value: number) {
+    Assert.assert(!isNaN(value))
     this._scaleX = value
   }
 
@@ -28,83 +32,92 @@ export class PivotMDS extends Algorithm {
     return this._scaleY
   }
   public set scaleY(value: number) {
+    Assert.assert(!isNaN(value))
     this._scaleY = value
   }
 
   // Layout graph by the PivotMds method.  Uses spectral techniques to obtain a layout in
   // O(n^2) time when iterations with majorization are used, otherwise it is more like O(PivotNumber*n).
-  public PivotMDS(graph: GeomGraph) {
+  constructor(
+    graph: GeomGraph,
+    cancelToken: CancelToken,
+    length: (e: GeomEdge) => number,
+  ) {
+    super(cancelToken)
     this.graph = graph
-    this.scaleX = 1
+    this.scaleX = this.scaleY = 200
+    this.length = length
   }
 
   // Executes the actual algorithm.
   run() {
-    const liftedData = {
-      liftedGraph: GeomGraph.mk('tmpmds_does_not_matter', null),
-      liftedToOriginalNodes: new Map<GeomNode, GeomNode>(),
-      liftedToOriginalEdges: new Map<GeomEdge, GeomEdge>(),
+    // first recurse to layout the subgraphs
+    for (const n of this.graph.shallowNodes()) {
+      if (n.isGraph()) {
+        const g = <GeomGraph>n
+        const subMds = new PivotMDS(g, this.cancelToken, this.length)
+        subMds.run()
+        n.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
+          n.boundingBox.width,
+          n.boundingBox.height,
+          g.Margins,
+          g.Margins,
+          n.center,
+        )
+      }
     }
-    const g = CreateLiftedGraph(this.graph, liftedData)
+    // Let as suppose we have an edge (u,v) where u is a shallow node of this.graph, but b is only a node in
+    // graph c, where c is also a shallow node of this.graph. It this case we create new edge, lifted edge, (u, c) for the
+    // purpose of the layout and remove it when done
+
+    const liftedEdges = CreateLiftedEdges(this.graph)
 
     // with 0 majorization iterations we just do PivotMDS
     const settings = new MdsLayoutSettings()
 
-    ;(settings.ScaleX = this.scaleX), (settings.ScaleY = this.scaleY)
+    settings.ScaleX = this.scaleX
+    settings.ScaleY = this.scaleY
     settings.IterationsWithMajorization = 0
     settings.RemoveOverlaps = false
 
     const mdsLayout = new MdsGraphLayout(
       settings,
-      liftedData.liftedGraph,
+      this.graph,
       this.cancelToken,
       (e) => {
-        const origE = liftedData.liftedToOriginalEdges.get(e)
+        const origE = liftedEdges.get(e)
         return this.length(origE)
       },
     )
     mdsLayout.run()
 
-    for (const v of liftedData.liftedGraph.shallowNodes()) {
-      const origNode = liftedData.liftedToOriginalNodes.get(v)
-      origNode.center = v.center // it should call Translate for clusters
+    for (const e of liftedEdges.keys()) {
+      e.source.node.removeEdde(e.edge)
     }
   }
 }
 
-function CreateLiftedGraph(
-  geomGraph: GeomGraph,
-  t: {
-    liftedGraph: GeomGraph
-    liftedToOriginalNodes: Map<GeomNode, GeomNode>
-    liftedToOriginalEdges: Map<GeomEdge, GeomEdge>
-  },
-) {
+// returns
+function CreateLiftedEdges(geomGraph: GeomGraph): Map<GeomEdge, GeomEdge> {
+  const liftedEdges = new Map<GeomEdge, GeomEdge>()
   for (const u of geomGraph.deepNodes()) {
-    const origLiftedU = geomGraph.liftNode(u)
-    const newLiftedU = getNewLifted(u, origLiftedU)
+    const liftedU = geomGraph.liftNode(u)
 
     for (const uv of u.outEdges()) {
-      const liftedV = geomGraph.liftNode(uv.target)
-      if (liftedV == origLiftedU) continue
+      const v = uv.target
+      const liftedV = geomGraph.liftNode(v)
+      if (
+        liftedV == null ||
+        (liftedU == u && liftedV == v) ||
+        liftedU == liftedV
+      ) {
+        continue
+      }
 
-      const newLiftedV = getNewLifted(uv.target, liftedV)
-      const uvL = new Edge(newLiftedV.node, newLiftedV.node)
-      const uvGeomEdge = new GeomEdge(uvL)
-      t.liftedToOriginalEdges.set(uvGeomEdge, uv)
+      const newLiftedEdge = new Edge(liftedU.node, liftedV.node)
+      const newLiftedGeomEdge = new GeomEdge(newLiftedEdge)
+      liftedEdges.set(newLiftedGeomEdge, uv)
     }
   }
-
-  function getNewLifted(v: GeomNode, vLifted: GeomNode): GeomNode {
-    let newLifted = t.liftedGraph.findNode(vLifted.id)
-    if (!newLifted) {
-      newLifted = GeomNode.mkNode(
-        vLifted.boundaryCurve.clone(),
-        new Node(vLifted.id),
-      )
-      t.liftedGraph.addNode(newLifted)
-      t.liftedToOriginalNodes.set(newLifted, v)
-    }
-    return newLifted
-  }
+  return liftedEdges
 }

@@ -156,7 +156,8 @@ export class GeomGraph extends GeomNode {
   }
 
   liftNode(n: GeomNode): GeomNode {
-    return <GeomNode>GeomObject.getGeom(this.graph.liftNode(n.node))
+    const liftedNode = this.graph.liftNode(n.node)
+    return liftedNode ? <GeomNode>GeomObject.getGeom(liftedNode) : null
   }
 
   findNode(id: string): GeomNode {

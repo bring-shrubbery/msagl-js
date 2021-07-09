@@ -5,6 +5,7 @@ import {PlaneTransformation} from './planeTransformation'
 import {Rectangle} from './rectangle'
 import {GeomConstants} from './geomConstants'
 import {PN} from './parallelogramNode'
+import {Assert} from '../../utils/assert'
 export class LineSegment implements ICurve {
   start: Point //the line goes from start to end
   end: Point // the line end point

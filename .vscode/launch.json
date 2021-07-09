@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/layout/mds/PivotDistances.spec.ts",
+        "src/tests/layoutPlatform/layout/mds/PivotMDS.spec.ts",
         "-t",
-        "MDSGraphLayout - lay out a flat graph, no subgraphs"
+        "graph with subgraphs"
       ],
       "console": "integratedTerminal"
     }
