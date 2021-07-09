@@ -5,6 +5,10 @@ export class IntPairMap<T> {
   set(x: number, y: number, v: T) {
     this.arrayOfMaps[x].set(y, v)
   }
+  setPair(p: IntPair, v: T) {
+    this.set(p.x, p.y, v)
+  }
+
   delete(x: number, y: number) {
     if (x < 0 || x >= this.arrayOfMaps.length) {
       return
