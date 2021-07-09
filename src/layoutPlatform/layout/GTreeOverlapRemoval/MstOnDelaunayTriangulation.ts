@@ -1,91 +1,141 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Core.Geometry.Curves;
-using Microsoft.Msagl.Core.GraphAlgorithms;
-using Microsoft.Msagl.DebugHelpers;
-using Microsoft.Msagl.Routing;
-using Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation;
+﻿import {DebugCurve} from '../../math/geometry/debugCurve'
+import {LineSegment} from '../../math/geometry/lineSegment'
+import {Point} from '../../math/geometry/point'
+import {Cdt} from '../../routing/ConstrainedDelaunayTriangulation/Cdt'
+import {CdtEdge} from '../../routing/ConstrainedDelaunayTriangulation/CdtEdge'
+import {CdtSite} from '../../routing/ConstrainedDelaunayTriangulation/CdtSite'
+import {
+  BasicGraphOnEdges,
+  mkGraphOnEdgesN,
+} from '../../structs/basicGraphOnEdges'
+import {IEdge} from '../../structs/iedge'
+import {IntPair} from '../../utils/IntPair'
+import {IntPairMap} from '../../utils/IntPairMap'
 
-namespace Microsoft.Msagl.Core.Layout.ProximityOverlapRemoval.MinimumSpanningTree
-{
-    // Computes the minimum spanning tree on a triangulation or on a set of edges given by a list of tuple.
-    public class MstOnDelaunayTriangulation
-    {
-
-
-        // Computes the minimum spanning tree on a set of edges
-        static internal List<Tuple<int, int, double, double, double>> GetMstOnTuple(List<Tuple<int,int,double,double,double>> proximityEdges, int sizeId) {
-            if (proximityEdges.Count == 0)
-            {
-                return null;
-            }
-            var intPairs = proximityEdges.Select(t => new IntPair(t.Item1, t.Item2)).ToArray();
-            var weighting = new Dictionary<IntPair, Tuple<int, int, double, double, double>>(intPairs.Count());
-            for (int i = 0; i < proximityEdges.Count; i++) {
-                weighting[intPairs[i]] = proximityEdges[i];
-            }
-            var graph = new BasicGraphOnEdges<IEdge>(intPairs, sizeId);
-
-            var mstOnBasicGraph = new MinimumSpanningTreeByPrim(graph, intPair => weighting[(IntPair)intPair].Item5, intPairs[0].First);
-
-            List<Tuple<int, int, double, double, double>> treeEdges = mstOnBasicGraph.GetTreeEdges().Select(e => weighting[(IntPair) e]).ToList();
-            return treeEdges;
-        }
-
-        // Computes the minimum spanning tree on a DT with given weights.
-        static internal List<CdtEdge> GetMstOnCdt(Cdt cdt, Func<CdtEdge, double> weights) {
-            var siteArray = cdt.PointsToSites.Values.ToArray();
-            var siteIndex = new Dictionary<CdtSite, int>();
-            for (int i = 0; i < siteArray.Length; i++)
-                siteIndex[siteArray[i]] = i;
-
-            Dictionary<IntPair, CdtEdge> intPairsToCdtEdges = GetEdges(siteArray, siteIndex);
-
-            var graph = new BasicGraphOnEdges<IEdge>( intPairsToCdtEdges.Keys, siteArray.Length);
-
-            var mstOnBasicGraph = new MinimumSpanningTreeByPrim(graph, intPair => weights(intPairsToCdtEdges[(IntPair)intPair]), 0);
-
-            return new List<CdtEdge>(mstOnBasicGraph.GetTreeEdges().Select(e=>intPairsToCdtEdges[(IntPair)e]));
-        }
-
-        static Dictionary<IntPair, CdtEdge> GetEdges(CdtSite[] siteArray, Dictionary<CdtSite, int> siteIndex) {
-            var d = new Dictionary<IntPair, CdtEdge>();
-            for (int i = 0; i < siteArray.Length; i++) {
-                var site = siteArray[i];
-                var sourceIndex = siteIndex[site];
-                foreach (var e in site.Edges)
-                    d[new IntPair(sourceIndex, siteIndex[e.lowerSite])] = e;
-            }
-            return d;
-        }
-
-        // 
-        public static void Test()
-        {
-#if TEST_MSAGL && !SHARPKIT
-            int count = 100;
-            var random = new Random(3);
-            var points = new List<Point>();
-            for (int i = 0; i < count; i++)
-                points.Add(20 * new Point(random.NextDouble(), random.NextDouble()));
-
-            var cdt = new Cdt(points, null, null);
-            cdt.Run();
-            var ret = GetMstOnCdt(cdt, e => (e.lowerSite.Point - e.upperSite.Point).Length);
-            var l = new List<DebugCurve>();
-            foreach(var s in cdt.PointsToSites.Values)
-                foreach (var e in s.Edges)
-                {
-                    l.Add(new DebugCurve(100, 0.1, "black", new LineSegment(e.lowerSite.Point, e.upperSite.Point)));
-                }
-            foreach (var e in ret)
-            {
-                l.Add(new DebugCurve(100, 0.12, "red", new LineSegment(e.lowerSite.Point, e.upperSite.Point)));
-            }
-            LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(l);
-#endif
-        }
+//  Computes the minimum spanning tree on a triangulation or on a set of edges given by a list of tuples
+export class MstOnDelaunayTriangulation {
+  //  Computes the minimum spanning tree on a set of edges
+  GetMstOnTuple(
+    proximityEdges: Array<[number, number, number, number]>,
+    size: number,
+  ): Array<[number, number, number, number]> {
+    if (proximityEdges.length == 0) {
+      return null
     }
+
+    const intPairs = proximityEdges.map((t) => new IntPair(t[0], t[1]))
+
+    const weighting = new IntPairMap<[number, number, number, number]>(
+      intPairs.length,
+    )
+    for (let i = 0; i < proximityEdges.length; i++) {
+      weighting.setPair(intPairs[i], proximityEdges[i])
+    }
+
+    const graph = mkGraphOnEdgesN<IntPair>(intPairs, size)
+
+    const mstOnBasicGraph = new MinimumSpanningTreeByPrim(
+      graph,
+      () => {},
+      weighting[<IntPair>intPair].Item5,
+      intPairs[0].First,
+    )
+    const treeEdges: List<[number, number, number, number]> = mstOnBasicGraph
+      .GetTreeEdges()
+      .Select(() => {}, weighting[<IntPair>e])
+      .ToList()
+    return treeEdges
+  }
+
+  //  Computes the minimum spanning tree on a DT with given weights.
+  private static /* internal */ GetMstOnCdt(
+    cdt: Cdt,
+    weights: Func<CdtEdge, number>,
+  ): List<CdtEdge> {
+    const siteArray = cdt.PointsToSites.Values.ToArray()
+    const siteIndex = new Dictionary<CdtSite, number>()
+    for (let i = 0; i < siteArray.Length; i++) {
+      siteIndex[siteArray[i]] = i
+    }
+
+    const intPairsToCdtEdges: Dictionary<
+      IntPair,
+      CdtEdge
+    > = MstOnDelaunayTriangulation.GetEdges(siteArray, siteIndex)
+    const graph = new BasicGraphOnEdges<IEdge>(
+      intPairsToCdtEdges.Keys,
+      siteArray.Length,
+    )
+    const mstOnBasicGraph = new MinimumSpanningTreeByPrim(
+      graph,
+      () => {},
+      weights(intPairsToCdtEdges[<IntPair>intPair]),
+      0,
+    )
+    return new List<CdtEdge>(
+      mstOnBasicGraph
+        .GetTreeEdges()
+        .Select(() => {}, intPairsToCdtEdges[<IntPair>e]),
+    )
+  }
+
+  static GetEdges(
+    siteArray: CdtSite[],
+    siteIndex: Dictionary<CdtSite, number>,
+  ): Dictionary<IntPair, CdtEdge> {
+    const d = new Dictionary<IntPair, CdtEdge>()
+    for (let i = 0; i < siteArray.Length; i++) {
+      const site = siteArray[i]
+      const sourceIndex = siteIndex[site]
+      for (const e in site.Edges) {
+        d[new IntPair(sourceIndex, siteIndex[e.lowerSite])] = e
+      }
+    }
+
+    return d
+  }
+
+  //
+  public static Test() {
+    const count = 100
+    const random = new Random(3)
+    const points = new List<Point>()
+    for (let i = 0; i < count; i++) {
+      points.Add(20 * new Point(random.NextDouble(), random.NextDouble()))
+    }
+
+    const cdt = new Cdt(points, null, null)
+    cdt.Run()
+    const ret = MstOnDelaunayTriangulation.GetMstOnCdt(
+      cdt,
+      () => {},
+      (e.lowerSite.Point - e.upperSite.Point).Length,
+    )
+    const l = new List<DebugCurve>()
+    for (const s in cdt.PointsToSites.Values) {
+      for (const e in s.Edges) {
+        l.Add(
+          new DebugCurve(
+            100,
+            0.1,
+            'black',
+            new LineSegment(e.lowerSite.Point, e.upperSite.Point),
+          ),
+        )
+      }
+    }
+
+    for (const e in ret) {
+      l.Add(
+        new DebugCurve(
+          100,
+          0.12,
+          'red',
+          new LineSegment(e.lowerSite.Point, e.upperSite.Point),
+        ),
+      )
+    }
+
+    //          LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(l);
+  }
 }
