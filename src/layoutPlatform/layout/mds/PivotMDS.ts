@@ -1,4 +1,5 @@
 import {CurveFactory} from '../../math/geometry/curveFactory'
+import {StraightLineEdges} from '../../routing/StraightLineEdges'
 import {Edge} from '../../structs/edge'
 import {Node} from '../../structs/node'
 import {Algorithm} from '../../utils/algorithm'
@@ -93,6 +94,19 @@ export class PivotMDS extends Algorithm {
 
     for (const e of liftedEdges.keys()) {
       e.source.node.removeEdde(e.edge)
+    }
+    if (this.graph.graph.parent == null) {
+      this.routeEdges()
+    }
+  }
+  routeEdges() {
+    for (const u of this.graph.deepNodes()) {
+      for (const e of u.outEdges()) {
+        StraightLineEdges.RouteEdge(e, 0)
+      }
+      for (const e of u.selfEdges()) {
+        StraightLineEdges.RouteEdge(e, 0)
+      }
     }
   }
 }
