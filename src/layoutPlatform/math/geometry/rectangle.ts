@@ -4,6 +4,9 @@ import {GeomConstants} from './geomConstants'
 import {IRectangle} from '../../core/geometry/IRectangle'
 
 export class Size {
+  pad(padW: number): any {
+    this.width += padW * 2
+  }
   width: number
   height: number
   constructor(width: number, height: number) {

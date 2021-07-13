@@ -53,10 +53,10 @@ test('RTreeQuery_IncrementalRectangles', () => {
 
     const checkSet = new Set<string>(checkList.map((r) => r.toString()))
     const result = queryTree.GetAllIntersecting(query)
-    expect(result.length).toBe(checkList.length) // "result and check are different sizes: seed={0}", seed);
+    expect(result.length).toBe(checkList.length)
     for (const r of result) {
-      expect(query.intersects(r)).toBe(true) //, "rect doesn't intersect query: seed={0}, rect={1}, query={2}", seed, r, query);
-      expect(checkSet.has(r.toString())).toBe(true) // "check set does not contain rect
+      expect(query.intersects(r)).toBe(true)
+      expect(checkSet.has(r.toString())).toBe(true)
     }
   }
 })

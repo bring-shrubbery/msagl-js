@@ -29,4 +29,7 @@ test('rombus with diagal', () => {
     nodes.delete(e.target)
   }
   expect(nodes.size).toBe(0)
+  expect(tree.find((e) => e == edges[4])).toBe(undefined)
+  const e = tree.find((e) => e == edges[0] || e == edges[1])
+  expect(e == undefined).toBe(false)
 })

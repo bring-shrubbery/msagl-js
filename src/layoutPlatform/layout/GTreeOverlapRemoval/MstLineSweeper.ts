@@ -1,25 +1,22 @@
+import {from} from 'linq-to-typescript'
 import {Interval} from '../../core/geometry/Interval'
-import {RTree} from '../../core/geometry/RTree/RTree'
+import {mkRTree, RTree} from '../../core/geometry/RTree/RTree'
 import {Point} from '../../math/geometry/point'
 import {Size} from '../../math/geometry/rectangle'
+import {BinaryHeapPriorityQueue} from '../../structs/BinaryHeapPriorityQueue'
+import {Assert} from '../../utils/assert'
 
 export class MstLineSweeper {
   _proximityEdges: Array<[number, number, number, number, number]>
-
   _nodeSizes: Size[]
-
   _nodePositions: Point[]
-
   _forLayers: boolean
-
   _intervalTree: RTree<number, number>
-
   _q: BinaryHeapPriorityQueue
-
   _numberOfOverlaps = 0
 
   public constructor(
-    proximityEdges: List<Tuple<number, number, number, number, number>>,
+    proximityEdges: Array<[number, number, number, number, number]>,
     nodeSizes: Size[],
     nodePositions: Point[],
     forLayers: boolean,
@@ -28,8 +25,8 @@ export class MstLineSweeper {
     this._nodeSizes = nodeSizes
     this._nodePositions = nodePositions
     this._forLayers = forLayers
-    Debug.Assert(nodePositions.Length == nodeSizes.Length)
-    this._q = new BinaryHeapPriorityQueue(nodeSizes.Length * 2)
+    Assert.assert(nodePositions.length == nodeSizes.length)
+    this._q = new BinaryHeapPriorityQueue(nodeSizes.length * 2)
   }
 
   public Run(): number {
@@ -41,11 +38,11 @@ export class MstLineSweeper {
   FindOverlaps() {
     while (this._q.Count > 0) {
       let i: number = this._q.Dequeue()
-      if (i < this._nodePositions.Length) {
+      if (i < this._nodePositions.length) {
         this.FindOverlapsWithInterval(i)
         this.AddIntervalToTree(i)
       } else {
-        i = i - this._nodePositions.Length
+        i -= this._nodePositions.length
         this.RemoveIntervalFromTree(i)
       }
     }
@@ -56,9 +53,9 @@ export class MstLineSweeper {
   }
 
   AddIntervalToTree(i: number) {
-    const interval = this.GetInterval(i)
+    const interval: Interval = this.GetInterval(i)
     if (this._intervalTree == null) {
-      this._intervalTree = new RTree<number, number>()
+      this._intervalTree = mkRTree<number, number>(from([]))
     }
 
     this._intervalTree.Add(interval, i)
@@ -83,24 +80,24 @@ export class MstLineSweeper {
         return
       }
 
-      this._proximityEdges.Add(tuple)
+      this._proximityEdges.push(tuple)
       this._numberOfOverlaps++
     }
   }
 
   GetInterval(i: number): Interval {
-    const w = this._nodeSizes[i].Width / 2
-    const nodeCenterX = this._nodePositions[i].X
+    const w = this._nodeSizes[i].width / 2
+    const nodeCenterX = this._nodePositions[i].x
     return new Interval(nodeCenterX - w, nodeCenterX + w)
   }
 
   InitQueue() {
-    for (let i = 0; i < this._nodeSizes.Length; i++) {
-      const h = this._nodeSizes[i].Height / 2
-      const nodeCenterY = this._nodePositions[i].Y
+    for (let i = 0; i < this._nodeSizes.length; i++) {
+      const h = this._nodeSizes[i].height / 2
+      const nodeCenterY = this._nodePositions[i].y
       this._q.Enqueue(i, nodeCenterY - h)
       //  enqueue the bottom event
-      this._q.Enqueue(this._nodeSizes.Length + i, nodeCenterY + h)
+      this._q.Enqueue(this._nodeSizes.length + i, nodeCenterY + h)
       //  enqueue the top event
     }
   }

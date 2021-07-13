@@ -202,7 +202,7 @@ export class RectangleNode<T, P> {
 
   Parent: RectangleNode<T, P>
 
-  // false if it is an  node and true if it is a leaf
+  // false if it is an internal node and true if it is a leaf
   get IsLeaf(): boolean {
     return this.left == null /*&& right==null*/
   } //if left is a null then right is also a null
