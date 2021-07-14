@@ -1,16 +1,17 @@
 import { CurveFactory } from "../../math/geometry/curveFactory"
 import { DebugCurve } from "../../math/geometry/debugCurve"
+import { GeomConstants } from "../../math/geometry/geomConstants"
 import { LineSegment } from "../../math/geometry/lineSegment"
 import { Point } from "../../math/geometry/point"
 import { Size, Rectangle } from "../../math/geometry/rectangle"
 import { Cdt } from "../../routing/ConstrainedDelaunayTriangulation/Cdt"
 import { CdtSite } from "../../routing/ConstrainedDelaunayTriangulation/CdtSite"
 import { Edge } from "../../structs/edge"
+import { Assert } from "../../utils/assert"
 import { GeomNode } from "../core/geomNode"
 import { MstLineSweeper } from "./MstLineSweeper"
-import { MstOnDelaunayTriangulation } from "./MstOnDelaunayTriangulation"
+import { MstEdge, MstOnDelaunayTriangulation } from "./MstOnDelaunayTriangulation"
 import { OverlapRemovalSettings } from "./OverlapRemovalSettings"
-
 //  Overlap Removal using Minimum Spanning Tree on the delaunay triangulation. The edge weight corresponds to the amount of overlap between two nodes.
 class GTreeOverlapRemoval {
 _settings:OverlapRemovalSettings
@@ -86,104 +87,83 @@ _settings:OverlapRemovalSettings
   }
 
   GetIdealDistanceBetweenTwoNodes(a: GeomNode, b: GeomNode): number {
-        #if(SHARPKIT)
-    let abox = a.boundingBox.clone();
-    let bbox = b.boundingBox.clone();
-        #else
-    let abox = a.boundingBox;
-    let bbox = b.boundingBox;
-        #endif
-    abox.pad((_settings.NodeSeparation / 2));
-    bbox.pad((_settings.NodeSeparation / 2));
-    let ac = abox.center;
-    let bc = bbox.center;
-    let ab = (ac - bc);
-    let dx: number = Math.abs(ab.X);
-    let dy: number = Math.abs(ab.Y);
-    let wx: number = ((abox.width / 2)
-      + (bbox.width / 2));
-    let wy: number = ((abox.height / 2)
-      + (bbox.height / 2));
-    const let machineAcc: number = 1E-16;
-    let t: number;
-    if ((dx
-      < (machineAcc * wx))) {
-      t = (wy / dy);
-    }
-    else if ((dy
-      < (machineAcc * wy))) {
-      t = (wx / dx);
-    }
-    else {
-      t = Math.min((wx / dx), (wy / dy));
-    }
+        let ab = a.center.sub( b.center);
+        let dx: number = Math.abs(ab.x);
+        let dy: number = Math.abs(ab.y);
+        let w: number = (a.width + b.width)/ 2 + this._settings.NodeSeparation
+                    
+        let h: number = (a.height+b.height) / 2 + this._settings.NodeSeparation
+        let scale:number 
+        let scaleX:number = Number.POSITIVE_INFINITY
+        let scaleY:number= Number.POSITIVE_INFINITY
+        const eps = GeomConstants.tolerance
+        if (dx > GeomConstants.tolerance) {
+                  scaleX = w/dx  
 
-    return (t * ab.Length);
-  }
-
+        }
+        if (dy  > GeomConstants.tolerance) {
+                    
+            scaleY = (h / dy);
+        }
+        
+        scale = Math.min(scaleX, scaleY);
+                
+        return (scale * ab.length);
+    }
+    
   static AvgEdgeLength(nodes: GeomNode[]): number {
-    let i: number = 0;
-    let avgEdgeLength: number = 0;
-    for (let edge: Edge in nodes.SelectMany(() => { }, n.OutEdges)) {
-      let sPoint: Point = edge.Source.Center;
-      let tPoint: Point = edge.Target.Center;
-      let euclid: number = (sPoint - tPoint).Length;
-      avgEdgeLength = (avgEdgeLength + euclid);
-      i++;
+    let count = 0;
+    let avgEdgeLength = 0;
+    for (const n of nodes) {
+     for (const edge of n.outEdges()) {
+       avgEdgeLength += n.center.sub(edge.target.center).length;
+        count++;
     }
-
-    if ((i == 0)) {
-      return 1;
     }
-
-    i;
-    return avgEdgeLength;
-  }
+    return count> 0? avgEdgeLength/count :1
+}
 
   //  Does one iterations in which a miniminum spanning tree is 
   //  determined on the delaunay triangulation and finally the tree is exanded to resolve the overlaps.
   OneIteration(nodePositions: Point[], nodeSizes: Size[], scanlinePhase: boolean): boolean {
-        #if(SHARPKIT)
-    let ts = new Array(nodePositions.length);
-    for (let i: number = 0; (i < nodePositions.length); i++) {
-      ts[i] = Tuple.Create(nodePositions[i], (<Object>(i)));
+    
+    const ts = new Array<[Point, number]>();
+    for (let i: number = 0; i < nodePositions.length; i++) {
+      ts.push([nodePositions[i], i]);
     }
 
-    let cdt = new Cdt(ts);
-        #else
-    let cdt = new Cdt(() => { }, Tuple.Create(p, (<Object>(index))));
-        #endif
+    let cdt = Cdt.constructor_(ts);
+        
+        
     cdt.run();
-    let siteIndex = new Dictionary<CdtSite, number>();
+    let siteIndex = new Map<CdtSite, number>();
     for (let i: number = 0; (i < nodePositions.length); i++) {
-      siteIndex[cdt.PointsToSites[nodePositions[i]]] = i;
+      siteIndex.set(cdt.PointsToSites.getP(nodePositions[i]), i);
     }
 
     let numCrossings: number = 0;
-    let proximityEdges: List<Tuple<number, number, number, number, number>> = new List<Tuple<number, number, number, number, number>>();
-    for (let site in cdt.PointsToSites.values) {
-      for (let edge in site.Edges) {
-        let point1: Point = edge.upperSite.Point;
-        let point2: Point = edge.lowerSite.Point;
-        let nodeId1 = siteIndex[edge.upperSite];
-        let nodeId2 = siteIndex[edge.lowerSite];
-        Debug.Assert(ApproximateComparer.Close(point1, nodePositions[nodeId1]));
-        Debug.Assert(ApproximateComparer.Close(point2, nodePositions[nodeId2]));
+    let proximityEdges = new Array<MstEdge>();
+    for (const site of cdt.PointsToSites.values()) {
+      for (const edge of site.Edges) {
+        let point1: Point = edge.upperSite.point;
+        let point2: Point = edge.lowerSite.point;
+        let nodeId1 = siteIndex.get(edge.upperSite);
+        let nodeId2 = siteIndex.get(edge.lowerSite)
+        Assert.assert(Point.closeDistEps(point1, nodePositions[nodeId1]));
+        Assert.assert(Point.closeDistEps(point2, nodePositions[nodeId2]));
         let tuple = GTreeOverlapRemoval.GetIdealEdgeLength(nodeId1, nodeId2, point1, point2, nodeSizes, this._overlapForLayers);
-        proximityEdges.Add(tuple);
+        proximityEdges.push(tuple);
         if ((tuple.Item3 > 1)) {
-          numCrossings++;
+          numCrossings++
         }
 
       }
 
     }
 
-    if (((numCrossings == 0)
-      || scanlinePhase)) {
+    if (numCrossings == 0|| scanlinePhase) {
       let additionalCrossings: number = this.FindProximityEdgesWithSweepLine(proximityEdges, nodeSizes, nodePositions);
-      if (((numCrossings == 0)
-        && (additionalCrossings == 0))) {
+      if (numCrossings == 0 && additionalCrossings == 0) {
         //                     if(nodeSizes.Length>100)
         //                     ShowAndMoveBoxesRemoveLater(null, proximityEdges, nodeSizes, nodePositions, -1);
         return false;
@@ -196,7 +176,7 @@ _settings:OverlapRemovalSettings
 
     }
 
-    let treeEdges = MstOnDelaunayTriangulation.GetMstOnTuple(proximityEdges, nodePositions.length);
+    let treeEdges = MstOnDelaunayTriangulation.GetMstOnTuples(proximityEdges, nodePositions.length);
     let rootId: number = treeEdges.First().Item1;
     GTreeOverlapRemoval.MoveNodePositions(treeEdges, nodePositions, rootId);
     return true;
@@ -208,7 +188,7 @@ _settings:OverlapRemovalSettings
   }
 
   //  Returns a tuple representing an edge with: nodeId1, nodeId2, t(overlapFactor), ideal distance, edge weight.
-  private /* internal */ static GetIdealEdgeLength(nodeId1: number, nodeId2: number, point1: Point, point2: Point, nodeSizes: Size[], forLayers: boolean): Tuple<number, number, number, number, number> {
+  private /* internal */ static GetIdealEdgeLength(nodeId1: number, nodeId2: number, point1: Point, point2: Point, nodeSizes: Size[], forLayers: boolean): MstEdge {
     let t: number;
     let idealDist: number = GTreeOverlapRemoval.GetIdealEdgeLength(nodeId1, nodeId2, point1, point2, nodeSizes, /* out */t);
     let length: number = (point1 - point2).Length;
@@ -356,7 +336,7 @@ _settings:OverlapRemovalSettings
         GTreeOverlapRemoval.MoveUpperSite(tupleEdge, nodePositions, posOld, visited);
       }
       else {
-        Debug.Assert(visited.Contains(tupleEdge.Item2));
+        Assert.assert(visited.Contains(tupleEdge.Item2));
         GTreeOverlapRemoval.MoveLowerSite(tupleEdge, nodePositions, posOld, visited);
       }
 

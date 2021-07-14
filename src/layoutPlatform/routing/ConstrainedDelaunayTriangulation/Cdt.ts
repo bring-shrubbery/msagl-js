@@ -22,7 +22,7 @@ import {SymmetricTuple} from './../../structs/SymmetricTuple'
 import {CdtSweeper} from './CdtSweeper'
 type SymmetricSegment = SymmetricTuple<Point>
 export class Cdt extends Algorithm {
-  isolatedSitesWithObject: IEnumerable<[Point, unknown]>
+  isolatedSitesWithObject: Array<[Point, unknown]>
 
   isolatedSites: Point[] = []
 
@@ -53,7 +53,7 @@ export class Cdt extends Algorithm {
   }
 
   //  constructor
-  static constructor_(isolatedSitesWithObj: IEnumerable<[Point, unknown]>) {
+  static constructor_(isolatedSitesWithObj: Array<[Point, unknown]>) {
     const r = new Cdt(null, null, null)
     r.isolatedSitesWithObject = isolatedSitesWithObj
     return r

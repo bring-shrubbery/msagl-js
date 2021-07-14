@@ -1,6 +1,7 @@
 ﻿import {DebugCurve} from '../../math/geometry/debugCurve'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Point} from '../../math/geometry/point'
+import {MinimumSpanningTreeByPrim} from '../../math/graphAlgorithms/MinimumSpanningTreeByPrim'
 import {Cdt} from '../../routing/ConstrainedDelaunayTriangulation/Cdt'
 import {CdtEdge} from '../../routing/ConstrainedDelaunayTriangulation/CdtEdge'
 import {CdtSite} from '../../routing/ConstrainedDelaunayTriangulation/CdtSite'
@@ -15,17 +16,17 @@ import {IntPairMap} from '../../utils/IntPairMap'
 //  Computes the minimum spanning tree on a triangulation or on a set of edges given by a list of tuples
 export class MstOnDelaunayTriangulation {
   //  Computes the minimum spanning tree on a set of edges
-  GetMstOnTuple(
-    proximityEdges: Array<[number, number, number, number]>,
+  GetMstOnTuple(    
+    proximityEdges: Array<{source:number, target:number, c:number, d:number, weight:number}>,
     size: number,
   ): Array<[number, number, number, number]> {
     if (proximityEdges.length == 0) {
       return null
     }
 
-    const intPairs = proximityEdges.map((t) => new IntPair(t[0], t[1]))
+    const intPairs = proximityEdges.map((t) => new IntPair(t.source, t.target))
 
-    const weighting = new IntPairMap<[number, number, number, number]>(
+    const weighting = new IntPairMap<{source:number, target:number, c:number, d:number,weight:number}>(
       intPairs.length,
     )
     for (let i = 0; i < proximityEdges.length; i++) {
@@ -35,10 +36,7 @@ export class MstOnDelaunayTriangulation {
     const graph = mkGraphOnEdgesN<IntPair>(intPairs, size)
 
     const mstOnBasicGraph = new MinimumSpanningTreeByPrim(
-      graph,
-      () => {},
-      weighting[<IntPair>intPair].Item5,
-      intPairs[0].First,
+      graph, (intPair) => weighting.get(intPair.source, intPair.target).weight, intPairs[0][0])
     )
     const treeEdges: List<[number, number, number, number]> = mstOnBasicGraph
       .GetTreeEdges()
