@@ -42,12 +42,12 @@ export class Cdt extends Algorithm {
 
   // constructor
   constructor(
-    isolatedSites: IEnumerable<Point>,
+    isolatedSites: Point[],
     obstacles: IEnumerable<Polyline>,
     isolatedSegments: IEnumerable<SymmetricSegment>,
   ) {
     super(null)
-    if (isolatedSites) this.isolatedSites = isolatedSites.toArray()
+    this.isolatedSites = isolatedSites
     if (obstacles) this.obstacles = obstacles.toArray()
     if (isolatedSegments) this.isolatedSegments = isolatedSegments.toArray()
   }

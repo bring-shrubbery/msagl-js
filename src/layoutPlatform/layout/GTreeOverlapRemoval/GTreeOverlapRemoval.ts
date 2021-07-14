@@ -6,7 +6,6 @@ import { Point } from "../../math/geometry/point"
 import { Size, Rectangle } from "../../math/geometry/rectangle"
 import { Cdt } from "../../routing/ConstrainedDelaunayTriangulation/Cdt"
 import { CdtSite } from "../../routing/ConstrainedDelaunayTriangulation/CdtSite"
-import { Edge } from "../../structs/edge"
 import { Assert } from "../../utils/assert"
 import { GeomNode } from "../core/geomNode"
 import { MstLineSweeper } from "./MstLineSweeper"
@@ -176,34 +175,26 @@ _settings:OverlapRemovalSettings
 
     }
 
-    let treeEdges = MstOnDelaunayTriangulation.GetMstOnTuples(proximityEdges, nodePositions.length);
-    let rootId: number = treeEdges.First().Item1;
+    const treeEdges = MstOnDelaunayTriangulation.GetMstOnTuples(proximityEdges, nodePositions.length);
+    let rootId: number = treeEdges[0].source
     GTreeOverlapRemoval.MoveNodePositions(treeEdges, nodePositions, rootId);
     return true;
   }
 
-  FindProximityEdgesWithSweepLine(proximityEdges: List<Tuple<number, number, number, number, number>>, nodeSizes: Size[], nodePositions: Point[]): number {
+  FindProximityEdgesWithSweepLine(proximityEdges: Array<MstEdge>, nodeSizes: Size[], nodePositions: Point[]): number {
     let mstLineSweeper: MstLineSweeper = new MstLineSweeper(proximityEdges, nodeSizes, nodePositions, this._overlapForLayers);
     return mstLineSweeper.Run();
   }
 
   //  Returns a tuple representing an edge with: nodeId1, nodeId2, t(overlapFactor), ideal distance, edge weight.
-  private /* internal */ static GetIdealEdgeLength(nodeId1: number, nodeId2: number, point1: Point, point2: Point, nodeSizes: Size[], forLayers: boolean): MstEdge {
+  static GetIdealEdge(nodeId1: number, nodeId2: number, point1: Point, point2: Point, nodeSizes: Size[], forLayers: boolean): MstEdge {
     let t: number;
     let idealDist: number = GTreeOverlapRemoval.GetIdealEdgeLength(nodeId1, nodeId2, point1, point2, nodeSizes, /* out */t);
-    let length: number = (point1 - point2).Length;
-    let box2: Rectangle;
-    let box1: Rectangle;
-    if (forLayers) {
-      let maxId: number = Math.max(nodeId1, nodeId2);
-      box1 = new Rectangle(nodeSizes[maxId], point1);
-      box2 = new Rectangle(nodeSizes[maxId], point2);
-    }
-    else {
-      box1 = new Rectangle(nodeSizes[nodeId1], point1);
-      box2 = new Rectangle(nodeSizes[nodeId2], point2);
-    }
-
+    let length: number = point1.sub(point2).length;
+    const box1 = Rectangle.mkSizeCenter(nodeSizes[nodeId1], point1);
+    const box2 = Rectangle.mkSizeCenter(nodeSizes[nodeId2], point2);
+      
+    
     let distBox = GTreeOverlapRemoval.GetDistanceRects(box1, box2);
     let weight: number;
     if ((t > 1)) {

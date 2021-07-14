@@ -7,28 +7,35 @@ import {CdtEdge} from '../../routing/ConstrainedDelaunayTriangulation/CdtEdge'
 import {CdtSite} from '../../routing/ConstrainedDelaunayTriangulation/CdtSite'
 import {
   BasicGraphOnEdges,
+  mkGraphOnEdgesArray,
   mkGraphOnEdgesN,
 } from '../../structs/basicGraphOnEdges'
 import {IEdge} from '../../structs/iedge'
 import {IntPair} from '../../utils/IntPair'
 import {IntPairMap} from '../../utils/IntPairMap'
 
+export type MstEdge = {
+  source: number
+  target: number
+  overlapFactor: number
+  idealDistance: number
+  weight: number
+}
+
 //  Computes the minimum spanning tree on a triangulation or on a set of edges given by a list of tuples
 export class MstOnDelaunayTriangulation {
   //  Computes the minimum spanning tree on a set of edges
-  GetMstOnTuple(    
-    proximityEdges: Array<{source:number, target:number, c:number, d:number, weight:number}>,
+  static GetMstOnTuples(
+    proximityEdges: Array<MstEdge>,
     size: number,
-  ): Array<[number, number, number, number]> {
+  ): Array<MstEdge> {
     if (proximityEdges.length == 0) {
       return null
     }
 
     const intPairs = proximityEdges.map((t) => new IntPair(t.source, t.target))
 
-    const weighting = new IntPairMap<{source:number, target:number, c:number, d:number,weight:number}>(
-      intPairs.length,
-    )
+    const weighting = new IntPairMap<MstEdge>(intPairs.length)
     for (let i = 0; i < proximityEdges.length; i++) {
       weighting.setPair(intPairs[i], proximityEdges[i])
     }
@@ -36,57 +43,49 @@ export class MstOnDelaunayTriangulation {
     const graph = mkGraphOnEdgesN<IntPair>(intPairs, size)
 
     const mstOnBasicGraph = new MinimumSpanningTreeByPrim(
-      graph, (intPair) => weighting.get(intPair.source, intPair.target).weight, intPairs[0][0])
+      graph,
+      (intPair) => weighting.get(intPair.source, intPair.target).weight,
+      intPairs[0][0],
     )
-    const treeEdges: List<[number, number, number, number]> = mstOnBasicGraph
+
+    return mstOnBasicGraph
       .GetTreeEdges()
-      .Select(() => {}, weighting[<IntPair>e])
-      .ToList()
-    return treeEdges
+      .map((e) => weighting.get(e.source, e.target))
   }
 
   //  Computes the minimum spanning tree on a DT with given weights.
-  private static /* internal */ GetMstOnCdt(
-    cdt: Cdt,
-    weights: Func<CdtEdge, number>,
-  ): List<CdtEdge> {
-    const siteArray = cdt.PointsToSites.Values.ToArray()
-    const siteIndex = new Dictionary<CdtSite, number>()
-    for (let i = 0; i < siteArray.Length; i++) {
-      siteIndex[siteArray[i]] = i
+  static GetMstOnCdt(cdt: Cdt, weights: (e: CdtEdge) => number): CdtEdge[] {
+    const siteArray = Array.from(cdt.PointsToSites.values())
+    const siteIndex = new Map<CdtSite, number>()
+    for (let i = 0; i < siteArray.length; i++) {
+      siteIndex.set(siteArray[i], i)
     }
 
-    const intPairsToCdtEdges: Dictionary<
-      IntPair,
-      CdtEdge
-    > = MstOnDelaunayTriangulation.GetEdges(siteArray, siteIndex)
-    const graph = new BasicGraphOnEdges<IEdge>(
-      intPairsToCdtEdges.Keys,
-      siteArray.Length,
+    const intPairsToCdtEdges: IntPairMap<CdtEdge> = MstOnDelaunayTriangulation.GetEdges(
+      siteArray,
+      siteIndex,
     )
+    const graph = mkGraphOnEdgesArray(Array.from(intPairsToCdtEdges.keys()))
     const mstOnBasicGraph = new MinimumSpanningTreeByPrim(
       graph,
-      () => {},
-      weights(intPairsToCdtEdges[<IntPair>intPair]),
+      (e) => weights(intPairsToCdtEdges.get(e.source, e.target)),
       0,
     )
-    return new List<CdtEdge>(
-      mstOnBasicGraph
-        .GetTreeEdges()
-        .Select(() => {}, intPairsToCdtEdges[<IntPair>e]),
-    )
+    return mstOnBasicGraph
+      .GetTreeEdges()
+      .map((e) => intPairsToCdtEdges.get(e.source, e.target))
   }
 
   static GetEdges(
     siteArray: CdtSite[],
-    siteIndex: Dictionary<CdtSite, number>,
-  ): Dictionary<IntPair, CdtEdge> {
-    const d = new Dictionary<IntPair, CdtEdge>()
-    for (let i = 0; i < siteArray.Length; i++) {
+    siteIndex: Map<CdtSite, number>,
+  ): IntPairMap<CdtEdge> {
+    const d = new IntPairMap<CdtEdge>(siteArray.length)
+    for (let i = 0; i < siteArray.length; i++) {
       const site = siteArray[i]
-      const sourceIndex = siteIndex[site]
-      for (const e in site.Edges) {
-        d[new IntPair(sourceIndex, siteIndex[e.lowerSite])] = e
+      const sourceIndex = siteIndex.get(site)
+      for (const e of site.Edges) {
+        d.set(sourceIndex, siteIndex.get(e.lowerSite), e)
       }
     }
 
@@ -94,46 +93,4 @@ export class MstOnDelaunayTriangulation {
   }
 
   //
-  public static Test() {
-    const count = 100
-    const random = new Random(3)
-    const points = new List<Point>()
-    for (let i = 0; i < count; i++) {
-      points.Add(20 * new Point(random.NextDouble(), random.NextDouble()))
-    }
-
-    const cdt = new Cdt(points, null, null)
-    cdt.Run()
-    const ret = MstOnDelaunayTriangulation.GetMstOnCdt(
-      cdt,
-      () => {},
-      (e.lowerSite.Point - e.upperSite.Point).Length,
-    )
-    const l = new List<DebugCurve>()
-    for (const s in cdt.PointsToSites.Values) {
-      for (const e in s.Edges) {
-        l.Add(
-          new DebugCurve(
-            100,
-            0.1,
-            'black',
-            new LineSegment(e.lowerSite.Point, e.upperSite.Point),
-          ),
-        )
-      }
-    }
-
-    for (const e in ret) {
-      l.Add(
-        new DebugCurve(
-          100,
-          0.12,
-          'red',
-          new LineSegment(e.lowerSite.Point, e.upperSite.Point),
-        ),
-      )
-    }
-
-    //          LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(l);
-  }
 }

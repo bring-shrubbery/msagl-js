@@ -16,6 +16,16 @@ export class Size {
 }
 
 export class Rectangle implements IRectangle<Point> {
+  static mkSizeCenter(size: Size, center: Point): Rectangle {
+    const w = size.width / 2
+    const h = size.height / 2
+    return new Rectangle({
+      left: center.x - w,
+      right: center.x + w,
+      bottom: center.y - h,
+      top: center.y + h,
+    })
+  }
   left_: number
   right_: number
   top_: number

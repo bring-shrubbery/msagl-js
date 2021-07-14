@@ -27,6 +27,7 @@ export class IntPairMap<T> {
     }
     return this.arrayOfMaps[x].get(y)
   }
+
   getI(p: IntPair) {
     return this.get(p.x, p.y)
   }

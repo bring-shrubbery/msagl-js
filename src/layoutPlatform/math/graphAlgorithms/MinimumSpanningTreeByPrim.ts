@@ -46,7 +46,7 @@ export class MinimumSpanningTreeByPrim {
     this.treeNodes.add(v)
     ret.push(e)
     this.UpdateOutEdgesOfV(v)
-    this.UpdateOutEdgesOfV(v)
+    this.UpdateInEdgesOfV(v)
   }
 
   UpdateOutEdgesOfV(v: number) {
