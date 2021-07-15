@@ -1,9 +1,20 @@
+import {from} from 'linq-to-typescript'
 import {MstOnDelaunayTriangulation} from '../../../../layoutPlatform/layout/GTreeOverlapRemoval/MstOnDelaunayTriangulation'
 import {DebugCurve} from '../../../../layoutPlatform/math/geometry/debugCurve'
 import {LineSegment} from '../../../../layoutPlatform/math/geometry/lineSegment'
 import {Point} from '../../../../layoutPlatform/math/geometry/point'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {Cdt} from '../../../../layoutPlatform/routing/ConstrainedDelaunayTriangulation/Cdt'
+import {CdtSweeper} from '../../../../layoutPlatform/routing/ConstrainedDelaunayTriangulation/CdtSweeper'
+
+test('ienum', () => {
+  function* foo() {
+    yield 0
+  }
+  const e = from(foo)
+  expect(e.count()).toBe(1)
+  expect(e.count()).toBe(1)
+})
 
 test('gtree on CDT', () => {
   const count = 100
@@ -14,6 +25,21 @@ test('gtree on CDT', () => {
 
   const cdt = new Cdt(points, null, null)
   cdt.run()
+  const redCurves = []
+  for (const s of cdt.PointsToSites.values()) {
+    for (const e of s.Edges) {
+      if (e.upperSite.point.y < 0 || e.lowerSite.point.y < 0) {
+        redCurves.push(LineSegment.mkPP(e.lowerSite.point, e.upperSite.point))
+      }
+    }
+  }
+  CdtSweeper.ShowCdt(
+    [...cdt.GetTriangles()],
+    null,
+    from(redCurves),
+    null,
+    '/tmp/mdsCdt.svg',
+  )
   const ret = MstOnDelaunayTriangulation.GetMstOnCdt(
     cdt,
     (e) => e.lowerSite.point.sub(e.upperSite.point).length,
@@ -23,7 +49,7 @@ test('gtree on CDT', () => {
     for (const e of s.Edges) {
       l.push(
         DebugCurve.mkDebugCurveTWCI(
-          100,
+          50,
           0.1,
           'black',
           LineSegment.mkPP(e.lowerSite.point, e.upperSite.point),
@@ -36,7 +62,7 @@ test('gtree on CDT', () => {
     l.push(
       DebugCurve.mkDebugCurveTWCI(
         100,
-        0.12,
+        0.2,
         'red',
         LineSegment.mkPP(e.lowerSite.point, e.upperSite.point),
       ),

@@ -366,7 +366,7 @@ test('sorted map', () => {
 
 test('show API', () => {
   // Create a new geometry graph
-  const g = GeomGraph.mk('graph', {width: 0, height: 0})
+  const g = GeomGraph.mk('graph', new Size(0, 0))
   // Add nodes to the graph. The first argument is the node id. The second is the size string
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})

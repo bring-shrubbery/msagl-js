@@ -119,7 +119,7 @@ test('SmallTriangulation', () => {
     new SymmetricTuple<Point>(new Point(109, 202), new Point(506, 135)),
     new SymmetricTuple<Point>(new Point(139, 96), new Point(452, 96)),
   ]
-  const cdt = new Cdt(from(Points()), null, from(isolatedObstacles))
+  const cdt = new Cdt(Array.from(Points()), null, from(isolatedObstacles))
   cdt.run()
   CdtSweeper.ShowCdt(
     [...cdt.GetTriangles().values()],
@@ -181,7 +181,7 @@ test('two holes and one isolated segment', () => {
         new Point(90, 75).rotate(ang),
       ),
     ]
-    const cdt = new Cdt(from(corners), from(holes), from(cut))
+    const cdt = new Cdt(Array.from(corners), from(holes), from(cut))
     cdt.run()
     // CdtSweeper.ShowCdt(
     //   [...cdt.GetTriangles()],
@@ -227,7 +227,7 @@ test('three holes and two isolated segments', () => {
         new Point(90, 70).rotate(ang),
       ),
     ]
-    const cdt = new Cdt(from(corners), from(holes), from(cut))
+    const cdt = new Cdt(Array.from(corners), from(holes), from(cut))
     cdt.run()
     // CdtSweeper.ShowCdt(
     //   [...cdt.GetTriangles()],
@@ -249,7 +249,7 @@ test('grid rotated', () => {
         corners.push(new Point(10 * i, 10 * j).rotate(ang))
       }
     }
-    const cdt = new Cdt(from(corners), null, null)
+    const cdt = new Cdt(Array.from(corners), null, null)
     cdt.run()
     CdtSweeper.ShowCdt(
       [...cdt.GetTriangles()],

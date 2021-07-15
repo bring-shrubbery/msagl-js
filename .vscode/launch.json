@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/structs/BinaryHeapPriorityQueue.spec.ts",
+        "src/tests/layoutPlatform/layout/GTreeOverlapRemoval/MstOnDelaunayTriangulation.spec.ts",
         "-t",
-        "pq general"
+        "gtree on CDT"
       ],
       "console": "integratedTerminal"
     }

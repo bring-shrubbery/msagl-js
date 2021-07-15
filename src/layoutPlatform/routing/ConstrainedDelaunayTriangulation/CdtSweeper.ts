@@ -350,13 +350,13 @@ export class CdtSweeper extends Algorithm {
     const ls: Array<DebugCurve> = new Array<DebugCurve>()
     if (redCurves != null) {
       for (const c of redCurves) {
-        ls.push(DebugCurve.mkDebugCurveTWCI(200, 0.5, 'Red', c))
+        ls.push(DebugCurve.mkDebugCurveTWCI(200, 0.1, 'Red', c))
       }
     }
 
     if (blueCurves != null) {
       for (const c of blueCurves) {
-        ls.push(DebugCurve.mkDebugCurveTWCI(200, 2, 'Blue', c))
+        ls.push(DebugCurve.mkDebugCurveTWCI(200, 0.1, 'Blue', c))
       }
     }
 
@@ -390,13 +390,13 @@ export class CdtSweeper extends Algorithm {
     if (e.CcwTriangle == null || e.CwTriangle == null)
       return DebugCurve.mkDebugCurveTWCI(
         255,
-        3,
+        0.5,
         e.Constrained ? 'Brown' : 'Black',
         LineSegment.mkPP(e.upperSite.point, e.lowerSite.point),
       )
     return DebugCurve.mkDebugCurveTWCI(
       200,
-      e.Constrained ? 0.8 : 0.4,
+      e.Constrained ? 0.8 : 0.2,
       e.Constrained ? 'Pink' : 'Navy',
       LineSegment.mkPP(e.upperSite.point, e.lowerSite.point),
     )
@@ -852,7 +852,7 @@ export class CdtSweeper extends Algorithm {
 
 function removeFromArray<T>(arr: T[], item: T) {
   const i = arr.findIndex((e) => item == e)
-  if (i > 0) arr.splice(i, 1)
+  if (i >= 0) arr.splice(i, 1)
 }
 
 function IsIllegal(pi: CdtSite, a: CdtSite, b: CdtSite, c: CdtSite): boolean {
