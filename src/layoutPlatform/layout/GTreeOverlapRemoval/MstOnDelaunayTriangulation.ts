@@ -1,16 +1,11 @@
-﻿import {DebugCurve} from '../../math/geometry/debugCurve'
-import {LineSegment} from '../../math/geometry/lineSegment'
-import {Point} from '../../math/geometry/point'
-import {MinimumSpanningTreeByPrim} from '../../math/graphAlgorithms/MinimumSpanningTreeByPrim'
+﻿import {MinimumSpanningTreeByPrim} from '../../math/graphAlgorithms/MinimumSpanningTreeByPrim'
 import {Cdt} from '../../routing/ConstrainedDelaunayTriangulation/Cdt'
 import {CdtEdge} from '../../routing/ConstrainedDelaunayTriangulation/CdtEdge'
 import {CdtSite} from '../../routing/ConstrainedDelaunayTriangulation/CdtSite'
 import {
-  BasicGraphOnEdges,
   mkGraphOnEdgesArray,
   mkGraphOnEdgesN,
 } from '../../structs/basicGraphOnEdges'
-import {IEdge} from '../../structs/iedge'
 import {IntPair} from '../../utils/IntPair'
 import {IntPairMap} from '../../utils/IntPairMap'
 
