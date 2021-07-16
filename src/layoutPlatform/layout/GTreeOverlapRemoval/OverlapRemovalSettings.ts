@@ -62,14 +62,6 @@ export class OverlapRemovalSettings {
     this.randomizeAllPointsOnStart = value
   }
 
-  //  Divide the coordinates by 72(Pixels) to work of inches. At the end this transformation is reverted again.
-  public get WorkInInches(): boolean {
-    return this.workInInches
-  }
-  public set WorkInInches(value: boolean) {
-    this.workInInches = value
-  }
-
   //  Clones the settings together with the stressmajorization settings
   public Clone(): OverlapRemovalSettings {
     const settings: OverlapRemovalSettings = new OverlapRemovalSettings()
@@ -79,7 +71,6 @@ export class OverlapRemovalSettings {
     settings.NodeSeparation = this.NodeSeparation
     settings.RandomizationSeed = this.RandomizationSeed
     settings.RandomizeAllPointsOnStart = this.randomizeAllPointsOnStart
-    settings.WorkInInches = this.WorkInInches
     return settings
   }
 }

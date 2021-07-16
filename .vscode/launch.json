@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/layout/GTreeOverlapRemoval/MstOnDelaunayTriangulation.spec.ts",
+        "src/tests/layoutPlatform/layout/GTreeOverlapRemoval/GTreeOverlapRemoval.spec.ts",
         "-t",
-        "gtree on CDT"
+        "two nodes"
       ],
       "console": "integratedTerminal"
     }

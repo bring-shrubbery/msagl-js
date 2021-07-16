@@ -7,15 +7,6 @@ import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugW
 import {Cdt} from '../../../../layoutPlatform/routing/ConstrainedDelaunayTriangulation/Cdt'
 import {CdtSweeper} from '../../../../layoutPlatform/routing/ConstrainedDelaunayTriangulation/CdtSweeper'
 
-test('ienum', () => {
-  function* foo() {
-    yield 0
-  }
-  const e = from(foo)
-  expect(e.count()).toBe(1)
-  expect(e.count()).toBe(1)
-})
-
 test('gtree on CDT', () => {
   const count = 100
   const points = []

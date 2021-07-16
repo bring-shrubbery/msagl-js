@@ -12,7 +12,7 @@ import {MstLineSweeper} from './MstLineSweeper'
 import {MstEdge, MstOnDelaunayTriangulation} from './MstOnDelaunayTriangulation'
 import {OverlapRemovalSettings} from './OverlapRemovalSettings'
 //  Overlap Removal using Minimum Spanning Tree on the delaunay triangulation. The edge weight corresponds to the amount of overlap between two nodes.
-class GTreeOverlapRemoval {
+export class GTreeOverlapRemoval {
   _settings: OverlapRemovalSettings
 
   _overlapForLayers: boolean

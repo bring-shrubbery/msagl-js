@@ -5,6 +5,7 @@ import {Point} from '../../math/geometry/point'
 import {Size} from '../../math/geometry/rectangle'
 import {BinaryHeapPriorityQueue} from '../../structs/BinaryHeapPriorityQueue'
 import {Assert} from '../../utils/assert'
+import {GTreeOverlapRemoval} from './GTreeOverlapRemoval'
 import {MstEdge} from './MstOnDelaunayTriangulation'
 
 export class MstLineSweeper {
@@ -69,19 +70,18 @@ export class MstLineSweeper {
 
     const interval = this.GetInterval(i)
     for (const j of this._intervalTree.GetAllIntersecting(interval)) {
-      const tuple = GTreeOverlapRemoval.GetIdealEdgeLength(
+      const edge = GTreeOverlapRemoval.GetIdealEdge(
         i,
         j,
         this._nodePositions[i],
         this._nodePositions[j],
         this._nodeSizes,
-        this._forLayers,
       )
-      if (!(tuple.Item3 > 1)) {
+      if (edge.overlapFactor <= 1) {
         return
       }
 
-      this._proximityEdges.push(tuple)
+      this._proximityEdges.push(edge)
       this._numberOfOverlaps++
     }
   }
