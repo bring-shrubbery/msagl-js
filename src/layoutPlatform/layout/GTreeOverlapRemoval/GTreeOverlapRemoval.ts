@@ -211,49 +211,47 @@ _settings:OverlapRemovalSettings
       smallId = nodeId2;
       bigId = nodeId1;
     }
-
-    return Tuple.Create(smallId, bigId, t, idealDist, weight);
+    return {source:smallId, target:bigId, overlapFactor:t, idealDistance:idealDist, weight:weight};
   }
 
   //  Returns the ideal edge length, such that the overlap is removed.
-  static GetIdealEdgeLength(nodeId1: number, nodeId2: number, point1: Point, point2: Point, nodeBoxes: Size[], /* out */tRes: number): number {
-    if ((nodeBoxes == null)) {
-      throw new ArgumentNullException("nodeBoxes");
+  static GetIdealEdgeLength(nodeId1: number, nodeId2: number, point1: Point, point2: Point, nodeBoxes: Size[], 
+    wrapTRes: {tRes: number}): number {
+   
+    let p1p2 = point1.sub(point2)
+    let dist: number = p1p2.length
+    let dx: number = Math.abs(p1p2.x);
+    let dy: number = Math.abs(p1p2.y);
+    let wx: number = (nodeBoxes[nodeId1].width + nodeBoxes[nodeId2].width) / 2
+    let wy: number = (nodeBoxes[nodeId1].height + nodeBoxes[nodeId2].height) / 2
+    if (dx >= wx && dy >= wy) { // no overlap
+          wrapTRes.tRes = 1
+          return p1p2.length   
     }
-
-    const let expandMax: number = 1.5;
-    const let expandMin: number = 1;
-    // todo: replace machineAcc with global epsilon method in MSAGL
-    const let machineAcc: number = 1E-16;
-    let dist: number = (point1 - point2).Length;
-    let dx: number = Math.abs((point1.x - point2.x));
-    let dy: number = Math.abs((point1.y - point2.y));
-    let wx: number = ((nodeBoxes[nodeId1].width / 2)
-      + (nodeBoxes[nodeId2].width / 2));
-    let wy: number = ((nodeBoxes[nodeId1].height / 2)
-      + (nodeBoxes[nodeId2].height / 2));
     let t: number;
-    if ((dx
-      < (machineAcc * wx))) {
-      t = (wy / dy);
+    const accuracy = 1E-10;
+    if (dx > accuracy) {
+      if (dy > accuracy) {
+           t = Math.min(wx / dx, wy / dy);           
+          }
+      else {
+           t = wx / dx
+      }                            
+    } else if (dy > accuracy) {
+      t = wy / dy
+    } else {
+      // the points almost coincide : this should not happen.
+      // Anyway, they will be moved away on some random vector
+        wrapTRes.tRes = 2 // important that is greater than 1
+      return Math.sqrt(wx*wx+ wy*wy)/4
     }
-    else if ((dy
-      < (machineAcc * wy))) {
-      t = (wx / dx);
-    }
-    else {
-      t = Math.min((wx / dx), (wy / dy));
-    }
+    
+    Assert.assert(t >= 1)
 
-    if ((t > 1)) {
-      t = Math.max(t, 1.001);
-    }
-
-    //  must be done, otherwise the convergence is very slow
-    t = Math.min(expandMax, t);
-    t = Math.max(expandMin, t);
-    tRes = t;
-    return (t * dist);
+    t = Math.max(t, 1.001) // to be  on the safe side
+    
+    wrapTRes.tRes = t;
+    return t * dist
   }
 
   //  Returns the distance between two given rectangles or zero if they intersect.
