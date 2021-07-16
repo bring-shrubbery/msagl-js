@@ -173,12 +173,15 @@ export class GTreeOverlapRemoval {
       }
     }
 
-    const treeEdges = MstOnDelaunayTriangulation.GetMstOnTuples(
+    const treeEdges = MstOnDelaunayTriangulation.GetMst(
       proximityEdges,
       nodePositions.length,
     )
-    const rootId: number = treeEdges[0].source
-    GTreeOverlapRemoval.MoveNodePositions(treeEdges, nodePositions, rootId)
+    GTreeOverlapRemoval.MoveNodePositions(
+      treeEdges,
+      nodePositions,
+      treeEdges[0].source, // it is the root
+    )
     return true
   }
 
@@ -204,7 +207,7 @@ export class GTreeOverlapRemoval {
     point2: Point,
     nodeSizes: Size[],
   ): MstEdge {
-    let t: {overlapFactor: number}
+    const t = {overlapFactor: 0}
     const idealDist: number = GTreeOverlapRemoval.GetIdealEdgeLength(
       i,
       j,
@@ -217,23 +220,14 @@ export class GTreeOverlapRemoval {
     const box1 = Rectangle.mkSizeCenter(nodeSizes[i], point1)
     const box2 = Rectangle.mkSizeCenter(nodeSizes[j], point2)
 
-    const distBox = GTreeOverlapRemoval.GetDistanceRects(box1, box2)
-    let weight: number
-    if (t.overlapFactor > 1) {
-      weight = (idealDist - length) * -1
-    } else {
-      weight = distBox
-    }
+    const weight =
+      t.overlapFactor > 1
+        ? length - idealDist
+        : GTreeOverlapRemoval.GetDistanceRects(box1, box2)
 
-    let smallId: number = i
-    let bigId: number = j
-    if (i > j) {
-      smallId = j
-      bigId = i
-    }
     return {
-      source: smallId,
-      target: bigId,
+      source: Math.min(i, j),
+      target: Math.max(i, j),
       overlapFactor: t.overlapFactor,
       idealDistance: idealDist,
       weight: weight,
@@ -255,7 +249,7 @@ export class GTreeOverlapRemoval {
     const dy: number = Math.abs(p1p2.y)
     const h: number = (nodeBoxes[i].width + nodeBoxes[j].width) / 2
     const w: number = (nodeBoxes[i].height + nodeBoxes[j].height) / 2
-    if (dx >= h && dy >= w) {
+    if (dx >= h || dy >= w) {
       // no overlap
       wrapTRes.overlapFactor = 1
       return p1p2.length

@@ -20,10 +20,7 @@ export type MstEdge = {
 //  Computes the minimum spanning tree on a triangulation or on a set of edges given by a list of tuples
 export class MstOnDelaunayTriangulation {
   //  Computes the minimum spanning tree on a set of edges
-  static GetMstOnTuples(
-    proximityEdges: Array<MstEdge>,
-    size: number,
-  ): Array<MstEdge> {
+  static GetMst(proximityEdges: Array<MstEdge>, size: number): Array<MstEdge> {
     if (proximityEdges.length == 0) {
       return null
     }
@@ -40,7 +37,7 @@ export class MstOnDelaunayTriangulation {
     const mstOnBasicGraph = new MinimumSpanningTreeByPrim(
       graph,
       (intPair) => weighting.get(intPair.source, intPair.target).weight,
-      intPairs[0][0],
+      intPairs[0].source,
     )
 
     return mstOnBasicGraph
