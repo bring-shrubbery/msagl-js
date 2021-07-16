@@ -675,7 +675,7 @@ function runLayout(
   return dg
 }
 
-function outputGraph(g: GeomGraph, name: string) {
+export function outputGraph(g: GeomGraph, name: string) {
   const strB = new StringBuilder()
   for (const n of g.shallowNodes()) {
     const s = n.id + ', center = ' + n.center

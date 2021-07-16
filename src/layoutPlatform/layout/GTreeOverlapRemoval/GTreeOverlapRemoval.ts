@@ -42,22 +42,20 @@ export class GTreeOverlapRemoval {
       this.RemoveOverlapsOnTinyGraph()
       return
     }
-    const nodePositions: Point[] = []
-    const nodeSizes: Size[] = []
-    const t = {nodePositions: nodePositions, nodeSizes: nodeSizes}
+    const t = {nodePositions: [], nodeSizes: []}
     InitNodePositionsAndBoxes(this._settings, this._nodes, t)
 
     this.lastRunNumberIterations = 0
-    while (this.OneIteration(nodePositions, nodeSizes, false)) {
+    while (this.OneIteration(t.nodePositions, t.nodeSizes, false)) {
       this.lastRunNumberIterations++
     }
 
-    while (this.OneIteration(nodePositions, nodeSizes, true)) {
+    while (this.OneIteration(t.nodePositions, t.nodeSizes, true)) {
       this.lastRunNumberIterations++
     }
 
     for (let i = 0; i < this._nodes.length; i++) {
-      this._nodes[i].center = nodePositions[i]
+      this._nodes[i].center = t.nodePositions[i]
     }
   }
 
