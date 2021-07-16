@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/layout/GTreeOverlapRemoval/GTreeOverlapRemoval.spec.ts",
+        "src/tests/layoutPlatform/layout/mds/PivotMDS.spec.ts",
         "-t",
-        "ring"
+        "graph with subgraphs"
       ],
       "console": "integratedTerminal"
     }

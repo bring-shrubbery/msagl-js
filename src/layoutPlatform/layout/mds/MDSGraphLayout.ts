@@ -12,13 +12,7 @@ import {GeomEdge} from '../core/geomEdge'
 import {MultidimensionalScaling} from './MultiDimensionalScaling'
 import {LayoutSettings} from '../layered/SugiyamaLayoutSettings'
 import {OptimalRectanglePacking} from '../../math/geometry/rectanglePacking/OptimalRectanglePacking'
-import {StraightLineEdges} from '../../routing/StraightLineEdges'
-
-class GTreeOverlapRemoval {
-  static RemoveOverlaps(nodes: GeomNode[], separation: number) {
-    // throw new Error('not implemented')
-  }
-}
+import {GTreeOverlapRemoval} from '../GTreeOverlapRemoval/GTreeOverlapRemoval'
 
 //  Class for graph layout with multidimensional scaling.
 export class MdsGraphLayout extends Algorithm {

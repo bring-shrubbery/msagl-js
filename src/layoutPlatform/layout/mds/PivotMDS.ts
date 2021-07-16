@@ -79,7 +79,7 @@ export class PivotMDS extends Algorithm {
     settings.ScaleX = this.scaleX
     settings.ScaleY = this.scaleY
     settings.IterationsWithMajorization = 0
-    settings.RemoveOverlaps = false
+    settings.RemoveOverlaps = true
 
     const mdsLayout = new MdsGraphLayout(
       settings,
