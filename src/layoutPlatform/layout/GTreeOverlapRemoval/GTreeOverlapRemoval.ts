@@ -399,6 +399,7 @@ function InitNodePositionsAndBoxes(
   t.nodeSizes = nodes.map((n) => {
     const s = n.boundingBox.size
     s.width += overlapRemovalSettings.NodeSeparation // this pad with both sides by overlapRemovalSettings.NodeSeparation/2
+    s.height += overlapRemovalSettings.NodeSeparation
     return s
   })
 }

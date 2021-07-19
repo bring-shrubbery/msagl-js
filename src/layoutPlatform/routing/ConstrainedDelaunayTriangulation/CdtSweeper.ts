@@ -1,4 +1,4 @@
-﻿import {from, IEnumerable} from 'linq-to-typescript'
+﻿import {IEnumerable} from 'linq-to-typescript'
 import {Stack} from 'stack-typescript'
 import {DebugCurve} from '../../math/geometry/debugCurve'
 import {Ellipse} from '../../math/geometry/ellipse'
@@ -86,17 +86,18 @@ export class CdtSweeper extends Algorithm {
 
   FinalizeTriangulation() {
     this.RemoveP1AndP2Triangles()
-    const firstPerimeterEdge = this.CreateDoubleLinkedListOfPerimeter()
-    this.MakePerimeterConvex(firstPerimeterEdge)
+    if (this.triangles.size > 0) this.MakePerimeterConvex()
   }
 
-  MakePerimeterConvex(firstPerimeterEdge: PerimeterEdge) {
+  MakePerimeterConvex() {
+    let firstPerimeterEdge = this.CreateDoubleLinkedListOfPerimeter()
     do {
       const concaveEdge = this.FindConcaveEdge(firstPerimeterEdge)
       if (concaveEdge == null) return
       firstPerimeterEdge = this.ShortcutTwoListElements(concaveEdge)
     } while (true)
   }
+
   FindConcaveEdge(firstPerimeterEdge: PerimeterEdge): PerimeterEdge {
     let a = firstPerimeterEdge
     let b: PerimeterEdge
@@ -851,8 +852,15 @@ export class CdtSweeper extends Algorithm {
 }
 
 function removeFromArray<T>(arr: T[], item: T) {
+  if (arr.length == 0) return
   const i = arr.findIndex((e) => item == e)
-  if (i >= 0) arr.splice(i, 1)
+
+  if (i >= 0) {
+    if (i != arr.length - 1) {
+      arr[i] = arr[arr.length - 1] // save the last element
+    }
+    arr.pop()
+  }
 }
 
 function IsIllegal(pi: CdtSite, a: CdtSite, b: CdtSite, c: CdtSite): boolean {

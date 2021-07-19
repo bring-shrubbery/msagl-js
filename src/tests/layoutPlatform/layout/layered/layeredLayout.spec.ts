@@ -339,7 +339,7 @@ xtest('process.gv', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
-xtest('b100', () => {
+test('b100', () => {
   const dg = runLayout('src/tests/data/graphvis/b100.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/b100.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
@@ -459,7 +459,7 @@ test('awilliams', () => {
   }
 })
 
-xtest('brandes', () => {
+test('brandes', () => {
   const path = 'src/tests/data/graphvis/'
 
   for (let i = 0; i < sortedList.length && i < 217; i++) {
@@ -504,7 +504,7 @@ test('layout all gv files from list', () => {
   }
 })
 
-xtest('layout all gv files', () => {
+test('layout all gv files', () => {
   const path = 'src/tests/data/graphvis/'
   fs.readdir(path, (err, files) => {
     expect(err).toBe(null)

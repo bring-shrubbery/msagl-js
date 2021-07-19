@@ -39,8 +39,7 @@ test('layout all gv files with MDS', () => {
   let i = 0
   for (const f of sortedList) {
     if (f.match('big(.*).gv')) continue // the parser bug
-    //console.log(f)
-    if (i++ > 160) return
+    if (i++ > 50) return
     let dg: DrawingGraph
     try {
       dg = runLayout(join(path, f))
@@ -49,8 +48,23 @@ test('layout all gv files with MDS', () => {
       expect(1).toBe(0)
     }
     if (dg != null) {
-      const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + f + '.svg')
+      const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pivot' + f + '.svg')
       t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
+  }
+})
+
+test('labelclust-ndd.gv with MDS', () => {
+  const path = 'src/tests/data/graphvis/labelclust-ndd.gv'
+  let dg: DrawingGraph
+  try {
+    dg = runLayout(path)
+  } catch (Error) {
+    console.log(path + ' error:' + Error.message)
+    expect(1).toBe(0)
+  }
+  if (dg != null) {
+    const t: SvgDebugWriter = new SvgDebugWriter('/tmp/inPivot.svg')
+    t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   }
 })

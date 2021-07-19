@@ -271,7 +271,7 @@ test('all gv files list ', () => {
     parseDotGraph(join(path, f))
   }
 })
-xtest('all gv files', () => {
+test('all gv files', () => {
   const path = 'src/tests/data/graphvis/'
   fs.readdir(path, (err, files) => {
     expect(err).toBe(null)

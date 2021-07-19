@@ -238,7 +238,23 @@ test('three holes and two isolated segments', () => {
     //  )
   }
 })
+test('flat line', () => {
+  const corners = []
 
+  for (let i = 0; i < 4; i++) {
+    corners.push(new Point(10 * i, 0))
+  }
+
+  const cdt = new Cdt(Array.from(corners), null, null)
+  cdt.run()
+  CdtSweeper.ShowCdt(
+    [...cdt.GetTriangles()],
+    null,
+    null,
+    null,
+    '/tmp/flatLine.svg',
+  )
+})
 test('grid rotated', () => {
   for (let k = 0; k < 6; k++) {
     const corners = []

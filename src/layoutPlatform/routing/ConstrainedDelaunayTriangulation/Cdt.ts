@@ -86,7 +86,7 @@ export class Cdt extends Algorithm {
     }
 
     this.AddP1AndP2()
-    this.allInputSites = [...this.PointsToSites.values()]
+    this.allInputSites = Array.from(this.PointsToSites.values())
   }
 
   AddSite(point: Point, relatedObject: unknown): CdtSite {
@@ -107,10 +107,10 @@ export class Cdt extends Algorithm {
       box.add(site)
     }
 
-    const delx = box.width / 3
-    const dely = box.height / 3
-    this.P1 = new CdtSite(box.leftBottom.add(new Point(delx * -1, dely * -1)))
-    this.P2 = new CdtSite(box.rightBottom.add(new Point(delx, dely * -1)))
+    const delx = Math.max(box.width / 3, 1)
+    const dely = Math.max(box.height / 3, 1)
+    this.P1 = new CdtSite(box.leftBottom.add(new Point(-delx, -dely)))
+    this.P2 = new CdtSite(box.rightBottom.add(new Point(delx, -dely)))
   }
 
   AddPolylineToAllInputSites(poly: Polyline) {

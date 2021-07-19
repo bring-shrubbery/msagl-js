@@ -86,8 +86,8 @@ export class PivotMDS extends Algorithm {
       this.graph,
       this.cancelToken,
       (e) => {
-        const origE = liftedEdges.get(e)
-        return this.length(origE)
+        const orig_e = liftedEdges.get(e)
+        return orig_e ? this.length(orig_e) : this.length(e)
       },
     )
     mdsLayout.run()
