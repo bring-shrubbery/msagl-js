@@ -12,11 +12,9 @@ import {from} from 'linq-to-typescript'
 import {allVerticesOfParall} from './parallelogram'
 import {GeomEdge} from './../../layout/core/geomEdge'
 import {GeomGraph} from '../../layout/core/GeomGraph'
-import {GeomLabel} from './../../layout/core/geomLabel'
 import {PlaneTransformation} from './planeTransformation'
 import fs = require('fs')
 import xmlw = require('xml-writer')
-import {Label} from '../../structs/label'
 export class SvgDebugWriter {
   // Here we import the File System module of node
   //  private fs = require('fs')

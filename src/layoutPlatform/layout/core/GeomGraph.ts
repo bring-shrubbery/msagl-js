@@ -22,6 +22,9 @@ export class GeomGraph extends GeomNode {
   }
   public set boundingBox(value: Rectangle) {
     this._boundingBox = value
+    if (this.boundaryCurve) {
+      throw new Error('not implemented')
+    }
   }
   isGraph(): boolean {
     return true
