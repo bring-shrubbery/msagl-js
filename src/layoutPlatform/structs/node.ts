@@ -71,17 +71,6 @@ export class Node extends Entity {
     }
   }
 
-  removeEdde(e: Edge) {
-    if (this == e.source) {
-      if (e.target == this) this.selfEdges.delete(e)
-      else this.outEdges.delete(e)
-    } else if (this == e.target) {
-      this.inEdges.delete(e)
-    } else {
-      Assert.assert(false, 'removind an edge from a not adjacent node')
-    }
-  }
-
   get edges(): IterableIterator<Edge> {
     return this._edges()
   }

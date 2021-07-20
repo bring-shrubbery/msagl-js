@@ -15,6 +15,14 @@ export class Edge extends Entity {
       s.selfEdges.add(this)
     }
   }
+  remove() {
+    if (this.source != this.target) {
+      this.source.outEdges.delete(this)
+      this.target.inEdges.delete(this)
+    } else {
+      this.source.selfEdges.delete(this)
+    }
+  }
   toString(): string {
     return '(' + this.source.toString() + '->' + this.target.toString() + ')'
   }
