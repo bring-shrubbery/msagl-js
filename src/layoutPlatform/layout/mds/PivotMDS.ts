@@ -67,11 +67,8 @@ export class PivotMDS extends Algorithm {
         )
       }
     }
-    // Let as suppose we have an edge (u,v) where u is a shallow node of this.graph, but b is only a node in
-    // graph c, where c is also a shallow node of this.graph. It this case we create new edge, lifted edge, (u, c) for the
-    // purpose of the layout and remove it when done
 
-    const liftedEdges = CreateLiftedEdges(this.graph)
+    const liftedEdges: Map<GeomEdge, GeomEdge> = CreateLiftedEdges(this.graph)
 
     // with 0 majorization iterations we just do PivotMDS
     const settings = new MdsLayoutSettings()
@@ -111,7 +108,7 @@ export class PivotMDS extends Algorithm {
   }
 }
 
-// returns
+// returns the map of pairs (new lifted GeomEdge, existing GeomEdge)
 function CreateLiftedEdges(geomGraph: GeomGraph): Map<GeomEdge, GeomEdge> {
   const liftedEdges = new Map<GeomEdge, GeomEdge>()
   for (const u of geomGraph.deepNodes()) {

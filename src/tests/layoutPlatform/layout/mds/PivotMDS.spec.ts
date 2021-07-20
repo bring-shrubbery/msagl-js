@@ -34,7 +34,7 @@ function runLayout(fname: string) {
   return dg
 }
 
-test('layout all gv files with MDS', () => {
+xtest('layout all gv files with MDS', () => {
   const path = 'src/tests/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
@@ -54,7 +54,7 @@ test('layout all gv files with MDS', () => {
   }
 })
 
-test('labelclust-ndd.gv with MDS', () => {
+xtest('labelclust-ndd.gv with MDS', () => {
   const path = 'src/tests/data/graphvis/labelclust-ndd.gv'
   let dg: DrawingGraph
   try {

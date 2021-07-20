@@ -1,5 +1,4 @@
-﻿import {IEnumerable} from 'linq-to-typescript'
-import {Assert} from '../../../utils/assert'
+﻿import {Assert} from '../../../utils/assert'
 import {Rectangle} from '../rectangle'
 import {OptimalPacking} from './OptimalPacking'
 import {GreedyRectanglePacking} from './RectanglePacking'

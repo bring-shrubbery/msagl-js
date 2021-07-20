@@ -2,8 +2,6 @@
 import {GeomConstants} from '../../../../layoutPlatform/math/geometry/geomConstants'
 import {LineSegment} from '../../../../layoutPlatform/math/geometry/lineSegment'
 import {Point} from '../../../../layoutPlatform/math/geometry/point'
-import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
-import {DebugCurve} from '../../../../layoutPlatform/math/geometry/debugCurve'
 
 test('lineSegment basic case', () => {
   const a = new LineSegment(0, 0, 1, 1)

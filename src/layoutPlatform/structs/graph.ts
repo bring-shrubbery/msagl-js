@@ -1,3 +1,4 @@
+import {Queue} from 'queue-typescript'
 import {Assert} from '../utils/assert'
 import {Edge} from './edge'
 import {Node} from './node'
@@ -39,10 +40,11 @@ export class Graph extends Node {
   removeNode(n: Node): void {
     this.nodeCollection.removeNode(n)
   }
-  addNode(n: Node) {
+  addNode(n: Node): Node {
     Assert.assert(n.parent == null || n.parent == this)
     n.parent = this
     this.nodeCollection.addNode(n)
+    return n
   }
   addEdge(n: Edge) {
     this.nodeCollection.addEdge(n)
@@ -68,5 +70,35 @@ export class Graph extends Node {
       n = <Node>n.parent
     }
     return n
+  }
+}
+
+export function* shallowConnectedComponents(
+  graph: Graph,
+): IterableIterator<Node[]> {
+  const enqueueed = new Set<Node>()
+  const queue = new Queue<Node>()
+  for (const n of graph.shallowNodes) {
+    if (enqueueed.has(n)) continue
+    const nodes = new Array<Node>()
+    enqueue(n, queue, enqueueed)
+    while (queue.length > 0) {
+      const s = queue.dequeue()
+      nodes.push(s)
+      for (const neighbor of neighbors(s)) {
+        enqueue(neighbor, queue, enqueueed)
+      }
+    }
+    yield nodes
+  }
+  function* neighbors(n: Node): IterableIterator<Node> {
+    for (const e of n.outEdges) yield e.target
+    for (const e of n.inEdges) yield e.source
+  }
+  function enqueue(n: Node, queue: Queue<Node>, enqueueed: Set<Node>) {
+    if (!enqueueed.has(n)) {
+      queue.enqueue(n)
+      enqueueed.add(n)
+    }
   }
 }

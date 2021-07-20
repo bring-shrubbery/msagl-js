@@ -5,8 +5,8 @@ import {Rectangle} from '../../../../../layoutPlatform/math/geometry/rectangle'
 import {randomInt} from '../../../../../layoutPlatform/utils/random'
 
 test('RTreeQuery_IncrementalRectangles', () => {
-  const RectsCount = 1000
-  const RegionSize = 1000
+  const RectsCount = 100
+  const RegionSize = 100
   const RectSize = 10
 
   const rects = new Array<Rectangle>(RectsCount)

@@ -308,7 +308,7 @@ test('src/tests/data/graphvis/ER.gv', () => {
   createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
 })
 
-test('b.gv', () => {
+xtest('b.gv', () => {
   const ss = new SugiyamaLayoutSettings()
   ss.BrandesThreshold = 1
   const dg = runLayout('src/tests/data/graphvis/b.gv', ss)
@@ -323,7 +323,7 @@ test('fsm.gv brandes', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   // console.log(qualityMetric(GeomObject.getGeom(dg.graph) as GeomGraph))
 })
-test('fsm.gv', () => {
+xtest('fsm.gv', () => {
   const ss = new SugiyamaLayoutSettings()
   const dg = runLayout('src/tests/data/graphvis/fsm.gv', ss)
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/fsmNetworkSimplex.svg')
@@ -339,24 +339,24 @@ xtest('process.gv', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
-test('b100', () => {
+xtest('b100', () => {
   const dg = runLayout('src/tests/data/graphvis/b100.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/b100.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
-test('pmpipe.gv', () => {
+xtest('pmpipe.gv', () => {
   const dg = runLayout('src/tests/data/graphvis/pmpipe.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pmpipe.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
-test('layered layout hookup longflat', () => {
+xtest('layered layout hookup longflat', () => {
   const dg = runLayout('src/tests/data/graphvis/longflat.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/longflat.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
-test('layered layout empty graph', () => {
+xtest('layered layout empty graph', () => {
   const gg = GeomGraph.mk('graph', Rectangle.mkEmpty())
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(gg, ss, new CancelToken())
@@ -381,7 +381,7 @@ export function qualityMetric(gg: GeomGraph): number {
   return r
 }
 
-test('layered layout nodes only', () => {
+xtest('layered layout nodes only', () => {
   const g = new GeomGraph(new Graph('graph'), new Size(0, 0))
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
@@ -450,7 +450,7 @@ function interpolateEdgeAsString(e: GeomEdge): string {
   }
   return s + ']'
 }
-test('awilliams', () => {
+xtest('awilliams', () => {
   const fname = 'src/tests/data/graphvis/awilliams.gv'
   const dg = runLayout(fname)
   if (dg != null) {
@@ -459,10 +459,10 @@ test('awilliams', () => {
   }
 })
 
-test('brandes', () => {
+xtest('brandes', () => {
   const path = 'src/tests/data/graphvis/'
 
-  for (let i = 0; i < sortedList.length && i < 217; i++) {
+  for (let i = 0; i < sortedList.length && i < 50; i++) {
     const f = sortedList[i]
     if (f.match('big(.*).gv')) continue // the parser bug
 
@@ -483,13 +483,13 @@ test('brandes', () => {
   }
 })
 
-test('layout all gv files from list', () => {
+xtest('layout all gv files from list', () => {
   const path = 'src/tests/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
     if (f.match('big(.*).gv')) continue // the parser bug
     //console.log(f)
-    if (i++ > 160) return
+    if (i++ > 50) return
     let dg: DrawingGraph
     try {
       dg = runLayout(join(path, f))
@@ -504,7 +504,7 @@ test('layout all gv files from list', () => {
   }
 })
 
-test('layout all gv files', () => {
+xtest('layout all gv files', () => {
   const path = 'src/tests/data/graphvis/'
   fs.readdir(path, (err, files) => {
     expect(err).toBe(null)

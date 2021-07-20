@@ -7,6 +7,8 @@ import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 import {Node} from '../../structs/node'
 import {CurveFactory} from '../../math/geometry/curveFactory'
 import {Point} from '../../math/geometry/point'
+import {Curve} from '../../math/geometry/curve'
+import {Ellipse} from '../../math/geometry/ellipse'
 
 export class GeomGraph extends GeomNode {
   translate(delta: Point) {
@@ -23,7 +25,27 @@ export class GeomGraph extends GeomNode {
   public set boundingBox(value: Rectangle) {
     this._boundingBox = value
     if (this.boundaryCurve) {
-      throw new Error('not implemented')
+      // suppose it is a rectangle with rounded corners
+      if (this.boundaryCurve instanceof Curve) {
+        const r = <Curve>this.boundaryCurve
+        let rx = 0
+        let ry = 0
+        for (const seg of r.segs) {
+          if (seg instanceof Ellipse) {
+            const ell = <Ellipse>seg
+            rx = ell.aAxis.length
+            ry = ell.bAxis.length
+            break
+          }
+        }
+        this.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
+          value.width,
+          value.height,
+          rx,
+          ry,
+          value.center,
+        )
+      }
     }
   }
   isGraph(): boolean {
@@ -72,9 +94,9 @@ export class GeomGraph extends GeomNode {
     this.pumpTheBoxToTheGraph(b)
     b.pad(this.Margins)
     if (this.MinimalWidth > 0) b.width = Math.max(b.width, this.MinimalWidth)
-    if (this.MinimalHeight > 0) {
+    if (this.MinimalHeight > 0)
       b.height = Math.max(b.height, this.MinimalHeight)
-    }
+
     return b
   }
 
@@ -89,6 +111,7 @@ export class GeomGraph extends GeomNode {
     const t = new PlaneTransformation(1, 0, del.x, 0, 1, del.y)
     this.transform(t)
   }
+
   pumpTheBoxToTheGraph(b: Rectangle) {
     for (const e of this.edges()) {
       if (e.underCollapsedCluster()) continue

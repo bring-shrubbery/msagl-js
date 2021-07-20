@@ -1,4 +1,7 @@
-import {Graph} from './../../../layoutPlatform/structs/graph'
+import {
+  Graph,
+  shallowConnectedComponents,
+} from './../../../layoutPlatform/structs/graph'
 import {Edge} from './../../../layoutPlatform/structs/edge'
 import {Node} from './../../../layoutPlatform/structs/node'
 import {Rectangle} from './../../../layoutPlatform/math/geometry/rectangle'
@@ -94,4 +97,47 @@ test('graph attr', () => {
   expect(g.getAttr(2)).toBe(null)
   r = g.getAttr(0) as Rectangle
   expect(r.width).toBe(rect.width)
+})
+
+test('connected comps', () => {
+  const g = new Graph()
+  const a = g.addNode(new Node('a'))
+  const b = g.addNode(new Node('b'))
+  const c = g.addNode(new Node('c'))
+  const d = g.addNode(new Node('d'))
+  const e = g.addNode(new Node('e'))
+  const nodes = Array.from(g.shallowNodes)
+  expect(nodes.length).toBe(5)
+  let cc = Array.from(shallowConnectedComponents(g))
+  expect(cc.length).toBe(5)
+  new Edge(a, b)
+  cc = Array.from(shallowConnectedComponents(g))
+  expect(cc.length).toBe(4)
+
+  new Edge(d, c)
+  new Edge(c, e)
+  cc = Array.from(shallowConnectedComponents(g))
+
+  expect(cc.length).toBe(2)
+  expect(cc[0].length).toBe(2)
+  expect(cc[1].length).toBe(3)
+  const cc1 = new Set<Node>()
+  cc1.add(c)
+
+  cc1.add(d)
+  cc1.add(e)
+  for (const n of cc[1]) expect(cc1.has(n))
+  new Edge(e, a)
+  new Edge(e, a)
+  cc = Array.from(shallowConnectedComponents(g))
+  expect(cc.length).toBe(1)
+  expect(cc[0].length).toBe(5)
+
+  const a_edges = []
+  for (const e of a.edges) a_edges.push(e)
+
+  for (const e of a_edges) a.removeEdde(e)
+
+  cc = Array.from(shallowConnectedComponents(g))
+  expect(cc.length).toBe(3)
 })
