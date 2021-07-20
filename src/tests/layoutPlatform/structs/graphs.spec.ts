@@ -136,7 +136,7 @@ test('connected comps', () => {
   const a_edges = []
   for (const e of a.edges) a_edges.push(e)
 
-  for (const e of a_edges) a.removeEdde(e)
+  for (const e of a_edges) e.remove()
 
   cc = Array.from(shallowConnectedComponents(g))
   expect(cc.length).toBe(3)

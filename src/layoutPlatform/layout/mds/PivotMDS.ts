@@ -90,12 +90,13 @@ export class PivotMDS extends Algorithm {
     mdsLayout.run()
 
     for (const e of liftedEdges.keys()) {
-      e.source.node.removeEdde(e.edge)
+      e.edge.remove()
     }
     if (this.graph.graph.parent == null) {
       this.routeEdges()
     }
   }
+
   routeEdges() {
     for (const u of this.graph.deepNodes()) {
       for (const e of u.outEdges()) {
