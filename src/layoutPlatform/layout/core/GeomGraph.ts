@@ -103,7 +103,7 @@ export class GeomGraph extends GeomNode {
   // Fields which are set by Msagl
   // return the center of the curve bounding box
   get center() {
-    return this.boundingBox.center
+    return this.boundingBox ? this.boundingBox.center : new Point(0, 0)
   }
 
   set center(value: Point) {
@@ -124,7 +124,7 @@ export class GeomGraph extends GeomNode {
     }
 
     for (const n of this.shallowNodes()) {
-      if (n.underCollapsedCluster()) continue
+      if (n.underCollapsedCluster() || !n.boundingBox) continue
       b.addRec(n.boundingBox)
     }
   }
@@ -200,7 +200,8 @@ export class GeomGraph extends GeomNode {
   }
 
   updateBoundingBox() {
-    this.boundingBox = Rectangle.mkEmpty()
+    if (this.graph.isEmpty()) return
+    const rect = Rectangle.mkEmpty()
     let padding = 0
     for (const e of this.graph.edges) {
       const ge = GeomObject.getGeom(e) as GeomEdge
@@ -209,14 +210,19 @@ export class GeomGraph extends GeomNode {
       padding = Math.max(padding, ge.lineWidth)
     }
     for (const gn of this.shallowNodes()) {
-      this.boundingBox.addRec(gn.boundingBox)
-      padding = Math.max(padding, gn.padding)
+      if (gn.boundingBox) {
+        rect.addRec(gn.boundingBox)
+        padding = Math.max(padding, gn.padding)
+      }
     }
-    this.boundingBox.top += this.labelSize.height
-    if (this.boundingBox.width < this.labelSize.width) {
-      this.boundingBox.width = this.labelSize.width
+    if (this.labelSize) {
+      rect.top += this.labelSize.height
+      if (rect.width < this.labelSize.width) {
+        rect.width = this.labelSize.width
+      }
     }
 
-    this.boundingBox.pad(padding)
+    rect.pad(padding)
+    this.boundingBox = rect
   }
 }

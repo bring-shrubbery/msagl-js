@@ -147,10 +147,12 @@ export class MdsGraphLayout extends Algorithm {
 
     let index = 0
     for (const node of this.graph.shallowNodes()) {
-      node.center = new Point(
-        arrays.x[index] * this.settings.ScaleX,
-        arrays.y[index] * this.settings.ScaleY,
-      )
+      if (node.boundingBox) {
+        node.center = new Point(
+          arrays.x[index] * this.settings.ScaleX,
+          arrays.y[index] * this.settings.ScaleY,
+        )
+      }
       index++
     }
 

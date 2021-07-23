@@ -5,6 +5,9 @@ import {Node} from './node'
 import {NodeCollection} from './nodeCollection'
 
 export class Graph extends Node {
+  isEmpty() {
+    return this.shallowNodeCount == 0
+  }
   setEdge(sourceId: string, targetId: string): Edge {
     const s = this.nodeCollection.find(sourceId)
     if (s == null) return

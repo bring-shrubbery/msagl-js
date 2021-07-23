@@ -11,9 +11,10 @@ export class OptimalRectanglePacking extends OptimalPacking {
   //  closest aspect ratio to the specified desired aspect ratio
   public constructor(rectangles: Rectangle[], aspectRatio: number) {
     super(GreedyRectanglePacking.SortRectangles(rectangles), aspectRatio)
+
     Assert.assert(
       rectangles.length > 0,
-      'Expected more than one rectangle in rectangles',
+      'Expected at least one rectangle in rectangles packing',
     )
     Assert.assert(aspectRatio > 0, 'aspect ratio should be greater than 0')
     this.createPacking = (rs, width) =>

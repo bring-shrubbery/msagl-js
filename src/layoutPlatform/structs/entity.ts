@@ -3,14 +3,15 @@ import {Graph} from './graph'
 import {Assert} from './../utils/assert'
 import {AttrContainer} from './attrContainer'
 export abstract class Entity extends AttrContainer {
-  parent: Entity = null
+  private _parent: Entity = null
+  public get parent(): Entity {
+    return this._parent
+  }
+  public set parent(value: Entity) {
+    this._parent = value
+  }
 
   abstract toString(): string
-
-  setParent(parent: Graph): void {
-    Assert.assert(!Object.is(parent, this))
-    this.parent = parent
-  }
 
   *getAncestors(): IterableIterator<Entity> {
     let p = this.parent

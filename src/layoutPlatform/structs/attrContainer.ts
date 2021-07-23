@@ -9,9 +9,10 @@ export class AttrContainer {
     this.attrs = []
   }
   setAttr(position: number, val: any) {
+    // todo : make it more JavaScript
     if (this.attrs.length < position) {
       do {
-        this.attrs.push(null)
+        this.attrs.push(null) // todo - will
       } while (this.attrs.length < position)
       this.attrs.push(val)
     } else if (this.attrs.length == position) {

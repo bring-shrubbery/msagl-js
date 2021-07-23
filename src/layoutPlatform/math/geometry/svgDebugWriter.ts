@@ -292,6 +292,7 @@ export class SvgDebugWriter {
     }
     this.open(box)
     for (const n of g.deepNodes()) {
+      if (!n.boundaryCurve) continue
       this.writeDebugCurve(DebugCurve.mkDebugCurveI(n.boundaryCurve))
       const box = n.boundingBox
       if (n.isGraph()) {

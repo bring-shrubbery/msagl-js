@@ -1,22 +1,47 @@
 import {GeomGraph} from '../../..'
 import {GeomEdge} from '../../../layoutPlatform/layout/core/geomEdge'
-import {LayoutSettings} from '../../../layoutPlatform/layout/layered/SugiyamaLayoutSettings'
+import {LayeredLayout} from '../../../layoutPlatform/layout/layered/layeredLayout'
+import {
+  LayoutSettings,
+  SugiyamaLayoutSettings,
+} from '../../../layoutPlatform/layout/layered/SugiyamaLayoutSettings'
+import {MdsLayoutSettings} from '../../../layoutPlatform/layout/mds/MDSLayoutSettings'
+import {PivotMDS} from '../../../layoutPlatform/layout/mds/PivotMDS'
+import {CurveFactory} from '../../../layoutPlatform/math/geometry/curveFactory'
 import {Point} from '../../../layoutPlatform/math/geometry/point'
 import {Rectangle} from '../../../layoutPlatform/math/geometry/rectangle'
 import {OptimalRectanglePacking} from '../../../layoutPlatform/math/geometry/rectanglePacking/OptimalRectanglePacking'
+import {StraightLineEdges} from '../../../layoutPlatform/routing/StraightLineEdges'
 import {Edge} from '../../../layoutPlatform/structs/edge'
 import {
   Graph,
   shallowConnectedComponents,
 } from '../../../layoutPlatform/structs/graph'
+import {Assert} from '../../../layoutPlatform/utils/assert'
 import {CancelToken} from '../../../layoutPlatform/utils/cancelToken'
 
-// Lays out a graph, possibly disconnected
-function layoutGraph(
+// Lays out a GeomGraph, which is possibly disconnected and might have sub-graphs
+export function layoutGraph(
   geomG: GeomGraph,
   cancelToken: CancelToken,
-  layoutSettings: (g: GeomGraph) => LayoutSettings,
+  layoutSettingsFunc: (g: GeomGraph) => LayoutSettings,
 ) {
+  const removedEdges = removeEdges()
+
+  for (const n of geomG.shallowNodes()) {
+    if (n.isGraph()) {
+      layoutGraph(<GeomGraph>n, cancelToken, layoutSettingsFunc)
+      const bb = n.boundingBox
+      if (bb)
+        n.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
+          bb.width,
+          bb.height,
+          Math.min(10, bb.width / 10),
+          Math.min(10, bb.height / 10),
+          bb.center,
+        )
+    }
+  }
   const liftedEdges = createLiftedEdges(geomG.graph)
   const connectedGraphs: GeomGraph[] = getConnectedComponents(geomG)
 
@@ -24,13 +49,43 @@ function layoutGraph(
 
   liftedEdges.forEach((e) => e.edge.remove())
   connectedGraphs.forEach((g) => {
-    for (const n of g.graph.shallowNodes) n.parent = g.graph
+    for (const n of g.graph.shallowNodes) n.parent = geomG.graph
   })
 
+  for (const e of removedEdges) e.add()
+
+  if (geomG.graph.parent == null) routeEdges()
+
+  function routeEdges() {
+    for (const u of geomG.deepNodes()) {
+      for (const e of u.outEdges()) {
+        if (e.curve == null) StraightLineEdges.RouteEdge(e, 0)
+      }
+      for (const e of u.selfEdges()) {
+        if (e.curve == null) StraightLineEdges.RouteEdge(e, 0)
+      }
+    }
+  }
+  function removeEdges(): Set<Edge> {
+    const ret = new Set<Edge>()
+    const graphUnderSurgery = geomG.graph
+    for (const n of graphUnderSurgery.shallowNodes) {
+      for (const e of n.outEdges) {
+        if (graphUnderSurgery.liftNode(e.target) == null) ret.add(e)
+      }
+      for (const e of n.inEdges) {
+        if (graphUnderSurgery.liftNode(e.source) == null) ret.add(e)
+      }
+    }
+    for (const e of ret) e.remove()
+    return ret
+  }
+
   function layoutComps() {
+    if (connectedGraphs.length == 0) return
     for (const cg of connectedGraphs) {
       layoutConnectedComponent(cg, cancelToken, (g: GeomGraph) =>
-        g == cg ? layoutSettings(geomG) : layoutSettings(g),
+        g == cg ? layoutSettingsFunc(geomG) : layoutSettingsFunc(g),
       )
     }
     const originalLeftBottoms = new Array<{g: GeomGraph; lb: Point}>()
@@ -40,7 +95,7 @@ function layoutGraph(
     const rectangles = connectedGraphs.map((g) => g.boundingBox)
     const packing = new OptimalRectanglePacking(
       rectangles,
-      layoutSettings(geomG).PackingAspectRatio,
+      layoutSettingsFunc(geomG).PackingAspectRatio,
     )
     packing.run()
     for (const {g, lb} of originalLeftBottoms) {
@@ -61,15 +116,11 @@ function createLiftedEdges(graph: Graph): GeomEdge[] {
   const liftedEdges = []
   for (const u of graph.deepNodes) {
     const liftedU = graph.liftNode(u)
-
+    if (liftedU == null) continue
     for (const uv of u.outEdges) {
       const v = uv.target
       const liftedV = graph.liftNode(v)
-      if (
-        liftedV == null ||
-        (liftedU == u && liftedV == v) ||
-        liftedU == liftedV
-      ) {
+      if ((liftedU == u && liftedV == v) || liftedU == liftedV) {
         continue
       }
 
@@ -82,11 +133,25 @@ function createLiftedEdges(graph: Graph): GeomEdge[] {
 }
 
 function layoutConnectedComponent(
-  graph: GeomGraph,
+  geomG: GeomGraph,
   cancelToken: CancelToken,
-  layoutSettings: (g: GeomGraph) => LayoutSettings,
+  layoutSettingsFunc: (g: GeomGraph) => LayoutSettings,
 ) {
-  throw new Error('not implemented')
+  const settings = layoutSettingsFunc(geomG)
+  if (settings instanceof MdsLayoutSettings) {
+    const pmd = new PivotMDS(
+      geomG,
+      null,
+      (e) => 1,
+      <MdsLayoutSettings>settings,
+      layoutSettingsFunc,
+    )
+    pmd.run()
+  } else if (settings instanceof SugiyamaLayoutSettings) {
+    const ll = new LayeredLayout(geomG, <SugiyamaLayoutSettings>settings, null)
+  } else {
+    throw new Error('unknown settings')
+  }
 }
 
 function getConnectedComponents(geomGraph: GeomGraph): GeomGraph[] {
@@ -98,7 +163,8 @@ function getConnectedComponents(geomGraph: GeomGraph): GeomGraph[] {
     const g = new Graph(graph.id + i++)
     const geomG = new GeomGraph(g, null)
     for (const n of comp) {
-      g.addNode(n) // this changes the parent - should be restored
+      n.parent = g
+      g.addNode(n) // this changes the parent - should be restored to graph
     }
     ret.push(geomG)
   }

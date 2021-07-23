@@ -34,7 +34,7 @@ export class LayoutSettings {
   public set NodeSeparation(value) {
     this.nodeSeparation = value
   }
-  packingAspectRatio = 0
+  packingAspectRatio = 1.5
   get PackingAspectRatio() {
     return this.packingAspectRatio
   }

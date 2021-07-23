@@ -15,6 +15,14 @@ export class Edge extends Entity {
       s.selfEdges.add(this)
     }
   }
+  add() {
+    if (this.source != this.target) {
+      this.source.outEdges.add(this)
+      this.target.inEdges.add(this)
+    } else {
+      this.source.selfEdges.add(this)
+    }
+  }
   remove() {
     if (this.source != this.target) {
       this.source.outEdges.delete(this)

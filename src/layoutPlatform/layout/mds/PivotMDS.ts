@@ -1,3 +1,4 @@
+import {layoutGraph} from '../../../tests/layoutPlatform/layout/driver'
 import {CurveFactory} from '../../math/geometry/curveFactory'
 import {StraightLineEdges} from '../../routing/StraightLineEdges'
 import {Edge} from '../../structs/edge'
@@ -8,6 +9,7 @@ import {CancelToken} from '../../utils/cancelToken'
 import {GeomEdge} from '../core/geomEdge'
 import {GeomGraph} from '../core/GeomGraph'
 import {GeomNode} from '../core/geomNode'
+import {LayoutSettings} from '../layered/SugiyamaLayoutSettings'
 import {MdsGraphLayout} from './MDSGraphLayout'
 import {MdsLayoutSettings} from './MDSLayoutSettings'
 
@@ -17,24 +19,24 @@ export class PivotMDS extends Algorithm {
   private graph: GeomGraph
 
   // scales the final layout by the specified factor on X
-  private _scaleX: number
   iterationsWithMajorization: number
+  settings: MdsLayoutSettings
+  layoutSettingsFunc: (g: GeomGraph) => LayoutSettings
   public get scaleX(): number {
-    return this._scaleX
+    return this.settings.ScaleX
   }
   public set scaleX(value: number) {
     Assert.assert(!isNaN(value))
-    this._scaleX = value
+    this.settings.ScaleX = value
   }
 
   // scales the final layout by the specified factor on Y
-  private _scaleY: number
   public get scaleY(): number {
-    return this._scaleY
+    return this.settings.ScaleY
   }
   public set scaleY(value: number) {
     Assert.assert(!isNaN(value))
-    this._scaleY = value
+    this.settings.ScaleY = value
   }
 
   // Layout graph by the PivotMds method.  Uses spectral techniques to obtain a layout in
@@ -43,69 +45,28 @@ export class PivotMDS extends Algorithm {
     graph: GeomGraph,
     cancelToken: CancelToken,
     length: (e: GeomEdge) => number,
+    settings: MdsLayoutSettings,
+    layoutSettingsFunc: (g: GeomGraph) => LayoutSettings,
   ) {
     super(cancelToken)
     this.graph = graph
-    this.scaleX = this.scaleY = 200
     this.length = length
+    this.settings = settings
+    this.settings.ScaleX = this.settings.ScaleY = 200
+    this.layoutSettingsFunc = layoutSettingsFunc
   }
 
   // Executes the actual algorithm.
   run() {
-    // first recurse to layout the subgraphs
-    for (const n of this.graph.shallowNodes()) {
-      if (n.isGraph()) {
-        const g = <GeomGraph>n
-        const subMds = new PivotMDS(g, this.cancelToken, this.length)
-        subMds.run()
-        n.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
-          n.boundingBox.width,
-          n.boundingBox.height,
-          g.Margins,
-          g.Margins,
-          n.center,
-        )
-      }
-    }
-
-    const liftedEdges: Map<GeomEdge, GeomEdge> = CreateLiftedEdges(this.graph)
-
     // with 0 majorization iterations we just do PivotMDS
-    const settings = new MdsLayoutSettings()
-
-    settings.ScaleX = this.scaleX
-    settings.ScaleY = this.scaleY
-    settings.IterationsWithMajorization = 0
-    settings.RemoveOverlaps = true
 
     const mdsLayout = new MdsGraphLayout(
-      settings,
+      this.settings,
       this.graph,
       this.cancelToken,
-      (e) => {
-        const orig_e = liftedEdges.get(e)
-        return orig_e ? this.length(orig_e) : this.length(e)
-      },
+      this.length,
     )
     mdsLayout.run()
-
-    for (const e of liftedEdges.keys()) {
-      e.edge.remove()
-    }
-    if (this.graph.graph.parent == null) {
-      this.routeEdges()
-    }
-  }
-
-  routeEdges() {
-    for (const u of this.graph.deepNodes()) {
-      for (const e of u.outEdges()) {
-        StraightLineEdges.RouteEdge(e, 0)
-      }
-      for (const e of u.selfEdges()) {
-        StraightLineEdges.RouteEdge(e, 0)
-      }
-    }
   }
 }
 
