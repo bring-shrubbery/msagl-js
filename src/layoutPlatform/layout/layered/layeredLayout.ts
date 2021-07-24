@@ -76,22 +76,12 @@ export class LayeredLayout extends Algorithm {
     let index = 0
     for (const n of nodeArray) {
       this.nodeIdToIndex.set(n.id, index++)
-      if (n.isGraph()) {
-        // recursion!
-        const gGraph = (n as unknown) as GeomGraph
-        new LayeredLayout(gGraph, settings, cancelToken).run()
-        //gGraph.updateBoundingBox()
-        gGraph.boundaryCurve = gGraph.boundingBox.perimeter()
-      }
     }
 
     const intEdges: PolyIntEdge[] = []
     for (const edge of this.originalGraph.edges()) {
       Assert.assert(!(edge.source == null || edge.target == null))
-      if (edge.isInterGraphEdge()) {
-        // we will route the integraph in a separate step
-        continue
-      }
+
       const intEdge = new PolyIntEdge(
         this.nodeIdToIndex.get(edge.source.id),
         this.nodeIdToIndex.get(edge.target.id),

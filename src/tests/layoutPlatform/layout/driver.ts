@@ -26,13 +26,18 @@ export function layoutGraph(
   cancelToken: CancelToken,
   layoutSettingsFunc: (g: GeomGraph) => LayoutSettings,
 ) {
-  const removedEdges = removeEdges()
+  if (geomG.graph.isEmpty()) {
+    // if there are  no nodes in the graph, create a circle for its boundary and exit
+    geomG.boundaryCurve = CurveFactory.mkCircle(10, new Point(0, 0))
+    return
+  }
+  const removedEdges = removeEdgesLeadingOutOfGraph()
 
   for (const n of geomG.shallowNodes()) {
     if (n.isGraph()) {
       layoutGraph(<GeomGraph>n, cancelToken, layoutSettingsFunc)
       const bb = n.boundingBox
-      if (bb)
+      if (bb) {
         n.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
           bb.width,
           bb.height,
@@ -40,6 +45,7 @@ export function layoutGraph(
           Math.min(10, bb.height / 10),
           bb.center,
         )
+      }
     }
   }
   const liftedEdges = createLiftedEdges(geomG.graph)
@@ -47,7 +53,10 @@ export function layoutGraph(
 
   layoutComps()
 
-  liftedEdges.forEach((e) => e.edge.remove())
+  liftedEdges.forEach((e) => {
+    e[0].edge.remove()
+    e[1].add()
+  })
   connectedGraphs.forEach((g) => {
     for (const n of g.graph.shallowNodes) n.parent = geomG.graph
   })
@@ -66,7 +75,8 @@ export function layoutGraph(
       }
     }
   }
-  function removeEdges(): Set<Edge> {
+
+  function removeEdgesLeadingOutOfGraph(): Set<Edge> {
     const ret = new Set<Edge>()
     const graphUnderSurgery = geomG.graph
     for (const n of graphUnderSurgery.shallowNodes) {
@@ -111,8 +121,8 @@ export function layoutGraph(
   }
 }
 
-// returns the map of pairs (new lifted GeomEdge, existing GeomEdge)
-function createLiftedEdges(graph: Graph): GeomEdge[] {
+// returns arrays of pairs (new lifted GeomEdge, existing Edge)
+function createLiftedEdges(graph: Graph): Array<[GeomEdge, Edge]> {
   const liftedEdges = []
   for (const u of graph.deepNodes) {
     const liftedU = graph.liftNode(u)
@@ -120,13 +130,17 @@ function createLiftedEdges(graph: Graph): GeomEdge[] {
     for (const uv of u.outEdges) {
       const v = uv.target
       const liftedV = graph.liftNode(v)
-      if ((liftedU == u && liftedV == v) || liftedU == liftedV) {
+      if (
+        liftedV == null ||
+        (liftedU == u && liftedV == v) ||
+        liftedU == liftedV
+      ) {
         continue
       }
-
+      uv.remove()
       const newLiftedEdge = new Edge(liftedU, liftedV)
       const newLiftedGeomEdge = new GeomEdge(newLiftedEdge)
-      liftedEdges.push(newLiftedGeomEdge)
+      liftedEdges.push([newLiftedGeomEdge, uv])
     }
   }
   return liftedEdges
@@ -149,6 +163,7 @@ function layoutConnectedComponent(
     pmd.run()
   } else if (settings instanceof SugiyamaLayoutSettings) {
     const ll = new LayeredLayout(geomG, <SugiyamaLayoutSettings>settings, null)
+    ll.run()
   } else {
     throw new Error('unknown settings')
   }

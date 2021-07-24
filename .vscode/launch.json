@@ -42,9 +42,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/layout/mds/PivotMDS.spec.ts",
+        "src/tests/layoutPlatform/layout/layered/layeredLayout.spec.ts",
         "-t",
-        "b7 pivot mds"
+        "compound"
       ],
       "console": "integratedTerminal"
     }

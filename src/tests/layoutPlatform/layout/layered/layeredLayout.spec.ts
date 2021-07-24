@@ -30,6 +30,7 @@ import {Node} from '../../../../layoutPlatform/structs/node'
 import {Edge} from '../../../../layoutPlatform/structs/edge'
 import {LineSegment} from '../../../../layoutPlatform/math/geometry/lineSegment'
 import {sortedList} from '../sortedBySizeListOfgvFiles'
+import {layoutGraph} from '../driver'
 
 type P = [number, number]
 
@@ -229,8 +230,7 @@ test('clusters', () => {
   const rootGeom = createGeometry(root, nodeBoundaryFunc, labelRectFunc)
 
   const ss = new SugiyamaLayoutSettings()
-  const ll = new LayeredLayout(rootGeom, ss, new CancelToken())
-  ll.run()
+  layoutGraph(rootGeom, null, () => ss)
   const t = new SvgDebugWriter('/tmp/clustabc' + '.svg')
   t.writeGraph(rootGeom)
 })
@@ -264,13 +264,10 @@ test('layer and node separation', () => {
 })
 
 test('clust3', () => {
-  const dg = parseDotGraph('src/tests/data/graphvis/clust3.gv')
-  const geomGraph = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const ss = new SugiyamaLayoutSettings()
-  const ll = new LayeredLayout(geomGraph, ss, new CancelToken())
-  ll.run()
+  const dg = runLayout('src/tests/data/graphvis/clust3.gv', ss)
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/testclust3.svg')
-  t.writeGraph(geomGraph)
+  t.writeGraph(<GeomGraph>GeomObject.getGeom(dg.graph))
 })
 
 test('arrowhead size default', () => {
@@ -281,7 +278,7 @@ test('arrowhead size default', () => {
   const ll = new LayeredLayout(geomGraph, ss, new CancelToken())
   ll.run()
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/longArrows.svg')
-  t.writeGraph(geomGraph)
+  t.writeGraph(<GeomGraph>GeomObject.getGeom(dg.graph))
 })
 
 test('arrowhead size per edge', () => {
@@ -381,7 +378,7 @@ export function qualityMetric(gg: GeomGraph): number {
   return r
 }
 
-xtest('layered layout nodes only', () => {
+test('layered layout nodes only', () => {
   const g = new GeomGraph(new Graph('graph'), new Size(0, 0))
   g.setNode('kspacey', {width: 144, height: 100})
   g.setNode('swilliams', {width: 160, height: 100})
@@ -396,23 +393,31 @@ xtest('layered layout nodes only', () => {
   t.writeGraph(g)
 })
 
-function runLayout(
-  fname: string,
-  ss: SugiyamaLayoutSettings = new SugiyamaLayoutSettings(),
-) {
+function runLayout(fname: string, settings: SugiyamaLayoutSettings = null) {
   const dg = parseDotGraph(fname)
   if (dg == null) return null
-  createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
-  const ll = new LayeredLayout(
-    GeomObject.getGeom(dg.graph) as GeomGraph,
-    ss,
-    new CancelToken(),
-  )
-
-  ll.run()
-
+  const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
+  if (!settings) settings = new SugiyamaLayoutSettings()
+  layoutGraph(gg, null, () => settings)
   return dg
 }
+// function runLayout(
+//   fname: string,
+//   ss: SugiyamaLayoutSettings = new SugiyamaLayoutSettings(),
+// ) {
+//   const dg = parseDotGraph(fname)
+//   if (dg == null) return null
+//   createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
+//   const ll = new LayeredLayout(
+//     GeomObject.getGeom(dg.graph) as GeomGraph,
+//     ss,
+//     new CancelToken(),
+//   )
+
+//   ll.run()
+
+//   return dg
+// }
 
 export function outputGraph(g: GeomGraph, name: string) {
   const strB = new StringBuilder()
@@ -450,19 +455,24 @@ function interpolateEdgeAsString(e: GeomEdge): string {
   }
   return s + ']'
 }
-xtest('awilliams', () => {
-  const fname = 'src/tests/data/graphvis/awilliams.gv'
+test('root', () => {
+  const fname = 'src/tests/data/graphvis/root.gv'
   const dg = runLayout(fname)
   if (dg != null) {
-    const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + 'awilliams.svg')
+    const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + 'root.svg')
     t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   }
 })
 
-xtest('brandes', () => {
+test('compound', () => {
+  const dg = runLayout('src/tests/data/graphvis/compound.gv')
+  outputGraph(<GeomGraph>GeomObject.getGeom(dg.graph), 'compound')
+})
+
+test('brandes', () => {
   const path = 'src/tests/data/graphvis/'
 
-  for (let i = 0; i < sortedList.length && i < 50; i++) {
+  for (let i = 0; i < sortedList.length && i < 100; i++) {
     const f = sortedList[i]
     if (f.match('big(.*).gv')) continue // the parser bug
 
@@ -483,13 +493,13 @@ xtest('brandes', () => {
   }
 })
 
-xtest('layout all gv files from list', () => {
+test('layout all gv files from list', () => {
   const path = 'src/tests/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
     if (f.match('big(.*).gv')) continue // the parser bug
     //console.log(f)
-    if (i++ > 50) return
+    if (i++ > 150) return
     let dg: DrawingGraph
     try {
       dg = runLayout(join(path, f))
