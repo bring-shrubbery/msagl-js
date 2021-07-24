@@ -1,7 +1,6 @@
 import {GeomGraph} from '../../../..'
 import {DrawingGraph} from '../../../../drawing/drawingGraph'
 import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
-import {PivotMDS} from '../../../../layoutPlatform/layout/mds/PivotMDS'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {parseDotGraph} from '../../../../tools/dotparser'
 import {
