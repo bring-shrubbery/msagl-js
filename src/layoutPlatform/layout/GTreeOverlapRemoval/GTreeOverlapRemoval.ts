@@ -113,7 +113,7 @@ export class GTreeOverlapRemoval {
   }
 
   //  Does one iterations in which a miniminum spanning tree is
-  //  determined on the delaunay triangulation and finally the tree is exanded to resolve the overlaps.
+  //  determined on the delaunay triangulation and finally the tree is extended to resolve the overlaps.
   OneIteration(
     nodePositions: Point[],
     nodeSizes: Size[],

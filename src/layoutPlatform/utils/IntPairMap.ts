@@ -35,6 +35,7 @@ export class IntPairMap<T> {
     this.arrayOfMaps = new Array<Map<number, T>>(n)
     for (let i = 0; i < n; i++) this.arrayOfMaps[i] = new Map<number, T>()
   }
+
   *keys(): IterableIterator<IntPair> {
     for (let i = 0; i < this.arrayOfMaps.length; i++) {
       const map = this.arrayOfMaps[i]
