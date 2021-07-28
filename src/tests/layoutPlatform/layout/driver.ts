@@ -17,7 +17,6 @@ import {
   Graph,
   shallowConnectedComponents,
 } from '../../../layoutPlatform/structs/graph'
-import {Assert} from '../../../layoutPlatform/utils/assert'
 import {CancelToken} from '../../../layoutPlatform/utils/cancelToken'
 
 // Lays out a GeomGraph, which is possibly disconnected and might have sub-graphs
@@ -156,7 +155,7 @@ function layoutConnectedComponent(
     const pmd = new PivotMDS(
       geomG,
       null,
-      (e) => 1,
+      () => 1,
       <MdsLayoutSettings>settings,
       layoutSettingsFunc,
     )

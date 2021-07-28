@@ -145,7 +145,9 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
           drawingObj.headlabel = str
           break
         case 'label':
-          drawingObj.labelText = str
+          if (typeof str === 'string' || typeof str == 'number')
+            // ignore html labels, for example
+            drawingObj.labelText = str.toString()
           break
         case 'size':
           drawingObj.size = parseFloatTuple(str)
