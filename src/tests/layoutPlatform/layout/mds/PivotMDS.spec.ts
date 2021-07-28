@@ -43,7 +43,7 @@ test('layout 0-50 gv files with MDS', () => {
     try {
       dg = runLayout(join(path, f))
     } catch (Error) {
-      console.log(f + ' error:' + Error.message)
+      console.log('i = ' + i + ', ' + f + ' error:' + Error.message)
       expect(1).toBe(0)
     }
     if (dg != null) {
@@ -154,20 +154,5 @@ test('layout from 250 and up  gv files with MDS', () => {
       const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pivot' + f + '.svg')
       t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
-  }
-})
-
-test('clust1.gv with MDS', () => {
-  const path = 'src/tests/data/graphvis/clust1.gv'
-  let dg: DrawingGraph
-  try {
-    dg = runLayout(path)
-  } catch (Error) {
-    console.log(path + ' error:' + Error.message)
-    expect(1).toBe(0)
-  }
-  if (dg != null) {
-    const t: SvgDebugWriter = new SvgDebugWriter('/tmp/clust1.svg')
-    t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   }
 })
