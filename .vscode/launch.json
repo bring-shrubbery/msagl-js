@@ -35,7 +35,7 @@
         "-i",
         "src/tests/layoutPlatform/layout/mds/PivotMDS.spec.ts",
         "-t",
-        "clust1.gv with MDS"
+        "b7 pivot mds"
       ],
       "console": "integratedTerminal"
     }

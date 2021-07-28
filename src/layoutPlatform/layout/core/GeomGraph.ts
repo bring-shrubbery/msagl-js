@@ -89,10 +89,10 @@ export class GeomGraph extends GeomNode {
   }
   MinimalWidth = 0
   MinimalHeight = 0
-  pumpTheBoxToTheGraphWithMargins(): Rectangle {
+  pumpTheBoxToTheGraphWithMargins(minSeparation: number): Rectangle {
     const b = Rectangle.mkEmpty()
     this.pumpTheBoxToTheGraph(b)
-    b.pad(this.Margins)
+    b.pad(Math.max(this.Margins, minSeparation))
     if (this.MinimalWidth > 0) b.width = Math.max(b.width, this.MinimalWidth)
     if (this.MinimalHeight > 0)
       b.height = Math.max(b.height, this.MinimalHeight)
