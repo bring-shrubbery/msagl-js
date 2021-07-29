@@ -11,19 +11,6 @@ test('all gv files list ', () => {
     parseDotGraph(join(path, f))
   }
 })
-test('all gv files', () => {
-  const path = 'src/tests/data/graphvis/'
-  fs.readdir(path, (err, files) => {
-    expect(err).toBe(null)
-    for (const f of files) {
-      if (!f.match('(.*).gv')) continue
-      if (f.match('big.gv')) continue
-
-      const g = parseDotGraph(join(path, f))
-      expect(g != null).toBe(true)
-    }
-  })
-})
 
 test('dot parser', () => {
   const g = parseDotGraph('src/tests/data/graphvis/clust4.gv')

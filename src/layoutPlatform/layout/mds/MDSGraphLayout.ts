@@ -40,7 +40,9 @@ export class MdsGraphLayout extends Algorithm {
   }
 
   SetGraphBoundingBox() {
-    this.graph.boundingBox = this.graph.pumpTheBoxToTheGraphWithMargins()
+    this.graph.boundingBox = this.graph.pumpTheBoxToTheGraphWithMargins(
+      this.settings.NodeSeparation / 2,
+    )
   }
 
   //  Scales a configuration such that the average edge length in the drawing
@@ -163,7 +165,7 @@ export class MdsGraphLayout extends Algorithm {
       )
     }
 
-    this.graph.pumpTheBoxToTheGraphWithMargins()
+    this.graph.pumpTheBoxToTheGraphWithMargins(this.settings.NodeSeparation / 2)
   }
 
   ScaleNodes(nodes: GeomNode[], scale: number) {

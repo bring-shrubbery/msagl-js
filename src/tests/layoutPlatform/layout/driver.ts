@@ -17,7 +17,6 @@ import {
   Graph,
   shallowConnectedComponents,
 } from '../../../layoutPlatform/structs/graph'
-import {Assert} from '../../../layoutPlatform/utils/assert'
 import {CancelToken} from '../../../layoutPlatform/utils/cancelToken'
 
 // Lays out a GeomGraph, which is possibly disconnected and might have sub-graphs
@@ -27,7 +26,7 @@ export function layoutGraph(
   layoutSettingsFunc: (g: GeomGraph) => LayoutSettings,
 ) {
   if (geomG.graph.isEmpty()) {
-    // if there are  no nodes in the graph, create a circle for its boundary and exit
+    // if there are no nodes in the graph, create a circle for its boundary and exit
     geomG.boundaryCurve = CurveFactory.mkCircle(10, new Point(0, 0))
     return
   }
@@ -50,13 +49,18 @@ export function layoutGraph(
   }
   const liftedEdges = createLiftedEdges(geomG.graph)
   const connectedGraphs: GeomGraph[] = getConnectedComponents(geomG)
-
+  if (connectedGraphs.length == 1) {
+    layoutConnectedComponent(geomG, cancelToken, layoutSettingsFunc)
+    routeEdges()
+    return
+  }
   layoutComps()
 
   liftedEdges.forEach((e) => {
     e[0].edge.remove()
     e[1].add()
   })
+
   connectedGraphs.forEach((g) => {
     for (const n of g.graph.shallowNodes) n.parent = geomG.graph
   })
@@ -156,7 +160,7 @@ function layoutConnectedComponent(
     const pmd = new PivotMDS(
       geomG,
       null,
-      (e) => 1,
+      () => 1,
       <MdsLayoutSettings>settings,
       layoutSettingsFunc,
     )

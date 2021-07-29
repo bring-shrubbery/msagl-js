@@ -8,9 +8,7 @@
       "type": "node",
       "name": "vscode-jest-tests",
       "request": "launch",
-      "args": [
-        "--runInBand"
-      ],
+      "args": ["--runInBand"],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -21,30 +19,23 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/dist/index.js",
       "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ]
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Run selected Jest test",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run-script",
-        "test"
-      ],
+      "runtimeArgs": ["run-script", "test"],
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/layout/layered/layeredLayout.spec.ts",
+        "src/tests/layoutPlatform/layout/mds/PivotMDS.spec.ts",
         "-t",
-        "compound"
+        "b7 pivot mds"
       ],
       "console": "integratedTerminal"
     }
