@@ -1,22 +1,20 @@
+import {Point} from '../../math/geometry/point'
 import {SweepEvent} from '../spline/sweepEvent'
 import {Obstacle} from './obstacle'
 
 export class BasicReflectionEvent extends SweepEvent {
-  get ReflectingObstacle(): Obstacle {}
-  set ReflectingObstacle(value: Obstacle) {}
+  ReflectingObstacle: Obstacle
 
-  get InitialObstacle(): Obstacle {}
-  set InitialObstacle(value: Obstacle) {}
+  InitialObstacle: Obstacle
 
-  get PreviousSite(): BasicReflectionEvent {}
-  set PreviousSite(value: BasicReflectionEvent) {}
-
+  PreviousSite: BasicReflectionEvent
   //  Called by StoreLookaheadSite only.
   constructor(
     initialObstacle: Obstacle,
     reflectingObstacle: Obstacle,
     site: Point,
   ) {
+    super()
     this.InitialObstacle = initialObstacle
     this.ReflectingObstacle = reflectingObstacle
     this.site = site
@@ -26,7 +24,7 @@ export class BasicReflectionEvent extends SweepEvent {
   //  AddReflectionEvent, which in turn is called by LoadLookaheadIntersections.
   //  In this case we know the eventObstacle and initialObstacle are the same obstacle (the
   //  one that the reflected ray bounced off of, to generate the Left/HighReflectionEvent).
-  constructor(
+  mkSiteObstalePoint(
     previousSite: BasicReflectionEvent,
     reflectingObstacle: Obstacle,
     site: Point,
@@ -44,7 +42,7 @@ export class BasicReflectionEvent extends SweepEvent {
 
   private site: Point
 
-  /* override */ get Site(): Point {
+  get Site(): Point {
     return this.site
   }
 }

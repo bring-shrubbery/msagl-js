@@ -1,11 +1,12 @@
-import {Port} from '../../../../layoutPlatform/layout/core/port'
-import {CompassVector} from '../../../../layoutPlatform/math/geometry/compassVector'
-import {Curve} from '../../../../layoutPlatform/math/geometry/curve'
-import {GeomConstants} from '../../../../layoutPlatform/math/geometry/geomConstants'
-import {Point} from '../../../../layoutPlatform/math/geometry/point'
-import {Polyline} from '../../../../layoutPlatform/math/geometry/polyline'
-import {PolylinePoint} from '../../../../layoutPlatform/math/geometry/polylinePoint'
-import {Assert} from '../../../../layoutPlatform/utils/assert'
+import {Port} from '../../layout/core/port'
+import {CompassVector} from '../../math/geometry/compassVector'
+import {Curve} from '../../math/geometry/curve'
+import {GeomConstants} from '../../math/geometry/geomConstants'
+import {Point, TriangleOrientation} from '../../math/geometry/point'
+import {Polyline} from '../../math/geometry/polyline'
+import {PolylinePoint} from '../../math/geometry/polylinePoint'
+import {Assert} from '../../utils/assert'
+import {InteractiveEdgeRouter} from '../InteractiveEdgeRouter'
 import {InteractiveObstacleCalculator} from '../interactiveObstacleCalculator'
 import {Shape} from '../shape'
 
@@ -79,7 +80,7 @@ export class Obstacle {
       ppt = ppt.nextOnPolyline
     }
 
-    RemoveCloseAndCollinearVerticesInPlace(polyline)
+    Obstacle.RemoveCloseAndCollinearVerticesInPlace(polyline)
     //  We've modified the points so the BoundingBox may have changed; force it to be recalculated.
     polyline.requireInit()
     //  Verify that the polyline is still clockwise.
@@ -112,8 +113,8 @@ export class Obstacle {
     InteractiveEdgeRouter.RemoveCollinearVertices(polyline)
     if (
       polyline.endPoint.prev != null &&
-      print.GetTriangleOrientation(
-        polyline.endPoint.prev.Point,
+      Point.getTriangleOrientation(
+        polyline.endPoint.prev.point,
         polyline.end,
         polyline.start,
       ) == TriangleOrientation.Collinear
@@ -123,10 +124,10 @@ export class Obstacle {
 
     if (
       polyline.startPoint.next != null &&
-      print.GetTriangleOrientation(
+      Point.getTriangleOrientation(
         polyline.end,
         polyline.start,
-        polyline.startPoint.next.Point,
+        polyline.startPoint.next.point,
       ) == TriangleOrientation.Collinear
     ) {
       polyline.RemoveStartPoint()

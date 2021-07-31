@@ -1,3 +1,26 @@
+import {Point, TriangleOrientation} from '../math/geometry/point'
+import {Polyline} from '../math/geometry/polyline'
+import {PolylinePoint} from '../math/geometry/polylinePoint'
+
+export class InteractiveEdgeRouter {
+  static RemoveCollinearVertices(ret: Polyline): Polyline {
+    for (
+      let pp: PolylinePoint = ret.startPoint.next;
+      pp.next != null;
+      pp = pp.next
+    ) {
+      if (
+        Point.getTriangleOrientation(pp.prev.point, pp.point, pp.next.point) ==
+        TriangleOrientation.Collinear
+      ) {
+        pp.prev.next = pp.next
+        pp.next.prev = pp.prev
+      }
+    }
+
+    return ret
+  }
+}
 /*
 using System;
 using System.Collections.Generic;
