@@ -1,36 +1,36 @@
-import {SugiyamaLayoutSettings} from '../../../../layoutPlatform/layout/layered/SugiyamaLayoutSettings'
+import { SugiyamaLayoutSettings } from '../../../../layoutPlatform/layout/layered/SugiyamaLayoutSettings'
 import SortedMap = require('collections/sorted-map')
-import {LayeredLayout} from '../../../../layoutPlatform/layout/layered/layeredLayout'
-import {Graph} from '../../../../layoutPlatform/structs/graph'
-import {GeomNode} from '../../../../layoutPlatform/layout/core/geomNode'
-import {GeomEdge} from '../../../../layoutPlatform/layout/core/geomEdge'
-import {CurveFactory} from '../../../../layoutPlatform/math/geometry/curveFactory'
-import {Point} from '../../../../layoutPlatform/math/geometry/point'
-import {CancelToken} from '../../../../layoutPlatform/utils/cancelToken'
-import {GeomGraph} from '../../../../layoutPlatform/layout/core/GeomGraph'
-import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
-import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
-import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
-import {StringBuilder} from 'typescript-string-operations'
-import {interpolateICurve} from '../../../../layoutPlatform/math/geometry/curve'
-import {LayerDirectionEnum} from '../../../../layoutPlatform/layout/layered/layerDirectionEnum'
-import {ICurve} from '../../../../layoutPlatform/math/geometry/icurve'
+import { LayeredLayout } from '../../../../layoutPlatform/layout/layered/layeredLayout'
+import { Graph } from '../../../../layoutPlatform/structs/graph'
+import { GeomNode } from '../../../../layoutPlatform/layout/core/geomNode'
+import { GeomEdge } from '../../../../layoutPlatform/layout/core/geomEdge'
+import { CurveFactory } from '../../../../layoutPlatform/math/geometry/curveFactory'
+import { Point } from '../../../../layoutPlatform/math/geometry/point'
+import { CancelToken } from '../../../../layoutPlatform/utils/cancelToken'
+import { GeomGraph } from '../../../../layoutPlatform/layout/core/GeomGraph'
+import { GeomObject } from '../../../../layoutPlatform/layout/core/geomObject'
+import { SvgDebugWriter } from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
+import { parseDotGraph, parseDotString } from '../../../../tools/dotparser'
+import { StringBuilder } from 'typescript-string-operations'
+import { interpolateICurve } from '../../../../layoutPlatform/math/geometry/curve'
+import { LayerDirectionEnum } from '../../../../layoutPlatform/layout/layered/layerDirectionEnum'
+import { ICurve } from '../../../../layoutPlatform/math/geometry/icurve'
 import {
   Rectangle,
   Size,
 } from '../../../../layoutPlatform/math/geometry/rectangle'
 
-import {join} from 'path'
+import { join } from 'path'
 import fs = require('fs')
-import {DrawingGraph} from '../../../../drawing/drawingGraph'
-import {Arrowhead} from '../../../../layoutPlatform/layout/core/arrowhead'
-import {GeomLabel} from '../../../../layoutPlatform/layout/core/geomLabel'
-import {Assert} from '../../../../layoutPlatform/utils/assert'
-import {Node} from '../../../../layoutPlatform/structs/node'
-import {Edge} from '../../../../layoutPlatform/structs/edge'
-import {LineSegment} from '../../../../layoutPlatform/math/geometry/lineSegment'
-import {sortedList} from '../sortedBySizeListOfgvFiles'
-import {layoutGraph} from '../driver'
+import { DrawingGraph } from '../../../../drawing/drawingGraph'
+import { Arrowhead } from '../../../../layoutPlatform/layout/core/arrowhead'
+import { GeomLabel } from '../../../../layoutPlatform/layout/core/geomLabel'
+import { Assert } from '../../../../layoutPlatform/utils/assert'
+import { Node } from '../../../../layoutPlatform/structs/node'
+import { Edge } from '../../../../layoutPlatform/structs/edge'
+import { LineSegment } from '../../../../layoutPlatform/math/geometry/lineSegment'
+import { sortedList } from '../sortedBySizeListOfgvFiles'
+import { layoutGraph } from '../../../../layoutPlatform/layout/driver'
 
 type P = [number, number]
 
@@ -55,7 +55,7 @@ test('map test', () => {
 
 test('self on node', () => {
   const g = GeomGraph.mk('graph', Rectangle.mkEmpty())
-  g.setNode('a', {width: 10, height: 10})
+  g.setNode('a', { width: 10, height: 10 })
   g.setEdge('a', 'a')
   const ll = new LayeredLayout(
     g,
@@ -108,12 +108,12 @@ test('show API', () => {
   // Create a new geometry graph
   const g = GeomGraph.mk('graph', new Size(0, 0))
   // Add nodes to the graph. The first argument is the node id. The second is the size string
-  g.setNode('kspacey', {width: 144, height: 100})
-  g.setNode('swilliams', {width: 160, height: 100})
-  g.setNode('bpitt', {width: 108, height: 100})
-  g.setNode('hford', {width: 168, height: 100})
-  g.setNode('lwilson', {width: 144, height: 100})
-  g.setNode('kbacon', {width: 121, height: 100})
+  g.setNode('kspacey', { width: 144, height: 100 })
+  g.setNode('swilliams', { width: 160, height: 100 })
+  g.setNode('bpitt', { width: 108, height: 100 })
+  g.setNode('hford', { width: 168, height: 100 })
+  g.setNode('lwilson', { width: 144, height: 100 })
+  g.setNode('kbacon', { width: 121, height: 100 })
 
   // Add edges to the graph.
   g.setEdge('kspacey', 'swilliams')
@@ -140,12 +140,12 @@ test('disconnected comps', () => {
   // Create a new geometry graph
   const g = GeomGraph.mk('graph', Rectangle.mkEmpty())
   // Add nodes to the graph. The first argument is the node id. The second is the size string
-  g.setNode('kspacey', {width: 144, height: 100})
-  g.setNode('swilliams', {width: 160, height: 100})
-  g.setNode('bpitt', {width: 108, height: 100})
-  g.setNode('hford', {width: 168, height: 100})
-  g.setNode('lwilson', {width: 144, height: 100})
-  g.setNode('kbacon', {width: 121, height: 100})
+  g.setNode('kspacey', { width: 144, height: 100 })
+  g.setNode('swilliams', { width: 160, height: 100 })
+  g.setNode('bpitt', { width: 108, height: 100 })
+  g.setNode('hford', { width: 168, height: 100 })
+  g.setNode('lwilson', { width: 144, height: 100 })
+  g.setNode('kbacon', { width: 121, height: 100 })
 
   // Add edges to the graph.
   g.setEdge('kspacey', 'swilliams')
@@ -176,7 +176,7 @@ test('margins', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
   createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const ss = new SugiyamaLayoutSettings()
-  ss.margins = {left: 100, right: 10, top: 170, bottom: 50}
+  ss.margins = { left: 100, right: 10, top: 170, bottom: 50 }
   const ll = new LayeredLayout(
     GeomObject.getGeom(dg.graph) as GeomGraph,
     ss,
@@ -380,12 +380,12 @@ export function qualityMetric(gg: GeomGraph): number {
 
 test('layered layout nodes only', () => {
   const g = new GeomGraph(new Graph('graph'), new Size(0, 0))
-  g.setNode('kspacey', {width: 144, height: 100})
-  g.setNode('swilliams', {width: 160, height: 100})
-  g.setNode('bpitt', {width: 108, height: 100})
-  g.setNode('hford', {width: 168, height: 100})
-  g.setNode('lwilson', {width: 144, height: 100})
-  g.setNode('kbacon', {width: 121, height: 100})
+  g.setNode('kspacey', { width: 144, height: 100 })
+  g.setNode('swilliams', { width: 160, height: 100 })
+  g.setNode('bpitt', { width: 108, height: 100 })
+  g.setNode('hford', { width: 168, height: 100 })
+  g.setNode('lwilson', { width: 144, height: 100 })
+  g.setNode('kbacon', { width: 121, height: 100 })
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(g, ss, new CancelToken())
   ll.run()
@@ -536,7 +536,7 @@ function duplicateDisconnected(g: GeomGraph, suffix: string) {
   const nodes: GeomNode[] = Array.from(g.shallowNodes())
   const edges: GeomEdge[] = Array.from(g.edges())
   for (const n of nodes) {
-    g.setNode(n.node.id + suffix, {width: n.width, height: n.height})
+    g.setNode(n.node.id + suffix, { width: n.width, height: n.height })
   }
   for (const e of edges) {
     g.setEdge(e.source.id + suffix, e.target.id + suffix)
