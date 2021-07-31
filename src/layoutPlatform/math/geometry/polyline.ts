@@ -17,6 +17,18 @@ type AdjustedPar = {
 }
 
 export class Polyline implements ICurve {
+  RemoveStartPoint() {
+    const p = this.startPoint.next
+    p.prev = null
+    this.startPoint = p
+    this.requireInit()
+  }
+  RemoveEndPoint() {
+    const p = this.endPoint.prev
+    p.next = null
+    this.endPoint = p
+    this.requireInit()
+  }
   startPoint: PolylinePoint
   endPoint: PolylinePoint
   requireInit_: boolean
@@ -61,6 +73,10 @@ export class Polyline implements ICurve {
       this.startPoint = this.endPoint = pp
     }
     this.requireInit()
+  }
+
+  *points(): IterableIterator<Point> {
+    for (let s = this.startPoint; s != null; s = s.next) yield s.point
   }
 
   *polylinePoints(): IterableIterator<PolylinePoint> {

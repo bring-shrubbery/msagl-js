@@ -14,6 +14,9 @@ export function compareTo(a: number, b: number) {
 }
 
 export class Point {
+  get l1() {
+    return Math.abs(this.x_) + Math.abs(this.y_)
+  }
   dot(a: Point): number {
     return this.x * a.x + this.y * a.y
   }
@@ -227,6 +230,18 @@ export class Point {
     return TriangleOrientation.Collinear
   }
 
+  static getTriangleOrientationWithIntersectionEpsilon(
+    cornerA: Point,
+    cornerB: Point,
+    cornerC: Point,
+  ) {
+    const area = Point.signedDoubledTriangleArea(cornerA, cornerB, cornerC)
+    if (area > GeomConstants.intersectionEpsilon)
+      return TriangleOrientation.Counterclockwise
+    if (area < -GeomConstants.intersectionEpsilon)
+      return TriangleOrientation.Clockwise
+    return TriangleOrientation.Collinear
+  }
   static ClosestPointAtLineSegment(
     point: Point,
     segmentStart: Point,

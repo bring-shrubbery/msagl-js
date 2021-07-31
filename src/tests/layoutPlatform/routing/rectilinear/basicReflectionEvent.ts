@@ -1,4 +1,7 @@
-class BasicReflectionEvent extends SweepEvent {
+import {SweepEvent} from '../spline/sweepEvent'
+import {Obstacle} from './obstacle'
+
+export class BasicReflectionEvent extends SweepEvent {
   get ReflectingObstacle(): Obstacle {}
   set ReflectingObstacle(value: Obstacle) {}
 
