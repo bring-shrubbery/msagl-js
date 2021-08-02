@@ -525,6 +525,7 @@ function VerifyAndDisplayConvexHull(points: Point[], filename: string) {
   const hull = Polyline.mkFromPoints(
     Array.from(ConvexHull.CalculateConvexHull(points)),
   )
+  hull.closed = true
   VerifyPointsAreInOrOnHull(points, hull)
 
   const poly = Polyline.mkFromPoints(points)
