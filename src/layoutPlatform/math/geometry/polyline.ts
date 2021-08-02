@@ -9,7 +9,7 @@ import {GeomConstants} from './geomConstants'
 import {Assert} from './../../utils/assert'
 import {Parallelogram} from './parallelogram'
 import {LineSegment} from './lineSegment'
-import { Curve } from './curve'
+import {Curve} from './curve'
 
 type AdjustedPar = {
   a: Point
@@ -348,14 +348,12 @@ export class Polyline implements ICurve {
   prev(a: PolylinePoint): PolylinePoint {
     return a.prev ?? this.closed ? this.endPoint : null
   }
-  toCurve():Curve {
-    var c = new Curve();
-    Curve.addLineSegment(c, this.startPoint.point, this.startPoint.next.point);
-    let p = this.startPoint.next;
-    while ((p = p.next) != null)
-        Curve.continueWithLineSegmentP(c, p.point);
-    if (this.closed)
-        Curve.continueWithLineSegmentP(c, this.startPoint.point);
-    return c;
-}
+  toCurve(): Curve {
+    const c = new Curve()
+    Curve.addLineSegment(c, this.startPoint.point, this.startPoint.next.point)
+    let p = this.startPoint.next
+    while ((p = p.next) != null) Curve.continueWithLineSegmentP(c, p.point)
+    if (this.closed) Curve.continueWithLineSegmentP(c, this.startPoint.point)
+    return c
+  }
 }

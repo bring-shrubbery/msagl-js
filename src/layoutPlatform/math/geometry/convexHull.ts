@@ -78,8 +78,7 @@ export class ConvexHull {
     pointsOfTheBody: Iterable<Point>,
   ): IterableIterator<Point> {
     const convexHull = new ConvexHull(pointsOfTheBody)
-    for(const p of convexHull.Calculate())
-     yield p
+    for (const p of convexHull.Calculate()) yield p
   }
 
   *Calculate(): IterableIterator<Point> {
@@ -87,10 +86,10 @@ export class ConvexHull {
       return
     }
 
-    if (this.hullPoints.length == 0) { 
-         yield   this.pivot 
-         return
-        }
+    if (this.hullPoints.length == 0) {
+      yield this.pivot
+      return
+    }
 
     this.SortAllPointsWithoutPivot()
     this.Scan()

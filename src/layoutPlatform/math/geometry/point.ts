@@ -14,9 +14,8 @@ export function compareTo(a: number, b: number) {
 }
 
 export class Point {
-  static closeIntersections(a: Point, b:Point):boolean {
+  static closeIntersections(a: Point, b: Point): boolean {
     return Point.close(a, b, GeomConstants.intersectionEpsilon)
-    
   }
   get l1() {
     return Math.abs(this.x_) + Math.abs(this.y_)

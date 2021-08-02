@@ -3,25 +3,24 @@ import {GeomConstants} from './geomConstants'
 import {Point} from './point'
 
 export enum Direction {
-  
   /// no direction defined
-  
+
   None = 0,
-  
+
   /// North
-  
+
   North = 1,
-  
+
   /// East
-  
+
   East = 2,
-  
+
   /// South
-  
+
   South = 4,
-  
+
   /// West
-  
+
   West = 8,
 }
 export class CompassVector {
