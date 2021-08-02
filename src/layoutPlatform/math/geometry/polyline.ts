@@ -314,8 +314,37 @@ export class Polyline implements ICurve {
     throw new Error('Method not implemented.')
   }
   closestParameter(targetPoint: Point): number {
-    throw new Error('Method not implemented.')
+    let ret = 0
+    let dist: number = Number.MAX_VALUE
+    let offset = 0
+    let pp: PolylinePoint = this.startPoint
+    while (pp.next != null) {
+      const ls = LineSegment.mkPP(pp.point, pp.next.point)
+      const t: number = ls.closestParameter(targetPoint)
+      const delta: Point = ls.value(t).sub(targetPoint)
+      const newDist: number = delta.dot(delta)
+      if (newDist < dist) {
+        dist = newDist
+        ret = t + offset
+      }
+
+      pp = pp.next
+      offset++
+    }
+
+    if (this.closed) {
+      const ls = LineSegment.mkPP(this.endPoint.point, this.startPoint.point)
+      const t: number = ls.closestParameter(targetPoint)
+      const delta: Point = ls.value(t).sub(targetPoint)
+      const newDist: number = delta.dot(delta)
+      if (newDist < dist) {
+        ret = t + offset
+      }
+    }
+
+    return ret
   }
+
   clone(): ICurve {
     const r = new Polyline()
     r.closed = this.closed

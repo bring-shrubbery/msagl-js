@@ -35,7 +35,7 @@
         "-i",
         "src/tests/layoutPlatform/math/geometry/convexHull.spec.ts",
         "-t",
-        "testConvexHull1"
+        "TestConvexHull8"
       ],
       "console": "integratedTerminal"
     }

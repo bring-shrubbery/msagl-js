@@ -541,7 +541,7 @@ function VerifyPointsAreInOrOnHull(points: Array<Point>, hull: Polyline) {
     if (
       Curve.PointRelativeToCurveLocation(point, hull) == PointLocation.Outside
     ) {
-      const hullPoint = hull[hull.closestParameter(point)]
+      const hullPoint = hull.value(hull.closestParameter(point))
       expect(Point.closeIntersections(point, hullPoint)).toBe(true)
     }
   }
