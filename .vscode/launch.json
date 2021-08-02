@@ -35,7 +35,7 @@
         "-i",
         "src/tests/layoutPlatform/math/geometry/convexHull.spec.ts",
         "-t",
-        "repeated points"
+        "testConvexHull1"
       ],
       "console": "integratedTerminal"
     }
