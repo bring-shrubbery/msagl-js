@@ -19,11 +19,11 @@ export class ConvexHull {
 
   stamp = 0
 
-  constructor(bodyPoints: IterableIterator<Point>) {
+  constructor(bodyPoints: Iterable<Point>) {
     this.SetPivotAndAllocateHullPointsArray(bodyPoints)
   }
 
-  SetPivotAndAllocateHullPointsArray(bodyPoints: IterableIterator<Point>) {
+  SetPivotAndAllocateHullPointsArray(bodyPoints: Iterable<Point>) {
     this.pivot = new Point(0, Number.MAX_SAFE_INTEGER)
     // set Y to a very big value
     let pivotIndex = -1
@@ -75,10 +75,11 @@ export class ConvexHull {
   ///  <param name="pointsOfTheBody">Point of the convex hull.</param>
   ///  <returns>The list of extreme points of the hull boundaries in the clockwise order</returns>
   static *CalculateConvexHull(
-    pointsOfTheBody: IterableIterator<Point>,
+    pointsOfTheBody: Iterable<Point>,
   ): IterableIterator<Point> {
     const convexHull = new ConvexHull(pointsOfTheBody)
-    return convexHull.Calculate()
+    for(const p of convexHull.Calculate())
+     yield p
   }
 
   *Calculate(): IterableIterator<Point> {
@@ -86,15 +87,16 @@ export class ConvexHull {
       return
     }
 
-    if (this.hullPoints.length == 0) {
-      return
-    }
-
-    this.pivot
+    if (this.hullPoints.length == 0) { 
+         yield   this.pivot 
+         return
+        }
 
     this.SortAllPointsWithoutPivot()
     this.Scan()
-    return this.EnumerateStack()
+    for (const p of this.EnumerateStack()) {
+      yield p
+    }
   }
 
   *EnumerateStack(): IterableIterator<Point> {
@@ -290,8 +292,8 @@ function hullPointComparer(
           return 1
         }
 
-        // points are the same, leave the one with the greatest hash code
-        if (i.stamp < j.stamp) {
+        // points are the same, leave the one with the smallest stamp
+        if (i.stamp > j.stamp) {
           i.deleted = true
         } else {
           j.deleted = true

@@ -8,9 +8,9 @@ import {constructor} from '../../../layoutPlatform/routing/ConstrainedDelaunayTr
 export class Shape {
   parents: Set<Shape> = new Set<Shape>()
 
-  /// <summary>
+  
   ///  shape parents
-  /// </summary>
+  
   public get Parents(): IEnumerable<Shape> {
     return from(this.parents.values())
   }
@@ -110,17 +110,17 @@ export class Shape {
     }
   }
 
-  /// <summary>
+  
   ///  Adds a parent. A shape can have several parents
-  /// </summary>
+  
   /// <param name="shape"></param>
   public AddParent(shape: Shape) {
     this.parents.add(shape)
     shape.children.add(this)
   }
 
-  /// <summary>
-  /// </summary>
+  
+  
   /// <param name="shape"></param>
   public AddChild(shape: Shape) {
     shape.parents.add(this)

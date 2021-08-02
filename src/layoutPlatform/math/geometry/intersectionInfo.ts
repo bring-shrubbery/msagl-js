@@ -16,6 +16,7 @@ export class IntersectionInfo {
 
   seg0: ICurve
   seg1: ICurve
+  Segment0: ICurve
   // the constructor
   constructor(pr0: number, pr1: number, x: Point, s0: ICurve, s1: ICurve) {
     this.par0 = pr0

@@ -1,15 +1,20 @@
-import { GeomGraph, CancelToken, SugiyamaLayoutSettings, LayeredLayout } from "../.."
-import { CurveFactory } from "../math/geometry/curveFactory"
-import { Point } from "../math/geometry/point"
-import { Rectangle } from "../math/geometry/rectangle"
-import { OptimalRectanglePacking } from "../math/geometry/rectanglePacking/OptimalRectanglePacking"
-import { StraightLineEdges } from "../routing/StraightLineEdges"
-import { Edge } from "../structs/edge"
-import { Graph, shallowConnectedComponents } from "../structs/graph"
-import { GeomEdge } from "./core/geomEdge"
-import { LayoutSettings } from "./layered/SugiyamaLayoutSettings"
-import { MdsLayoutSettings } from "./mds/MDSLayoutSettings"
-import { PivotMDS } from "./mds/PivotMDS"
+import {
+  GeomGraph,
+  CancelToken,
+  SugiyamaLayoutSettings,
+  LayeredLayout,
+} from '../..'
+import {CurveFactory} from '../math/geometry/curveFactory'
+import {Point} from '../math/geometry/point'
+import {Rectangle} from '../math/geometry/rectangle'
+import {OptimalRectanglePacking} from '../math/geometry/rectanglePacking/OptimalRectanglePacking'
+import {StraightLineEdges} from '../routing/StraightLineEdges'
+import {Edge} from '../structs/edge'
+import {Graph, shallowConnectedComponents} from '../structs/graph'
+import {GeomEdge} from './core/geomEdge'
+import {LayoutSettings} from './layered/SugiyamaLayoutSettings'
+import {MdsLayoutSettings} from './mds/MDSLayoutSettings'
+import {PivotMDS} from './mds/PivotMDS'
 
 // Lays out a GeomGraph, which is possibly disconnected and might have sub-graphs
 export function layoutGraph(
@@ -94,9 +99,9 @@ export function layoutGraph(
         g == cg ? layoutSettingsFunc(geomG) : layoutSettingsFunc(g),
       )
     }
-    const originalLeftBottoms = new Array<{ g: GeomGraph; lb: Point }>()
+    const originalLeftBottoms = new Array<{g: GeomGraph; lb: Point}>()
     for (const g of connectedGraphs) {
-      originalLeftBottoms.push({ g: g, lb: g.boundingBox.leftBottom.clone() })
+      originalLeftBottoms.push({g: g, lb: g.boundingBox.leftBottom.clone()})
     }
     const rectangles = connectedGraphs.map((g) => g.boundingBox)
     const packing = new OptimalRectanglePacking(
@@ -104,7 +109,7 @@ export function layoutGraph(
       layoutSettingsFunc(geomG).PackingAspectRatio,
     )
     packing.run()
-    for (const { g, lb } of originalLeftBottoms) {
+    for (const {g, lb} of originalLeftBottoms) {
       const delta = g.boundingBox.leftBottom.sub(lb)
       g.translate(delta)
     }

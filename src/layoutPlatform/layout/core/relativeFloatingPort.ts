@@ -35,9 +35,9 @@ export class RelativeFloatingPort extends FloatingPort {
     this.curveDelegate = value
   }
   locationOffset: Point
-  //         /// <summary>
+  //         
   //         /// The node where we calculate our location and Curve from
-  //         /// </summary>
+  //         
   //         public Node RelativeTo { get; private set; }
   ///  <summary>
   ///  An offset relative to the Center of the Node that we use to calculate Location

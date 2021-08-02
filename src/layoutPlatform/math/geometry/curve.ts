@@ -17,7 +17,6 @@ import {SvgDebugWriter} from './svgDebugWriter'
 import {DebugCurve} from './debugCurve'
 import {BezierSeg} from './bezierSeg'
 import {CornerSite} from './cornerSite'
-
 type Params = {
   start: number
   end: number
@@ -62,8 +61,7 @@ function segParamThirdDerivative(sp: SegParam) {
   return sp.seg.thirdDerivative(sp.par)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-enum PointLocation {
+export enum PointLocation {
   Outside,
   Boundary,
   Inside,
@@ -1335,66 +1333,142 @@ export class Curve implements ICurve {
       x: x,
     }
   }
-  /*
+  
     // Decides if the point lies inside, outside or on the curve
-    PointRelativeToCurveLocation(Point point, ICurve curve) {
-    if (!curve.BoundingBox.Contains(point))
-    return PointLocation.Outside;
     
-    number l = 2 * curve.BoundingBox.Diagonal; //l should be big enough for the line to exit outside of the curve
-    
-    const number degree = Math.PI / 180.0;
-    int inside = 0;
-    for (int i = 13; i < 360; i += 13) {
-    var lineDir = new Point(Math.Cos(i * degree), Math.Sin(i * degree));
-    var ls = new LineSegment(point, point + l * lineDir);
-    
-    IList < IntersectionInfo > intersections = GetAllIntersections(ls, curve, true);
-    
-    
-    //SugiyamaLayoutSettings.Show(ls, curve);
-    // CurveSerializer.Serialize("cornerC:\\tmp\\ls",ls);
-    // CurveSerializer.Serialize("cornerC:\\tmp\\pol",curve);
-    if (AllIntersectionsAreGood(intersections, curve)) {
-    for (IntersectionInfo xx of intersections)
-    if (Point.closeDistEps(xx.intersectionPoint, point))
-    return PointLocation.Boundary;
-    boolean insideThisTime = intersections.length % 2 == 1;
-    //to be on the safe side we need to get the same result at least twice
-    if (insideThisTime)
-    inside++;
-    else
-    inside--;
-    
-    if (inside >= 2)
-    return PointLocation.Inside;
-    if (inside <= -2)
-    return PointLocation.Outside;
-    }
-    }
-    //if all intersections are not good then we probably have the point on the boundaryCurve
-    
-    return PointLocation.Boundary;
-    }
-    
-    /*
-    //    static boolean debug;
-    static boolean AllIntersectionsAreGood(IList<IntersectionInfo> intersections, ICurve polygon) {
+    public static PointRelativeToCurveLocation(point: Point, curve: ICurve): PointLocation {
+      if (!curve.boundingBox.contains(point)) {
+          return PointLocation.Outside;
+      }
+      
+      let l: number = (2 * curve.boundingBox.diagonal);
+      // l should be big enough for the line to exit outside of the curve
+      const  degree: number = (Math.PI / 180);
+      let inside: number = 0;
+      for (let i: number = 13; (i < 360); i += 13) {
+          let lineDir = new Point(Math.cos((i * degree)), Math.sin((i * degree)));
+          let ls = LineSegment.mkPP(point, (point.add(lineDir.mul(l))));
+          let intersections = this.getAllIntersectionsOfLineAndICurve(ls, curve, true);
+          // SugiyamaLayoutSettings.Show(ls, curve);
+          //  CurveSerializer.Serialize("cornerC:\\tmp\\ls",ls);
+          //  CurveSerializer.Serialize("cornerC:\\tmp\\pol",curve);
+          if (Curve.AllIntersectionsAreGood(intersections, curve)) {
+              for (const xx of intersections) {
+                  if (Point.closeDistEps(xx.x, point)) {
+                      return PointLocation.Boundary;
+                  }
+                  
+              }
+              
+              let insideThisTime: boolean = ((intersections.length % 2) 
+                          == 1);
+              // to be on the safe side we need to get the same result at least twice
+              if (insideThisTime) {
+                  inside++;
+              }
+              else {
+                  inside--;
+              }
+              
+              if ((inside >= 2)) {
+                  return PointLocation.Inside;
+              }
+              
+              if ((inside <= -2)) {
+                  return PointLocation.Outside;
+              }
+              
+          }
+          
+      }
+      
+      // if all intersections are not good then we probably have the point on the boundaryCurve
+      return PointLocation.Boundary;
+  }
+   
+  static AllIntersectionsAreGood(intersections:Array<IntersectionInfo>, polygon:ICurve) {
     // If this isn't a Curve, try a Polyline.
     //TODO: fix this to avoid the cast
-    var polyCurve = polygon as Curve;
-    if (null == polyCurve) {
-    var polyLine = polygon as Polyline;
-    if (null != polyLine)
-    polyCurve = polyLine.ToCurve();
+    const isCurve = polygon.hasOwnProperty('segs')
+    let curve:Curve = null
+    if (!isCurve) {
+        var isPolyLine = polygon.hasOwnProperty('polylinePoints')
+        if (isPolyLine)
+            curve = (<Polyline>polygon).toCurve();
     }
-    if (null != polyCurve)
-    for (IntersectionInfo xx of intersections)
-    if (!RealCut(DropIntersectionToSegs(xx), polyCurve, false))
-    return false;
+    if (curve)
+        for (const xx of intersections)
+            if (!Curve.RealCut(Curve.DropIntersectionToSegs(xx), curve, false))
+                return false;
     return true;
-    }
-    */
+}
+
+public static RealCut(xx: IntersectionInfo, polyline: Curve, onlyFromInsideCuts: boolean): boolean {
+  let sseg: ICurve = xx.seg0;
+  let pseg: ICurve = xx.seg1;
+  let spar: number = xx.par0;
+  let ppar: number = xx.par1;
+  let x: Point = xx.x
+  // normalised tangent to spline
+  let ts: Point = sseg.derivative(spar).normalize();
+  let pn: Point = pseg.derivative(ppar).normalize().rotate((Math.PI / 2));
+  if (Point.closeDistEps(x, pseg.end)) {
+      // so pseg enters the spline 
+      let exitSeg: ICurve = null;
+      for (let i: number = 0; (i 
+                  < (polyline.segs.length - 1)); i++) {
+          if ((polyline.segs[i] == pseg)) {
+              exitSeg = polyline.segs[(i + 1)];
+              break;
+          }
+          
+      }
+      
+      if ((exitSeg == null)) {
+          return false;
+      }
+      
+      // hit the end of the polyline
+      let tsn: Point = ts.rotate((Math.PI / 2));
+      let touch = tsn.dot(pseg.derivative(pseg.parEnd)) 
+                  * tsn.dot(exitSeg.derivative(exitSeg.parStart)) 
+                  < GeomConstants.tolerance
+      return !touch;
+  }
+  
+  if (Point.closeDistEps(x, pseg.start)) {
+      // so pseg exits the spline 
+      let enterSeg: ICurve = null;
+      for (let i: number = (polyline.segs.length - 1); (i > 0); i--) {
+          if ((polyline.segs[i] == pseg)) {
+              enterSeg = polyline.segs[(i - 1)];
+              break;
+          }
+          
+      }
+      
+      if ((enterSeg == null)) {
+          return false;
+      }
+      
+      let tsn: Point = ts.rotate((Math.PI / 2));
+      let touch: boolean = tsn.dot(pseg.derivative(pseg.parStart))
+                  * tsn.dot(enterSeg.derivative(enterSeg.parEnd))
+                  < GeomConstants.tolerance
+      return !touch;
+  }
+  
+  let d: number = ts.dot(pn)
+  if (onlyFromInsideCuts) {
+      return (d > GeomConstants.distanceEpsilon);
+  }
+  
+  return (Math.abs(d) > GeomConstants.distanceEpsilon);
+}  
+    
+    //    static boolean debug;
+    
+    /*
 
   // Returns true if curves do not touch in the intersection point
   // only when the second curve cuts the first one from the inside</param>
@@ -1463,40 +1537,6 @@ export class Curve implements ICurve {
     return Math.abs(d) > GeomConstants.distanceEpsilon
   }
   /*
-  // 
-  public static boolean RealCut(IntersectionInfo xx, Curve polyline, boolean onlyFromInsideCuts) {
-  ValidateArg.IsNotNull(xx, "xx");
-  ValidateArg.IsNotNull(polyline, "polyline");
-  ICurve sseg = xx.segment0;
-  ICurve pseg = xx.seg1;
-  number spar = xx.Par0;
-  number ppar = xx.par1;
-  Point x = xx.intersectionPoint;
-  
-  
-  //normalised tangent to spline
-  Point ts = sseg.derivative(spar).normalize();
-  Point pn = pseg.derivative(ppar).normalize().rotate(Math.PI/2);
-  
-  if (Point.closeDistEps(x, pseg.end)) {
-  //so pseg enters the spline 
-  ICurve exitSeg = null;
-  for (int i = 0; i < polyline.segs.length - 1; i++)
-  if (polyline.segs[i] == pseg) {
-  exitSeg = polyline.segs[i + 1];
-  break;
-  }
-  
-  if (exitSeg == null)
-  return false; //hit the end of the polyline
-  
-  Point tsn = ts.rotate((Math.PI/2));
-  
-  boolean touch = (tsn*pseg.derivative(pseg.parEnd))*(tsn*exitSeg.derivative(exitSeg.parStart)) <
-  GeomConstants.tolerance;
-  
-  return !touch;
-  }
   
   if (Point.closeDistEps(x, pseg.start)) {
   //so pseg exits the spline 

@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/layout/mds/PivotMDS.spec.ts",
+        "src/tests/layoutPlatform/math/geometry/convexHull.spec.ts",
         "-t",
-        "b7 pivot mds"
+        "repeated points"
       ],
       "console": "integratedTerminal"
     }
