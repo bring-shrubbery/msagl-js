@@ -39,7 +39,7 @@ export class LayerInserter {
     this.intGraph = intGraphP
   }
 
-  /// the entry point of the class
+  // the entry point of the class
   static InsertLayers(
     layeredGraph: ProperLayeredGraph,
     la: LayerArrays,
@@ -271,8 +271,8 @@ export class LayerInserter {
     this.Nla = new LayerArrays(this.NLayering)
     this.Nla.Layers = newLayers
   }
-  /// mark the vertex as one representing a label
-  /// or a middle of a multi edge
+  // mark the vertex as one representing a label
+  // or a middle of a multi edge
   static RegisterDontStepOnVertex(db: Database, parent: PolyIntEdge) {
     if (db.Multiedges.get(parent.source, parent.target).length > 1) {
       const e = parent.LayerEdges[parent.LayerEdges.length / 2]

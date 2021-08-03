@@ -16,7 +16,7 @@ export class RelativeFloatingPort extends FloatingPort {
   centerDelegate: () => Point
   curveDelegate: () => ICurve
 
-  ///  the delegate returning center
+  //  the delegate returning center
 
   public get CenterDelegate(): () => Point {
     return this.centerDelegate
@@ -25,7 +25,7 @@ export class RelativeFloatingPort extends FloatingPort {
     this.centerDelegate = value
   }
 
-  ///  the delegate returning center
+  //  the delegate returning center
 
   public get CurveDelegate(): () => ICurve {
     return this.curveDelegate
@@ -35,11 +35,11 @@ export class RelativeFloatingPort extends FloatingPort {
   }
   locationOffset: Point
   //
-  //         /// The node where we calculate our location and Curve from
+  //         // The node where we calculate our location and Curve from
   //
   //         public Node RelativeTo { get; private set; }
 
-  ///  An offset relative to the Center of the Node that we use to calculate Location
+  //  An offset relative to the Center of the Node that we use to calculate Location
 
   public get /* virtual */ LocationOffset(): Point {
     return this.locationOffset
@@ -48,7 +48,7 @@ export class RelativeFloatingPort extends FloatingPort {
     this.locationOffset = value
   }
 
-  ///  Create a port relative to a specific node with an offset for the port Location from the nodes center
+  //  Create a port relative to a specific node with an offset for the port Location from the nodes center
 
   public constructor(
     curveDelegate: () => ICurve,
@@ -62,7 +62,7 @@ export class RelativeFloatingPort extends FloatingPort {
   }
 
   //
-  // ///  Create a port relative to the center of a specific node
+  // //  Create a port relative to the center of a specific node
   //
 
   // public constructor (curveDelegate: Func<ICurve>, centerDelegate: Func<Point>) :
@@ -70,13 +70,13 @@ export class RelativeFloatingPort extends FloatingPort {
 
   // }
 
-  ///  Get the location = CenterDelegate() + LocationOffset
+  //  Get the location = CenterDelegate() + LocationOffset
 
   public get /* override */ Location(): Point {
     return this.CenterDelegate().add(this.LocationOffset)
   }
 
-  ///  Get the curve from the node's BoundaryCurve
+  //  Get the curve from the node's BoundaryCurve
 
   public get /* override */ Curve(): ICurve {
     return this.CurveDelegate()

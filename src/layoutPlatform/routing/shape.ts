@@ -7,7 +7,7 @@ import {Rectangle} from '../math/geometry/rectangle'
 export class Shape {
   parents: Set<Shape> = new Set<Shape>()
 
-  ///  shape parents
+  //  shape parents
 
   public get Parents(): IEnumerable<Shape> {
     return from(this.parents.values())
@@ -15,7 +15,7 @@ export class Shape {
 
   children: Set<Shape> = new Set<Shape>()
 
-  ///  shape children
+  //  shape children
 
   public get Children(): IEnumerable<Shape> {
     return from(this.children.values())
@@ -30,14 +30,14 @@ export class Shape {
 
   boundaryCurve: ICurve
 
-  ///  The bounding box of the shape.
+  //  The bounding box of the shape.
 
   public get BoundingBox(): Rectangle {
     return this.BoundaryCurve.boundingBox
   }
 
-  ///  The set of Ports for this obstacle, usually RelativePorts.  In the event of overlapping
-  ///  obstacles, this identifies the obstacle to which the port applies.
+  //  The set of Ports for this obstacle, usually RelativePorts.  In the event of overlapping
+  //  obstacles, this identifies the obstacle to which the port applies.
 
   public get Ports(): Set<Port> {
     return this.ports
@@ -45,23 +45,23 @@ export class Shape {
 
   private ports: Set<Port> = new Set<Port>()
 
-  ///  A location for storing user data associated with the Shape.
+  //  A location for storing user data associated with the Shape.
 
   UserData: any
 
-  ///  Default constructor.
+  //  Default constructor.
 
   static mkShope(): Shape {
     return new Shape(null)
   }
 
-  ///  Constructor taking the ID and the curve of the shape.
+  //  Constructor taking the ID and the curve of the shape.
 
   public constructor(boundaryCurve: ICurve) {
     this.boundaryCurve = boundaryCurve
   }
 
-  ///  A group is a shape that has children.
+  //  A group is a shape that has children.
 
   public get IsGroup(): boolean {
     return this.children.size > 0
@@ -100,7 +100,7 @@ export class Shape {
     }
   }
 
-  ///  Adds a parent. A shape can have several parents
+  //  Adds a parent. A shape can have several parents
 
   public AddParent(shape: Shape) {
     this.parents.add(shape)
@@ -112,21 +112,21 @@ export class Shape {
     this.children.add(shape)
   }
 
-  ///
+  //
 
   public RemoveChild(shape: Shape) {
     this.children.delete(shape)
     shape.parents.delete(this)
   }
 
-  ///
+  //
 
   public RemoveParent(shape: Shape) {
     this.parents.delete(shape)
     shape.children.delete(this)
   }
 
-  ///
+  //
 
   public ToString(): string {
     return this.UserData ? this.UserData.toString() : 'null'

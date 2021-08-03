@@ -1,4 +1,4 @@
-///  Creates the convex hull of a set of points following "Computational Geometry, second edition" of O'Rourke
+//  Creates the convex hull of a set of points following "Computational Geometry, second edition" of O'Rourke
 
 import {IEnumerable} from 'linq-to-typescript'
 import {Assert} from '../../utils/assert'
@@ -67,7 +67,7 @@ export class ConvexHull {
     return this.stack.next.point
   }
 
-  ///  calculates the convex hull of the given set of points
+  //  calculates the convex hull of the given set of points
 
   static *CalculateConvexHull(
     pointsOfTheBody: Iterable<Point>,
@@ -219,7 +219,7 @@ export class ConvexHull {
   }
 }
 
-///  note that this function can change "deleted" member for collinear points
+//  note that this function can change "deleted" member for collinear points
 
 function hullPointComparer(
   pivot: Point,

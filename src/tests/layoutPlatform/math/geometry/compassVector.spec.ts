@@ -18,7 +18,7 @@ test('VectorDirection', () => {
   const dirpp = CompassVector.VectorDirectionPP(new Point(0, 0), p)
   expect(dirpp).toBe(dir)
   const dd = Direction.East | Direction.South
-  const ddVec = CompassVector.ToPoint(dd)
+  const ddVec = CompassVector.toPoint(dd)
   expect(ddVec.x).toBe(1)
   expect(ddVec.y).toBe(-1)
 })

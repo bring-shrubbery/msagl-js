@@ -19,8 +19,8 @@ export class Obstacle {
   InputShape: Shape
   Ports: Set<Port>
 
-  ///  Only public to make the compiler happy about the "where TPoly : new" constraint.
-  ///  Will be populated by caller.
+  //  Only public to make the compiler happy about the "where TPoly : new" constraint.
+  //  Will be populated by caller.
 
   public constructor(shape: Shape, makeRect: boolean, padding: number) {
     if (makeRect) {
@@ -56,7 +56,7 @@ export class Obstacle {
     for (; ppt != this.PaddedPolyline.startPoint; ) {
       ppt = nextPpt
       nextPpt = ppt.nextOnPolyline
-      const nextDir = CompassVector.DirectionsFromPointToPoint(
+      const nextDir = CompassVector.DirectionFromPointToPoint(
         ppt.point,
         nextPpt.point,
       )

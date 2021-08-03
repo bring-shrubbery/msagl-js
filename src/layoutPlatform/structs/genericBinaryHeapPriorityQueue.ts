@@ -135,7 +135,7 @@ export class GenericBinaryHeapPriorityQueue<T> {
     }
   }
 
-  ///
+  //
 
   public Peek(t: {priority: number}): T {
     if (this.count == 0) {

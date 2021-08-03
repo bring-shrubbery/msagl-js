@@ -16,7 +16,7 @@ export class DrawingNode extends DrawingObject {
   }
   xRad = 3
 
-  /// x radius of the rectangle box
+  // x radius of the rectangle box
 
   get XRadius(): number {
     return this.xRad
@@ -28,7 +28,7 @@ export class DrawingNode extends DrawingObject {
 
   yRad = 3
 
-  ///  y radius of the rectangle box
+  //  y radius of the rectangle box
 
   get YRadius(): number {
     return this.yRad
@@ -39,7 +39,7 @@ export class DrawingNode extends DrawingObject {
 
   static defaultFillColor: Color = Color.LightGray
 
-  ///  the default fill color
+  //  the default fill color
 
   static get DefaultFillColor(): Color {
     return DrawingNode.defaultFillColor
@@ -50,7 +50,7 @@ export class DrawingNode extends DrawingObject {
 
   private fillcolor: Color = Color.Transparent
 
-  /// Node fill color.
+  // Node fill color.
 
   get FillColor(): Color {
     return this.fillcolor
@@ -62,7 +62,7 @@ export class DrawingNode extends DrawingObject {
 
   private shape: ShapeEnum = ShapeEnum.Box
 
-  ///  Node shape.
+  //  Node shape.
 
   get ShapeEnum(): ShapeEnum {
     return this.shape
@@ -74,7 +74,7 @@ export class DrawingNode extends DrawingObject {
 
   labelMargin = 1
 
-  ///  the node label margin
+  //  the node label margin
 
   get LabelMargin(): number {
     return this.labelMargin
@@ -91,11 +91,11 @@ export class DrawingNode extends DrawingObject {
     this.fontname = DrawingObject.defaultLabelFontName
     this.fontsize = DrawingObject.defaultLabelFontSize
   }
-  ///  the non adgjacent edges should avoid being closer to the node than Padding
+  //  the non adgjacent edges should avoid being closer to the node than Padding
 
   private labelWidthToHeightRatio = 1
 
-  ///  the label width to height ratio.
+  //  the label width to height ratio.
 
   get LabelWidthToHeightRatio(): number {
     return this.labelWidthToHeightRatio

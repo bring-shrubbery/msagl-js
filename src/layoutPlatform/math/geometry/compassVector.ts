@@ -1,25 +1,24 @@
-import {Assert} from '../../utils/assert'
 import {GeomConstants} from './geomConstants'
 import {Point} from './point'
 
 export enum Direction {
-  /// no direction defined
+  // no direction defined
 
   None = 0,
 
-  /// North
+  // North
 
   North = 1,
 
-  /// East
+  // East
 
   East = 2,
 
-  /// South
+  // South
 
   South = 4,
 
-  /// West
+  // West
 
   West = 8,
 }
@@ -165,7 +164,7 @@ export class CompassVector {
     )
   }
 
-  ///  Translates the CompassVector's direction into a new Point.
+  //  Translates the CompassVector's direction into a new Point.
 
   public ToPoint(): Point {
     let x = 0,
@@ -189,13 +188,13 @@ export class CompassVector {
     return new Point(x, y)
   }
 
-  ///  Translates a direction into a Point.
+  //  Translates a direction into a Point.
 
-  public static ToPoint(dir: Direction): Point {
+  public static toPoint(dir: Direction): Point {
     return new CompassVector(dir).ToPoint()
   }
 
-  ///   the negation operator
+  //   the negation operator
 
   public static negate(directionVector: CompassVector): CompassVector {
     return new CompassVector(CompassVector.OppositeDir(directionVector.Dir))
