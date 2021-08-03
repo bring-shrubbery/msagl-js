@@ -115,6 +115,24 @@ export class Point {
     const ba = b.sub(a)
     const cd = c.sub(d)
     const ca = c.sub(a)
+    const ret = LinearSystem2.solve(ba.x, cd.x, ca.x, ba.y, cd.y, ca.y)
+    if (ret != undefined) {
+      return a.add(ba.mul(ret.x))
+    } else {
+      return
+    }
+  }
+
+  static segSegIntersection(
+    a: Point,
+    b: Point,
+    c: Point,
+    d: Point,
+  ): Point | undefined {
+    //look for the solution of the form a+u*(b-a)=c+v*(d-c)
+    const ba = b.sub(a)
+    const cd = c.sub(d)
+    const ca = c.sub(a)
     const eps = GeomConstants.tolerance
     const ret = LinearSystem2.solve(ba.x, cd.x, ca.x, ba.y, cd.y, ca.y)
     if (

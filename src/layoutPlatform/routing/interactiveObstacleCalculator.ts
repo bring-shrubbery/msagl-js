@@ -8,15 +8,13 @@ import {PolylinePoint} from '../math/geometry/polylinePoint'
 import {Assert} from '../utils/assert'
 
 export class InteractiveObstacleCalculator {
-  static PadCorner(
+  private static PadCorner(
     poly: Polyline,
     p0: PolylinePoint,
     p1: PolylinePoint,
     p2: PolylinePoint,
     padding: number,
   ): boolean {
-    let b: Point
-    let a: Point
     const padInfo = InteractiveObstacleCalculator.GetPaddedCorner(
       p0,
       p1,
@@ -27,9 +25,9 @@ export class InteractiveObstacleCalculator {
       return false
     }
 
-    poly.addPoint(a)
+    poly.addPoint(padInfo.a)
     if (padInfo.numberOfPoints == 2) {
-      poly.addPoint(b)
+      poly.addPoint(padInfo.b)
     }
 
     return true
@@ -110,8 +108,11 @@ export class InteractiveObstacleCalculator {
   }
   static CreatePaddedPolyline(poly: Polyline, padding: number): Polyline {
     Assert.assert(
-      Point.getTriangleOrientation(poly[0], poly[1], poly[2]) ==
-        TriangleOrientation.Clockwise,
+      Point.getTriangleOrientation(
+        poly.start,
+        poly.startPoint.next.point,
+        poly.startPoint.next.next.point,
+      ) == TriangleOrientation.Clockwise,
       'Unpadded polyline is not clockwise',
     )
     const ret = new Polyline()
@@ -169,8 +170,11 @@ export class InteractiveObstacleCalculator {
     }
 
     Assert.assert(
-      Point.getTriangleOrientation(ret[0], ret[1], ret[2]) !=
-        TriangleOrientation.Counterclockwise,
+      Point.getTriangleOrientation(
+        ret.start,
+        ret.startPoint.next.point,
+        ret.startPoint.next.next.point,
+      ) != TriangleOrientation.Counterclockwise,
       'Padded polyline is counterclockwise',
     )
     ret.closed = true
