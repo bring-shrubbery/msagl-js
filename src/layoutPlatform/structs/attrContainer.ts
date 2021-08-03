@@ -10,21 +10,9 @@ export class AttrContainer {
   }
   setAttr(position: number, val: any) {
     // todo : make it more JavaScript
-    if (this.attrs.length < position) {
-      do {
-        this.attrs.push(null) // todo - will
-      } while (this.attrs.length < position)
-      this.attrs.push(val)
-    } else if (this.attrs.length == position) {
-      this.attrs.push(val)
-    } else {
-      this.attrs[position] = val
-    }
+    this.attrs[position] = val
   }
   getAttr(position: number): any {
-    if (this.attrs.length > position) {
-      return this.attrs[position]
-    }
-    return null
+    return this.attrs[position]
   }
 }

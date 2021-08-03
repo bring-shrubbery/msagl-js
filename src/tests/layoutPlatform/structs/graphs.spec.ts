@@ -94,7 +94,7 @@ test('graph attr', () => {
   let r = g.getAttr(0) as Rectangle
   expect(r.width).toBe(rect.width)
   g.setAttr(3, rect)
-  expect(g.getAttr(2)).toBe(null)
+  expect(g.getAttr(2)).toBe(undefined)
   r = g.getAttr(0) as Rectangle
   expect(r.width).toBe(rect.width)
 })

@@ -16,6 +16,6 @@ test('entity graphs', () => {
 test('test attrs', () => {
   const a = new Node('a')
   a.setAttr(2, '2')
-  expect(a.getAttr(0)).toBe(null)
+  expect(a.getAttr(0)).toBe(undefined)
   expect(a.getAttr(2)).toBe('2')
 })

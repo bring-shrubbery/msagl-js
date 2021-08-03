@@ -5,6 +5,7 @@ import {Curve} from './../../../../layoutPlatform/math/geometry/curve'
 import {PlaneTransformation} from './../../../../layoutPlatform/math/geometry/planeTransformation'
 import {DebugCurve} from './../../../../layoutPlatform/math/geometry/debugCurve'
 import {CurveFactory} from './../../../../layoutPlatform/math/geometry/curveFactory'
+import {from} from 'linq-to-typescript'
 test('polyline test iterator', () => {
   const poly = new Polyline()
   const ps = [
@@ -116,9 +117,10 @@ test('closest par', () => {
   ]
   const poly = Polyline.mkFromPoints(points)
   poly.closed = true
-  const delta = new Point(10, -10)
+  const delta = new Point(1, -1)
   const p = poly.startPoint.next.point.add(delta)
   const par = poly.closestParameter(p)
   const ndelta = p.sub(poly.value(par))
-  expect(ndelta.length).toBeLessThanOrEqual(delta.length)
+  const lenToVerts = from(poly.points()).min((v) => p.sub(v).length)
+  expect(ndelta.length).toBeLessThanOrEqual(lenToVerts)
 })
