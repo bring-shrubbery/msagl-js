@@ -5,17 +5,12 @@ import {ICurve} from '../math/geometry/icurve'
 import {Rectangle} from '../math/geometry/rectangle'
 
 export class Shape {
-  parents: Set<Shape> = new Set<Shape>()
-
-  //  shape parents
+  private parents: Set<Shape> = new Set<Shape>()
+  private children: Set<Shape> = new Set<Shape>()
 
   public get Parents(): IEnumerable<Shape> {
     return from(this.parents.values())
   }
-
-  children: Set<Shape> = new Set<Shape>()
-
-  //  shape children
 
   public get Children(): IEnumerable<Shape> {
     return from(this.children.values())
@@ -51,7 +46,7 @@ export class Shape {
 
   //  Default constructor.
 
-  static mkShope(): Shape {
+  static mkShape(): Shape {
     return new Shape(null)
   }
 
@@ -92,8 +87,7 @@ export class Shape {
 
     while (q.length > 0) {
       const sh = q.dequeue()
-      yield
-      return sh
+      yield sh
       for (const shape of sh.Parents) {
         q.enqueue(shape)
       }
