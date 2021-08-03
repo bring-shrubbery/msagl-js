@@ -236,7 +236,7 @@ export class Arrowhead {
   // <summary>
   // Creates a spline between two nodes big enough to draw arrowheads
   // <
-  // <param name="edge"></param>
+
   static createBigEnoughSpline(edge: GeomEdge) {
     const a = edge.source.center
     let b = edge.target.center

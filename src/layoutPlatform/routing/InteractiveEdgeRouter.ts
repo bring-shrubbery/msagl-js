@@ -188,13 +188,13 @@ namespace Microsoft.Msagl.Routing {
         // <summary>
         // Set up the router and calculate the set of obstacles over which to route.
         // <
-        // <param name="obstacles">the obstacles for routing</param>
-        // <param name="padding">obstacles are inflated by this much to find an inner boundary within which edges cannot enter</param>
-        // <param name="loosePadding">
+
+
+
         // obstacles are inflated again by this much to find initial
         // routing but then spline smoothing is allowed to come inside this outer boundary.
         // Loose padding of 0 will give sharp corners (no spline smoothing)</param>
-        // <param name="coneSpannerAngle">if this is greater than 0 then a "cone spanner" visibility graph with be
+
         // generated using cones of the specified angle to search for visibility edges.  The cone spanner graph is
         // a sparser graph than the complete visibility graph and is hence much faster to generate and route over
         // but may not give strictly shortest path routes</param>
@@ -633,7 +633,7 @@ namespace Microsoft.Msagl.Routing {
         // <summary>
         // smoothing the corners of the polyline
         // <
-        // <param name="edgePolyline"></param>
+
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Polyline")]
         public void SmoothCorners(SmoothedPolyline edgePolyline) {
             ValidateArg.IsNotNull(edgePolyline, "edgePolyline");
@@ -737,7 +737,7 @@ namespace Microsoft.Msagl.Routing {
         // <summary>
         //
         // <
-        // <param name="underlyingPolyline"></param>
+
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Polyline")]
         public void TryToRemoveInflectionsAndCollinearSegments(SmoothedPolyline underlyingPolyline) {
             ValidateArg.IsNotNull(underlyingPolyline, "underlyingPolyline");
@@ -891,8 +891,8 @@ namespace Microsoft.Msagl.Routing {
         // <summary>
         //
         // <
-        // <param name="targetLocation"></param>
-        // <returns></returns>
+
+
         public EdgeGeometry RouteEdgeToLocation(Point targetLocation) {
             TargetPort = new FloatingPort((ICurve) null, targetLocation); //otherwise route edge to a port would be called
             TargetTightPolyline = null;
@@ -943,11 +943,11 @@ namespace Microsoft.Msagl.Routing {
         // <summary>
         // routes the edge to the port
         // <
-        // <param name="edgeTargetPort"></param>
-        // <param name="portLoosePolyline"></param>
-        // <param name="smooth"> if true will smooth the edge avoiding the obstacles, will take more time</param>
-        // <param name="smoothedPolyline"></param>
-        // <returns></returns>
+
+
+
+
+
         [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "3#"), SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Polyline")]
         public ICurve RouteEdgeToPort(Port edgeTargetPort, Polyline portLoosePolyline, bool smooth, out SmoothedPolyline smoothedPolyline) {
             ValidateArg.IsNotNull(edgeTargetPort, "edgeTargetToPort");
@@ -1182,11 +1182,11 @@ namespace Microsoft.Msagl.Routing {
 
         
         //<
-        //<param name="obstacles"></param>
-        //<param name="padding"></param>
-        //<param name="loosePadding"></param>
-        //<param name="coneSpannerAngle"></param>
-        //<param name="ignoreTightPadding"></param>
+
+
+
+
+
         public InteractiveEdgeRouter(IEnumerable < ICurve > obstacles, double padding, double loosePadding, double coneSpannerAngle, bool ignoreTightPadding) {
             IgnoreTightPadding = ignoreTightPadding;
             EnteringAngleBound = 80 * Math.PI / 180;
@@ -1417,8 +1417,8 @@ namespace Microsoft.Msagl.Routing {
         // <summary>
         // returns the hit object
         // <
-        // <param name="point"></param>
-        // <returns></returns>
+
+
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Polyline")]
         public Polyline GetHitLoosePolyline(Point point) {
             if (ObstacleCalculator.IsEmpty() || ObstacleCalculator.RootOfLooseHierarchy == null)
@@ -1459,8 +1459,8 @@ namespace Microsoft.Msagl.Routing {
         // <summary>
         // setting source port and the loose polyline of the port
         // <
-        // <param name="port"></param>
-        // <param name="sourceLoosePolylinePar"></param>
+
+
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "polyline"),
         SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Polyline")]
         public void SetSourcePortAndSourceLoosePolyline(Port port, Polyline sourceLoosePolylinePar) {
@@ -1513,11 +1513,11 @@ namespace Microsoft.Msagl.Routing {
 
         
         //<
-        //<param name="sourcePortLocal"></param>
-        //<param name="targetPortLocal"></param>
-        //<param name="smooth"></param>
-        //<param name="smoothedPolyline"></param>
-        //<returns></returns>
+
+
+
+
+
         [SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
         public ICurve RouteSplineFromPortToPortWhenTheWholeGraphIsReady(Port sourcePortLocal,
             Port targetPortLocal, bool smooth, out SmoothedPolyline smoothedPolyline) {
@@ -1764,7 +1764,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // <
-        // <returns></returns>
+
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public VisibilityGraph GetVisibilityGraph() {
             return VisibilityGraph;

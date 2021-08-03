@@ -60,8 +60,7 @@ export class XCoordsWithAlignment {
   //  <summary>
   //  Returns true if v is a virtual vertex
   //  <
-  //  <param name="v"></param>
-  //  <returns></returns>
+
   IsVirtual(v: number): boolean {
     return v >= this.nOfOriginalVertices
   }
@@ -375,9 +374,7 @@ export class XCoordsWithAlignment {
   //  <summary>
   //  Parameterized left relation
   //  <
-  //  <param name="i"></param>
-  //  <param name="j"></param>
-  //  <returns></returns>
+
   IsLeftFrom(i: number, j: number): boolean {
     return this.LR ? i < j : j < i
   }
@@ -395,7 +392,7 @@ export class XCoordsWithAlignment {
   // // <summary>
   // // Eliminates conflicts with at least one inner edge inside of one layer
   // // <
-  // // <param name="i"></param>
+
   ConflictsWithAtLeastOneInnerEdgeForALayer(layerIndex: number) {
     if (layerIndex >= 0 && layerIndex < this.la.Layers.length) {
       const lowerLayer: number[] = this.la.Layers[layerIndex]
@@ -501,11 +498,7 @@ export class XCoordsWithAlignment {
   // // <summary>
   // // This function marks conflicting edges with targets positioned between innerEdge and newInnerEdge targets.
   // // <
-  // // <param name="lowerLayer"></param>
-  // // <param name="innerEdge"></param>
-  // // <param name="newInnerEdge"></param>
-  // // <param name="posInnerEdgeTarget"></param>
-  // // <param name="posNewInnerEdgeTarget"></param>
+
   MarkEdgesBetweenInnerAndNewInnerEdges(
     lowerLayer: number[],
     innerEdge: LayerEdge,
@@ -534,10 +527,7 @@ export class XCoordsWithAlignment {
   // // Returns the inner non-conflicting edge incoming into i-th position
   // // of the layer or null if there is no such edge
   // // <
-  // // <param name="layer"></param>
-  // // <param name="innerEdge"></param>
-  // // <param name="i"></param>
-  // // <returns></returns>
+
   private AlignmentToTheRightOfInner(
     lowLayer: number[],
     i: number,
@@ -593,10 +583,7 @@ export class XCoordsWithAlignment {
   // // <summary>
   // // private constructor
   // // <
-  // // <param name="layerArrays"></param>
-  // // <param name="anchs"></param>
-  // // <param name="layeredGraph"></param>
-  // // <param name="nOfOriginalVs"></param>
+
   constructor(
     layerArrays: LayerArrays,
     layeredGraph: ProperLayeredGraph,
@@ -803,9 +790,7 @@ export class XCoordsWithAlignment {
   //  Calculates the minimum separation between two neighboring vertices: if u is to the left of v on the same layer return positive
   //  number, otherwise negative.
   //  <
-  //  <param name="u"></param>
-  //  <param name="v"></param>
-  //  <returns></returns>
+
   DeltaBetweenVertices(u: number, v: number): number {
     let sign: number
     if (this.Pos(u) > this.Pos(v)) {

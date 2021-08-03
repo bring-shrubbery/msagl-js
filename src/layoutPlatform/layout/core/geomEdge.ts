@@ -156,7 +156,7 @@ export class GeomEdge extends GeomObject {
     // <summary>
     // Transform the curve, arrowheads and label according to the given matrix
     // <
-    // <param name="matrix">affine transform matrix</param>
+
     internal void Transform(PlaneTransformation matrix)
     {
       if (Curve == null)
@@ -182,7 +182,7 @@ export class GeomEdge extends GeomObject {
             // <summary>
             // Translate the edge curve arrowheads and label by the specified delta
             // <
-            // <param name="delta">amount to shift geometry</param>
+
             public void Translate(Point delta)
     {
       if (this.this.edgeGeometry != null) {
@@ -237,10 +237,10 @@ export class GeomEdge extends GeomObject {
             // <summary>
             // Routes a self edge inside the given "howMuchToStickOut" parameter
             // <
-            // <param name="boundaryCurve"></param>
-            // <param name="howMuchToStickOut"></param>
-            // <param name="smoothedPolyline"> the underlying polyline used later for editing</param>
-            // <returns></returns>
+
+
+
+
             static internal ICurve RouteSelfEdge(ICurve boundaryCurve, double howMuchToStickOut, out SmoothedPolyline smoothedPolyline)
     {
       //we just need to find the box of the corresponding node
@@ -261,7 +261,7 @@ export class GeomEdge extends GeomObject {
             // <summary>
             //
             // <
-            // <param name="newValue"></param>
+
             public override void RaiseLayoutChangeEvent(object newValue) {
       edgeGeometry.RaiseLayoutChangeEvent(newValue);
     }

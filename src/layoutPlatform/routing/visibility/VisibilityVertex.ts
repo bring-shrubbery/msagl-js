@@ -58,7 +58,7 @@ export class VisibilityVertex {
   //  the number of items, so callers have been optimized where possible to
   //  remove only the last or next-to-last edges (but in some cases such as
   //  rectilinear, this optimization isn't always possible).
-  //  <param name="edge"></param>
+
   RemoveOutEdge(edge: VisibilityEdge) {
     this.OutEdges.remove(edge)
   }
@@ -76,9 +76,7 @@ export class VisibilityVertex {
   }
 
   //  avoiding using delegates in calling RBTree.FindFirst because of the memory allocations
-  //  <param name="tree"></param>
-  //  <param name="targetPoint"></param>
-  //  <returns></returns>
+
   static FindFirst(
     tree: RBTree<VisibilityEdge>,
     targetPoint: Point,

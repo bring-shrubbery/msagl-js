@@ -15,9 +15,8 @@ export class Shape {
 
   children: Set<Shape> = new Set<Shape>()
 
-  ///  <summary>
   ///  shape children
-  ///  <
+
   public get Children(): IEnumerable<Shape> {
     return from(this.children.values())
   }
@@ -31,46 +30,39 @@ export class Shape {
 
   boundaryCurve: ICurve
 
-  ///  <summary>
   ///  The bounding box of the shape.
-  ///  <
+
   public get BoundingBox(): Rectangle {
     return this.BoundaryCurve.boundingBox
   }
 
-  ///  <summary>
   ///  The set of Ports for this obstacle, usually RelativePorts.  In the event of overlapping
   ///  obstacles, this identifies the obstacle to which the port applies.
-  ///  <
+
   public get Ports(): Set<Port> {
     return this.ports
   }
 
   private ports: Set<Port> = new Set<Port>()
 
-  ///  <summary>
   ///  A location for storing user data associated with the Shape.
-  ///  <
+
   UserData: any
 
-  ///  <summary>
   ///  Default constructor.
-  ///  <
+
   static mkShope(): Shape {
     return new Shape(null)
   }
 
-  ///  <summary>
   ///  Constructor taking the ID and the curve of the shape.
-  ///  <
-  ///  <param name="boundaryCurve"></param>
+
   public constructor(boundaryCurve: ICurve) {
     this.boundaryCurve = boundaryCurve
   }
 
-  ///  <summary>
   ///  A group is a shape that has children.
-  ///  <
+
   public get IsGroup(): boolean {
     return this.children.size > 0
   }
@@ -110,40 +102,32 @@ export class Shape {
 
   ///  Adds a parent. A shape can have several parents
 
-  /// <param name="shape"></param>
   public AddParent(shape: Shape) {
     this.parents.add(shape)
     shape.children.add(this)
   }
 
-  /// <param name="shape"></param>
   public AddChild(shape: Shape) {
     shape.parents.add(this)
     this.children.add(shape)
   }
 
-  ///  <summary>
   ///
-  ///  <
-  ///  <param name="shape"></param>
+
   public RemoveChild(shape: Shape) {
     this.children.delete(shape)
     shape.parents.delete(this)
   }
 
-  ///  <summary>
   ///
-  ///  <
-  ///  <param name="shape"></param>
+
   public RemoveParent(shape: Shape) {
     this.parents.delete(shape)
     shape.children.delete(this)
   }
 
-  ///  <summary>
   ///
-  ///  <
-  ///  <returns></returns>
+
   public ToString(): string {
     return this.UserData ? this.UserData.toString() : 'null'
   }

@@ -119,7 +119,7 @@ export class RefinerBetweenTwoLayers {
   //  <summary>
   //  circimvating from the side
   //  <
-  //  <returns></returns>
+
   CalculateNewBottomSite(): boolean {
     const mainSeg = this.currentBottomSite.point.sub(this.currentTopSite.point)
     let cotan: number = RefinerBetweenTwoLayers.absCotan(mainSeg)

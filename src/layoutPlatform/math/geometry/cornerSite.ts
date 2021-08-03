@@ -29,9 +29,7 @@ export class CornerSite {
     previousSite.next = s
     return s
   }
-  // <param name="previousSite"></param>
-  // <param name="sitePoint"></param>
-  // <param name="nextSite"></param>
+
   static mkSiteSPS(
     previousSite: CornerSite,
     sitePoint: Point,

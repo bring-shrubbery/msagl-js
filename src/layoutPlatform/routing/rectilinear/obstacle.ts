@@ -19,10 +19,9 @@ export class Obstacle {
   InputShape: Shape
   Ports: Set<Port>
 
-  ///  <summary>
   ///  Only public to make the compiler happy about the "where TPoly : new" constraint.
   ///  Will be populated by caller.
-  ///  <
+
   public constructor(shape: Shape, makeRect: boolean, padding: number) {
     if (makeRect) {
       const paddedBox = shape.BoundingBox.clone()

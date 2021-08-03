@@ -97,8 +97,8 @@ export class VisibilityGraph {
   }
 
   //  Calculates the tangent visibility graph
-  //  <param name="obstacles">a list of polylines representing obstacles</param>
-  //  <returns></returns>
+
+
   public static FillVisibilityGraphForShortestPath(
     obstacles: IEnumerable<Polyline>,
   ): VisibilityGraph {

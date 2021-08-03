@@ -612,9 +612,7 @@
 //         // <summary>
 //         //
 //         // <
-//         // <param name="obstSideEndVertex"></param>
-//         // <param name="rbNode">represents a node of the right cone side</param>
-//         // <param name="obstSideStartVertex"></param>
+
 //         void FixConeRightSideIntersections(PolylinePoint obstSideStartVertex, PolylinePoint obstSideEndVertex,
 //             RBNode < ConeSide > rbNode) {
 //             if (rbNode != null) {

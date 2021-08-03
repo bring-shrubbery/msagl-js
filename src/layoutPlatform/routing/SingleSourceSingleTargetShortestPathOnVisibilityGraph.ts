@@ -45,7 +45,7 @@
 //     // <summary>
 //     // Returns  a  path
 //     // <
-//     // <returns>a path or null if the target is not reachable from the source</returns>
+
 //     internal IEnumerable < VisibilityVertex > GetPath(bool shrinkEdgeLength)
 //     {
 //         var pq = new GenericBinaryHeapPriorityQueue<VisibilityVertex>();

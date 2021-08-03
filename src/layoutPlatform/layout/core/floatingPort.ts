@@ -6,11 +6,9 @@ export class FloatingPort extends Port {
   curve: ICurve
 
   // a curve associated with the port
-  ///  <summary>
+
   ///  constructor
-  ///  <
-  ///  <param name="location"></param>
-  ///  <param name="curve">the port curve, can be null</param>
+
   public constructor(curve: ICurve, location: Point) {
     super()
     this.curve = this.curve
@@ -19,26 +17,23 @@ export class FloatingPort extends Port {
 
   location: Point
 
-  ///  <summary>
   ///  the location of the port
-  ///  <
+
   get Location(): Point {
     return this.location
   }
   set Location(value: Point) {
     this.location = value
   }
-  ///  <summary>
+
   ///  translate the port location by delta
-  ///  <
-  ///  <param name="delta"></param>
+
   public /* virtual */ Translate(delta: Point) {
     this.location = this.location.add(delta)
   }
 
-  ///  <summary>
   ///  the port's curve
-  ///  <
+
   public get /* override */ Curve(): ICurve {
     return this.curve
   }

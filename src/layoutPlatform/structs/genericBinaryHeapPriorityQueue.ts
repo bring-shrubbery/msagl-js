@@ -135,11 +135,8 @@ export class GenericBinaryHeapPriorityQueue<T> {
     }
   }
 
-  ///  <summary>
   ///
-  ///  <
-  ///  <param name="priority"></param>
-  ///  <returns></returns>
+
   public Peek(t: {priority: number}): T {
     if (this.count == 0) {
       t.priority = 0

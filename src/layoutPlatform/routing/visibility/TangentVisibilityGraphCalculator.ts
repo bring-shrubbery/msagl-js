@@ -156,9 +156,7 @@
 //     // <summary>
 //     // compare tangents by measuring the counterclockwise angle between the tangent and the edge
 //     // <
-//     // <param name="e0"></param>
-//     // <param name="e1"></param>
-//     // <returns></returns>
+
 //     int TangentComparison(Tangent e0, Tangent e1) {
 //         return StemStartPointComparer.CompareVectorsByAngleToXAxis(e0.End.point - e0.start.point, e1.End.point - e1.start.point);
 //     }

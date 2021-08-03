@@ -200,7 +200,7 @@
 //         //  -1  if v1 lyes to the left of v2
 //         //   1  if v1 lyes to the right of v2
 //         //   0  if v1 and v2 are collinear (and codirectinal)
-//         // </returns>
+
 //         static int IsLeft(Point v0, Point v1, Point v2) {
 //                     return Point.GetOrientationOf3Vectors(v0, v1, v2);
 //                 }

@@ -74,7 +74,7 @@ export class SmoothedPolyline {
   // <summary>
   // Creates a curve by using the underlying polyline
   // <
-  // <returns></returns>
+
   createCurve(): Curve {
     const curve = new Curve()
     let a = this.headSite //the corner start

@@ -1,4 +1,3 @@
-///  <summary>
 ///  Creates the convex hull of a set of points following "Computational Geometry, second edition" of O'Rourke
 
 import {IEnumerable} from 'linq-to-typescript'
@@ -7,7 +6,6 @@ import {GeomConstants} from './geomConstants'
 import {Point, TriangleOrientation} from './point'
 import {Polyline} from './polyline'
 
-///  <
 type HullPoint = {point: Point; deleted: boolean; stamp: number}
 type HullStack = {point: Point; next: HullStack}
 export class ConvexHull {
@@ -69,11 +67,8 @@ export class ConvexHull {
     return this.stack.next.point
   }
 
-  ///  <summary>
   ///  calculates the convex hull of the given set of points
-  ///  <
-  ///  <param name="pointsOfTheBody">Point of the convex hull.</param>
-  ///  <returns>The list of extreme points of the hull boundaries in the clockwise order</returns>
+
   static *CalculateConvexHull(
     pointsOfTheBody: Iterable<Point>,
   ): IterableIterator<Point> {
@@ -223,12 +218,9 @@ export class ConvexHull {
     return convexHull
   }
 }
-///  <summary>
+
 ///  note that this function can change "deleted" member for collinear points
-///  <
-///  <param name="i"></param>
-///  <param name="j"></param>
-///  <returns></returns>
+
 function hullPointComparer(
   pivot: Point,
 ): (i: HullPoint, j: HullPoint) => number {

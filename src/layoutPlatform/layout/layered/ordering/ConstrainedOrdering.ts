@@ -375,7 +375,7 @@ export class ConstrainedOrdering {
   // //  <summary>
   // //  These blocks are connected components in the vertical constraints. They don't necesserely span consequent layers.
   // //  <
-  // //  <returns></returns>
+
   // CreateVerticalComponents(): Dictionary<number, number> {
   //   let vertGraph = new BasicGraphOnEdges<PolyIntEdge>(from, pair, in, this.horizontalConstraints.VerticalInts, select, new PolyIntEdge(pair.Item1, pair.Item2));
   //   let verticalComponents = ConnectedComponentCalculator.GetComponents(vertGraph);
@@ -699,8 +699,7 @@ export class ConstrainedOrdering {
   // //  <summary>
   // //  when we call this function we know that a LayerInfo is needed
   // //  <
-  // //  <param name="layerNumber"></param>
-  // //  <returns></returns>
+
   // GetOrCreateLayerInfo(layerNumber: number): LayerInfo {
   //   let layerInfo: LayerInfo;
   //   new LayerInfo();

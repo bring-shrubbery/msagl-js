@@ -171,10 +171,8 @@ export class CompassVector {
     )
   }
 
-  ///  <summary>
   ///  Translates the CompassVector's direction into a new Point.
-  ///  <
-  ///  <returns></returns>
+
   public ToPoint(): Point {
     let x = 0,
       y = 0
@@ -197,19 +195,14 @@ export class CompassVector {
     return new Point(x, y)
   }
 
-  ///  <summary>
   ///  Translates a direction into a Point.
-  ///  <
-  ///  <returns></returns>
+
   public static ToPoint(dir: Direction): Point {
     return new CompassVector(dir).ToPoint()
   }
 
-  ///  <summary>
   ///   the negation operator
-  ///  <
-  ///  <param name="directionVector"></param>
-  ///  <returns></returns>
+
   public static Operator(directionVector: CompassVector): CompassVector {
     return new CompassVector(CompassVector.OppositeDir(directionVector.Dir))
   }

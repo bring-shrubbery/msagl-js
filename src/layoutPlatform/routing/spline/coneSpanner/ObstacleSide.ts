@@ -30,7 +30,7 @@ export abstract class ObstacleSide extends SegmentBase {
 
   // //  <summary>
   // //  <
-  // //  <returns></returns>
+
   // public  ToString(): string {
   //     let typeString: string = this.GetType().ToString();
   //     let lastDotLoc: number = typeString.LastIndexOf('.');

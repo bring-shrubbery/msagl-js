@@ -76,13 +76,7 @@
 //         // <summary>
 //         // Computes the intersection between the hub and obstacles
 //         // <
-//         // <param name="node"></param>
-//         // <param name="center"></param>
-//         // <param name="radius"></param>
-//         // <param name="obstaclesToIgnore">these are the obstacles the are ignored by the method</param>
-//         // <param name="touchedObstacles">list of pairs (obstacle, closest point on the obstacle)</param>
-//         // <param name="minimalDistance">min distance from the center to an obstacle</param>
-//         // <returns>false iff center is inside of an obstacle</returns>
+
 //         static bool IntersectCircleWithTree(RectangleNode < Polyline > node, Point center, double radius, Set < Polyline > obstaclesToIgnore,
 //         List < Tuple < Polyline, Point >> touchedObstacles, ref double minimalDistance) {
 //         if (!node.Rectangle.Contains(center, radius))

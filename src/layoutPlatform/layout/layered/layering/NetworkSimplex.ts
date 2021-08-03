@@ -289,8 +289,7 @@ export class NetworkSimplex implements LayerCalculator {
     this.initLowLimParentAndLeavesOnSubtree(1, 0)
   }
   // initializes lim and low in the subtree
-  // <param name="curLim">the root of the subtree</param>
-  // <param name="v">the low(v)</param>
+
   initLowLimParentAndLeavesOnSubtree(curLim: number, v: number) {
     const stack = new Stack<StackStruct>()
     let outEnum = this.graph.outEdges[v]
@@ -350,7 +349,7 @@ export class NetworkSimplex implements LayerCalculator {
   }
 
   // here we update values lim and low for the subtree with the root l
-  // <param name="l"></param>
+
   updateLimLowLeavesAndParentsUnderNode(l: number) {
     //first we zero all low values in the subtree since they are an indication when positive that
     //the node has been processed

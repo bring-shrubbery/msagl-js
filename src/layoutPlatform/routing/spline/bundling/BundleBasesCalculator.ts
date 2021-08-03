@@ -299,7 +299,7 @@
 //     // <summary>
 //     // find a cut point for 2 segments
 //     // <
-//     // <returns>true if the segment interiors intersect</returns>
+
 //     double RegularCut(double l1, double r1, double l2, double r2, double span1, double span2) {
 //         double cutParam = (span1 * r2 + span2 * l1) / (span1 + span2);
 //         double mn = Math.Min(r1, r2);
@@ -595,11 +595,7 @@
 //     // <summary>
 //     // returns the length of the overlapped interval in parameter space
 //     // <
-//     // <param name="a"></param>
-//     // <param name="b"></param>
-//     // <param name="c"></param>
-//     // <param name="d"></param>
-//     // <param name="curve"></param>
+
 //     double IntervalsOverlapLength(double a, double b, double c, double d, ICurve curve) {
 //         var s = curve.ParStart;
 //         var e = curve.ParEnd;

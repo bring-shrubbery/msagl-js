@@ -32,7 +32,7 @@
 //         // <summary>
 //         // Constructor taking the ID and the curve delegate for the shape.
 //         // <
-//         // <param name="curveDelegate"></param>
+
 //         public RelativeShape(Func < ICurve > curveDelegate)
 //         {
 //             this.curveDelegate = curveDelegate;

@@ -835,8 +835,7 @@
 //         // <summary>
 //         //
 //         // <
-//         // <param name="rightSide"></param>
-//         // <param name="rbNode">represents a node of the right cone side</param>
+
 //         void FixConeRightSideIntersections(BrokenConeSide rightSide, RBNode < ConeSide > rbNode) {
 //             //the first intersection can happen only with predecessors of rightSide
 //             Assert.assert(rbNode != null);

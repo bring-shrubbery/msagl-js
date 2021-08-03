@@ -10,8 +10,8 @@ import {Shape} from './Shape'
 export class ShapeCreator {
   //  For a given graph finds the obstacles for nodes and clusters, correctly parenting the obstacles
   //  according to the cluster hierarchy
-  //  <param name="graph">graph with edges to route and nodes/clusters to route around</param>
-  //  <returns>the set of obstacles with correct cluster hierarchy and ports</returns>
+
+
   public static GetShapes(graph: GeomGraph): IEnumerable<Shape> {
     const nodesToShapes = new Map<Node, Shape>()
     const interestingNodes = from(graph.nodes())
@@ -67,8 +67,8 @@ return nodesToShapes.Values
   }
 
   //  Creates a shape with a RelativeFloatingPort for the node center, attaches it to the shape and all edges
-  //  <param name="node"></param>
-  //  <returns>Shape obstacle for the node with simple port</returns>
+
+
   static CreateShapeWithCenterPort(node: Node): Shape {
   //  Assert.assert(Point.closeDistEps(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
   const shape = new RelativeShape((node) => node.BoundaryCurve)
@@ -94,8 +94,8 @@ return nodesToShapes.Values
 }
 
   //  Creates a ClusterBoundaryPort for the cluster boundary, attaches it to the shape and all edges
-  //  <param name="node"></param>
-  //  <returns>Shape obstacle for the node with simple port</returns>
+
+
   static CreateShapeWithClusterBoundaryPort(node: Node): Shape {
   //  Assert.assert(Point.closeDistEps(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
   Assert.assert(node instanceof Cluster)

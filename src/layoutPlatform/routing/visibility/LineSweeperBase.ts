@@ -139,9 +139,7 @@
 //         // lower events have higher priorities,
 //         // for events at the same level events to the left have higher priority
 //         // <
-//         // <param name="a"></param>
-//         // <param name="b"></param>
-//         // <returns></returns>
+
 //         public int Compare(SweepEvent a, SweepEvent b) {
 //         ValidateArg.IsNotNull(a, "a");
 //         ValidateArg.IsNotNull(b, "b");

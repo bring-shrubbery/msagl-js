@@ -21,10 +21,10 @@ export class TightLooseCouple {
   //  the loose polyline has been created with this distance
   Distance: number
   //  compare just by TightPolyline
-  //  <returns></returns>
+
   //  compare just by TightPolyline
-  //  <param name="obj"></param>
-  //  <returns></returns>
+
+
   public Equals(couple: TightLooseCouple): boolean {
     if (couple == null) {
       return false

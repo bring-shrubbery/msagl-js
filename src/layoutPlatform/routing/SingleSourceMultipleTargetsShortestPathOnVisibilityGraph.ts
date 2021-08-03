@@ -33,7 +33,7 @@
 //     // <summary>
 //     // Returns  a  path
 //     // <
-//     // <returns>a path or null if the target is not reachable from the source</returns>
+
 //     internal IEnumerable < VisibilityVertex > GetPath() {
 //         var pq = new GenericBinaryHeapPriorityQueue<VisibilityVertex>();
 //         source.Distance = 0;

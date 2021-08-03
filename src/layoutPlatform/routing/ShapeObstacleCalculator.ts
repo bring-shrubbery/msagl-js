@@ -64,9 +64,9 @@ export class ShapeObstacleCalculator {
     //  <summary>
     //  this test is valid in our situation were the tight polylines are disjoint and the shape can cross only one of them
     //  <
-    //  <param name="shape"></param>
-    //  <param name="tightPolyline"></param>
-    //  <returns></returns>
+
+
+
     static ShapeIsInsideOfPoly(shape: Shape, tightPolyline: Polyline): boolean {
       return (Curve.PointRelativeToCurveLocation(shape.BoundaryCurve.start, tightPolyline) == PointLocation.Inside);
     }

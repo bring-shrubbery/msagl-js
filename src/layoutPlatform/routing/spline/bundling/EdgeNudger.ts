@@ -284,11 +284,7 @@
 //         // Following "Biarc approximation of NURBS curves", Les A. Piegl, and Wayne Tiller. The paper has a bug in V, where they write that v=p0+p4, it is p0-p4.
 //         // Also I treat special cases differently.
 //         // <
-//         // <param name="p0"></param>
-//         // <param name="ts"></param>
-//         // <param name="p4"></param>
-//         // <param name="te"></param>
-//         // <returns></returns>
+
 //         internal static ICurve BiArc(Point p0, Point ts, Point p4, Point te) {
 //             Assert.assert(Point.closeDistEps(ts.LengthSquared, 1));
 //             Assert.assert(Point.closeDistEps(te.LengthSquared, 1));
@@ -350,10 +346,7 @@
 //         // <summary>
 //         // returns the arc that a,b,c touches
 //         // <
-//         // <param name="a">belongs to the arc, the tangent point of ba</param>
-//         // <param name="b">ba, and bc are tangents to the arc</param>
-//         // <param name="c">belongs to the arc, the tangent point of bc</param>
-//         // <returns></returns>
+
 //         internal static ICurve ArcOn(Point a, Point b, Point c) {
 //             Point center;
 //             if (Math.Abs(Point.SignedDoubledTriangleArea(a, b, c)) < 0.0001 || !FindArcCenter(a, b, c, out center))
@@ -539,13 +532,7 @@
 //         // <summary>
 //         //
 //         // <
-//         // <param name="longerSeg"></param>
-//         // <param name="del0"></param>
-//         // <param name="del1"></param>
-//         // <param name="midPointOfShorter"></param>
-//         // <param name="minDelLength"></param>
-//         // <param name="maxDelLen"></param>
-//         // <returns> 1 - need to stretch, -1 - need to squeze, 0 - OK </returns>
+
 //         int NicelyAligned(BezierSeg longerSeg, Point del0, Point del1, Point midPointOfShorter,
 //             double minDelLength, double maxDelLen) {
 //             const double eps = 0.001;
