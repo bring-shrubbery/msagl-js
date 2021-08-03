@@ -1,6 +1,5 @@
 import {from} from 'linq-to-typescript'
 import {Graph} from './graph'
-import {Assert} from './../utils/assert'
 import {AttrContainer} from './attrContainer'
 export abstract class Entity extends AttrContainer {
   private _parent: Entity = null
