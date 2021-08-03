@@ -106,3 +106,19 @@ test('polyline test all intersection with polyline', () => {
   }
   expect(xx.length == 3).toBe(true)
 })
+
+test('closest par', () => {
+  const points = [
+    new Point(0, 0),
+    new Point(10, 20),
+    new Point(20, 0),
+    new Point(30, 10),
+  ]
+  const poly = Polyline.mkFromPoints(points)
+  poly.closed = true
+  const delta = new Point(10, -10)
+  const p = poly.startPoint.next.point.add(delta)
+  const par = poly.closestParameter(p)
+  const ndelta = p.sub(poly.value(par))
+  expect(ndelta.length).toBeLessThanOrEqual(delta.length)
+})

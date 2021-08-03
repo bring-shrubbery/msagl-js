@@ -69,7 +69,7 @@
 
 //   // <summary>
 //   // routing of the edges minimizing (ink+path length+capacity penalty)
-//   // </summary>
+//   // <
 //   internal void RouteEdges() {
 //     Initialize();
 //     RestoreCapacities();
@@ -133,7 +133,7 @@
 
 //   // <summary>
 //   // Reroute edge
-//   // </summary>
+//   // <
 //   List < SdBoneEdge > RerouteEdge(EdgeGeometry edgeGeometry) {
 //     var route = EdgesToRoutes[edgeGeometry];
 
@@ -521,7 +521,7 @@
 
 //   // <summary>
 //   // compute cdt edges crossed by paths
-//   // </summary>
+//   // <
 //   internal void FillCrossedCdtEdges(Dictionary < EdgeGeometry, Set < CdtEdge >> crossedCdtEdges) {
 //     foreach(var geometryEdge of EdgeGeometries) {
 //       SetPortVerticesAndObstacles(geometryEdge.SourcePort, true, out sourceLoosePoly);

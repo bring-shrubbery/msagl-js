@@ -46,7 +46,7 @@ export class SmoothedPolyline {
 
   // <summary>
   // the last site of the polyline
-  // </summary>
+  // <
   get lastSite(): CornerSite {
     let ret = this.headSite
     while (ret.next != null) ret = ret.next
@@ -73,7 +73,7 @@ export class SmoothedPolyline {
 
   // <summary>
   // Creates a curve by using the underlying polyline
-  // </summary>
+  // <
   // <returns></returns>
   createCurve(): Curve {
     const curve = new Curve()

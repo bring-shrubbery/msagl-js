@@ -235,7 +235,7 @@ export class Arrowhead {
 
   // <summary>
   // Creates a spline between two nodes big enough to draw arrowheads
-  // </summary>
+  // <
   // <param name="edge"></param>
   static createBigEnoughSpline(edge: GeomEdge) {
     const a = edge.source.center

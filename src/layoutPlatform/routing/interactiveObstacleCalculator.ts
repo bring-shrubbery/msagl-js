@@ -1,14 +1,11 @@
-import {ConvexHull} from '../../../layoutPlatform/math/geometry/convexHull'
-import {Curve} from '../../../layoutPlatform/math/geometry/curve'
-import {GeomConstants} from '../../../layoutPlatform/math/geometry/geomConstants'
-import {ICurve} from '../../../layoutPlatform/math/geometry/icurve'
-import {
-  Point,
-  TriangleOrientation,
-} from '../../../layoutPlatform/math/geometry/point'
-import {Polyline} from '../../../layoutPlatform/math/geometry/polyline'
-import {PolylinePoint} from '../../../layoutPlatform/math/geometry/polylinePoint'
-import {Assert} from '../../../layoutPlatform/utils/assert'
+import {ConvexHull} from '../math/geometry/convexHull'
+import {Curve} from '../math/geometry/curve'
+import {GeomConstants} from '../math/geometry/geomConstants'
+import {ICurve} from '../math/geometry/icurve'
+import {Point, TriangleOrientation} from '../math/geometry/point'
+import {Polyline} from '../math/geometry/polyline'
+import {PolylinePoint} from '../math/geometry/polylinePoint'
+import {Assert} from '../utils/assert'
 
 export class InteractiveObstacleCalculator {
   static PadCorner(

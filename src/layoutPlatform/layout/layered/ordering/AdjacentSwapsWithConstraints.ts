@@ -29,18 +29,18 @@ export class AdjacentSwapsWithConstraints {
   //  <summary>
   //  The array contains a dictionary per vertex
   //  The value POrder[v][u] gives the offset of u in the array P[v]
-  //  </summary>
+  //  <
   POrder: Map<number, number>[]
 
   //  <summary>
   //  for each vertex v let S[v] be the array of successors of v
-  //  </summary>
+  //  <
   S: number[][]
 
   //  <summary>
   //  The array contains a dictionary per vertex
   //  The value SOrder[v][u] gives the offset of u in the array S[v]
-  //  </summary>
+  //  <
   SOrder: Map<number, number>[]
 
   constructor(
@@ -107,7 +107,7 @@ export class AdjacentSwapsWithConstraints {
 
   // // <summary>
   // // swaps two vertices only if reduces the number of intersections
-  // // </summary>
+  // // <
   // // <param name="layer">the layer to work on</param>
   // // <param name="u">left vertex</param>
   // // <param name="v">right vertex</param>
@@ -134,7 +134,7 @@ export class AdjacentSwapsWithConstraints {
 
   //  <summary>
   //  calculates the number of intersections between edges adjacent to u and v
-  //  </summary>
+  //  <
   //  <param name="u">a vertex</param>
   //  <param name="v">a vertex</param>
   //  <param name="cuv">the result when u is to the left of v</param>
@@ -309,7 +309,7 @@ export class AdjacentSwapsWithConstraints {
 
   //  <summary>
   //  Is called just after median layer swap is done
-  //  </summary>
+  //  <
   InitArrays() {
     if (this.S == null) {
       this.AllocArrays()
@@ -424,7 +424,7 @@ export class AdjacentSwapsWithConstraints {
 
   //  <summary>
   //  swaps i-th element with i+1
-  //  </summary>
+  //  <
   //  <param name="layer">the layer to work on</param>
   //  <param name="i">the position to start</param>
   //  <returns></returns>
@@ -442,7 +442,7 @@ export class AdjacentSwapsWithConstraints {
   //  Sweep layer from left to right and fill S,P arrays as we go.
   //  The arrays P and S will be sorted according to X. Note that we will not keep them sorted
   //  as we doing adjacent swaps. Initial sorting only needed to calculate initial clr,crl values.
-  //  </summary>
+  //  <
   //  <param name="layer"></param>
   InitPSArraysForLayer(layer: number[]) {
     for (const l of layer) {

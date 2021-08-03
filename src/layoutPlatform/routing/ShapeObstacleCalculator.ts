@@ -9,7 +9,7 @@ import {Polyline} from '../math/geometry/polyline'
 import {Shape} from './Shape'
 import {TightLooseCouple} from './TightLooseCouple'
 
-//  </summary>
+//  <
 export class ShapeObstacleCalculator {
   tightHierarchy: RectangleNode<Polyline, Point>
 
@@ -63,7 +63,7 @@ export class ShapeObstacleCalculator {
 
     //  <summary>
     //  this test is valid in our situation were the tight polylines are disjoint and the shape can cross only one of them
-    //  </summary>
+    //  <
     //  <param name="shape"></param>
     //  <param name="tightPolyline"></param>
     //  <returns></returns>

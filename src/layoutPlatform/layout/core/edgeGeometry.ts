@@ -22,7 +22,7 @@ export class EdgeGeometry {
   /* 
    // <summary>
    //     Translate all the geometries with absolute positions by the specified delta
-   // </summary>
+   // <
    // <param name="delta">vector by which to translate</param>
    public void Translate(Point delta) {
      if (delta.x == 0 && delta.y == 0) return;
@@ -54,12 +54,12 @@ export class EdgeGeometry {
  
  
          // <summary>
-         // </summary>
+         // <
          public event EventHandler < LayoutChangeEventArgs > LayoutChangeEvent;
  
  
          // <summary>
-         // </summary>
+         // <
          // <param name="newValue"></param>
          public void RaiseLayoutChangeEvent(object newValue) {
    if (LayoutChangeEvent != null)

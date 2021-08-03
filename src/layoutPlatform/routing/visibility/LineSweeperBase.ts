@@ -35,7 +35,7 @@
 //         public Point SweepDirection { get; set; }
 //         // <summary>
 //         // sweep direction rotated by 90 degrees clockwise
-//         // </summary>
+//         // <
 //         protected Point DirectionPerp {
 //         get { return directionPerp; }
 //         set { directionPerp = value; }
@@ -138,7 +138,7 @@
 //         // imagine that direction points up,
 //         // lower events have higher priorities,
 //         // for events at the same level events to the left have higher priority
-//         // </summary>
+//         // <
 //         // <param name="a"></param>
 //         // <param name="b"></param>
 //         // <returns></returns>

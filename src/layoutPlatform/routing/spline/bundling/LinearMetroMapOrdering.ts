@@ -12,23 +12,23 @@
 //     // <summary>
 //     // Linear algorithm as described in our paper
 //     // Edge Routing with Ordered Bunldles
-//     // </summary>
+//     // <
 //     public class LinearMetroMapOrdering : IMetroMapOrderingAlgorithm {
 //         // <summary>
 //         // bundle lines
-//         // </summary>
+//         // <
 //         readonly List < Metroline > MetrolinesGlobal;
 
 //         List < int[] > Metrolines;
 
 //         // <summary>
 //         // Station positions
-//         // </summary>
+//         // <
 //         Point[] positions;
 
 //         // <summary>
 //         // Initialize bundle graph and build the ordering
-//         // </summary>
+//         // <
 //         internal LinearMetroMapOrdering(List < Metroline > MetrolinesGlobal, Dictionary < Point, Station > pointToIndex) {
 //             this.MetrolinesGlobal = MetrolinesGlobal;
 
@@ -39,7 +39,7 @@
 
 //         // <summary>
 //         // Get the ordering of lines on station u with respect to the edge (u->v)
-//         // </summary>
+//         // <
 //         IEnumerable < Metroline > IMetroMapOrderingAlgorithm.GetOrder(Station u, Station v) {
 //             MetroEdge me = MetroEdge.CreateFromTwoNodes(u.SerialNumber, v.SerialNumber);
 //             List < int > orderedMetrolineListForUv = order[me];
@@ -55,7 +55,7 @@
 
 //         // <summary>
 //         // Get the index of line on the edge (u->v) and node u
-//         // </summary>
+//         // <
 //         int IMetroMapOrderingAlgorithm.GetLineIndexInOrder(Station u, Station v, Metroline Metroline) {
 //             MetroEdge me = MetroEdge.CreateFromTwoNodes(u.SerialNumber, v.SerialNumber);
 //             Dictionary < Metroline, int > d = lineIndexInOrder[me];
@@ -91,7 +91,7 @@
 //         // <summary>
 //         // Edge in graph H
 //         // label is used to distinguish multiple edges
-//         // </summary>
+//         // <
 //         class MetroEdge {
 //             List<int> nodes;
 
@@ -189,7 +189,7 @@
 //         }
 //             // <summary>
 //             // overrides the equality
-//             // </summary>
+//             // <
 //             // <param name="obj"></param>
 //             // <returns></returns>
 //             public override bool Equals(object obj) {
@@ -214,7 +214,7 @@
 
 //     // <summary>
 //     // unordered list of paths on a specified edge
-//     // </summary>
+//     // <
 //     class PathList {
 //         internal MetroEdge edge;
 //         internal HashSet<PathOnEdge> paths;
@@ -243,7 +243,7 @@
 
 // // <summary>
 // // Do the main job
-// // </summary>
+// // <
 // void BuildOrder() {
 //     //init local structures
 //     Initialize();
@@ -344,7 +344,7 @@
 
 // // <summary>
 // // update adjacencies of node 'a': put new edges instead of oldEdge
-// // </summary>
+// // <
 // void UpdateAdjacencyData(int a, MetroEdge oldEdge, List < PathList > newSubList) {
 //     //find a (cached) position of oldEdge in order
 //     LinkedListNode < MetroEdge > node = adjacencyIndex[new Tuple<int, MetroEdge>(a, oldEdge)];
@@ -368,7 +368,7 @@
 
 // // <summary>
 // // recursively build an order on the edge
-// // </summary>
+// // <
 // List < int > RestoreResult(MetroEdge edge) {
 //     List < int > res = new List<int>();
 
@@ -404,7 +404,7 @@
 
 // // <summary>
 // // Remove vertex v from the graph. Update graph and paths correspondingly
-// // </summary>
+// // <
 // void ProcessNonTerminal(int v) {
 //     //oldEdge => sorted PathLists
 //     Dictionary < MetroEdge, List < PathList >> newSubLists = RadixSort(v);
@@ -441,7 +441,7 @@
 
 // // <summary>
 // // Linear sorting of paths passing through vertex v
-// // </summary>
+// // <
 // Dictionary < MetroEdge, List < PathList >> RadixSort(int v) {
 //     //build a map [old_edge => list_of_paths_on_it]; the relative order of paths is important
 //     Dictionary < MetroEdge, List < PathOnEdge >> r = new Dictionary<MetroEdge, List<PathOnEdge>>();
@@ -499,7 +499,7 @@
 
 // // <summary>
 // // extract the next edge on a given path after node v
-// // </summary>
+// // <
 // MetroEdge FindNextEdgeOnPath(int v, PathOnEdge pathOnEdge) {
 //     if (pathOnEdge.node.next != null) {
 //         int o = OppositeNode(pathOnEdge.node.next.Value, v);
@@ -516,7 +516,7 @@
 
 // // <summary>
 // // return an opposite vertex of a given edge
-// // </summary>
+// // <
 // int OppositeNode(MetroEdge edge, int v) {
 //     if (edge.Source() == v) return edge.Target();
 //     if (edge.Target() == v) return edge.Source();
@@ -526,7 +526,7 @@
 
 // // <summary>
 // // replace edges (av) and (vb) with edge (ab) on a given path
-// // </summary>
+// // <
 // void UpdatePath(PathOnEdge pathOnEdge, int v, MetroEdge newEdge) {
 //     LinkedListNode < MetroEdge > f = pathOnEdge.node;
 //     Assert.assert(f.Value.Source() == v || f.Value.Target() == v);

@@ -26,7 +26,7 @@ export class MetroMapOrdering {
 
   //  <summary>
   //  Reorder only points having identical nodePositions
-  //  </summary>
+  //  <
   static UpdateLayerArrays0(
     properLayeredGraph: ProperLayeredGraph,
     layerArrays: LayerArrays,
@@ -41,7 +41,7 @@ export class MetroMapOrdering {
 
   //  <summary>
   //  Reorder virtual nodes between the same pair of real nodes
-  //  </summary>
+  //  <
   static UpdateLayerArrays1(
     properLayeredGraph: ProperLayeredGraph,
     layerArrays: LayerArrays,

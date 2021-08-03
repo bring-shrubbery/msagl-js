@@ -137,7 +137,7 @@ export class GenericBinaryHeapPriorityQueue<T> {
 
   ///  <summary>
   ///
-  ///  </summary>
+  ///  <
   ///  <param name="priority"></param>
   ///  <returns></returns>
   public Peek(t: {priority: number}): T {

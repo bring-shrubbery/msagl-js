@@ -96,7 +96,7 @@ export class Polyline implements ICurve {
     return Parallelogram.parallelogramByCornerSideSide(a, side, side)
   }
 
-  static mkFromPoints(ps: Point[]) {
+  static mkFromPoints(ps: Iterable<Point>) {
     const r = new Polyline()
     for (const p of ps) r.addPoint(p)
     return r

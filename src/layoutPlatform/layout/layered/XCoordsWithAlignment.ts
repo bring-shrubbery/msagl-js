@@ -59,7 +59,7 @@ export class XCoordsWithAlignment {
 
   //  <summary>
   //  Returns true if v is a virtual vertex
-  //  </summary>
+  //  <
   //  <param name="v"></param>
   //  <returns></returns>
   IsVirtual(v: number): boolean {
@@ -374,7 +374,7 @@ export class XCoordsWithAlignment {
 
   //  <summary>
   //  Parameterized left relation
-  //  </summary>
+  //  <
   //  <param name="i"></param>
   //  <param name="j"></param>
   //  <returns></returns>
@@ -394,7 +394,7 @@ export class XCoordsWithAlignment {
 
   // // <summary>
   // // Eliminates conflicts with at least one inner edge inside of one layer
-  // // </summary>
+  // // <
   // // <param name="i"></param>
   ConflictsWithAtLeastOneInnerEdgeForALayer(layerIndex: number) {
     if (layerIndex >= 0 && layerIndex < this.la.Layers.length) {
@@ -500,7 +500,7 @@ export class XCoordsWithAlignment {
 
   // // <summary>
   // // This function marks conflicting edges with targets positioned between innerEdge and newInnerEdge targets.
-  // // </summary>
+  // // <
   // // <param name="lowerLayer"></param>
   // // <param name="innerEdge"></param>
   // // <param name="newInnerEdge"></param>
@@ -533,7 +533,7 @@ export class XCoordsWithAlignment {
   // // <summary>
   // // Returns the inner non-conflicting edge incoming into i-th position
   // // of the layer or null if there is no such edge
-  // // </summary>
+  // // <
   // // <param name="layer"></param>
   // // <param name="innerEdge"></param>
   // // <param name="i"></param>
@@ -592,7 +592,7 @@ export class XCoordsWithAlignment {
 
   // // <summary>
   // // private constructor
-  // // </summary>
+  // // <
   // // <param name="layerArrays"></param>
   // // <param name="anchs"></param>
   // // <param name="layeredGraph"></param>
@@ -742,7 +742,7 @@ export class XCoordsWithAlignment {
   //  The alignment is defined by array align. Every vertex is connected to the top vertex of
   //  the block by using root array. The alignment is cyclic. If we start from a root vertex v and
   //  apply align then we return to v at some point.
-  //  </summary>
+  //  <
   CreateBlocks() {
     for (let v = 0; v < this.nOfVertices; v++) {
       this.root[v] = this.align[v] = v
@@ -802,7 +802,7 @@ export class XCoordsWithAlignment {
   //  <summary>
   //  Calculates the minimum separation between two neighboring vertices: if u is to the left of v on the same layer return positive
   //  number, otherwise negative.
-  //  </summary>
+  //  <
   //  <param name="u"></param>
   //  <param name="v"></param>
   //  <returns></returns>

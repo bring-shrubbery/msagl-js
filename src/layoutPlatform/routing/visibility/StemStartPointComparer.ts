@@ -8,7 +8,7 @@
 //     // <summary>
 //     // compares couples only by looking at the couple first point
 //     // we need the couple to hold the stem
-//     // </summary>
+//     // <
 //     internal class StemStartPointComparer : IComparer < Stem > {
 //         Point pivot;
 

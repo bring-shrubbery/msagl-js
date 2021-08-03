@@ -14,16 +14,16 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     // <summary>
 //     // Adjust current bundle-routing with a number of heuristic
-//     // </summary>
+//     // <
 //     public class NodePositionsAdjuster {
 //         // <summary>
 //         // Algorithm settings
-//         // </summary>
+//         // <
 //         readonly BundlingSettings bundlingSettings;
 
 //         // <summary>
 //         // bundle data
-//         // </summary>
+//         // <
 //         readonly MetroGraphData metroGraphData;
 
 //         NodePositionsAdjuster(MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
@@ -33,7 +33,7 @@
 
 //         // <summary>
 //         // apply a number of heuristics to improve current routing
-//         // </summary>
+//         // <
 //         internal static void FixRouting(MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
 // #if TEST_MSAGL && TEST_MSAGL
 //             Assert.assert(metroGraphData.looseIntersections.HubPositionsAreOK());
@@ -85,7 +85,7 @@
 
 // // <summary>
 // // unite the nodes that are close to each other
-// // </summary>
+// // <
 // bool GlueConflictingNodes() {
 
 //   var circlesHierarchy = GetCirclesHierarchy();
@@ -173,7 +173,7 @@
 
 // // <summary>
 // // trying to glue i to j
-// // </summary>
+// // <
 // bool NodeGluingIsAllowed(Station i, Station j, Dictionary < Station, Station > gluingMap) {
 //   foreach(var adj of i.Neighbors) {
 //     var k = Glued(adj, gluingMap);
@@ -272,7 +272,7 @@
 // // <summary>
 // // Unbundle unnecessary edges:
 // //  instead of one bundle (a->bcd) we get two bundles (a->b,a->cd) with smaller ink
-// // </summary>
+// // <
 // bool UnglueEdgesFromBundleToSaveInk(bool alwaysExecuteSA) {
 //   var segsToPolylines = new Dictionary<PointPair, Set<Metroline>>();
 //   ink = metroGraphData.Ink;
@@ -332,7 +332,7 @@
 
 // // <summary>
 // // allowed iff line (a,c) is legal and inkgain > 0
-// // </summary>
+// // <
 // bool SeparationShortcutAllowed(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines, Set < Polyline > obstaclesAllowedToIntersect) {
 //   var a = pp.point;
 //   var b = pp.next.point;
@@ -455,7 +455,7 @@
 
 // // <summary>
 // // Fix the situation where a station has two neighbors that are almost in the same directions
-// // </summary>
+// // <
 // bool GlueCollinearNeighbors(int step) {
 //   HashSet < Point > affectedPoints = new HashSet<Point>();
 //   bool progress = false;
@@ -652,7 +652,7 @@
 
 // // <summary>
 // // split each edge that is too much constrained by the obstacles
-// // </summary>
+// // <
 // bool RelaxConstrainedEdges() {
 //   HashSet < Point > affectedPoints = new HashSet<Point>();
 //   bool progress = false;
@@ -731,7 +731,7 @@
 
 // // <summary>
 // // switch flips
-// // </summary>
+// // <
 // bool RemoveDoublePathCrossings() {
 //   bool progress = new PathFixer(metroGraphData, metroGraphData.PointIsAcceptableForEdge).Run();
 

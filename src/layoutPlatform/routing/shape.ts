@@ -1,9 +1,8 @@
-import {from, IEnumerable} from 'linq-to-typescript'
+import {IEnumerable, from} from 'linq-to-typescript'
 import {Queue} from 'queue-typescript'
-import {Port} from '../../../layoutPlatform/layout/core/port'
-import {ICurve} from '../../../layoutPlatform/math/geometry/icurve'
-import {Rectangle} from '../../../layoutPlatform/math/geometry/rectangle'
-import {constructor} from '../../../layoutPlatform/routing/ConstrainedDelaunayTriangulation/ThreeArray'
+import {Port} from '../layout/core/port'
+import {ICurve} from '../math/geometry/icurve'
+import {Rectangle} from '../math/geometry/rectangle'
 
 export class Shape {
   parents: Set<Shape> = new Set<Shape>()
@@ -18,7 +17,7 @@ export class Shape {
 
   ///  <summary>
   ///  shape children
-  ///  </summary>
+  ///  <
   public get Children(): IEnumerable<Shape> {
     return from(this.children.values())
   }
@@ -34,7 +33,7 @@ export class Shape {
 
   ///  <summary>
   ///  The bounding box of the shape.
-  ///  </summary>
+  ///  <
   public get BoundingBox(): Rectangle {
     return this.BoundaryCurve.boundingBox
   }
@@ -42,7 +41,7 @@ export class Shape {
   ///  <summary>
   ///  The set of Ports for this obstacle, usually RelativePorts.  In the event of overlapping
   ///  obstacles, this identifies the obstacle to which the port applies.
-  ///  </summary>
+  ///  <
   public get Ports(): Set<Port> {
     return this.ports
   }
@@ -51,19 +50,19 @@ export class Shape {
 
   ///  <summary>
   ///  A location for storing user data associated with the Shape.
-  ///  </summary>
+  ///  <
   UserData: any
 
   ///  <summary>
   ///  Default constructor.
-  ///  </summary>
+  ///  <
   static mkShope(): Shape {
     return new Shape(null)
   }
 
   ///  <summary>
   ///  Constructor taking the ID and the curve of the shape.
-  ///  </summary>
+  ///  <
   ///  <param name="boundaryCurve"></param>
   public constructor(boundaryCurve: ICurve) {
     this.boundaryCurve = boundaryCurve
@@ -71,7 +70,7 @@ export class Shape {
 
   ///  <summary>
   ///  A group is a shape that has children.
-  ///  </summary>
+  ///  <
   public get IsGroup(): boolean {
     return this.children.size > 0
   }
@@ -125,7 +124,7 @@ export class Shape {
 
   ///  <summary>
   ///
-  ///  </summary>
+  ///  <
   ///  <param name="shape"></param>
   public RemoveChild(shape: Shape) {
     this.children.delete(shape)
@@ -134,7 +133,7 @@ export class Shape {
 
   ///  <summary>
   ///
-  ///  </summary>
+  ///  <
   ///  <param name="shape"></param>
   public RemoveParent(shape: Shape) {
     this.parents.delete(shape)
@@ -143,7 +142,7 @@ export class Shape {
 
   ///  <summary>
   ///
-  ///  </summary>
+  ///  <
   ///  <returns></returns>
   public ToString(): string {
     return this.UserData ? this.UserData.toString() : 'null'

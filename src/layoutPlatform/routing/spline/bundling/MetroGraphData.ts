@@ -19,7 +19,7 @@
 //     //
 //     //  'real' edges are original graph edges
 //     //  'virtual' edges are polyline segments
-//     // </summary>
+//     // <
 //     internal class MetroGraphData {
 //         internal Set<Station> Stations;
 
@@ -51,7 +51,7 @@
 
 //     // <summary>
 //     // triangulation
-//     // </summary>
+//     // <
 //     internal Cdt Cdt;
 
 //     internal MetroGraphData(EdgeGeometry[] regularEdges,
@@ -100,7 +100,7 @@
 
 //     // <summary>
 //     // number of real edges passing the edge uv
-//     // </summary>
+//     // <
 //     internal int RealEdgeCount(Station u, Station v) {
 //         var couple = u < v ? new Tuple<Station, Station>(u, v) : new Tuple<Station, Station>(v, u);
 //         StationEdgeInfo cw;
@@ -111,14 +111,14 @@
 
 //     // <summary>
 //     // real edges passing the node
-//     // </summary>
+//     // <
 //     internal List < MetroNodeInfo > MetroNodeInfosOfNode(Station node) {
 //         return node.MetroNodeInfos;
 //     }
 
 //     // <summary>
 //     // real edges passing the edge uv
-//     // </summary>
+//     // <
 //     internal StationEdgeInfo GetIjInfo(Station u, Station v) {
 //         var couple = u < v ? new Tuple<Station, Station>(u, v) : new Tuple<Station, Station>(v, u);
 //         return edgeInfoDictionary[couple];
@@ -126,7 +126,7 @@
 
 //     // <summary>
 //     // Move node to the specified position
-//     // </summary>
+//     // <
 //     internal void MoveNode(Station node, Point newPosition) {
 //         Point oldPosition = node.Position;
 //         PointToStations.Remove(oldPosition);
@@ -178,7 +178,7 @@
 
 //     // <summary>
 //     // Initialize data
-//     // </summary>
+//     // <
 //     internal void Initialize(bool initTightTree) {
 //         //TimeMeasurer.DebugOutput("bundle graph data initializing...");
 
@@ -201,7 +201,7 @@
 
 //     // <summary>
 //     // remove self-cycles
-//     // </summary>
+//     // <
 //     void SimplifyRegularEdges() {
 //         foreach(var edge of regularEdges)
 //         SimplifyRegularEdge(edge);
@@ -209,7 +209,7 @@
 
 //     // <summary>
 //     // change the polyline by removing cycles
-//     // </summary>
+//     // <
 //     void SimplifyRegularEdge(EdgeGeometry edge) {
 //         Polyline polyline = (Polyline)edge.Curve;
 
@@ -301,7 +301,7 @@
 
 //     // <summary>
 //     // Initialize graph comprised of stations and their neighbors
-//     // </summary>
+//     // <
 //     void InitializeVirtualGraph() {
 //         Dictionary < Station, Set < Station >> neighbors = new Dictionary<Station, Set<Station>>();
 //         foreach(var metroline of metrolines) {

@@ -9,7 +9,7 @@
 //     internal class TangentVisibilityGraphCalculator {
 //         // <summary>
 //         // the list of obstacles
-//         // </summary>
+//         // <
 //         List<Polygon> polygons;
 
 //         VisibilityGraph visibilityGraph;
@@ -92,7 +92,7 @@
 
 //         // <summary>
 //         // this function will also add the first tangent to the visible edges if needed
-//         // </summary>
+//         // <
 //         private void InitActiveDiagonals() {
 
 //         Tangent firstTangent = this.tangents[0];
@@ -155,7 +155,7 @@
 
 //     // <summary>
 //     // compare tangents by measuring the counterclockwise angle between the tangent and the edge
-//     // </summary>
+//     // <
 //     // <param name="e0"></param>
 //     // <param name="e1"></param>
 //     // <returns></returns>

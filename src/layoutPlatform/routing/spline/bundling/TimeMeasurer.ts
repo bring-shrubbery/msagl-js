@@ -4,7 +4,7 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     // <summary>
 //     // Outputs run time in debug mode
-//     // </summary>
+//     // <
 //     internal class TimeMeasurer {
 //         #if TEST_MSAGL && TEST_MSAGL
 //         static Timer timer;

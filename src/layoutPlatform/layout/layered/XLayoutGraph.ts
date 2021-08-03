@@ -47,7 +47,7 @@ export class XLayoutGraph extends BasicGraphOnEdges<PolyIntEdge> {
 
   //  <summary>
   //  following Gansner etc 93 returning weight multplier bigger if there are virtual nodes
-  //  </summary>
+  //  <
   //  <param name="edge"></param>
   //  <returns></returns>
   EdgeWeightMultiplier(edge: PolyIntEdge): number {

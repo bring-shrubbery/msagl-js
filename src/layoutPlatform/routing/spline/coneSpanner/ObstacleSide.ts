@@ -29,7 +29,7 @@ export abstract class ObstacleSide extends SegmentBase {
   }
 
   // //  <summary>
-  // //  </summary>
+  // //  <
   // //  <returns></returns>
   // public  ToString(): string {
   //     let typeString: string = this.GetType().ToString();

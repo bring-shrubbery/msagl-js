@@ -9,17 +9,17 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     // <summary>
 //     // greedy bundle map ordering based on path comparison
-//     // </summary>
+//     // <
 //     public class GeneralMetroMapOrdering : IMetroMapOrderingAlgorithm {
 //         // <summary>
 //         // bundle lines
-//         // </summary>
+//         // <
 //         readonly List < Metroline > Metrolines;
 //         Dictionary < PointPair, PointPairOrder > bundles;
 
 //         // <summary>
 //         // Initialize bundle graph and build the ordering
-//         // </summary>
+//         // <
 //         internal GeneralMetroMapOrdering(List < Metroline > Metrolines) {
 //             this.Metrolines = Metrolines;
 
@@ -28,7 +28,7 @@
 
 //         // <summary>
 //         // Get the ordering of lines on station u with respect to the edge (u->v)
-//         // </summary>
+//         // <
 // #if SHARPKIT //http://code.google.com/p/sharpkit/issues/detail?id=203
 //         //SharpKit/Colin - Interface implementations
 //         public IEnumerable < Metroline > GetOrder(Station u, Station v) {
@@ -50,7 +50,7 @@
 
 //         // <summary>
 //         // Get the index of line on the edge (u->v) and node u
-//         // </summary>
+//         // <
 // #if SHARPKIT //http://code.google.com/p/sharpkit/issues/detail?id=203
 //         //SharpKit/Colin - Interface implementations
 //         public int GetLineIndexInOrder(Station u, Station v, Metroline Metroline) {
@@ -65,7 +65,7 @@
 
 //                 // <summary>
 //                 // Do the main job
-//                 // </summary>
+//                 // <
 //                 void BuildOrder() {
 //                     bundles = new Dictionary<PointPair, PointPairOrder>();
 
@@ -86,7 +86,7 @@
 
 //                 // <summary>
 //                 // Build order for edge (u->v)
-//                 // </summary>
+//                 // <
 //                 void BuildOrder(PointPair pair, PointPairOrder order) {
 //                     if (order.orderFixed) return;
 //                     order.Metrolines.Sort((line0, line1) => CompareLines(line0, line1, pair.First, pair.Second));
@@ -100,7 +100,7 @@
 
 //                 // <summary>
 //                 // Compare two lines on station u with respect to edge (u->v)
-//                 // </summary>
+//                 // <
 //                 int CompareLines(Metroline ml0, Metroline ml1, Point u, Point v) {
 //                     PolylinePoint polylinePoint0;
 //                     Func < PolylinePoint, PolylinePoint > next0;
@@ -163,7 +163,7 @@
 
 //                 // <summary>
 //                 // Reimplement it in more efficient way!!! (cache indexes)
-//                 // </summary>
+//                 // <
 //                 void FindStationOnLine(Point u, Point v, Metroline Metroline, out PolylinePoint polyPoint, out Func < PolylinePoint, PolylinePoint > next,
 //                     out Func < PolylinePoint, PolylinePoint > prev) {
 
@@ -195,7 +195,7 @@
 //         // <summary>
 //         // Compare polar angles of v1 and v2 with respect to v0
 //         // (v1 lyes to the left of v2 ?)
-//         // </summary>
+//         // <
 //         // <returns>
 //         //  -1  if v1 lyes to the left of v2
 //         //   1  if v1 lyes to the right of v2

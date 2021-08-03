@@ -15,7 +15,7 @@
 
 //         // <summary>
 //         // the intersection of the sweepline and the active segment
-//         // </summary>
+//         // <
 //         Point x;
 
 //         public int Compare(SegmentBase a, SegmentBase b) {

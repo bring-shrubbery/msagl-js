@@ -80,7 +80,7 @@ namespace Microsoft.Msagl.Routing {
     }
     // <summary>
     // creates a set of pregraphs suitable for bundle routing
-    // </summary>
+    // <
     // <returns></returns>
     IEnumerable < PreGraph > GetIndependantPreGraphs() {
         List < PreGraph > preGraphs = CreateInitialPregraphs();

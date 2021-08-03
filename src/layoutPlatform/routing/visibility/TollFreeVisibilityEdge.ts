@@ -7,7 +7,7 @@
 // // namespace Microsoft.Msagl.Routing.Visibility {
 // //     // <summary>
 // //     // passing through such an edge does not cost anything
-// //     // </summary>
+// //     // <
 // //     internal class TollFreeVisibilityEdge : VisibilityEdge {
 // //         internal TollFreeVisibilityEdge(VisibilityVertex source, VisibilityVertex target)
 // //             : this(source, target, 0) { }

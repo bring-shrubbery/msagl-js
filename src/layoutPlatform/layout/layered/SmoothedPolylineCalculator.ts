@@ -54,7 +54,7 @@ export class SmoothedPolylineCalculator {
 
   //  <summary>
   //  Creates a smoothed polyline
-  //  </summary>
+  //  <
   constructor(
     edgePathPar: PolyIntEdge,
     anchorsP: Anchor[],

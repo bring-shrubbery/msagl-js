@@ -137,7 +137,7 @@ export class BundleRouter extends Algorithm {
   //  <summary>
   //  set endpoint of the edge from child to parent (cluster) to the boundary of the parent
   //  TODO: is there a better solution?
-  //  </summary>
+  //  <
   FixChildParentEdges() {
     for (const edge of this.regularEdges) {
       const sPort = edge.SourcePort
@@ -331,7 +331,7 @@ export class BundleRouter extends Algorithm {
   //      stop edge bundling, or
   //      reduce edge separation, or
   //      move obstacles to get more free space
-  //  </summary>
+  //  <
   AnalyzeEdgeSeparation(): boolean {
     const crossedCdtEdges: Dictionary<
       EdgeGeometry,

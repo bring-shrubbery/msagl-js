@@ -11,7 +11,7 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     // <summary>
 //     // this class nudges the edges
-//     // </summary>
+//     // <
 //     public class HubDebugger {
 
 //         #if TEST_MSAGL && TEST_MSAGL

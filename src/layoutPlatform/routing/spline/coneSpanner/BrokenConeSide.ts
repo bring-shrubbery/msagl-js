@@ -4,11 +4,11 @@
 // // namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
 // //     // <summary>
 // //     // represents a cone side that is broken by the obstacle
-// //     // </summary>
+// //     // <
 // //     internal class BrokenConeSide: ConeSide {
 // //         // <summary>
 // //         // point where it starts
-// //         // </summary>
+// //         // <
 // //         internal Point start;
 
 // //         internal override Point Start {
@@ -17,7 +17,7 @@
 
 // //         // <summary>
 // //         // it is the side of the cone that intersects the obstacle side
-// //         // </summary>
+// //         // <
 // //         internal ConeSide ConeSide { get; set; }
 
 // //         internal PolylinePoint EndVertex { get; set; }

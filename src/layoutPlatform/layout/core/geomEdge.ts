@@ -102,7 +102,7 @@ export class GeomEdge extends GeomObject {
   }
   // <summary>
   // The bounding box of the edge curve
-  // </summary>
+  // <
   /*
     public override Rectangle BoundingBox {
     get {
@@ -137,7 +137,7 @@ export class GeomEdge extends GeomObject {
   /*
           // <summary>
           // the polyline of the untrimmed spline
-          // </summary>
+          // <
           public SmoothedPolyline UnderlyingPolyline {
     get { return edgeGeometry.SmoothedPolyline; }
     set { edgeGeometry.SmoothedPolyline = value; }
@@ -155,7 +155,7 @@ export class GeomEdge extends GeomObject {
   /*  
     // <summary>
     // Transform the curve, arrowheads and label according to the given matrix
-    // </summary>
+    // <
     // <param name="matrix">affine transform matrix</param>
     internal void Transform(PlaneTransformation matrix)
     {
@@ -181,7 +181,7 @@ export class GeomEdge extends GeomObject {
     
             // <summary>
             // Translate the edge curve arrowheads and label by the specified delta
-            // </summary>
+            // <
             // <param name="delta">amount to shift geometry</param>
             public void Translate(Point delta)
     {
@@ -196,7 +196,7 @@ export class GeomEdge extends GeomObject {
     
                     // <summary>
                     // transforms relative to given rectangles
-                    // </summary>
+                    // <
                     public void TransformRelativeTo(Rectangle oldBounds, Rectangle newBounds)
     {
       if (this.edgeGeometry != null) {
@@ -214,7 +214,7 @@ export class GeomEdge extends GeomObject {
     
             // <summary>
             // Checks if an arrowhead is needed at the source
-            // </summary>
+            // <
             public bool ArrowheadAtSource
     {
       get
@@ -225,7 +225,7 @@ export class GeomEdge extends GeomObject {
     
             // <summary>
             // Checks if an arrowhead is needed at the target
-            // </summary>
+            // <
             public bool ArrowheadAtTarget
     {
       get
@@ -236,7 +236,7 @@ export class GeomEdge extends GeomObject {
     
             // <summary>
             // Routes a self edge inside the given "howMuchToStickOut" parameter
-            // </summary>
+            // <
             // <param name="boundaryCurve"></param>
             // <param name="howMuchToStickOut"></param>
             // <param name="smoothedPolyline"> the underlying polyline used later for editing</param>
@@ -260,7 +260,7 @@ export class GeomEdge extends GeomObject {
     
             // <summary>
             //
-            // </summary>
+            // <
             // <param name="newValue"></param>
             public override void RaiseLayoutChangeEvent(object newValue) {
       edgeGeometry.RaiseLayoutChangeEvent(newValue);
@@ -269,7 +269,7 @@ export class GeomEdge extends GeomObject {
     
             // <summary>
             //
-            // </summary>
+            // <
             public override event EventHandler < LayoutChangeEventArgs > BeforeLayoutChangeEvent {
       add { edgeGeometry.LayoutChangeEvent += value; }
       remove { edgeGeometry.LayoutChangeEvent -= value; }

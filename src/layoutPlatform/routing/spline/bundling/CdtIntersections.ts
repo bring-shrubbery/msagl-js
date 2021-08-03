@@ -10,7 +10,7 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     // <summary>
 //     // Check intersections between edges and obstacles using triangulation (faster than kd-tree)
-//     // </summary>
+//     // <
 //     internal class CdtIntersections {
 //         readonly MetroGraphData metroGraphData;
 //         readonly BundlingSettings bundlingSettings;
@@ -25,7 +25,7 @@
 //         // <summary>
 //         // returns false iff the edge overlap an obstacle
 //         // otherwise it calulates distances to the closest obstacles
-//         // </summary>
+//         // <
 //         internal bool BundleAvoidsObstacles(Station v, Station u, Point vPosition, Point uPosition, double upperBound,
 //             out List<Tuple<Point, Point>> closestDist) {
 
@@ -53,7 +53,7 @@
 
 //     // <summary>
 //     // returns null iff the edge overlap an obstacle
-//     // </summary>
+//     // <
 //     Dictionary < Polyline, Tuple < Point, Point >> FindCloseObstaclesForBundle(CdtTriangle startTriangle, Point start,
 //         Point end, Set < Polyline > obstaclesToIgnore,
 //         double upperBound) {
@@ -107,7 +107,7 @@
 
 //     // <summary>
 //     // returns false iff the edge overlap an obstacle
-//     // </summary>
+//     // <
 //     bool ThreadLineSegmentThroughTriangles(CdtTriangle currentTriangle, Point start, Point end, Set < Polyline > obstaclesToIgnore,
 //         out List < CdtTriangle > triangles) {
 //         Assert.assert(Cdt.PointIsInsideOfTriangle(start, currentTriangle));
@@ -179,7 +179,7 @@
 //     // <summary>
 //     // checks if an edge intersects obstacles
 //     // otherwise it calulates distances to the closest obstacles
-//     // </summary>
+//     // <
 //     internal bool EdgeIsLegal(Station v, Station u, Point vPosition, Point uPosition) {
 //         List < CdtTriangle > list;
 //         Set < Polyline > obstaclesToIgnore = metroGraphData.looseIntersections.ObstaclesToIgnoreForBundle(v, u);
@@ -189,7 +189,7 @@
 //     // <summary>
 //     // checks if an edge intersects obstacles
 //     // otherwise it calulates distances to the closest obstacles
-//     // </summary>
+//     // <
 //     internal bool EdgeIsLegal(Station v, Station u, Point vPosition, Point uPosition, Set < Polyline > obstaclesToIgnore) {
 //         var start = v.Position;
 

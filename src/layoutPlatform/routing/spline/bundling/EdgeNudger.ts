@@ -14,7 +14,7 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     // <summary>
 //     // this class nudges the edges
-//     // </summary>
+//     // <
 //     internal class EdgeNudger : Algorithm {
 //         readonly BundlingSettings bundlingSettings;
 //         readonly MetroGraphData metroGraphData;
@@ -22,7 +22,7 @@
 
 //         // <summary>
 //         // Constructor
-//         // </summary>
+//         // <
 //         internal EdgeNudger(MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
 //             this.metroGraphData = metroGraphData;
 //             this.bundlingSettings = bundlingSettings;
@@ -44,7 +44,7 @@
 
 //         // <summary>
 //         // bundle-map ordering
-//         // </summary>
+//         // <
 //         void CreateMetroOrdering() {
 //             if (bundlingSettings.UseGreedyMetrolineOrdering)
 //                 metroOrdering = new GeneralMetroMapOrdering(metroGraphData.Metrolines);
@@ -283,7 +283,7 @@
 //         // <summary>
 //         // Following "Biarc approximation of NURBS curves", Les A. Piegl, and Wayne Tiller. The paper has a bug in V, where they write that v=p0+p4, it is p0-p4.
 //         // Also I treat special cases differently.
-//         // </summary>
+//         // <
 //         // <param name="p0"></param>
 //         // <param name="ts"></param>
 //         // <param name="p4"></param>
@@ -349,7 +349,7 @@
 
 //         // <summary>
 //         // returns the arc that a,b,c touches
-//         // </summary>
+//         // <
 //         // <param name="a">belongs to the arc, the tangent point of ba</param>
 //         // <param name="b">ba, and bc are tangents to the arc</param>
 //         // <param name="c">belongs to the arc, the tangent point of bc</param>
@@ -432,7 +432,7 @@
 
 //         // <summary>
 //         // fans the couple i,i+1
-//         // </summary>
+//         // <
 //         bool FanCouple(BundleBase bundleHub, int i, Point center, double radius) {
 //             OrientedHubSegment lSeg = bundleHub.OrientedHubSegments[i];
 //             OrientedHubSegment rSeg = bundleHub.OrientedHubSegments[i + 1];
@@ -538,7 +538,7 @@
 
 //         // <summary>
 //         //
-//         // </summary>
+//         // <
 //         // <param name="longerSeg"></param>
 //         // <param name="del0"></param>
 //         // <param name="del1"></param>

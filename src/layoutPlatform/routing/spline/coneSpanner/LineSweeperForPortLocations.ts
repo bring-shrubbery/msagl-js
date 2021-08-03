@@ -17,7 +17,7 @@
 //     // <summary>
 //     // Sweeps a given direction of cones and adds discovered edges to the graph.
 //     // The cones can only start at ports here.
-//     // </summary>
+//     // <
 //     class LineSweeperForPortLocations : LineSweeperBase, IConeSweeper {
 //         public Point ConeRightSideDirection {
 //             get;
@@ -611,7 +611,7 @@
 
 //         // <summary>
 //         //
-//         // </summary>
+//         // <
 //         // <param name="obstSideEndVertex"></param>
 //         // <param name="rbNode">represents a node of the right cone side</param>
 //         // <param name="obstSideStartVertex"></param>

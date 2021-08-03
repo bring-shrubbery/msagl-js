@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/math/geometry/convexHull.spec.ts",
+        "src/tests/layoutPlatform/math/geometry/polyline.spec.ts",
         "-t",
-        "TestConvexHull8"
+        "closest par"
       ],
       "console": "integratedTerminal"
     }

@@ -14,7 +14,7 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     // <summary>
 //     // Calculates the cost of the routing
-//     // </summary>
+//     // <
 //     internal class CostCalculator {
 //         internal const double Inf = 1000000000.0;
 
@@ -28,21 +28,21 @@
 
 //         // <summary>
 //         // Error of ink
-//         // </summary>
+//         // <
 //         static internal double InkError(double oldInk, double newInk, BundlingSettings bundlingSettings) {
 //             return (oldInk - newInk) * bundlingSettings.InkImportance;
 //         }
 
 //         // <summary>
 //         // Error of path lengths
-//         // </summary>
+//         // <
 //         static internal double PathLengthsError(double oldLength, double newLength, double idealLength, BundlingSettings bundlingSettings) {
 //             return (oldLength - newLength) * (bundlingSettings.PathLengthImportance / idealLength);
 //         }
 
 //         // <summary>
 //         // Error of hubs
-//         // </summary>
+//         // <
 //         static internal double RError(double idealR, double nowR, BundlingSettings bundlingSettings) {
 //             if (idealR <= nowR) return 0;
 
@@ -52,7 +52,7 @@
 
 //         // <summary>
 //         // Error of bundles
-//         // </summary>
+//         // <
 //         static internal double BundleError(double idealWidth, double nowWidth, BundlingSettings bundlingSettings) {
 //             if (idealWidth <= nowWidth) return 0;
 
@@ -62,7 +62,7 @@
 
 //         // <summary>
 //         // Cost of the whole graph
-//         // </summary>
+//         // <
 //         static internal double Cost(MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
 //             double cost = 0;
 
@@ -81,7 +81,7 @@
 
 //         // <summary>
 //         // Cost of the whole graph (hubs and bundles)
-//         // </summary>
+//         // <
 //         static internal double CostOfForces(MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
 //             double cost = 0;
 
@@ -102,7 +102,7 @@
 
 //         // <summary>
 //         // Gain of ink
-//         // </summary>
+//         // <
 //         internal double InkGain(Station node, Point newPosition) {
 //             //ink
 //             double oldInk = metroGraphData.Ink;
@@ -117,7 +117,7 @@
 
 //         // <summary>
 //         // Gain of path lengths
-//         // </summary>
+//         // <
 //         internal double PathLengthsGain(Station node, Point newPosition) {
 //             double gain = 0;
 //             //edge lengths
@@ -138,7 +138,7 @@
 
 //         // <summary>
 //         // Gain of radii
-//         // </summary>
+//         // <
 //         internal double RadiusGain(Station node, Point newPosition) {
 //             double gain = 0;
 
@@ -172,7 +172,7 @@
 //         // <summary>
 //         // Gain of bundles
 //         // if a newPosition is not valid (e.g. intersect obstacles) the result is -inf
-//         // </summary>
+//         // <
 //         internal double BundleGain(Station node, Point newPosition) {
 //             double gain = 0;
 

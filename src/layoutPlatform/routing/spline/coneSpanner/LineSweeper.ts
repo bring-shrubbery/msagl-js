@@ -14,7 +14,7 @@
 // namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
 //     // <summary>
 //     // sweeps a given direction of cones and adds discovered edges to the graph
-//     // </summary>
+//     // <
 //     internal class LineSweeper : LineSweeperBase, IConeSweeper {
 //         public Point ConeRightSideDirection { get; set; }
 //         public Point ConeLeftSideDirection { get; set; }
@@ -834,7 +834,7 @@
 
 //         // <summary>
 //         //
-//         // </summary>
+//         // <
 //         // <param name="rightSide"></param>
 //         // <param name="rbNode">represents a node of the right cone side</param>
 //         void FixConeRightSideIntersections(BrokenConeSide rightSide, RBNode < ConeSide > rbNode) {

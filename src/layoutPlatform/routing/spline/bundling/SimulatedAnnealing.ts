@@ -15,16 +15,16 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     // <summary>
 //     // Adjust current bundle-routing
-//     // </summary>
+//     // <
 //     public class SimulatedAnnealing {
 //         // <summary>
 //         // bundle data
-//         // </summary>
+//         // <
 //         readonly MetroGraphData metroGraphData;
 
 //         // <summary>
 //         // Algorithm settings
-//         // </summary>
+//         // <
 //         readonly BundlingSettings bundlingSettings;
 
 //         //  calculates rouing cost
@@ -35,7 +35,7 @@
 
 //         // <summary>
 //         // fix routing by simulated annealing algorithm
-//         // </summary>
+//         // <
 //         internal static bool FixRouting(MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
 //             return FixRouting(metroGraphData, bundlingSettings, null);
 //         }
@@ -60,7 +60,7 @@
 
 //     // <summary>
 //     // Use constraint edge routing to reduce ink
-//     // </summary>
+//     // <
 //     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters",
 //         MessageId = "Microsoft.Msagl.Routing.Spline.Bundling.GeneralBundling.InkMetric.OutputQ(System.String,Microsoft.Msagl.Routing.Spline.Bundling.GeneralBundling.MetroGraphData,Microsoft.Msagl.Core.Routing.BundlingSettings)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Microsoft.Msagl.Routing.Spline.Bundling.GeneralBundling.InkMetric.OutputQ(System.String,Microsoft.Msagl.Routing.Spline.Bundling.GeneralBundling.MetroGraphData,Microsoft.Msagl.Routing.Spline.Bundling.BundlingSettings)")]
 //     bool FixRouting(HashSet < Point > changedPoints) {
@@ -112,7 +112,7 @@
 
 //     // <summary>
 //     // stop SA if relative changes are small
-//     // </summary>
+//     // <
 //     bool Converged(double step, List < Point > oldx, List < Point > newx) {
 //         //return false;
 
@@ -168,7 +168,7 @@
 //     // <summary>
 //     // Move node to decrease the cost of the drawing
 //     // Returns true iff position has changed
-//     // </summary>
+//     // <
 //     bool TryMoveNode(Station node) {
 //         Point direction = BuildDirection(node);
 //         if (direction.length == 0) return false;
@@ -194,7 +194,7 @@
 
 //     // <summary>
 //     // Calculate the direction to improve the ink function
-//     // </summary>
+//     // <
 //     Point BuildDirection(Station node) {
 //         var forceInk = BuildForceForInk(node);
 //         var forcePL = BuildForceForPathLengths(node);
@@ -230,7 +230,7 @@
 //     // <summary>
 //     // Computes cost delta when moving the node
 //     // the cost will be negative if a new position overlaps obstacles
-//     // </summary>
+//     // <
 //     double CostGain(Station node, Point newPosition) {
 //         double MInf = -12345678.0;
 //         double rGain = costCalculator.RadiusGain(node, newPosition);
@@ -245,7 +245,7 @@
 
 //     // <summary>
 //     // force to decrease ink
-//     // </summary>
+//     // <
 //     Point BuildForceForInk(Station node) {
 //         //return new Point();
 //         Point direction = new Point();
@@ -262,7 +262,7 @@
 
 //     // <summary>
 //     // direction to decrease path lengths
-//     // </summary>
+//     // <
 //     Point BuildForceForPathLengths(Station node) {
 //         //return new Point();
 //         var direction = new Point();
@@ -286,7 +286,7 @@
 
 //     // <summary>
 //     // direction to increase radii
-//     // </summary>
+//     // <
 //     Point BuildForceForRadius(Station node) {
 //         Point direction = new Point();
 
@@ -311,7 +311,7 @@
 
 //     // <summary>
 //     // direction to push a bundle away from obstacle
-//     // </summary>
+//     // <
 //     Point BuildForceForBundle(Station node) {
 //         var direction = new Point();
 //         foreach(var adj of node.Neighbors) {

@@ -13,14 +13,14 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     // <summary>
 //     // Check intersections between hubs and obstacles with kd-tree
-//     // </summary>
+//     // <
 //     internal class Intersections {
 //         readonly MetroGraphData metroGraphData;
 //         readonly BundlingSettings bundlingSettings;
 //         Func<Station, Set<Polyline>> obstaclesToIgnore;
 //     // <summary>
 //     // represents loose or tight hierarchy
-//     // </summary>
+//     // <
 //     internal RectangleNode < Polyline > obstacleTree { get; set; }
 
 //         public Intersections(MetroGraphData metroGraphData, BundlingSettings bundlingSettings,
@@ -75,7 +75,7 @@
 
 //         // <summary>
 //         // Computes the intersection between the hub and obstacles
-//         // </summary>
+//         // <
 //         // <param name="node"></param>
 //         // <param name="center"></param>
 //         // <param name="radius"></param>
@@ -115,7 +115,7 @@
 //     // <summary>
 //     // faster way to check segment-polyline intersection
 //     // NOTE: polyline points should be oriented clockwise
-//     // </summary>
+//     // <
 //     internal static bool LineSegmentIntersectPolyline(Point start, Point end, Polyline poly) {
 //         Point segDirection = end - start;   // the segment direction vector
 //         Assert.assert(segDirection.length > GeomConstants.distanceEpsilon);
@@ -164,7 +164,7 @@
 //     // check the validness of the drawing:
 //     // 1. hubs are not inside loose obstacles
 //     // 2. bundles do not cross loose obstacles
-//     // </summary>
+//     // <
 //     internal bool HubPositionsAreOK() {
 //         //check polylines
 //         foreach(var line of metroGraphData.Metrolines) {
@@ -239,7 +239,7 @@
 //     // <summary>
 //     // edge doesn't cross obstacles
 //     // NOTE: use method in CdtIntersection insetad!
-//     // </summary>
+//     // <
 //     bool EdgeIsLegal(Station stationA, Station stationB, Point a, Point b) {
 //         var crossings = InteractiveEdgeRouter.IntersectionsOfLineAndRectangleNodeOverPolyline(new LineSegment(a, b), obstacleTree);
 //         Set < Polyline > obstaclesToIgnoreForBundle = ObstaclesToIgnoreForBundle(stationA, stationB);

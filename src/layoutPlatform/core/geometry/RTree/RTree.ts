@@ -98,7 +98,7 @@ export class RTree<T, P> {
   _rootNode: RectangleNode<T, P>
   // <summary>
   // Removes everything from the tree
-  // </summary>
+  // <
   Clear() {
     this.RootNode = null
   }

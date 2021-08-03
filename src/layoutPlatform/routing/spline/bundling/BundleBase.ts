@@ -10,7 +10,7 @@
 
 //         // <summary>
 //         // only one of those is not null
-//         // </summary>
+//         // <
 //         internal BundleInfo OutgoingBundleInfo;
 
 //         internal BundleInfo IncomingBundleInfo;
@@ -23,23 +23,23 @@
 
 //         // <summary>
 //         // boundary of cluster or hub containing this base
-//         // </summary>
+//         // <
 //         internal ICurve Curve;
 
 //         // <summary>
 //         // this bundle base sits on a cluster boundary and the opposite base sits on a child of the cluster
-//         // </summary>
+//         // <
 //         internal bool IsParent;
 
 //         // <summary>
 //         // if true then the base sits on a real node or cluster, otherwise it belongs to an intermediate hub
-//         // </summary>
+//         // <
 //         internal bool BelongsToRealNode;
 
 //         // <summary>
 //         // position of the station containing the base
 //         // (could be a center of a hub, or a point on the boundary of a cluster)
-//         // </summary>
+//         // <
 //         internal Point Position;
 
 //         //need for debug only
@@ -47,7 +47,7 @@
 
 //         // <summary>
 //         // constructor
-//         // </summary>
+//         // <
 //         internal BundleBase(int count, ICurve boundaryCurve, Point position, bool belongsToRealNode, int stationIndex) {
 //             BelongsToRealNode = belongsToRealNode;
 //             Curve = boundaryCurve;
@@ -84,7 +84,7 @@
 //     double parRight;
 //     // <summary>
 //     // corresponds to the left point of the base
-//     // </summary>
+//     // <
 //     internal double ParRight {
 //         get { return parRight; }
 //         set {
@@ -96,7 +96,7 @@
 //     double parLeft;
 //     // <summary>
 //     // corresponds to the right point of the base
-//     // </summary>
+//     // <
 //     internal double ParLeft {
 //         get { return parLeft; }
 //         set {

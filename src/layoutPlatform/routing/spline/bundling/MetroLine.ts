@@ -8,7 +8,7 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     // <summary>
 //     // holds the data of a path
-//     // </summary>
+//     // <
 // #if SHARPKIT //http://code.google.com/p/sharpkit/issues/detail?id=203
 //     //SharpKit/Colin - Interface implementations
 //     // FP: this needs to be public because it is referenced by interfaces elsewhere. It's not public in the .NET version because that version can use explicitly-defined interfaces.

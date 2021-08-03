@@ -26,52 +26,52 @@
 
 //         // <summary>
 //         // id of the station (used for comparison)
-//         // </summary>
+//         // <
 //         internal readonly int SerialNumber;
 
 //         // <summary>
 //         // if true the station is a center of an obstacle
-//         // </summary>
+//         // <
 //         internal readonly bool IsRealNode;
 
 //         // <summary>
 //         // radius of the corresponding hub
-//         // </summary>
+//         // <
 //         internal double Radius;
 
 //         // <summary>
 //         // position of the corresponding hub
-//         // </summary>
+//         // <
 //         internal Point Position;
 
 //         // <summary>
 //         // neighbors sorted in counter-clockwise order around the station
-//         // </summary>
+//         // <
 //         internal Station[] Neighbors;
 
 //         // <summary>
 //         // it maps each neighbor to its hub
-//         // </summary>
+//         // <
 //         internal Dictionary<Station, BundleBase> BundleBases = new Dictionary<Station, BundleBase>();
 
 //         // <summary>
 //         // it maps a node to a set of tight polylines that can contain the node
-//         // </summary>
+//         // <
 //         internal Set<Polyline> EnterableTightPolylines;
 
 //         // <summary>
 //         // it maps a node to a set of loose polylines that can contain the node
-//         // </summary>
+//         // <
 //         internal Set<Polyline> EnterableLoosePolylines;
 
 //         // <summary>
 //         // MetroNodeInfos corresponding to the node
-//         // </summary>
+//         // <
 //         internal List<MetroNodeInfo> MetroNodeInfos = new List<MetroNodeInfo>();
 
 //         // <summary>
 //         // curve of the hub
-//         // </summary>
+//         // <
 //         internal ICurve BoundaryCurve;
 
 //         public static bool operator<(Station a, Station b) {
@@ -88,7 +88,7 @@
 
 //     // <summary>
 //     // triangle of cdt where the station is situated
-//     // </summary>
+//     // <
 //     internal CdtTriangle CdtTriangle;
 
 //     internal double cachedRadiusCost;

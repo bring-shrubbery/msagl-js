@@ -14,7 +14,7 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     // <summary>
 //     // Stores intersections between edges, hubs, and obstacles to speed up simulated annealing
-//     // </summary>
+//     // <
 //     internal class IntersectionCache {
 //         readonly MetroGraphData metroGraphData;
 //         readonly BundlingSettings bundlingSettings;

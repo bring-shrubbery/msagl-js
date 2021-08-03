@@ -22,7 +22,7 @@ export class Obstacle {
   ///  <summary>
   ///  Only public to make the compiler happy about the "where TPoly : new" constraint.
   ///  Will be populated by caller.
-  ///  </summary>
+  ///  <
   public constructor(shape: Shape, makeRect: boolean, padding: number) {
     if (makeRect) {
       const paddedBox = shape.BoundingBox.clone()

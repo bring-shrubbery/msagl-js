@@ -6,7 +6,7 @@
 // namespace Microsoft.Msagl.Routing.Visibility {
 //     // <summary>
 //     // represents a chunk of a hole boundary
-//     // </summary>
+//     // <
 //     internal class Stem {
 //         PolylinePoint start;
 

@@ -12,12 +12,12 @@
 //     internal class InteractiveTangentVisibilityGraphCalculator : Algorithm {
 //         // <summary>
 //         // the list of obstacles
-//         // </summary>
+//         // <
 //         ICollection < Polygon > polygons;
 
 //         // <summary>
 //         // From these polygons we calculate visibility edges to all other polygons
-//         // </summary>
+//         // <
 //         IEnumerable < Polygon > addedPolygons;
 
 //         VisibilityGraph visibilityGraph;
@@ -30,7 +30,7 @@
 
 //         // <summary>
 //         // we calculate tangents between activePolygons and between activePolygons and existingObsacles
-//         // </summary>
+//         // <
 //         protected override void RunInternal() {
 //             useLeftPTangents = true;
 //             CalculateAndAddEdges();
@@ -103,7 +103,7 @@
 
 //         // <summary>
 //         // this function will also add the first tangent to the visible edges if needed
-//         // </summary>
+//         // <
 //         private void InitActiveDiagonals() {
 //             if (tangents.Count == 0)
 //                 return;
@@ -170,7 +170,7 @@
 
 //         // <summary>
 //         // compare tangents by measuring the counterclockwise angle between the tangent and the edge
-//         // </summary>
+//         // <
 //         // <param name="e0"></param>
 //         // <param name="e1"></param>
 //         // <returns></returns>

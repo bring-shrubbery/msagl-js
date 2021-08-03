@@ -43,18 +43,18 @@ using Microsoft.Msagl.DebugHelpers;
 namespace Microsoft.Msagl.Routing {
     // <summary>
     // the router between nodes
-    // </summary>
+    // <
     public class InteractiveEdgeRouter : Algorithm {
 
         // <summary>
         // the obstacles for routing
-        // </summary>
+        // <
         public IEnumerable < ICurve > Obstacles { get; private set; }
 
         // <summary>
         // the minimum angle between a node boundary curve and and an edge
         // curve at the place where the edge curve intersects the node boundary
-        // </summary>
+        // <
         double EnteringAngleBound { get; set; }
 
         Polyline _sourceTightPolyline;
@@ -66,14 +66,14 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         //
-        // </summary>
+        // <
         Polyline SourceLoosePolyline { get; set; }
 
         Polyline targetTightPolyline;
 
         // <summary>
         //
-        // </summary>
+        // <
         Polyline TargetTightPolyline {
             get { return targetTightPolyline; }
             set { targetTightPolyline = value; }
@@ -109,7 +109,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // the port of the edge start
-        // </summary>
+        // <
         public Port SourcePort {
             get { return sourcePort; }
             private set {
@@ -135,7 +135,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // the port of the edge end
-        // </summary>
+        // <
         Port TargetPort {
             get { return targetPort; }
             set { targetPort = value; }
@@ -144,14 +144,14 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // the curve should not come closer than Padding to the nodes
-        // </summary>
+        // <
         public double TightPadding { get; set; }
 
         double loosePadding;
 
         // <summary>
         // we further pad each node but not more than LoosePadding.
-        // </summary>
+        // <
         public double LoosePadding {
             get {
                 return loosePadding;
@@ -182,12 +182,12 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         //
-        // </summary>
+        // <
         double OffsetForPolylineRelaxing { get; set; }
 
         // <summary>
         // Set up the router and calculate the set of obstacles over which to route.
-        // </summary>
+        // <
         // <param name="obstacles">the obstacles for routing</param>
         // <param name="padding">obstacles are inflated by this much to find an inner boundary within which edges cannot enter</param>
         // <param name="loosePadding">
@@ -203,7 +203,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // The expected number of progress steps this algorithm will take.
-        // </summary>
+        // <
         public int ExpectedProgressSteps { get; private set; }
 
         bool targetIsInsideOfSourceTightPolyline;
@@ -211,12 +211,12 @@ namespace Microsoft.Msagl.Routing {
         internal bool UseEdgeLengthMultiplier;
         // <summary>
         // if set to true the algorithm will try to shortcut a shortest polyline inner points
-        // </summary>
+        // <
         internal bool UseInnerPolylingShortcutting = true;
 
         // <summary>
         // if set to true the algorithm will try to shortcut a shortest polyline start and end
-        // </summary>
+        // <
         internal bool UsePolylineEndShortcutting = true;
 
         internal bool AllowedShootingStraightLines = true;
@@ -226,7 +226,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // An empty constructor for calling it from inside of MSAGL
-        // </summary>
+        // <
         internal InteractiveEdgeRouter() {
             ObstacleCalculator = new InteractiveObstacleCalculator(Obstacles, TightPadding, LoosePadding, false);
         }
@@ -632,7 +632,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // smoothing the corners of the polyline
-        // </summary>
+        // <
         // <param name="edgePolyline"></param>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Polyline")]
         public void SmoothCorners(SmoothedPolyline edgePolyline) {
@@ -719,7 +719,7 @@ namespace Microsoft.Msagl.Routing {
         // <summary>
         // is set to true will cache three points defining the corner
         // to avoid obstacle avoidance calculation
-        // </summary>
+        // <
         public bool CacheCorners {
             get { return cacheCorners; }
             set {
@@ -736,7 +736,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         //
-        // </summary>
+        // <
         // <param name="underlyingPolyline"></param>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Polyline")]
         public void TryToRemoveInflectionsAndCollinearSegments(SmoothedPolyline underlyingPolyline) {
@@ -857,13 +857,13 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // returns true if the nodes overlap or just positioned too close
-        // </summary>
+        // <
         public bool OverlapsDetected {
             get { return ObstacleCalculator.OverlapsDetected; }
         }
 
-        //<summary>
-        //</summary>
+        
+        //<
         public double ConeSpannerAngle { get; set; }
 
         internal RectangleNode < Polyline > TightHierarchy {
@@ -890,7 +890,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         //
-        // </summary>
+        // <
         // <param name="targetLocation"></param>
         // <returns></returns>
         public EdgeGeometry RouteEdgeToLocation(Point targetLocation) {
@@ -942,7 +942,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // routes the edge to the port
-        // </summary>
+        // <
         // <param name="edgeTargetPort"></param>
         // <param name="portLoosePolyline"></param>
         // <param name="smooth"> if true will smooth the edge avoiding the obstacles, will take more time</param>
@@ -1180,8 +1180,8 @@ namespace Microsoft.Msagl.Routing {
 
         internal InteractiveObstacleCalculator ObstacleCalculator { get; set; }
 
-        //<summary>
-        //</summary>
+        
+        //<
         //<param name="obstacles"></param>
         //<param name="padding"></param>
         //<param name="loosePadding"></param>
@@ -1416,7 +1416,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // returns the hit object
-        // </summary>
+        // <
         // <param name="point"></param>
         // <returns></returns>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Polyline")]
@@ -1443,7 +1443,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         //
-        // </summary>
+        // <
         public void Clean() {
             SourcePort = TargetPort = null;
             SourceLoosePolyline = SourceTightPolyline = null;
@@ -1458,7 +1458,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         // setting source port and the loose polyline of the port
-        // </summary>
+        // <
         // <param name="port"></param>
         // <param name="sourceLoosePolylinePar"></param>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "polyline"),
@@ -1483,7 +1483,7 @@ namespace Microsoft.Msagl.Routing {
 
         // <summary>
         //
-        // </summary>
+        // <
         protected override void RunInternal() {
             CalculateWholeTangentVisibilityGraph();
         }
@@ -1511,8 +1511,8 @@ namespace Microsoft.Msagl.Routing {
             visibilityGraphGenerator.Run();
         }
 
-        //<summary>
-        //</summary>
+        
+        //<
         //<param name="sourcePortLocal"></param>
         //<param name="targetPortLocal"></param>
         //<param name="smooth"></param>
@@ -1763,7 +1763,7 @@ namespace Microsoft.Msagl.Routing {
 
 
         // <summary>
-        // </summary>
+        // <
         // <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public VisibilityGraph GetVisibilityGraph() {

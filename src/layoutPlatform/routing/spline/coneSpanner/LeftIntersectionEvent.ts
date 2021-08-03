@@ -4,7 +4,7 @@
 // namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
 //     // <summary>
 //     // left here means an intersection of a left cone side with an obstacle edge
-//     // </summary>
+//     // <
 //     internal class LeftIntersectionEvent : SweepEvent {
 //         internal ConeLeftSide coneLeftSide;
 //         Point intersectionPoint;

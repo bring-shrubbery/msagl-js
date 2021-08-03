@@ -52,7 +52,7 @@
 //         // If set to true then a smaller visibility graph is created.
 //         // An edge is added to the visibility graph only if it is found at least twice:
 //         // once sweeping with a direction d and the second time with -d
-//         // </summary>
+//         // <
 //         internal bool Bidirectional {
 //             get { return _bidirectional; }
 //             set { _bidirectional = value; }
