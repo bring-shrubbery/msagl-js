@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/math/geometry/polyline.spec.ts",
+        "src/tests/layoutPlatform/math/geometry/compassVector.spec.ts",
         "-t",
-        "closest par"
+        "VectorDirection"
       ],
       "console": "integratedTerminal"
     }

@@ -30,7 +30,7 @@ export class CompassVector {
     this.Dir = direction
   }
 
-  private get Right(): CompassVector {
+  get Right(): CompassVector {
     return new CompassVector(CompassVector.RotateRight(this.Dir))
   }
 
@@ -54,7 +54,7 @@ export class CompassVector {
     }
   }
 
-  private static RotateLeft(direction: Direction): Direction {
+  static RotateLeft(direction: Direction): Direction {
     switch (direction) {
       case Direction.North:
         return Direction.West
@@ -115,14 +115,8 @@ export class CompassVector {
     return CompassVector.VectorDirection(b.sub(a))
   }
 
-  static DirectionsFromPointToPoint(a: Point, b: Point): Direction {
+  static DirectionFromPointToPoint(a: Point, b: Point): Direction {
     return CompassVector.VectorDirectionPP(a, b)
-  }
-
-  private static PureDirectionFromPointToPoint(a: Point, b: Point): Direction {
-    const dir: Direction = CompassVector.VectorDirectionPP(a, b)
-    Assert.assert(CompassVector.IsPureDirection(dir), 'Impure direction found')
-    return dir
   }
 
   static OppositeDir(direction: Direction): Direction {
@@ -167,7 +161,7 @@ export class CompassVector {
 
   static IsPureDirectionPP(a: Point, b: Point): boolean {
     return CompassVector.IsPureDirection(
-      CompassVector.DirectionsFromPointToPoint(a, b),
+      CompassVector.DirectionFromPointToPoint(a, b),
     )
   }
 
@@ -203,7 +197,7 @@ export class CompassVector {
 
   ///   the negation operator
 
-  public static Operator(directionVector: CompassVector): CompassVector {
+  public static negate(directionVector: CompassVector): CompassVector {
     return new CompassVector(CompassVector.OppositeDir(directionVector.Dir))
   }
 }
