@@ -12,5 +12,5 @@ test('padded polyline', () => {
     poly,
     10,
   )
-  SvgDebugWriter.dumpICurves('/tmp/paddedePolyOfRect.ts', [paddedPoly])
+  SvgDebugWriter.dumpICurves('/tmp/paddedePolyOfRect.svg', [poly, paddedPoly])
 })
