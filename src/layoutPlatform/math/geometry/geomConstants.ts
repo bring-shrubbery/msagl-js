@@ -8,8 +8,10 @@ export class GeomConstants {
     )
   }
   static RoundDouble(num: number): number {
-    return
-    Math.round((num + Number.EPSILON) * GeomConstants.mult) / GeomConstants.mult
+    return (
+      Math.round((num + Number.EPSILON) * GeomConstants.mult) /
+      GeomConstants.mult
+    )
   }
   static mult = 1000000
   static defaultLeafBoxesOffset = 0.5

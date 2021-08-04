@@ -272,7 +272,7 @@ export class Polyline implements ICurve {
     return this.startPoint.point
   }
   get end(): Point {
-    return this.closed ? this.startPoint.point : this.endPoint.point
+    return this.endPoint.point
   }
   reverse(): ICurve {
     const r = new Polyline()

@@ -34,7 +34,7 @@ export class Obstacle {
       )
     }
 
-    Obstacle.RoundVertices(this.PaddedPolyline)
+    Obstacle.RoundVerticesAndSimplify(this.PaddedPolyline)
     this.IsRectangle = this.IsPolylineRectangle()
 
     this.InputShape = shape
@@ -70,14 +70,17 @@ export class Obstacle {
 
     return true
   }
-  private static RoundVertices(polyline: Polyline) {
+
+  static RoundVerticesAndSimplify(polyline: Polyline) {
+    Assert.assert(polyline.isClockwise(), 'Polyline is not clockwise')
+    Assert.assert(polyline.closed)
     //  Following creation of the padded border, round off the vertices for consistency
     //  in later operations (intersections and event ordering).
     let ppt: PolylinePoint = polyline.startPoint
-    for (; ppt != polyline.startPoint; ) {
+    do {
       ppt.point = GeomConstants.RoundPoint(ppt.point)
       ppt = ppt.nextOnPolyline
-    }
+    } while (ppt != polyline.startPoint)
 
     Obstacle.RemoveCloseAndCollinearVerticesInPlace(polyline)
     //  We've modified the points so the BoundingBox may have changed; force it to be recalculated.
@@ -110,8 +113,10 @@ export class Obstacle {
     }
 
     InteractiveEdgeRouter.RemoveCollinearVertices(polyline)
+
     if (
       polyline.endPoint.prev != null &&
+      polyline.endPoint.prev != polyline.startPoint &&
       Point.getTriangleOrientation(
         polyline.endPoint.prev.point,
         polyline.end,
@@ -123,6 +128,7 @@ export class Obstacle {
 
     if (
       polyline.startPoint.next != null &&
+      polyline.endPoint.prev != polyline.startPoint &&
       Point.getTriangleOrientation(
         polyline.end,
         polyline.start,
@@ -132,6 +138,7 @@ export class Obstacle {
       polyline.RemoveStartPoint()
     }
 
+    polyline.requireInit()
     return polyline
   }
 }
