@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/math/geometry/compassVector.spec.ts",
+        "src/tests/layoutPlatform/routing/interactiveObstacleCalculator.spec.ts",
         "-t",
-        "VectorDirection"
+        "padded triangle"
       ],
       "console": "integratedTerminal"
     }

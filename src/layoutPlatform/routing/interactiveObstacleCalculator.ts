@@ -80,7 +80,7 @@ export class InteractiveObstacleCalculator {
       return {a: a, b: a, numberOfPoints: 1}
     }
 
-    const l: Point = v.sub(u).normalize().add(v.sub(w)).normalize()
+    const l: Point = v.sub(u).normalize().add(v.sub(w).normalize())
     if (l.length < GeomConstants.intersectionEpsilon) {
       const a = v.add(uvPerp.mul(padding))
       return {a: a, b: a, numberOfPoints: 1}
