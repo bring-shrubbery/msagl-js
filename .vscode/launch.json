@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/routing/interactiveObstacleCalculator.spec.ts",
+        "src/tests/layoutPlatform/routing/rectilinear/PointComparer.spec.ts",
         "-t",
-        "padded triangle"
+        "equal"
       ],
       "console": "integratedTerminal"
     }

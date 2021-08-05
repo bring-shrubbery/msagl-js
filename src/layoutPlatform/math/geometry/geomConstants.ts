@@ -1,6 +1,7 @@
 import {Point} from './point'
 
 export class GeomConstants {
+  static distanceEpsilonPrecision = 6
   static RoundPoint(point: Point): Point {
     return new Point(
       GeomConstants.RoundDouble(point.x),
@@ -8,15 +9,12 @@ export class GeomConstants {
     )
   }
   static RoundDouble(num: number): number {
-    return (
-      Math.round((num + Number.EPSILON) * GeomConstants.mult) /
-      GeomConstants.mult
-    )
+    return Math.round(num * GeomConstants.mult) / GeomConstants.mult
   }
-  static mult = 1000000
+  static mult = Math.pow(10, 6)
   static defaultLeafBoxesOffset = 0.5
   static lineSegmentThreshold = 0.05
   static intersectionEpsilon = 0.0001
-  static distanceEpsilon = Math.pow(10, -6)
+  static distanceEpsilon = Math.pow(10, -GeomConstants.distanceEpsilonPrecision)
   static tolerance = 1.0e-8
 }

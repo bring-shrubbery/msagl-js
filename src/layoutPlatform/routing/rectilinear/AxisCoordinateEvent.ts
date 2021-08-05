@@ -1,4 +1,4 @@
-import {Point} from '../../../../layoutPlatform/math/geometry/point'
+import {Point} from '../../math/geometry/point'
 import {SweepEvent} from '../spline/sweepEvent'
 
 export class AxisCoordinateEvent extends SweepEvent {

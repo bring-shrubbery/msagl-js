@@ -1,27 +1,7 @@
-import {GeomConstants} from './geomConstants'
+import {PointComparer} from '../../routing/rectilinear/PointComparer'
+import {Direction} from './directiton'
 import {Point} from './point'
 
-export enum Direction {
-  // no direction defined
-
-  None = 0,
-
-  // North
-
-  North = 1,
-
-  // East
-
-  East = 2,
-
-  // South
-
-  South = 4,
-
-  // West
-
-  West = 8,
-}
 export class CompassVector {
   Dir: Direction
 
@@ -95,15 +75,15 @@ export class CompassVector {
 
   static VectorDirection(d: Point): Direction {
     let r: Direction = Direction.None
-    if (d.x > GeomConstants.distanceEpsilon) {
+    if (d.x > PointComparer.DifferenceEpsilon) {
       r = Direction.East
-    } else if (d.x < GeomConstants.distanceEpsilon * -1) {
+    } else if (d.x < -PointComparer.DifferenceEpsilon) {
       r = Direction.West
     }
 
-    if (d.y > GeomConstants.distanceEpsilon) {
+    if (d.y > PointComparer.DifferenceEpsilon) {
       r = r | Direction.North
-    } else if (d.y < GeomConstants.distanceEpsilon * -1) {
+    } else if (d.y < -PointComparer.DifferenceEpsilon) {
       r = r | Direction.South
     }
 
@@ -111,15 +91,32 @@ export class CompassVector {
   }
 
   static VectorDirectionPP(a: Point, b: Point): Direction {
-    return CompassVector.VectorDirection(b.sub(a))
+    let r: Direction = Direction.None
+    //  This method is called a lot as part of rectilinear layout.
+    //  Try to keep it quick.
+    const horizontalDiff: number = b.x - a.x
+    const verticalDiff: number = b.y - a.y
+    if (horizontalDiff > PointComparer.DifferenceEpsilon) {
+      r = Direction.East
+    } else if (-horizontalDiff > PointComparer.DifferenceEpsilon) {
+      r = Direction.West
+    }
+
+    if (verticalDiff > PointComparer.DifferenceEpsilon) {
+      r |= Direction.North
+    } else if (-verticalDiff > PointComparer.DifferenceEpsilon) {
+      r |= Direction.South
+    }
+
+    return r
   }
 
   static DirectionFromPointToPoint(a: Point, b: Point): Direction {
     return CompassVector.VectorDirectionPP(a, b)
   }
 
-  static OppositeDir(direction: Direction): Direction {
-    switch (direction) {
+  static OppositeDir(dir: Direction): Direction {
+    switch (dir) {
       case Direction.North:
         return Direction.South
         break
@@ -138,8 +135,8 @@ export class CompassVector {
     }
   }
 
-  static IsPureDirection(direction: Direction): boolean {
-    switch (direction) {
+  static IsPureDirection(dir: Direction): boolean {
+    switch (dir) {
       case Direction.North:
         return true
         break

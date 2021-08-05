@@ -1,7 +1,5 @@
-import {
-  CompassVector,
-  Direction,
-} from '../../../../layoutPlatform/math/geometry/compassVector'
+import {CompassVector} from '../../../../layoutPlatform/math/geometry/compassVector'
+import {Direction} from '../../../../layoutPlatform/math/geometry/directiton'
 import {Point} from '../../../../layoutPlatform/math/geometry/point'
 
 test('rotate', () => {

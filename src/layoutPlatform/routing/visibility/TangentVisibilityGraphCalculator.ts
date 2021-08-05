@@ -168,7 +168,7 @@
 //             ProcessPolygonQ(q);
 
 //         this.tangents.Sort(new Comparison<Tangent>(TangentComparison));
-//         ///debug
+//         //debug
 //         //List<ICurve> cc = new List<ICurve>();
 //         //foreach (Tangent t of this.tangents)
 //         //    cc.Add(new LineSegment(t.start.point, t.End.point));
