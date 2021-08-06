@@ -1,9 +1,12 @@
 import {Point} from '../../math/geometry/point'
+import {PolylinePoint} from '../../math/geometry/polylinePoint'
 import {Assert} from '../../utils/assert'
+import {PointMap} from '../../utils/PointMap'
 import {VisibilityEdge} from './VisibilityEdge'
 import {VisibilityVertex} from './VisibilityVertex'
 
 export class VisibilityGraph {
+  //  needed for shortest path calculations
   _prevEdgesMap: Map<VisibilityVertex, VisibilityEdge> = new Map<
     VisibilityVertex,
     VisibilityEdge
@@ -23,7 +26,6 @@ export class VisibilityGraph {
   }
 
   //  needed for shortest path calculations
-
   PreviosVertex(v: VisibilityVertex): VisibilityVertex {
     const prev: VisibilityEdge = this._prevEdgesMap.get(v)
     if (!prev) return null
@@ -41,11 +43,8 @@ export class VisibilityGraph {
   }
 
   //  the default is just to return a new VisibilityVertex
-  VertexFactory: (p: Point) => VisibilityVertex
-  pointToVertexMap: Map<Point, VisibilityVertex> = new Map<
-    Point,
-    VisibilityVertex
-  >()
+  VertexFactory = (p: Point) => new VisibilityVertex(p)
+  pointToVertexMap: PointMap<VisibilityVertex> = new PointMap<VisibilityVertex>()
 
   //   static GetVisibilityGraphForShortestPath(pathStart: Point, pathEnd: Point, obstacles: IEnumerable<Polyline>, /* out */sourceVertex: VisibilityVertex, /* out */targetVertex: VisibilityVertex): VisibilityGraph {
   //       let holes = new List<Polyline>(VisibilityGraph.OrientHolesClockwise(obstacles));
@@ -171,33 +170,28 @@ export class VisibilityGraph {
   //       return this.AddVertex(polylinePoint.point);
   //   }
 
-  //   AddVertex(point: Point): VisibilityVertex {
-  //       #if (SHARPKIT)
-  //       let currentVertex: VisibilityVertex;
-  //       if (this.PointToVertexMap.TryGetValue(point, /* out */currentVertex)) {
-  //           return currentVertex;
-  //       }
+  AddVertexP(point: Point): VisibilityVertex {
+    const currentVertex = this.pointToVertexMap.getP(point)
+    if (currentVertex) {
+      return currentVertex
+    }
 
-  //       let newVertex = VertexFactory(point);
-  //       this.PointToVertexMap[point] = newVertex;
-  //       return newVertex;
-  //       #else
-  //       let vertex: VisibilityVertex;
-  //       return VertexFactory(point);
-  //       // TODO: Warning!!!, inline IF is not supported ?
-  //       !this.PointToVertexMap.TryGetValue(point, /* out */vertex);
-  //       vertex;
-  //       #endif
-  //   }
+    const newVertex = this.VertexFactory(point)
+    this.pointToVertexMap.setP(point, newVertex)
+    return newVertex
+  }
 
-  //   AddVertex(vertex: VisibilityVertex) {
-  //       Assert.assert(!this.PointToVertexMap.ContainsKey(vertex.point), "A vertex already exists at this location");
-  //       this.PointToVertexMap[vertex.point] = vertex;
-  //   }
+  AddVertexV(vertex: VisibilityVertex) {
+    Assert.assert(
+      !this.pointToVertexMap.hasP(vertex.point),
+      'A vertex already exists at this location',
+    )
+    this.pointToVertexMap.setP(vertex.point, vertex)
+  }
 
-  //   ContainsVertex(point: Point): boolean {
-  //       return this.PointToVertexMap.ContainsKey(point);
-  //   }
+  ContainsVertex(point: Point): boolean {
+    return this.pointToVertexMap.hasP(point)
+  }
 
   //   static AddEdge(source: VisibilityVertex, target: VisibilityVertex): VisibilityEdge {
   //       let visEdge: VisibilityEdge;
@@ -216,74 +210,51 @@ export class VisibilityGraph {
   //       return edge;
   //   }
 
-  //   AddEdge(source: PolylinePoint, target: PolylinePoint) {
-  //       this.AddEdge(source.point, target.point);
-  //   }
+  AddEdgePlPl(source: PolylinePoint, target: PolylinePoint) {
+    this.AddEdge(source.point, target.point)
+  }
 
-  //   static AddEdge(edge: VisibilityEdge) {
-  //       Assert.assert((edge.Source != edge.Target));
-  //       edge.Source.OutEdges.insert(edge);
-  //       edge.Target.InEdges.Add(edge);
-  //   }
+  static AddEdge(edge: VisibilityEdge) {
+    Assert.assert(edge.Source != edge.Target)
+    edge.Source.OutEdges.insert(edge)
+    edge.Target.InEdges.push(edge)
+  }
 
-  //   AddEdge(source: Point, target: Point): VisibilityEdge {
-  //       let edge: VisibilityEdge;
-  //       let sourceV = this.FindVertex(source);
-  //       let targetV: VisibilityVertex = null;
-  //       if ((sourceV != null)) {
-  //           targetV = this.FindVertex(target);
-  //           if (((targetV != null)
-  //                       && sourceV.TryGetEdge(targetV, /* out */edge))) {
-  //               return edge;
-  //           }
+  AddEdgeF(
+    source: Point,
+    target: Point,
+    edgeCreator: (a: VisibilityVertex, b: VisibilityVertex) => VisibilityEdge,
+  ): VisibilityEdge {
+    let sourceV = this.FindVertex(source)
+    let targetV: VisibilityVertex = null
+    if (sourceV != null) {
+      targetV = this.FindVertex(target)
+      if (targetV != null) {
+        const edge: VisibilityEdge = sourceV.get(targetV)
+        if (edge) return edge
+      }
+    }
 
-  //       }
+    if (sourceV == null) {
+      // then targetV is also null
+      sourceV = this.AddVertexP(source)
+      targetV = this.AddVertexP(target)
+    } else if (targetV == null) {
+      targetV = this.AddVertexP(target)
+    }
 
-  //       if ((sourceV == null)) {
-  //           // then targetV is also null
-  //           sourceV = this.AddVertex(source);
-  //           targetV = this.AddVertex(target);
-  //       }
-  //       else if ((targetV == null)) {
-  //           targetV = this.AddVertex(target);
-  //       }
+    const edge = edgeCreator(sourceV, targetV)
+    sourceV.OutEdges.insert(edge)
+    targetV.InEdges.push(edge)
+    return edge
+  }
 
-  //       edge = new VisibilityEdge(sourceV, targetV);
-  //       sourceV.OutEdges.insert(edge);
-  //       targetV.InEdges.Add(edge);
-  //       return edge;
-  //   }
-
-  //   AddEdge(source: Point, target: Point, edgeCreator: Func<VisibilityVertex, VisibilityVertex, VisibilityEdge>): VisibilityEdge {
-  //       let edge: VisibilityEdge;
-  //       let sourceV = this.FindVertex(source);
-  //       let targetV: VisibilityVertex = null;
-  //       if ((sourceV != null)) {
-  //           targetV = this.FindVertex(target);
-  //           if (((targetV != null)
-  //                       && sourceV.TryGetEdge(targetV, /* out */edge))) {
-  //               return edge;
-  //           }
-
-  //       }
-
-  //       if ((sourceV == null)) {
-  //           // then targetV is also null
-  //           sourceV = this.AddVertex(source);
-  //           targetV = this.AddVertex(target);
-  //       }
-  //       else if ((targetV == null)) {
-  //           targetV = this.AddVertex(target);
-  //       }
-
-  //       edge = edgeCreator(sourceV, targetV);
-  //       sourceV.OutEdges.insert(edge);
-  //       targetV.InEdges.Add(edge);
-  //       return edge;
-  //   }
+  AddEdge(source: Point, target: Point): VisibilityEdge {
+    return this.AddEdgeF(source, target, (a, b) => new VisibilityEdge(a, b))
+  }
 
   FindVertex(point: Point): VisibilityVertex {
-    return this.pointToVertexMap.get(point)
+    return this.pointToVertexMap.getP(point)
   }
 
   //   GetVertex(polylinePoint: PolylinePoint): VisibilityVertex {
@@ -294,18 +265,18 @@ export class VisibilityGraph {
     return this.pointToVertexMap.values()
   }
 
-  //   RemoveVertex(vertex: VisibilityVertex) {
-  //       //  Assert.assert(PointToVertexMap.ContainsKey(vertex.Point), "Cannot find vertex in PointToVertexMap");
-  //       for (let edge in vertex.OutEdges) {
-  //           edge.Target.RemoveInEdge(edge);
-  //       }
+  RemoveVertex(vertex: VisibilityVertex) {
+    //  Assert.assert(PointToVertexMap.ContainsKey(vertex.Point), "Cannot find vertex in PointToVertexMap");
+    for (const edge of vertex.OutEdges) {
+      edge.Target.RemoveInEdge(edge)
+    }
 
-  //       for (let edge in vertex.InEdges) {
-  //           edge.Source.RemoveOutEdge(edge);
-  //       }
+    for (const edge of vertex.InEdges) {
+      edge.Source.RemoveOutEdge(edge)
+    }
 
-  //       this.PointToVertexMap.Remove(vertex.point);
-  //   }
+    this.pointToVertexMap.deleteP(vertex.point)
+  }
 
   //   RemoveEdge(v1: VisibilityVertex, v2: VisibilityVertex) {
   //       let edge: VisibilityEdge;

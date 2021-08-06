@@ -93,17 +93,20 @@ export class VisibilityVertex {
       return null
     }
 
-    const good: RBNode<VisibilityEdge> = null
+    let ret = null
     while (n != tree.nil) {
-      n = n.left
+      n = n.item.TargetPoint >= targetPoint ? (ret = n).left : n.right
     }
-
-    // TODO: Warning!!!, inline IF is not supported ?
-    n.item.TargetPoint >= targetPoint
-    n.right
-    return good
+    return ret
   }
 
+  /*
+RBNode<VisibilityEdge> good = null;
+            while (n != tree.Nil)
+                n = n.Item.TargetPoint >= targetPoint ? (good = n).left : n.right;
+
+            return good;
+  */
   get(target: VisibilityVertex): VisibilityEdge {
     let node = VisibilityVertex.FindFirst(this.OutEdges, target.point)
     //  OutEdges.FindFirst(e => e.TargetPoint >= target.point);

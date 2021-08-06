@@ -117,7 +117,7 @@ export class PointComparer {
     return CompassVector.DirectionFromPointToPoint(a, b)
   }
 
-  static GetPureDirection(a: Point, b: Point): Direction {
+  static GetPureDirectionPP(a: Point, b: Point): Direction {
     PointComparer.Assert_RoundedP(a)
     PointComparer.Assert_RoundedP(b)
     const dir: Direction = PointComparer.GetDirections(a, b)
@@ -131,7 +131,7 @@ export class PointComparer {
     return CompassVector.IsPureDirection(PointComparer.GetDirections(a, b))
   }
 
-  static IsPureDirectionFromEnum(dir: Direction): boolean {
+  static IsPureDirectionD(dir: Direction): boolean {
     return CompassVector.IsPureDirection(dir)
   }
 
@@ -148,6 +148,6 @@ export class PointComparer {
     first: VisibilityVertex,
     second: VisibilityVertex,
   ): Direction {
-    return PointComparer.GetPureDirection(first.point, second.point)
+    return PointComparer.GetPureDirectionPP(first.point, second.point)
   }
 }
