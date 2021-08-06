@@ -124,7 +124,6 @@ export class StaticGraphUtility {
   static SegmentsIntersectLLOutPoint(
     first: LineSegment,
     second: LineSegment,
-    /* out */ intersect: Point,
   ): boolean {
     return (
       StaticGraphUtility.IntervalsIntersect(

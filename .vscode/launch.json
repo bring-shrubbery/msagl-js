@@ -33,11 +33,11 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/routing/rectilinear/PointComparer.spec.ts",
+        "src/tests/layoutPlatform/routing/rectilinear/StaticGraphUtility.spec.ts",
         "-t",
         "equal"
       ],
-      "console": "integratedTerminal"
+      "console": "EdgeDirectionVE"
     }
   ]
 }
