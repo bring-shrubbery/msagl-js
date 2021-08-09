@@ -1,51 +1,84 @@
-class SegmentIntersector extends IComparer<SegmentIntersector.SegEvent>, IComparer<ScanSegment> {
-    
+import { IEnumerable } from "linq-to-typescript"
+import { Point } from "../../math/geometry/point"
+import { RBNode } from "../../structs/RBTree/rbNode"
+import { RBTree } from "../../structs/RBTree/rbTree"
+import { VisibilityGraph } from "../visibility/VisibilityGraph"
+import { VisibilityVertex } from "../visibility/VisibilityVertex"
+import { PointComparer } from "./PointComparer"
+import { ScanSegment } from "./ScanSegment"
+import { ScanSegmentTree } from "./ScanSegmentTree"
+import { StaticGraphUtility } from "./StaticGraphUtility"
+
+enum SegEventType {
+            
+            VOpen,
+            
+            VClose,
+            
+            HOpen,
+        }
+
+export class SegmentIntersector  {
+   
+        eventList: Array<SegEvent> = new Array<SegEvent>();
+     
+    //  For searching the tree to find the first VSeg for an HSeg.
+        findFirstHSeg: ScanSegment;
+        
+        visGraph: VisibilityGraph;
+        
+        
+        verticalSegmentsScanLine: RBTree<ScanSegment>;
+findFirstPred: (s:ScanSegment)=> boolean
+        
+        segmentsWithoutVisibility: Array<ScanSegment> = new Array<ScanSegment>();
+                    
     //  The event types.  We sweep vertically, with a horizontal scanline, so the vertical
     //  segments that are active and have X coords within the current vertical segment's
     //  span all create intersections with it.  All events are ordered on Y coordinate then X.
-    private /* internal */ constructor () {
-        verticalSegmentsScanLine = new RbTree<ScanSegment>(this);
-        findFirstPred = new Func<ScanSegment, boolean>(IsVSegInHSegRange);
+     constructor () {
+        this.verticalSegmentsScanLine = new RBTree<ScanSegment>(this);
+        this.findFirstPred = (s)=> this.IsVSegInHSegRange(s)
     }
     
     IsVSegInHSegRange(v: ScanSegment): boolean {
-        return (PointComparer.Compare(v.Start.X, findFirstHSeg.Start.X) >= 0);
+        return (PointComparer.Compare(v.Start.x, this.findFirstHSeg.Start.x) >= 0);
     }
     
     //  This creates the VisibilityVertex objects along the segments.
-    private /* internal */ Generate(hSegments: IEnumerable<ScanSegment>, vSegments: IEnumerable<ScanSegment>): VisibilityGraph {
-        for (let seg: ScanSegment in vSegments) {
-            eventList.Add(new SegEvent(SegEventType.VOpen, seg));
-            eventList.Add(new SegEvent(SegEventType.VClose, seg));
+     Generate(hSegments: IEnumerable<ScanSegment>, vSegments: IEnumerable<ScanSegment>): VisibilityGraph {
+        for (let seg: ScanSegment of vSegments) {
+            this.eventList.push(new SegEvent(SegEventType.VOpen, seg));
+            this.eventList.push(new SegEvent(SegEventType.VClose, seg));
         }
         
-        for (let seg: ScanSegment in hSegments) {
-            eventList.Add(new SegEvent(SegEventType.HOpen, seg));
+        for (let seg: ScanSegment of hSegments) {
+            this.eventList.push(new SegEvent(SegEventType.HOpen, seg));
         }
         
-        if ((0 == eventList.Count)) {
+        if ((0 == this.eventList.length)) {
             return null;
             //  empty
         }
         
-        eventList.Sort(this);
+        this.eventList.sort(this);
         //  Note: We don't need any sentinels in the scanline here, because the lowest VOpen
         //  events are loaded before the first HOpen is.
         //  Process all events.
-        visGraph = VisibilityGraphGenerator.NewVisibilityGraph();
-        for (let evt: SegEvent in eventList) {
+        this.visGraph = VisibilityGraphGenerator.NewVisibilityGraph();
+        for (let evt: SegEvent in this.eventList) {
             switch (evt.EventType) {
                 case SegEventType.VOpen:
                     this.OnSegmentOpen(evt.Segment);
-                    ScanInsert(evt.Segment);
+                    this.ScanInsert(evt.Segment);
                     break;
                 case SegEventType.VClose:
-                    OnSegmentClose(evt.Segment);
-                    ScanRemove(evt.Segment);
+                    this.OnSegmentClose(evt.Segment);
+                    this.ScanRemove(evt.Segment);
                     break;
                 case SegEventType.HOpen:
                     this.OnSegmentOpen(evt.Segment);
-                    ScanIntersect(evt.Segment);
+                    this.ScanIntersect(evt.Segment);
                     break;
                 default:
                     Debug.Assert(false, "Unknown SegEventType");
@@ -55,16 +88,16 @@ class SegmentIntersector extends IComparer<SegmentIntersector.SegEvent>, ICompar
         }
         
         //  endforeach
-        return visGraph;
+        return this.visGraph;
     }
     
     OnSegmentOpen(seg: ScanSegment) {
-        seg.OnSegmentIntersectorBegin(visGraph);
+        seg.OnSegmentIntersectorBegin(this.visGraph);
     }
     OnSegmentClose(seg: ScanSegment) {
-            seg.OnSegmentIntersectorEnd(visGraph);
+            seg.OnSegmentIntersectorEnd(this.visGraph);
             if ((seg.LowestVisibilityVertex == null)) {
-                segmentsWithoutVisibility.Add(seg);
+                this.segmentsWithoutVisibility.push(seg);
             }
             
         }
@@ -75,21 +108,21 @@ class SegmentIntersector extends IComparer<SegmentIntersector.SegEvent>, ICompar
         //  but may be in an external "corner" of intersecting sides for a small enough span
         //  that no other segment crosses them.  In that case we don't need them and they 
         //  would require extra handling later.
-        private /* internal */ RemoveSegmentsWithNoVisibility(horizontalScanSegments: ScanSegmentTree, verticalScanSegments: ScanSegmentTree) {
-            for (let seg: ScanSegment in segmentsWithoutVisibility){
+         RemoveSegmentsWithNoVisibility(horizontalScanSegments: ScanSegmentTree, verticalScanSegments: ScanSegmentTree) {
+            for (let seg: ScanSegment in this.segmentsWithoutVisibility){
             (seg.IsVertical ? verticalScanSegments : horizontalScanSegments).Remove(seg);
             }
         }
 ScanInsert(seg: ScanSegment) {
-             Debug.Assert(null == this.verticalSegmentsScanLine.Find(seg), "seg already exists in the rbtree");
+             Debug.Assert(null == this.verticalSegmentsScanLine.find(seg), "seg already exists in the rbtree");
             //  RBTree's internal operations on insert/remove etc. mean the node can't cache the
             //  RBNode returned by insert(); instead we must do find() on each call.  But we can
             //  use the returned node to get predecessor/successor.
-            verticalSegmentsScanLine.Insert(seg);
+            this.verticalSegmentsScanLine.insert(seg);
         }
         
         ScanRemove(seg: ScanSegment) {
-            verticalSegmentsScanLine.Remove(seg);
+            this.verticalSegmentsScanLine.remove(seg);
         }
         
         ScanIntersect(hSeg: ScanSegment) {
@@ -97,28 +130,28 @@ ScanInsert(seg: ScanSegment) {
             //  all VSegs in the scan line after that until we leave the HSeg range.
             //  We only use FindFirstHSeg in this routine, to find the first satisfying node,
             //  so we don't care that we leave leftovers in it.
-            findFirstHSeg = hSeg;
-            let segNode: RBNode<ScanSegment> = verticalSegmentsScanLine.FindFirst(findFirstPred);
+            this.findFirstHSeg = hSeg;
+            let segNode: RBNode<ScanSegment> = this.verticalSegmentsScanLine.findFirst(this.findFirstPred);
             for (
-            ; (null != segNode); segNode = verticalSegmentsScanLine.Next(segNode)) {
-                let vSeg: ScanSegment = segNode.Item;
-                if ((1 == PointComparer.Compare(vSeg.Start.X, hSeg.End.X))) {
+            ; (null != segNode); segNode = this.verticalSegmentsScanLine.next(segNode)) {
+                let vSeg: ScanSegment = segNode.item;
+                if ((1 == PointComparer.Compare(vSeg.Start.x, hSeg.End.x))) {
                     break;
                     //  Out of HSeg range
                 }
                 
-                let newVertex: VisibilityVertex = visGraph.AddVertex(new Point(vSeg.Start.X, hSeg.Start.Y));
+                let newVertex: VisibilityVertex = this.visGraph.AddVertexP(new Point(vSeg.Start.x, hSeg.Start.y));
                 //  HSeg has just opened so if we are overlapped and newVertex already existed,
                 //  it was because we just closed a previous HSeg or VSeg and are now opening one
                 //  whose Start is the same as previous.  So we may be appending a vertex that
                 //  is already the *Seg.HighestVisibilityVertex, which will be a no-op.  Otherwise
                 //  this will add a (possibly Overlapped)VisibilityEdge in the *Seg direction.
-                hSeg.AppendVisibilityVertex(visGraph, newVertex);
-                vSeg.AppendVisibilityVertex(visGraph, newVertex);
+                hSeg.AppendVisibilityVertex(this.visGraph, newVertex);
+                vSeg.AppendVisibilityVertex(this.visGraph, newVertex);
             }
             
             //  endforeach scanline VSeg in range
-            OnSegmentClose(hSeg);
+            this.OnSegmentClose(hSeg);
         }
         
         ///  <summary>
@@ -127,7 +160,7 @@ ScanInsert(seg: ScanSegment) {
         ///  <param name="first"></param>
         ///  <param name="second"></param>
         ///  <returns></returns>
-        public Compare(first: SegEvent, second: SegEvent): number {
+         Compare(first: SegEvent, second: SegEvent): number {
             if ((first == second)) {
                 return 0;
             }
@@ -142,7 +175,7 @@ ScanInsert(seg: ScanSegment) {
             
             //  Unlike the ScanSegment-generating scanline in VisibilityGraphGenerator, this scanline has no slope
             //  calculations so no additional rounding error is introduced.
-            let cmp: number = PointComparer.Compare(first.Site.Y, second.Site.Y);
+            let cmp: number = PointComparer.Compare(first.Site.y, second.Site.y);
             if ((0 != cmp)) {
                 return cmp;
             }
@@ -151,7 +184,7 @@ ScanInsert(seg: ScanSegment) {
             //  HOpen which comes after VOpen, thus make sure VOpen comes before VClose.
             if ((first.IsVertical && second.IsVertical)) {
                 //  Separate segments may join at Start and End due to overlap.
-                Debug.Assert((!StaticGraphUtility.IntervalsOverlap(first.Segment, second.Segment) 
+                Debug.Assert((!StaticGraphUtility.IntervalsOverlapSS(first.Segment, second.Segment) 
                                 || ((0 == PointComparer.Compare(first.Segment.Start, second.Segment.End)) || (0 == PointComparer.Compare(first.Segment.End, second.Segment.Start)))), "V subsumption failure detected in SegEvent comparison");
                 if ((0 == cmp)) {
                     //  false is < true.
@@ -166,9 +199,9 @@ ScanInsert(seg: ScanSegment) {
                         && !second.IsVertical)) {
                 //  Separate segments may join at Start and End due to overlap, so compare by Start.X;
                 //  the ending segment (lowest Start.X) comes before the Open (higher Start.X).
-                Debug.Assert((!StaticGraphUtility.IntervalsOverlap(first.Segment, second.Segment) 
+                Debug.Assert((!StaticGraphUtility.IntervalsOverlapSS(first.Segment, second.Segment) 
                                 || ((0 == PointComparer.Compare(first.Segment.Start, second.Segment.End)) || (0 == PointComparer.Compare(first.Segment.End, second.Segment.Start)))), "H subsumption failure detected in SegEvent comparison");
-                cmp = PointComparer.Compare(first.Site.X, second.Site.X);
+                cmp = PointComparer.Compare(first.Site.x, second.Site.x);
                 return cmp;
             }
             
@@ -202,7 +235,7 @@ ScanInsert(seg: ScanSegment) {
         ///  <param name="first"></param>
         ///  <param name="second"></param>
         ///  <returns></returns>
-        public Compare(first: ScanSegment, second: ScanSegment): number {
+         Compare(first: ScanSegment, second: ScanSegment): number {
             if ((first == second)) {
                 return 0;
             }
@@ -217,11 +250,11 @@ ScanInsert(seg: ScanSegment) {
             
             //  Note: Unlike the ScanSegment-generating scanline, this scanline has no slope
             //  calculations so no additional rounding error is introduced.
-            let cmp: number = PointComparer.Compare(first.Start.X, second.Start.X);
+            let cmp: number = PointComparer.Compare(first.Start.x, second.Start.x);
             //  Separate segments may join at Start and End due to overlap, so compare the Y positions;
             //  the Close (lowest Y) comes before the Open.
             if ((0 == cmp)) {
-                cmp = PointComparer.Compare(first.Start.Y, second.Start.Y);
+                cmp = PointComparer.Compare(first.Start.y, second.Start.y);
             }
             
             return cmp;
@@ -229,26 +262,26 @@ ScanInsert(seg: ScanSegment) {
         
         class SegEvent {
             
-            private /* internal */ constructor (eventType: SegEventType, seg: ScanSegment) {
-                EventType = eventType;
-                Segment = seg;
+             constructor (eventType: SegEventType, seg: ScanSegment) {
+                eventType = eventType;
+                this.Segment = seg;
             }
             
-            private /* internal */ get EventType(): SegEventType {
+             get EventType(): SegEventType {
             }
-            private /* internal */ set EventType(value: SegEventType)  {
-            }
-            
-            private /* internal */ get Segment(): ScanSegment {
-            }
-            private /* internal */ set Segment(value: ScanSegment)  {
+             set EventType(value: SegEventType)  {
             }
             
-            private /* internal */ get IsVertical(): boolean {
+             get Segment(): ScanSegment {
+            }
+             set Segment(value: ScanSegment)  {
+            }
+            
+             get IsVertical(): boolean {
                 return (SegEventType.HOpen != this.EventType);
             }
             
-            private /* internal */ get Site(): Point {
+             get Site(): Point {
                 return this.Segment.End;
                 // TODO: Warning!!!, inline IF is not supported ?
                 (SegEventType.VClose == this.EventType);
@@ -259,33 +292,15 @@ ScanInsert(seg: ScanSegment) {
             ///  </summary>
             ///  <returns></returns>
             @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId="System.String.Format(System.String,System.Object[])")
-            public /* override */ ToString(): string {
+             /* override */ ToString(): string {
                 return string.Format("{0} {1} {2} {3}", this.EventType, this.IsVertical, this.Site, this.Segment);
             }
         }
         
-        eventList: List<SegEvent> = new List<SegEvent>();
-        
         //  Tracks the currently open V segments.
-        findFirstPred: Func<ScanSegment, boolean>;
         
-        segmentsWithoutVisibility: List<ScanSegment> = new List<ScanSegment>();
         
-        verticalSegmentsScanLine: RbTree<ScanSegment>;
         
-        //  For searching the tree to find the first VSeg for an HSeg.
-        findFirstHSeg: ScanSegment;
-        
-        visGraph: VisibilityGraph;
-        
-        enum SegEventType {
-            
-            VOpen,
-            
-            VClose,
-            
-            HOpen,
-        }
     }
 }
 
