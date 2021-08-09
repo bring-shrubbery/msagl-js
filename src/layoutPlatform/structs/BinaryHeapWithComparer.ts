@@ -63,7 +63,7 @@ export class BinaryHeapWithComparer<T> {
           this.A[i + 1] = candidate
           done = false
           j = i + 1
-          i = j >> 1
+          i = j << 1
         }
       }
     }
