@@ -1,3 +1,4 @@
+import { Curve } from "../../math/geometry/curve"
 import { Point } from "../../math/geometry/point"
 import { Assert } from "../../utils/assert"
 import { constructor } from "../ConstrainedDelaunayTriangulation/ThreeArray"
@@ -10,9 +11,10 @@ import { PointAndCrossings } from "./PointAndCrossings"
 import { PointAndCrossingsList } from "./PointAndCrossingsList"
 import { PointComparer } from "./PointComparer"
 import { ScanDirection } from "./ScanDirection"
+import { ScanSegmentTree } from "./ScanSegmentTree"
 import { StaticGraphUtility } from "./StaticGraphUtility"
 
-    class ScanSegment extends SegmentBase {
+export    class ScanSegment extends SegmentBase {
         
  //  This is a single segment added by the ScanLine.
      GroupBoundaryPointAndCrossingsList: PointAndCrossingsList;
@@ -211,17 +213,17 @@ import { StaticGraphUtility } from "./StaticGraphUtility"
         //    followed by all closes (per EventQueue opening), so we may add multiple discrete
         //    segments, which ScanSegmentTree will merge.
         static Subsume(t:{seg: ScanSegment}, 
-            newStart: Point, newEnd: Point, weight: number, gbcList: PointAndCrossingsList, scanDir: ScanDirection, tree: ScanSegmentTree, ot: {extendStart: boolean, extendEnd: boolean}): boolean { {
+            newStart: Point, newEnd: Point, weight: number, gbcList: PointAndCrossingsList, scanDir: ScanDirection, tree: ScanSegmentTree, ot: {extendStart: boolean, extendEnd: boolean}): boolean { 
             // Initialize these to the non-subsumed state; the endpoints were extended (or on a
             // different line).
-            extendStart = true;
-            extendEnd = true;
+            ot.extendStart = true;
+            ot.extendEnd = true;
             if (null == t.seg) {
                 return false;
             }
 
             // If they don't overlap (including touching at an endpoint), we don't subsume.
-            if (!StaticGraphUtility.IntervalsOverlapSS(seg.Start, seg.End, newStart, newEnd)) {
+            if (!StaticGraphUtility.IntervalsOverlapPPPP(t.seg.Start, t.seg.End, newStart, newEnd)) {
                 return false;
             }
 
@@ -230,20 +232,20 @@ import { StaticGraphUtility } from "./StaticGraphUtility"
             // These may differ by more than Curve.DistanceEpsilon in the case of reflection lookahead
             // segments collinear with vertex-derived segments, so have a looser tolerance here and we'll
             // adjust the segments in ScanSegmentTree.MergeSegments.
-            if (seg.Weight != weight) {
-                if ((seg.Start == newStart) && (seg.End == newEnd)) {
+            if (t.seg.Weight != weight) {
+                if ((t.seg.Start == newStart) && (t.seg.End == newEnd)) {
                     // This is probably because of a rounding difference by one DistanceEpsilon reporting being
                     // inside an obstacle vs. the scanline intersection calculation side-ordering.
                     // Test is RectilinearFileTests.Overlap_Rounding_Vertex_Intersects_Side.
-                    seg.Weight = Math.min(seg.Weight, weight);
+                    t.seg.Weight = Math.min(t.seg.Weight, weight);
                     return true;
                 }
                 
                 // In the case of groups, we go through the group boundary; this may coincide with a
                 // reflection segment. RectilinearFileTests.ReflectionSubsumedBySegmentExitingGroup.
-                Assert.assert((seg.Weight == ScanSegment.OverlappedWeight) == (weight == ScanSegment.OverlappedWeight) ||
-                                ApproximateComparer.CloseIntersections(seg.End, newStart) ||
-                                ApproximateComparer.CloseIntersections(seg.Start, newEnd)
+                Assert.assert((t.seg.Weight == ScanSegment.OverlappedWeight) == (weight == ScanSegment.OverlappedWeight) ||
+                                Curve.closeIntersectionPoints(t.seg.End, newStart) ||
+                                Curve.closeIntersectionPoints(t.seg.Start, newEnd)
                         , "non-equal overlap-mismatched ScanSegments overlap by more than just Start/End");
                 return false;
             }
@@ -251,20 +253,21 @@ import { StaticGraphUtility } from "./StaticGraphUtility"
             // Subsume the input segment.  Return whether the start/end points were extended (newStart
             // is before this.Start, or newEnd is after this.End), so the caller can generate reflections
             // and so we can merge group border crossings.
-            extendStart = (-1 == scanDir.CompareScanCoord(newStart, seg.Start));
-            extendEnd = (1 == scanDir.CompareScanCoord(newEnd, seg.End));
-            if (extendStart || extendEnd) {
+            ot.extendStart = (-1 == scanDir.CompareScanCoord(newStart, t.seg.Start));
+            ot.extendEnd = (1 == scanDir.CompareScanCoord(newEnd, t.seg.End));
+            if (ot.extendStart || ot.extendEnd) {
                 // We order by start and end so need to replace this in the tree regardless of which end changes.
-                tree.Remove(seg);
-                seg.startPoint = scanDir.Min(seg.Start, newStart);
-                seg.endPoint = scanDir.Max(seg.End, newEnd);
-                seg = tree.InsertUnique(seg).Item;
-                seg.MergeGroupBoundaryCrossingList(gbcList);
+                tree.Remove(t.seg);
+                t.seg.startPoint = scanDir.Min(t.seg.Start, newStart);
+                t.seg.endPoint = scanDir.Max(t.seg.End, newEnd);
+                t.seg = tree.InsertUnique(t.seg).item;
+                t.seg.MergeGroupBoundaryCrossingList(gbcList);
             }
             return true;
         }
+
  IntersectsSegment(seg: ScanSegment): boolean {
-        return StaticGraphUtility.SegmentIntersection(this, seg);
+        return StaticGraphUtility.SegmentIntersection(this, seg) != undefined
     }
     
     ///  <summary>
