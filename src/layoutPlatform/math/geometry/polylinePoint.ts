@@ -10,6 +10,9 @@ export class PolylinePoint {
   get nextOnPolyline(): PolylinePoint {
     return this.polyline.next(this)
   }
+  get prevOnPolyline(): PolylinePoint {
+    return this.polyline.prev(this)
+  }
 
   //
   getNext(): PolylinePoint {

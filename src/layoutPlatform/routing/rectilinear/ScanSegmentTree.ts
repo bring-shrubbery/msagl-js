@@ -337,13 +337,12 @@ export class ScanSegmentTree {
     }
   }
 
-  ///  <summary>
-  ///  For ordering the line segments inserted by the ScanLine. Assuming vertical sweep (sweeping up from
-  ///  bottom, scanning horizontally) then order ScanSegments first by lowest Y coord, then by lowest X coord.
-  ///  </summary>
-  ///  <param name="first"></param>
-  ///  <param name="second"></param>
-  ///  <returns></returns>
+  //  For ordering the line segments inserted by the ScanLine. Assuming vertical sweep (sweeping up from
+  //  bottom, scanning horizontally) then order ScanSegments first by lowest Y coord, then by lowest X coord.
+
+  /
+  /
+
   public Compare(first: ScanSegment, second: ScanSegment): number {
     if (first == second) {
       return 0

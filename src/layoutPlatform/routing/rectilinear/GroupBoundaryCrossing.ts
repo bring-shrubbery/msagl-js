@@ -35,9 +35,6 @@ export class GroupBoundaryCrossing {
     )
   }
 
-  ///  <summary>
-  ///  </summary>
-  ///  <returns></returns>
   toString(): string {
     return String.Format('{0} {1}', this.DirectionToInside, this.Group)
   }

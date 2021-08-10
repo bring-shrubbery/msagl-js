@@ -1,31 +1,29 @@
-///  <summary>
-///  Wrap the tree of events.
+//  Wrap the tree of events.
 
-import {GenericBinaryHeapPriorityQueue} from '../../structs/genericBinaryHeapPriorityQueue'
+import {BinaryHeapWithComparer} from '../../structs/BinaryHeapWithComparer'
 import {Assert} from '../../utils/assert'
 import {SweepEvent} from '../spline/sweepEvent'
 import {BasicReflectionEvent} from './basicReflectionEvent'
 import {ScanDirection} from './ScanDirection'
 
-///  </summary>
 export class EventQueue {
   scanDirection: ScanDirection
 
-  eventTree: GenericBinaryHeapPriorityQueue<SweepEvent>
+  eventTree: BinaryHeapWithComparer<SweepEvent>
 
   constructor() {
-    this.eventTree = new GenericBinaryHeapPriorityQueue<SweepEvent>((a, b) =>
+    this.eventTree = new BinaryHeapWithComparer<SweepEvent>((a, b) =>
       this.Compare(a, b),
     )
   }
 
   Reset(scanDir: ScanDirection) {
-    Assert.assert(0 == this.eventTree.count, 'Stray events in EventQueue.Reset')
+    Assert.assert(0 == this.eventTree.Count, 'Stray events in EventQueue.Reset')
     this.scanDirection = scanDir
   }
 
   Enqueue(evt: SweepEvent) {
-    this.eventTree.Enqueue(evt, 1)
+    this.eventTree.Enqueue(evt)
   }
 
   Dequeue(): SweepEvent {
@@ -34,7 +32,7 @@ export class EventQueue {
   }
 
   get Count(): number {
-    return this.eventTree.count
+    return this.eventTree.Count
   }
 
   public Compare(lhs: SweepEvent, rhs: SweepEvent): number {

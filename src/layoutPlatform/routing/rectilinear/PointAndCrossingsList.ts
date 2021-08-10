@@ -126,7 +126,7 @@ export class PointAndCrossingsList {
 
   //  For a single vertex point, split its Array of crossings in both directions into an array in each (opposite)
   //  direction.  CLR Array iteration is much faster than Array.
-  staticToCrossingArray(
+  static ToCrossingArray(
     crossings: Array<GroupBoundaryCrossing>,
     dirToInside: Direction,
   ): GroupBoundaryCrossing[] {
@@ -156,10 +156,7 @@ export class PointAndCrossingsList {
     return vector
   }
 
-  ///  <summary>
-  ///  </summary>
-  ///  <returns></returns>
-  public /* override */ ToString(): string {
+  ToString(): string {
     return String.Format(
       '{0} [{1}]',
       this.ListOfPointsAndCrossings.length,

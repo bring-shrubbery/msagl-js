@@ -1,8 +1,7 @@
-///  <summary>
-///  A priority queue based on the binary heap algorithm.
-///  This class needs a comparer object to compare elements of the queue.
-///  </summary>
-///  <typeparam name="T"></typeparam>
+//  A priority queue based on the binary heap algorithm.
+//  This class needs a comparer object to compare elements of the queue.
+
+//  <typeparam name="T"></typeparam>
 export class BinaryHeapWithComparer<T> {
   A: T[]
 

@@ -112,8 +112,8 @@ export class ScanDirection {
       : ScanDirection.HorizontalInstance
   }
 
-  ///  <summary/>
-  public /* override */ ToString(): string {
+  //  <summary/>
+  ToString(): string {
     return this.Dir.toString()
   }
 }
