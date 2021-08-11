@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/routing/rectilinear/StaticGraphUtility.spec.ts",
+        "src/tests/layoutPlatform/routing/rectilinear/eventQueue.spec.ts",
         "-t",
-        "equal"
+        "evq"
       ],
       "console": "EdgeDirectionVE"
     }

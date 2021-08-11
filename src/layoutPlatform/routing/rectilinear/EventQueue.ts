@@ -49,21 +49,17 @@ export class EventQueue {
     }
 
     //  First see if it's at the same scanline level (perpendicular coordinate).
-    const cmp: number = this.scanDirection.ComparePerpCoord(lhs.Site, rhs.Site)
-    if (0 == cmp) {
-      //  Event sites are at the same scanline level. Make sure that any reflection events are lowest (come before
-      //  any side events, which could remove the side the reflection event was queued for).  We may have two
-      //  reflection events at same coordinate, because we enqueue in two situations: when a side is opened,
-      //  and when a side that is within that side's scanline-parallel span is closed.
-      const lhsIsNotReflection = !(lhs instanceof BasicReflectionEvent) ? 1 : 0
-      const rhsIsNotReflection = !(rhs instanceof BasicReflectionEvent) ? 1 : 0
-      let cmp = lhsIsNotReflection - rhsIsNotReflection
-      //  If the scanline-parallel coordinate is the same these events are at the same point.
-      if (0 == cmp) {
-        cmp = this.scanDirection.CompareScanCoord(lhs.Site, rhs.Site)
-      }
-    }
-
-    return cmp
+    let cmp = this.scanDirection.ComparePerpCoord(lhs.Site, rhs.Site)
+    if (cmp) return cmp
+    //  Event sites are at the same scanline level. Make sure that any reflection events are lowest (come before
+    //  any side events, which could remove the side the reflection event was queued for).  We may have two
+    //  reflection events at same coordinate, because we enqueue in two situations: when a side is opened,
+    //  and when a side that is within that side's scanline-parallel span is closed.
+    const lhsIsNotReflection = !(lhs instanceof BasicReflectionEvent) ? 1 : 0
+    const rhsIsNotReflection = !(rhs instanceof BasicReflectionEvent) ? 1 : 0
+    cmp = lhsIsNotReflection - rhsIsNotReflection
+    //  If the scanline-parallel coordinate is the same these events are at the same point.
+    if (cmp) return cmp
+    return this.scanDirection.CompareScanCoord(lhs.Site, rhs.Site)
   }
 }
