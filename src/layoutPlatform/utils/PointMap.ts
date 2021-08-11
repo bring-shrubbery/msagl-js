@@ -1,15 +1,20 @@
 import {Point} from '../math/geometry/point'
 
 export class PointMap<T> {
+  mapOfMaps: Map<number, Map<number, T>>
+  private size_ = 0
   deleteP(point: Point) {
     this.delete(point.x, point.y)
   }
-  mapOfMaps: Map<number, Map<number, T>>
-  size_ = 0
+  clear() {
+    this.mapOfMaps.clear()
+    this.size_ = 0
+  }
+
   get size(): number {
     return this.size_
   }
-  set(x: number, y: number, v: T) {
+  setxy(x: number, y: number, v: T) {
     let m = this.mapOfMaps.get(x)
     if (m == null) this.mapOfMaps.set(x, (m = new Map<number, T>()))
 
@@ -18,8 +23,8 @@ export class PointMap<T> {
     }
     m.set(y, v)
   }
-  setP(p: Point, v: T) {
-    this.set(p.x, p.y, v)
+  set(p: Point, v: T) {
+    this.setxy(p.x, p.y, v)
   }
 
   delete(x: number, y: number) {
@@ -36,14 +41,14 @@ export class PointMap<T> {
   hasP(p: Point) {
     return this.has(p.x, p.y)
   }
-  get(x: number, y: number) {
+  getxy(x: number, y: number) {
     const m = this.mapOfMaps.get(x)
     if (m == null) return
 
     return m.get(y)
   }
-  getP(p: Point) {
-    return this.get(p.x, p.y)
+  get(p: Point) {
+    return this.getxy(p.x, p.y)
   }
   constructor() {
     this.mapOfMaps = new Map<number, Map<number, T>>()

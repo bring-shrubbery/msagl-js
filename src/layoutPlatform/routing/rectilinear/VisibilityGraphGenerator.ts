@@ -5,7 +5,6 @@
 //  and lookback scans that have not had their reflections calculated because they reflect
 
 import { InvalidOperationException } from "linq-to-typescript"
-import { format } from "prettier"
 import { CompassVector } from "../../math/geometry/compassVector"
 import { Direction } from "../../math/geometry/directiton"
 import { Point } from "../../math/geometry/point"
@@ -19,7 +18,9 @@ import { VisibilityVertex } from "../visibility/VisibilityVertex"
 import { BasicObstacleSide } from "./BasicObstacleSide"
 import { BasicReflectionEvent } from "./basicReflectionEvent"
 import { EventQueue } from "./EventQueue"
+import { LookaheadScan } from "./LookaheadScan"
 import { Obstacle } from "./obstacle"
+import { ObstacleTree } from "./ObstacleTree"
 import { PointComparer } from "./PointComparer"
 import { ScanDirection } from "./ScanDirection"
 import { ScanSegmentTree } from "./ScanSegmentTree"

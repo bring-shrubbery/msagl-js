@@ -1,7 +1,4 @@
-import {CurveFactory} from '../../math/geometry/curveFactory'
-import {DebugCurve} from '../../math/geometry/debugCurve'
 import {GeomConstants} from '../../math/geometry/geomConstants'
-import {LineSegment} from '../../math/geometry/lineSegment'
 import {Point} from '../../math/geometry/point'
 import {Size, Rectangle} from '../../math/geometry/rectangle'
 import {Cdt} from '../../routing/ConstrainedDelaunayTriangulation/Cdt'
@@ -129,7 +126,7 @@ export class GTreeOverlapRemoval {
     cdt.run()
     const siteIndex = new Map<CdtSite, number>()
     for (let i = 0; i < nodePositions.length; i++) {
-      siteIndex.set(cdt.PointsToSites.getP(nodePositions[i]), i)
+      siteIndex.set(cdt.PointsToSites.get(nodePositions[i]), i)
     }
 
     let numCrossings = 0

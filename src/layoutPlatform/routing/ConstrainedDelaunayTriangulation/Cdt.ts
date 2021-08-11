@@ -91,12 +91,12 @@ export class Cdt extends Algorithm {
 
   AddSite(point: Point, relatedObject: unknown): CdtSite {
     let site: CdtSite
-    if ((site = this.PointsToSites.getP(point))) {
+    if ((site = this.PointsToSites.get(point))) {
       site.Owner = relatedObject
       // set the owner anyway
     } else {
       site = CdtSite.mkSO(point, relatedObject)
-      this.PointsToSites.setP(point, site)
+      this.PointsToSites.set(point, site)
     }
     return site
   }
@@ -240,7 +240,7 @@ export class Cdt extends Algorithm {
   }
 
   public FindSite(point: Point): CdtSite {
-    return this.PointsToSites.getP(point)
+    return this.PointsToSites.get(point)
   }
 
   static PointIsInsideOfTriangle(point: Point, t: CdtTriangle): boolean {
@@ -282,7 +282,7 @@ export class Cdt extends Algorithm {
     if (!edgeIsThere) {
       return false
     }
-    const usShouldBe = this.PointsToSites.getP(us.point)
+    const usShouldBe = this.PointsToSites.get(us.point)
     return usShouldBe == us
   }
 }

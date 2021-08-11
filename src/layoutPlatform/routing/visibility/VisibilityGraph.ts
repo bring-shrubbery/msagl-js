@@ -171,13 +171,13 @@ export class VisibilityGraph {
   //   }
 
   AddVertexP(point: Point): VisibilityVertex {
-    const currentVertex = this.pointToVertexMap.getP(point)
+    const currentVertex = this.pointToVertexMap.get(point)
     if (currentVertex) {
       return currentVertex
     }
 
     const newVertex = this.VertexFactory(point)
-    this.pointToVertexMap.setP(point, newVertex)
+    this.pointToVertexMap.set(point, newVertex)
     return newVertex
   }
 
@@ -186,7 +186,7 @@ export class VisibilityGraph {
       !this.pointToVertexMap.hasP(vertex.point),
       'A vertex already exists at this location',
     )
-    this.pointToVertexMap.setP(vertex.point, vertex)
+    this.pointToVertexMap.set(vertex.point, vertex)
   }
 
   ContainsVertex(point: Point): boolean {
@@ -254,7 +254,7 @@ export class VisibilityGraph {
   }
 
   FindVertex(point: Point): VisibilityVertex {
-    return this.pointToVertexMap.getP(point)
+    return this.pointToVertexMap.get(point)
   }
 
   //   GetVertex(polylinePoint: PolylinePoint): VisibilityVertex {

@@ -101,9 +101,9 @@ export class MetroMapOrdering {
       for (const node of layer) {
         const p = this.nodePositions.get(node)
         if (!initialOrdering.has(p.x, p.y)) {
-          initialOrdering.set(p.x, p.y, [])
+          initialOrdering.setxy(p.x, p.y, [])
         }
-        initialOrdering.get(p.x, p.y).push(node)
+        initialOrdering.getxy(p.x, p.y).push(node)
       }
     }
     return initialOrdering
@@ -123,8 +123,8 @@ export class MetroMapOrdering {
           continue
         }
 
-        this.BuildNodeOrdering(initialOrdering.getP(p), inverseOrder)
-        result.setP(p, initialOrdering.getP(p))
+        this.BuildNodeOrdering(initialOrdering.get(p), inverseOrder)
+        result.set(p, initialOrdering.get(p))
       }
     }
 
@@ -206,7 +206,7 @@ export class MetroMapOrdering {
           tec++
         }
 
-        const t = ordering.getP(this.nodePositions.get(layer[pred]))
+        const t = ordering.get(this.nodePositions.get(layer[pred]))
         for (let j = pred; j < tec; j++) {
           layer[j] = t[j - pred]
         }

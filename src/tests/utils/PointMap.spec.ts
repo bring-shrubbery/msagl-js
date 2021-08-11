@@ -2,10 +2,10 @@ import {PointMap} from '../../layoutPlatform/utils/PointMap'
 
 test('PointMap', () => {
   const m = new PointMap<number>()
-  m.set(0, 0, 0)
-  m.set(1.3, 1, 2)
-  m.set(2, 2, 4)
-  m.set(2, 1.2, 3)
+  m.setxy(0, 0, 0)
+  m.setxy(1.3, 1, 2)
+  m.setxy(2, 2, 4)
+  m.setxy(2, 1.2, 3)
 
   const p = Array.from(m.keys())
   expect(p.length).toBe(4)
