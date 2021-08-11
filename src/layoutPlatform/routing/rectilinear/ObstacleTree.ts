@@ -1,6 +1,7 @@
-import { from, IEnumerable } from "linq-to-typescript";
+
 import { HitTestBehavior } from "../../core/geometry/RTree/HitTestBehavior";
 import { RectangleNode } from "../../core/geometry/RTree/RectangleNode";
+import { CrossRectangleNodes } from "../../core/geometry/RTree/RectangleNodeUtils"
 import { CompassVector } from "../../math/geometry/compassVector";
 import { ConvexHull } from "../../math/geometry/convexHull";
 import { Curve, PointLocation } from "../../math/geometry/curve";
@@ -11,15 +12,15 @@ import { Point } from "../../math/geometry/point";
 import { Polyline } from "../../math/geometry/polyline";
 import { Rectangle } from "../../math/geometry/rectangle";
 import { BasicGraphOnEdges } from "../../structs/basicGraphOnEdges";
+import { Assert } from "../../utils/assert"
 import { IntPair } from "../../utils/IntPair";
 import { Shape } from "../shape";
+import { GroupBoundaryCrossingMap } from "./GroupBoundaryCrossingMap"
 import { Obstacle } from "./obstacle";
 import { PointAndCrossingsList } from "./PointAndCrossingsList";
 import { PointComparer } from "./PointComparer";
 import { ScanDirection } from "./ScanDirection";
 import { StaticGraphUtility } from "./StaticGraphUtility";
-import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
-
 export class ObstacleTree {
         
         
@@ -33,7 +34,7 @@ export class ObstacleTree {
         }
         
         
-          // Dictionary of sets of ancestors for each shape, for evaluating necessary group-boundary crossings.
+          // Map of sets of ancestors for each shape, for evaluating necessary group-boundary crossings.
         
          AncestorSets: Map<Shape, Set<Shape>>;
         
@@ -55,7 +56,7 @@ export class ObstacleTree {
         
           // The list of all obstacles (not just those in the Root, which may have accretions of obstacles in convex hulls).
         
-        private allObstacles: List<Obstacle>;
+        private allObstacles: Array<Obstacle>;
         
         
           // For accreting obstacles for clumps or convex hulls.
@@ -75,17 +76,17 @@ export class ObstacleTree {
         
           //Create the tree hierarchy from the enumeration.
         
-         Init(obstacles: IEnumerable<Obstacle>, ancestorSets: Dictionary<Shape, Set<Shape>>, idToObstacleMap: Dictionary<Shape, Obstacle>) {
+         Init(obstacles: Iterable<Obstacle>, ancestorSets: Map<Shape, Set<Shape>>, idToObstacleMap: Map<Shape, Obstacle>) {
             this.CreateObstacleListAndOrdinals(obstacles);
             this.AncestorSets = ancestorSets;
             this.CreateRoot();
             this.shapeIdToObstacleMap = idToObstacleMap;
         }
         
-        private CreateObstacleListAndOrdinals(obstacles: IEnumerable<Obstacle>) {
-            this.allObstacles = obstacles.ToList();
+        private CreateObstacleListAndOrdinals(obstacles: Iterable<Obstacle>) {
+            this.allObstacles = Array.from(obstacles)
             let scanlineOrdinal: number = Obstacle.FirstNonSentinelOrdinal;
-            for (let obstacle in this.allObstacles) {
+            for (const obstacle of this.allObstacles) {
                 scanlineOrdinal++;
                 obstacle.Ordinal = scanlineOrdinal;
             }
@@ -95,7 +96,7 @@ export class ObstacleTree {
         private OrdinalToObstacle(index: number): Obstacle {
             Assert.assert((index >= Obstacle.FirstNonSentinelOrdinal), "index too small");
             Assert.assert((index 
-                            < (this.allObstacles.Count + Obstacle.FirstNonSentinelOrdinal)), "index too large");
+                            < (this.allObstacles.length + Obstacle.FirstNonSentinelOrdinal)), "index too large");
             return this.allObstacles[(index - Obstacle.FirstNonSentinelOrdinal)];
         }
         
@@ -111,7 +112,7 @@ export class ObstacleTree {
             this.AccreteClumps();
             this.AccreteConvexHulls();
             this.GrowGroupsToAccommodateOverlaps();
-            this.Root = ObstacleTree.CalculateHierarchy(this.GetAllObstacles().Where(() => {  }, obs.IsPrimaryObstacle));
+            this.Root = ObstacleTree.CalculateHierarchy(this.GetAllObstacles().filter(obs => obs.IsPrimaryObstacle()));
         }
         
         private OverlapsExist(): boolean {
@@ -119,7 +120,7 @@ export class ObstacleTree {
                 return false;
             }
             
-            RectangleNodeUtils.CrossRectangleNodes<Obstacle, Point>(this.Root, this.Root, this.CheckForInitialOverlaps);
+            CrossRectangleNodes<Obstacle, Point>(this.Root, this.Root, this.CheckForInitialOverlaps);
             return this.hasOverlaps;
         }
         
@@ -289,7 +290,7 @@ export class ObstacleTree {
                 return;
             }
             
-            RectangleNodeUtils.CrossRectangleNodes<Obstacle, Point>(groupObstacles, allPrimaryObstacles, this.EvaluateOverlappedPairForGroup);
+            CrossRectangleNodes<Obstacle, Point>(groupObstacles, allPrimaryObstacles, this.EvaluateOverlappedPairForGroup);
         }
         
         private EvaluateOverlappedPairForGroup(a: Obstacle, b: Obstacle) {
@@ -523,8 +524,8 @@ export class ObstacleTree {
         }
         
         
-          Add ancestors that are spatial parents - they may not be in the hierarchy, but we need to be
-          able to cross their boundaries if we're routing between obstacles on different sides of them.
+          //Add ancestors that are spatial parents - they may not be in the hierarchy, but we need to be
+          //able to cross their boundaries if we're routing between obstacles on different sides of them.
         
          AdjustSpatialAncestors(): boolean {
             if (this.SpatialAncestorsAdjusted) {
@@ -557,7 +558,7 @@ export class ObstacleTree {
             //  crossing the boundary the first time and will always go to the full "activate all groups" path.  By
             //  removing them here we not only get a better graph (avoiding some spurious crossings) but we're faster
             //  both in path generation and Nudging.
-            let nonSpatialGroups = new List<Shape>();
+            let nonSpatialGroups = new Array<Shape>();
             for (let child in this.Root.GetAllLeaves()) {
                 let childBox = child.VisibilityBoundingBox;
                 //  This has to be two steps because we can't modify the Set during enumeration.
@@ -578,7 +579,7 @@ export class ObstacleTree {
         }
         
         
-          Clear the internal state.
+          //Clear the internal state.
         
          Clear() {
             this.Root = null;
@@ -586,7 +587,7 @@ export class ObstacleTree {
         }
         
         
-          Create a LineSegment that contains the max visibility from startPoint in the desired direction.
+        //  Create a LineSegment that contains the max visibility from startPoint in the desired direction.
         
          CreateMaxVisibilitySegment(startPoint: Point, dir: Direction, /* out */pacList: PointAndCrossingsList): LineSegment {
             let graphBoxBorderIntersect = StaticGraphUtility.RectangleBorderIntersect(this.GraphBox, startPoint, dir);
@@ -602,17 +603,15 @@ export class ObstacleTree {
         }
         
         
-          Convenience functions that call through to RectangleNode.
+          // Convenience functions that call through to RectangleNode.
         
-          <returns></returns>
-         GetAllObstacles(): IEnumerable<Obstacle> {
+         GetAllObstacles(): Array<Obstacle> {
             return this.allObstacles;
         }
         
         
-          Returns a list of all primary obstacles - secondary obstacles inside a convex hull are not needed in the VisibilityGraphGenerator.
+         // Returns a list of all primary obstacles - secondary obstacles inside a convex hull are not needed in the VisibilityGraphGenerator.
         
-          <returns></returns>
          GetAllPrimaryObstacles(): IEnumerable<Obstacle> {
             return this.Root.GetAllLeaves();
         }

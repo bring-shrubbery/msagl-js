@@ -60,3 +60,22 @@ export abstract class BasicObstacleSide extends ObstacleSide {
     return this.endVertex
   }
 }
+
+export class LowObstacleSide extends BasicObstacleSide {
+  constructor(
+    obstacle: Obstacle,
+    startVertex: PolylinePoint,
+    scanDir: ScanDirection,
+  ) {
+    super(obstacle, startVertex, scanDir, scanDir.IsHorizontal)
+  }
+}
+export class HighObstacleSide extends BasicObstacleSide {
+  constructor(
+    obstacle: Obstacle,
+    startVertex: PolylinePoint,
+    scanDir: ScanDirection,
+  ) {
+    super(obstacle, startVertex, scanDir, scanDir.IsVertical)
+  }
+}

@@ -9,20 +9,53 @@ import {Assert} from '../../utils/assert'
 import {InteractiveEdgeRouter} from '../InteractiveEdgeRouter'
 import {InteractiveObstacleCalculator} from '../interactiveObstacleCalculator'
 import {Shape} from '../shape'
+import {LowObstacleSide, HighObstacleSide} from './BasicObstacleSide'
+import {OverlapConvexHull} from './OverlapConvexHull'
+import {ScanDirection} from './ScanDirection'
 
 export class Obstacle {
-  private static readonly FirstSentinelOrdinal = 1
+  static readonly FirstSentinelOrdinal = 1
 
-  private static readonly FirstNonSentinelOrdinal = 10
+  static readonly FirstNonSentinelOrdinal = 10
   PaddedPolyline: Polyline
   IsRectangle: boolean
   InputShape: Shape
   Ports: Set<Port>
+  ConvexHull: OverlapConvexHull
 
-  //  Only public to make the compiler happy about the "where TPoly : new" constraint.
+  static CreateSentinel(
+    a: Point,
+    b: Point,
+    scanDir: ScanDirection,
+    scanlineOrdinal: number,
+  ): Obstacle {
+    const sentinel = Obstacle.mk(a, b, scanlineOrdinal)
+    sentinel.CreateInitialSides(sentinel.PaddedPolyline.startPoint, scanDir)
+    return sentinel
+  }
+
+  ActiveLowSide: LowObstacleSide
+  ActiveHighSide: HighObstacleSide
+  //  Only  to make the compiler happy about the "where TPoly : new" constraint.
   //  Will be populated by caller.
-
-  public constructor(shape: Shape, makeRect: boolean, padding: number) {
+  CreateInitialSides(startPoint: PolylinePoint, scanDir: ScanDirection) {
+    Assert.assert(
+      this.ActiveLowSide == null && this.ActiveHighSide == null,
+      'Cannot call SetInitialSides when sides are already set',
+    )
+    this.ActiveLowSide = new LowObstacleSide(this, startPoint, scanDir)
+    this.ActiveHighSide = new HighObstacleSide(this, startPoint, scanDir)
+    if (scanDir.IsFlatS(this.ActiveHighSide)) {
+      //  No flat sides in the scanline; we'll do lookahead processing in the scanline to handle overlaps
+      //  with existing segments, and normal neighbor handling will take care of collinear OpenVertexEvents.
+      this.ActiveHighSide = new HighObstacleSide(
+        this,
+        this.ActiveHighSide.EndVertex,
+        scanDir,
+      )
+    }
+  }
+  constructor(shape: Shape, makeRect: boolean, padding: number) {
     if (makeRect) {
       const paddedBox = shape.BoundingBox.clone()
       paddedBox.pad(padding)
@@ -41,6 +74,15 @@ export class Obstacle {
     this.Ports = new Set<Port>(this.InputShape.Ports)
   }
 
+  static mk(a: Point, b: Point, scanlineOrdinal: number) {
+    const obs = new Obstacle(null, false, 0)
+    obs.PaddedPolyline = Polyline.mkFromPoints([
+      GeomConstants.RoundPoint(a),
+      GeomConstants.RoundPoint(b),
+    ])
+    obs.Ordinal = scanlineOrdinal
+    return obs
+  }
   private IsPolylineRectangle(): boolean {
     if (this.PaddedPolyline.count != 4) {
       return false
@@ -90,6 +132,11 @@ export class Obstacle {
       polyline.isClockwise(),
       'Polyline is not clockwise after RoundVertices',
     )
+  }
+  // A single convex hull is shared by all obstacles contained by it and we only want one occurrence of that
+  // convex hull's polyline in the visibility graph generation.
+  get IsPrimaryObstacle(): boolean {
+    return this.ConvexHull == null || this == this.ConvexHull.PrimaryObstacle
   }
   static RemoveCloseAndCollinearVerticesInPlace(polyline: Polyline): Polyline {
     const epsilon = GeomConstants.intersectionEpsilon * 10
@@ -141,4 +188,8 @@ export class Obstacle {
     polyline.requireInit()
     return polyline
   }
+  // The ScanLine uses this as a final tiebreaker.  It is set on InitializeEventQueue rather than in
+  // AddObstacle to avoid a possible wraparound issue if a lot of obstacles are added/removed.
+  // For sentinels, 1/2 are left/right, 3/4 are top/bottom. 0 is invalid during scanline processing.
+  Ordinal: number
 }
