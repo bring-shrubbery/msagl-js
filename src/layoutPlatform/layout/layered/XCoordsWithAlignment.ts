@@ -773,9 +773,9 @@ export class XCoordsWithAlignment {
 
   private IsMarked(source: number, target: number): boolean {
     if (this.BT) {
-      return this.markedEdges.has(target, source)
+      return this.markedEdges.hasxy(target, source)
     } else {
-      return this.markedEdges.has(source, target)
+      return this.markedEdges.hasxy(source, target)
     }
   }
 

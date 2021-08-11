@@ -5,6 +5,7 @@ import {GeomConstants} from '../../math/geometry/geomConstants'
 import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
+import {Rectangle} from '../../math/geometry/rectangle'
 import {Assert} from '../../utils/assert'
 import {InteractiveEdgeRouter} from '../InteractiveEdgeRouter'
 import {InteractiveObstacleCalculator} from '../interactiveObstacleCalculator'
@@ -22,6 +23,18 @@ export class Obstacle {
   InputShape: Shape
   Ports: Set<Port>
   ConvexHull: OverlapConvexHull
+  get IsGroup(): boolean {
+    return this.InputShape != null && this.InputShape.IsGroup
+  }
+  get VisibilityBoundingBox(): Rectangle {
+    return this.VisibilityPolyline.boundingBox
+  }
+
+  get VisibilityPolyline(): Polyline {
+    return this.ConvexHull != null
+      ? this.ConvexHull.Polyline
+      : this.PaddedPolyline
+  }
 
   static CreateSentinel(
     a: Point,

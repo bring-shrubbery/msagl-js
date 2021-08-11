@@ -2,6 +2,9 @@ import {IntPair} from './IntPair'
 import {IEnumerable} from 'linq-to-typescript'
 
 export class IntPairSet {
+  has(p: IntPair): boolean {
+    return this.hasxy(p.x, p.y)
+  }
   arrayOfSets: Set<number>[]
   remove(p: IntPair) {
     if (p.x < 0 || p.x >= this.arrayOfSets.length) {
@@ -9,7 +12,7 @@ export class IntPairSet {
     }
     return this.arrayOfSets[p.x].delete(p.y)
   }
-  has(x: number, y: number): boolean {
+  hasxy(x: number, y: number): boolean {
     if (x < 0 || x >= this.arrayOfSets.length) {
       return false
     }
