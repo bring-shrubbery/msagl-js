@@ -14,6 +14,7 @@ import { Rectangle } from "../../math/geometry/rectangle";
 import { BasicGraphOnEdges } from "../../structs/basicGraphOnEdges";
 import { Assert } from "../../utils/assert"
 import { IntPair } from "../../utils/IntPair";
+import { IntPairSet } from "../../utils/IntPairSet"
 import { Shape } from "../shape";
 import { GroupBoundaryCrossingMap } from "./GroupBoundaryCrossingMap"
 import { Obstacle } from "./obstacle";
@@ -61,7 +62,7 @@ export class ObstacleTree {
         
           // For accreting obstacles for clumps or convex hulls.
         
-        private overlapPairs: Set<IntPair> = new Set<IntPair>();
+        private overlapPairs = new IntPairSet()
         
         
           // Indicates whether one or more obstacles overlap.
@@ -112,7 +113,7 @@ export class ObstacleTree {
             this.AccreteClumps();
             this.AccreteConvexHulls();
             this.GrowGroupsToAccommodateOverlaps();
-            this.Root = ObstacleTree.CalculateHierarchy(this.GetAllObstacles().filter(obs => obs.IsPrimaryObstacle()));
+            this.Root = ObstacleTree.CalculateHierarchy(this.GetAllObstacles().filter(obs => obs.IsPrimaryObstacle));
         }
         
         private OverlapsExist(): boolean {
@@ -120,7 +121,7 @@ export class ObstacleTree {
                 return false;
             }
             
-            CrossRectangleNodes<Obstacle, Point>(this.Root, this.Root, this.CheckForInitialOverlaps);
+            CrossRectangleNodes<Obstacle, Obstacle, Point>(this.Root, this.Root, this.CheckForInitialOverlaps);
             return this.hasOverlaps;
         }
         

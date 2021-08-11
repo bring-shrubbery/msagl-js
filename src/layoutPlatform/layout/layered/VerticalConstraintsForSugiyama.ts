@@ -62,7 +62,7 @@ export class VerticalConstraintsForSugiyama {
     this.upDownConstraints = []
   }
 
-  gluedUpDownIntConstraints = new IntPairSet(0)
+  gluedUpDownIntConstraints = new IntPairSet()
 
   nodeIdToIndex: Map<string, number>
   intGraph: BasicGraph<GeomNode, PolyIntEdge>
@@ -132,7 +132,7 @@ export class VerticalConstraintsForSugiyama {
   glueTogetherSameConstraintsMaxAndMin() {
     this.createDictionaryOfSameLayerRepresentatives()
     const array = this.upDownInts.map(this.gluedIntPairNN)
-    this.gluedUpDownIntConstraints = new IntPairSet(array.length)
+    this.gluedUpDownIntConstraints = new IntPairSet()
   }
 
   gluedIntPairNN(p: [number, number]): IntPair {
@@ -304,7 +304,7 @@ export class VerticalConstraintsForSugiyama {
   }
 
   createGluedGraph(): BasicGraphOnEdges<IntPair> {
-    const set = new IntPairSet(this.intGraph.nodeCount)
+    const set = new IntPairSet()
     this.intGraph.edges.forEach((e) => set.add(this.gluedIntPairI(e)))
 
     return mkGraphOnEdgesN<IntPair>(

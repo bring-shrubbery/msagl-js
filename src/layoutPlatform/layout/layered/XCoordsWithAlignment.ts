@@ -595,7 +595,7 @@ export class XCoordsWithAlignment {
     this.graph = layeredGraph
     this.nOfOriginalVertices = nOfOriginalVs
     this.nOfVertices = this.graph.NodeCount
-    this.markedEdges = new IntPairSet(this.graph.NodeCount)
+    this.markedEdges = new IntPairSet()
     this.h = this.la.Layers.length
     this.root = new Array(this.nOfVertices)
     this.align = new Array(this.nOfVertices)

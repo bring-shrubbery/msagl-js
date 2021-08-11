@@ -1277,7 +1277,7 @@ function GetFlatPairs(
   layering: number[],
   intGraph: BasicGraphOnEdges<PolyIntEdge>,
 ): IEnumerable<IntPair> {
-  const pairs = new IntPairSet(intGraph.nodeCount)
+  const pairs = new IntPairSet()
   for (const v of layer) {
     if (v >= intGraph.nodeCount) continue
     for (const edge of intGraph.outEdges[v])

@@ -36,8 +36,7 @@ export class Obstacle {
 
   ActiveLowSide: LowObstacleSide
   ActiveHighSide: HighObstacleSide
-  //  Only  to make the compiler happy about the "where TPoly : new" constraint.
-  //  Will be populated by caller.
+
   CreateInitialSides(startPoint: PolylinePoint, scanDir: ScanDirection) {
     Assert.assert(
       this.ActiveLowSide == null && this.ActiveHighSide == null,

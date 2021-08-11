@@ -13,17 +13,16 @@ export class IntPairSet {
     if (x < 0 || x >= this.arrayOfSets.length) {
       return false
     }
-    return this.arrayOfSets[x].has(y)
+    const s = this.arrayOfSets[x]
+    return s != undefined && s.has(y)
   }
 
-  constructor(n: number) {
-    this.arrayOfSets = new Array<Set<number>>(n)
-    for (let i = 0; i < n; i++) this.arrayOfSets[i] = new Set<number>()
+  constructor() {
+    this.arrayOfSets = new Array<Set<number>>()
   }
 
   static mk(ps: IEnumerable<IntPair>) {
-    const length = ps.max((p) => p.x) + 1
-    const r = new IntPairSet(length)
+    const r = new IntPairSet()
     for (const p of ps) r.add(p)
     return r
   }
@@ -33,13 +32,23 @@ export class IntPairSet {
       for (const j of this.arrayOfSets[i]) yield new IntPair(i, j)
   }
   add(p: IntPair) {
-    this.arrayOfSets[p.x].add(p.y)
+    let s = this.arrayOfSets[p.x]
+    if (s == undefined) {
+      this.arrayOfSets[p.x] = s = new Set<number>()
+    }
+    s.add(p.y)
   }
   addNN(x: number, y: number) {
-    this.arrayOfSets[x].add(y)
+    let s = this.arrayOfSets[x]
+    if (s == undefined) {
+      this.arrayOfSets[x] = s = new Set<number>()
+    }
+    s.add(y)
   }
 
   clear() {
-    for (const s of this.arrayOfSets) s.clear()
+    for (const s of this.arrayOfSets) {
+      if (s) s.clear()
+    }
   }
 }
