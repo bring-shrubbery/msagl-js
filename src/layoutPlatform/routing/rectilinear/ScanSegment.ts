@@ -559,7 +559,7 @@ export class ScanSegment extends SegmentBase {
     crossingVertex: VisibilityVertex,
     crossings: GroupBoundaryCrossing[],
   ) {
-    if (null != crossings) {
+    if (crossings != null) {
       const interiorVertex: VisibilityVertex = ScanSegment.GetCrossingInteriorVertex(
         vg,
         crossingVertex,
@@ -575,7 +575,7 @@ export class ScanSegment extends SegmentBase {
     crossingVertex: VisibilityVertex,
     crossings: GroupBoundaryCrossing[],
   ) {
-    if (null != crossings) {
+    if (crossings != null) {
       const interiorVertex: VisibilityVertex = ScanSegment.GetCrossingInteriorVertex(
         vg,
         crossingVertex,

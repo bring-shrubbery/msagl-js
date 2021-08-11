@@ -33,7 +33,7 @@ export class ScanSegmentTree {
     //  use the returned node to get predecessor/successor.
     this.AssertValidSegmentForInsertion(seg)
     const node = this.segmentTree.find(seg)
-    if (null != node) {
+    if (node != null) {
       Assert.assert(
         seg.IsOverlapped == node.item.IsOverlapped,
         'Existing node found with different isOverlapped',
@@ -175,7 +175,7 @@ export class ScanSegmentTree {
     //  Now we need to that it starts before 'end'.  ScanSegment.CompareToPointPositionFullLength
     //  asserts the point is on the segment which we don't want to require here, so
     //  compare the endpoints directly.
-    if (null != node) {
+    if (node != null) {
       const seg: ScanSegment = node.item
       if (this.ScanDirection.Compare(seg.Start, end) <= 0) {
         return seg

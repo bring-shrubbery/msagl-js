@@ -11,7 +11,7 @@ import { ScanDirection } from "./ScanDirection";
 import { StaticGraphUtility } from "./StaticGraphUtility";
 import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
 
-class RectilinearScanLine {
+export class RectilinearScanLine {
     
     scanDirection: ScanDirection;
     
