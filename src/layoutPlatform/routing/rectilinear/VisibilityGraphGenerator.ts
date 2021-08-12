@@ -11,10 +11,11 @@ import { Polyline } from "../../math/geometry/polyline"
 import { PolylinePoint } from "../../math/geometry/polylinePoint"
 import { Rectangle } from "../../math/geometry/rectangle"
 import { RBNode } from "../../structs/RBTree/rbNode"
+import { Assert } from "../../utils/assert"
 import { SweepEvent } from "../spline/sweepEvent"
 import { VisibilityGraph } from "../visibility/VisibilityGraph"
 import { VisibilityVertex } from "../visibility/VisibilityVertex"
-import { BasicObstacleSide } from "./BasicObstacleSide"
+import { BasicObstacleSide, HighObstacleSide, LowObstacleSide } from "./BasicObstacleSide"
 import { BasicReflectionEvent } from "./basicReflectionEvent"
 import { EventQueue } from "./EventQueue"
 import { GroupBoundaryCrossingMap } from "./GroupBoundaryCrossingMap"
@@ -129,15 +130,15 @@ export class VisibilityGraphGenerator {
         //  Low sentinel...
         let lowerCorner = new Point((this.ObstacleTree.GraphBox.left - VisibilityGraphGenerator.SentinelOffset), (this.ObstacleTree.GraphBox.bottom - VisibilityGraphGenerator.SentinelOffset));
         let upperCorner = new Point((this.ObstacleTree.GraphBox.left - VisibilityGraphGenerator.SentinelOffset), (this.ObstacleTree.GraphBox.top + VisibilityGraphGenerator.SentinelOffset));
-        let sentinel = Obstacle.CreateSentinel(lowerCorner, upperCorner, ScanDirection, scanlineSentinelOrdinal++);
+        let sentinel = Obstacle.CreateSentinel(lowerCorner, upperCorner, this.ScanDirection, scanlineSentinelOrdinal++);
         this.scanLine.Insert(sentinel.ActiveHighSide, this.ObstacleTree.GraphBox.leftBottom);
         //  High sentinel...
         lowerCorner = new Point((this.ObstacleTree.GraphBox.right + VisibilityGraphGenerator.SentinelOffset), (this.ObstacleTree.GraphBox.bottom - VisibilityGraphGenerator.SentinelOffset));
         upperCorner = new Point((this.ObstacleTree.GraphBox.right + VisibilityGraphGenerator.SentinelOffset), (this.ObstacleTree.GraphBox.top + VisibilityGraphGenerator.SentinelOffset));
-        sentinel = Obstacle.CreateSentinel(lowerCorner, upperCorner, ScanDirection, scanlineSentinelOrdinal++);
+        sentinel = Obstacle.CreateSentinel(lowerCorner, upperCorner, this.ScanDirection, scanlineSentinelOrdinal++);
         this.scanLine.Insert(sentinel.ActiveLowSide, this.ObstacleTree.GraphBox.leftBottom);
         //  Process the Hscan events.`
-        DevTraceInfoVgGen(1, "Processing Horizontal Scan events");
+        //DevTraceInfoVgGen(1, "Processing Horizontal Scan events");
         ProgressEvent();
         //  Now do the horizontal sweep (vertical scan).  Note: Because we use Cartesian coordinates
         //  rather than Page coordinates, the High and Low sides reverse the direction they traverse
@@ -155,24 +156,24 @@ export class VisibilityGraphGenerator {
         sentinel = Obstacle.CreateSentinel(lowerCorner, upperCorner, ScanDirection, scanlineSentinelOrdinal);
         this.scanLine.Insert(sentinel.ActiveLowSide, this.ObstacleTree.GraphBox.leftBottom);
         //  Process the Vscan events.
-        DevTraceInfoVgGen(1, "Processing Vertical Scan events");
+       // DevTraceInfoVgGen(1, "Processing Vertical Scan events");
         ProgressEvent();
     }
-        // ReSharper disable InconsistentNaming
-        protected static Debug_AssertGraphIsRectilinear(graph: VisibilityGraph, this.ObstacleTree: this.ObstacleTree) {
-            this.#if TEST_MSAGL
-            if (graph.Edges.Any(edge => !PointComparer.IsPureDirection(PointComparer.GetDirections(edge.SourcePoint, edge.TargetPoint))))
-            {
-                StaticGraphUtility.Assert(false, "Generated VisibilityGraph contains non-rectilinear lines", this.ObstacleTree, graph);
-                return;
-            }
-            this.#endif
-        }
+        // // ReSharper disable InconsistentNaming
+        // protected static Debug_AssertGraphIsRectilinear(graph: VisibilityGraph, this.ObstacleTree: this.ObstacleTree) {
+        //     this.#if TEST_MSAGL
+        //     if (graph.Edges.Any(edge => !PointComparer.IsPureDirection(PointComparer.GetDirections(edge.SourcePoint, edge.TargetPoint))))
+        //     {
+        //         StaticGraphUtility.Assert(false, "Generated VisibilityGraph contains non-rectilinear lines", this.ObstacleTree, graph);
+        //         return;
+        //     }
+        //     this.#endif
+        // }
 
       static ScanLineIntersectSide(site: Point, side: BasicObstacleSide, scanDir: ScanDirection): Point {
         //  Note: we don't assert that site and side are not PointComparer.Equal, because ScanLine calls
         //  this on sides that share vertices.
-        Debug.Assert(!scanDir.IsFlatS(side), "flat sides should not be in the scanline or encountered on lookahead scan");
+        Assert.assert(!scanDir.IsFlatS(side), "flat sides should not be in the scanline or encountered on lookahead scan");
         //  We know that we will have an intersection if the side is adjacent in the scanline, so
         //  we can optimize the calculation to project along the slope of the BasicObstacleSide.
         //  Also, due to rounding, we need to make sure that when intersecting the side, we're not
@@ -183,20 +184,21 @@ export class VisibilityGraphGenerator {
         //  lookaheads calculate the perpendicular intersection and side.Slope(Inverse) is always
         //  relative to the scanline parallel.
         let dir: Point = side.Direction;
-        let intersect: Point = side.Start.clone();
+
+        let ix =  side.Start.x
+        let iy = side.Start.y
         if (scanDir.IsHorizontal) {
-            intersect.x = (intersect.x 
-                        + ((dir.x / dir.y) 
-                        * (site.y - side.Start.y)));
-            intersect.x = SpliceUtility.MungeIntersect(site.x, intersect.x, side.Start.x, side.End.x);
-            intersect.y = site.y;
+            ix +=  ((dir.x / dir.y) 
+                        * (site.y - side.Start.y));
+            ix = SpliceUtility.MungeIntersect(site.x, ix, side.Start.x, side.End.x);
+            iy = site.y;
         }
         else {
-            intersect.x = site.x;
-            intersect.y = (intersect.y 
+            ix = site.x;
+            iy +=  
                         + ((dir.y / dir.x) 
-                        * (site.x - side.Start.x)));
-            intersect.y = SpliceUtility.MungeIntersect(site.y, intersect.y, side.Start.y, side.End.y);
+                        * (site.x - side.Start.x));
+            iy = SpliceUtility.MungeIntersect(site.y, iy, side.Start.y, side.End.y);
         }
         
         return intersect;
@@ -435,7 +437,7 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
         //  If eventSide is null it means we had the wrong side type as a scanline neighbor.
         //  If another obstacle opened up, then that obstacle (or another intervening one) should have
         //  drained this reflection event.
-        Debug.Assert((null != eventSide), "eventSide should not be null");
+        Assert.assert((null != eventSide), "eventSide should not be null");
         //  Between the time currentEvent was queued and the time we're now processing it, another
         //  obstacle may have opened between the previousSite and the eventSite, in which case it
         //  removed currentEvent from the queue already.  So currentEvent may be stale.  The new
@@ -445,7 +447,7 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
         //  coordinate, and would remove the site from the lookahead list before the "live" event
         //  looks for it.  See RectilinearTests.ReflectionsRemoveInterceptedSite.
         if (LookaheadScan.RemoveExact(currentEvent.PreviousSite)) {
-            Debug.Assert((currentEvent.InitialObstacle == currentEvent.PreviousSite.ReflectingObstacle), "Inconsistency: currentEvent.InitialObstacle != currentEvent.PreviousSite.ReflectingObstacle");
+            Assert.assert((currentEvent.InitialObstacle == currentEvent.PreviousSite.ReflectingObstacle), "Inconsistency: currentEvent.InitialObstacle != currentEvent.PreviousSite.ReflectingObstacle");
             //  ReSharper disable HeuristicUnreachableCode
             //  ReSharper disable ConditionIsAlwaysTrueOrFalse
             if ((eventSide == null)) {
@@ -457,7 +459,7 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
             //  ReSharper restore HeuristicUnreachableCode
             //  If the two sides intersect ahead of the scanline, we don't want the reflection.
             //  If the reflecting side is flat, no reflection is done - that's handled by OpenVertexEvent.
-            Debug.Assert(!this.IsFlat(eventSide), "Flat sides should not be encountered in reflections");
+            Assert.assert(!this.IsFlat(eventSide), "Flat sides should not be encountered in reflections");
             if (currentEvent.PreviousSite.IsStaircaseStep(currentEvent.ReflectingObstacle)) {
                 //  We need to draw the perpendicular lines here because we may be on the second
                 //  sweep so there won't be a subsequent sweep to draw them.  And if we're on the
@@ -522,7 +524,7 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
                 BasicObstacleSide lowNborSide, BasicObstacleSide highNborSide, BasicReflectionEvent action);
 
         AddReflectionEvent(previousSite: BasicReflectionEvent, side: BasicObstacleSide, site: Point): void {
-        Debug.Assert((null != this.scanLine.Find(side)), "AddReflectionEvent could not find 'side' in the scanline");
+        Assert.assert((null != this.scanLine.Find(side)), "AddReflectionEvent could not find 'side' in the scanline");
         //  Add an event that will be drained when a side spanning the scanline-parallel is loaded
         //  as the sweep moves "up".
         let lowSide = (<LowObstacleSide>(side));
@@ -597,11 +599,11 @@ PointCompare(lhs: Point, rhs: Point): number {
         
         //  endwhile there are events
         //  Ensure we have no leftovers in the scanline - we should have the two sentinels and nothing else.
-        Debug.Assert((2 == this.scanLine.Count), "There are leftovers in the scanline");
+        Assert.assert((2 == this.scanLine.Count), "There are leftovers in the scanline");
     }
       protected /* virtual */ ProcessCustomEvent(evt: SweepEvent) {
         //  These are events specific to the derived class; by default there are none.
-        Debug.Assert(false, "Unknown event type");
+        Assert.assert(false, "Unknown event type");
     }
     
     protected ScanLineCrossesObstacle(eventSite: Point, obstacle: Obstacle): boolean {
@@ -733,8 +735,8 @@ PointCompare(lhs: Point, rhs: Point): number {
         //  LowObstacleSide and HighObstacleSide take a parameter to know when to go counterclockwise.
         let obstacle = openVertEvent.Obstacle;
         obstacle.CreateInitialSides(openVertEvent.Vertex, ScanDirection);
-        Debug.Assert(!this.IsFlat(obstacle.ActiveLowSide), "OpenVertexEvent ActiveLowSide should not be flat");
-        Debug.Assert(!this.IsFlat(obstacle.ActiveHighSide), "RemoveCollinearSides should have been called");
+        Assert.assert(!this.IsFlat(obstacle.ActiveLowSide), "OpenVertexEvent ActiveLowSide should not be flat");
+        Assert.assert(!this.IsFlat(obstacle.ActiveHighSide), "RemoveCollinearSides should have been called");
         DevTraceIfFlatSide(true, obstacle.ActiveLowSide.Start, obstacle.ActiveHighSide.Start);
         //  Adding can rotate the RBTree which modifies RBNodes so get the lowSideNode after adding highSideNode.
         //  AddSideToScanLine loads any reflection events for the side.

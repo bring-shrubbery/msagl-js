@@ -53,7 +53,7 @@ export class CompassVector {
     }
   }
 
-  private static ToIndex(direction: Direction): number {
+  static ToIndex(direction: Direction): number {
     switch (direction) {
       case Direction.North:
         return 0
