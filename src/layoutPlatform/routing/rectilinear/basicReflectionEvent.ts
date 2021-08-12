@@ -1,6 +1,4 @@
-import {Point} from '../../math/geometry/point'
-import {SweepEvent} from '../spline/sweepEvent'
-import {Obstacle} from './obstacle'
+import {SweepEvent} from '../spline/coneSpanner/SweepEvent'
 
 export class BasicReflectionEvent extends SweepEvent {
   ReflectingObstacle: Obstacle
@@ -8,13 +6,13 @@ export class BasicReflectionEvent extends SweepEvent {
   InitialObstacle: Obstacle
 
   PreviousSite: BasicReflectionEvent
+
   //  Called by StoreLookaheadSite only.
-  constructor(
+  private /* internal */ constructor(
     initialObstacle: Obstacle,
     reflectingObstacle: Obstacle,
     site: Point,
   ) {
-    super()
     this.InitialObstacle = initialObstacle
     this.ReflectingObstacle = reflectingObstacle
     this.site = site
@@ -24,7 +22,7 @@ export class BasicReflectionEvent extends SweepEvent {
   //  AddReflectionEvent, which in turn is called by LoadLookaheadIntersections.
   //  In this case we know the eventObstacle and initialObstacle are the same obstacle (the
   //  one that the reflected ray bounced off of, to generate the Left/HighReflectionEvent).
-  mkSiteObstalePoint(
+  private /* internal */ constructor(
     previousSite: BasicReflectionEvent,
     reflectingObstacle: Obstacle,
     site: Point,
@@ -36,13 +34,13 @@ export class BasicReflectionEvent extends SweepEvent {
   }
 
   //  If true, we have a staircase situation.
-  IsStaircaseStep(reflectionTarget: Obstacle): boolean {
+  private /* internal */ IsStaircaseStep(reflectionTarget: Obstacle): boolean {
     return this.InitialObstacle == reflectionTarget
   }
 
   private site: Point
 
-  get Site(): Point {
+  private get /* internal */ /* override */ Site(): Point {
     return this.site
   }
 }

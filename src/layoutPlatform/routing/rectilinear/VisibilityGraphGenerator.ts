@@ -23,10 +23,12 @@ import { LookaheadScan } from "./LookaheadScan"
 import { NeighborSides } from "./NeighborSides"
 import { Obstacle } from "./obstacle"
 import { ObstacleTree } from "./ObstacleTree"
+import { OpenVertexEvent } from "./OpenVertexEvent"
 import { PointComparer } from "./PointComparer"
 import { RectilinearScanLine } from "./RectilinearScanLine"
 import { ScanDirection } from "./ScanDirection"
 import { ScanSegmentTree } from "./ScanSegmentTree"
+import { SpliceUtility } from "./SpliceUtility"
 import { StaticGraphUtility } from "./StaticGraphUtility"
 import { VisibilityVertexRectilinear } from "./VisibilityVertexRectiline"
 
@@ -62,8 +64,7 @@ export class VisibilityGraphGenerator {
     }
     
     protected get PerpendicularScanSegments(): ScanSegmentTree {
-        return 
-           this.ScanDirection.IsHorizontal? this.VerticalScanSegments:   this.HorizontalScanSegments;
+        return  this.ScanDirection.IsHorizontal? this.VerticalScanSegments:   this.HorizontalScanSegments;
     }
     
     //  For lookahead points, we record the point of the intersection on the reflecting side, then
@@ -139,7 +140,7 @@ export class VisibilityGraphGenerator {
         this.scanLine.Insert(sentinel.ActiveLowSide, this.ObstacleTree.GraphBox.leftBottom);
         //  Process the Hscan events.`
         //DevTraceInfoVgGen(1, "Processing Horizontal Scan events");
-        ProgressEvent();
+        this.ProcessEvents();
         //  Now do the horizontal sweep (vertical scan).  Note: Because we use Cartesian coordinates
         //  rather than Page coordinates, the High and Low sides reverse the direction they traverse
         //  when doing vertical scan; this information is passed as a ctor param.  This allows for
@@ -148,16 +149,16 @@ export class VisibilityGraphGenerator {
         //  Lower sentinel...
         lowerCorner = new Point((this.ObstacleTree.GraphBox.left - VisibilityGraphGenerator.SentinelOffset), (this.ObstacleTree.GraphBox.bottom - VisibilityGraphGenerator.SentinelOffset));
         upperCorner = new Point((this.ObstacleTree.GraphBox.right + VisibilityGraphGenerator.SentinelOffset), (this.ObstacleTree.GraphBox.bottom - VisibilityGraphGenerator.SentinelOffset));
-        sentinel = Obstacle.CreateSentinel(lowerCorner, upperCorner, ScanDirection, scanlineSentinelOrdinal++);
+        sentinel = Obstacle.CreateSentinel(lowerCorner, upperCorner, this.ScanDirection, scanlineSentinelOrdinal++);
         this.scanLine.Insert(sentinel.ActiveHighSide, this.ObstacleTree.GraphBox.leftBottom);
         //  Upper sentinel
         lowerCorner = new Point((this.ObstacleTree.GraphBox.left - VisibilityGraphGenerator.SentinelOffset), (this.ObstacleTree.GraphBox.top + VisibilityGraphGenerator.SentinelOffset));
         upperCorner = new Point((this.ObstacleTree.GraphBox.right + VisibilityGraphGenerator.SentinelOffset), (this.ObstacleTree.GraphBox.top + VisibilityGraphGenerator.SentinelOffset));
-        sentinel = Obstacle.CreateSentinel(lowerCorner, upperCorner, ScanDirection, scanlineSentinelOrdinal);
+        sentinel = Obstacle.CreateSentinel(lowerCorner, upperCorner, this.ScanDirection, scanlineSentinelOrdinal);
         this.scanLine.Insert(sentinel.ActiveLowSide, this.ObstacleTree.GraphBox.leftBottom);
         //  Process the Vscan events.
        // DevTraceInfoVgGen(1, "Processing Vertical Scan events");
-        ProgressEvent();
+        this.ProcessEvents();
     }
         // // ReSharper disable InconsistentNaming
         // protected static Debug_AssertGraphIsRectilinear(graph: VisibilityGraph, this.ObstacleTree: this.ObstacleTree) {
@@ -170,7 +171,7 @@ export class VisibilityGraphGenerator {
         //     this.#endif
         // }
 
-      static ScanLineIntersectSide(site: Point, side: BasicObstacleSide, scanDir: ScanDirection): Point {
+      static ScanLineIntersectSidePBS(site: Point, side: BasicObstacleSide, scanDir: ScanDirection): Point {
         //  Note: we don't assert that site and side are not PointComparer.Equal, because ScanLine calls
         //  this on sides that share vertices.
         Assert.assert(!scanDir.IsFlatS(side), "flat sides should not be in the scanline or encountered on lookahead scan");
@@ -195,13 +196,12 @@ export class VisibilityGraphGenerator {
         }
         else {
             ix = site.x;
-            iy +=  
-                        + ((dir.y / dir.x) 
+            iy +=  ((dir.y / dir.x) 
                         * (site.x - side.Start.x));
             iy = SpliceUtility.MungeIntersect(site.y, iy, side.Start.y, side.End.y);
         }
         
-        return intersect;
+        return new Point(ix, iy);
     }
  
 
@@ -212,10 +212,10 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
         //  flat bottom side, and we've guaranteed that the lines are oriented clockwise.  This means
         //  that we want a <= comparison of the current node vs. the candidate, to store the last
         //  lowest vertex of the clockwise rotation.  Stop when we've turned upward from descending/flat.
-        let iPrevCmp: number = PointComparer(next.point, lowest.point);
+        let iPrevCmp: number = this.PointCompare(next.point, lowest.point);
         for (
         ; ; next = this.TraversePolylineForEvents(next)) {
-            let iCurCmp: number = PointComparer(next.point, lowest.point);
+            let iCurCmp: number = this.PointCompare(next.point, lowest.point);
             if ((iCurCmp <= 0)) {
                 lowest = next;
             }
@@ -234,62 +234,58 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
         //  When loading scanline events, we'll go clockwise for horizontal scan, where the
         //  scanline-parallel coordinate increases to the right, or counterclockwise for vertical
         //  scan, where the scanline-parallel coordinate increases to the left.
-        if (ScanDirection.IsHorizontal) {
-            return polyPoint.nextOnPolyline;
-        }
-        
-        return polyPoint.prevOnPolyline;
+        return this.ScanDirection.IsHorizontal? polyPoint.nextOnPolyline: polyPoint.prevOnPolyline;
     }
     
      InitializeEventQueue(scanDir: ScanDirection) {
-        ScanDirection = scanDir;
-        EventQueue.Reset(ScanDirection);
+        this.ScanDirection = scanDir;
+        this.eventQueue.Reset(this.ScanDirection);
         this.EnqueueBottomVertexEvents();
-        this.scanLine = new RectilinearScanLine(ScanDirection, this.ObstacleTree.GraphBox.leftBottom);
-        LookaheadScan = new LookaheadScan(ScanDirection);
+        this.scanLine = new RectilinearScanLine(this.ScanDirection, this.ObstacleTree.GraphBox.leftBottom);
+        this.lookaheadScan = new LookaheadScan(this.ScanDirection);
     }
     EnqueueBottomVertexEvents() {
-        for (let obstacle in this.ObstacleTree.GetAllPrimaryObstacles()) {
+        for (const obstacle of this.ObstacleTree.GetAllPrimaryObstacles()) {
             let bottomVertex: PolylinePoint = this.GetOpenVertex(obstacle.VisibilityPolyline);
-            EventQueue.Enqueue(new OpenVertexEvent(obstacle, bottomVertex));
+            this.eventQueue.Enqueue(new OpenVertexEvent(obstacle, bottomVertex));
         }
         
     }
     
     //  end EnqueueBottomVertexEvents
      IsFlat(side: BasicObstacleSide): boolean {
-        return ScanDirection.IsFlat(side);
+        return this.ScanDirection.IsFlatS(side);
     }
     
      IsPerpendicular(side: BasicObstacleSide): boolean {
         //  If it's perpendicular we won't generate reflections.
-        return ScanDirection.IsPerpendicular(side);
+        return this.ScanDirection.IsPerpendicularS(side);
     }
     
     //  Params are event site (vertex point) and the obstacle side adjacent to that site.
     protected ScanLineIntersectSide(site: Point, side: BasicObstacleSide): Point {
-        return this.ScanLineIntersectSide(site, side, ScanDirection);
+        return VisibilityGraphGenerator.ScanLineIntersectSidePBS(site, side, this.ScanDirection);
     }
     
     protected SideReflectsUpward(side: BasicObstacleSide): boolean {
         //  Returns false if vertical.
         if ((side instanceof  LowObstacleSide)) {
             //  Low side slopes upward if slope is positive (to the high direction).
-            return (ScanDirection.Coord(side.End) > ScanDirection.Coord(side.Start));
+            return (this.ScanDirection.Coord(side.End) > this.ScanDirection.Coord(side.Start));
         }
         
         //  High side slopes upward if slope is negative (to the low direction).
-        return (ScanDirection.Coord(side.End) < ScanDirection.Coord(side.Start));
+        return (this.ScanDirection.Coord(side.End) < this.ScanDirection.Coord(side.Start));
     }
       SideReflectsDownward(side: BasicObstacleSide): boolean {
         //  Returns false if vertical.
         if ((side instanceof  LowObstacleSide)) {
             //  Low side slopes downward if slope is negative (to the low direction).
-            return (ScanDirection.Coord(side.End) < ScanDirection.Coord(side.Start));
+            return (this.ScanDirection.Coord(side.End) < this.ScanDirection.Coord(side.Start));
         }
         
         //  High side slopes downward if slope is positive (to the high direction).
-        return (ScanDirection.Coord(side.End) > ScanDirection.Coord(side.Start));
+        return (this.ScanDirection.Coord(side.End) > this.ScanDirection.Coord(side.Start));
     }
         // Calculate reflections from the lines, depending on line side (Low vs. High) and slope.
         // Because the low neighbor intersection is on a high side of its obstacle
@@ -331,12 +327,12 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
                 //  safely ignore the duplicate lookahead.
                 //  Don't worry about enqueueing a reflection at the extreme scanline-parallel
                 //  vertex because we'll MergeSegments to handle that.
-                if ((LookaheadScan.Find(reflectionSite) == null)) {
-                    LookaheadScan.Add(new BasicReflectionEvent(initialObstacle, reflectingSide.Obstacle, reflectionSite));
-                    DevTraceInfoVgGen(1, "Storing reflection lookahead site {0}", reflectionSite);
+                if ((this.lookaheadScan.Find(reflectionSite) == null)) {
+                    this.lookaheadScan.Add(new BasicReflectionEvent(initialObstacle, reflectingSide.Obstacle, reflectionSite));
+                    //DevTraceInfoVgGen(1, "Storing reflection lookahead site {0}", reflectionSite);
                 }
                 else {
-                    DevTraceInfoVgGen(1, "Reflection lookahead site {0} already exists", reflectionSite);
+                   // DevTraceInfoVgGen(1, "Reflection lookahead site {0} already exists", reflectionSite);
                 }
                 
             }
@@ -345,13 +341,13 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
         
     }
         // Load any lookahead scan ray intersections with a side we've just added.
-       protected LoadReflectionEvents(sideToQueue: BasicObstacleSide) {
-        BasicReflectionEvent(sideToQueue, sideToQueue);
+       LoadReflectionEvents(sideToQueue: BasicObstacleSide) {
+        this.LoadReflectionEventsBB(sideToQueue, sideToQueue);
     }
     
     //  sideWithRange is either the same as sideToQueue, if that side is being loaded by an
     //  OpenVertexEvent, or is a different side that is just closing.
-    protected LoadReflectionEvents(sideToQueue: BasicObstacleSide, sideWithRange: BasicObstacleSide) {
+    protected LoadReflectionEventsBB(sideToQueue: BasicObstacleSide, sideWithRange: BasicObstacleSide) {
         //  If this line reflects upward then it cannot receive rays from below (they would pass
         //  through its obstacle), and of course a perpendicular lookahead line will never
         //  intersect a perpendicular side.
@@ -362,15 +358,11 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
         
         //  If there is no overlap in the rectangles along the current axis, there is nothing
         //  to do.  This reduces (but doesn't prevent) duplicate events being loaded.
-        let bbox1 = new Rectangle(sideToQueue.Start, sideToQueue.End);
-        let bbox2 = new Rectangle(sideWithRange.Start, sideWithRange.End);
-        if (!bbox1.intersectsOnX(bbox2)) {
+        let bbox1 = Rectangle.mkPP(sideToQueue.Start, sideToQueue.End);
+        let bbox2 = Rectangle.mkPP(sideWithRange.Start, sideWithRange.End);
+        if ((this.ScanDirection.IsHorizontal) ? !bbox1.intersectsOnX(bbox2) : !bbox1.intersectsOnY(bbox2)) {
             return;
-            // TODO: Warning!!!, inline IF is not supported ?
-            ScanDirection.IsHorizontal;
-            !bbox1.intersectsOnY(bbox2);
         }
-        
         //  Make sure we order the endpoints from low to high along the scanline parallel, and get only
         //  the intersection.  RectilinearFileTests.Nudger_Overlap* exercise reflection lookahead subranges.
         let bboxIntersect: Rectangle = Rectangle.intersect(bbox1, bbox2);
@@ -379,15 +371,15 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
         //  This is inclusive of the endpoints of sideWithRange, to be sure that we remove the item
         //  from LookaheadScan; if it's on an extreme vertex in the perpendicular sweep then it will
         //  stop the chain; see TestRectilinear.Reflection_Staircase_Stops_At_BoundingBox_Side*.
-        let lookaheadSiteNode: RBNode<BasicReflectionEvent> = LookaheadScan.FindFirstInRange(low, high);
+        let lookaheadSiteNode: RBNode<BasicReflectionEvent> = this.lookaheadScan.FindFirstInRange(low, high);
         while ((lookaheadSiteNode != null)) {
             //  Calculate the lookahead intersection with this side in the perpendicular direction to
             //  the scanline.  Note: due to rounding error, this may be different from the calculation
             //  in the parallel direction when the scanline gets up to the ScanDirection.PerpCoord(intersect);
             //  this will be adjusted in ScanSegmentTree.MergeSegments.
-            let intersect: Point = this.ScanLineIntersectSide(lookaheadSiteNode.item.Site, sideToQueue, ScanDirection.PerpendicularInstance);
-            DevTraceInfoVgGen(1, "Loading reflection from lookahead site {0} to intersect at {1}", lookaheadSiteNode.item.Site, intersect);
-            DevTraceInfoVgGen(2, "     side {0})", sideToQueue);
+            let intersect: Point = VisibilityGraphGenerator.ScanLineIntersectSidePBS(lookaheadSiteNode.item.Site, sideToQueue, this.ScanDirection.PerpendicularInstance);
+            //DevTraceInfoVgGen(1, "Loading reflection from lookahead site {0} to intersect at {1}", lookaheadSiteNode.item.Site, intersect);
+           // DevTraceInfoVgGen(2, "     side {0})", sideToQueue);
             //  same indent as AddSegment
             //  In some cases where the ActiveLowSide and ActiveHighSide of an obstacle lean in the same
             //  direction such that LowSide is above HighSide, e.g. on the horizontal pass when they both
@@ -402,23 +394,23 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
             //  so we're parallel to the extreme-vertex line and it's fine to just absorb the photon.
             //  This also handles the case of reflections into intersecting sides - at some point
             //  they converge such that the intersection is not ahead of the lookahead site.
-            if ((ScanDirection.ComparePerpCoord(intersect, lookaheadSiteNode.item.Site) > 0)) {
+            if ((this.ScanDirection.ComparePerpCoord(intersect, lookaheadSiteNode.item.Site) > 0)) {
                 //  Add an event to continue the chain, "shifting" the site's reflecting
                 //  obstacle back to the initialObstacle position.  We must load this here 
                 //  and process it in ConfirmLookaheadEvent so it will be removed from
                 //  the lookahead list; we can't remove it here if it doesn't satisfy the
                 //  staircase requirements, because this may be called from loading a "higher"
                 //  side (during the sweep) which could steal events from the lower side.
-                BasicReflectionEvent(lookaheadSiteNode.item, sideToQueue, intersect);
+                this.AddReflectionEvent(lookaheadSiteNode.item, sideToQueue, intersect);
             }
             else if ((lookaheadSiteNode.item.ReflectingObstacle != sideToQueue.Obstacle)) {
-                DevTraceInfoVgGen(1, "  (discarding reflection at intersect {0} as it is not ahead of the previous site)", intersect);
+                //DevTraceInfoVgGen(1, "  (discarding reflection at intersect {0} as it is not ahead of the previous site)", intersect);
                 //  We need to remove the site.  We're in the middle of Node enumeration so just
                 //  mark the site and on function exit we'll remove any so marked.
-                LookaheadScan.MarkStaleSite(lookaheadSiteNode.item);
+                this.lookaheadScan.MarkStaleSite(lookaheadSiteNode.item);
             }
             else {
-                DevTraceInfoVgGen(1, "  (skipping reflection at intersect {0} as it is the same obstacle)", intersect);
+                // DevTraceInfoVgGen(1, "  (skipping reflection at intersect {0} as it is the same obstacle)", intersect);
             }
             
             //  Get the next item, leaving the current one in the lookahead scan until
@@ -426,11 +418,11 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
             //  obstacle may be opened and intercepted the reflection. ConfirmLookaheadEvents
             //  will actually do the removal when the lowest side containing the lookahead
             //  site is loaded.  See RectilinearTests.ReflectionsRemoveInterceptedSite.
-            lookaheadSiteNode = LookaheadScan.FindNextInRange(lookaheadSiteNode, high);
+            lookaheadSiteNode = this.lookaheadScan.FindNextInRange(lookaheadSiteNode, high);
         }
         
         //  endwhile previousSiteNode
-        LookaheadScan.RemoveStaleSites();
+        this.lookaheadScan.RemoveStaleSites();
     }
         // Determine whether the event is valid and do some common processing.
     AddPerpendicularReflectionSegment(currentEvent: BasicReflectionEvent, eventSide: BasicObstacleSide, nborSide: BasicObstacleSide): boolean {
@@ -446,7 +438,7 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
         //  otherwise the currentEvent could be a stale event with the lower scanline-parallel
         //  coordinate, and would remove the site from the lookahead list before the "live" event
         //  looks for it.  See RectilinearTests.ReflectionsRemoveInterceptedSite.
-        if (LookaheadScan.RemoveExact(currentEvent.PreviousSite)) {
+        if (this.lookaheadScan.RemoveExact(currentEvent.PreviousSite)) {
             Assert.assert((currentEvent.InitialObstacle == currentEvent.PreviousSite.ReflectingObstacle), "Inconsistency: currentEvent.InitialObstacle != currentEvent.PreviousSite.ReflectingObstacle");
             //  ReSharper disable HeuristicUnreachableCode
             //  ReSharper disable ConditionIsAlwaysTrueOrFalse
@@ -512,10 +504,10 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
             
             // Now get the opposite neighbors so AddSegment can continue the reflection chain.
             if (lowNborSide == null) {
-                lowNborSide = this.scanLine.NextLow(highNborSide).Item;
+                lowNborSide = this.scanLine.NextLow(highNborSide).item;
             }
             else {
-                highNborSide = this.scanLine.NextHigh(lowNborSide).Item;
+                highNborSide = this.scanLine.NextHigh(lowNborSide).item;
             }
             return this.InsertParallelReflectionSegment(start, end, eventObstacle, lowNborSide, highNborSide, action);
         }
@@ -548,7 +540,7 @@ GetOpenVertex(poly: Polyline): PolylinePoint {
         this.scanLine.Remove(sideNode.item, scanPos);
     }
 PointCompare(lhs: Point, rhs: Point): number {
-        return ScanDirection.Compare(lhs, rhs);
+        return this.ScanDirection.Compare(lhs, rhs);
     }
     
      Clear() {
@@ -559,28 +551,27 @@ PointCompare(lhs: Point, rhs: Point): number {
         VisibilityGraph = null;
     }
     
-    @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")
     private ProcessEvents() {
         //  Note: Sentinel vertices are not in EventQueue so eventcount will go to 0.
         while ((EventQueue.Count > 0)) {
             let evt: SweepEvent = EventQueue.Dequeue();
             if ((evt instanceof  OpenVertexEvent)) {
-                ProgressEvent((<OpenVertexEvent>(evt)));
+                this.ProcessEvent((<OpenVertexEvent>(evt)));
             }
             else if ((evt instanceof  LowBendVertexEvent)) {
-                ProgressEvent((<LowBendVertexEvent>(evt)));
+                this.ProcessEvent((<LowBendVertexEvent>(evt)));
             }
             else if ((evt instanceof  HighBendVertexEvent)) {
-                ProgressEvent((<HighBendVertexEvent>(evt)));
+                this.ProcessEvent((<HighBendVertexEvent>(evt)));
             }
             else if ((evt instanceof  CloseVertexEvent)) {
-                ProgressEvent((<CloseVertexEvent>(evt)));
+                this.ProcessEvent((<CloseVertexEvent>(evt)));
             }
             else if ((evt instanceof  LowReflectionEvent)) {
-                ProgressEvent((<LowReflectionEvent>(evt)));
+                this.ProcessEvent((<LowReflectionEvent>(evt)));
             }
             else if ((evt instanceof  HighReflectionEvent)) {
-                ProgressEvent((<HighReflectionEvent>(evt)));
+                this.ProcessEvent((<HighReflectionEvent>(evt)));
             }
             else {
                 this.ProcessCustomEvent(evt);
@@ -609,8 +600,8 @@ PointCompare(lhs: Point, rhs: Point): number {
     protected ScanLineCrossesObstacle(eventSite: Point, obstacle: Obstacle): boolean {
         //  An inner or outer neighbor's side is only an overlap start/stop candidate if its obstacle 
         //  brackets the open/close event's Perpendicular Scan coord.
-        return ((ScanDirection.ComparePerpCoord(eventSite, obstacle.VisibilityBoundingBox.LeftBottom) > 0) 
-                    && (ScanDirection.ComparePerpCoord(eventSite, obstacle.VisibilityBoundingBox.RightTop) < 0));
+        return ((ScanDirection.ComparePerpCoord(eventSite, obstacle.VisibilityBoundingBox.leftBottom) > 0) 
+                    && (ScanDirection.ComparePerpCoord(eventSite, obstacle.VisibilityBoundingBox.rightTop) < 0));
     }
     
     FindInitialNeighborSides(sideNode: RBNode<BasicObstacleSide>, /* out */lowNborSideNode: RBNode<BasicObstacleSide>, /* out */highNborSideNode: RBNode<BasicObstacleSide>) {
@@ -688,7 +679,7 @@ PointCompare(lhs: Point, rhs: Point): number {
         
         neighborSides.SetSides(nborSearchDir, nborNode, overlapSideNode, interveningGroupSide);
     }
-     //  end ProcessEvent(CloseVertexEvent)
+     //  end this.ProcessEvent(CloseVertexEvent)
 
     
     private ProcessGroupSideEncounteredOnTraversalToNeighbor(nborNode: RBNode<BasicObstacleSide>, sideReferencePoint: Point, nborSearchDir: Direction): boolean {
@@ -719,25 +710,15 @@ PointCompare(lhs: Point, rhs: Point): number {
     
     protected abstract ProcessVertexEvent(lowSideNode: RBNode<BasicObstacleSide>, highSideNode: RBNode<BasicObstacleSide>, vertexEvent: BasicVertexEvent);
     
-    //  ReSharper disable InconsistentNaming
-    @Conditional("DEVTRACE")
-    @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")
-    protected DevTrace_DumpScanSegmentsDuringAdd(verboseLevel: number) {
-        //  ReSharper restore InconsistentNaming
-        this.#if (DEVTRACE)
-        DevTraceScanSegmentDump(verboseLevel);
-        this.#endif
-        //  DEVTRACE
-    }
     
     ProcessEvent(openVertEvent: OpenVertexEvent) {
         //  First insert the two new lines into the scanline.  Note: Although the lines are clockwise oriented,
         //  LowObstacleSide and HighObstacleSide take a parameter to know when to go counterclockwise.
         let obstacle = openVertEvent.Obstacle;
-        obstacle.CreateInitialSides(openVertEvent.Vertex, ScanDirection);
+        obstacle.CreateInitialSides(openVertEvent.Vertex, this.ScanDirection);
         Assert.assert(!this.IsFlat(obstacle.ActiveLowSide), "OpenVertexEvent ActiveLowSide should not be flat");
         Assert.assert(!this.IsFlat(obstacle.ActiveHighSide), "RemoveCollinearSides should have been called");
-        DevTraceIfFlatSide(true, obstacle.ActiveLowSide.Start, obstacle.ActiveHighSide.Start);
+        //DevTraceIfFlatSide(true, obstacle.ActiveLowSide.Start, obstacle.ActiveHighSide.Start);
         //  Adding can rotate the RBTree which modifies RBNodes so get the lowSideNode after adding highSideNode.
         //  AddSideToScanLine loads any reflection events for the side.
         this.AddSideToScanLine(obstacle.ActiveLowSide, openVertEvent.Site);
@@ -767,7 +748,7 @@ PointCompare(lhs: Point, rhs: Point): number {
         if ((obstacle.ActiveHighSide.Start != obstacle.ActiveLowSide.Start)) {
             //  Create a temp HighObstacleSide so the "next vertex" moves in the correct direction.
             let tempSide = new HighObstacleSide(obstacle, openVertEvent.Vertex, ScanDirection);
-            LookaheadScan.RemoveSitesForFlatBottom(tempSide.Start, tempSide.End);
+            this.lookaheadScan.RemoveSitesForFlatBottom(tempSide.Start, tempSide.End);
         }
         
         //  Add events for the low and high sides.
@@ -775,8 +756,8 @@ PointCompare(lhs: Point, rhs: Point): number {
         this.EnqueueHighBendOrCloseVertexEvent(obstacle.ActiveHighSide);
     }
     
-    //  end ProcessEvent(OpenVertexEvent)
-    ProcessEvent(lowVertEvent: LowBendVertexEvent) {
+    //  end this.ProcessEvent(OpenVertexEvent)
+    this.ProcessEvent(lowVertEvent: LowBendVertexEvent) {
         //  Note:  we only draw lines only from "interesting" vertices, which would be those
         //  that open or close an obstacle, as well as staircase Reflections (see doc). This means
         //  Low/HighVertexEvents routines will just track the change in ActiveLowSide/ActiveHighSide.
@@ -799,13 +780,13 @@ PointCompare(lhs: Point, rhs: Point): number {
         
     }
     
-    //  end ProcessEvent(LowBendVertexEvent)
+    //  end this.ProcessEvent(LowBendVertexEvent)
     EnqueueLowBendVertexEvent(lowSide: BasicObstacleSide) {
         //  We've already ensured the extension is valid so just queue the next event.
         EventQueue.Enqueue(new LowBendVertexEvent(lowSide.Obstacle, lowSide.EndVertex));
     }
     
-    ProcessEvent(highVertEvent: HighBendVertexEvent) {
+    this.ProcessEvent(highVertEvent: HighBendVertexEvent) {
         //  See comments in LowBendVertexEvent; this is mostly the same thing to the other side.
         let obstacle = highVertEvent.Obstacle;
         let highSide = new HighObstacleSide(obstacle, highVertEvent.Vertex, ScanDirection);
@@ -830,7 +811,7 @@ PointCompare(lhs: Point, rhs: Point): number {
         //  Test is RectilinearFileTests.Overlap_ExtremeSide_Lookahead.
         if ((this.wantReflections 
                     && (this.ScanDirection.IsHorizontal 
-                    && ((highSide.Start.X == obstacle.VisibilityBoundingBox.Right) 
+                    && ((highSide.Start.x == obstacle.VisibilityBoundingBox.Right) 
                     && this.SideReflectsUpward(highSide))))) {
             let nborSideNode = this.scanLine.NextHigh(highSideNode);
             if (((nborSideNode.item instanceof  LowObstacleSide) 
@@ -864,7 +845,7 @@ PointCompare(lhs: Point, rhs: Point): number {
         
     }
     
-    //  end ProcessEvent(HighBendVertexEvent)
+    //  end this.ProcessEvent(HighBendVertexEvent)
     CreateCloseEventSegmentsAndFindNeighbors(closeVertEvent: CloseVertexEvent) {
         let obstacle = closeVertEvent.Obstacle;
         DevTraceIfFlatSide(false, obstacle.ActiveLowSide.End, obstacle.ActiveHighSide.End);
@@ -902,7 +883,7 @@ PointCompare(lhs: Point, rhs: Point): number {
         this.scanLine.Remove(obstacle.ActiveHighSide, closeVertEvent.Site);
     }
     
-    ProcessEvent(closeVertEvent: CloseVertexEvent) {
+    this.ProcessEvent(closeVertEvent: CloseVertexEvent) {
         //  This event closes the obstacle.  It removes the ActiveLowSide and ActiveHighSide from the scanline and does
         //  not add new sides.  As above, see comments in OpenVertexEvent and its callees for more detailed explanations.
         this.CreateCloseEventSegmentsAndFindNeighbors(closeVertEvent);
@@ -936,7 +917,7 @@ PointCompare(lhs: Point, rhs: Point): number {
         //  This prepares the object for the second (perpendicular) sweep.
         obstacle.Close();
     }
-ProcessEvent(lowIntEvent: LowReflectionEvent) {
+this.ProcessEvent(lowIntEvent: LowReflectionEvent) {
         //  Unlike LowBendVertexEvent we don't update the ActiveLowSide in the obstacle and scanline.
         let obstacle = lowIntEvent.Side.Obstacle;
         //  Add a perpendicular segment from the previous site to the lowNbor intersection, then from
@@ -952,8 +933,8 @@ ProcessEvent(lowIntEvent: LowReflectionEvent) {
         
     }
     
-    //  end ProcessEvent(LowReflectionEvent)
-    ProcessEvent(highIntEvent: HighReflectionEvent) {
+    //  end this.ProcessEvent(LowReflectionEvent)
+    this.ProcessEvent(highIntEvent: HighReflectionEvent) {
         //  Unlike HighBendVertexEvent we don't update the ActiveHighSide in the obstacle and scanline.
         let obstacle = highIntEvent.Side.Obstacle;
         //  Add a perpendicular segment from the previous site to the highNbor intersection, then from
@@ -969,7 +950,7 @@ ProcessEvent(lowIntEvent: LowReflectionEvent) {
         
     }
     
-    //  end ProcessEvent(HighReflectionEvent)
+    //  end this.ProcessEvent(HighReflectionEvent)
      MakeInBoundsLocation(location: Point): Point {
         let xPos: number = Math.max(location.x, this.ObstacleTree.GraphBox.left);
         let yPos: number = Math.max(location.y, this.ObstacleTree.GraphBox.bottom);
