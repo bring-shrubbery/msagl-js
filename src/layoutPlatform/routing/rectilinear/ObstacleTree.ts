@@ -1,4 +1,5 @@
 
+import { from, IEnumerable } from "linq-to-typescript";
 import { HitTestBehavior } from "../../core/geometry/RTree/HitTestBehavior";
 import { CreateRectangleNodeOnListOfNodes, mkRectangleNode, RectangleNode } from "../../core/geometry/RTree/RectangleNode";
 import { CrossRectangleNodes } from "../../core/geometry/RTree/RectangleNodeUtils"
@@ -11,7 +12,8 @@ import { LineSegment } from "../../math/geometry/lineSegment";
 import { Point } from "../../math/geometry/point";
 import { Polyline } from "../../math/geometry/polyline";
 import { Rectangle } from "../../math/geometry/rectangle";
-import { BasicGraphOnEdges } from "../../structs/basicGraphOnEdges";
+import { GetConnectedComponents } from "../../math/graphAlgorithms/ConnectedComponentCalculator";
+import { BasicGraphOnEdges, mkGraphOnEdges } from "../../structs/basicGraphOnEdges";
 import { Assert } from "../../utils/assert"
 import { IntPair } from "../../utils/IntPair";
 import { IntPairSet } from "../../utils/IntPairSet"
@@ -137,15 +139,14 @@ export class ObstacleTree {
                 return;
             }
             
-            let bIsInsideA: boolean;
-            let aIsInsideB: boolean;
-            if (ObstacleTree.ObstaclesIntersect(a, b, /* out */aIsInsideB, /* out */bIsInsideA)) {
+            const t = { bIsInsideA: undefined,aIsInsideB: undefined}
+            if (ObstacleTree.ObstaclesIntersect(a, b, t)) {
                 this.hasOverlaps = true;
                 return;
             }
             
-            if ((!aIsInsideB 
-                        && !bIsInsideA)) {
+            if ((!t.aIsInsideB 
+                        && !t.bIsInsideA)) {
                 return;
             }
             
@@ -155,8 +156,8 @@ export class ObstacleTree {
                 return;
             }
             
-            if (((a.IsGroup && bIsInsideA) 
-                        || (b.IsGroup && aIsInsideB))) {
+            if (((a.IsGroup && t.bIsInsideA) 
+                        || (b.IsGroup && t.aIsInsideB))) {
                 return;
             }
             
@@ -211,11 +212,11 @@ export class ObstacleTree {
                 return;
             }
             
-            let bIsInsideA: boolean;
-            let aIsInsideB: boolean;
-            if ((!ObstacleTree.ObstaclesIntersect(a, b, /* out */aIsInsideB, /* out */bIsInsideA) 
-                        && (!aIsInsideB 
-                        && !bIsInsideA))) {
+            const t = { bIsInsideA: undefined, aIsInsideB: undefined};
+
+            if ((!ObstacleTree.ObstaclesIntersect(a, b, t) 
+                        && (!t.aIsInsideB 
+                        && !t.bIsInsideA))) {
                 return;
             }
             
@@ -242,11 +243,10 @@ export class ObstacleTree {
                 return;
             }
             
-            let bIsInsideA: boolean;
-            let aIsInsideB: boolean;
-            if ((!ObstacleTree.ObstaclesIntersect(a, b, /* out */aIsInsideB, /* out */bIsInsideA) 
-                        && (!aIsInsideB 
-                        && !bIsInsideA))) {
+            const t = { bIsInsideA: undefined, aIsInsideB: undefined}
+            if ((!ObstacleTree.ObstaclesIntersect(a, b, t) 
+                        && (!t.aIsInsideB 
+                        && !t.bIsInsideA))) {
                 return;
             }
             
@@ -260,7 +260,7 @@ export class ObstacleTree {
                 
             }
             
-            this.overlapPairs.Insert(new IntPair(a.Ordinal, b.Ordinal));
+            this.overlapPairs.add(new IntPair(a.Ordinal, b.Ordinal));
             this.AddClumpToConvexHull(a);
             this.AddClumpToConvexHull(b);
             this.AddConvexHullToConvexHull(a);
@@ -282,14 +282,14 @@ export class ObstacleTree {
         }
         
         private AccumulateObstaclesForGroupOverlaps() {
-            let groupObstacles = ObstacleTree.CalculateHierarchy(this.GetAllObstacles().Where(() => {  }, obs.IsGroup));
-            let allPrimaryObstacles = ObstacleTree.CalculateHierarchy(this.GetAllObstacles().Where(() => {  }, obs.IsPrimaryObstacle));
+            let groupObstacles = ObstacleTree.CalculateHierarchy(this.GetAllObstacles().filter(obs=>obs.IsGroup));
+            let allPrimaryObstacles = ObstacleTree.CalculateHierarchy(this.GetAllObstacles().filter(obs => obs.IsPrimaryObstacle));
             if (((groupObstacles == null) 
                         || (allPrimaryObstacles == null))) {
                 return;
             }
             
-            CrossRectangleNodes<Obstacle, Point>(groupObstacles, allPrimaryObstacles, this.EvaluateOverlappedPairForGroup);
+            CrossRectangleNodes(groupObstacles, allPrimaryObstacles, this.EvaluateOverlappedPairForGroup);
         }
         
         private EvaluateOverlappedPairForGroup(a: Obstacle, b: Obstacle) {
@@ -299,12 +299,11 @@ export class ObstacleTree {
                 return;
             }
             
-            let bIsInsideA: boolean;
-            let aIsInsideB: boolean;
-            let curvesIntersect = ObstacleTree.ObstaclesIntersect(a, b, /* out */aIsInsideB, /* out */bIsInsideA);
+            const t = {bIsInsideA: undefined,  aIsInsideB: undefined}
+            let curvesIntersect = ObstacleTree.ObstaclesIntersect(a, b, t);
             if ((!curvesIntersect 
-                        && (!aIsInsideB 
-                        && !bIsInsideA))) {
+                        && (!t.aIsInsideB 
+                        && !t.bIsInsideA))) {
                 return;
             }
             
@@ -315,7 +314,7 @@ export class ObstacleTree {
                 //  However, SparseVg needs to know about the overlap so it will create interior scansegments if the
                 //  obstacle is not otherwise overlapped.
                 if (!b.IsGroup) {
-                    if ((aIsInsideB || ObstacleTree.FirstRectangleContainsACornerOfTheOther(b.VisibilityBoundingBox, a.VisibilityBoundingBox))) {
+                    if ((t.aIsInsideB || ObstacleTree.FirstRectangleContainsACornerOfTheOther(b.VisibilityBoundingBox, a.VisibilityBoundingBox))) {
                         b.OverlapsGroupCorner = true;
                     }
                     
@@ -327,13 +326,13 @@ export class ObstacleTree {
             if (!curvesIntersect) {
                 //  If the borders don't intersect, we don't need to do anything if both are groups or the
                 //  obstacle or convex hull is inside the group.  Otherwise we have to grow group a to encompass b.
-                if ((b.IsGroup || bIsInsideA)) {
+                if ((b.IsGroup || t.bIsInsideA)) {
                     return;
                 }
                 
             }
             
-            this.overlapPairs.Insert(new IntPair(a.Ordinal, b.Ordinal));
+            this.overlapPairs.add(new IntPair(a.Ordinal, b.Ordinal));
         }
         
         private static FirstRectangleContainsACornerOfTheOther(a: Rectangle, b: Rectangle): boolean {
@@ -347,36 +346,36 @@ export class ObstacleTree {
         }
         
         private AddClumpToConvexHull(obstacle: Obstacle) {
-            if (obstacle.IsOverlapped) {
-                for (let sibling in obstacle.Clump.Where(() => {  }, (sib.Ordinal != obstacle.Ordinal))) {
-                    this.overlapPairs.Insert(new IntPair(obstacle.Ordinal, sibling.Ordinal));
+            if (obstacle.isOverlapped) {
+                for (const sibling of obstacle.clump.filter(sib=>sib.Ordinal != obstacle.Ordinal)) {
+                    this.overlapPairs.add(new IntPair(obstacle.Ordinal, sibling.Ordinal));
                 }
                 
                 //  Clear this now so any overlaps with other obstacles in the clump won't doubly insert.
-                obstacle.Clump.Clear();
+                obstacle.clump = []
             }
             
         }
         
         private AddConvexHullToConvexHull(obstacle: Obstacle) {
             if (obstacle.IsInConvexHull) {
-                for (let sibling in obstacle.ConvexHull.Obstacles.Where(() => {  }, (sib.Ordinal != obstacle.Ordinal))) {
-                    this.overlapPairs.Insert(new IntPair(obstacle.Ordinal, sibling.Ordinal));
+                for (const sibling of obstacle.ConvexHull.Obstacles.filter(sib=> (sib.Ordinal != obstacle.Ordinal))) {
+                    this.overlapPairs.add(new IntPair(obstacle.Ordinal, sibling.Ordinal));
                 }
                 
                 //  Clear this now so any overlaps with other obstacles in the ConvexHull won't doubly insert.
-                obstacle.ConvexHull.Obstacles.Clear();
+                obstacle.ConvexHull.Obstacles= []
             }
             
         }
         
         private CreateClumps() {
-            let graph = new BasicGraphOnEdges<IntPair>(this.overlapPairs);
-            let connectedComponents = ConnectedComponentCalculator.GetComponents(graph);
-            for (let component in connectedComponents) {
+            let graph = mkGraphOnEdges(this.overlapPairs.values());
+            let connectedComponents = GetConnectedComponents(graph);
+            for (const component of connectedComponents) {
                 //  GetComponents returns at least one self-entry for each index - including the < FirstNonSentinelOrdinal ones.
-                if ((component.Count() == 1)) {
-                    // TODO: Warning!!! continue If
+                if ((component.length == 1)) {
+                    continue
                 }
                 
                 let clump = new clump(component.Select(this.OrdinalToObstacle));
@@ -617,10 +616,10 @@ export class ObstacleTree {
         
         //  Hit-testing.
          IntersectionIsInsideAnotherObstacle(sideObstacle: Obstacle, eventObstacle: Obstacle, intersect: Point, scanDirection: ScanDirection): boolean {
-            insideHitTestIgnoreObstacle1 = eventObstacle;
-            insideHitTestIgnoreObstacle2 = sideObstacle;
-            insideHitTestScanDirection = scanDirection;
-            let obstacleNode: RectangleNode<Obstacle, Point> = this.Root.FirstHitNode(intersect, InsideObstacleHitTest);
+            this.insideHitTestIgnoreObstacle1 = eventObstacle;
+            this.insideHitTestIgnoreObstacle2 = sideObstacle;
+            this.insideHitTestScanDirection = scanDirection;
+            let obstacleNode: RectangleNode<Obstacle, Point> = this.Root.FirstHitNode(intersect, this.InsideObstacleHitTest);
             return (null != obstacleNode);
         }
         
@@ -629,10 +628,10 @@ export class ObstacleTree {
         }
         
          PointIsInsideAnObstacle(intersect: Point, scanDirection: ScanDirection): boolean {
-            insideHitTestIgnoreObstacle1 = null;
-            insideHitTestIgnoreObstacle2 = null;
-            insideHitTestScanDirection = scanDirection;
-            let obstacleNode: RectangleNode<Obstacle, Point> = this.Root.FirstHitNode(intersect, InsideObstacleHitTest);
+            this.insideHitTestIgnoreObstacle1 = null;
+            this.insideHitTestIgnoreObstacle2 = null;
+            this.insideHitTestScanDirection = scanDirection;
+            let obstacleNode: RectangleNode<Obstacle, Point> = this.Root.FirstHitNode(intersect, this.InsideObstacleHitTest);
             return (null != obstacleNode);
         }
         
@@ -697,33 +696,33 @@ export class ObstacleTree {
         }
         
          SegmentCrossesAnObstacle(startPoint: Point, endPoint: Point): boolean {
-            stopAtGroups = true;
-            wantGroupCrossings = false;
+            this.stopAtGroups = true;
+            this.wantGroupCrossings = false;
             let obstacleIntersectSeg: LineSegment = this.RestrictSegmentPrivate(startPoint, endPoint);
             return !PointComparer.Equal(obstacleIntersectSeg.end, endPoint);
         }
         
          SegmentCrossesANonGroupObstacle(startPoint: Point, endPoint: Point): boolean {
-            stopAtGroups = false;
-            wantGroupCrossings = false;
+            this.stopAtGroups = false;
+            this.wantGroupCrossings = false;
             let obstacleIntersectSeg: LineSegment = this.RestrictSegmentPrivate(startPoint, endPoint);
             return !PointComparer.Equal(obstacleIntersectSeg.end, endPoint);
         }
         
         //  TEST_MSAGL
          RestrictSegmentWithObstacles(startPoint: Point, endPoint: Point): LineSegment {
-            stopAtGroups = false;
-            wantGroupCrossings = true;
+            this.stopAtGroups = false;
+            this.wantGroupCrossings = true;
             return this.RestrictSegmentPrivate(startPoint, endPoint);
         }
         
         private RestrictSegmentPrivate(startPoint: Point, endPoint: Point): LineSegment {
             this.GetRestrictedIntersectionTestSegment(startPoint, endPoint);
-            currentRestrictedRay = new LineSegment(startPoint, endPoint);
-            restrictedRayLengthSquared = (startPoint - endPoint).LengthSquared;
+            this.currentRestrictedRay = new LineSegment(startPoint, endPoint);
+            this.restrictedRayLengthSquared = (startPoint - endPoint).LengthSquared;
             this.CurrentGroupBoundaryCrossingMap.Clear();
             this.RecurseRestrictRayWithObstacles(this.Root);
-            return currentRestrictedRay;
+            return this.currentRestrictedRay;
         }
         
         private GetRestrictedIntersectionTestSegment(startPoint: Point, endPoint: Point) {
@@ -757,7 +756,7 @@ export class ObstacleTree {
             (Direction.North == segDir);
             startPoint.y;
             this.GraphBox.top;
-            restrictedIntersectionTestSegment = new LineSegment(new Point(startX, startY), new Point(endX, endY));
+            this.restrictedIntersectionTestSegment = new LineSegment(new Point(startX, startY), new Point(endX, endY));
         }
         
         //  Due to rounding at the endpoints of the segment on intersection calculations, we need to preserve the original full-length segment.

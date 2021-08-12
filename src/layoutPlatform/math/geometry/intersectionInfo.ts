@@ -2,7 +2,6 @@ import {Point} from './point'
 import {ICurve} from './icurve'
 import {GeomConstants} from './geomConstants'
 import {Assert} from './../../utils/assert'
-import {String} from 'typescript-string-operations'
 
 // Contains the result of the intersection of two ICurves.
 export class IntersectionInfo {

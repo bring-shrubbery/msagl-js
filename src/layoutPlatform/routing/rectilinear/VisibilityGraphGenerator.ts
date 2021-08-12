@@ -4,7 +4,6 @@
 //  X for Hscan, Y for Vscan) to handle reflections from non-orthogonal obstacle sides,
 //  and lookback scans that have not had their reflections calculated because they reflect
 
-import {InvalidOperationException} from 'linq-to-typescript'
 import {Direction} from '../../math/geometry/directiton'
 import {Point} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
@@ -44,6 +43,7 @@ import {ScanSegmentTree} from './ScanSegmentTree'
 import {SpliceUtility} from './SpliceUtility'
 import {StaticGraphUtility} from './StaticGraphUtility'
 import {VisibilityVertexRectilinear} from './VisibilityVertexRectiline'
+import {CompassVector} from '../../math/geometry/compassVector'
 
 //  backward from the scanline and thus must be picked up on a subsequent perpendicular sweep.
 export abstract class VisibilityGraphGenerator {
@@ -788,7 +788,8 @@ export abstract class VisibilityGraphGenerator {
       'There are leftovers in the scanline',
     )
   }
-  protected /* virtual */ ProcessCustomEvent(evt: SweepEvent) {
+
+  ProcessCustomEvent(evt: SweepEvent) {
     //  These are events specific to the derived class; by default there are none.
     Assert.assert(false, 'Unknown event type')
   }
@@ -800,11 +801,11 @@ export abstract class VisibilityGraphGenerator {
     //  An inner or outer neighbor's side is only an overlap start/stop candidate if its obstacle
     //  brackets the open/close event's Perpendicular Scan coord.
     return (
-      ScanDirection.ComparePerpCoord(
+      this.ScanDirection.ComparePerpCoord(
         eventSite,
         obstacle.VisibilityBoundingBox.leftBottom,
       ) > 0 &&
-      ScanDirection.ComparePerpCoord(
+      this.ScanDirection.ComparePerpCoord(
         eventSite,
         obstacle.VisibilityBoundingBox.rightTop,
       ) < 0
@@ -813,18 +814,20 @@ export abstract class VisibilityGraphGenerator {
 
   FindInitialNeighborSides(
     sideNode: RBNode<BasicObstacleSide>,
-    /* out */ lowNborSideNode: RBNode<BasicObstacleSide>,
-    /* out */ highNborSideNode: RBNode<BasicObstacleSide>,
+    t: {
+      lowNborSideNode: RBNode<BasicObstacleSide>
+      highNborSideNode: RBNode<BasicObstacleSide>
+    },
   ) {
-    lowNborSideNode = this.scanLine.NextLow(sideNode)
-    highNborSideNode = this.scanLine.NextHigh(sideNode)
+    t.lowNborSideNode = this.scanLine.NextLow(sideNode.item)
+    t.highNborSideNode = this.scanLine.NextHigh(sideNode.item)
   }
 
   //  As described in the doc, we stop at the first neighbor of the appropriate side type that we touch
   //  the border of, even if that's just skimming along the extreme vertex of it, because those will
   //  continue the chain of open/close+addSegment, and we don't want to follow the full length of the
   //  segment each time if there are a lot of collinear obstacle open/close events.
-  protected FindNeighbors(
+  protected FindNeighborsBRR(
     vertexEvent: BasicVertexEvent,
     lowSideNode: RBNode<BasicObstacleSide>,
     highSideNode: RBNode<BasicObstacleSide>,
@@ -850,25 +853,20 @@ export abstract class VisibilityGraphGenerator {
     // TODO: Warning!!!, inline IF is not supported ?
     vertexEvent instanceof OpenVertexEvent
     sideNode.item.End
-    let initialHighNbor: RBNode<BasicObstacleSide>
-    let initialLowNbor: RBNode<BasicObstacleSide>
-    this.FindInitialNeighborSides(
-      sideNode,
-      /* out */ initialLowNbor,
-      /* out */ initialHighNbor,
-    )
+    const t = {lowNborSideNode: null, highNborSideNode: null}
+    this.FindInitialNeighborSides(sideNode, t)
     this.SkipToNeighbor(
       this.ScanDirection.OppositeDirection,
       sideNode.item,
       sideReferencePoint,
-      initialLowNbor,
+      t.lowNborSideNode,
       neighborSides,
     )
     this.SkipToNeighbor(
-      this.ScanDirection.Direction,
+      this.ScanDirection.Dir,
       sideNode.item,
       sideReferencePoint,
-      initialHighNbor,
+      t.highNborSideNode,
       neighborSides,
     )
   }
@@ -887,7 +885,7 @@ export abstract class VisibilityGraphGenerator {
     for (; ; nborNode = this.scanLine.Next(nborSearchDir, nborNode)) {
       //  Ignore the opposite side of the current obstacle.
       if (nborNode.item.Obstacle == side.Obstacle) {
-        // TODO: Warning!!! continue If
+        continue
       }
 
       if (nborNode.item.Obstacle.IsGroup) {
@@ -904,7 +902,7 @@ export abstract class VisibilityGraphGenerator {
           }
         }
 
-        // TODO: Warning!!! continue If
+        continue
       }
 
       //  Check for overlap-ending obstacle.
@@ -922,7 +920,7 @@ export abstract class VisibilityGraphGenerator {
           interveningGroupSide = null
         }
 
-        // TODO: Warning!!! continue If
+        continue
       }
 
       //  If we're here, we found the neighbor we were looking for.
@@ -955,8 +953,8 @@ export abstract class VisibilityGraphGenerator {
     const dirToInsideOfGroup: Direction =
       nborNode.item instanceof LowObstacleSide ==
       StaticGraphUtility.IsAscending(nborSearchDir)
-    // TODO: Warning!!!, inline IF is not supported ?
-    // TODO: Warning!!!! NULL EXPRESSION DETECTED...
+        ? nborSearchDir
+        : CompassVector.OppositeDir(nborSearchDir)
 
     const intersect = this.ScanLineIntersectSide(
       sideReferencePoint,
@@ -976,7 +974,7 @@ export abstract class VisibilityGraphGenerator {
     vertexEvent: BasicVertexEvent,
   ) {
     this.CurrentGroupBoundaryCrossingMap.Clear()
-    this.FindNeighbors(vertexEvent, lowSideNode, highSideNode)
+    this.FindNeighborsBRR(vertexEvent, lowSideNode, highSideNode)
     this.ProcessVertexEvent(lowSideNode, highSideNode, vertexEvent)
     //  Clear this again because we don't want Reflections to access stale values.
     this.CurrentGroupBoundaryCrossingMap.Clear()
@@ -1027,13 +1025,13 @@ export abstract class VisibilityGraphGenerator {
     let lowReflector
     this.LowNeighborSides.LowNeighborSide
     if (this.SideReflectsUpward(lowReflector)) {
-      BasicReflectionEvent(obstacle.ActiveLowSide)
+      this.LoadReflectionEvents(obstacle.ActiveLowSide)
     }
 
     let highReflector
     this.HighNeighborSides.HighNeighborSide
     if (this.SideReflectsUpward(highReflector)) {
-      BasicReflectionEvent(obstacle.ActiveHighSide)
+      this.LoadReflectionEvents(obstacle.ActiveHighSide)
     }
 
     //  If this is a flat side it must absorb any outstanding reflection sites.
@@ -1042,7 +1040,7 @@ export abstract class VisibilityGraphGenerator {
       const tempSide = new HighObstacleSide(
         obstacle,
         openVertEvent.Vertex,
-        ScanDirection,
+        this.ScanDirection,
       )
       this.lookaheadScan.RemoveSitesForFlatBottom(tempSide.Start, tempSide.End)
     }

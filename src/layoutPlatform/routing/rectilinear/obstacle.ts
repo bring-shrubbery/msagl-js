@@ -23,6 +23,10 @@ export class Obstacle {
   InputShape: Shape
   Ports: Set<Port>
   ConvexHull: OverlapConvexHull
+  OverlapsGroupCorner: boolean
+  get IsInConvexHull() {
+    return this.ConvexHull != null
+  }
   get IsGroup(): boolean {
     return this.InputShape != null && this.InputShape.IsGroup
   }
@@ -207,5 +211,9 @@ export class Obstacle {
   clump: Array<Obstacle>
   get isOverlapped() {
     return this.clump != undefined && this.clump.length > 0
+  }
+  Close() {
+    this.ActiveLowSide = null
+    this.ActiveHighSide = null
   }
 }

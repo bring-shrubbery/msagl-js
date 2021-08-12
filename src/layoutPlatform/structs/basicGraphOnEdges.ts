@@ -2,10 +2,10 @@ import {IEdge} from './iedge'
 import {Queue} from 'queue-typescript'
 import {from, IEnumerable} from 'linq-to-typescript'
 export function mkGraphOnEdges<TEdge extends IEdge>(
-  edges: IEnumerable<TEdge>,
+  edges: Iterable<TEdge>,
 ): BasicGraphOnEdges<TEdge> {
   const n = new BasicGraphOnEdges<TEdge>()
-  n.SetEdges(edges.toArray(), BasicGraphOnEdges.vertexCount(edges))
+  n.SetEdges(Array.from(edges), BasicGraphOnEdges.vertexCount(edges))
   return n
 }
 
