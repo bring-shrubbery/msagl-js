@@ -204,4 +204,8 @@ export class Obstacle {
   // AddObstacle to avoid a possible wraparound issue if a lot of obstacles are added/removed.
   // For sentinels, 1/2 are left/right, 3/4 are top/bottom. 0 is invalid during scanline processing.
   Ordinal: number
+  clump: Array<Obstacle>
+  get isOverlapped() {
+    return this.clump != undefined && this.clump.length > 0
+  }
 }
