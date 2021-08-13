@@ -10,6 +10,29 @@ import {CurveFactory} from './../../../../layoutPlatform/math/geometry/curveFact
 import {BezierSeg} from './../../../../layoutPlatform/math/geometry/bezierSeg'
 import {ICurve} from './../../../../layoutPlatform/math/geometry/icurve'
 import {Rectangle} from './../../../../layoutPlatform/math/geometry/rectangle'
+import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
+
+test('adjustStartEndEndParametersToDomain', () => {
+  const c = new Curve()
+  c.addSegment(LineSegment.mkPP(new Point(0, 0), new Point(1, 2)))
+  const params = {start: 0.9, end: 0.1}
+  c.adjustStartEndEndParametersToDomain(params)
+  expect(params.end).toBeGreaterThan(params.start)
+})
+test('trimWithWrap', () => {
+  const c = CurveFactory.mkRectangleWithRoundedCorners(
+    100,
+    100,
+    5,
+    5,
+    new Point(0, 0),
+  )
+  const trimResult = c.trimWithWrap(
+    (c.parStart + c.parEnd) / 2,
+    c.parStart * 0.6 + c.parEnd * 0.4,
+  )
+  SvgDebugWriter.dumpICurves('/tmp/trimWithWrap.svg', [trimResult])
+})
 
 test('tail', () => {
   const a = [1, 2, 3]
@@ -197,6 +220,31 @@ test('bezier rounded rect intersections', () => {
     expect(xx.length > 0 && xx.length % 2 != 0).toBe(true)
   }
 }, 10)
+test('ClosestPoint', () => {
+  const rr: Curve = CurveFactory.mkRectangleWithRoundedCorners(
+    100,
+    52,
+    7,
+    7,
+    new Point(0, 0),
+  )
+  const p = Curve.ClosestPoint(rr, new Point(11, 150))
+
+  expect(Point.closeDistEps(p, new Point(11, 26))).toBe(true)
+})
+
+test('line curve intersections', () => {
+  const rr: Curve = CurveFactory.mkRectangleWithRoundedCorners(
+    100,
+    52,
+    7,
+    7,
+    new Point(0, 0),
+  )
+  const ls = LineSegment.mkPP(new Point(1000, 1000), new Point(2000, 2000))
+  const xx = Curve.getAllIntersections(ls, rr, false)
+  expect(xx.length).toBe(0)
+})
 
 test('bezier bezier rect intersections', () => {
   const a = new Point(0, 0)

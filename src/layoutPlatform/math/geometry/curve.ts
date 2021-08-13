@@ -75,7 +75,7 @@ export class Curve implements ICurve {
     )
   }
   // fields
-  parEnd_: number
+  private parEnd_: number
 
   pBNode: PN
   //the parameter domain is [0,parEnd_] where parEnd_ is the sum (seg.parEnd - seg.parStart()) over all segment in this.segs
