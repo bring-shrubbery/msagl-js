@@ -24,6 +24,7 @@ export class Obstacle {
   Ports: Set<Port>
   ConvexHull: OverlapConvexHull
   OverlapsGroupCorner: boolean
+  looseVisibilityPolyline: Polyline
   get IsInConvexHull() {
     return this.ConvexHull != null
   }
@@ -215,5 +216,20 @@ export class Obstacle {
   Close() {
     this.ActiveLowSide = null
     this.ActiveHighSide = null
+  }
+  SetConvexHull(hull: OverlapConvexHull) {
+    //  This obstacle may have been in a rectangular obstacle or clump that was now found to overlap with a non-rectangular obstacle.
+    this.clump = null
+    this.IsRectangle = false
+    this.ConvexHull = hull
+    this.looseVisibilityPolyline = null
+  }
+  static CreateLoosePolyline(polyline: Polyline): Polyline {
+    const loosePolyline = InteractiveObstacleCalculator.CreatePaddedPolyline(
+      polyline,
+      GeomConstants.intersectionEpsilon * 10,
+    )
+    Obstacle.RoundVerticesAndSimplify(loosePolyline)
+    return loosePolyline
   }
 }
