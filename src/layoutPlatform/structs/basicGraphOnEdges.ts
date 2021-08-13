@@ -58,7 +58,7 @@ export class BasicGraphOnEdges<TEdge extends IEdge> {
 
   // This method should be static be
   // finds the maximum of sources and targets, and return it incremented by 1
-  static vertexCount(edges: IEnumerable<IEdge>) {
+  static vertexCount(edges: Iterable<IEdge>) {
     let nov = 0
     for (const ie of edges) {
       if (ie.source >= nov) nov = ie.source

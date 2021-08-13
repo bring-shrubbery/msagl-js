@@ -491,22 +491,14 @@ export class ObstacleTree {
     let loosePolyline = obstacle.looseVisibilityPolyline
     ObstacleTree.GrowGroupAroundLoosePolyline(group, loosePolyline)
     //  Due to rounding we may still report this to be close or intersecting; grow it again if so.
-    let bIsInsideA: boolean
-    let aIsInsideB: boolean
+    const t = {bIsInsideA: undefined, aIsInsideB: undefined}
     while (
-      ObstacleTree.ObstaclesIntersect(
-        obstacle,
-        group,
-        /* out */ aIsInsideB,
-        /* out */ bIsInsideA,
-      ) ||
-      !aIsInsideB
+      ObstacleTree.ObstaclesIntersect(obstacle, group, t) ||
+      !t.aIsInsideB
     ) {
       loosePolyline = Obstacle.CreateLoosePolyline(loosePolyline)
       ObstacleTree.GrowGroupAroundLoosePolyline(group, loosePolyline)
     }
-
-    return
   }
 
   private static GrowGroupAroundLoosePolyline(
@@ -579,23 +571,20 @@ export class ObstacleTree {
     }
 
     //  Otherwise see if the inner one is close enough to the outer border to consider them touching.
-    const innerLoosePolyline = a.looseVisibilityPolyline
-    // TODO: Warning!!!, inline IF is not supported ?
-    aIsInsideB
-    b.looseVisibilityPolyline
-    const outerPolyline = b.VisibilityPolyline
-    // TODO: Warning!!!, inline IF is not supported ?
-    aIsInsideB
-    a.VisibilityPolyline
-    for (const innerPoint: Point in innerLoosePolyline) {
+    const innerLoosePolyline = aIsInsideB
+      ? a.looseVisibilityPolyline
+      : b.looseVisibilityPolyline
+    const outerPolyline = aIsInsideB
+      ? b.VisibilityPolyline
+      : a.VisibilityPolyline
+
+    for (const innerPoint of innerLoosePolyline.points()) {
       if (
         Curve.PointRelativeToCurveLocation(innerPoint, outerPolyline) ==
         PointLocation.Outside
       ) {
         const outerParamPoint = Curve.ClosestPoint(outerPolyline, innerPoint)
-        if (
-          !ApproximateComparer.CloseIntersections(innerPoint, outerParamPoint)
-        ) {
+        if (!Point.closeIntersections(innerPoint, outerParamPoint)) {
           return true
         }
       }
@@ -613,9 +602,9 @@ export class ObstacleTree {
     }
 
     //  Add each group to the AncestorSet of any spatial children (duplicate Insert() is ignored).
-    for (const group in this.GetAllGroups()) {
+    for (const group of this.GetAllGroups()) {
       const groupBox = group.VisibilityBoundingBox
-      for (const obstacle in this.Root.GetNodeItemsIntersectingRectangle(
+      for (const obstacle of this.Root.GetNodeItemsIntersectingRectangle(
         groupBox,
       )) {
         if (
@@ -833,10 +822,7 @@ export class ObstacleTree {
           'incorrect parameter ordering to GetAllIntersections',
         )
         if (
-          !ApproximateComparer.Close(
-            Math.floor(xxs[0].Par1),
-            Math.floor(xxs[1].Par1),
-          )
+          !GeomConstants.Close(Math.floor(xxs[0].Par1), Math.floor(xxs[1].Par1))
         ) {
           return HitTestBehavior.Stop
         }
@@ -1019,7 +1005,7 @@ export class ObstacleTree {
         const rawDistSquared = (
           intersectionInfo.IntersectionPoint - this.currentRestrictedRay.start
         ).LengthSquared
-        if (rawDistSquared < ApproximateComparer.SquareOfDistanceEpsilon) {
+        if (rawDistSquared < GeomConstants.SquareOfDistanceEpsilon) {
           // TODO: Warning!!! continue If
         }
 
@@ -1037,11 +1023,11 @@ export class ObstacleTree {
           this.currentRestrictedRay.start,
         )
         if (
-          ApproximateComparer.CloseIntersections(
+          GeomConstants.CloseIntersections(
             intersect,
             this.currentRestrictedRay.start,
           ) ||
-          ApproximateComparer.CloseIntersections(
+          GeomConstants.CloseIntersections(
             intersect,
             this.currentRestrictedRay.end,
           )

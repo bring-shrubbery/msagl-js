@@ -17,6 +17,7 @@ import {SvgDebugWriter} from './svgDebugWriter'
 import {DebugCurve} from './debugCurve'
 import {BezierSeg} from './bezierSeg'
 import {CornerSite} from './cornerSite'
+import {from} from 'linq-to-typescript'
 type Params = {
   start: number
   end: number
@@ -1808,13 +1809,12 @@ export class Curve implements ICurve {
        pointOnCurve = curve[t];
        return t;
        }
-       
-       // gets the point on the curve that is closest to the given point
-       public static Point ClosestPoint(ICurve curve, Point location) {
-       ValidateArg.IsNotNull(curve, "curve");
-       return curve[curve.closestParameter(location)];
-       }
-       
+       */
+  // gets the point on the curve that is closest to the given point
+  static ClosestPoint(curve: ICurve, location: Point): Point {
+    return curve.value(curve.closestParameter(location))
+  }
+  /*
        // Tests whether the first curve is inside the second.
        // We suppose that the curves are convex and they are 
        // not degenerated into a point
@@ -1825,7 +1825,7 @@ export class Curve implements ICurve {
        IList<IntersectionInfo> xx = GetAllIntersections(innerCurve, outerCurve, true);
        if (xx.length == 0) return NonIntersectingCurveIsInsideOther(innerCurve, outerCurve);
        if (xx.length == 1) //it has to be a touch
-       return innerCurve.start != xx[0].intersectionPoint
+       return innerCurve.start != xx[0].x
        ? PointRelativeToCurveLocation(innerCurve.start, outerCurve) == PointLocation.Inside
        : PointRelativeToCurveLocation(innerCurve[(innerCurve.parStart + innerCurve.parEnd)/2],
        outerCurve) == PointLocation.Inside;
@@ -1833,63 +1833,84 @@ export class Curve implements ICurve {
        PointsBetweenIntersections(innerCurve, xx).All(
        p => PointRelativeToCurveLocation(p, outerCurve) != PointLocation.Outside);
        }
-       
-       // Return points between but not including the intersections.
-       internal static IEnumerable<Point> PointsBetweenIntersections(ICurve a, IList<IntersectionInfo> xx) {
-       xx.OrderBy(x => x.Par0);
-       for (int i = 0; i < xx.length - 1; i++)
-       yield return a[(xx[i].Par0 + xx[i + 1].Par0)/2];
-       //take care of the last interval
-       number start = xx[xx.length - 1].Par0;
-       number end = xx[0].Par0;
-       number len = a.parEnd - start + end - a.parStart;
-       number middle = start + len/2;
-       if (middle > a.parEnd)
-       middle = a.parStart + middle - a.parEnd;
-       yield return a[middle];
-       }
-       
-       static boolean NonIntersectingCurveIsInsideOther(ICurve a, ICurve b) {
-       ValidateArg.IsNotNull(a, "a");
-       ValidateArg.IsNotNull(b, "b");
-       // Due to rounding, even curves with 0 intersections may return Boundary.
-       for (number par = a.parStart; par < a.parEnd; par += 0.5) {
-       // continue as long as we have boundary points.
-       PointLocation parLoc = PointRelativeToCurveLocation(a[par], b);
-       if (PointLocation.Boundary != parLoc) return PointLocation.Inside == parLoc;
-       }
-       
-       // All points so far were on border so it is not considered inside; test the End.
-       return PointLocation.Outside != PointRelativeToCurveLocation(a.end, b);
-       }
-       
-       // Tests whether the interiors of two closed convex curves intersect
-       public static boolean ClosedCurveInteriorsIntersect(ICurve curve1, ICurve curve2) {
-       ValidateArg.IsNotNull(curve1, "curve1");
-       ValidateArg.IsNotNull(curve2, "curve2");
-       if (!curve2.BoundingBox.intersects(curve1.BoundingBox))
-       return false;
-       IList<IntersectionInfo> xx = GetAllIntersections(curve1, curve2, true);
-       if (xx.length == 0)
-       return NonIntersectingCurveIsInsideOther(curve1, curve2) ||
-       NonIntersectingCurveIsInsideOther(curve2, curve1);
-       if (xx.length == 1) //it is a touch
-       return curve1.start != xx[0].intersectionPoint
-       ? PointRelativeToCurveLocation(curve1.start, curve2) == PointLocation.Inside
-       : PointRelativeToCurveLocation(curve1[(curve1.parStart + curve1.parEnd)/2], curve2) ==
-       PointLocation.Inside ||
-       curve2.start != xx[0].intersectionPoint
-       ? PointRelativeToCurveLocation(curve2.start, curve1) == PointLocation.Inside
-       : PointRelativeToCurveLocation(curve2[(curve2.parStart + curve2.parEnd)/2], curve1) ==
-       PointLocation.Inside;
-       return
-       PointsBetweenIntersections(curve1, xx).Any(
-       p => PointRelativeToCurveLocation(p, curve2) == PointLocation.Inside);
-       }
-       
-       #region ICurve Members
-       
        */
+
+  //  Return points between but not including the intersections.
+  static *PointsBetweenIntersections(
+    a: ICurve,
+    xx: Array<IntersectionInfo>,
+  ): IterableIterator<Point> {
+    xx.sort((x, y) => (x.par0 < y.par0 ? -1 : x.par0 > y.par0 ? 1 : 0))
+    for (let i = 0; i < xx.length - 1; i++) {
+      yield a.value((xx[i].par0 + xx[i + 1].par0) / 2)
+    }
+    // take care of the last interval
+    const start: number = xx[xx.length - 1].par0
+    const end: number = xx[0].par0
+    const len: number = a.parEnd - start + (end - a.parStart)
+    let middle: number = start + len / 2
+    if (middle > a.parEnd) {
+      middle = a.parStart + (middle - a.parEnd)
+    }
+
+    yield a.value(middle)
+  }
+  static NonIntersectingCurveIsInsideOther(a: ICurve, b: ICurve): boolean {
+    //  Due to rounding, even curves with 0 intersections may return Boundary.
+    for (let par: number = a.parStart; par < a.parEnd; par += 0.5) {
+      //  continue as long as we have boundary points.
+      const parLoc: PointLocation = Curve.PointRelativeToCurveLocation(
+        a.value(par),
+        b,
+      )
+      if (PointLocation.Boundary != parLoc) {
+        return PointLocation.Inside == parLoc
+      }
+    }
+
+    //  All points so far were on border so it is not considered inside; test the End.
+    return PointLocation.Outside != Curve.PointRelativeToCurveLocation(a.end, b)
+  }
+  //  Tests whether the interiors of two closed convex curves intersect
+  public static ClosedCurveInteriorsIntersect(
+    curve1: ICurve,
+    curve2: ICurve,
+  ): boolean {
+    if (!curve2.boundingBox.intersects(curve1.boundingBox)) {
+      return false
+    }
+
+    const xx = Curve.getAllIntersections(curve1, curve2, true)
+    if (xx.length == 0) {
+      return (
+        Curve.NonIntersectingCurveIsInsideOther(curve1, curve2) ||
+        Curve.NonIntersectingCurveIsInsideOther(curve2, curve1)
+      )
+    }
+
+    if (xx.length == 1) {
+      //it is a touch
+      return !curve1.start.equal(xx[0].x)
+        ? Curve.PointRelativeToCurveLocation(curve1.start, curve2) ==
+            PointLocation.Inside
+        : Curve.PointRelativeToCurveLocation(
+            curve1.value((curve1.parStart + curve1.parEnd) / 2),
+            curve2,
+          ) == PointLocation.Inside || !curve2.start.equal(xx[0].x)
+        ? Curve.PointRelativeToCurveLocation(curve2.start, curve1) ==
+          PointLocation.Inside
+        : Curve.PointRelativeToCurveLocation(
+            curve2.value((curve2.parStart + curve2.parEnd) / 2),
+            curve1,
+          ) == PointLocation.Inside
+    }
+    return from(Curve.PointsBetweenIntersections(curve1, xx)).any(
+      (p) =>
+        Curve.PointRelativeToCurveLocation(p, curve2) == PointLocation.Inside,
+    )
+  }
+  // ICurve Members
+
   curvature(t: number) {
     const sp = this.getSegParam(t)
     return sp.seg.curvature(sp.par)
