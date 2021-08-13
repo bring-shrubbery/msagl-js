@@ -1,6 +1,5 @@
 //  Creates the convex hull of a set of points following "Computational Geometry, second edition" of O'Rourke
 
-import {IEnumerable} from 'linq-to-typescript'
 import {Assert} from '../../utils/assert'
 import {GeomConstants} from './geomConstants'
 import {Point, TriangleOrientation} from './point'
@@ -196,9 +195,7 @@ export class ConvexHull {
     this.hullPoints.sort(hullPointComparer(this.pivot))
   }
 
-  private static CreateConvexHullAsClosedPolyline(
-    points: IterableIterator<Point>,
-  ): Polyline {
+  static createConvexHullAsClosedPolyline(points: Iterable<Point>): Polyline {
     const convexHull = Polyline.mkFromPoints(
       Array.from(ConvexHull.CalculateConvexHull(points)),
     )

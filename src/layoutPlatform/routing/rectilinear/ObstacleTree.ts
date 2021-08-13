@@ -1,4 +1,3 @@
-import {from, IEnumerable} from 'linq-to-typescript'
 import {HitTestBehavior} from '../../core/geometry/RTree/HitTestBehavior'
 import {
   CreateRectangleNodeOnListOfNodes,
@@ -10,16 +9,14 @@ import {CompassVector} from '../../math/geometry/compassVector'
 import {ConvexHull} from '../../math/geometry/convexHull'
 import {Curve, PointLocation} from '../../math/geometry/curve'
 import {Direction} from '../../math/geometry/directiton'
+import {GeomConstants} from '../../math/geometry/geomConstants'
 import {IntersectionInfo} from '../../math/geometry/intersectionInfo'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Point} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
 import {Rectangle} from '../../math/geometry/rectangle'
 import {GetConnectedComponents} from '../../math/graphAlgorithms/ConnectedComponentCalculator'
-import {
-  BasicGraphOnEdges,
-  mkGraphOnEdges,
-} from '../../structs/basicGraphOnEdges'
+import {mkGraphOnEdges} from '../../structs/basicGraphOnEdges'
 import {Assert} from '../../utils/assert'
 import {IntPair} from '../../utils/IntPair'
 import {IntPairSet} from '../../utils/IntPairSet'
@@ -30,9 +27,16 @@ import {OverlapConvexHull} from './OverlapConvexHull'
 import {PointAndCrossingsList} from './PointAndCrossingsList'
 import {PointComparer} from './PointComparer'
 import {ScanDirection} from './ScanDirection'
+import {SpliceUtility} from './SpliceUtility'
 import {StaticGraphUtility} from './StaticGraphUtility'
 export class ObstacleTree {
-  //   // The root of the hierarchy.
+  //  Ignore one (always) or both (depending on location) of these obstacles on Obstacle hit testing.
+  insideHitTestIgnoreObstacle1: Obstacle
+
+  insideHitTestIgnoreObstacle2: Obstacle
+
+  insideHitTestScanDirection: ScanDirection
+  //    The root of the hierarchy.
 
   Root: RectangleNode<Obstacle, Point>
 
@@ -434,7 +438,7 @@ export class ObstacleTree {
         .map((p) => p.VisibilityPolyline.points)
         .reduce((a, b) => a.concat(b), [])
       const och = new OverlapConvexHull(
-        createConvexHullAsClosedPolyline(points),
+        ConvexHull.createConvexHullAsClosedPolyline(points),
         obstacles,
       )
       for (const obstacle of obstacles) {
@@ -509,7 +513,10 @@ export class ObstacleTree {
       Array.from(loosePolyline.points()),
     )
     group.SetConvexHull(
-      new OverlapConvexHull(createConvexHullAsClosedPolyline(points), [group]),
+      new OverlapConvexHull(
+        ConvexHull.createConvexHullAsClosedPolyline(points),
+        [group],
+      ),
     )
   }
 
@@ -619,12 +626,12 @@ export class ObstacleTree {
               obstacle.IsPrimaryObstacle,
               'Only primary obstacles should be in the hierarchy',
             )
-            for (const sibling in obstacle.ConvexHull.Obstacles) {
-              this.AncestorSets[sibling.InputShape].Insert(group.InputShape)
+            for (const sibling of obstacle.ConvexHull.Obstacles) {
+              this.AncestorSets.get(sibling.InputShape).add(group.InputShape)
             }
           }
 
-          this.AncestorSets[obstacle.InputShape].Insert(group.InputShape)
+          this.AncestorSets.get(obstacle.InputShape).add(group.InputShape)
         }
       }
     }
@@ -634,27 +641,32 @@ export class ObstacleTree {
     //  crossing the boundary the first time and will always go to the full "activate all groups" path.  By
     //  removing them here we not only get a better graph (avoiding some spurious crossings) but we're faster
     //  both in path generation and Nudging.
-    const nonSpatialGroups = new Array<Shape>()
-    for (const child in this.Root.GetAllLeaves()) {
+    let nonSpatialGroups = new Array<Shape>()
+    for (const child of this.Root.GetAllLeaves()) {
       const childBox = child.VisibilityBoundingBox
       //  This has to be two steps because we can't modify the Set during enumeration.
-      nonSpatialGroups.AddRange(
-        this.AncestorSets[child.InputShape].Where(() => {},
-        !childBox.Intersects(this.shapeIdToObstacleMap[anc].VisibilityBoundingBox)),
+      nonSpatialGroups = nonSpatialGroups.concat(
+        Array.from(this.AncestorSets.get(child.InputShape)).filter(
+          (anc) =>
+            !childBox.intersects(
+              this.shapeIdToObstacleMap.get(anc).VisibilityBoundingBox,
+            ),
+        ),
       )
-      for (const group in nonSpatialGroups) {
-        this.AncestorSets[child.InputShape].Remove(group)
+
+      for (const group of nonSpatialGroups) {
+        this.AncestorSets.get(child.InputShape).delete(group)
       }
 
-      nonSpatialGroups.Clear()
+      nonSpatialGroups = []
     }
 
     this.SpatialAncestorsAdjusted = true
     return true
   }
 
-  GetAllGroups(): IEnumerable<Obstacle> {
-    return this.GetAllObstacles().Where(() => {}, obs.IsGroup)
+  GetAllGroups(): Array<Obstacle> {
+    return this.GetAllObstacles().filter((obs) => obs.IsGroup)
   }
 
   //Clear the internal state.
@@ -669,7 +681,7 @@ export class ObstacleTree {
   CreateMaxVisibilitySegment(
     startPoint: Point,
     dir: Direction,
-    /* out */ pacList: PointAndCrossingsList,
+    t: {pacList: PointAndCrossingsList},
   ): LineSegment {
     const graphBoxBorderIntersect = StaticGraphUtility.RectangleBorderIntersect(
       this.GraphBox,
@@ -680,8 +692,8 @@ export class ObstacleTree {
       PointComparer.GetDirections(startPoint, graphBoxBorderIntersect) ==
       Direction.None
     ) {
-      pacList = null
-      return new LineSegment(startPoint, startPoint)
+      t.pacList = null
+      return LineSegment.mkPP(startPoint, startPoint)
     }
 
     const segment = this.RestrictSegmentWithObstacles(
@@ -689,7 +701,7 @@ export class ObstacleTree {
       graphBoxBorderIntersect,
     )
     //  Store this off before other operations which overwrite it.
-    pacList = this.CurrentGroupBoundaryCrossingMap.GetOrderedListBetween(
+    t.pacList = this.CurrentGroupBoundaryCrossingMap.GetOrderedListBetween(
       segment.start,
       segment.end,
     )
@@ -704,7 +716,7 @@ export class ObstacleTree {
 
   // Returns a list of all primary obstacles - secondary obstacles inside a convex hull are not needed in the VisibilityGraphGenerator.
 
-  GetAllPrimaryObstacles(): IEnumerable<Obstacle> {
+  GetAllPrimaryObstacles(): Iterable<Obstacle> {
     return this.Root.GetAllLeaves()
   }
 
@@ -718,14 +730,17 @@ export class ObstacleTree {
     this.insideHitTestIgnoreObstacle1 = eventObstacle
     this.insideHitTestIgnoreObstacle2 = sideObstacle
     this.insideHitTestScanDirection = scanDirection
-    const obstacleNode: RectangleNode<Obstacle, Point> = this.Root.FirstHitNode(
+    const obstacleNode: RectangleNode<
+      Obstacle,
+      Point
+    > = this.Root.FirstHitNodeWithPredicate(
       intersect,
       this.InsideObstacleHitTest,
     )
     return null != obstacleNode
   }
 
-  PointIsInsideAnObstacle(intersect: Point, direction: Direction): boolean {
+  PointIsInsideAnObstaclePD(intersect: Point, direction: Direction): boolean {
     return this.PointIsInsideAnObstacle(
       intersect,
       ScanDirection.GetInstance(direction),
@@ -739,19 +754,15 @@ export class ObstacleTree {
     this.insideHitTestIgnoreObstacle1 = null
     this.insideHitTestIgnoreObstacle2 = null
     this.insideHitTestScanDirection = scanDirection
-    const obstacleNode: RectangleNode<Obstacle, Point> = this.Root.FirstHitNode(
+    const obstacleNode: RectangleNode<
+      Obstacle,
+      Point
+    > = this.Root.FirstHitNodeWithPredicate(
       intersect,
       this.InsideObstacleHitTest,
     )
     return null != obstacleNode
   }
-
-  //  Ignore one (always) or both (depending on location) of these obstacles on Obstacle hit testing.
-  insideHitTestIgnoreObstacle1: Obstacle
-
-  insideHitTestIgnoreObstacle2: Obstacle
-
-  insideHitTestScanDirection: ScanDirection
 
   InsideObstacleHitTest(location: Point, obstacle: Obstacle): HitTestBehavior {
     if (
@@ -781,20 +792,18 @@ export class ObstacleTree {
 
     //  Note: There are rounding issues using Curve.PointRelativeToCurveLocation at angled
     //  obstacle boundaries, hence this function.
-    const high: Point =
-      StaticGraphUtility.RectangleBorderIntersect(
-        obstacle.VisibilityBoundingBox,
-        location,
-        this.insideHitTestScanDirection.Direction,
-      ) + this.insideHitTestScanDirection.DirectionAsPoint
-    const low: Point =
-      StaticGraphUtility.RectangleBorderIntersect(
-        obstacle.VisibilityBoundingBox,
-        location,
-        this.insideHitTestScanDirection.OppositeDirection,
-      ) - this.insideHitTestScanDirection.DirectionAsPoint
-    const testSeg = new LineSegment(low, high)
-    const xxs: IList<IntersectionInfo> = Curve.getAllIntersections(
+    const high: Point = StaticGraphUtility.RectangleBorderIntersect(
+      obstacle.VisibilityBoundingBox,
+      location,
+      this.insideHitTestScanDirection.dir,
+    ).add(this.insideHitTestScanDirection.DirectionAsPoint)
+    const low: Point = StaticGraphUtility.RectangleBorderIntersect(
+      obstacle.VisibilityBoundingBox,
+      location,
+      this.insideHitTestScanDirection.OppositeDirection,
+    ).sub(this.insideHitTestScanDirection.DirectionAsPoint)
+    const testSeg = LineSegment.mkPP(low, high)
+    const xxs = Curve.getAllIntersections(
       testSeg,
       obstacle.VisibilityPolyline,
       true,
@@ -803,13 +812,13 @@ export class ObstacleTree {
     //  or outside; if it's a collinear flat boundary, there can be 3 intersections to this point which again
     //  means we're on the border (and 3 shouldn't happen anymore with the curve intersection fixes and
     //  PointIsInsideRectangle check above).  So the interesting case is that we have 2 intersections.
-    if (2 == xxs.Count) {
-      const firstInt: Point = SpliceUtility.RawIntersection(xxs[0], location)
-      const secondInt: Point = SpliceUtility.RawIntersection(xxs[1], location)
+    if (2 == xxs.length) {
+      const firstInt: Point = GeomConstants.RoundPoint(xxs[0].x)
+      const secondInt: Point = GeomConstants.RoundPoint(xxs[1].x)
       //  If we're on either intersection, we're on the border rather than inside.
       if (
-        !PointComparer.Equal(location, firstInt) &&
-        !PointComparer.Equal(location, secondInt) &&
+        !PointComparer.EqualPP(location, firstInt) &&
+        !PointComparer.EqualPP(location, secondInt) &&
         location.compareTo(firstInt) != location.compareTo(secondInt)
       ) {
         //  We're inside.  However, this may be an almost-flat side, in which case rounding
@@ -818,12 +827,10 @@ export class ObstacleTree {
         //  are on the same side (integral portion of the parameter), we consider location
         //  to be on the border.  testSeg is always xxs[*].Segment0.
         Assert.assert(
-          testSeg == xxs[0].Segment0,
+          testSeg == xxs[0].seg0,
           'incorrect parameter ordering to GetAllIntersections',
         )
-        if (
-          !GeomConstants.Close(Math.floor(xxs[0].Par1), Math.floor(xxs[1].Par1))
-        ) {
+        if (!Point.closeD(Math.floor(xxs[0].par1), Math.floor(xxs[1].par1))) {
           return HitTestBehavior.Stop
         }
       }
@@ -839,7 +846,7 @@ export class ObstacleTree {
       startPoint,
       endPoint,
     )
-    return !PointComparer.Equal(obstacleIntersectSeg.end, endPoint)
+    return !PointComparer.EqualPP(obstacleIntersectSeg.end, endPoint)
   }
 
   SegmentCrossesANonGroupObstacle(startPoint: Point, endPoint: Point): boolean {
@@ -849,7 +856,7 @@ export class ObstacleTree {
       startPoint,
       endPoint,
     )
-    return !PointComparer.Equal(obstacleIntersectSeg.end, endPoint)
+    return !PointComparer.EqualPP(obstacleIntersectSeg.end, endPoint)
   }
 
   //  TEST_MSAGL
@@ -867,8 +874,8 @@ export class ObstacleTree {
     endPoint: Point,
   ): LineSegment {
     this.GetRestrictedIntersectionTestSegment(startPoint, endPoint)
-    this.currentRestrictedRay = new LineSegment(startPoint, endPoint)
-    this.restrictedRayLengthSquared = (startPoint - endPoint).LengthSquared
+    this.currentRestrictedRay = LineSegment.mkPP(startPoint, endPoint)
+    this.restrictedRayLengthSquared = startPoint.sub(endPoint).lengthSquared
     this.CurrentGroupBoundaryCrossingMap.Clear()
     this.RecurseRestrictRayWithObstacles(this.Root)
     return this.currentRestrictedRay
@@ -878,40 +885,33 @@ export class ObstacleTree {
     startPoint: Point,
     endPoint: Point,
   ) {
-    //  Due to rounding issues use a larger line span for intersection calculations.
-    const segDir: Direction = PointComparer.GetPureDirectionPP(
-      startPoint,
-      endPoint,
-    )
-    const startX: number = this.GraphBox.right
-    // TODO: Warning!!!, inline IF is not supported ?
-    Direction.West == segDir
-    // TODO: Warning!!!, inline IF is not supported ?
-    Direction.East == segDir
-    startPoint.x
-    this.GraphBox.left
-    const endX: number = this.GraphBox.left
-    // TODO: Warning!!!, inline IF is not supported ?
-    Direction.West == segDir
-    // TODO: Warning!!!, inline IF is not supported ?
-    Direction.East == segDir
-    endPoint.x
-    this.GraphBox.right
-    const startY: number = this.GraphBox.top * 2
-    // TODO: Warning!!!, inline IF is not supported ?
-    Direction.South == segDir
-    // TODO: Warning!!!, inline IF is not supported ?
-    Direction.North == segDir
-    startPoint.y
-    this.GraphBox.bottom
-    const endY: number = this.GraphBox.bottom
-    // TODO: Warning!!!, inline IF is not supported ?
-    Direction.South == segDir
-    // TODO: Warning!!!, inline IF is not supported ?
-    Direction.North == segDir
-    startPoint.y
-    this.GraphBox.top
-    this.restrictedIntersectionTestSegment = new LineSegment(
+    // Due to rounding issues use a larger line span for intersection calculations.
+    const segDir = PointComparer.GetPureDirectionPP(startPoint, endPoint)
+    const startX =
+      Direction.West == segDir
+        ? this.GraphBox.right
+        : Direction.East == segDir
+        ? this.GraphBox.left
+        : startPoint.x
+    const endX =
+      Direction.West == segDir
+        ? this.GraphBox.left
+        : Direction.East == segDir
+        ? this.GraphBox.right
+        : endPoint.x
+    const startY =
+      Direction.South == segDir
+        ? this.GraphBox.top * 2
+        : Direction.North == segDir
+        ? this.GraphBox.bottom
+        : startPoint.y
+    const endY =
+      Direction.South == segDir
+        ? this.GraphBox.bottom
+        : Direction.North == segDir
+        ? this.GraphBox.top
+        : startPoint.y
+    this.restrictedIntersectionTestSegment = LineSegment.mkPP(
       new Point(startX, startY),
       new Point(endX, endY),
     )
@@ -935,7 +935,7 @@ export class ObstacleTree {
     if (
       !StaticGraphUtility.RectangleInteriorsIntersect(
         this.currentRestrictedRay.boundingBox,
-        <Rectangle>rectNode.Rectangle,
+        <Rectangle>rectNode.irect,
       )
     ) {
       return
@@ -944,7 +944,7 @@ export class ObstacleTree {
     const obstacle: Obstacle = rectNode.UserData
     if (null != obstacle) {
       //  Leaf node. Get the interior intersections.  Use the full-length original segment for the intersection calculation.
-      const intersections: IList<IntersectionInfo> = Curve.getAllIntersections(
+      const intersections = Curve.getAllIntersections(
         this.restrictedIntersectionTestSegment,
         obstacle.VisibilityPolyline,
         true,
@@ -968,7 +968,7 @@ export class ObstacleTree {
   }
 
   private LookForCloserNonGroupIntersectionToRestrictRay(
-    intersections: IList<IntersectionInfo>,
+    intersections: Array<IntersectionInfo>,
   ) {
     let numberOfGoodIntersections = 0
     let closestIntersectionInfo: IntersectionInfo = null
@@ -977,17 +977,15 @@ export class ObstacleTree {
       this.restrictedIntersectionTestSegment.start,
       this.restrictedIntersectionTestSegment.end,
     )
-    for (const intersectionInfo in intersections) {
-      const intersect = SpliceUtility.RawIntersection(
-        intersectionInfo,
-        this.currentRestrictedRay.start,
-      )
+    for (const intersectionInfo of intersections) {
+      const intersect = GeomConstants.RoundPoint(intersectionInfo.x)
+
       const dirToIntersect = PointComparer.GetDirections(
         this.currentRestrictedRay.start,
         intersect,
       )
       if (dirToIntersect == CompassVector.OppositeDir(testDirection)) {
-        // TODO: Warning!!! continue If
+        continue
       }
 
       numberOfGoodIntersections++
@@ -997,16 +995,16 @@ export class ObstacleTree {
         // TODO: Warning!!! continue If
       }
 
-      const distSquared = (intersect - this.currentRestrictedRay.start)
-        .LengthSquared
+      const distSquared = intersect.sub(this.currentRestrictedRay.start)
+        .lengthSquared
       if (distSquared < localLeastDistSquared) {
         //  Rounding may falsely report two intersections as different when they are actually "Close",
         //  e.g. a horizontal vs. vertical intersection on a slanted edge.
-        const rawDistSquared = (
-          intersectionInfo.IntersectionPoint - this.currentRestrictedRay.start
-        ).LengthSquared
-        if (rawDistSquared < GeomConstants.SquareOfDistanceEpsilon) {
-          // TODO: Warning!!! continue If
+        const rawDistSquared = intersectionInfo.x.sub(
+          this.currentRestrictedRay.start,
+        ).lengthSquared
+        if (rawDistSquared < GeomConstants.squareOfDistanceEpsilon) {
+          continue
         }
 
         localLeastDistSquared = distSquared
@@ -1018,19 +1016,13 @@ export class ObstacleTree {
       //  If there was only one intersection and it is quite close to an end, ignore it.
       //  If there is more than one intersection, we have crossed the obstacle so we want it.
       if (numberOfGoodIntersections == 1) {
-        const intersect = SpliceUtility.RawIntersection(
-          closestIntersectionInfo,
-          this.currentRestrictedRay.start,
-        )
+        const intersect = GeomConstants.RoundPoint(closestIntersectionInfo.x)
         if (
-          GeomConstants.CloseIntersections(
+          Point.closeIntersections(
             intersect,
             this.currentRestrictedRay.start,
           ) ||
-          GeomConstants.CloseIntersections(
-            intersect,
-            this.currentRestrictedRay.end,
-          )
+          Point.closeIntersections(intersect, this.currentRestrictedRay.end)
         ) {
           return
         }
@@ -1040,7 +1032,7 @@ export class ObstacleTree {
       this.currentRestrictedRay.end = SpliceUtility.MungeClosestIntersectionInfo(
         this.currentRestrictedRay.start,
         closestIntersectionInfo,
-        !StaticGraphUtility.IsVertical(
+        !StaticGraphUtility.IsVerticalPP(
           this.currentRestrictedRay.start,
           this.currentRestrictedRay.end,
         ),
@@ -1050,30 +1042,27 @@ export class ObstacleTree {
 
   private AddGroupIntersectionsToRestrictedRay(
     obstacle: Obstacle,
-    intersections: IList<IntersectionInfo>,
+    intersections: Array<IntersectionInfo>,
   ) {
     //  We'll let the lines punch through any intersections with groups, but track the location so we can enable/disable crossing.
-    for (const intersectionInfo in intersections) {
-      const intersect = SpliceUtility.RawIntersection(
-        intersectionInfo,
-        this.currentRestrictedRay.start,
-      )
+    for (const intersectionInfo of intersections) {
+      const intersect = GeomConstants.RoundPoint(intersectionInfo.x)
       //  Skip intersections that are past the end of the restricted segment (though there may still be some
       //  there if we shorten it later, but we'll skip them later).
-      const distSquared = (intersect - this.currentRestrictedRay.start)
-        .LengthSquared
+      const distSquared = intersect.sub(this.currentRestrictedRay.start)
+        .lengthSquared
       if (distSquared > this.restrictedRayLengthSquared) {
-        // TODO: Warning!!! continue If
+        continue
       }
 
       const dirTowardIntersect = PointComparer.GetPureDirectionPP(
         this.currentRestrictedRay.start,
         this.currentRestrictedRay.end,
       )
-      const polyline = <Polyline>intersectionInfo.Segment1
+      const polyline = <Polyline>intersectionInfo.seg1
       //  this is the second arg to GetAllIntersections
       const dirsOfSide = CompassVector.VectorDirection(
-        polyline.derivative(intersectionInfo.Par1),
+        polyline.derivative(intersectionInfo.par1),
       )
       //  // The derivative is always clockwise, so if the side contains the rightward rotation of the
       //  direction from the ray origin, then we're hitting it from the inside; otherwise from the outside.
@@ -1089,8 +1078,4 @@ export class ObstacleTree {
       )
     }
   }
-}
-
-function createConvexHullAsClosedPolyline(points: Point[]): Polyline {
-  throw new Error('Function not implemented.')
 }

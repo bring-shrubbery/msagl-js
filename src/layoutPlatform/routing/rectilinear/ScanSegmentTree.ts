@@ -17,7 +17,7 @@ export class ScanSegmentTree {
 
   constructor(scanDir: ScanDirection) {
     this.ScanDirection = scanDir
-    this.segmentTree = new RBTree<ScanSegment>((a, b) => this.Compare(a, b))
+    this.segmentTree = new RBTree<ScanSegment>(this.Compare)
     this.findIntersectorPred = this.CompareIntersector
     this.findPointPred = this.CompareToPoint
   }
@@ -339,9 +339,6 @@ export class ScanSegmentTree {
 
   //  For ordering the line segments inserted by the ScanLine. Assuming vertical sweep (sweeping up from
   //  bottom, scanning horizontally) then order ScanSegments first by lowest Y coord, then by lowest X coord.
-
-  /
-  /
 
   public Compare(first: ScanSegment, second: ScanSegment): number {
     if (first == second) {
