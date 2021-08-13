@@ -1,9 +1,5 @@
-import {DebugCurve} from '../../math/geometry/debugCurve'
 import {Direction} from '../../math/geometry/directiton'
-import {GeomConstants} from '../../math/geometry/geomConstants'
-import {LineSegment} from '../../math/geometry/lineSegment'
 import {Point} from '../../math/geometry/point'
-import {Rectangle} from '../../math/geometry/rectangle'
 import {RBNode} from '../../structs/RBTree/rbNode'
 import {RBTree} from '../../structs/RBTree/rbTree'
 import {Assert} from '../../utils/assert'
@@ -117,7 +113,7 @@ export class RectilinearScanLine {
       return first instanceof LowObstacleSide ? -1 : 1
     }
 
-    RectilinearScanLine.Debug_VerifySidesDoNotIntersect(first, second)
+    // RectilinearScanLine.Debug_VerifySidesDoNotIntersect(first, second)
     //  Other than intersecting sides at vertices of the same obstacle, there should be no interior intersections...
     const firstIntersect: Point = VisibilityGraphGenerator.ScanLineIntersectSidePBS(
       this.linePositionAtLastInsertOrRemove,
@@ -146,38 +142,38 @@ export class RectilinearScanLine {
     return cmp
   }
 
-  static Debug_VerifySidesDoNotIntersect(
-    side1: BasicObstacleSide,
-    side2: BasicObstacleSide,
-  ) {
-    let intersect: Point
-    if (
-      !Point.lineLineIntersection(
-        side1.Start,
-        side1.End,
-        side2.Start,
-        side2.End,
-        /* out */ intersect,
-      )
-    ) {
-      return
-    }
+  // static Debug_VerifySidesDoNotIntersect(
+  //   side1: BasicObstacleSide,
+  //   side2: BasicObstacleSide,
+  // ) {
+  //   let intersect: Point
+  //   if (
+  //     !Point.lineLineIntersection(
+  //       side1.Start,
+  //       side1.End,
+  //       side2.Start,
+  //       side2.End,
+  //       /* out */ intersect,
+  //     )
+  //   ) {
+  //     return
+  //   }
 
-    //  The test for being within the interval is just multiplying to ensure that both subtractions
-    //  return same-signed results (including endpoints).
-    const isInterior =
-      side1.Start.sub(intersect).dot(intersect.sub(side1.End)) >=
-        -GeomConstants.distanceEpsilon &&
-      side2.Start.sub(intersect).dot(intersect.sub(side2.End)) >=
-        -GeomConstants.distanceEpsilon
-    Assert.assert(
-      !isInterior,
-      "Shouldn't have interior intersections except sides of the same obstacle",
-    )
-  }
-  toString(): string {
-    return this.linePositionAtLastInsertOrRemove + (' ' + this.scanDirection)
-  }
+  //   //  The test for being within the interval is just multiplying to ensure that both subtractions
+  //   //  return same-signed results (including endpoints).
+  //   const isInterior =
+  //     side1.Start.sub(intersect).dot(intersect.sub(side1.End)) >=
+  //       -GeomConstants.distanceEpsilon &&
+  //     side2.Start.sub(intersect).dot(intersect.sub(side2.End)) >=
+  //       -GeomConstants.distanceEpsilon
+  //   Assert.assert(
+  //     !isInterior,
+  //     "Shouldn't have interior intersections except sides of the same obstacle",
+  //   )
+  // }
+  // toString(): string {
+  //   return this.linePositionAtLastInsertOrRemove + (' ' + this.scanDirection)
+  // }
 
   /*
         Test_GetScanLineDebugCurves(): Array<DebugCurve> {
