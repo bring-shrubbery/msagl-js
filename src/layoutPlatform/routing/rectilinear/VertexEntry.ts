@@ -1,5 +1,5 @@
 import {CompassVector} from '../../math/geometry/compassVector'
-import {Direction} from '../../math/geometry/directiton'
+import {Direction} from '../../math/geometry/direction'
 import {VisibilityVertexRectilinear} from './VisibilityVertexRectiline'
 
 export class VertexEntry {

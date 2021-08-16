@@ -3,8 +3,9 @@
 //  Postprocessing minimizing crossings step that works on the layered graph
 
 import {from} from 'linq-to-typescript'
-import {Point, compareTo} from '../../../math/geometry/point'
+import {Point} from '../../../math/geometry/point'
 import {Assert} from '../../../utils/assert'
+import {compareNumbers} from '../../../utils/compare'
 import {PointMap} from '../../../utils/PointMap'
 import {LayerArrays, layersAreCorrect} from '../LayerArrays'
 import {ProperLayeredGraph} from '../ProperLayeredGraph'
@@ -171,7 +172,7 @@ export class MetroMapOrdering {
         const o1: number = inverseToOrder.get(succ1)
         const o2: number = inverseToOrder.get(succ2)
         Assert.assert(o1 != -1 && o2 != -1)
-        return compareTo(o1, o2)
+        return compareNumbers(o1, o2)
       }
 
       while (
@@ -183,7 +184,7 @@ export class MetroMapOrdering {
       }
 
       if (this.nodePositions.get(pred1).equal(this.nodePositions.get(pred2))) {
-        return compareTo(node1, node2)
+        return compareNumbers(node1, node2)
       }
 
       return this.nodePositions

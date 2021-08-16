@@ -1,7 +1,6 @@
 import {MdsGraphLayout} from '../../../../layoutPlatform/layout/mds/MDSGraphLayout'
 import {MdsLayoutSettings} from '../../../../layoutPlatform/layout/mds/MDSLayoutSettings'
 import {PivotDistances} from '../../../../layoutPlatform/layout/mds/PivotDistances'
-import {PlaneTransformation} from '../../../../layoutPlatform/math/geometry/planeTransformation'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {parseDotGraph} from '../../../../tools/dotparser'
 import {

@@ -1,5 +1,5 @@
 import {CompassVector} from '../../math/geometry/compassVector'
-import {Direction} from '../../math/geometry/directiton'
+import {Direction} from '../../math/geometry/direction'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Point} from '../../math/geometry/point'
 import {Rectangle} from '../../math/geometry/rectangle'

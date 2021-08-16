@@ -1,4 +1,4 @@
-import {Direction} from '../../../../layoutPlatform/math/geometry/directiton'
+import {Direction} from '../../../../layoutPlatform/math/geometry/direction'
 import {Point} from '../../../../layoutPlatform/math/geometry/point'
 import {StaticGraphUtility} from '../../../../layoutPlatform/routing/rectilinear/StaticGraphUtility'
 import {VisibilityGraph} from '../../../../layoutPlatform/routing/visibility/VisibilityGraph'

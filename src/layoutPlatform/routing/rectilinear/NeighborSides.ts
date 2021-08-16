@@ -1,4 +1,4 @@
-import {Direction} from '../../math/geometry/directiton'
+import {Direction} from '../../math/geometry/direction'
 import {RBNode} from '../../structs/RBTree/rbNode'
 import {BasicObstacleSide} from './BasicObstacleSide'
 import {StaticGraphUtility} from './StaticGraphUtility'

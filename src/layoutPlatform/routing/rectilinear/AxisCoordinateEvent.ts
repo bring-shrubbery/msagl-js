@@ -1,5 +1,5 @@
 import {Point} from '../../math/geometry/point'
-import {SweepEvent} from '../spline/sweepEvent'
+import {SweepEvent} from '../spline/coneSpanner/SweepEvent'
 
 export class AxisCoordinateEvent extends SweepEvent {
   private site: Point

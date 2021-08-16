@@ -1,4 +1,4 @@
-import {Direction} from '../../math/geometry/directiton'
+import {Direction} from '../../math/geometry/direction'
 import {Point} from '../../math/geometry/point'
 import {RBNode} from '../../structs/RBTree/rbNode'
 import {RBTree} from '../../structs/RBTree/rbTree'

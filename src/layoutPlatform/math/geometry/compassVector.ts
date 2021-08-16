@@ -1,5 +1,5 @@
 import {PointComparer} from '../../routing/rectilinear/PointComparer'
-import {Direction} from './directiton'
+import {Direction} from './direction'
 import {Point} from './point'
 
 export class CompassVector {

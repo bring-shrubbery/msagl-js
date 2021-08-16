@@ -1,16 +1,10 @@
 import {LinearSystem2} from './linearSystem'
 import {GeomConstants} from './geomConstants'
-import {Assert} from '../../utils/assert'
+import {compareNumbers} from '../../utils/compare'
 export enum TriangleOrientation {
   Clockwise,
   Counterclockwise,
   Collinear,
-}
-
-export function compareTo(a: number, b: number) {
-  if (a < b) return -1
-  if (a > b) return 1
-  return 0
 }
 
 export class Point {
@@ -34,9 +28,9 @@ export class Point {
   }
 
   compareTo(other: Point): number {
-    const r = compareTo(this.x, other.x)
+    const r = compareNumbers(this.x, other.x)
     if (r != 0) return r
-    return compareTo(this.y, other.y)
+    return compareNumbers(this.y, other.y)
   }
 
   toString() {

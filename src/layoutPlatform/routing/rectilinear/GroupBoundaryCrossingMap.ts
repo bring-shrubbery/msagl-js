@@ -1,5 +1,5 @@
 import {String} from 'typescript-string-operations'
-import {Direction} from '../../math/geometry/directiton'
+import {Direction} from '../../math/geometry/direction'
 import {Point} from '../../math/geometry/point'
 import {Assert} from '../../utils/assert'
 import {PointMap} from '../../utils/PointMap'

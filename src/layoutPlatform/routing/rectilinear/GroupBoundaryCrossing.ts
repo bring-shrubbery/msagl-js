@@ -3,7 +3,7 @@
 //  It is intended as the Value of a GroupBoundaryCrossingMap entry, or as an element in a VisiblityEdge.GroupCrossings
 import {String} from 'typescript-string-operations'
 import {CompassVector} from '../../math/geometry/compassVector'
-import {Direction} from '../../math/geometry/directiton'
+import {Direction} from '../../math/geometry/direction'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {Point} from '../../math/geometry/point'
 import {Assert} from '../../utils/assert'

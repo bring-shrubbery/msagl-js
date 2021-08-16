@@ -1,6 +1,6 @@
 //  Settings controlling how ideal edge lengths will be calculated for layouts that consider it.
 
-import {Direction} from '../math/geometry/directiton'
+import {Direction} from '../math/geometry/direction'
 
 export class EdgeConstraints {
   direction = Direction.None

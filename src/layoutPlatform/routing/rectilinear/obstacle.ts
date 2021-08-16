@@ -213,6 +213,14 @@ export class Obstacle {
   get isOverlapped() {
     return this.clump != undefined && this.clump.length > 0
   }
+  get IsSentinel() {
+    return this.InputShape == null
+  }
+
+  IsInSameClump(other: Obstacle): boolean {
+    return this.isOverlapped && this.clump == other.clump
+  }
+
   Close() {
     this.ActiveLowSide = null
     this.ActiveHighSide = null

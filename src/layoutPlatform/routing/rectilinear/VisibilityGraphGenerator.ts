@@ -4,7 +4,7 @@
 //  X for Hscan, Y for Vscan) to handle reflections from non-orthogonal obstacle sides,
 //  and lookback scans that have not had their reflections calculated because they reflect
 
-import {Direction} from '../../math/geometry/directiton'
+import {Direction} from '../../math/geometry/direction'
 import {Point} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
@@ -681,9 +681,9 @@ export abstract class VisibilityGraphGenerator {
 
       // Now get the opposite neighbors so AddSegment can continue the reflection chain.
       if (lowNborSide == null) {
-        lowNborSide = this.scanLine.NextLow(highNborSide).item
+        lowNborSide = this.scanLine.NextLowB(highNborSide).item
       } else {
-        highNborSide = this.scanLine.NextHigh(lowNborSide).item
+        highNborSide = this.scanLine.NextHighB(lowNborSide).item
       }
       return this.InsertParallelReflectionSegment(
         start,
@@ -791,7 +791,7 @@ export abstract class VisibilityGraphGenerator {
 
   ProcessCustomEvent(evt: SweepEvent) {
     //  These are events specific to the derived class; by default there are none.
-    Assert.assert(false, 'Unknown event type')
+    Assert.assert(false, 'Unknown event type ' + evt)
   }
 
   protected ScanLineCrossesObstacle(
@@ -819,8 +819,8 @@ export abstract class VisibilityGraphGenerator {
       highNborSideNode: RBNode<BasicObstacleSide>
     },
   ) {
-    t.lowNborSideNode = this.scanLine.NextLow(sideNode.item)
-    t.highNborSideNode = this.scanLine.NextHigh(sideNode.item)
+    t.lowNborSideNode = this.scanLine.NextLowR(sideNode)
+    t.highNborSideNode = this.scanLine.NextHighR(sideNode)
   }
 
   //  As described in the doc, we stop at the first neighbor of the appropriate side type that we touch
@@ -849,10 +849,10 @@ export abstract class VisibilityGraphGenerator {
   ) {
     //  vertexEvent.Site is on one of vertexEvent.Obstacle.Active(Low|High)Side, so we must get the
     //  appropriate vertex on whichever one of those Active*Sides is sideNode.
-    const sideReferencePoint = sideNode.item.Start
-    // TODO: Warning!!!, inline IF is not supported ?
-    vertexEvent instanceof OpenVertexEvent
-    sideNode.item.End
+    const sideReferencePoint =
+      vertexEvent instanceof OpenVertexEvent
+        ? sideNode.item.Start
+        : sideNode.item.End
     const t = {lowNborSideNode: null, highNborSideNode: null}
     this.FindInitialNeighborSides(sideNode, t)
     this.SkipToNeighbor(
@@ -1127,7 +1127,7 @@ export abstract class VisibilityGraphGenerator {
       highSide.Start.x == obstacle.VisibilityBoundingBox.right &&
       this.SideReflectsUpward(highSide)
     ) {
-      const nborSideNode = this.scanLine.NextHigh(highSideNode.item)
+      const nborSideNode = this.scanLine.NextHighR(highSideNode)
       if (
         nborSideNode.item instanceof LowObstacleSide &&
         this.SideReflectsDownward(nborSideNode.item)
@@ -1136,7 +1136,7 @@ export abstract class VisibilityGraphGenerator {
           !obstacle.isOverlapped ||
           !this.ObstacleTree.PointIsInsideAnObstacle(
             highSide.Start,
-            this.ScanDirection.Dir,
+            this.ScanDirection,
           )
         ) {
           this.StoreLookaheadSite(
@@ -1209,11 +1209,11 @@ export abstract class VisibilityGraphGenerator {
     //  outside the closing obstacle.
     if (this.wantReflections && obstacle.isOverlapped) {
       for (
-        let nextNode: RBNode<BasicObstacleSide> = this.scanLine.NextHigh(
-          lowSideNode.item,
+        let nextNode: RBNode<BasicObstacleSide> = this.scanLine.NextHighR(
+          lowSideNode,
         );
         nextNode.item != highSideNode.item;
-        nextNode = this.scanLine.NextHigh(nextNode.item)
+        nextNode = this.scanLine.NextHighR(nextNode)
       ) {
         this.LoadReflectionEvents(nextNode.item)
       }
@@ -1269,7 +1269,7 @@ export abstract class VisibilityGraphGenerator {
     //  Add a perpendicular segment from the previous site to the lowNbor intersection, then from
     //  the lowNbor intersection to the event site.
     const lowNborSide = <HighObstacleSide>(
-      this.scanLine.NextLow(lowIntEvent.Side).item
+      this.scanLine.NextLowB(lowIntEvent.Side).item
     )
     if (
       this.AddPerpendicularReflectionSegment(
@@ -1299,7 +1299,7 @@ export abstract class VisibilityGraphGenerator {
     //  Add a perpendicular segment from the previous site to the highNbor intersection, then from
     //  the highNbor intersection to the event site.
     const highNborSide = <LowObstacleSide>(
-      this.scanLine.NextHigh(highIntEvent.Side).item
+      this.scanLine.NextHighB(highIntEvent.Side).item
     )
     if (
       this.AddPerpendicularReflectionSegment(

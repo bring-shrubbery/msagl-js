@@ -1,7 +1,7 @@
 //  A Group is a Shape that has children.
 //  This class maps between intersection points on Group boundaries and the groups and crossing
 import {String} from 'typescript-string-operations'
-import {Direction} from '../../math/geometry/directiton'
+import {Direction} from '../../math/geometry/direction'
 import {Point} from '../../math/geometry/point'
 import {Assert} from '../../utils/assert'
 import {GroupBoundaryCrossing} from './GroupBoundaryCrossing'
