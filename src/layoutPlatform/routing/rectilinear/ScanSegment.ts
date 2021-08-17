@@ -178,14 +178,14 @@ export class ScanSegment extends SegmentBase {
     )
     //  Make sure we aren't adding two edges in the same direction to the same vertex.
     Assert.assert(
-      StaticGraphUtility.FindNextVertex(
+      StaticGraphUtility.FindAdjacentVertex(
         source,
         StaticGraphUtility.EdgeDirectionVV(source, target),
       ) == null,
       'Duplicate outEdge from Source vertex',
     )
     Assert.assert(
-      StaticGraphUtility.FindNextVertex(
+      StaticGraphUtility.FindAdjacentVertex(
         target,
         StaticGraphUtility.EdgeDirectionVV(target, source),
       ) == null,

@@ -24,7 +24,7 @@ export class StaticGraphUtility {
     return PointComparer.GetPureDirectionPP(source.point, target.point)
   }
 
-  static GetVertex(edge: VisibilityEdge, dir: Direction): VisibilityVertex {
+  static GetEdgeEnd(edge: VisibilityEdge, dir: Direction): VisibilityVertex {
     const edgeDir: Direction = StaticGraphUtility.EdgeDirectionVE(edge)
     Assert.assert(
       0 != (dir & (edgeDir | CompassVector.OppositeDir(edgeDir))),
@@ -33,7 +33,7 @@ export class StaticGraphUtility {
     return dir == edgeDir ? edge.Target : edge.Source
   }
 
-  static FindNextVertex(
+  static FindAdjacentVertex(
     vertex: VisibilityVertex,
     dir: Direction,
   ): VisibilityVertex {
@@ -51,15 +51,7 @@ export class StaticGraphUtility {
     }
 
     //  Avoid GetEnumerator overhead.
-    let outEdgeNode = vertex.OutEdges.isEmpty
-      ? null
-      : vertex.OutEdges.treeMinimum()
-    for (
-      ;
-      outEdgeNode != null;
-      outEdgeNode = vertex.OutEdges.next(outEdgeNode)
-    ) {
-      const edge = outEdgeNode.item
+    for (const edge of vertex.OutEdges) {
       if (
         PointComparer.GetPureDirectionPP(vertex.point, edge.TargetPoint) == dir
       ) {
@@ -70,12 +62,12 @@ export class StaticGraphUtility {
     return null
   }
 
-  static FindNextEdge(
+  static FindAdjacentEdge(
     vg: VisibilityGraph,
     vertex: VisibilityVertex,
     dir: Direction,
   ): VisibilityEdge {
-    const nextVertex: VisibilityVertex = StaticGraphUtility.FindNextVertex(
+    const nextVertex: VisibilityVertex = StaticGraphUtility.FindAdjacentVertex(
       vertex,
       dir,
     )
