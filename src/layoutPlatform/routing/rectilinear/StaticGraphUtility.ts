@@ -62,18 +62,19 @@ export class StaticGraphUtility {
     return null
   }
 
-  static FindAdjacentEdge(
-    vg: VisibilityGraph,
-    vertex: VisibilityVertex,
-    dir: Direction,
-  ): VisibilityEdge {
-    const nextVertex: VisibilityVertex = StaticGraphUtility.FindAdjacentVertex(
-      vertex,
-      dir,
-    )
-    return null == nextVertex
-      ? null
-      : vg.FindEdgePP(vertex.point, nextVertex.point)
+  static FindAdjacentEdge(a: VisibilityVertex, dir: Direction): VisibilityEdge {
+    for (const edge of a.InEdges) {
+      if (PointComparer.GetPureDirectionPP(edge.SourcePoint, a.point) == dir) {
+        return edge
+      }
+    }
+
+    for (const edge of a.OutEdges) {
+      if (PointComparer.GetPureDirectionPP(a.point, edge.TargetPoint) == dir) {
+        return edge
+      }
+    }
+    return null
   }
 
   static FindBendPointBetween(

@@ -34,7 +34,6 @@
     "npm": "^7.6.0",
     "queue-typescript": "^1.0.1",
     "stack-typescript": "^1.0.4",
-    "tsc": "1.20150623.0",
     "typescript-string-operations": "^1.4.1",
     "xml-writer": "^1.7.0"
   },
