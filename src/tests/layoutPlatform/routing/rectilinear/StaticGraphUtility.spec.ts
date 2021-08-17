@@ -21,7 +21,7 @@ test('GetVertex', () => {
   expect(StaticGraphUtility.GetEdgeEnd(ve, Direction.East)).toBe(a)
 })
 
-test('FindNextVertex', () => {
+test('FindAdjacentVertex', () => {
   const a = new VisibilityVertex(new Point(0, 0))
   const b = new VisibilityVertex(new Point(-1, 0))
   const c = new VisibilityVertex(new Point(0, -1))
@@ -34,11 +34,49 @@ test('FindNextVertex', () => {
   expect(StaticGraphUtility.FindAdjacentVertex(a, Direction.North)).toBe(null)
   expect(StaticGraphUtility.FindAdjacentVertex(b, Direction.East)).toBe(a)
 })
+
+test('FindAdjacentEdge', () => {
+  const a = new VisibilityVertex(new Point(0, 0))
+  const b = new VisibilityVertex(new Point(-1, 0))
+  const c = new VisibilityVertex(new Point(0, -1))
+  const ab = new VisibilityEdge(a, b)
+  const ca = new VisibilityEdge(c, a)
+  VisibilityGraph.AddEdge(ab)
+  VisibilityGraph.AddEdge(ca)
+  expect(StaticGraphUtility.FindAdjacentEdge(a, Direction.South)).toBe(null)
+  expect(StaticGraphUtility.FindAdjacentEdge(c, Direction.North)).toBe(ca)
+  expect(StaticGraphUtility.FindAdjacentEdge(a, Direction.West)).toBe(ab)
+  expect(StaticGraphUtility.FindAdjacentEdge(b, Direction.West)).toBe(ab)
+})
 test('PointIsOnSegmentPPP', () => {
   const a = new Point(0, 0)
   const b = new Point(1, 0)
   const c = new Point(0.5, 0)
   expect(StaticGraphUtility.PointIsOnSegmentPPP(a, b, c)).toBe(true)
+})
+
+test('FindBendPointBetween', () => {
+  const a = new Point(0, 0)
+  const b = new Point(1, 1)
+
+  expect(
+    StaticGraphUtility.FindBendPointBetween(a, b, Direction.East).equal(
+      new Point(0, 1),
+    ),
+  ).toBe(true)
+  expect(
+    StaticGraphUtility.FindBendPointBetween(a, b, Direction.North).equal(
+      new Point(1, 0),
+    ),
+  ).toBe(true)
+})
+test('SegmentIntersectionPPP', () => {
+  const a = new Point(0, 0)
+  const b = new Point(0, 2)
+  const c = new Point(1, 1)
+  expect(
+    StaticGraphUtility.SegmentIntersectionPPP(a, b, c).equal(new Point(0, 1)),
+  ).toBe(true)
 })
 test('EdgeDirectionVE', () => {
   const g = new VisibilityGraph()

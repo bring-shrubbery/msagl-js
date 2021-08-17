@@ -33,11 +33,11 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/routing/rectilinear/eventQueue.spec.ts",
+        "src/tests/layoutPlatform/routing/rectilinear/StaticGraphUtility.spec.ts",
         "-t",
-        "evq"
+        "FindAdjacentEdge"
       ],
-      "console": "EdgeDirectionVE"
+      "console": "internalConsole"
     }
   ]
 }
