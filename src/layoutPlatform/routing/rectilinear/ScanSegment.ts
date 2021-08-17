@@ -67,10 +67,9 @@ export class ScanSegment extends SegmentBase {
   }
 
   get ScanDirection(): ScanDirection {
-    return ScanDirection.VerticalInstance
-    // TODO: Warning!!!, inline IF is not supported ?
-    this.IsVertical
-    ScanDirection.HorizontalInstance
+    return this.IsVertical
+      ? ScanDirection.VerticalInstance
+      : ScanDirection.HorizontalInstance
   }
 
   //  For fast intersection calculation and ScanSegment splicing.
@@ -331,11 +330,15 @@ export class ScanSegment extends SegmentBase {
     return StaticGraphUtility.SegmentIntersection(this, seg) != undefined
   }
 
-  ToString(): string {
-    return '[' + (this.Start + (' -> ' + (this.End + (' olap' + ']'))))
-    // TODO: Warning!!!, inline IF is not supported ?
-    this.IsOverlapped
-    ;(' free')
+  toString(): string {
+    return (
+      '[' +
+      this.Start +
+      ' -> ' +
+      this.End +
+      (this.IsOverlapped ? ' olap' : ' free') +
+      ']'
+    )
   }
 
   ContainsPoint(test: Point): boolean {

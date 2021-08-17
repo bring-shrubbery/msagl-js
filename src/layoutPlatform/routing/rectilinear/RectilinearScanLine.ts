@@ -88,10 +88,9 @@ export class RectilinearScanLine {
     dir: Direction,
     sideNode: RBNode<BasicObstacleSide>,
   ): RBNode<BasicObstacleSide> {
-    const succ = this.SideTree.next(sideNode)
-    // TODO: Warning!!!, inline IF is not supported ?
-    StaticGraphUtility.IsAscending(dir)
-    this.SideTree.previous(sideNode)
+    const succ = StaticGraphUtility.IsAscending(dir)
+      ? this.SideTree.next(sideNode)
+      : this.SideTree.previous(sideNode)
     return succ
   }
 

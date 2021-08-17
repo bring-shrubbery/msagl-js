@@ -992,7 +992,7 @@ export class ObstacleTree {
       if (Direction.None == dirToIntersect) {
         localLeastDistSquared = 0
         closestIntersectionInfo = intersectionInfo
-        // TODO: Warning!!! continue If
+        continue
       }
 
       const distSquared = intersect.sub(this.currentRestrictedRay.start)

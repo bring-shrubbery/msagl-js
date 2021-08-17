@@ -247,10 +247,9 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     highSideNode: RBNode<BasicObstacleSide>,
     vertexEvent: BasicVertexEvent,
   ) {
-    const vertexPoints = this.horizontalVertexPoints
-    // TODO: Warning!!!, inline IF is not supported ?
-    super.ScanDirection.IsHorizontal
-    this.verticalVertexPoints
+    const vertexPoints = super.ScanDirection.IsHorizontal
+      ? this.horizontalVertexPoints
+      : this.verticalVertexPoints
     vertexPoints.add(vertexEvent.Site)
     //  For easier reading...
     const lowNborSide = this.LowNeighborSides.LowNeighbor.item
@@ -332,10 +331,9 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
   ) {
     if (isLowSide) {
       t.lowCorner = boundingBox.leftBottom
-      t.highCorner = boundingBox.rightBottom
-      // TODO: Warning!!!, inline IF is not supported ?
-      isHorizontal
-      boundingBox.leftTop
+      t.highCorner = isHorizontal
+        ? boundingBox.rightBottom
+        : boundingBox.leftTop
       return
     }
 
@@ -394,15 +392,15 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
 
       //  If we are not within an overlapped obstacle, don't bother creating the overlapped ScanSegment
       //  as there will never be visibility connecting to it.
-      start = this.CreateScanSegment(
-        start,
-        nextNode.item,
-        ScanSegment.OverlappedWeight,
-      )
-      // TODO: Warning!!!, inline IF is not supported ?
-      nextNode.item.Obstacle.isOverlapped ||
+      start =
+        nextNode.item.Obstacle.isOverlapped ||
         nextNode.item.Obstacle.OverlapsGroupCorner
-      this.ScanLineIntersectSide(start, nextNode.item)
+          ? this.CreateScanSegment(
+              start,
+              nextNode.item,
+              ScanSegment.OverlappedWeight,
+            )
+          : this.ScanLineIntersectSide(start, nextNode.item)
       super.CurrentGroupBoundaryCrossingMap.Clear()
       isInsideOverlappedObstacle = false
     }
@@ -730,10 +728,9 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     //  3.  Non-extreme vertices in the perpendicular direction (e.g. for a triangle, we add the X's of
     //      the left and right to the coords, but not of the top).
     //  4.  Non-rectilinear group side intersections.
-    return -1
-    // TODO: Warning!!!, inline IF is not supported ?
-    0 == directionIfMiss
-    segmentVector.FindNearest(coord, directionIfMiss)
+    return directionIfMiss == 0
+      ? -1
+      : segmentVector.FindNearest(coord, directionIfMiss)
   }
 
   private AddSlotToSegmentIntersections(
@@ -769,7 +766,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
           this.AddSlotToSegmentIntersections(parallelItem, high)
         }
 
-        // TODO: Warning!!! continue If
+        continue
       }
 
       low = mid

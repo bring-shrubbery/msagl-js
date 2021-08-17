@@ -176,10 +176,9 @@ export class StaticGraphUtility {
     const vertical: boolean = StaticGraphUtility.IsVerticalPP(start1, end1)
     if (StaticGraphUtility.IsVerticalPP(start2, end2) == vertical) {
       //  This handles touching endpoints as well.
-      return PointComparer.Equal(start1.x, start2.x)
-      // TODO: Warning!!!, inline IF is not supported ?
-      vertical
-      PointComparer.Equal(start1.y, start2.y)
+      return vertical
+        ? PointComparer.Equal(start1.x, start2.x)
+        : PointComparer.Equal(start1.y, start2.y)
     }
 
     return false
