@@ -325,7 +325,7 @@ export class ScanSegment extends SegmentBase {
   }
 
   IntersectsSegment(seg: ScanSegment): boolean {
-    return StaticGraphUtility.SegmentIntersection(this, seg) != undefined
+    return StaticGraphUtility.SegmentsIntersection(this, seg) != undefined
   }
 
   toString(): string {
