@@ -115,9 +115,7 @@ export class ScanSegment extends SegmentBase {
   Update(start: Point, end: Point) {
     Assert.assert(
       PointComparer.EqualPP(start, end) ||
-        StaticGraphUtility.IsAscending(
-          PointComparer.GetPureDirectionPP(start, end),
-        ),
+        StaticGraphUtility.IsAscending(PointComparer.GetDirections(start, end)),
       'non-ascending segment',
     )
     this.startPoint = start

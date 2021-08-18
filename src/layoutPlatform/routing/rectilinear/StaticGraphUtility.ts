@@ -20,7 +20,7 @@ export class StaticGraphUtility {
     source: VisibilityVertex,
     target: VisibilityVertex,
   ): Direction {
-    return PointComparer.GetPureDirectionPP(source.point, target.point)
+    return PointComparer.GetDirections(source.point, target.point)
   }
 
   static GetEdgeEnd(edge: VisibilityEdge, dir: Direction): VisibilityVertex {
@@ -42,18 +42,14 @@ export class StaticGraphUtility {
     //  direction without having to track whether we're going forward or backward
     //  through the In/OutEdge chain.
     for (const edge of vertex.InEdges) {
-      if (
-        PointComparer.GetPureDirectionPP(vertex.point, edge.SourcePoint) == dir
-      ) {
+      if (PointComparer.GetDirections(vertex.point, edge.SourcePoint) == dir) {
         return edge.Source
       }
     }
 
     //  Avoid GetEnumerator overhead.
     for (const edge of vertex.OutEdges) {
-      if (
-        PointComparer.GetPureDirectionPP(vertex.point, edge.TargetPoint) == dir
-      ) {
+      if (PointComparer.GetDirections(vertex.point, edge.TargetPoint) == dir) {
         return edge.Target
       }
     }
@@ -63,13 +59,13 @@ export class StaticGraphUtility {
 
   static FindAdjacentEdge(a: VisibilityVertex, dir: Direction): VisibilityEdge {
     for (const edge of a.InEdges) {
-      if (PointComparer.GetPureDirectionPP(edge.SourcePoint, a.point) == dir) {
+      if (PointComparer.GetDirections(edge.SourcePoint, a.point) == dir) {
         return edge
       }
     }
 
     for (const edge of a.OutEdges) {
-      if (PointComparer.GetPureDirectionPP(a.point, edge.TargetPoint) == dir) {
+      if (PointComparer.GetDirections(a.point, edge.TargetPoint) == dir) {
         return edge
       }
     }
@@ -91,7 +87,7 @@ export class StaticGraphUtility {
     second: Point,
     from: Point,
   ): Point {
-    const dir = PointComparer.GetPureDirectionPP(first, second)
+    const dir = PointComparer.GetDirections(first, second)
     return StaticGraphUtility.IsVerticalD(dir)
       ? new Point(first.x, from.y)
       : new Point(from.x, first.y)
@@ -101,10 +97,7 @@ export class StaticGraphUtility {
     return StaticGraphUtility.SegmentIntersectionPPP(seg.Start, seg.End, from)
   }
 
-  static SegmentsIntersectSSOutPoint(
-    first: SegmentBase,
-    second: SegmentBase,
-  ): Point {
+  static SegmentsIntersection(first: SegmentBase, second: SegmentBase): Point {
     return StaticGraphUtility.IntervalsIntersect(
       first.Start,
       first.End,
@@ -113,10 +106,7 @@ export class StaticGraphUtility {
     )
   }
 
-  static SegmentsIntersectLLOutPoint(
-    first: LineSegment,
-    second: LineSegment,
-  ): boolean {
+  static SegmentsIntersectLL(first: LineSegment, second: LineSegment): boolean {
     return (
       StaticGraphUtility.IntervalsIntersect(
         first.start,
@@ -125,11 +115,6 @@ export class StaticGraphUtility {
         second.end,
       ) != undefined
     )
-  }
-
-  static SegmentIntersection(first: SegmentBase, second: SegmentBase): Point {
-    //  Caller expects segments to intersect.
-    return StaticGraphUtility.SegmentsIntersectSSOutPoint(first, second)
   }
 
   static IntervalsOverlapSS(first: SegmentBase, second: SegmentBase): boolean {
@@ -229,8 +214,8 @@ export class StaticGraphUtility {
     return (
       PointComparer.EqualPP(first, test) ||
       PointComparer.EqualPP(second, test) ||
-      PointComparer.GetPureDirectionPP(first, test) ==
-        PointComparer.GetPureDirectionPP(test, second)
+      PointComparer.GetDirections(first, test) ==
+        PointComparer.GetDirections(test, second)
     )
   }
 
@@ -244,19 +229,19 @@ export class StaticGraphUtility {
 
   static IsVerticalE(edge: VisibilityEdge): boolean {
     return StaticGraphUtility.IsVerticalD(
-      PointComparer.GetPureDirectionPP(edge.SourcePoint, edge.TargetPoint),
+      PointComparer.GetDirections(edge.SourcePoint, edge.TargetPoint),
     )
   }
 
   static IsVerticalPP(first: Point, second: Point): boolean {
     return StaticGraphUtility.IsVerticalD(
-      PointComparer.GetPureDirectionPP(first, second),
+      PointComparer.GetDirections(first, second),
     )
   }
 
   static IsVertical(seg: LineSegment): boolean {
     return StaticGraphUtility.IsVerticalD(
-      PointComparer.GetPureDirectionPP(seg.start, seg.end),
+      PointComparer.GetDirections(seg.start, seg.end),
     )
   }
 

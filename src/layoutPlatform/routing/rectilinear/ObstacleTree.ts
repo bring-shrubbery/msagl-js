@@ -886,7 +886,7 @@ export class ObstacleTree {
     endPoint: Point,
   ) {
     // Due to rounding issues use a larger line span for intersection calculations.
-    const segDir = PointComparer.GetPureDirectionPP(startPoint, endPoint)
+    const segDir = PointComparer.GetDirections(startPoint, endPoint)
     const startX =
       Direction.West == segDir
         ? this.GraphBox.right
@@ -1055,7 +1055,7 @@ export class ObstacleTree {
         continue
       }
 
-      const dirTowardIntersect = PointComparer.GetPureDirectionPP(
+      const dirTowardIntersect = PointComparer.GetDirections(
         this.currentRestrictedRay.start,
         this.currentRestrictedRay.end,
       )
