@@ -2,6 +2,7 @@ import {Direction} from '../../../../layoutPlatform/math/geometry/direction'
 import {LineSegment} from '../../../../layoutPlatform/math/geometry/lineSegment'
 import {Point} from '../../../../layoutPlatform/math/geometry/point'
 import {Polyline} from '../../../../layoutPlatform/math/geometry/polyline'
+import {Rectangle} from '../../../../layoutPlatform/math/geometry/rectangle'
 import {StaticGraphUtility} from '../../../../layoutPlatform/routing/rectilinear/StaticGraphUtility'
 import {LeftObstacleSide} from '../../../../layoutPlatform/routing/spline/coneSpanner/LeftObstacleSide'
 import {VisibilityEdge} from '../../../../layoutPlatform/routing/visibility/VisibilityEdge'
@@ -89,6 +90,39 @@ test('SegmentIntersectionPPP', () => {
   ).toBe(true)
 })
 
+test('IntervalsAreCollinear', () => {
+  const a = new Point(0, 0)
+  const b = new Point(0, 2)
+  const c = new Point(0, 1)
+  const d = new Point(0, 4)
+  expect(StaticGraphUtility.IntervalsAreCollinear(a, b, c, d)).toBe(true)
+  expect(
+    StaticGraphUtility.IntervalsAreCollinear(
+      a,
+      b,
+      new Point(1, 1),
+      new Point(1, 3),
+    ),
+  ).toBe(false)
+})
+test('RectangleBorderIntersect', () => {
+  const r = Rectangle.mkPP(new Point(1, 0), new Point(5, 2))
+  const a = new Point(3, 0)
+  expect(
+    StaticGraphUtility.RectangleBorderIntersect(r, a, Direction.North).equal(
+      new Point(3, 2),
+    ),
+  ).toBe(true)
+
+  expect(StaticGraphUtility.PointIsInRectangleInterior(r.center, r)).toBe(true)
+})
+test('sortascending', () => {
+  const a = new Point(0, 0)
+  const b = new Point(1, 0)
+  const sorted = StaticGraphUtility.SortAscending(b, a)
+  expect(sorted[0]).toBe(a)
+  expect(sorted[1]).toBe(b)
+})
 test('SegmentIntersectionSP', () => {
   const poly = Polyline.mkFromPoints([
     new Point(0, 0),
@@ -151,4 +185,12 @@ test('EdgeDirectionVE', () => {
   g.AddVertexP(c)
   const ab = g.AddEdge(a, b)
   expect(StaticGraphUtility.EdgeDirectionVE(ab)).toBe(Direction.East)
+})
+test('interion_x', () => {
+  const r = Rectangle.mkPP(new Point(0, 0), new Point(1, 0))
+  const r1 = Rectangle.mkPP(new Point(0.5, 0), new Point(0.2, 0))
+  expect(StaticGraphUtility.RectangleInteriorsIntersect(r, r1)).toBe(false)
+  r.height = 2
+  r1.height = 1
+  expect(StaticGraphUtility.RectangleInteriorsIntersect(r, r1)).toBe(true)
 })
