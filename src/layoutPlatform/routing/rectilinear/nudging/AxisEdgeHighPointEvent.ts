@@ -1,20 +1,19 @@
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Routing.Spline.ConeSpanner;
+import {Point} from '../../../..'
+import {SweepEvent} from '../../spline/coneSpanner/SweepEvent'
+import {AxisEdge} from './AxisEdge'
 
-namespace Microsoft.Msagl.Routing.Rectilinear.Nudging {
-    internal class AxisEdgeHighPointEvent : SweepEvent {
-        Point site;
-        internal AxisEdge AxisEdge { get; set; }
+class AxisEdgeHighPointEvent extends SweepEvent {
+  site: Point
 
-        public AxisEdgeHighPointEvent(AxisEdge edge, Point point) {
-            site = point;
-            AxisEdge = edge;
-        }
+  AxisEdge: AxisEdge
 
-        internal override Point Site {
-            get { return site; }
-        }
+  constructor(edge: AxisEdge, point: Point) {
+    super()
+    this.site = point
+    this.AxisEdge = edge
+  }
 
-
-    }
+  get Site(): Point {
+    return this.site
+  }
 }
