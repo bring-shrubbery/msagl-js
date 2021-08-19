@@ -1,4 +1,3 @@
-import {IEnumerable} from 'linq-to-typescript'
 import {Point} from '../../../..'
 import {Assert} from '../../../utils/assert'
 import {AxisEdge} from './AxisEdge'
