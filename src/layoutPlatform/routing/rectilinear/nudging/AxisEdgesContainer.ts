@@ -1,62 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Microsoft.Msagl.Core.DataStructures;
-using Microsoft.Msagl.Core.Geometry;
+import {IEnumerable} from 'linq-to-typescript'
+import {Point} from '../../../..'
+import {Assert} from '../../../utils/assert'
+import {AxisEdge} from './AxisEdge'
 
-namespace Microsoft.Msagl.Routing.Rectilinear.Nudging{
-    /// <summary>
-    /// keeps a list of active overlapping AxisEdges discovered during the sweep
-    ///  </summary>
-    internal class AxisEdgesContainer:IEnumerable<AxisEdge>{
-        readonly Set<AxisEdge> edges = new Set<AxisEdge>();
-        /// <summary>
-        /// it is not necessarely the upper point but some point above the source
-        /// </summary>
-        internal Point UpPoint;
+export class AxisEdgesContainer {
+  edges: Set<AxisEdge> = new Set<AxisEdge>()
 
+  get Edges(): Iterable<AxisEdge> {
+    return this.edges
+  }
 
-        internal void AddEdge(AxisEdge edge){
-            UpPoint = edge.TargetPoint;
-            Debug.Assert(edges.Contains(edge)==false);
-            edges.Insert(edge);
-        }
+  ///  <summary>
+  ///  it is not necessarely the upper point but some point above the source
+  ///  </summary>
+  UpPoint: Point
 
-        internal AxisEdgesContainer(Point source){
-            Source = source;
-        }
+  AddEdge(edge: AxisEdge) {
+    this.UpPoint = edge.TargetPoint
+    Assert.assert(!this.edges.has(edge))
+    this.edges.add(edge)
+  }
 
-        public Point Source { get; set; }
+  constructor(source: Point) {
+    this.Source = source
+  }
 
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
-        /// </returns>
-        /// <filterpriority>1</filterpriority>
-        public IEnumerator<AxisEdge> GetEnumerator(){
-            return edges.GetEnumerator();
-        }
+  Source: Point
+  RemoveAxis(edge: AxisEdge) {
+    Assert.assert(this.edges.has(edge))
+    this.edges.delete(edge)
+  }
 
-        /// <summary>
-        /// Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
-        /// </returns>
-        /// <filterpriority>2</filterpriority>
-        IEnumerator IEnumerable.GetEnumerator(){
-            return GetEnumerator();
-        }
-
-        internal void RemoveAxis(AxisEdge edge){
-            Debug.Assert(edges.Contains(edge));
-            edges.Remove(edge);
-        }
-
-        internal bool IsEmpty(){
-            return edges.Count == 0;
-        }
-    }
+  IsEmpty(): boolean {
+    return this.edges.size == 0
+  }
 }

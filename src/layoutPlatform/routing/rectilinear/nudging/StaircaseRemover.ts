@@ -1,200 +1,269 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Msagl.Core.DataStructures;
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Core.Geometry.Curves;
+import {Point, Rectangle} from '../../../..'
+import {RectangleNode} from '../../../core/geometry/RTree/RectangleNode'
+import {RTree} from '../../../core/geometry/RTree/RTree'
+import {CompassVector} from '../../../math/geometry/compassVector'
+import {Curve} from '../../../math/geometry/curve'
+import { GeomConstants } from '../../../math/geometry/geomConstants'
+import {LineSegment} from '../../../math/geometry/lineSegment'
+import {Polyline} from '../../../math/geometry/polyline'
+import {Path} from './Path'
+import {SegWithIndex} from './SegWithIndex'
 
-namespace Microsoft.Msagl.Routing.Rectilinear.Nudging {
-    internal class StaircaseRemover {
-        protected List<Path> Paths { get; set; }
+export class StaircaseRemover {
+  Paths: Array<Path>
 
-        protected RTree<Polyline,Point> HierarchyOfObstacles { get; set; }
-        readonly RTree<SegWithIndex, Point> segTree=new RTree<SegWithIndex, Point>();
-        Set<Path> crossedOutPaths = new Set<Path>();
+  HierarchyOfObstacles: RTree<Polyline, Point>
 
-        StaircaseRemover(List<Path> paths, RectangleNode<Polyline, Point> hierarchyOfObstacles) {
-            HierarchyOfObstacles = new RTree<Polyline, Point>(hierarchyOfObstacles);
-            Paths = paths;
-        }
+  segTree: RTree<SegWithIndex, Point> = new RTree<SegWithIndex, Point>(null)
 
+  crossedOutPaths: Set<Path> = new Set<Path>()
 
-        internal static void RemoveStaircases(List<Path> paths, RectangleNode<Polyline, Point> hierarchyOfObstacles) {
-            var r = new StaircaseRemover(paths, hierarchyOfObstacles);
-            r.Calculate();
-        }
+  constructor(
+    paths: Array<Path>,
+    hierarchyOfObstacles: RectangleNode<Polyline, Point>,
+  ) {
+    this.HierarchyOfObstacles = new RTree<Polyline, Point>(hierarchyOfObstacles)
+    this.Paths = paths
+  }
 
-        void Calculate() {
-            InitHierarchies();
-            bool success;
-            do {
-                success = false;
-                foreach (var path in Paths.Where(p=>!crossedOutPaths.Contains(p)))
-                    success |= ProcessPath(path);
-            } while (success);
-        }
+  static RemoveStaircases(
+    paths: Array<Path>,
+    hierarchyOfObstacles: RectangleNode<Polyline, Point>,
+  ) {
+    const r = new StaircaseRemover(paths, hierarchyOfObstacles)
+    r.Calculate()
+  }
 
-        bool ProcessPath(Path path) {
-            var pts = (Point[])path.PathPoints;
-            bool canHaveStaircase;
-            if (ProcessPoints(ref pts, out canHaveStaircase)) {
-                path.PathPoints = pts;
-                return true;
-            }
-            if (!canHaveStaircase)
-                crossedOutPaths.Insert(path);
-            return false;
-        }
+  Calculate() {
+    this.InitHierarchies()
+    let success: boolean
+    do {
+      success = false
+      for (const path of this.Paths.filter(
+        (p) => !this.crossedOutPaths.has(p),
+      )) {
+        if (this.ProcessPath(path)) success = true
+      }
+    } while (success)
+  }
 
-        bool ProcessPoints(ref Point[] pts, out bool canHaveStaircase) {
-            var staircaseStart  = FindStaircaseStart(pts, out canHaveStaircase);
-            if (staircaseStart < 0) return false;
-            pts = RemoveStaircase(pts, staircaseStart);
-            return true;
-        }
-
-
-        int FindStaircaseStart(Point[] pts, out bool canHaveStaircase) {
-            canHaveStaircase = false;
-            if (pts.Length < 5) // At least five points make a staircase
-                return -1;
-            var segs = new[] {
-                                 new SegWithIndex(pts, 0), new SegWithIndex(pts, 1), new SegWithIndex(pts, 2),
-                                 new SegWithIndex(pts, 3)
-                             };
-            int segToReplace = 0;
-
-            for (int i = 0;;) {
-                bool canHaveStaircaseAtI;
-                if (IsStaircase(pts, i, segs, out canHaveStaircaseAtI)) {
-                    canHaveStaircase = true;
-                    return i;                    
-                }
-                canHaveStaircase = canHaveStaircase || canHaveStaircaseAtI;
-                i++;
-                if (pts.Length < i + 5)// At least five points make a staircase
-                    return -1;
-
-                segs[segToReplace] = new SegWithIndex(pts, i + 3);
-                segToReplace += 1;
-                segToReplace %= 4;
-            }
-        }
-
-        static Point GetFlippedPoint(Point[] pts, int offset) {
-            var horiz = ApproximateComparer.Close(pts[offset].Y, pts[offset + 1].Y);
-            return horiz ? new Point(pts[offset + 4].X, pts[offset].Y) : new Point(pts[offset].X, pts[offset + 4].Y);
-        }
-
-        /// <summary>
-        /// ignoring crossing at a
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <param name="segsToIgnore"></param>
-        /// <returns></returns>
-        bool Crossing(Point a, Point b, SegWithIndex[] segsToIgnore) {
-            return IsCrossing(new LineSegment(a, b), segTree, segsToIgnore);
-        }
-
-        /// <summary>
-        /// ignoring crossing at ls.Start
-        /// </summary>
-        /// <param name="ls"></param>
-        /// <param name="rTree"></param>
-        /// <param name="segsToIgnore"></param>
-        /// <returns></returns>
-        static bool IsCrossing(LineSegment ls, RTree<SegWithIndex,Point> rTree, SegWithIndex[] segsToIgnore) {
-            return rTree.GetAllIntersecting(ls.BoundingBox).Where(seg => !segsToIgnore.Contains(seg)).Any();
-        }
-
-        
-        bool IntersectObstacleHierarchy(Point a, Point b, Point c) {
-            return IntersectObstacleHierarchy(new LineSegment(a, b)) ||
-                   IntersectObstacleHierarchy(new LineSegment(b, c));
-        }
-
-        bool IntersectObstacleHierarchy(LineSegment ls) {
-            return
-                HierarchyOfObstacles.GetAllIntersecting(ls.BoundingBox).Any(
-                    poly => Curve.CurveCurveIntersectionOne(ls, poly, false) != null);
-        }
-
-        bool IsStaircase(Point[] pts, int offset, SegWithIndex[] segsToIgnore, out bool canHaveStaircaseAtI) {
-            var a = pts[offset];
-            var b = pts[offset + 1];
-            var c = pts[offset + 2];
-            var d = pts[offset + 3];
-            var f = pts[offset + 4];
-            canHaveStaircaseAtI = false;
-            if (CompassVector.DirectionsFromPointToPoint(a, b) != CompassVector.DirectionsFromPointToPoint(c, d) ||
-                CompassVector.DirectionsFromPointToPoint(b, c) != CompassVector.DirectionsFromPointToPoint(d, f))
-                return false;
-
-            c = GetFlippedPoint(pts, offset);
-            if (IntersectObstacleHierarchy(b, c, d))
-                return false;
-            canHaveStaircaseAtI = true;
-            return !Crossing(b, c, segsToIgnore);
-        }
-
-        Point[] RemoveStaircase(Point[] pts, int staircaseStart) {
-            Point a = pts[staircaseStart];
-            Point b = pts[staircaseStart + 1];
-            var horiz = Math.Abs(a.Y - b.Y) < ApproximateComparer.DistanceEpsilon/2;
-            return RemoveStaircase(pts, staircaseStart, horiz);
-
-        }
-
-        Point[] RemoveStaircase(Point[] pts, int staircaseStart, bool horiz) {
-            RemoveSegs(pts);
-            var ret = new Point[pts.Length - 2];
-            Array.Copy(pts, ret, staircaseStart + 1);
-            var a = pts[staircaseStart + 1];
-            var c = pts[staircaseStart + 3];
-            ret[staircaseStart + 1] = horiz ? new Point(c.X, a.Y) : new Point(a.X, c.Y);
-            Array.Copy(pts, staircaseStart + 4, ret, staircaseStart + 2, ret.Length - staircaseStart - 2);
-            InsertNewSegs(ret, staircaseStart);
-            return ret;
-        }
-
-        void RemoveSegs(Point[] pts) {
-            for (int i = 0; i < pts.Length-1; i++)
-                RemoveSeg(new SegWithIndex(pts,i));
-        }
-
-        void RemoveSeg(SegWithIndex seg) {
-            segTree.Remove(Rect(seg), seg);
-        }
-        
-       
-        void InsertNewSegs(Point[] pts, int staircaseStart) {
-            InsSeg(pts, staircaseStart);
-            InsSeg(pts, staircaseStart+1);
-        }
-
-        void InitHierarchies() {
-            foreach (var path in Paths)
-                InsertPathSegs(path);
-        }
-       
-        void InsertPathSegs(Path path) {
-            InsertSegs((Point[])path.PathPoints);
-        }
-
-   
-        void InsertSegs(Point[] pts) {
-            for (int i = 0; i < pts.Length - 1; i++)
-                InsSeg(pts, i);
-        }
-
-        void InsSeg(Point[] pts, int i) {
-            var seg = new SegWithIndex(pts, i);
-            segTree.Add(Rect(seg), seg);
-        }
-
-        static Rectangle Rect(SegWithIndex seg) {
-            return new Rectangle(seg.Start,seg.End);
-        }
+  ProcessPath(path: Path): boolean {
+    const t = {pts:<Point[]>path.PathPoints, canHaveStaircase:false}
+    if (this.ProcessPoints(t) {
+      path.PathPoints = t.pts
+      return true
     }
+
+    if (!t.canHaveStaircase) {
+      this.crossedOutPaths.add(path)
+    }
+
+    return false
+  }
+
+  ProcessPoints( t:{
+     pts: Point[],
+     canHaveStaircase: boolean,
+  }
+  ): boolean {
+    const staircaseStart = this.FindStaircaseStart( t  )
+    if (staircaseStart < 0) {
+      return false
+    }
+
+    pts = this.RemoveStaircase(pts, staircaseStart)
+    return true
+  }
+
+  FindStaircaseStart(t:{
+    pts: Point[],
+    canHaveStaircase: boolean,
+ }
+  ): number {
+    t.canHaveStaircase = false
+    if (t.pts.length < 5) {
+      return -1
+    }
+
+    let segs
+    new SegWithIndex(t.pts, 0)
+    new SegWithIndex(t.pts, 1)
+    new SegWithIndex(t.pts, 2)
+    new SegWithIndex(t.pts, 3)
+
+    let segToReplace = 0
+    for (let i = 0; ; ) {
+      const w =  {canHaveStaircaseAtI: false}
+      if (this.IsStaircase(t.pts, i, segs, w)) {
+        canHaveStaircase = true
+        return i
+      }
+
+      canHaveStaircase = canHaveStaircase || canHaveStaircaseAtI
+      i++
+      if (pts.Length < i + 5) {
+        return -1
+      }
+
+      segs[segToReplace] = new SegWithIndex(pts, i + 3)
+      segToReplace++
+      4
+    }
+  }
+
+  static GetFlippedPoint(pts: Point[], offset: number): Point {
+    const horiz = ApproximateComparer.Close(pts[offset].y, pts[offset + 1].y)
+    return new Point(pts[offset + 4].x, pts[offset].y)
+    // TODO: Warning!!!, inline IF is not supported ?
+    horiz
+    new Point(pts[offset].x, pts[offset + 4].y)
+  }
+
+  ///  <summary>
+  ///  ignoring crossing at a
+  ///  </summary>
+  ///  <param name="a"></param>
+  ///  <param name="b"></param>
+  ///  <param name="segsToIgnore"></param>
+  ///  <returns></returns>
+  Crossing(a: Point, b: Point, segsToIgnore: SegWithIndex[]): boolean {
+    return StaircaseRemover.IsCrossing(
+      new LineSegment(a, b),
+      this.segTree,
+      segsToIgnore,
+    )
+  }
+
+  ///  <summary>
+  ///  ignoring crossing at ls.Start
+  ///  </summary>
+  ///  <param name="ls"></param>
+  ///  <param name="rTree"></param>
+  ///  <param name="segsToIgnore"></param>
+  ///  <returns></returns>
+  static IsCrossing(
+    ls: LineSegment,
+    rTree: RTree<SegWithIndex, Point>,
+    segsToIgnore: SegWithIndex[],
+  ): boolean {
+    return rTree
+      .GetAllIntersecting(ls.boundingBox)
+      .Where(() => {}, !segsToIgnore.Contains(seg))
+      .Any()
+  }
+
+  IntersectObstacleHierarchy(a: Point, b: Point, c: Point): boolean {
+    return (
+      this.IntersectObstacleHierarchy(new LineSegment(a, b)) ||
+      this.IntersectObstacleHierarchy(new LineSegment(b, c))
+    )
+  }
+
+  IntersectObstacleHierarchy(ls: LineSegment): boolean {
+    return this.HierarchyOfObstacles.GetAllIntersecting(
+      ls.boundingBox,
+    ).Any(() => {}, Curve.CurveCurveIntersectionOne(ls, poly, false) != null)
+  }
+
+  IsStaircase(
+    pts: Point[],
+    offset: number,
+    segsToIgnore: SegWithIndex[],
+    w:{canHaveStaircaseAtI: boolean}
+  ): boolean {
+    const a = pts[offset]
+    const b = pts[offset + 1]
+    let c = pts[offset + 2]
+    const d = pts[offset + 3]
+    const f = pts[offset + 4]
+    w.canHaveStaircaseAtI = false
+    if (
+      CompassVector.DirectionFromPointToPoint(a, b) !=
+        CompassVector.DirectionFromPointToPoint(c, d) ||
+      CompassVector.DirectionFromPointToPoint(b, c) !=
+        CompassVector.DirectionFromPointToPoint(d, f)
+    ) {
+      return false
+    }
+
+    c = StaircaseRemover.GetFlippedPoint(pts, offset)
+    if (this.IntersectObstacleHierarchy(b, c, d)) {
+      return false
+    }
+
+    w.canHaveStaircaseAtI = true
+    return !this.Crossing(b, c, segsToIgnore)
+  }
+
+  RemoveStaircasePN(pts: Point[], staircaseStart: number): Point[] {
+    const a: Point = pts[staircaseStart]
+    const b: Point = pts[staircaseStart + 1]
+    const horiz = Math.abs(a.y - b.y) < GeomConstants.distanceEpsilon / 2
+    return this.RemoveStaircasePNH(pts, staircaseStart, horiz)
+  }
+
+  RemoveStaircasePNH(
+    pts: Point[],
+    staircaseStart: number,
+    horiz: boolean,
+  ): Point[] {
+    this.RemoveSegs(pts)
+    const ret = new Array(pts.length - 2)
+    Array.Copy(pts, ret, staircaseStart + 1)
+    const a = pts[staircaseStart + 1]
+    const c = pts[staircaseStart + 3]
+    ret[staircaseStart + 1] = new Point(c.x, a.y)
+    // TODO: Warning!!!, inline IF is not supported ?
+    horiz
+    new Point(a.x, c.y)
+    Array.Copy(
+      pts,
+      staircaseStart + 4,
+      ret,
+      staircaseStart + 2,
+      ret.length - (staircaseStart - 2),
+    )
+    this.InsertNewSegs(ret, staircaseStart)
+    return ret
+  }
+
+  RemoveSegs(pts: Point[]) {
+    for (let i = 0; i < pts.length - 1; i++) {
+      this.RemoveSeg(new SegWithIndex(pts, i))
+    }
+  }
+
+  RemoveSeg(seg: SegWithIndex) {
+    this.segTree.Remove(StaircaseRemover.Rect(seg), seg)
+  }
+
+  InsertNewSegs(pts: Point[], staircaseStart: number) {
+    this.InsSeg(pts, staircaseStart)
+    this.InsSeg(pts, staircaseStart + 1)
+  }
+
+  InitHierarchies() {
+    for (const path in this.Paths) {
+      this.InsertPathSegs(path)
+    }
+  }
+
+  InsertPathSegs(path: Path) {
+    this.InsertSegs(<Point[]>path.PathPoints)
+  }
+
+  InsertSegs(pts: Point[]) {
+    for (let i = 0; i < pts.length - 1; i++) {
+      this.InsSeg(pts, i)
+    }
+  }
+
+  InsSeg(pts: Point[], i: number) {
+    const seg = new SegWithIndex(pts, i)
+    this.segTree.Add(StaircaseRemover.Rect(seg), seg)
+  }
+
+  static Rect(seg: SegWithIndex): Rectangle {
+    return new Rectangle(seg.Start, seg.End)
+  }
 }

@@ -2,7 +2,7 @@ import {Point} from '../../../..'
 import {SweepEvent} from '../../spline/coneSpanner/SweepEvent'
 import {AxisEdge} from './AxisEdge'
 
-class AxisEdgeHighPointEvent extends SweepEvent {
+export class AxisEdgeHighPointEvent extends SweepEvent {
   site: Point
 
   AxisEdge: AxisEdge

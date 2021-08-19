@@ -1,62 +1,47 @@
-using System.Diagnostics;
-using System.Collections;
-using System.Collections.Generic;
-using Microsoft.Msagl.Core.Geometry;
+import {Point} from '../../../..'
+import {CompassVector} from '../../../math/geometry/compassVector'
+import {Assert} from '../../../utils/assert'
 
-#if TEST_MSAGL
-using System.Linq;
-#endif
+///  represents a segment of a path
+export class LinkedPoint {
+  Point: Point
+  Next: LinkedPoint
 
-namespace Microsoft.Msagl.Routing.Rectilinear.Nudging {
-    /// <summary>
-    /// represents a segment of a path
-    /// </summary>
-    internal class LinkedPoint : IEnumerable<Point> {
-        internal Point Point { get; set; }
+  constructor(point: Point) {
+    this.Point = point
+  }
 
-        internal LinkedPoint Next { get; set; }
-
-        internal LinkedPoint(Point point) {
-            Point = point;
-        }
-
-        public IEnumerator<Point> GetEnumerator() {
-            for (var p = this; p != null; p = p.Next)
-                yield return p.Point;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() {
-            return GetEnumerator();
-        }
-
-        internal double X { get { return Point.X; } }
- 
-        internal double Y { get { return Point.Y; } }
-
-        internal void InsertVerts(int i, int j, Point[] points) {
-            for (j--; i < j; j--)
-                SetNewNext(points[j]);
-        }
-
-        public void InsertVertsInReverse(int i, int j, Point[] points) {
-            for (i++; i < j; i++)
-                SetNewNext(points[i]);
-        }
-
-        internal void SetNewNext(Point p) {
-            var nv = new LinkedPoint(p);
-            var tmp = Next;
-            Next = nv;
-            nv.Next = tmp;            
-            Debug.Assert( CompassVector.IsPureDirection(Point, Next.Point) );
-        }
-
-#if TEST_MSAGL
-        public override string ToString() {
-            return Point.ToString();
-        }
-#endif
-
-
+  *GetEnumerator(): IterableIterator<Point> {
+    for (let p = this; p != null; p = p.Next) {
+      yield p.Point
     }
+  }
+
+  get X(): number {
+    return this.Point.x
+  }
+
+  get Y(): number {
+    return this.Point.y
+  }
+
+  InsertVerts(i: number, j: number, points: Point[]) {
+    for (j--; i < j; j--) {
+      this.SetNewNext(points[j])
+    }
+  }
+
+  public InsertVertsInReverse(i: number, j: number, points: Point[]) {
+    for (i++; i < j; i++) {
+      this.SetNewNext(points[i])
+    }
+  }
+
+  SetNewNext(p: Point) {
+    const nv = new LinkedPoint(p)
+    const tmp = this.Next
+    this.Next = nv
+    nv.Next = tmp
+    Assert.assert(CompassVector.IsPureDirectionPP(this.Point, this.Next.Point))
+  }
 }
