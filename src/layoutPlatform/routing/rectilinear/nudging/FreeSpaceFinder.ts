@@ -1,12 +1,11 @@
 ///  The class is looking for the free space around AxisEdges
 
-import {IEnumerable, from, IComparer, IComparer} from 'linq-to-typescript'
-import {Point, CurveFactory, ICurve} from '../../../..'
+import {IEnumerable, from} from 'linq-to-typescript'
+import {Point} from '../../../..'
 import {CompassVector} from '../../../math/geometry/compassVector'
 import {DebugCurve} from '../../../math/geometry/debugCurve'
 import {Direction} from '../../../math/geometry/direction'
 import {GeomConstants} from '../../../math/geometry/geomConstants'
-import {LineSegment} from '../../../math/geometry/lineSegment'
 import {Polyline} from '../../../math/geometry/polyline'
 import {PolylinePoint} from '../../../math/geometry/polylinePoint'
 import {RBNode} from '../../../structs/RBTree/rbNode'
@@ -20,9 +19,7 @@ import {RightVertexEvent} from '../../spline/coneSpanner/RightVertexEvent'
 import {SweepEvent} from '../../spline/coneSpanner/SweepEvent'
 import {VertexEvent} from '../../spline/coneSpanner/VertexEvent'
 import {LineSweeperBase} from '../../visibility/LineSweeperBase'
-import {ObstacleSideComparer} from '../../visibility/ObstacleSideComparer'
 import {SegmentBase} from '../../visibility/SegmentBase'
-import {EventQueue} from '../EventQueue'
 import {AxisEdge} from './AxisEdge'
 import {AxisEdgeHighPointEvent} from './AxisEdgeHighPointEvent'
 import {AxisEdgeLowPointEvent} from './AxisEdgeLowPointEvent'
@@ -30,18 +27,10 @@ import {AxisEdgesContainer} from './AxisEdgesContainer'
 import {PathEdge} from './PathEdge'
 
 ///  </summary>
-class FreeSpaceFinder extends LineSweeperBase {
+export class FreeSpaceFinder extends LineSweeperBase {
   static AreaComparisonEpsilon: number = GeomConstants.intersectionEpsilon
 
   xProjection: (a: Point) => number
-
-  static X(p: Point): number {
-    return p.x
-  }
-
-  static MinusY(p: Point): number {
-    return p.y * -1
-  }
 
   edgeContainersTree: RBTree<AxisEdgesContainer>
 
