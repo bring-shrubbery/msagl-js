@@ -1,46 +1,45 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Diagnostics;
-// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Core;
+import {Point} from '../../..'
+import {GeomConstants} from '../../math/geometry/geomConstants'
+import {TriangleOrientation} from '../../math/geometry/point'
+import {Assert} from '../../utils/assert'
+import {LineSweeperBase} from './LineSweeperBase'
+import {SegmentBase} from './SegmentBase'
 
-// namespace Microsoft.Msagl.Routing.Visibility {
-//     internal class ObstacleSideComparer : IComparer < SegmentBase > {
+export class ObstacleSideComparer {
+  lineSweeper: LineSweeperBase
 
-//         readonly LineSweeperBase lineSweeper;
+  constructor(lineSweeper: LineSweeperBase) {
+    this.lineSweeper = lineSweeper
+  }
 
-//         internal ObstacleSideComparer(LineSweeperBase lineSweeper) {
-//             this.lineSweeper = lineSweeper;
-//         }
+  //  the intersection of the sweepline and the active segment
+  x: Point
 
-//         // <summary>
-//         // the intersection of the sweepline and the active segment
-//         // <
-//         Point x;
+  public Compare(a: SegmentBase, b: SegmentBase): number {
+    const orient = Point.getTriangleOrientation(b.Start, b.End, this.x)
+    switch (orient) {
+      case TriangleOrientation.Collinear:
+        return 0
+        break
+      case TriangleOrientation.Clockwise:
+        return 1
+        break
+      default:
+        return -1
+        break
+    }
+  }
 
-//         public int Compare(SegmentBase a, SegmentBase b) {
-//             ValidateArg.IsNotNull(b, "b");
-//             var orient = Point.getTriangleOrientation(b.start, b.End, x);
-//             switch (orient) {
-//                 case TriangleOrientation.Collinear:
-//                     return 0;
-//                 case TriangleOrientation.Clockwise:
-//                     return 1;
-//                 default:
-//                     return -1;
-//             }
-//         }
+  SetOperand(side: SegmentBase) {
+    this.x = this.IntersectionOfSideAndSweepLine(side)
+  }
 
-//         internal void SetOperand(SegmentBase side) {
-//         x = IntersectionOfSideAndSweepLine(side);
-//     }
-
-//     internal Point IntersectionOfSideAndSweepLine(SegmentBase obstacleSide) {
-//         var den = obstacleSide.Direction * lineSweeper.SweepDirection;
-//         Assert.assert(Math.Abs(den) > GeomConstants.distanceEpsilon);
-//         var t = (lineSweeper.Z - obstacleSide.start * lineSweeper.SweepDirection) / den;
-//         return obstacleSide.start + t * obstacleSide.Direction;
-//     }
-
-// }
-// }
+  IntersectionOfSideAndSweepLine(obstacleSide: SegmentBase): Point {
+    const den = obstacleSide.Direction.dot(this.lineSweeper.SweepDirection)
+    Assert.assert(Math.abs(den) > GeomConstants.distanceEpsilon)
+    const t =
+      this.lineSweeper.Z -
+      obstacleSide.Start.dot(this.lineSweeper.SweepDirection) / den
+    return obstacleSide.Start.add(obstacleSide.Direction.mul(t))
+  }
+}

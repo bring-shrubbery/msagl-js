@@ -1,16 +1,15 @@
-﻿// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Routing.Spline.ConeSpanner;
+﻿import {Point} from '../../..'
+import {SweepEvent} from '../spline/coneSpanner/SweepEvent'
 
-// namespace Microsoft.Msagl.Routing.Visibility {
-//     internal class PortObstacleEvent : SweepEvent {
-//         readonly Point site;
+export class PortObstacleEvent extends SweepEvent {
+  site: Point
 
-//         public PortObstacleEvent(Point site) {
-//             this.site = site;
-//         }
+  constructor(site: Point) {
+    super()
+    this.site = site
+  }
 
-//         internal override Point Site {
-//             get { return site; }
-//         }
-//     }
-// }
+  get Site(): Point {
+    return this.site
+  }
+}

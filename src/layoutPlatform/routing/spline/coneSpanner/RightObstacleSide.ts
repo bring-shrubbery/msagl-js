@@ -1,25 +1,20 @@
-// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Core.Geometry.Curves;
+import {Point} from '../../../..'
+import {PolylinePoint} from '../../../math/geometry/polylinePoint'
+import {ObstacleSide} from './ObstacleSide'
 
-// namespace Microsoft.Msagl.Routing.Spline.ConeSpanner
-// {
-//     internal class RightObstacleSide : ObstacleSide
-//     {
-//         Point end;
-//         internal RightObstacleSide(PolylinePoint startVertex)
-//             : base(startVertex)
-//         {
-//             this.end = startVertex.PrevOnPolyline.point;
-//         }
-//         internal override Point End
-//         {
-//             get { return end; }
-//         }
+export class RightObstacleSide extends ObstacleSide {
+  end: Point
 
-//         internal override PolylinePoint EndVertex
-//         {
-//             get { return StartVertex.PrevOnPolyline; }
-//         }
+  constructor(startVertex: PolylinePoint) {
+    super(startVertex)
+    this.end = startVertex.prevOnPolyline.point
+  }
 
-//     }
-// }
+  get End(): Point {
+    return this.end
+  }
+
+  get EndVertex(): PolylinePoint {
+    return this.StartVertex.prevOnPolyline
+  }
+}

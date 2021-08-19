@@ -1,532 +1,593 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Microsoft.Msagl.Core;
-using Microsoft.Msagl.Core.DataStructures;
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Core.Geometry.Curves;
-using Microsoft.Msagl.Core.Layout;
-using Microsoft.Msagl.DebugHelpers;
-using Microsoft.Msagl.Routing.Spline.ConeSpanner;
-using Microsoft.Msagl.Routing.Visibility;
-
-namespace Microsoft.Msagl.Routing.Rectilinear.Nudging {
-    /// <summary>
-    /// The class is looking for the free space around AxisEdges
-    /// </summary>
-#if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=301
-    internal class FreeSpaceFinder : LineSweeperBase {
-#else
-    internal class FreeSpaceFinder : LineSweeperBase, IComparer<AxisEdgesContainer> {
-#endif
-        static double AreaComparisonEpsilon = ApproximateComparer.IntersectionEpsilon;
-        readonly PointProjection xProjection;
-        
-        internal static double X(Point p){return p.X;}
-        internal static double MinusY(Point p) { return -p.Y; }
-
-        readonly RbTree<AxisEdgesContainer> edgeContainersTree;
-        internal Dictionary<AxisEdge, List<PathEdge>> PathOrders { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="direction"></param>
-        /// <param name="obstacles"></param>
-        /// <param name="axisEdgesToObstaclesTheyOriginatedFrom"></param>
-        /// <param name="pathOrders"></param>
-        /// <param name="axisEdges">edges to find the empty space around</param>
-        internal FreeSpaceFinder(Direction direction, IEnumerable<Polyline> obstacles, Dictionary<AxisEdge,Polyline> axisEdgesToObstaclesTheyOriginatedFrom, Dictionary<AxisEdge, List<PathEdge>> pathOrders, 
-            IEnumerable<AxisEdge> axisEdges): base(obstacles, new CompassVector(direction).ToPoint()) {
-            DirectionPerp = new CompassVector(direction).Right.ToPoint();
-            PathOrders = pathOrders;
-            xProjection = direction == Direction.North ? (PointProjection)X : MinusY;
-#if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=301
-            edgeContainersTree = new RbTree<AxisEdgesContainer>(new FreeSpaceFinderComparer(this));
-#else
-            edgeContainersTree = new RbTree<AxisEdgesContainer>(this);
-#endif
-            SweepPole = CompassVector.VectorDirection(SweepDirection);
-            Debug.Assert(CompassVector.IsPureDirection(SweepPole));
-            AxisEdges = axisEdges;
-            AxisEdgesToObstaclesTheyOriginatedFrom = axisEdgesToObstaclesTheyOriginatedFrom;
-            
-        }
-
-        Dictionary<AxisEdge, Polyline> AxisEdgesToObstaclesTheyOriginatedFrom { get; set; }
-
-        protected Direction SweepPole { get; set; }
-
-     //   List<Path> EdgePaths { get; set; }
-
-        //VisibilityGraph PathVisibilityGraph { get; set; }
-
-        /// <summary>
-        /// calculates the right offsets
-        /// </summary>
-        internal void FindFreeSpace() {
-            InitTheQueueOfEvents();
-            ProcessEvents();
-        //    ShowAxisEdges();            
-        }
-
-        
-        void ProcessEvents() {
-            while (EventQueue.Count > 0)
-                ProcessEvent(EventQueue.Dequeue());
-        }
-
-        void ProcessEvent(SweepEvent sweepEvent) {
-//            if (SweepDirection.Y == 1 && (sweepEvent.Site - new Point(75.45611, 15.21524)).Length < 0.1)
-               // ShowAtPoint(sweepEvent.Site);
-          
-            var vertexEvent = sweepEvent as VertexEvent;
-            if (vertexEvent != null)
-                ProcessVertexEvent(vertexEvent);
-            else {
-                var lowEdgeEvent = sweepEvent as AxisEdgeLowPointEvent;
-                Z = GetZ(sweepEvent.Site);
-                if (lowEdgeEvent != null)
-                    ProcessLowEdgeEvent(lowEdgeEvent);
-                else
-                    ProcessHighEdgeEvent((AxisEdgeHighPointEvent)sweepEvent);
-            }
-        }
-
-        void ProcessHighEdgeEvent(AxisEdgeHighPointEvent edgeForNudgingHighPointEvent) {
-            var edge = edgeForNudgingHighPointEvent.AxisEdge;
-            RemoveEdge(edge);
-            ConstraintEdgeWithObstaclesAtZ(edge, edge.Target.Point);
-        }
-
-        void ProcessLowEdgeEvent(AxisEdgeLowPointEvent lowEdgeEvent) {
-            
-            var edge = lowEdgeEvent.AxisEdge;
-
-            var containerNode = GetOrCreateAxisEdgesContainer(edge);
-            containerNode.Item.AddEdge(edge);
-            var prev = edgeContainersTree.Previous(containerNode);
-            if (prev != null)
-                foreach (var prevEdge in prev.Item)
-                    foreach (var ed in containerNode.Item)
-                        TryToAddRightNeighbor(prevEdge, ed);
-                        
-            var next = edgeContainersTree.Next(containerNode);
-            if (next != null)
-                foreach (var ed in containerNode.Item)
-                    foreach (var neEdge in next.Item)
-                        TryToAddRightNeighbor(ed, neEdge);
-            ConstraintEdgeWithObstaclesAtZ(edge, edge.Source.Point);
-        }
-
-        void TryToAddRightNeighbor(AxisEdge leftEdge, AxisEdge rightEdge) {
-            if (ProjectionsOfEdgesOverlap(leftEdge, rightEdge))
-                leftEdge.AddRightNeighbor(rightEdge);
-        }
-
-        bool ProjectionsOfEdgesOverlap(AxisEdge leftEdge, AxisEdge rightEdge) {
-            return SweepPole == Direction.North
-                       ? !(leftEdge.TargetPoint.Y < rightEdge.SourcePoint.Y - ApproximateComparer.DistanceEpsilon ||
-                           rightEdge.TargetPoint.Y < leftEdge.SourcePoint.Y - ApproximateComparer.DistanceEpsilon)
-                       : !(leftEdge.TargetPoint.X < rightEdge.SourcePoint.X - ApproximateComparer.DistanceEpsilon ||
-                           rightEdge.TargetPoint.X < leftEdge.SourcePoint.X - ApproximateComparer.DistanceEpsilon);
-        }
-
-#if TEST_MSAGL
-// ReSharper disable UnusedMember.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        void DebShowEdge(AxisEdge edge, Point point){
-// ReSharper restore UnusedMember.Local
-           // if (InterestingEdge(edge))
-                ShowEdge(edge,point);
-        }
-
-
-// ReSharper disable SuggestBaseTypeForParameter
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        void ShowEdge(AxisEdge edge, Point point){
-// ReSharper restore SuggestBaseTypeForParameter
-
-            var dd = GetObstacleBoundaries("black");
-            var seg = new DebugCurve( 1, "red", new LineSegment(edge.Source.Point, edge.Target.Point));
-            LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(dd.Concat(
-                new[]{seg ,new DebugCurve("blue",CurveFactory.CreateEllipse(3, 3, point))}));
-  
-
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        IEnumerable<DebugCurve> GetObstacleBoundaries(string color){
-            return Obstacles.Select(p => new DebugCurve(1, color, p));
-        }
-#endif
-        
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="edge"></param>
-        /// <param name="point">a point on the edge on Z level</param>
-        void ConstraintEdgeWithObstaclesAtZ(AxisEdge edge, Point point) {
-            Debug.Assert(point==edge.Source.Point || point == edge.Target.Point);
-            ConstraintEdgeWithObstaclesAtZFromLeft(edge, point);
-            ConstraintEdgeWithObstaclesAtZFromRight(edge, point);
-        }
-
-        void ConstraintEdgeWithObstaclesAtZFromRight(AxisEdge edge, Point point) {
-            var node = GetActiveSideFromRight(point);
-            if (node == null) return;
-            if (NotRestricting(edge, ((LeftObstacleSide) node.Item).Polyline)) return;
-            var x = ObstacleSideComparer.IntersectionOfSideAndSweepLine(node.Item);
-            edge.BoundFromRight(x*DirectionPerp);
-        }
-
-        RBNode<SegmentBase> GetActiveSideFromRight(Point point){
-            return LeftObstacleSideTree.FindFirst(side =>
-                                           PointToTheLeftOfLineOrOnLineLocal(point, side.Start, side.End));
-        }
-
-        void ConstraintEdgeWithObstaclesAtZFromLeft(AxisEdge edge, Point point){
-            //    ShowNudgedSegAndPoint(point, nudgedSegment);
-            var node = GetActiveSideFromLeft(point);
-            if (node == null) return;
-            if (NotRestricting(edge, ((RightObstacleSide) node.Item).Polyline)) return;
-            var x = ObstacleSideComparer.IntersectionOfSideAndSweepLine(node.Item);
-            edge.BoundFromLeft(x * DirectionPerp);
-        }
-       
-        static bool PointToTheLeftOfLineOrOnLineLocal(Point a, Point linePoint0, Point linePoint1) {
-            return Point.SignedDoubledTriangleArea(a, linePoint0, linePoint1) > -AreaComparisonEpsilon;
-        }
-
-        static bool PointToTheRightOfLineOrOnLineLocal(Point a, Point linePoint0, Point linePoint1) {
-            return Point.SignedDoubledTriangleArea(linePoint0, linePoint1, a) < AreaComparisonEpsilon;
-        }
-
-        RBNode<SegmentBase> GetActiveSideFromLeft(Point point){
-            return RightObstacleSideTree.FindLast(side =>
-                                                  PointToTheRightOfLineOrOnLineLocal(point, side.Start, side.End));
-        }
-        #region debug
-#if TEST_MSAGL
-        // ReSharper disable UnusedMember.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        void ShowPointAndEdge(Point point, AxisEdge edge) {
-// ReSharper restore UnusedMember.Local
-            List<ICurve> curves = GetCurves(point, edge);
-
-            LayoutAlgorithmSettings.Show(curves.ToArray());
-        }
-
-// ReSharper disable UnusedMember.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        void ShowPointAndEdgeWithSweepline(Point point, AxisEdge edge) {
-// ReSharper restore UnusedMember.Local
-            List<ICurve> curves = GetCurves(point, edge);
-
-            curves.Add(new LineSegment(SweepDirection * Z + 10 * DirectionPerp, SweepDirection * Z - 10 * DirectionPerp));
-
-            LayoutAlgorithmSettings.Show(curves.ToArray());
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        List<ICurve> GetCurves(Point point, AxisEdge edge) {
-            var ellipse = CurveFactory.CreateEllipse(3, 3, point);
-            var curves = new List<ICurve>(Obstacles.Select(o => o as ICurve)){ellipse,
-                                                                            new LineSegment(edge.Source.Point, edge.Target.Point
-                                                                                )};
-
-            if (edge.RightBound < double.PositiveInfinity) {
-                double rightOffset = edge.RightBound;
-                var del = DirectionPerp * rightOffset;
-                curves.Add(new LineSegment(edge.Source.Point + del, edge.Target.Point + del));
-            }
-            if (edge.LeftBound > double.NegativeInfinity) {
-                double leftOffset = edge.LeftBound;
-                var del = DirectionPerp * leftOffset;
-                curves.Add(new LineSegment(edge.Source.Point + del, edge.Target.Point  + del));
-            }
-
-            curves.AddRange((from e in PathOrders.Keys
-                             let a = e.SourcePoint
-                             let b = e.TargetPoint
-                             select new CubicBezierSegment(a, a*0.8 + b*0.2, a*0.2 + b*0.8, b)).Cast<ICurve>());
-
-            return curves;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        List<DebugCurve> GetCurvesTest(Point point){
-            var ellipse = CurveFactory.CreateEllipse(3, 3, point);
-            var curves = new List<DebugCurve>(Obstacles.Select(o => new DebugCurve(100, 1, "black", o)))
-                         {new DebugCurve(100, 1, "red", ellipse)};
-            curves.AddRange(from e in edgeContainersTree
-                             from axisEdge in e
-                             let a = axisEdge.Source.Point
-                             let b = axisEdge.Target.Point
-                             select new DebugCurve(100, 1, "green", new LineSegment(a, b)));
-
-
-            curves.AddRange(RightNeighborsCurvesTest(edgeContainersTree));
-
-            return curves;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        static IEnumerable<DebugCurve> RightNeighborsCurvesTest(IEnumerable<AxisEdgesContainer> rbTree) {
-            foreach (var container in rbTree) {
-                foreach (var edge  in container) {
-                    foreach (var rn in edge.RightNeighbors) {
-                        yield return new DebugCurve(100,1,"brown",new LineSegment(EdgeMidPoint(edge), EdgeMidPoint(rn)));
-                    }
-                }
-            }
-        }
-
-        static Point EdgeMidPoint(AxisEdge edge) {
-            return 0.5*(edge.SourcePoint + edge.TargetPoint);
-        }
-
-        // ReSharper disable UnusedMember.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        void ShowAxisEdges() {
-            // ReSharper restore UnusedMember.Local
-            var dd = new List<DebugCurve>(GetObstacleBoundaries("black"));
-            int i = 0;
-            foreach (var axisEdge in AxisEdges) {
-                var color = DebugCurve.Colors[i];
-                dd.Add(new DebugCurve(200, 1, color,
-                                       new LineSegment(axisEdge.Source.Point, axisEdge.Target.Point)));
-                Point perp = axisEdge.Direction == Direction.East ? new Point(0, 1) : new Point(-1, 0);
-                if (axisEdge.LeftBound != double.NegativeInfinity) {
-                    dd.Add(new DebugCurve(200, 0.5, color,
-                        new LineSegment(axisEdge.Source.Point + axisEdge.LeftBound * perp, axisEdge.Target.Point + axisEdge.LeftBound * perp)));
-                }
-                if (axisEdge.RightBound != double.PositiveInfinity) {
-                    dd.Add(new DebugCurve(200, 0.5, color,
-                        new LineSegment(axisEdge.Source.Point - axisEdge.RightBound * perp, axisEdge.Target.Point - axisEdge.RightBound * perp)));
-                }
-                i = (i + 1) % DebugCurve.Colors.Length;
-            }
-            DebugCurveCollection.WriteToFile(dd, "c:/tmp/ae");
-            LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(dd);
-        }
-
-// ReSharper disable UnusedMember.Local
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        void ShowAtPoint(Point point) {
-// ReSharper restore UnusedMember.Local
-            var curves = GetCurvesTest(point);
-            LayoutAlgorithmSettings.ShowDebugCurves(curves.ToArray());
-        }
-#endif
-        #endregion
-        RBNode<AxisEdgesContainer> GetOrCreateAxisEdgesContainer(AxisEdge edge) {
-            var source = edge.Source.Point;
-
-            var ret = GetAxisEdgesContainerNode(source);
-      
-            if(ret!=null)
-                return ret;
-
-            return edgeContainersTree.Insert(new AxisEdgesContainer(source));
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="point">the point has to be on the same line as the container</param>
-        /// <returns></returns>
-        RBNode<AxisEdgesContainer> GetAxisEdgesContainerNode(Point point){
-            var prj = xProjection( point);
-            var ret =
-                edgeContainersTree.FindFirst(cont => xProjection(cont.Source) >= prj-ApproximateComparer.DistanceEpsilon/2);
-            if(ret != null)
-                if (xProjection(ret.Item.Source) <= prj+ApproximateComparer.DistanceEpsilon/2) 
-                    return ret;
-            return null;
-        }
-
-
-
-        void ProcessVertexEvent(VertexEvent vertexEvent) {
-            Z = GetZ(vertexEvent);
-            var leftVertexEvent = vertexEvent as LeftVertexEvent;
-            if (leftVertexEvent != null)
-                ProcessLeftVertex(leftVertexEvent, vertexEvent.Vertex.NextOnPolyline);
-            else {
-                var rightVertexEvent = vertexEvent as RightVertexEvent;
-                if (rightVertexEvent != null)
-                    ProcessRightVertex(rightVertexEvent, vertexEvent.Vertex.PrevOnPolyline);
-                else {
-                    ProcessLeftVertex(vertexEvent, vertexEvent.Vertex.NextOnPolyline);
-                    ProcessRightVertex(vertexEvent, vertexEvent.Vertex.PrevOnPolyline);
-                }
-            }
-        }
-
-        void ProcessRightVertex(VertexEvent rightVertexEvent, PolylinePoint nextVertex){
-            Debug.Assert(Z == rightVertexEvent.Site*SweepDirection);
-
-            var site = rightVertexEvent.Site;
-            ProcessPrevSegmentForRightVertex(rightVertexEvent, site);
-
-            var delta = nextVertex.Point - rightVertexEvent.Site;
-            var deltaX = delta*DirectionPerp;
-            var deltaZ = delta*SweepDirection;
-            if (deltaZ <= ApproximateComparer.DistanceEpsilon){
-                if (deltaX > 0 && deltaZ >= 0)
-                    EnqueueEvent(new RightVertexEvent(nextVertex));
-                else
-                    RestrictEdgeContainerToTheRightOfEvent(rightVertexEvent.Vertex);
-            }
-            else{
-                //deltaZ>epsilon
-                InsertRightSide(new RightObstacleSide(rightVertexEvent.Vertex));
-                EnqueueEvent(new RightVertexEvent(nextVertex));
-                RestrictEdgeContainerToTheRightOfEvent(rightVertexEvent.Vertex);
-
-            }
-        }
-
-        private void RestrictEdgeContainerToTheRightOfEvent(PolylinePoint polylinePoint) {
-            var site = polylinePoint.Point;
-            var siteX = xProjection(site);
-            var containerNode =
-                edgeContainersTree.FindFirst
-                    (container => siteX <= xProjection(container.Source));
-
-            if (containerNode != null)
-                foreach (var edge in containerNode.Item)
-                    if (!NotRestricting(edge, polylinePoint.Polyline))
-                        edge.BoundFromLeft(DirectionPerp*site);
-        }
-
-        bool NotRestricting(AxisEdge edge, Polyline polyline) {
-            Polyline p;
-            return AxisEdgesToObstaclesTheyOriginatedFrom.TryGetValue(edge, out p) && p == polyline;
-        }
-
-
-        void ProcessPrevSegmentForRightVertex(VertexEvent rightVertexEvent, Point site) {
-            var prevSite = rightVertexEvent.Vertex.NextOnPolyline.Point;
-            var delta = site - prevSite;
-            double deltaZ = delta * SweepDirection;
-            if (deltaZ > ApproximateComparer.DistanceEpsilon)
-                RemoveRightSide(new RightObstacleSide(rightVertexEvent.Vertex.NextOnPolyline));
-        }
-
-
-        void RemoveEdge(AxisEdge edge){
-            var containerNode = GetAxisEdgesContainerNode(edge.Source.Point);
-            containerNode.Item.RemoveAxis(edge);
-            if(containerNode.Item.IsEmpty())
-                edgeContainersTree.DeleteNodeInternal(containerNode);
-        }
-
-
-        void ProcessLeftVertex(VertexEvent leftVertexEvent, PolylinePoint nextVertex){
-            Debug.Assert(Z == leftVertexEvent.Site*SweepDirection);
-
-            var site = leftVertexEvent.Site;
-            ProcessPrevSegmentForLeftVertex(leftVertexEvent, site);
-
-            Point delta = nextVertex.Point - leftVertexEvent.Site;
-            double deltaX = delta*DirectionPerp;
-            double deltaZ = delta*SweepDirection;
-            if (deltaZ <= ApproximateComparer.DistanceEpsilon ){
-                if (deltaX < 0 && deltaZ >= 0)
-                    EnqueueEvent(new LeftVertexEvent(nextVertex));
-            }
-            else{
-                //deltaZ>epsilon
-                InsertLeftSide(new LeftObstacleSide(leftVertexEvent.Vertex));
-                EnqueueEvent(new LeftVertexEvent(nextVertex));
-            }
-            //ShowAtPoint(leftVertexEvent.Site);
-            RestrictEdgeFromTheLeftOfEvent(leftVertexEvent.Vertex);
-        }
-
-        private void RestrictEdgeFromTheLeftOfEvent(PolylinePoint polylinePoint) {
-            //ShowAtPoint(site);
-            Point site = polylinePoint.Point;
-            RBNode<AxisEdgesContainer> containerNode = GetContainerNodeToTheLeftOfEvent(site);
-
-            if (containerNode != null)
-                foreach (var edge in containerNode.Item)
-                    if (!NotRestricting(edge, polylinePoint.Polyline))
-                        edge.BoundFromRight(site*DirectionPerp);
-        }
-
-        RBNode<AxisEdgesContainer> GetContainerNodeToTheLeftOfEvent(Point site) {
-            double siteX = xProjection(site);
-            return
-                edgeContainersTree.FindLast(
-                    container => xProjection(container.Source)<= siteX);
-            //                Point.PointToTheRightOfLineOrOnLine(site, container.Source,
-            //                                                                                                container.UpPoint));
-        }
-
-
-        private void ProcessPrevSegmentForLeftVertex(VertexEvent leftVertexEvent, Point site) {
-            var prevSite = leftVertexEvent.Vertex.PrevOnPolyline.Point;
-            var delta = site - prevSite;
-            double deltaZ = delta * SweepDirection;
-            if (deltaZ > ApproximateComparer.DistanceEpsilon)
-                RemoveLeftSide(new LeftObstacleSide(leftVertexEvent.Vertex.PrevOnPolyline));
-        }
-
-
-        void InitTheQueueOfEvents() {
-            InitQueueOfEvents();
-            foreach (var axisEdge in AxisEdges)
-                EnqueueEventsForEdge(axisEdge);
-        }
-
-        protected IEnumerable<AxisEdge> AxisEdges { get; set; }
-
-        void EnqueueEventsForEdge(AxisEdge edge) {
-            if (EdgeIsParallelToSweepDir(edge)) {
-                EnqueueEvent(EdgeLowPointEvent(edge, edge.Source.Point));
-                EnqueueEvent(EdgeHighPointEvent(edge, edge.Target.Point));
-            }
-        }
-
-        bool EdgeIsParallelToSweepDir(AxisEdge edge) {
-            return edge.Direction == SweepPole || edge.Direction == CompassVector.OppositeDir(SweepPole);
-        }
-
-
-        static SweepEvent EdgeHighPointEvent(AxisEdge edge, Point point) {
-            return new AxisEdgeHighPointEvent(edge, point);
-        }
-
-        static SweepEvent EdgeLowPointEvent(AxisEdge edge, Point point) {
-            return new AxisEdgeLowPointEvent(edge, point);
-
-        }
-
-#if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=301
-        public class FreeSpaceFinderComparer : IComparer<AxisEdgesContainer>
-        {
-            private FreeSpaceFinder m_Owner;
-            public FreeSpaceFinderComparer(FreeSpaceFinder owner)
-            {
-                m_Owner = owner;
-            }
-            public int Compare(AxisEdgesContainer x, AxisEdgesContainer y)
-            {
-                ValidateArg.IsNotNull(x, "x");
-                ValidateArg.IsNotNull(y, "y");
-                return (x.Source * m_Owner.DirectionPerp).CompareTo(y.Source * m_Owner.DirectionPerp);
-            }
-        }
-#else
-        public int Compare(AxisEdgesContainer x, AxisEdgesContainer y) {
-            ValidateArg.IsNotNull(x, "x");
-            ValidateArg.IsNotNull(y, "y");
-            return (x.Source * DirectionPerp).CompareTo(y.Source * DirectionPerp);
-        }
-#endif
+///  The class is looking for the free space around AxisEdges
+
+import {IEnumerable, from, IComparer, IComparer} from 'linq-to-typescript'
+import {Point, CurveFactory, ICurve} from '../../../..'
+import {CompassVector} from '../../../math/geometry/compassVector'
+import {DebugCurve} from '../../../math/geometry/debugCurve'
+import {Direction} from '../../../math/geometry/direction'
+import {GeomConstants} from '../../../math/geometry/geomConstants'
+import {LineSegment} from '../../../math/geometry/lineSegment'
+import {Polyline} from '../../../math/geometry/polyline'
+import {PolylinePoint} from '../../../math/geometry/polylinePoint'
+import {RBNode} from '../../../structs/RBTree/rbNode'
+import {RBTree} from '../../../structs/RBTree/rbTree'
+import {Assert} from '../../../utils/assert'
+import {compareNumbers} from '../../../utils/compare'
+import {LeftObstacleSide} from '../../spline/coneSpanner/LeftObstacleSide'
+import {LeftVertexEvent} from '../../spline/coneSpanner/LeftVertexEvent'
+import {RightObstacleSide} from '../../spline/coneSpanner/RightObstacleSide'
+import {RightVertexEvent} from '../../spline/coneSpanner/RightVertexEvent'
+import {SweepEvent} from '../../spline/coneSpanner/SweepEvent'
+import {VertexEvent} from '../../spline/coneSpanner/VertexEvent'
+import {LineSweeperBase} from '../../visibility/LineSweeperBase'
+import {ObstacleSideComparer} from '../../visibility/ObstacleSideComparer'
+import {SegmentBase} from '../../visibility/SegmentBase'
+import {EventQueue} from '../EventQueue'
+import {AxisEdge} from './AxisEdge'
+import {AxisEdgeHighPointEvent} from './AxisEdgeHighPointEvent'
+import {AxisEdgeLowPointEvent} from './AxisEdgeLowPointEvent'
+import {AxisEdgesContainer} from './AxisEdgesContainer'
+import {PathEdge} from './PathEdge'
+
+///  </summary>
+class FreeSpaceFinder extends LineSweeperBase {
+  static AreaComparisonEpsilon: number = GeomConstants.intersectionEpsilon
+
+  xProjection: (a: Point) => number
+
+  static X(p: Point): number {
+    return p.x
+  }
+
+  static MinusY(p: Point): number {
+    return p.y * -1
+  }
+
+  edgeContainersTree: RBTree<AxisEdgesContainer>
+
+  PathOrders: Map<AxisEdge, Array<PathEdge>>
+  ///  <summary>
+  ///
+  ///  </summary>
+  ///  <param name="direction"></param>
+  ///  <param name="obstacles"></param>
+  ///  <param name="axisEdgesToObstaclesTheyOriginatedFrom"></param>
+  ///  <param name="pathOrders"></param>
+  ///  <param name="axisEdges">edges to find the empty space around</param>
+  constructor(
+    direction: Direction,
+    obstacles: IEnumerable<Polyline>,
+    axisEdgesToObstaclesTheyOriginatedFrom: Map<AxisEdge, Polyline>,
+    pathOrders: Map<AxisEdge, Array<PathEdge>>,
+    axisEdges: IEnumerable<AxisEdge>,
+  ) {
+    super(obstacles, new CompassVector(direction).ToPoint())
+    this.DirectionPerp = new CompassVector(direction).Right.ToPoint()
+    this.PathOrders = pathOrders
+    this.xProjection = direction == Direction.North ? (p) => p.x : (p) => -p.y
+    this.edgeContainersTree = new RBTree<AxisEdgesContainer>(this.CompareAA)
+    this.SweepPole = CompassVector.VectorDirection(this.SweepDirection)
+    Assert.assert(CompassVector.IsPureDirection(this.SweepPole))
+    this.AxisEdges = axisEdges
+    this.AxisEdgesToObstaclesTheyOriginatedFrom = axisEdgesToObstaclesTheyOriginatedFrom
+  }
+
+  AxisEdgesToObstaclesTheyOriginatedFrom: Map<AxisEdge, Polyline>
+
+  SweepPole: Direction
+
+  //    Array<Path> EdgePaths { get; set; }
+  // VisibilityGraph PathVisibilityGraph { get; set; }
+  ///  <summary>
+  ///  calculates the right offsets
+  ///  </summary>
+  FindFreeSpace() {
+    this.InitTheQueueOfEvents()
+    this.ProcessEvents()
+    //     ShowAxisEdges();
+  }
+
+  ProcessEvents() {
+    while (this.EventQueue.Count > 0) {
+      this.ProcessEvent(this.EventQueue.Dequeue())
     }
+  }
+
+  ProcessEvent(sweepEvent: SweepEvent) {
+    const vertexEvent = <VertexEvent>sweepEvent
+    if (vertexEvent != null) {
+      this.ProcessVertexEvent(vertexEvent)
+    } else {
+      const lowEdgeEvent = <AxisEdgeLowPointEvent>sweepEvent
+      this.Z = this.GetZP(sweepEvent.Site)
+      if (lowEdgeEvent != null) {
+        this.ProcessLowEdgeEvent(lowEdgeEvent)
+      } else {
+        this.ProcessHighEdgeEvent(<AxisEdgeHighPointEvent>sweepEvent)
+      }
+    }
+  }
+
+  ProcessHighEdgeEvent(edgeForNudgingHighPointEvent: AxisEdgeHighPointEvent) {
+    const edge = edgeForNudgingHighPointEvent.AxisEdge
+    this.RemoveEdge(edge)
+    this.ConstraintEdgeWithObstaclesAtZ(edge, edge.Target.point)
+  }
+
+  ProcessLowEdgeEvent(lowEdgeEvent: AxisEdgeLowPointEvent) {
+    const edge = lowEdgeEvent.AxisEdge
+    const containerNode = this.GetOrCreateAxisEdgesContainer(edge)
+    containerNode.item.AddEdge(edge)
+    const prev = this.edgeContainersTree.previous(containerNode)
+    if (prev != null) {
+      for (const prevEdge of prev.item.edges) {
+        for (const ed of containerNode.item.edges) {
+          this.TryToAddRightNeighbor(prevEdge, ed)
+        }
+      }
+    }
+
+    const next = this.edgeContainersTree.next(containerNode)
+    if (next != null) {
+      for (const ed of containerNode.item.Edges) {
+        for (const neEdge of next.item.edges) {
+          this.TryToAddRightNeighbor(ed, neEdge)
+        }
+      }
+    }
+
+    this.ConstraintEdgeWithObstaclesAtZ(edge, edge.Source.point)
+  }
+
+  TryToAddRightNeighbor(leftEdge: AxisEdge, rightEdge: AxisEdge) {
+    if (this.ProjectionsOfEdgesOverlap(leftEdge, rightEdge)) {
+      leftEdge.AddRightNeighbor(rightEdge)
+    }
+  }
+
+  ProjectionsOfEdgesOverlap(leftEdge: AxisEdge, rightEdge: AxisEdge): boolean {
+    return this.SweepPole == Direction.North
+      ? !(
+          leftEdge.TargetPoint.y <
+            rightEdge.SourcePoint.y - GeomConstants.distanceEpsilon ||
+          rightEdge.TargetPoint.y <
+            leftEdge.SourcePoint.y - GeomConstants.distanceEpsilon
+        )
+      : !(
+          leftEdge.TargetPoint.x <
+            rightEdge.SourcePoint.x - GeomConstants.distanceEpsilon ||
+          rightEdge.TargetPoint.x <
+            leftEdge.SourcePoint.x - GeomConstants.distanceEpsilon
+        )
+  }
+
+  // DebShowEdge(edge: AxisEdge, point: Point) {
+  //     //  ReSharper restore UnusedMember.Local
+  //     //  if (InterestingEdge(edge))
+  //     this.ShowEdge(edge, point);
+  // }
+
+  // //  ReSharper disable SuggestBaseTypeForParameter
+  // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")
+  // ShowEdge(edge: AxisEdge, point: Point) {
+  //     //  ReSharper restore SuggestBaseTypeForParameter
+  //     let dd = this.GetObstacleBoundaries("black");
+  //     let seg = new DebugCurve(1, "red", new LineSegment(edge.Source.point, edge.Target.point));
+  //     LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(dd.Concat(new, [));
+  //     seg;
+  //     new DebugCurve("blue", CurveFactory.CreateEllipse(3, 3, point));
+  // }
+
+  GetObstacleBoundaries(color: string): IEnumerable<DebugCurve> {
+    return from(this.Obstacles).select((p) =>
+      DebugCurve.mkDebugCurveWCI(1, color, p),
+    )
+  }
+
+  ///  <summary>
+  ///
+  ///  </summary>
+  ///  <param name="edge"></param>
+  ///  <param name="point">a point on the edge on Z level</param>
+  ConstraintEdgeWithObstaclesAtZ(edge: AxisEdge, point: Point) {
+    Assert.assert(point == edge.Source.point || point == edge.Target.point)
+    this.ConstraintEdgeWithObstaclesAtZFromLeft(edge, point)
+    this.ConstraintEdgeWithObstaclesAtZFromRight(edge, point)
+  }
+
+  ConstraintEdgeWithObstaclesAtZFromRight(edge: AxisEdge, point: Point) {
+    const node = this.GetActiveSideFromRight(point)
+    if (node == null) {
+      return
+    }
+
+    if (this.NotRestricting(edge, (<LeftObstacleSide>node.item).Polyline)) {
+      return
+    }
+
+    const x = this.ObstacleSideComparer.IntersectionOfSideAndSweepLine(
+      node.item,
+    )
+    edge.BoundFromRight(x.dot(this.DirectionPerp))
+  }
+
+  GetActiveSideFromRight(point: Point): RBNode<SegmentBase> {
+    return this.LeftObstacleSideTree.findFirst((side) =>
+      FreeSpaceFinder.PointToTheLeftOfLineOrOnLineLocal(
+        point,
+        side.Start,
+        side.End,
+      ),
+    )
+  }
+
+  ConstraintEdgeWithObstaclesAtZFromLeft(edge: AxisEdge, point: Point) {
+    //     ShowNudgedSegAndPoint(point, nudgedSegment);
+    const node = this.GetActiveSideFromLeft(point)
+    if (node == null) {
+      return
+    }
+
+    if (this.NotRestricting(edge, (<RightObstacleSide>node.item).Polyline)) {
+      return
+    }
+
+    const x = this.ObstacleSideComparer.IntersectionOfSideAndSweepLine(
+      node.item,
+    )
+    edge.BoundFromLeft(x.dot(this.DirectionPerp))
+  }
+
+  static PointToTheLeftOfLineOrOnLineLocal(
+    a: Point,
+    linePoint0: Point,
+    linePoint1: Point,
+  ): boolean {
+    return (
+      Point.signedDoubledTriangleArea(a, linePoint0, linePoint1) >
+      -FreeSpaceFinder.AreaComparisonEpsilon
+    )
+  }
+
+  static PointToTheRightOfLineOrOnLineLocal(
+    a: Point,
+    linePoint0: Point,
+    linePoint1: Point,
+  ): boolean {
+    return (
+      Point.signedDoubledTriangleArea(linePoint0, linePoint1, a) <
+      FreeSpaceFinder.AreaComparisonEpsilon
+    )
+  }
+
+  GetActiveSideFromLeft(point: Point): RBNode<SegmentBase> {
+    return this.RightObstacleSideTree.findLast((side) =>
+      FreeSpaceFinder.PointToTheRightOfLineOrOnLineLocal(
+        point,
+        side.Start,
+        side.End,
+      ),
+    )
+  }
+
+  //  ReSharper disable UnusedMember.Local
+  // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")
+  // ShowPointAndEdge(point: Point, edge: AxisEdge) {
+  //     //  ReSharper restore UnusedMember.Local
+  //     let curves: Array<ICurve> = this.GetCurves(point, edge);
+  //     LayoutAlgorithmSettings.Show(curves.ToArray());
+  // }
+
+  // //  ReSharper disable UnusedMember.Local
+  // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")
+  // ShowPointAndEdgeWithSweepline(point: Point, edge: AxisEdge) {
+  //     //  ReSharper restore UnusedMember.Local
+  //     let curves: Array<ICurve> = this.GetCurves(point, edge);
+  //     curves.Add(new LineSegment(((this.SweepDirection * this.Z) + (10 * this.DirectionPerp)), ((this.SweepDirection * this.Z) - (10 * this.DirectionPerp))));
+  //     LayoutAlgorithmSettings.Show(curves.ToArray());
+  // }
+
+  // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")
+  // GetCurves(point: Point, edge: AxisEdge): Array<ICurve> {
+  //     let ellipse = CurveFactory.CreateEllipse(3, 3, point);
+  //     let curves = new Array<ICurve>(this.Obstacles.select(() => {  }, (<ICurve>(o))));
+  //     if ((edge.RightBound < double.PositiveInfinity)) {
+  //         let rightOffset: number = edge.RightBound;
+  //         let del = (this.DirectionPerp * rightOffset);
+  //         curves.Add(new LineSegment((edge.Source.point + del), (edge.Target.point + del)));
+  //     }
+
+  //     if ((edge.LeftBound > double.NegativeInfinity)) {
+  //         let leftOffset: number = edge.LeftBound;
+  //         let del = (this.DirectionPerp * leftOffset);
+  //         curves.Add(new LineSegment((edge.Source.point + del), (edge.Target.point + del)));
+  //     }
+
+  //     curves.AddRange(from, e, in, this.PathOrders.keys, let, a=e.SourcePoint, let, b=e.TargetPoint, select, new CubicBezierSegment(a, ((a * 0.8)
+  //                         + (b * 0.2)), ((a * 0.2)
+  //                         + (b * 0.8)), b)).Cast();
+  //     return curves;
+  // }
+
+  // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")
+  // GetCurvesTest(point: Point): Array<DebugCurve> {
+  //     let ellipse = CurveFactory.CreateEllipse(3, 3, point);
+  //     let curves = new Array<DebugCurve>(this.Obstacles.select(() => {  }, new DebugCurve(100, 1, "black", o)));
+  //     curves.AddRange(from, e, in, this.edgeContainersTree, from, axisEdge, in, e, let, a=axisEdge.Source.Point, let, b=axisEdge.Target.Point, select, new DebugCurve(100, 1, "green", new LineSegment(a, b)));
+  //     curves.AddRange(FreeSpaceFinder.RightNeighborsCurvesTest(this.edgeContainersTree));
+  //     return curves;
+  // }
+
+  // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")
+  // static RightNeighborsCurvesTest(rbTree: IEnumerable<AxisEdgesContainer>): IEnumerable<DebugCurve> {
+  //     for (let container of rbTree) {
+  //         for (let edge of container) {
+  //             for (let rn of edge.RightNeighbors) {
+  //                 yield;
+  //                 return new DebugCurve(100, 1, "brown", new LineSegment(FreeSpaceFinder.EdgeMidPoint(edge), FreeSpaceFinder.EdgeMidPoint(rn)));
+  //             }
+
+  //         }
+
+  //     }
+
+  // }
+
+  static EdgeMidPoint(edge: AxisEdge): Point {
+    return Point.middle(edge.SourcePoint, edge.TargetPoint)
+  }
+
+  // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")
+  // ShowAxisEdges() {
+  //     //  ReSharper restore UnusedMember.Local
+  //     let dd = new Array<DebugCurve>(this.GetObstacleBoundaries("black"));
+  //     let i: number = 0;
+  //     for (let axisEdge of this.AxisEdges) {
+  //         let color = DebugCurve.colors[i];
+  //         dd.Add(new DebugCurve(200, 1, color, new LineSegment(axisEdge.Source.point, axisEdge.Target.point)));
+  //         let perp: Point = new Point(0, 1);
+  //         // TODO: Warning!!!, inline IF is not supported ?
+  //         (axisEdge.Direction == Direction.East);
+  //         new Point(-1, 0);
+  //         if ((axisEdge.LeftBound != double.NegativeInfinity)) {
+  //             dd.Add(new DebugCurve(200, 0.5, color, new LineSegment((axisEdge.Source.point
+  //                                     + (axisEdge.LeftBound * perp)), (axisEdge.Target.point
+  //                                     + (axisEdge.LeftBound * perp)))));
+  //         }
+
+  //         if ((axisEdge.RightBound != double.PositiveInfinity)) {
+  //             dd.Add(new DebugCurve(200, 0.5, color, new LineSegment((axisEdge.Source.point
+  //                                     - (axisEdge.RightBound * perp)), (axisEdge.Target.point
+  //                                     - (axisEdge.RightBound * perp)))));
+  //         }
+
+  //         i = ((i + 1)
+  //                     % DebugCurve.colors.length);
+  //     }
+
+  //     DebugCurveCollection.WriteToFile(dd, "c:/tmp/ae");
+  //     LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(dd);
+  // }
+
+  // //  ReSharper disable UnusedMember.Local
+  // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")
+  // ShowAtPoint(point: Point) {
+  //     //  ReSharper restore UnusedMember.Local
+  //     let curves = this.GetCurvesTest(point);
+  //     LayoutAlgorithmSettings.ShowDebugCurves(curves.ToArray());
+  // }
+
+  GetOrCreateAxisEdgesContainer(edge: AxisEdge): RBNode<AxisEdgesContainer> {
+    const source = edge.Source.point
+    const ret = this.GetAxisEdgesContainerNode(source)
+    if (ret != null) {
+      return ret
+    }
+
+    return this.edgeContainersTree.insert(new AxisEdgesContainer(source))
+  }
+
+  ///  <summary>
+  ///
+  ///  </summary>
+  ///  <param name="point">the point has to be on the same line as the container</param>
+  ///  <returns></returns>
+  GetAxisEdgesContainerNode(point: Point): RBNode<AxisEdgesContainer> {
+    const prj = this.xProjection(point)
+    const ret = this.edgeContainersTree.findFirst(
+      (cont) =>
+        this.xProjection(cont.Source) >=
+        prj - GeomConstants.distanceEpsilon / 2,
+    )
+    if (ret != null) {
+      if (
+        this.xProjection(ret.item.Source) <=
+        prj + GeomConstants.distanceEpsilon / 2
+      ) {
+        return ret
+      }
+    }
+
+    return null
+  }
+
+  ProcessVertexEvent(vertexEvent: VertexEvent) {
+    this.Z = this.GetZS(vertexEvent)
+    const leftVertexEvent = <LeftVertexEvent>vertexEvent
+    if (leftVertexEvent != null) {
+      this.ProcessLeftVertex(leftVertexEvent, vertexEvent.Vertex.nextOnPolyline)
+    } else {
+      const rightVertexEvent = <RightVertexEvent>vertexEvent
+      if (rightVertexEvent != null) {
+        this.ProcessRightVertex(
+          rightVertexEvent,
+          vertexEvent.Vertex.prevOnPolyline,
+        )
+      } else {
+        this.ProcessLeftVertex(vertexEvent, vertexEvent.Vertex.nextOnPolyline)
+        this.ProcessRightVertex(vertexEvent, vertexEvent.Vertex.prevOnPolyline)
+      }
+    }
+  }
+
+  ProcessRightVertex(rightVertexEvent: VertexEvent, nextVertex: PolylinePoint) {
+    Assert.assert(this.Z == rightVertexEvent.Site.dot(this.SweepDirection))
+    const site = rightVertexEvent.Site
+    this.ProcessPrevSegmentForRightVertex(rightVertexEvent, site)
+    const delta = nextVertex.point.sub(rightVertexEvent.Site)
+    const deltaX = delta.dot(this.DirectionPerp)
+    const deltaZ = delta.dot(this.SweepDirection)
+    if (deltaZ <= GeomConstants.distanceEpsilon) {
+      if (deltaX > 0 && deltaZ >= 0) {
+        this.EnqueueEvent(new RightVertexEvent(nextVertex))
+      } else {
+        this.RestrictEdgeContainerToTheRightOfEvent(rightVertexEvent.Vertex)
+      }
+    } else {
+      // deltaZ>epsilon
+      this.InsertRightSide(new RightObstacleSide(rightVertexEvent.Vertex))
+      this.EnqueueEvent(new RightVertexEvent(nextVertex))
+      this.RestrictEdgeContainerToTheRightOfEvent(rightVertexEvent.Vertex)
+    }
+  }
+
+  private RestrictEdgeContainerToTheRightOfEvent(polylinePoint: PolylinePoint) {
+    const site = polylinePoint.point
+    const siteX = this.xProjection(site)
+    const containerNode = this.edgeContainersTree.findFirst(
+      (container) => siteX <= this.xProjection(container.Source),
+    )
+    if (containerNode != null) {
+      for (const edge of containerNode.item.Edges) {
+        if (!this.NotRestricting(edge, polylinePoint.polyline)) {
+          edge.BoundFromLeft(this.DirectionPerp.dot(site))
+        }
+      }
+    }
+  }
+
+  NotRestricting(edge: AxisEdge, polyline: Polyline): boolean {
+    const p = this.AxisEdgesToObstaclesTheyOriginatedFrom.get(edge)
+    return p == polyline
+  }
+
+  ProcessPrevSegmentForRightVertex(rightVertexEvent: VertexEvent, site: Point) {
+    const prevSite = rightVertexEvent.Vertex.nextOnPolyline.point
+    const delta = site.sub(prevSite)
+    const deltaZ: number = delta.dot(this.SweepDirection)
+    if (deltaZ > GeomConstants.distanceEpsilon) {
+      this.RemoveRightSide(
+        new RightObstacleSide(rightVertexEvent.Vertex.nextOnPolyline),
+      )
+    }
+  }
+
+  RemoveEdge(edge: AxisEdge) {
+    const containerNode = this.GetAxisEdgesContainerNode(edge.Source.point)
+    containerNode.item.RemoveAxis(edge)
+    if (containerNode.item.IsEmpty()) {
+      this.edgeContainersTree.deleteNodeInternal(containerNode)
+    }
+  }
+
+  ProcessLeftVertex(leftVertexEvent: VertexEvent, nextVertex: PolylinePoint) {
+    Assert.assert(this.Z == leftVertexEvent.Site.dot(this.SweepDirection))
+    const site = leftVertexEvent.Site
+    this.ProcessPrevSegmentForLeftVertex(leftVertexEvent, site)
+    const delta: Point = nextVertex.point.sub(leftVertexEvent.Site)
+    const deltaX: number = delta.dot(this.DirectionPerp)
+    const deltaZ: number = delta.dot(this.SweepDirection)
+    if (deltaZ <= GeomConstants.distanceEpsilon) {
+      if (deltaX < 0 && deltaZ >= 0) {
+        this.EnqueueEvent(new LeftVertexEvent(nextVertex))
+      }
+    } else {
+      // deltaZ>epsilon
+      this.InsertLeftSide(new LeftObstacleSide(leftVertexEvent.Vertex))
+      this.EnqueueEvent(new LeftVertexEvent(nextVertex))
+    }
+
+    // ShowAtPoint(leftVertexEvent.Site);
+    this.RestrictEdgeFromTheLeftOfEvent(leftVertexEvent.Vertex)
+  }
+
+  private RestrictEdgeFromTheLeftOfEvent(polylinePoint: PolylinePoint) {
+    // ShowAtPoint(site);
+    const site: Point = polylinePoint.point
+    const containerNode: RBNode<AxisEdgesContainer> = this.GetContainerNodeToTheLeftOfEvent(
+      site,
+    )
+    if (containerNode != null) {
+      for (const edge of containerNode.item.Edges) {
+        if (!this.NotRestricting(edge, polylinePoint.polyline)) {
+          edge.BoundFromRight(site.dot(this.DirectionPerp))
+        }
+      }
+    }
+  }
+
+  GetContainerNodeToTheLeftOfEvent(site: Point): RBNode<AxisEdgesContainer> {
+    const siteX: number = this.xProjection(site)
+    return this.edgeContainersTree.findLast(
+      (container) => this.xProjection(container.Source) <= siteX,
+    )
+    //                 Point.PointToTheRightOfLineOrOnLine(site, container.Source,
+    //                                                                                                 container.UpPoint));
+  }
+
+  private ProcessPrevSegmentForLeftVertex(
+    leftVertexEvent: VertexEvent,
+    site: Point,
+  ) {
+    const prevSite = leftVertexEvent.Vertex.prevOnPolyline.point
+    const delta = site.sub(prevSite)
+    const deltaZ: number = delta.dot(this.SweepDirection)
+    if (deltaZ > GeomConstants.distanceEpsilon) {
+      this.RemoveLeftSide(
+        new LeftObstacleSide(leftVertexEvent.Vertex.prevOnPolyline),
+      )
+    }
+  }
+
+  InitTheQueueOfEvents() {
+    this.InitQueueOfEvents()
+    for (const axisEdge of this.AxisEdges) {
+      this.EnqueueEventsForEdge(axisEdge)
+    }
+  }
+
+  AxisEdges: IEnumerable<AxisEdge>
+
+  EnqueueEventsForEdge(edge: AxisEdge) {
+    if (this.EdgeIsParallelToSweepDir(edge)) {
+      this.EnqueueEvent(
+        FreeSpaceFinder.EdgeLowPointEvent(edge, edge.Source.point),
+      )
+      this.EnqueueEvent(
+        FreeSpaceFinder.EdgeHighPointEvent(edge, edge.Target.point),
+      )
+    }
+  }
+
+  EdgeIsParallelToSweepDir(edge: AxisEdge): boolean {
+    return (
+      edge.Direction == this.SweepPole ||
+      edge.Direction == CompassVector.OppositeDir(this.SweepPole)
+    )
+  }
+
+  static EdgeHighPointEvent(edge: AxisEdge, point: Point): SweepEvent {
+    return new AxisEdgeHighPointEvent(edge, point)
+  }
+
+  static EdgeLowPointEvent(edge: AxisEdge, point: Point): SweepEvent {
+    return new AxisEdgeLowPointEvent(edge, point)
+  }
+
+  public CompareAA(x: AxisEdgesContainer, y: AxisEdgesContainer): number {
+    return compareNumbers(
+      x.Source.dot(this.DirectionPerp),
+      y.Source.dot(this.DirectionPerp),
+    )
+  }
 }

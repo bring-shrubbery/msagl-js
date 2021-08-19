@@ -12,7 +12,8 @@ export class LinkedPoint {
   }
 
   *GetEnumerator(): IterableIterator<Point> {
-    for (let p = this; p != null; p = p.Next) {
+    let p: LinkedPoint
+    for (p = this; p != null; p = p.Next) {
       yield p.Point
     }
   }

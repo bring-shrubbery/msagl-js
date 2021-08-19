@@ -1,171 +1,198 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Diagnostics;
-// using Microsoft.Msagl.Core.DataStructures;
-// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Core.Geometry.Curves;
-// using Microsoft.Msagl.Routing.Spline.ConeSpanner;
-// using Microsoft.Msagl.Core;
+import {IEnumerable} from 'linq-to-typescript'
+import {Point} from '../../..'
+import {GeomConstants} from '../../math/geometry/geomConstants'
+import {Polyline} from '../../math/geometry/polyline'
+import {PolylinePoint} from '../../math/geometry/polylinePoint'
+import {BinaryHeapWithComparer} from '../../structs/BinaryHeapWithComparer'
+import {RBTree} from '../../structs/RBTree/rbTree'
+import {Assert} from '../../utils/assert'
+import {PointMap} from '../../utils/PointMap'
+import {EventQueue} from '../rectilinear/EventQueue'
+import {LeftObstacleSide} from '../spline/coneSpanner/LeftObstacleSide'
+import {LowestVertexEvent} from '../spline/coneSpanner/LowestVertexEvent'
+import {RightObstacleSide} from '../spline/coneSpanner/RightObstacleSide'
+import {SweepEvent} from '../spline/coneSpanner/SweepEvent'
+import {ObstacleSideComparer} from './ObstacleSideComparer'
+import {PortObstacleEvent} from './PortObstacleEvent'
+import {SegmentBase} from './SegmentBase'
 
-// namespace Microsoft.Msagl.Routing.Visibility {
-//     internal class LineSweeperBase : IComparer < SweepEvent > {
-//         Point directionPerp; // sweep direction rotated 90 degrees clockwse
-//         BinaryHeapWithComparer<SweepEvent> eventQueue;
+export class LineSweeperBase {
+  directionPerp: Point
 
-//         protected RBTree<SegmentBase> LeftObstacleSideTree { get; set; }
+  //  sweep direction rotated 90 degrees clockwse
+  eventQueue: BinaryHeapWithComparer<SweepEvent>
 
-//         protected ObstacleSideComparer ObstacleSideComparer { get; set; }
+  LeftObstacleSideTree: RBTree<SegmentBase>
 
-//         protected RBTree < SegmentBase > RightObstacleSideTree { get; set; }
-//         protected Set < Point > Ports;
-//         public LineSweeperBase(IEnumerable < Polyline > obstacles, Point sweepDirection) {
-//         Obstacles = obstacles;
-//         SweepDirection = sweepDirection;
-//         DirectionPerp = sweepDirection.rotate(-Math.PI / 2);
-//         EventQueue = new BinaryHeapWithComparer<SweepEvent>(this);
-//         ObstacleSideComparer = new ObstacleSideComparer(this);
-//         LeftObstacleSideTree = new RBTree<SegmentBase>(ObstacleSideComparer);
-//         RightObstacleSideTree = new RBTree<SegmentBase>(ObstacleSideComparer);
-//     }
+  ObstacleSideComparer: ObstacleSideComparer
 
-//         protected internal BinaryHeapWithComparer < SweepEvent > EventQueue {
-//         get { return eventQueue; }
-//         set { eventQueue = value; }
-//     }
-//         public Point SweepDirection { get; set; }
-//         // <summary>
-//         // sweep direction rotated by 90 degrees clockwise
-//         // <
-//         protected Point DirectionPerp {
-//         get { return directionPerp; }
-//         set { directionPerp = value; }
-//     }
+  RightObstacleSideTree: RBTree<SegmentBase>
 
-//         protected double PreviousZ = double.NegativeInfinity;
-//     double z;
-//         public double Z {
-//         get { return z; }
-//         set {
-//             if (value > z + ApproximateComparer.Tolerance)
-//                 PreviousZ = z;
-// #if TEST_MSAGL
-//             Assert.assert(PreviousZ <= value);
-// #endif
-//             z = value;
-//             //       Assert.assert(TreesAreCorrect());
-//         }
-//     }
+  protected Ports: PointMap<Point>
 
-//        // protected virtual bool TreesAreCorrect() { return true; }
+  public constructor(obstacles: IEnumerable<Polyline>, sweepDirection: Point) {
+    this.Obstacles = obstacles
+    this.SweepDirection = sweepDirection
+    this.DirectionPerp = sweepDirection.rotate(-Math.PI / 2)
+    this.EventQueue = new BinaryHeapWithComparer<SweepEvent>(this.Compare)
+    this.ObstacleSideComparer = new ObstacleSideComparer(this)
+    this.LeftObstacleSideTree = new RBTree<SegmentBase>(
+      this.ObstacleSideComparer.Compare,
+    )
+    this.RightObstacleSideTree = new RBTree<SegmentBase>(
+      this.ObstacleSideComparer.Compare,
+    )
+  }
 
-//         protected internal IEnumerable < Polyline > Obstacles { get; set; }
+  protected get EventQueue(): BinaryHeapWithComparer<SweepEvent> {
+    return this.eventQueue
+  }
+  protected set EventQueue(value: BinaryHeapWithComparer<SweepEvent>) {
+    this.eventQueue = value
+  }
 
-//         protected double GetZ(SweepEvent eve) {
-//         return SweepDirection * eve.Site;
-//     }
+  SweepDirection: Point
 
-//         protected double GetZ(Point point) {
-//         return SweepDirection * point;
-//     }
+  //  <summary>
+  //  sweep direction rotated by 90 degrees clockwise
+  //  <
+  protected get DirectionPerp(): Point {
+    return this.directionPerp
+  }
+  protected set DirectionPerp(value: Point) {
+    this.directionPerp = value
+  }
 
-//         protected bool SegmentIsNotHorizontal(Point a, Point b) {
-//         return Math.Abs((a - b) * SweepDirection) > GeomConstants.distanceEpsilon;
-//     }
+  protected PreviousZ: number = Number.NEGATIVE_INFINITY
 
-//         protected void RemoveLeftSide(LeftObstacleSide side) {
-//         ObstacleSideComparer.SetOperand(side);
-//         LeftObstacleSideTree.Remove(side);
-//     }
+  z: number
 
-//         protected void RemoveRightSide(RightObstacleSide side) {
-//         ObstacleSideComparer.SetOperand(side);
-//         RightObstacleSideTree.Remove(side);
-//     }
+  public get Z(): number {
+    return this.z
+  }
+  public set Z(value: number) {
+    if (value > this.z + GeomConstants.tolerance) {
+      this.PreviousZ = this.z
+    }
+  }
 
-//         protected void InsertLeftSide(LeftObstacleSide side) {
-//         ObstacleSideComparer.SetOperand(side);
-//         LeftObstacleSideTree.Insert((side));
-//     }
+  //  protected virtual bool TreesAreCorrect() { return true; }
+  Obstacles: IEnumerable<Polyline>
 
-//         protected void InsertRightSide(RightObstacleSide side) {
-//         ObstacleSideComparer.SetOperand(side);
-//         RightObstacleSideTree.Insert(side);
-//     }
+  protected GetZS(eve: SweepEvent): number {
+    return this.SweepDirection.dot(eve.Site)
+  }
 
-//         protected RightObstacleSide FindFirstObstacleSideToTheLeftOfPoint(Point point) {
-//         var node =
-//             RightObstacleSideTree.FindLast(
-//                 s => Point.PointToTheRightOfLineOrOnLine(point, s.start, s.End));
-//         return node == null ? null : (RightObstacleSide)(node.Item);
-//     }
+  protected GetZP(point: Point): number {
+    return this.SweepDirection.dot(point)
+  }
 
-//         protected LeftObstacleSide FindFirstObstacleSideToToTheRightOfPoint(Point point) {
-//         var node =
-//             LeftObstacleSideTree.FindFirst(
-//                 s => !Point.PointToTheRightOfLineOrOnLine(point, s.start, s.End));
-//         return node == null ? null : (LeftObstacleSide)node.Item;
-//     }
+  protected SegmentIsNotHorizontal(a: Point, b: Point): boolean {
+    return (
+      Math.abs(a.sub(b).dot(this.SweepDirection)) >
+      GeomConstants.distanceEpsilon
+    )
+  }
 
-//         protected void EnqueueEvent(SweepEvent eve) {
-//         Assert.assert(GetZ(eve.Site) >= PreviousZ);
-//         eventQueue.Enqueue(eve);
-//     }
+  protected RemoveLeftSide(side: LeftObstacleSide) {
+    this.ObstacleSideComparer.SetOperand(side)
+    this.LeftObstacleSideTree.remove(side)
+  }
 
-//         protected void InitQueueOfEvents() {
-//         foreach(var obstacle of Obstacles)
-//         EnqueueLowestPointsOnObstacles(obstacle);
-//         if (Ports != null)
-//             foreach(var point of Ports)
-//         EnqueueEvent(new PortObstacleEvent(point));
-//     }
+  protected RemoveRightSide(side: RightObstacleSide) {
+    this.ObstacleSideComparer.SetOperand(side)
+    this.RightObstacleSideTree.remove(side)
+  }
 
-//     void EnqueueLowestPointsOnObstacles(Polyline poly) {
-//         PolylinePoint candidate = GetLowestPoint(poly);
-//         EnqueueEvent(new LowestVertexEvent(candidate));
-//     }
+  protected InsertLeftSide(side: LeftObstacleSide) {
+    this.ObstacleSideComparer.SetOperand(side)
+    this.LeftObstacleSideTree.insert(side)
+  }
 
-//     PolylinePoint GetLowestPoint(Polyline poly) {
-//         PolylinePoint candidate = poly.startPoint;
-//         PolylinePoint pp = poly.startPoint.next;
+  protected InsertRightSide(side: RightObstacleSide) {
+    this.ObstacleSideComparer.SetOperand(side)
+    this.RightObstacleSideTree.insert(side)
+  }
 
-//         for (; pp != null; pp = pp.next)
-//             if (Less(pp.point, candidate.point))
-//                 candidate = pp;
-//         return candidate;
-//     }
+  protected FindFirstObstacleSideToTheLeftOfPoint(
+    point: Point,
+  ): RightObstacleSide {
+    const node = this.RightObstacleSideTree.findLast((s) =>
+      Point.pointToTheRightOfLineOrOnLine(point, s.Start, s.End),
+    )
+    return node == null ? null : <RightObstacleSide>node.item
+  }
 
-//         // <summary>
-//         // imagine that direction points up,
-//         // lower events have higher priorities,
-//         // for events at the same level events to the left have higher priority
-//         // <
+  protected FindFirstObstacleSideToToTheRightOfPoint(
+    point: Point,
+  ): LeftObstacleSide {
+    const node = this.LeftObstacleSideTree.findFirst(
+      (s) => !Point.pointToTheRightOfLineOrOnLine(point, s.Start, s.End),
+    )
+    return node == null ? null : <LeftObstacleSide>node.item
+  }
 
-//         public int Compare(SweepEvent a, SweepEvent b) {
-//         ValidateArg.IsNotNull(a, "a");
-//         ValidateArg.IsNotNull(b, "b");
-//         Point aSite = a.Site;
-//         Point bSite = b.Site;
-//         return ComparePoints(ref aSite, ref bSite);
-//     }
+  protected EnqueueEvent(eve: SweepEvent) {
+    Assert.assert(this.GetZP(eve.Site) >= this.PreviousZ)
+    this.eventQueue.Enqueue(eve)
+  }
 
-//     bool Less(Point a, Point b) {
-//         return ComparePoints(ref a, ref b) < 0;
-//     }
+  protected InitQueueOfEvents() {
+    for (const obstacle of this.Obstacles) {
+      this.EnqueueLowestPointsOnObstacles(obstacle)
+    }
+    if (this.Ports != null) {
+      for (const point of this.Ports.values()) {
+        this.EnqueueEvent(new PortObstacleEvent(point))
+      }
+    }
+  }
 
-//     int ComparePoints(ref Point aSite, ref Point bSite) {
-//         var aProjection = SweepDirection * aSite;
-//         var bProjection = SweepDirection * bSite;
-//         if (aProjection < bProjection)
-//             return -1;
-//         if (aProjection > bProjection)
-//             return 1;
+  EnqueueLowestPointsOnObstacles(poly: Polyline) {
+    const candidate: PolylinePoint = this.GetLowestPoint(poly)
+    this.EnqueueEvent(new LowestVertexEvent(candidate))
+  }
 
-//         aProjection = directionPerp * aSite;
-//         bProjection = directionPerp * bSite;
+  GetLowestPoint(poly: Polyline): PolylinePoint {
+    let candidate: PolylinePoint = poly.startPoint
+    let pp: PolylinePoint = poly.startPoint.next
+    for (; pp != null; pp = pp.next) {
+      if (this.Less(pp.point, candidate.point)) {
+        candidate = pp
+      }
+    }
 
-//         if (aProjection < bProjection)
-//             return -1;
-//         return aProjection > bProjection ? 1 : 0;
-//     }
-// }
-// }
+    return candidate
+  }
+
+  //  <summary>
+  //  imagine that direction points up,
+  //  lower events have higher priorities,
+  //  for events at the same level events to the left have higher priority
+  //  <
+  public Compare(a: SweepEvent, b: SweepEvent): number {
+    const aSite: Point = a.Site
+    const bSite: Point = b.Site
+    return this.ComparePoints(/* ref */ aSite, /* ref */ bSite)
+  }
+
+  Less(a: Point, b: Point): boolean {
+    return this.ComparePoints(/* ref */ a, /* ref */ b) < 0
+  }
+
+  ComparePoints(aSite: Point, bSite: Point): number {
+    let aProjection = this.SweepDirection.dot(aSite)
+    let bProjection = this.SweepDirection.dot(bSite)
+    if (aProjection < bProjection) {
+      return -1
+    }
+
+    if (aProjection > bProjection) {
+      return 1
+    }
+
+    aProjection = this.directionPerp.dot(aSite)
+    bProjection = this.directionPerp.dot(bSite)
+    return aProjection < bProjection ? -1 : aProjection > bProjection ? 1 : 0
+  }
+}

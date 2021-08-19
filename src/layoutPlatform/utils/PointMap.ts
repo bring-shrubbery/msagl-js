@@ -18,7 +18,7 @@ export class PointMap<T> {
     let m = this.mapOfMaps.get(x)
     if (m == null) this.mapOfMaps.set(x, (m = new Map<number, T>()))
 
-    if (!m.has(x)) {
+    if (!m.has(y)) {
       this.size_++
     }
     m.set(y, v)
