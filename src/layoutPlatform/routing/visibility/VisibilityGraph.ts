@@ -6,6 +6,15 @@ import {VisibilityEdge} from './VisibilityEdge'
 import {VisibilityVertex} from './VisibilityVertex'
 
 export class VisibilityGraph {
+  *edges_(): IterableIterator<VisibilityEdge> {
+    for (const u of this.pointToVertexMap.values()) {
+      for (const e of u.OutEdges) yield e
+    }
+  }
+
+  get Edges(): IterableIterator<VisibilityEdge> {
+    return this.edges_()
+  }
   //  needed for shortest path calculations
   _prevEdgesMap: Map<VisibilityVertex, VisibilityEdge> = new Map<
     VisibilityVertex,

@@ -1,221 +1,315 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Routing.Visibility;
+///  sets the order of connector paths on the edges
 
-namespace Microsoft.Msagl.Routing.Rectilinear.Nudging {
-    /// <summary>
-    /// sets the order of connector paths on the edges
-    /// </summary>
-    internal class CombinatorialNudger {
+import {IEnumerable} from 'linq-to-typescript'
+import {Queue} from 'queue-typescript'
+import {Point} from '../../../..'
+import {CompassVector} from '../../../math/geometry/compassVector'
+import {Direction} from '../../../math/geometry/direction'
+import {Assert} from '../../../utils/assert'
+import {compareNumbers} from '../../../utils/compare'
+import {VisibilityEdge} from '../../visibility/VisibilityEdge'
+import {VisibilityGraph} from '../../visibility/VisibilityGraph'
+import {VisibilityVertex} from '../../visibility/VisibilityVertex'
+import {AxisEdge} from './AxisEdge'
+import {Path} from './Path'
+import {PathEdge} from './PathEdge'
 
-        const int NotOrdered = int.MaxValue;
+///  </summary>
+export class CombinatorialNudger {
+  static readonly NotOrdered: number = Number.MAX_VALUE
 
-        //A new visibility graph is needed; the DAG of AxisEdges.
-        readonly VisibilityGraph pathVisibilityGraph = new VisibilityGraph();
-        internal VisibilityGraph PathVisibilityGraph {
-            get { return pathVisibilityGraph; }
-        }
+  // A new visibility graph is needed; the DAG of AxisEdges.
+  pathVisibilityGraph: VisibilityGraph = new VisibilityGraph()
 
-    
-        readonly Dictionary<AxisEdge, List<PathEdge>> axisEdgesToPathOrders = new Dictionary<AxisEdge, List<PathEdge>>();
+  get PathVisibilityGraph(): VisibilityGraph {
+    return this.pathVisibilityGraph
+  }
 
-        internal CombinatorialNudger(IEnumerable<Path> paths) {
-            OriginalPaths = paths;
-        }
+  axisEdgesToPathOrders: Map<AxisEdge, Array<PathEdge>> = new Map<
+    AxisEdge,
+    Array<PathEdge>
+  >()
 
-        IEnumerable<Path> OriginalPaths { get; set; }
+  constructor(paths: IEnumerable<Path>) {
+    this.OriginalPaths = paths
+  }
 
-        internal Dictionary<AxisEdge, List<PathEdge>> GetOrder() {
-            FillTheVisibilityGraphByWalkingThePaths();
-            InitPathOrder();
-            OrderPaths();
-            return axisEdgesToPathOrders;
-        }
+  OriginalPaths: Iterable<Path>
 
-        void FillTheVisibilityGraphByWalkingThePaths() {
-            foreach (var path in OriginalPaths)
-                FillTheVisibilityGraphByWalkingPath(path);
-        }
+  GetOrder(): Map<AxisEdge, Array<PathEdge>> {
+    this.FillTheVisibilityGraphByWalkingThePaths()
+    this.InitPathOrder()
+    this.OrderPaths()
+    return this.axisEdgesToPathOrders
+  }
 
-        void FillTheVisibilityGraphByWalkingPath(Path path){
-            var pathEdgesEnum = CreatePathEdgesFromPoints(path.PathPoints, path.Width).GetEnumerator();
-
-            if (pathEdgesEnum.MoveNext())
-                path.SetFirstEdge(pathEdgesEnum.Current);
-            
-            while(pathEdgesEnum.MoveNext())
-                path.AddEdge(pathEdgesEnum.Current);
-        }
-
-        IEnumerable<PathEdge> CreatePathEdgesFromPoints(IEnumerable<Point> pathPoints, double width) {
-            var p0 = pathPoints.First();
-            foreach (var p1 in pathPoints.Skip(1)) {
-                yield return CreatePathEdge(p0, p1, width);
-                p0 = p1;
-            }
-        }
-
-        PathEdge CreatePathEdge(Point p0, Point p1, double width){
-            var dir = CompassVector.DirectionsFromPointToPoint(p0, p1);
-            switch (dir){
-                case Direction.East:
-                case Direction.North:
-                    return new PathEdge(GetAxisEdge(p0, p1), width);
-                case Direction.South:
-                case Direction.West:
-                
-                return new PathEdge(GetAxisEdge(p1,p0), width){Reversed = true};
-                default:
-                    throw new InvalidOperationException(
-#if TEST_MSAGL
-                        "Not a rectilinear path"
-#endif
-                        );
-            }
-        }
-
-        AxisEdge GetAxisEdge(Point p0, Point p1){
-            return PathVisibilityGraph.AddEdge(p0, p1, ((m, n) => new AxisEdge(m, n))) as AxisEdge;
-        }
-
-        void InitPathOrder() {
-            foreach (var axisEdge in PathVisibilityGraph.Edges.Select(a => (AxisEdge) a))
-                axisEdgesToPathOrders[axisEdge] = new List<PathEdge>();
-
-            foreach (var pathEdge in OriginalPaths.SelectMany(path => path.PathEdges))
-                axisEdgesToPathOrders[pathEdge.AxisEdge].Add(pathEdge);
-        }
-
-
-        void OrderPaths() {
-            foreach (var axisEdge in WalkGraphEdgesInTopologicalOrderIfPossible(PathVisibilityGraph))
-                OrderPathEdgesSharingEdge(axisEdge);
-        }
-
-        void OrderPathEdgesSharingEdge(AxisEdge edge) {
-            var pathOrder = PathOrderOfVisEdge(edge);
-            pathOrder.Sort(new Comparison<PathEdge>(CompareTwoPathEdges));
-            var i = 0; //fill the index
-            foreach (var pathEdge in pathOrder)
-                pathEdge.Index = i++;
-//            if (pathOrder.PathEdges.Count > 1)
-//                Nudger.ShowOrderedPaths(null,pathOrder.PathEdges.Select(e => e.Path), edge.SourcePoint, edge.TargetPoint);
-        }
-
-
-        static int CompareTwoPathEdges(PathEdge x, PathEdge y) {
-            if (x == y)
-                return 0;
-            Debug.Assert(x.AxisEdge == y.AxisEdge);
-            //Nudger.ShowOrderedPaths(null, new[] { x.Path, y.Path }, x.AxisEdge.SourcePoint, x.AxisEdge.TargetPoint);
-            int r = CompareInDirectionStartingFromAxisEdge(x, y, x.AxisEdge, x.AxisEdge.Direction);
-            return r!=0 ? r : -CompareInDirectionStartingFromAxisEdge(x, y, x.AxisEdge, CompassVector.OppositeDir(x.AxisEdge.Direction));
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="axisEdge">axisEdge together with the axisEdgeIsReversed parameter define direction of the movement over the paths</param>
-        /// <param name="direction"></param>
-        /// <returns></returns>
-        static int CompareInDirectionStartingFromAxisEdge(PathEdge x, PathEdge y, AxisEdge axisEdge, Direction direction){
-            while (true) {
-                x = GetNextPathEdgeInDirection(x, axisEdge, direction);
-                if (x == null)
-                    return 0;
-                y = GetNextPathEdgeInDirection(y, axisEdge, direction);
-                if (y == null)
-                    return 0;
-                if (x.AxisEdge == y.AxisEdge) {
-                    direction = FindContinuedDirection(axisEdge, direction, x.AxisEdge);
-                    axisEdge = x.AxisEdge;
-                    int r = GetExistingOrder(x, y);
-                    if (r == NotOrdered) continue;
-                    return direction == axisEdge.Direction ? r : -r;
-                }
-                //there is a fork
-                var forkVertex = direction == axisEdge.Direction ? axisEdge.Target : axisEdge.Source;
-                var xFork = OtherVertex(x.AxisEdge, forkVertex);
-                var yFork = OtherVertex(y.AxisEdge, forkVertex);
-                var projection = ProjectionForCompare(axisEdge, direction != axisEdge.Direction);
-                return projection(xFork.Point).CompareTo(projection(yFork.Point));
-            }
-        }
-
-        static Direction FindContinuedDirection(AxisEdge edge, Direction direction, AxisEdge nextAxisEdge) {
-            if (edge.Direction == direction)
-                return nextAxisEdge.Source == edge.Target
-                           ? nextAxisEdge.Direction
-                           : CompassVector.OppositeDir(nextAxisEdge.Direction);
-
-            return nextAxisEdge.Source == edge.Source
-                       ? nextAxisEdge.Direction
-                       : CompassVector.OppositeDir(nextAxisEdge.Direction);
-        }
-
-        static VisibilityVertex OtherVertex(VisibilityEdge axisEdge, VisibilityVertex v) {
-            return axisEdge.Source==v?axisEdge.Target:axisEdge.Source;
-        }
-
-        static PointProjection ProjectionForCompare(AxisEdge axisEdge, bool isReversed) {
-            if (axisEdge.Direction == Direction.North)
-                return isReversed ? (p => -p.X) : (PointProjection)(p => p.X);
-            return isReversed ? (p => p.Y) : (PointProjection)(p => -p.Y);
-        }
-
-        static PathEdge GetNextPathEdgeInDirection(PathEdge e, AxisEdge axisEdge, Direction direction) {
-            Debug.Assert(e.AxisEdge==axisEdge);
-            return axisEdge.Direction == direction ? (e.Reversed ? e.Prev : e.Next) : (e.Reversed ? e.Next : e.Prev);
-        }
-
-
-        static int GetExistingOrder(PathEdge x, PathEdge y ) {
-            int xi = x.Index;
-            if (xi == -1)
-                return NotOrdered;
-            int yi = y.Index;
-            Debug.Assert(yi!=-1);
-            return xi.CompareTo(yi);
-        }
-
-
-        internal List<PathEdge> PathOrderOfVisEdge(AxisEdge axisEdge) {
-            return axisEdgesToPathOrders[axisEdge];
-        }
-
-        static void InitQueueOfSources(Queue<VisibilityVertex> queue, IDictionary<VisibilityVertex, int> dictionary, VisibilityGraph graph) {
-            foreach (var v in graph.Vertices()) {
-                int inDegree = v.InEdges.Count;
-                dictionary[v] = inDegree;
-                if (inDegree == 0)
-                    queue.Enqueue(v);
-            }
-            Debug.Assert(queue.Count > 0);
-
-        }
-
-        static internal IEnumerable<AxisEdge> WalkGraphEdgesInTopologicalOrderIfPossible(VisibilityGraph visibilityGraph){
-            //Here the visibility graph is always a DAG since the edges point only to North and East
-            // where possible
-            var sourcesQueue = new Queue<VisibilityVertex>();
-            var inDegreeLeftUnprocessed = new Dictionary<VisibilityVertex, int>();
-            InitQueueOfSources(sourcesQueue, inDegreeLeftUnprocessed, visibilityGraph);
-            while (sourcesQueue.Count > 0){
-                var visVertex = sourcesQueue.Dequeue();
-                foreach (var edge in visVertex.OutEdges){
-                    var incomingEdges = inDegreeLeftUnprocessed[edge.Target]--;
-                    if(incomingEdges == 1)//it is already zero in the dictionary; all incoming edges have been processed
-                        sourcesQueue.Enqueue(edge.Target);
-                    yield return (AxisEdge)edge;
-                }
-
-            }
-        }
+  FillTheVisibilityGraphByWalkingThePaths() {
+    for (const path of this.OriginalPaths) {
+      this.FillTheVisibilityGraphByWalkingPath(path)
     }
+  }
+
+  FillTheVisibilityGraphByWalkingPath(path: Path) {
+    const pathEdgesEnum = this.CreatePathEdgesFromPoints(
+      path.PathPoints,
+      path.Width,
+    )
+    let t = pathEdgesEnum.next()
+    if (!t.done) {
+      path.SetFirstEdge(t.value)
+    }
+
+    while ((t = pathEdgesEnum.next()).done == false) {
+      path.AddEdge(t.value)
+    }
+  }
+
+  *CreatePathEdgesFromPoints(
+    pathPoints: IterableIterator<Point>,
+    width: number,
+  ): IterableIterator<PathEdge> {
+    let t = pathPoints.next()
+    let p0: Point = t.value
+    while (!(t = pathPoints.next()).done) {
+      yield this.CreatePathEdge(p0, t.value, width)
+      p0 = t.value
+    }
+  }
+
+  CreatePathEdge(p0: Point, p1: Point, width: number): PathEdge {
+    const dir = CompassVector.DirectionFromPointToPoint(p0, p1)
+    switch (dir) {
+      case Direction.East:
+      case Direction.North:
+        return new PathEdge(this.GetAxisEdge(p0, p1), width)
+
+      case Direction.South:
+      case Direction.West:
+        return new PathEdge(this.GetAxisEdge(p1, p0), width)
+
+      default:
+        throw new Error('Not a rectilinear path')
+    }
+  }
+
+  GetAxisEdge(p0: Point, p1: Point): AxisEdge {
+    return this.PathVisibilityGraph.AddEdgeF(
+      p0,
+      p1,
+      (m, n) => new AxisEdge(m, n),
+    ) as AxisEdge
+  }
+
+  InitPathOrder() {
+    for (const axisEdge of this.PathVisibilityGraph.Edges) {
+      this.axisEdgesToPathOrders.set(<AxisEdge>axisEdge, new Array<PathEdge>())
+    }
+
+    for (const p of this.OriginalPaths) {
+      for (const pathEdge of p.PathEdges()) {
+        this.axisEdgesToPathOrders.get(pathEdge.AxisEdge).push(pathEdge)
+      }
+    }
+  }
+
+  OrderPaths() {
+    for (const axisEdge of CombinatorialNudger.WalkGraphEdgesInTopologicalOrderIfPossible(
+      this.PathVisibilityGraph,
+    )) {
+      this.OrderPathEdgesSharingEdge(axisEdge)
+    }
+  }
+
+  OrderPathEdgesSharingEdge(edge: AxisEdge) {
+    const pathOrder = this.PathOrderOfVisEdge(edge)
+    pathOrder.sort(CombinatorialNudger.CompareTwoPathEdges)
+    let i = 0
+    // fill the index
+    for (const pathEdge of pathOrder) {
+      pathEdge.Index = i++
+    }
+  }
+
+  static CompareTwoPathEdges(x: PathEdge, y: PathEdge): number {
+    if (x == y) {
+      return 0
+    }
+
+    Assert.assert(x.AxisEdge == y.AxisEdge)
+    // Nudger.ShowOrderedPaths(null, new[] { x.Path, y.Path }, x.AxisEdge.SourcePoint, x.AxisEdge.TargetPoint);
+    const r: number = CombinatorialNudger.CompareInDirectionStartingFromAxisEdge(
+      x,
+      y,
+      x.AxisEdge,
+      x.AxisEdge.Direction,
+    )
+    return r != 0
+      ? r
+      : -CombinatorialNudger.CompareInDirectionStartingFromAxisEdge(
+          x,
+          y,
+          x.AxisEdge,
+          CompassVector.OppositeDir(x.AxisEdge.Direction),
+        )
+  }
+
+  ///  <summary>
+  ///
+  ///  </summary>
+  ///  <param name="x"></param>
+  ///  <param name="y"></param>
+  ///  <param name="axisEdge">axisEdge together with the axisEdgeIsReversed parameter define direction of the movement over the paths</param>
+  ///  <param name="direction"></param>
+  ///  <returns></returns>
+  static CompareInDirectionStartingFromAxisEdge(
+    x: PathEdge,
+    y: PathEdge,
+    axisEdge: AxisEdge,
+    direction: Direction,
+  ): number {
+    while (true) {
+      x = CombinatorialNudger.GetNextPathEdgeInDirection(x, axisEdge, direction)
+      if (x == null) {
+        return 0
+      }
+
+      y = CombinatorialNudger.GetNextPathEdgeInDirection(y, axisEdge, direction)
+      if (y == null) {
+        return 0
+      }
+
+      if (x.AxisEdge == y.AxisEdge) {
+        direction = CombinatorialNudger.FindContinuedDirection(
+          axisEdge,
+          direction,
+          x.AxisEdge,
+        )
+        axisEdge = x.AxisEdge
+        const r: number = CombinatorialNudger.GetExistingOrder(x, y)
+        if (r == CombinatorialNudger.NotOrdered) {
+          continue
+        }
+
+        return direction == axisEdge.Direction ? r : -r
+      }
+
+      // there is a fork
+      const forkVertex =
+        direction == axisEdge.Direction ? axisEdge.Target : axisEdge.Source
+      const xFork = CombinatorialNudger.OtherVertex(x.AxisEdge, forkVertex)
+      const yFork = CombinatorialNudger.OtherVertex(y.AxisEdge, forkVertex)
+      const projection = CombinatorialNudger.ProjectionForCompare(
+        axisEdge,
+        direction != axisEdge.Direction,
+      )
+      return compareNumbers(projection(xFork.point), projection(yFork.point))
+    }
+  }
+
+  static FindContinuedDirection(
+    edge: AxisEdge,
+    direction: Direction,
+    nextAxisEdge: AxisEdge,
+  ): Direction {
+    if (edge.Direction == direction)
+      return nextAxisEdge.Source == edge.Target
+        ? nextAxisEdge.Direction
+        : CompassVector.OppositeDir(nextAxisEdge.Direction)
+
+    return nextAxisEdge.Source == edge.Source
+      ? nextAxisEdge.Direction
+      : CompassVector.OppositeDir(nextAxisEdge.Direction)
+  }
+
+  static OtherVertex(
+    axisEdge: VisibilityEdge,
+    v: VisibilityVertex,
+  ): VisibilityVertex {
+    return axisEdge.Source == v ? axisEdge.Target : axisEdge.Source
+  }
+
+  static ProjectionForCompare(
+    axisEdge: AxisEdge,
+    isReversed: boolean,
+  ): (p: Point) => number {
+    return axisEdge.Direction == Direction.North
+      ? isReversed
+        ? (p: Point) => -p.x
+        : (p: Point) => p.x
+      : isReversed
+      ? (p: Point) => p.y
+      : (p: Point) => -p.y
+  }
+
+  static GetNextPathEdgeInDirection(
+    e: PathEdge,
+    axisEdge: AxisEdge,
+    direction: Direction,
+  ): PathEdge {
+    Assert.assert(e.AxisEdge == axisEdge)
+    return axisEdge.Direction == direction
+      ? e.Reversed
+        ? e.Prev
+        : e.Next
+      : e.Reversed
+      ? e.Next
+      : e.Prev
+  }
+
+  static GetExistingOrder(x: PathEdge, y: PathEdge): number {
+    const xi: number = x.Index
+    if (xi == -1) {
+      return CombinatorialNudger.NotOrdered
+    }
+
+    const yi: number = y.Index
+    Assert.assert(yi != -1)
+    return compareNumbers(xi, yi)
+  }
+
+  PathOrderOfVisEdge(axisEdge: AxisEdge): Array<PathEdge> {
+    return this.axisEdgesToPathOrders.get(axisEdge)
+  }
+
+  static InitQueueOfSources(
+    queue: Queue<VisibilityVertex>,
+    dictionary: Map<VisibilityVertex, number>,
+    graph: VisibilityGraph,
+  ) {
+    for (const v of graph.Vertices()) {
+      const inDegree: number = v.InEdges.length
+      dictionary.set(v, inDegree)
+      if (inDegree == 0) {
+        queue.enqueue(v)
+      }
+    }
+
+    Assert.assert(queue.length > 0)
+  }
+
+  static *WalkGraphEdgesInTopologicalOrderIfPossible(
+    visibilityGraph: VisibilityGraph,
+  ): IterableIterator<AxisEdge> {
+    // Here the visibility graph is always a DAG since the edges point only to North and East
+    //  where possible
+    const sourcesQueue = new Queue<VisibilityVertex>()
+    const inDegreeLeftUnprocessed = new Map<VisibilityVertex, number>()
+    CombinatorialNudger.InitQueueOfSources(
+      sourcesQueue,
+      inDegreeLeftUnprocessed,
+      visibilityGraph,
+    )
+    while (sourcesQueue.length > 0) {
+      const visVertex = sourcesQueue.dequeue()
+      for (const edge of visVertex.OutEdges) {
+        const incomingEdges = inDegreeLeftUnprocessed.get(edge.Target)
+        inDegreeLeftUnprocessed.set(edge.Target, incomingEdges - 1)
+        if (incomingEdges == 1) {
+          sourcesQueue.enqueue(edge.Target)
+        }
+
+        yield <AxisEdge>edge
+      }
+    }
+  }
 }

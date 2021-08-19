@@ -13,7 +13,7 @@ export class Path {
   ///  <summary>
   ///  the path points
   ///  </summary>
-  PathPoints: Iterable<Point>
+  PathPoints: IterableIterator<Point>
   get Width(): number {
     return this.EdgeGeometry.lineWidth
   }
