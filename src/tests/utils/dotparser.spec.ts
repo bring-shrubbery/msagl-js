@@ -2,7 +2,6 @@ import {Color} from '../../drawing/color'
 import {DrawingNode} from '../../drawing/drawingNode'
 import {parseDotGraph, parseDotString} from '../../tools/dotparser'
 import {join} from 'path'
-import fs = require('fs')
 import {sortedList} from '../layoutPlatform/layout/sortedBySizeListOfgvFiles'
 test('all gv files list ', () => {
   const path = 'src/tests/data/graphvis/'
