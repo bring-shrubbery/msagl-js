@@ -1,3 +1,4 @@
+import {IEnumerable} from 'linq-to-typescript'
 import {String} from 'typescript-string-operations'
 import {Point} from '../../../..'
 import {EdgeGeometry} from '../../../layout/core/edgeGeometry'
@@ -13,7 +14,7 @@ export class Path {
   ///  <summary>
   ///  the path points
   ///  </summary>
-  PathPoints: IterableIterator<Point>
+  PathPoints: IEnumerable<Point>
   get Width(): number {
     return this.EdgeGeometry.lineWidth
   }

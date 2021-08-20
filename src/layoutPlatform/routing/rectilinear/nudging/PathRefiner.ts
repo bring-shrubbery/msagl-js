@@ -1,183 +1,230 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Msagl.Core.Geometry;
-using Microsoft.Msagl.Core.Geometry.Curves;
+///  If two paths intersect then insert the intersection point as a vertex into both paths.
+///  Remove path self loops. Merge paths between the crossings if they have multiple crossings.
+///  If a path passes through a vertex of another path then insert this vertex into the first path.
 
-namespace Microsoft.Msagl.Routing.Rectilinear.Nudging {
-    /// <summary>
-    /// If two paths intersect then insert the intersection point as a vertex into both paths.
-    /// Remove path self loops. Merge paths between the crossings if they have multiple crossings.
-    /// If a path passes through a vertex of another path then insert this vertex into the first path.
-    /// </summary>
-
-    internal class PathRefiner {
-        
-        internal static void RefinePaths(IEnumerable<Path> paths, bool mergePaths) {
-            AdjustPaths(paths);
-            var pathsToFirstLinkedVertices = CreatePathsToFirstLinkedVerticesMap(paths);
-            Refine(pathsToFirstLinkedVertices.Values);
-            CrossVerticalAndHorizontalSegs(pathsToFirstLinkedVertices.Values);
-            ReconstructPathsFromLinkedVertices(pathsToFirstLinkedVertices);
-            if (mergePaths)
-                new PathMerger(paths).MergePaths();
-        }
-        /// <summary>
-        /// make sure that every two different points in paths are separated by at least 10e-6
-        /// </summary>
-        /// <param name="paths"></param>
-        static void AdjustPaths(IEnumerable<Path> paths) {
-            foreach (var path in paths)
-#if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=369
-                path.PathPoints = AdjustPathPoints(path.PathPoints.Select(p=>p.Clone()).ToArray()).ToArray();
-#else
-                path.PathPoints = AdjustPathPoints(path.PathPoints as IList<Point>).ToArray();
-#endif
-        }
-
-        static IEnumerable<Point> AdjustPathPoints(IList<Point> points) {
-            Point p = AdjustPoint(points[0]);
-            yield return p;
-            for(int i=1;i<points.Count();i++) {
-                var np = AdjustPoint(points[i]);
-                if (p!=np)
-#if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=368
-                {
-                    p = np;
-                    yield return p;
-                }
-#else
-                    yield return p = np;
-#endif
-            }
-        }
-        static readonly int DigitsToRound = ApproximateComparer.DistanceEpsilonPrecision;
-        
-        static Point AdjustPoint(Point p0) {
-            return new Point(Math.Round(p0.X,DigitsToRound), Math.Round(p0.Y,DigitsToRound));
-        }
-
-        static void CrossVerticalAndHorizontalSegs(IEnumerable<LinkedPoint> pathsFirstLinked) {
-            var horizontalPoints = new List<LinkedPoint>();
-            var verticalPoints = new List<LinkedPoint>();
-            foreach (var pnt in pathsFirstLinked)
-                for (var p = pnt; p.Next != null; p = p.Next)
-                    if (ApproximateComparer.Close(p.Point.X, p.Next.Point.X))
-                        verticalPoints.Add(p);
-                    else
-                        horizontalPoints.Add(p);
-
-
-            (new LinkedPointSplitter(horizontalPoints, verticalPoints)).SplitPoints();
-        }
-
-
-        static void ReconstructPathsFromLinkedVertices(Dictionary<Path, LinkedPoint> pathsToPathLinkedPoints) {
-            foreach (var pair in pathsToPathLinkedPoints)
-                pair.Key.PathPoints = pair.Value;
-        }
-
-        static void Refine(IEnumerable<LinkedPoint> pathFirstPoints) {
-            RefineInDirection(Direction.North, pathFirstPoints);
-            RefineInDirection(Direction.East, pathFirstPoints);
-        }
-
-        /// <summary>
-        /// refines all segments that are parallel to "direction"
-        /// </summary>
-        /// <param name="direction"></param>
-        /// <param name="pathFirstPoints"></param>
-        static void RefineInDirection(Direction direction, IEnumerable<LinkedPoint> pathFirstPoints) {
-
-            PointProjection projectionToDirection, projectionToPerp;
-            GetProjectionsDelegates(direction, out projectionToPerp, out projectionToDirection);
-
-            var linkedPointsInDirection = GetAllLinkedVertsInDirection(projectionToPerp, pathFirstPoints).ToArray();
-
-            var colliniarBuckets = linkedPointsInDirection.GroupBy(p => projectionToPerp(p.Point));
-            foreach (var pathLinkedPointBucket in colliniarBuckets)
-                RefineCollinearBucket(pathLinkedPointBucket, projectionToDirection);
-        }
-
-        static void GetProjectionsDelegates(Direction direction,
-            out PointProjection projectionToPerp,
-            out PointProjection projectionToDirection) {
-            if (direction == Direction.East) {
-                projectionToDirection = delegate(Point p) { return p.X; };
-                projectionToPerp = delegate(Point p) { return p.Y; };
-            } else {
-                projectionToPerp = delegate(Point p) { return p.X; };
-                projectionToDirection = delegate(Point p) { return p.Y; };
-            }
-        }
-
-        static IEnumerable<LinkedPoint> GetAllLinkedVertsInDirection(
-            PointProjection projectionToPerp,
-            IEnumerable<LinkedPoint> initialVerts) {
-            foreach (var vert in initialVerts)
-                for (var v = vert; v.Next != null; v = v.Next)
-                    if ( ApproximateComparer.Close(projectionToPerp(v.Point),projectionToPerp(v.Next.Point)))
-                        yield return v;
-        }
-        /// <summary>
-        /// refine vertices belonging to a bucket; 
-        /// pathLinkedVertices belong to a line parallel to the direction of the refinement
-        /// </summary>
-        /// <param name="pathLinkedVertices"></param>
-        /// <param name="projectionToDirection"></param>
-        static void RefineCollinearBucket(
-            IEnumerable<LinkedPoint> pathLinkedVertices,
-            PointProjection projectionToDirection) {
-
-            var dict = new SortedDictionary<Point, int>(new PointByDelegateComparer(projectionToDirection));
-            foreach (var pathLinkedPoint in pathLinkedVertices) {
-                if (!dict.ContainsKey(pathLinkedPoint.Point))
-                    dict[pathLinkedPoint.Point] = 0;
-                if (!dict.ContainsKey(pathLinkedPoint.Next.Point))
-                    dict[pathLinkedPoint.Next.Point] = 0;
-            }
-
-            var arrayOfPoints = new Point[dict.Count];
-            int i = 0;
-            foreach (var point in dict.Keys)
-                arrayOfPoints[i++] = point;
-
-            for (i = 0; i < arrayOfPoints.Length; i++)
-                dict[arrayOfPoints[i]] = i;
-
-
-            foreach (var pathLinkedVertex in pathLinkedVertices) {
-                i = dict[pathLinkedVertex.Point];
-                int j = dict[pathLinkedVertex.Next.Point];
-                if (Math.Abs(j - i) > 1)
-                    InsertPoints(pathLinkedVertex, arrayOfPoints, i, j);
-            }
-        }
-
-        static void InsertPoints(LinkedPoint pathLinkedVertex, Point[] arrayOfPoints, int i, int j) {
-            if (i < j)
-                pathLinkedVertex.InsertVerts(i, j, arrayOfPoints);
-            else
-                pathLinkedVertex.InsertVertsInReverse(j, i, arrayOfPoints);
-        }
-
-
-        static Dictionary<Path, LinkedPoint> CreatePathsToFirstLinkedVerticesMap(IEnumerable<Path> edgePaths) {
-            var dict = new Dictionary<Path, LinkedPoint>();
-            foreach (var path in edgePaths)
-                dict[path] = CreateLinkedVertexOfEdgePath(path);
-            return dict;
-        }
-
-        static LinkedPoint CreateLinkedVertexOfEdgePath(Path path) {
-            var pathPoint = new LinkedPoint(path.PathPoints.First());
-            var first = pathPoint;
-#if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=368
-            path.PathPoints.Skip(1).Aggregate(pathPoint, (lp, p) => { lp.Next = new LinkedPoint(p); return lp.Next; });
-#else
-            path.PathPoints.Skip(1).Aggregate(pathPoint, (lp, p) => lp.Next = new LinkedPoint(p));
-#endif
-            return first;
-        }
+import {from} from 'linq-to-typescript'
+import {Point} from '../../../..'
+import {Direction} from '../../../math/geometry/direction'
+import {GeomConstants} from '../../../math/geometry/geomConstants'
+import {LinkedPoint} from './LinkedPoint'
+import {LinkedPointSplitter} from './LinkedPointSplitter'
+import {Path} from './Path'
+import {PathMerger} from './PathMerger'
+import {PointByDelegateComparer} from './PointByDelegateComparer'
+import SortedMap = require('collections/sorted-map')
+type PointProjection = (p: Point) => number
+///  </summary>
+export class PathRefiner {
+  static RefinePaths(paths: Iterable<Path>, mergePaths: boolean) {
+    PathRefiner.AdjustPaths(paths)
+    const pathsToFirstLinkedVertices = PathRefiner.CreatePathsToFirstLinkedVerticesMap(
+      paths,
+    )
+    PathRefiner.Refine(pathsToFirstLinkedVertices.values())
+    PathRefiner.CrossVerticalAndHorizontalSegs(
+      pathsToFirstLinkedVertices.values(),
+    )
+    PathRefiner.ReconstructPathsFromLinkedVertices(pathsToFirstLinkedVertices)
+    if (mergePaths) {
+      new PathMerger(paths).MergePaths()
     }
+  }
+
+  ///  <summary>
+  ///  make sure that every two different points of paths are separated by at least 10e-6
+  ///  </summary>
+  ///  <param name="paths"></param>
+  static AdjustPaths(paths: Iterable<Path>) {
+    for (const path of paths) {
+      const arg = path.PathPoints.select((p) => p.clone())
+      const adjusted = PathRefiner.AdjustPathPoints(arg.toArray())
+      path.PathPoints = from(adjusted)
+    }
+  }
+
+  static AdjustPathPoints(points: Array<Point>): Array<Point> {
+    const arr = []
+    let p: Point = GeomConstants.RoundPoint(points[0])
+    arr.push(p)
+    for (let i = 1; i < points.length; i++) {
+      const np = GeomConstants.RoundPoint(points[i])
+      if (!p.equal(np)) {
+        p = np
+        arr.push(p)
+      }
+    }
+    return arr
+  }
+
+  static CrossVerticalAndHorizontalSegs(
+    pathsFirstLinked: Iterable<LinkedPoint>,
+  ) {
+    const horizontalPoints = new Array<LinkedPoint>()
+    const verticalPoints = new Array<LinkedPoint>()
+    for (const pnt of pathsFirstLinked) {
+      for (let p = pnt; p.Next != null; p = p.Next) {
+        if (Point.closeD(p.Point.x, p.Next.Point.x)) {
+          verticalPoints.push(p)
+        } else {
+          horizontalPoints.push(p)
+        }
+      }
+    }
+
+    new LinkedPointSplitter(horizontalPoints, verticalPoints).SplitPoints()
+  }
+
+  static ReconstructPathsFromLinkedVertices(
+    pathsToPathLinkedPoints: Map<Path, LinkedPoint>,
+  ) {
+    for (const [k, v] of pathsToPathLinkedPoints) {
+      k.PathPoints = from(v.GetEnumerator())
+    }
+  }
+
+  static Refine(pathFirstPoints: Iterable<LinkedPoint>) {
+    PathRefiner.RefineInDirection(Direction.North, pathFirstPoints)
+    PathRefiner.RefineInDirection(Direction.East, pathFirstPoints)
+  }
+
+  ///  <summary>
+  ///  refines all segments that are parallel to "direction"
+  ///  </summary>
+  ///  <param name="direction"></param>
+  ///  <param name="pathFirstPoints"></param>
+  static RefineInDirection(
+    direction: Direction,
+    pathFirstPoints: Iterable<LinkedPoint>,
+  ) {
+    const t = {
+      projectionToPerp: undefined,
+      projectionToDirection: undefined,
+    }
+    PathRefiner.GetProjectionsDelegates(direction, t)
+    const linkedPointsInDirection = Array.from(
+      PathRefiner.GetAllLinkedVertsInDirection(
+        t.projectionToPerp,
+        pathFirstPoints,
+      ),
+    )
+    const colliniarBuckets = from(linkedPointsInDirection).groupBy((p) =>
+      t.projectionToPerp(p.Point),
+    )
+    for (const pathLinkedPointBucket of colliniarBuckets) {
+      PathRefiner.RefineCollinearBucket(
+        pathLinkedPointBucket,
+        t.projectionToDirection,
+      )
+    }
+  }
+
+  static GetProjectionsDelegates(
+    direction: Direction,
+    t: {
+      projectionToPerp: PointProjection
+      projectionToDirection: PointProjection
+    },
+  ) {
+    if (direction == Direction.East) {
+      t.projectionToDirection = (p) => p.x
+      t.projectionToPerp = (p) => p.y
+    } else {
+      t.projectionToPerp = (p) => p.x
+      t.projectionToDirection = (p) => p.y
+    }
+  }
+
+  static *GetAllLinkedVertsInDirection(
+    projectionToPerp: PointProjection,
+    initialVerts: Iterable<LinkedPoint>,
+  ): IterableIterator<LinkedPoint> {
+    for (const vert of initialVerts) {
+      for (let v = vert; v.Next != null; v = v.Next) {
+        if (
+          Point.closeD(
+            projectionToPerp(v.Point),
+            projectionToPerp(v.Next.Point),
+          )
+        ) {
+          yield v
+        }
+      }
+    }
+  }
+
+  ///  <summary>
+  ///  refine vertices belonging to a bucket;
+  ///  pathLinkedVertices belong to a line parallel to the direction of the refinement
+  ///  </summary>
+  ///  <param name="pathLinkedVertices"></param>
+  ///  <param name="projectionToDirection"></param>
+  static RefineCollinearBucket(
+    pathLinkedVertices: Iterable<LinkedPoint>,
+    projectionToDirection: PointProjection,
+  ) {
+    const dict = new SortedMap<Point, number>(
+      new PointByDelegateComparer(projectionToDirection),
+    )
+    for (const pathLinkedPoint of pathLinkedVertices) {
+      if (!dict.ContainsKey(pathLinkedPoint.Point)) {
+        dict[pathLinkedPoint.Point] = 0
+      }
+
+      if (!dict.ContainsKey(pathLinkedPoint.Next.Point)) {
+        dict[pathLinkedPoint.Next.Point] = 0
+      }
+    }
+
+    const arrayOfPoints = new Array(dict.Count)
+    let i = 0
+    for (const point of dict.Keys) {
+      arrayOfPoints[i++] = point
+    }
+
+    for (i = 0; i < arrayOfPoints.length; i++) {
+      dict[arrayOfPoints[i]] = i
+    }
+
+    for (const pathLinkedVertex of pathLinkedVertices) {
+      i = dict[pathLinkedVertex.Point]
+      const j: number = dict[pathLinkedVertex.Next.Point]
+      if (Math.abs(j - i) > 1) {
+        PathRefiner.InsertPoints(pathLinkedVertex, arrayOfPoints, i, j)
+      }
+    }
+  }
+
+  static InsertPoints(
+    pathLinkedVertex: LinkedPoint,
+    arrayOfPoints: Point[],
+    i: number,
+    j: number,
+  ) {
+    if (i < j) {
+      pathLinkedVertex.InsertVerts(i, j, arrayOfPoints)
+    } else {
+      pathLinkedVertex.InsertVertsInReverse(j, i, arrayOfPoints)
+    }
+  }
+
+  static CreatePathsToFirstLinkedVerticesMap(
+    edgePaths: Iterable<Path>,
+  ): Map<Path, LinkedPoint> {
+    const dict = new Map<Path, LinkedPoint>()
+    for (const path of edgePaths) {
+      dict.set(path, PathRefiner.CreateLinkedVertexOfEdgePath(path))
+    }
+
+    return dict
+  }
+
+  static CreateLinkedVertexOfEdgePath(path: Path): LinkedPoint {
+    const pathPoint = new LinkedPoint(path.PathPoints.first())
+    const first = pathPoint
+    path.PathPoints.skip(1).aggregate(pathPoint, (lp, p) => {
+      lp.Next = new LinkedPoint(p)
+      return lp.Next
+    })
+    return first
+  }
 }
