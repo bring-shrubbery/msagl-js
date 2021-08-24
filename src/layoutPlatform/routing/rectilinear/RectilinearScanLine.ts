@@ -98,7 +98,7 @@ export class RectilinearScanLine {
     return this.SideTree.treeMinimum()
   }
   ///  For ordering lines along the scanline at segment starts/ends.
-  ///  </summary>
+
   ///  <param name="first"></param>
   ///  <param name="second"></param>
   ///  <returns></returns>

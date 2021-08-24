@@ -50,10 +50,7 @@ export class CombinatorialNudger {
   }
 
   FillTheVisibilityGraphByWalkingPath(path: Path) {
-    const pathEdgesEnum = this.CreatePathEdgesFromPoints(
-      path.PathPoints,
-      path.Width,
-    )
+    const pathEdgesEnum = this.CreatePathEdgesFromPoints(it(), path.Width)
     let t = pathEdgesEnum.next()
     if (!t.done) {
       path.SetFirstEdge(t.value)
@@ -61,6 +58,10 @@ export class CombinatorialNudger {
 
     while ((t = pathEdgesEnum.next()).done == false) {
       path.AddEdge(t.value)
+    }
+
+    function* it(): IterableIterator<Point> {
+      for (const p of path.PathPoints) yield p
     }
   }
 

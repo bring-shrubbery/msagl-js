@@ -1,4 +1,3 @@
-///  <summary>
 ///  This stores the location and type of a Port.
 
 import {Polyline} from '../../math/geometry/polyline'
@@ -7,10 +6,9 @@ import {Obstacle} from './obstacle'
 export class OverlapConvexHull {
   Polyline: Polyline
 
-  ///  <summary>
   ///  This is some arbitrary obstacle inside the convex hull so we qualify Select().Where() so we
   ///  don't get the CH duplicated in the scanline etc. enumerations.
-  ///  </summary>
+
   PrimaryObstacle: Obstacle
 
   Obstacles: Array<Obstacle>

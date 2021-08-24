@@ -1,6 +1,5 @@
 ///  intersects a set of horizontal LinkedPoints with a set of vertical LinkedPoints
 
-import {Queue} from 'queue-typescript'
 import {Point} from '../../../..'
 import {GeomConstants} from '../../../math/geometry/geomConstants'
 import {GenericBinaryHeapPriorityQueue} from '../../../structs/genericBinaryHeapPriorityQueue'
@@ -9,11 +8,9 @@ import {Assert} from '../../../utils/assert'
 import {compareNumbers} from '../../../utils/compare'
 import {LinkedPoint} from './LinkedPoint'
 
-///  </summary>
 export class LinkedPointSplitter {
-  ///  <summary>
   ///
-  ///  </summary>
+
   ///  <param name="horizontalPoints">no two horizontal segs overlap, but they can share an end point</param>
   ///  <param name="verticalPoints">no two vertical segs overlap, but they can share an end point</param>
   constructor(
@@ -39,14 +36,14 @@ export class LinkedPointSplitter {
 
   ProcessEvents() {
     while (!this.Queue.IsEmpty()) {
-      let z: number
-      const linkedPoint = this.Queue.Dequeue(/* out */ z)
-      this.ProcessEvent(linkedPoint, z)
+      const t = {priority: 0}
+      const linkedPoint = this.Queue.DequeueAndGetPriority(t)
+      this.ProcessEvent(linkedPoint, t.priority)
     }
   }
 
   ProcessEvent(linkedPoint: LinkedPoint, z: number) {
-    if (GeomConstants.Close(linkedPoint.Next.Point.x, linkedPoint.Point.x)) {
+    if (Point.closeD(linkedPoint.Next.Point.x, linkedPoint.Point.x)) {
       if (z == LinkedPointSplitter.Low(linkedPoint)) {
         this.ProcessLowLinkedPointEvent(linkedPoint)
       } else {
@@ -61,7 +58,7 @@ export class LinkedPointSplitter {
     let right: number
     let left: number
     let xAligned: boolean
-    Debug.Assert(GeomConstants.Close(horizontalPoint.Y, horizontalPoint.Next.Y))
+    Assert.assert(Point.closeD(horizontalPoint.Y, horizontalPoint.Next.Y))
     const y = horizontalPoint.Y
     if (horizontalPoint.Point.x < horizontalPoint.Next.Point.x) {
       left = horizontalPoint.Point.x
@@ -75,31 +72,31 @@ export class LinkedPointSplitter {
 
     if (xAligned) {
       for (
-        let node = this.tree.findFirst((p) => left <= p.Point.X);
-        node != null && node.Item.Point.X <= right;
+        let node = this.tree.findFirst((p) => left <= p.Point.x);
+        node != null && node.item.Point.x <= right;
         node = this.tree.next(node)
       ) {
-        const p = new Point(node.Item.Point.X, y)
+        const p = new Point(node.item.Point.x, y)
         horizontalPoint = LinkedPointSplitter.TrySplitHorizontalPoint(
           horizontalPoint,
           p,
           true,
         )
-        LinkedPointSplitter.TrySplitVerticalPoint(node.Item, p)
+        LinkedPointSplitter.TrySplitVerticalPoint(node.item, p)
       }
     } else {
       for (
-        let node = this.tree.findLast((p) => p.Point.X <= right);
-        node != null && node.Item.Point.X >= left;
+        let node = this.tree.findLast((p) => p.Point.x <= right);
+        node != null && node.item.Point.x >= left;
         node = this.tree.previous(node)
       ) {
-        const p = new Point(node.Item.Point.X, y)
+        const p = new Point(node.item.Point.x, y)
         horizontalPoint = LinkedPointSplitter.TrySplitHorizontalPoint(
           horizontalPoint,
           p,
           false,
         )
-        LinkedPointSplitter.TrySplitVerticalPoint(node.Item, p)
+        LinkedPointSplitter.TrySplitVerticalPoint(node.item, p)
       }
     }
   }

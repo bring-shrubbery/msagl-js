@@ -1,9 +1,10 @@
+import {from} from 'linq-to-typescript'
 import {Point, Rectangle} from '../../../..'
 import {RectangleNode} from '../../../core/geometry/RTree/RectangleNode'
 import {RTree} from '../../../core/geometry/RTree/RTree'
 import {CompassVector} from '../../../math/geometry/compassVector'
 import {Curve} from '../../../math/geometry/curve'
-import { GeomConstants } from '../../../math/geometry/geomConstants'
+import {GeomConstants} from '../../../math/geometry/geomConstants'
 import {LineSegment} from '../../../math/geometry/lineSegment'
 import {Polyline} from '../../../math/geometry/polyline'
 import {Path} from './Path'
@@ -48,9 +49,9 @@ export class StaircaseRemover {
   }
 
   ProcessPath(path: Path): boolean {
-    const t = {pts:<Point[]>path.PathPoints, canHaveStaircase:false}
-    if (this.ProcessPoints(t) {
-      path.PathPoints = t.pts
+    const t = {pts: <Point[]>(<any>path.PathPoints), canHaveStaircase: false}
+    if (this.ProcessPoints(t)) {
+      path.PathPoints = from(t.pts)
       return true
     }
 
@@ -61,25 +62,17 @@ export class StaircaseRemover {
     return false
   }
 
-  ProcessPoints( t:{
-     pts: Point[],
-     canHaveStaircase: boolean,
-  }
-  ): boolean {
-    const staircaseStart = this.FindStaircaseStart( t  )
+  ProcessPoints(t: {pts: Point[]; canHaveStaircase: boolean}): boolean {
+    const staircaseStart = this.FindStaircaseStart(t)
     if (staircaseStart < 0) {
       return false
     }
 
-    pts = this.RemoveStaircase(pts, staircaseStart)
+    t.pts = RemoveStaircase(pts, staircaseStart)
     return true
   }
 
-  FindStaircaseStart(t:{
-    pts: Point[],
-    canHaveStaircase: boolean,
- }
-  ): number {
+  FindStaircaseStart(t: {pts: Point[]; canHaveStaircase: boolean}): number {
     t.canHaveStaircase = false
     if (t.pts.length < 5) {
       return -1
@@ -93,30 +86,29 @@ export class StaircaseRemover {
 
     let segToReplace = 0
     for (let i = 0; ; ) {
-      const w =  {canHaveStaircaseAtI: false}
+      const w = {canHaveStaircaseAtI: false}
       if (this.IsStaircase(t.pts, i, segs, w)) {
-        canHaveStaircase = true
+        t.canHaveStaircase = true
         return i
       }
 
-      canHaveStaircase = canHaveStaircase || canHaveStaircaseAtI
+      t.canHaveStaircase = t.canHaveStaircase || w.canHaveStaircaseAtI
       i++
-      if (pts.Length < i + 5) {
+      if (t.pts.length < i + 5) {
         return -1
       }
 
-      segs[segToReplace] = new SegWithIndex(pts, i + 3)
+      segs[segToReplace] = new SegWithIndex(t.pts, i + 3)
       segToReplace++
-      4
+      segToReplace %= 4
     }
   }
 
   static GetFlippedPoint(pts: Point[], offset: number): Point {
-    const horiz = ApproximateComparer.Close(pts[offset].y, pts[offset + 1].y)
-    return new Point(pts[offset + 4].x, pts[offset].y)
-    // TODO: Warning!!!, inline IF is not supported ?
-    horiz
-    new Point(pts[offset].x, pts[offset + 4].y)
+    const horiz = Point.closeD(pts[offset].y, pts[offset + 1].y)
+    return horiz
+      ? new Point(pts[offset + 4].x, pts[offset].y)
+      : new Point(pts[offset].x, pts[offset + 4].y)
   }
 
   ///  <summary>
@@ -128,7 +120,7 @@ export class StaircaseRemover {
   ///  <returns></returns>
   Crossing(a: Point, b: Point, segsToIgnore: SegWithIndex[]): boolean {
     return StaircaseRemover.IsCrossing(
-      new LineSegment(a, b),
+      LineSegment.mkPP(a, b),
       this.segTree,
       segsToIgnore,
     )
@@ -146,10 +138,9 @@ export class StaircaseRemover {
     rTree: RTree<SegWithIndex, Point>,
     segsToIgnore: SegWithIndex[],
   ): boolean {
-    return rTree
-      .GetAllIntersecting(ls.boundingBox)
-      .Where(() => {}, !segsToIgnore.Contains(seg))
-      .Any()
+    return from(rTree.GetAllIntersecting(ls.boundingBox))
+      .where((seg) => segsToIgnore.findIndex((p) => p == seg) == -1)
+      .any()
   }
 
   IntersectObstacleHierarchy(a: Point, b: Point, c: Point): boolean {
@@ -169,7 +160,7 @@ export class StaircaseRemover {
     pts: Point[],
     offset: number,
     segsToIgnore: SegWithIndex[],
-    w:{canHaveStaircaseAtI: boolean}
+    w: {canHaveStaircaseAtI: boolean},
   ): boolean {
     const a = pts[offset]
     const b = pts[offset + 1]

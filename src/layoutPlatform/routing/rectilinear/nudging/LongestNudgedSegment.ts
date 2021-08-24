@@ -35,7 +35,7 @@ export class LongestNudgedSegment extends SegmentBase {
   ///  <summary>
   ///  the list of edges holding the same offset and direction
   ///  </summary>
-  private get /* internal */ Edges(): Array<PathEdge> {
+  get Edges(): Array<PathEdge> {
     return this.edges
   }
 

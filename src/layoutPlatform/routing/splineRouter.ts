@@ -1154,14 +1154,14 @@ export class SplineRouter extends Algorithm {
 
   //     //   computes loosePadding for spline routing obstacles from node separation and EdgePadding.
   //     public static ComputeLooseSplinePadding(nodeSeparation: number, edgePadding: number): number {
-  //   Debug.Assert((edgePadding > 0), "require EdgePadding > 0");
+  //   Assert.assert((edgePadding > 0), "require EdgePadding > 0");
   //   let twicePadding: number = (2 * edgePadding);
-  //   Debug.Assert((nodeSeparation > twicePadding), "require OverlapSeparation > 2*EdgePadding");
+  //   Assert.assert((nodeSeparation > twicePadding), "require OverlapSeparation > 2*EdgePadding");
   //   //  the 8 divisor is just to guarantee the final postcondition
   //   let loosePadding: number = ((nodeSeparation - twicePadding)
   //     / 8);
-  //   Debug.Assert((loosePadding > 0), "require LoosePadding > 0");
-  //   Debug.Assert((twicePadding
+  //   Assert.assert((loosePadding > 0), "require LoosePadding > 0");
+  //   Assert.assert((twicePadding
   //     + ((2 * loosePadding)
   //       < nodeSeparation)), "EdgePadding too big!");
   //   return loosePadding;
