@@ -4,7 +4,7 @@
     "target": "es2018",
     "declaration": true,
     "outDir": "./dist",
-    "sourceMap": false,
+    "sourceMap": true,
     "lib": [
       "dom",
       "es2018"
