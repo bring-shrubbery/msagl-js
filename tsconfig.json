@@ -1,5 +1,5 @@
 {
-    "compilerOptions": {
+  "compilerOptions": {
     "module": "commonjs",
     "target": "es2018",
     "declaration": true,
@@ -13,11 +13,13 @@
     "downlevelIteration": true
   },
   "include": [
-    "src/**/*"
+    "src/layoutPlatform/*",
+    "src/index.ts",
   ],
   "exclude": [
     "dist",
-    "node_modules"
+    "node_modules",
+    "**/*.spec.ts"
   ],
   "typeRoots": [
     "./src/typings",
