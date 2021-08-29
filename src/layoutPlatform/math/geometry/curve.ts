@@ -1,6 +1,6 @@
 import {ICurve} from './icurve'
 import {PN, PNInternal, PNLeaf, ParallelogramNode} from './parallelogramNode'
-import {allVerticesOfParall} from './parallelogram'
+
 import {Point} from './point'
 import {LineSegment} from './lineSegment'
 import {IntersectionInfo} from './intersectionInfo'
@@ -13,8 +13,7 @@ import {LinearSystem2} from './linearSystem'
 import {MinDistCurveCurve} from './minDistCurveCurve'
 import {Rectangle} from './rectangle'
 import {PlaneTransformation} from './planeTransformation'
-import {SvgDebugWriter} from './svgDebugWriter'
-import {DebugCurve} from './debugCurve'
+
 import {BezierSeg} from './bezierSeg'
 import {CornerSite} from './cornerSite'
 import {from} from 'linq-to-typescript'
@@ -1052,30 +1051,6 @@ export class Curve implements ICurve {
     return null
   }
 
-  static writeLeavesToSvg(nl0: PN, nl1: PN): void {
-    const w = new SvgDebugWriter('/tmp/goDeeper.svg')
-    const poly0 = new Polyline()
-    for (const p of allVerticesOfParall(nl0.parallelogram)) {
-      poly0.addPoint(p)
-    }
-    poly0.closed = true
-
-    const poly1 = new Polyline()
-    for (const p of allVerticesOfParall(nl1.parallelogram)) {
-      poly1.addPoint(p)
-    }
-    poly1.closed = true
-
-    const dc = [
-      DebugCurve.mkDebugCurveTWCI(100, 0.1, 'Black', nl0.seg),
-      DebugCurve.mkDebugCurveTWCI(100, 0.1, 'Black', poly0),
-      DebugCurve.mkDebugCurveTWCI(100, 0.1, 'Red', nl1.seg),
-      DebugCurve.mkDebugCurveTWCI(100, 0.1, 'Red', poly1),
-    ]
-    w.writeDebugCurves(dc)
-    w.close()
-    throw new Error('killed')
-  }
   static goDeeper(intersections: IntersectionInfo[], nl0: PN, nl1: PN) {
     const l0 = nl0.node as PNLeaf
     const l1 = nl1.node as PNLeaf

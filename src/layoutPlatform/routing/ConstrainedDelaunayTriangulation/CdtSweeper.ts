@@ -384,7 +384,7 @@ export class CdtSweeper extends Algorithm {
       }
     }
 
-    SvgDebugWriter.dumpDebugCurves(fn, ls)
+    //SvgDebugWriter.dumpDebugCurves(fn, ls)
   }
 
   static GetDebugCurveOfCdtEdge(e: CdtEdge): DebugCurve {
