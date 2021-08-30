@@ -205,7 +205,7 @@ export class Curve implements ICurve {
   }
 
   // Returns the trimmed curve, wrapping around the end if start is greater than end.
-  trimWithWrap(start: number, end: number) {
+  trimWithWrap(start: number, end: number): ICurve {
     Assert.assert(start >= this.parStart && start <= this.parEnd)
     Assert.assert(end >= this.parStart && end <= this.parEnd)
     if (start < end) return this.trim(start, end) as Curve
@@ -617,7 +617,10 @@ export class Curve implements ICurve {
     }
   }
 
-  static curveCurveXWithParallelogramNodesOne(n0: PN, n1: PN) {
+  static curveCurveXWithParallelogramNodesOne(
+    n0: PN,
+    n1: PN,
+  ): IntersectionInfo {
     if (!Parallelogram.intersect(n0.parallelogram, n1.parallelogram))
       return null
 
@@ -1612,7 +1615,7 @@ export class Curve implements ICurve {
    */
   // Offsets the curve in the direction of dir
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  offsetCurve(offset: number, dir: Point) {
+  offsetCurve(offset: number, dir: Point): ICurve {
     throw new Error('Method not implemented.')
     return null
   }

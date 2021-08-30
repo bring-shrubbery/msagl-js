@@ -76,7 +76,7 @@ export class HorizontalConstraintsForSugiyama {
   BasicGraphFromLeftRightIntNeibs(): BasicGraphOnEdges<IntPair> {
     return mkGraphOnEdges(
       from(this.LeftRightIntNeibs.values()).select(
-        (p) => new IntPair(p[0], p[1]),
+        (p) => new IntPair(p.x, p.y),
       ),
     )
   }
@@ -135,7 +135,7 @@ export class HorizontalConstraintsForSugiyama {
 
   MapNodesToToIntegers(yLayers: number[]) {
     this.LeftRightIntNeibs = IntPairSet.mk(
-      from(this.LeftRightIntNeibs.values())
+      from(this.leftRightNeighbors.values())
         .select((p) => [this.NodeIndex(p[0]), this.NodeIndex(p[1])])
         .where((t) => t[0] != -1 && t[1] != -1)
         .select((t) => new IntPair(t[0], t[1])),

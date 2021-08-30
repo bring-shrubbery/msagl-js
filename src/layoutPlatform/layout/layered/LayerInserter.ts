@@ -6,7 +6,7 @@ import {LayerArrays} from './LayerArrays'
 import {LayerEdge} from './LayerEdge'
 import {PolyIntEdge} from './polyIntEdge'
 import {ProperLayeredGraph} from './ProperLayeredGraph'
-import SortedMap = require('collections/sorted-map')
+import {SortedMap} from "@esfx/collections-sortedmap";
 
 // Preparing the graph for x-coordinate calculation by inserting dummy nodes into the layers
 export class LayerInserter {

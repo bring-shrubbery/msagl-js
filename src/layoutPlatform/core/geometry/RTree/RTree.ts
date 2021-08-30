@@ -75,7 +75,7 @@ function NumberOfIntersectedIsLessThanBoundOnNode<T, P>(
   rect: IRectangle<P>,
   t: {bound: number},
   conditionFunc: (t: T) => boolean,
-) {
+):boolean {
   Assert.assert(t.bound > 0)
   if (!node.irect.intersects_rect(rect)) return true
   if (node.IsLeaf) {

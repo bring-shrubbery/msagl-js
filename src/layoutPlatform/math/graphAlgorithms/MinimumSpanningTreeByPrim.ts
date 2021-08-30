@@ -32,7 +32,7 @@ export class MinimumSpanningTreeByPrim {
   }
 
   public GetTreeEdges(): IEdge[] {
-    const ret = []
+    const ret = new Array<IEdge>()
     this.Init()
     while (ret.length < this.graph.nodeCount - 1 && this.q.Count > 0)
       //some nodes might have no edges

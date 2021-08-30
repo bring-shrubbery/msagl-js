@@ -124,7 +124,7 @@ export function layoutGraph(
 
 // returns arrays of pairs (new lifted GeomEdge, existing Edge)
 function createLiftedEdges(graph: Graph): Array<[GeomEdge, Edge]> {
-  const liftedEdges = []
+  const liftedEdges = new Array<[GeomEdge, Edge]>()
   for (const u of graph.deepNodes) {
     const liftedU = graph.liftNode(u)
     if (liftedU == null) continue

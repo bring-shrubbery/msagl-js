@@ -39,8 +39,8 @@ function shift(i: number, shift: number, bound: number) {
   return t
 }
 
-function mkPairs(n: number) {
-  const pairs = []
+function mkPairs(n: number): Array<[number, number]> {
+  const pairs = new Array<[number, number]>()
   const off = Math.ceil(n / 2)
   for (let s = 0; s < n; s++) {
     for (let t = s + 1; t < n; t++) {

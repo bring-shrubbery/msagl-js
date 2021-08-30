@@ -1,5 +1,5 @@
 import {SugiyamaLayoutSettings} from '../../../../layoutPlatform/layout/layered/SugiyamaLayoutSettings'
-import SortedMap = require('collections/sorted-map')
+import {SortedMap} from '@esfx/collections-sortedmap'
 import {LayeredLayout} from '../../../../layoutPlatform/layout/layered/layeredLayout'
 import {Graph} from '../../../../layoutPlatform/structs/graph'
 import {GeomNode} from '../../../../layoutPlatform/layout/core/geomNode'
@@ -86,7 +86,7 @@ test('layered layout glued graph', () => {
 })
 
 test('sorted map', () => {
-  const m = SortedMap<number, number>()
+  const m = new SortedMap<number, number>()
   m.set(0, 0)
   m.set(-1, -1)
   m.set(2, 2)
@@ -544,7 +544,7 @@ function duplicateDisconnected(g: GeomGraph, suffix: string) {
 }
 function interpolateEdge(edge: GeomEdge): Point[] {
   if (edge.edgeGeometry == null) return []
-  let ret = []
+  let ret = new Array<Point>()
   if (edge.edgeGeometry.sourceArrowhead != null)
     ret = ret.concat(
       addArrow(
@@ -587,8 +587,8 @@ export function labelRectFunc(text: string): Rectangle {
 }
 export function createGeometry(
   g: Graph,
-  nodeBoundaryFunc: (string) => ICurve,
-  labelRect: (string) => Rectangle,
+  nodeBoundaryFunc: (s: string) => ICurve,
+  labelRect: (s: string) => Rectangle,
 ): GeomGraph {
   for (const n of g.shallowNodes) {
     if (n.isGraph) {

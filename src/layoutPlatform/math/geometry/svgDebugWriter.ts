@@ -14,7 +14,9 @@ import {GeomEdge} from './../../layout/core/geomEdge'
 import {GeomGraph} from '../../layout/core/GeomGraph'
 import {PlaneTransformation} from './planeTransformation'
 import fs = require('fs')
+// @ts-ignore
 import xmlw = require('xml-writer')
+// @ts-check
 export class SvgDebugWriter {
   // Here we import the File System module of node
   //  private fs = require('fs')
@@ -26,7 +28,7 @@ export class SvgDebugWriter {
   constructor(svgFileName: string) {
     this.ws = fs.createWriteStream(svgFileName)
     const wsCapture = this.ws
-    this.xw = new xmlw(true, function (string: string, encoding) {
+    this.xw = new xmlw(true, function (string: string, encoding: string) {
       wsCapture.write(string, encoding)
     })
   }

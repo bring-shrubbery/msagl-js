@@ -329,7 +329,12 @@ export class MultidimensionalScaling {
     }
     MultidimensionalScaling.DoubleCenter(c)
     MultidimensionalScaling.Multiply(c, -0.5)
-    const tt = {u1: [], u2: [], lambda1: 0, lambda2: 0}
+    const tt = {
+      u1: new Array<number>(),
+      u2: new Array<number>(),
+      lambda1: 0,
+      lambda2: 0,
+    }
     MultidimensionalScaling.SpectralDecomposition(c, tt)
     tt.lambda1 = Math.sqrt(Math.abs(tt.lambda1))
     tt.lambda2 = Math.sqrt(Math.abs(tt.lambda2))

@@ -5,7 +5,6 @@ import {PlaneTransformation} from './planeTransformation'
 import {Rectangle} from './rectangle'
 import {GeomConstants} from './geomConstants'
 import {PN} from './parallelogramNode'
-import {Assert} from '../../utils/assert'
 export class LineSegment implements ICurve {
   start: Point //the line goes from start to end
   end: Point // the line end point
@@ -14,7 +13,7 @@ export class LineSegment implements ICurve {
 
   // Offsets the curve in the direction of dir
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  offsetCurve(offset: number, dir: Point) {
+  offsetCurve(offset: number, dir: Point): ICurve {
     return null
   }
 
@@ -42,7 +41,7 @@ export class LineSegment implements ICurve {
   }
   // Not Implemented: Returns the trimmed curve, wrapping around the end if start is greater than end.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  trimWithWrap(start: number, end: number) {
+  trimWithWrap(start: number, end: number): ICurve {
     return null
   } // not implemented
 

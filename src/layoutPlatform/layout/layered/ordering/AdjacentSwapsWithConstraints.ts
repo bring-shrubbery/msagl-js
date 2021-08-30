@@ -191,10 +191,10 @@ export class AdjacentSwapsWithConstraints {
       let vnb: number
       for (; j < vl && this.X[(vnb = vnbs[j + 1])] < xu; j++) {
         vCrossingNumberSeenAlready =
-          vCrossingNumberSeenAlready + vCrossingCount[vnb]
+          vCrossingNumberSeenAlready + vCrossingCount.get(vnb)
       }
 
-      ret = ret + vCrossingNumberSeenAlready * uCrossingCounts[uNeib]
+      ret = ret + vCrossingNumberSeenAlready * uCrossingCounts.get(uNeib)
     }
 
     return ret
@@ -349,7 +349,7 @@ export class AdjacentSwapsWithConstraints {
       if (this.hasCrossWeights) {
         let inCounts: Map<number, number>
         for (const le of this.properLayeredGraph.InEdges(i)) {
-          inCounts[le.Source] = le.CrossingWeight
+          inCounts.set(le.Source, le.CrossingWeight)
         }
       }
 
@@ -359,7 +359,7 @@ export class AdjacentSwapsWithConstraints {
       if (this.hasCrossWeights) {
         let outCounts: Map<number, number>
         for (const le of this.properLayeredGraph.OutEdges(i)) {
-          outCounts[le.Target] = le.CrossingWeight
+          outCounts.set(le.Target, le.CrossingWeight)
         }
       }
     }
@@ -371,14 +371,14 @@ export class AdjacentSwapsWithConstraints {
         const porder: Map<number, number> = this.POrder[a]
         // of course porder contains u, let us see if it contains v
         if (porder.has(v)) {
-          const vOffset: number = porder[v]
+          const vOffset: number = porder.get(v)
           // swap u and v in the array P[coeff]
           const p = this.P[a]
           p[vOffset - 1] = v
           p[vOffset] = u
           // update sorder itself
-          porder[v] = vOffset - 1
-          porder[u] = vOffset
+          porder.set(v, vOffset - 1)
+          porder.set(u, vOffset)
         }
       }
     } else {
@@ -386,14 +386,14 @@ export class AdjacentSwapsWithConstraints {
         const porder: Map<number, number> = this.POrder[a]
         // of course porder contains u, let us see if it contains v
         if (porder.has(u)) {
-          const vOffset: number = porder[v]
+          const vOffset: number = porder.get(v)
           // swap u and v in the array P[coeff]
           const p = this.P[a]
           p[vOffset - 1] = v
           p[vOffset] = u
           // update sorder itself
-          porder[v] = vOffset - 1
-          porder[u] = vOffset
+          porder.set(v, vOffset - 1)
+          porder.set(u, vOffset)
         }
       }
     }
@@ -442,7 +442,7 @@ export class AdjacentSwapsWithConstraints {
         const sHasNow: number = so.size
         this.S[p].push(l)
         // l takes the first available slot in S[p]
-        so[l] = sHasNow
+        so.set(l,sHasNow)
       }
 
       for (const s of this.properLayeredGraph.Succ(l)) {
@@ -454,7 +454,7 @@ export class AdjacentSwapsWithConstraints {
         const pHasNow: number = po.size
         this.P[s].push(l)
         // l take the first available slot in P[s]
-        po[l] = pHasNow
+        po.set(l, pHasNow)
       }
     }
   }
@@ -465,14 +465,14 @@ export class AdjacentSwapsWithConstraints {
         const sorder: Map<number, number> = this.SOrder[a]
         // of course sorder contains u, let us see if it contains v
         if (sorder.has(v)) {
-          const vOffset: number = sorder[v]
+          const vOffset: number = sorder.get(v)
           // swap u and v in the array S[coeff]
           const s = this.S[a]
           s[vOffset - 1] = v
           s[vOffset] = u
           // update sorder itself
-          sorder[v] = vOffset - 1
-          sorder[u] = vOffset
+          sorder.set(v, vOffset - 1)
+          sorder.set(u, vOffset)
         }
       }
     } else {
@@ -480,14 +480,14 @@ export class AdjacentSwapsWithConstraints {
         const sorder: Map<number, number> = this.SOrder[a]
         // of course sorder contains u, let us see if it contains v
         if (sorder.has(u)) {
-          const vOffset: number = sorder[v]
+          const vOffset: number = sorder.get(v)
           // swap u and v in the array S[coeff]
           const s = this.S[a]
           s[vOffset - 1] = v
           s[vOffset] = u
           // update sorder itself
-          sorder[v] = vOffset - 1
-          sorder[u] = vOffset
+          sorder.set(v, vOffset - 1)
+          sorder.set(u, vOffset)
         }
       }
     }

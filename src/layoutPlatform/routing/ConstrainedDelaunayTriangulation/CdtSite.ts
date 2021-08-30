@@ -5,7 +5,7 @@ import {CdtTriangle} from './CdtTriangle'
 import {Cdt} from './Cdt'
 export class CdtSite {
   //  Object to which this site refers to.
-  Owner = null
+  Owner: any = null
 
   point: Point
 

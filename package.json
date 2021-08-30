@@ -30,10 +30,11 @@
     ]
   },
   "dependencies": {
+    "@esfx/collections-sortedmap": "^1.0.0-pre.19",
     "collections": "^5.1.12",
     "file-system": "^1.2.2",
     "linq-to-typescript": "^8.1.0",
-    "npm": "^7.6.0",
+    "npm": "^7.21.1",
     "queue-typescript": "^1.0.1",
     "stack-typescript": "^1.0.4",
     "typescript-string-operations": "^1.4.1",
@@ -41,7 +42,7 @@
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
-    "@types/collections": "^5.1.0",
+    "@types/collections": "^5.1.2",
     "@types/jest": "^26.0.4",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",

@@ -254,10 +254,10 @@ export class Routing extends Algorithm {
           segmentInFrontOfLabel.value(u).sub(labelSide.start).length <
           segmentInFrontOfLabel.value(v).sub(labelSide.end).length
         ) {
-          t.curveClosestPoint = segmentInFrontOfLabel[u]
+          t.curveClosestPoint = segmentInFrontOfLabel.value(u)
           t.labelSideClosest = labelSide.start
         } else {
-          t.curveClosestPoint = segmentInFrontOfLabel[v]
+          t.curveClosestPoint = segmentInFrontOfLabel.value(v)
           t.labelSideClosest = labelSide.end
         }
 

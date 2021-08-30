@@ -236,7 +236,7 @@ export class RectangleNode<T, P> {
   FirstHitNodePF(
     point: P,
     hitTestForPointDelegate: (point: P, data: T) => HitTestBehavior,
-  ) {
+  ): RectangleNode<T, P> {
     if (this.irect.contains_point(point)) {
       if (this.IsLeaf) {
         if (hitTestForPointDelegate != null) {

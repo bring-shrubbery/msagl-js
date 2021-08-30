@@ -5,10 +5,8 @@
     "declaration": true,
     "outDir": "./dist",
     "sourceMap": true,
-    "lib": [
-      "dom",
-      "es2018"
-    ],
+    "noImplicitAny": true,
+    "lib": ["dom", "es2018"],
     "importHelpers": true,
     "downlevelIteration": true
   },

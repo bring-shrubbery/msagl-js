@@ -33,7 +33,7 @@ export class BezierSeg implements ICurve {
   // A tree of ParallelogramNodes covering the curve.
   // This tree is used in curve intersections routines.
   // <value></value>
-  pNodeOverICurve() {
+  pNodeOverICurve(): PN {
     if (this.pBoxNode != null) return this.pBoxNode
     return (this.pBoxNode = ParallelogramNode.createParallelogramNodeForCurveSegDefaultOffset(
       this,
@@ -55,7 +55,7 @@ export class BezierSeg implements ICurve {
 
   //throw away the segments [0,u] and [v,1] of the segment
   // Returns the trimmed curve
-  trim(u: number, v: number) {
+  trim(u: number, v: number): ICurve {
     u = BezierSeg.adjustParamTo01(u)
     v = BezierSeg.adjustParamTo01(v)
 
@@ -78,7 +78,7 @@ export class BezierSeg implements ICurve {
   }
 
   // Not Implemented: Returns the trimmed curve, wrapping around the end if start is greater than end.
-  trimWithWrap(start: number, end: number) {
+  trimWithWrap(start: number, end: number): ICurve {
     throw 'NotImplementedException()'
     return null
   }
@@ -106,7 +106,7 @@ export class BezierSeg implements ICurve {
   }
 
   // third derivative
-  thirdDerivative(t: number) {
+  thirdDerivative(t: number): Point {
     return this.l.mul(6)
   }
   // the constructor
@@ -157,7 +157,7 @@ export class BezierSeg implements ICurve {
   }
 
   // Offsets the curve in the direction of dir
-  offsetCurve(offset: number, dir: Point) {
+  offsetCurve(offset: number, dir: Point): ICurve {
     return null
   }
 
@@ -176,7 +176,12 @@ export class BezierSeg implements ICurve {
   }
 
   //
-  static lengthOnControlPolygon(b0: Point, b1: Point, b2: Point, b3: Point) {
+  static lengthOnControlPolygon(
+    b0: Point,
+    b1: Point,
+    b2: Point,
+    b3: Point,
+  ): number {
     const innerCordLength = b3.sub(b0).length
     const controlPointPolygonLength =
       b1.sub(b0).length + b2.sub(b1).length + b3.sub(b2).length
@@ -295,16 +300,16 @@ export class BezierSeg implements ICurve {
   }
 
   // the seconde derivative of x coord
-  Xpp(t: number) {
+  Xpp(t: number): number {
     return 6 * this.l.x * t + 2 * this.e.x
   }
   // the third derivative of x coordinate
-  Xppp(t: number) {
+  Xppp(t: number): number {
     return 6 * this.l.x
   }
 
   // the third derivative of y coordinate
-  Yppp(t: number) {
+  Yppp(t: number): number {
     return 6 * this.l.y
   }
 

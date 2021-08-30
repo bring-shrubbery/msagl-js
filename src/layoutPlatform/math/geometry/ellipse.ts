@@ -45,7 +45,7 @@ export class Ellipse implements ICurve {
   }
 
   // Reverse the ellipe: not implemented.
-  reverse() {
+  reverse(): ICurve {
     return null // throw new Exception("not implemented");
   }
 
@@ -128,7 +128,7 @@ export class Ellipse implements ICurve {
   }
 
   // a tree of ParallelogramNodes covering the edge
-  pNodeOverICurve() {
+  pNodeOverICurve(): PN {
     if (this.pNode != null) return this.pNode
     return (this.pNode = ParallelogramNode.createParallelogramNodeForCurveSegDefaultOffset(
       this,
@@ -230,7 +230,7 @@ export class Ellipse implements ICurve {
   }
 
   // Transforms the ellipse
-  transform(transformation: PlaneTransformation) {
+  transform(transformation: PlaneTransformation): ICurve {
     if (transformation != null) {
       const ap = transformation
         .multiplyPoint(this.aAxis)
@@ -251,14 +251,18 @@ export class Ellipse implements ICurve {
 
   // returns a parameter t such that the distance between curve[t] and targetPoint is minimal
   // and t belongs to the closed segment [low,high]
-  closestParameterWithinBounds(targetPoint: Point, low: number, high: number) {
+  closestParameterWithinBounds(
+    targetPoint: Point,
+    low: number,
+    high: number,
+  ): number {
     const numberOfTestPoints = 8
     const t = (high - low) / (numberOfTestPoints + 1)
     let closest = low
     let minDist = Number.MAX_VALUE
     for (let i = 0; i <= numberOfTestPoints; i++) {
       const par = low + i * t
-      const p = targetPoint.sub(this[par])
+      const p = targetPoint.sub(this.value(par))
       const d = p.dot(p)
       if (d < minDist) {
         minDist = d
@@ -285,7 +289,7 @@ export class Ellipse implements ICurve {
     )
   }
 
-  get length() {
+  get length(): number {
     return Curve.lengthWithInterpolation(this)
   }
 

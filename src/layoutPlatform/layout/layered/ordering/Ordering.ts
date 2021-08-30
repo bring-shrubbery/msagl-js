@@ -6,7 +6,7 @@ import {LayerArrays} from '../LayerArrays'
 import {ProperLayeredGraph} from '../ProperLayeredGraph'
 import {SugiyamaLayoutSettings} from '../SugiyamaLayoutSettings'
 import {OrderingMeasure} from './OrderingMeasure'
-import SortedMap = require('collections/sorted-map')
+import {SortedMap} from "@esfx/collections-sortedmap"
 import {CancelToken} from '../../../utils/cancelToken'
 import {LayerEdge} from '../LayerEdge'
 import {Stack} from 'stack-typescript'
@@ -369,7 +369,7 @@ export class Ordering extends Algorithm {
           }
         } else {
           const io = o as number
-          const al = []
+          const al = new Array<number>()
           s.set(m, al)
           if (HeadOfTheCoin()) {
             al.push(io)
@@ -519,7 +519,7 @@ export class Ordering extends Algorithm {
       if (this.hasCrossWeights) {
         const inCounts = (this.inCrossingCount[i] = new Map<number, number>())
         for (const le of this.properLayeredGraph.InEdges(i))
-          inCounts[le.Source] = le.CrossingWeight
+          inCounts.set(le.Source, le.CrossingWeight)
       }
       this.pOrder[i] = new Map<number, number>()
       count = this.properLayeredGraph.OutEdgesCount(i)
@@ -528,7 +528,7 @@ export class Ordering extends Algorithm {
       if (this.hasCrossWeights) {
         const outCounts = (this.outCrossingCount[i] = new Map<number, number>())
         for (const le of this.properLayeredGraph.OutEdges(i))
-          outCounts[le.Target] = le.CrossingWeight
+          outCounts.set(le.Target, le.CrossingWeight)
       }
     }
   }
@@ -621,8 +621,8 @@ export class Ordering extends Algorithm {
       const xu = this.X[uNeib]
       let vnb: number
       for (; j < vl && this.X[(vnb = vnbs[j + 1])] < xu; j++)
-        vCrossingNumberSeenAlready += vCrossingCount[vnb]
-      ret += vCrossingNumberSeenAlready * uCrossingCounts[uNeib]
+        vCrossingNumberSeenAlready += vCrossingCount.get(vnb)
+      ret += vCrossingNumberSeenAlready * uCrossingCounts.get(uNeib)
     }
     return ret
   }
