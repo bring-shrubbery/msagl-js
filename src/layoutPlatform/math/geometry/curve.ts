@@ -85,7 +85,7 @@ export class Curve implements ICurve {
     _seg: ICurve,
     _eps: number,
   ): number {
-    throw 'not implemented'
+    throw new Error('not implemented')
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static lengthWithInterpolation(_seg: ICurve): number {

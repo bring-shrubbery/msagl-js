@@ -305,7 +305,7 @@ test('src/tests/data/graphvis/ER.gv', () => {
   createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
 })
 
-xtest('b.gv', () => {
+test('b.gv', () => {
   const ss = new SugiyamaLayoutSettings()
   ss.BrandesThreshold = 1
   const dg = runLayout('src/tests/data/graphvis/b.gv', ss)

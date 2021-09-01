@@ -7,6 +7,7 @@ import {Curve} from '../../../math/geometry/curve'
 import {GeomConstants} from '../../../math/geometry/geomConstants'
 import {LineSegment} from '../../../math/geometry/lineSegment'
 import {Polyline} from '../../../math/geometry/polyline'
+import {Assert} from '../../../utils/assert'
 import {Path} from './Path'
 import {SegWithIndex} from './SegWithIndex'
 
@@ -68,7 +69,7 @@ export class StaircaseRemover {
       return false
     }
 
-    t.pts = RemoveStaircase(pts, staircaseStart)
+    t.pts = this.RemoveStaircasePN(t.pts, staircaseStart)
     return true
   }
 
@@ -143,17 +144,17 @@ export class StaircaseRemover {
       .any()
   }
 
-  IntersectObstacleHierarchy(a: Point, b: Point, c: Point): boolean {
+  IntersectObstacleHierarchyPPP(a: Point, b: Point, c: Point): boolean {
     return (
-      this.IntersectObstacleHierarchy(new LineSegment(a, b)) ||
-      this.IntersectObstacleHierarchy(new LineSegment(b, c))
+      this.IntersectObstacleHierarchyL(LineSegment.mkPP(a, b)) ||
+      this.IntersectObstacleHierarchyL(LineSegment.mkPP(b, c))
     )
   }
 
-  IntersectObstacleHierarchy(ls: LineSegment): boolean {
-    return this.HierarchyOfObstacles.GetAllIntersecting(
-      ls.boundingBox,
-    ).Any(() => {}, Curve.CurveCurveIntersectionOne(ls, poly, false) != null)
+  IntersectObstacleHierarchyL(ls: LineSegment): boolean {
+    return this.HierarchyOfObstacles.GetAllIntersecting(ls.boundingBox).some(
+      (poly) => Curve.intersectionOne(ls, poly, false) != null,
+    )
   }
 
   IsStaircase(
@@ -178,7 +179,7 @@ export class StaircaseRemover {
     }
 
     c = StaircaseRemover.GetFlippedPoint(pts, offset)
-    if (this.IntersectObstacleHierarchy(b, c, d)) {
+    if (this.IntersectObstacleHierarchyPPP(b, c, d)) {
       return false
     }
 
@@ -190,30 +191,28 @@ export class StaircaseRemover {
     const a: Point = pts[staircaseStart]
     const b: Point = pts[staircaseStart + 1]
     const horiz = Math.abs(a.y - b.y) < GeomConstants.distanceEpsilon / 2
-    return this.RemoveStaircasePNH(pts, staircaseStart, horiz)
+    return this.RemoveStaircasePNB(pts, staircaseStart, horiz)
   }
 
-  RemoveStaircasePNH(
+  RemoveStaircasePNB(
     pts: Point[],
     staircaseStart: number,
     horiz: boolean,
   ): Point[] {
     this.RemoveSegs(pts)
     const ret = new Array(pts.length - 2)
-    Array.Copy(pts, ret, staircaseStart + 1)
+    ArrayCopyAAN(pts, ret, staircaseStart + 1)
     const a = pts[staircaseStart + 1]
     const c = pts[staircaseStart + 3]
-    ret[staircaseStart + 1] = new Point(c.x, a.y)
-    // TODO: Warning!!!, inline IF is not supported ?
-    horiz
-    new Point(a.x, c.y)
-    Array.Copy(
+    ret[staircaseStart + 1] = horiz ? new Point(c.x, a.y) : new Point(a.x, c.y)
+    ArrayCopyANANN(
       pts,
       staircaseStart + 4,
       ret,
       staircaseStart + 2,
-      ret.length - (staircaseStart - 2),
+      ret.length - staircaseStart - 2,
     )
+
     this.InsertNewSegs(ret, staircaseStart)
     return ret
   }
@@ -234,13 +233,13 @@ export class StaircaseRemover {
   }
 
   InitHierarchies() {
-    for (const path in this.Paths) {
+    for (const path of this.Paths) {
       this.InsertPathSegs(path)
     }
   }
 
   InsertPathSegs(path: Path) {
-    this.InsertSegs(<Point[]>path.PathPoints)
+    this.InsertSegs(path.PathPoints.toArray())
   }
 
   InsertSegs(pts: Point[]) {
@@ -255,6 +254,25 @@ export class StaircaseRemover {
   }
 
   static Rect(seg: SegWithIndex): Rectangle {
-    return new Rectangle(seg.Start, seg.End)
+    return Rectangle.mkPP(seg.Start, seg.End)
+  }
+}
+function ArrayCopyANANN<T>(
+  a: T[],
+  ai: number,
+  b: T[],
+  bi: number,
+  length: number,
+) {
+  while (length-- > 0) {
+    b[bi++] = a[ai++]
+  }
+}
+function ArrayCopyAAN<T>(a: T[], b: T[], length: number) {
+  Assert.assert(a.length >= length)
+  Assert.assert(b.length >= length)
+  let i = 0
+  while (length-- > 0) {
+    b[i++] = a[i++]
   }
 }

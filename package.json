@@ -30,6 +30,7 @@
     ]
   },
   "dependencies": {
+    "@esfx/collections": "^1.0.0-pre.19",
     "@esfx/collections-sortedmap": "^1.0.0-pre.19",
     "collections": "^5.1.12",
     "file-system": "^1.2.2",
