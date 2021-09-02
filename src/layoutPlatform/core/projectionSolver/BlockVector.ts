@@ -1,54 +1,43 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BlockVector.cs" company="Microsoft">
-//   (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
-// <summary>
-// MSAGL class for Block vector management.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-using System.Collections.Generic;
-using System.Diagnostics;
+import {Assert} from '../../utils/assert'
+import {Block} from './Block'
 
-namespace Microsoft.Msagl.Core.ProjectionSolver
-{
-    /// <summary>
-    /// </summary>
-    class BlockVector
-    {
-        internal List<Block> Vector { get; private set; }
-        internal int Count { get { return Vector.Count; } }
-        internal Block this[int index] { get { return Vector[index]; } }
+export class BlockVector {
+  Vector: Array<Block>
+  get Count(): number {
+    return this.Vector.length
+  }
 
-        internal BlockVector()
-        {
-            Vector = new List<Block>();
-        }
+  Item(index: number): Block {
+    return this.Vector[index]
+  }
 
-        internal void Add(Block block)
-        {
-            block.VectorIndex = Vector.Count;
-            Vector.Add(block);
-            Debug.Assert(Vector[block.VectorIndex] == block, "Inconsistent block.VectorIndex");
-        }
+  constructor() {
+    this.Vector = new Array<Block>()
+  }
 
-        internal void Remove(Block block)
-        {
-            Debug.Assert(Vector[block.VectorIndex] == block, "Inconsistent block.VectorIndex");
-            Block swapBlock = Vector[Vector.Count - 1];
-            Vector[block.VectorIndex] = swapBlock;
-            swapBlock.VectorIndex = block.VectorIndex;
-            Vector.RemoveAt(Vector.Count - 1);
-            Debug.Assert((0 == Vector.Count) || (block == swapBlock) || (Vector[swapBlock.VectorIndex] == swapBlock),
-                    "Inconsistent swapBlock.VectorIndex");
-            Debug.Assert((0 == Vector.Count) || (Vector[Vector.Count - 1].VectorIndex == (Vector.Count - 1)),
-                    "Inconsistent finalBlock.VectorIndex");
-        }
+  Add(block: Block) {
+    block.VectorIndex = this.Vector.length
+    this.Vector.push(block)
+    Assert.assert(
+      this.Vector[block.VectorIndex] == block,
+      'Inconsistent block.VectorIndex',
+    )
+  }
 
-        /// <summary>
-        /// </summary>
-        public override string ToString()
-        {
-            return Vector.ToString();
-        }
-    }
+  Remove(block: Block) {
+    Assert.assert(
+      this.Vector[block.VectorIndex] == block,
+      'Inconsistent block.VectorIndex',
+    )
+    const swapBlock: Block = this.Vector[this.Vector.length - 1]
+    this.Vector[block.VectorIndex] = swapBlock
+    swapBlock.VectorIndex = block.VectorIndex
+    this.Vector.pop()
+  }
+
+  ///  <summary>
+  ///  </summary>
+  toString(): string {
+    return this.Vector.toString()
+  }
 }

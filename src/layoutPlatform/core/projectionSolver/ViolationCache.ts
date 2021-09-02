@@ -60,7 +60,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
         {
             LowViolation = 0.0;
             this.numConstraints = 0;
-            if (null == this.constraints)
+            if ( this.constraints == null)
             {
                 this.constraints = new Constraint[MaxConstraints];
             }

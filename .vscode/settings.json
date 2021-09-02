@@ -12,5 +12,6 @@
     "**/.git/subtree-cache/**": true,
     "**/node_modules/**": true
   },
-  "git.autofetch": true
+  "git.autofetch": true,
+  "jest.jestCommandLine": "npm t --"
 }

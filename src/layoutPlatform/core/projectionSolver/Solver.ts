@@ -944,7 +944,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
 
             double maxViolation;
             Constraint maxViolatedConstraint = GetMaxViolatedConstraint(out maxViolation, useViolationCache);
-            if (null == maxViolatedConstraint)
+            if ( maxViolatedConstraint == null)
             {
 #if VERBOSE
                 System.Diagnostics.Debug.WriteLine("Project() found no violations");
@@ -1341,7 +1341,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
                     // (We already know that if the previous maxViolatedConstraint is to be inserted, then its violation is
                     // greater than any in the cache).  On the first iteration of "for each constraint", maxViolatedConstraint
                     // is null, hence the constraint != maxViolatedConstraint test.
-                    if ((null == cacheInsertConstraint)
+                    if (( cacheInsertConstraint == null)
                             && (constraint != maxViolatedConstraint)
                             && (!this.violationCache.IsFull || (violation > this.violationCache.LowViolation)))
                     {

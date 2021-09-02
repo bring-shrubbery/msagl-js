@@ -1,27 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Constraint.cs" company="Microsoft">
-//   (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
-// <summary>
-// MSAGL Constraint class for Projection solutions.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-// Remove this from project build and uncomment here to selectively enable per-class.
-//#define VERBOSE
-
-using System;
-using System.Diagnostics;
-
-namespace Microsoft.Msagl.Core.ProjectionSolver
-{
-    /// <summary>
-    /// A Constraint defines the required minimal separation between two Variables
-    /// (thus is essentially a wrapper around the require minimal separation between
-    /// two nodes).
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1036:OverrideMethodsOnComparableTypes")]
-    public class Constraint : IComparable<Constraint>
+    export class Constraint : IComparable<Constraint>
     {
         /// <summary>
         /// The Left (if horizontal; Top, if vertical) variable of the constraint.
@@ -204,8 +181,8 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
             return (this.CompareTo((Constraint)obj) == 0);
         }
         public static bool operator ==(Constraint lhs, Constraint rhs) {
-            if (null == (object)lhs) {          // Cast to object to avoid recursive op==
-                return (null == (object)rhs);
+            if ( (object)lhs == null) {          // Cast to object to avoid recursive op==
+                return ( (object)rhs == null);
             }
             return lhs.Equals(rhs);
         }

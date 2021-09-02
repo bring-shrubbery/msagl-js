@@ -1,71 +1,78 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DfDvNode.cs" company="Microsoft">
-//   (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
-// <summary>
-// MSAGL class for Constraint-tree traversal iteration nodes for Projection Solver.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+import {String} from 'typescript-string-operations'
+import {Assert} from '../../utils/assert'
+import {Constraint} from './Constraint'
+import {ConstraintVector} from './ConstraintVector'
+import {DfDvNode} from './DfDvNode'
+import {Variable} from './Variable'
+///  <summary>
+///  variableDoneEval is NULL if we are starting an evaluation; if recursive, it's the variable
+///  on that side from the parent call, which was already processed.
+///  </summary>
+export class DfDvNode {
+  Parent: DfDvNode
+  ConstraintToEval(): Constraint {}
+  set ConstraintToEval(value: Constraint) {}
 
-namespace Microsoft.Msagl.Core.ProjectionSolver
-{
-    using System.Globalization;
+  get VariableToEval(): Variable {}
+  set VariableToEval(value: Variable) {}
 
-    /// <summary>
-    /// variableDoneEval is NULL if we are starting an evaluation; if recursive, it's the variable
-    /// on that side from the parent call, which was already processed.
-    /// </summary>
-    class DfDvNode
-    {
-        internal DfDvNode Parent { get; private set; }
-        internal Constraint ConstraintToEval { get; private set; }
-        internal Variable VariableToEval { get; private set; }
-        internal Variable VariableDoneEval { get; private set; }
+  get VariableDoneEval(): Variable {}
+  set VariableDoneEval(value: Variable) {}
 
-        // For Solution.MaxConstraintTreeDepth
-        internal int Depth { get; set; }
+  //  For Solution.MaxConstraintTreeDepth
+  get Depth(): number {}
+  set Depth(value: number) {}
 
-        internal bool ChildrenHaveBeenPushed { get; set; }
+  get ChildrenHaveBeenPushed(): boolean {}
+  set ChildrenHaveBeenPushed(value: boolean) {}
 
-        internal DfDvNode(DfDvNode parent, Constraint constraintToEval, Variable variableToEval, Variable variableDoneEval)
-        {
-            Set(parent, constraintToEval, variableToEval, variableDoneEval);
-        }
+  constructor(
+    parent: DfDvNode,
+    constraintToEval: Constraint,
+    variableToEval: Variable,
+    variableDoneEval: Variable,
+  ) {
+    this.Set(parent, constraintToEval, variableToEval, variableDoneEval)
+  }
 
-        // For DummyParentNode only.
-        internal DfDvNode(Constraint dummyConstraint)
-        {
-            this.ConstraintToEval = dummyConstraint;
-            this.Depth = -1;        // The first real node adds 1, so it starts at 0.
-        }
+  //  For DummyParentNode only.
+  constructor(dummyConstraint: Constraint) {
+    this.ConstraintToEval = dummyConstraint
+    this.Depth = -1
+    //  The first real node adds 1, so it starts at 0.
+  }
 
-        internal DfDvNode Set(DfDvNode parent, Constraint constraintToEval, Variable variableToEval, Variable variableDoneEval)
-        {
-            this.Parent = parent;
-            this.ConstraintToEval = constraintToEval;
-            this.VariableToEval = variableToEval;
-            this.VariableDoneEval = variableDoneEval;
-            this.Depth = 0;
-            this.ChildrenHaveBeenPushed = false;
+  Set(
+    parent: DfDvNode,
+    constraintToEval: Constraint,
+    variableToEval: Variable,
+    variableDoneEval: Variable,
+  ): DfDvNode {
+    this.Parent = parent
+    this.ConstraintToEval = constraintToEval
+    this.VariableToEval = variableToEval
+    this.VariableDoneEval = variableDoneEval
+    this.Depth = 0
+    this.ChildrenHaveBeenPushed = false
+    constraintToEval.Lagrangian = 0
+    return this
+  }
 
-            constraintToEval.Lagrangian = 0.0;
-            return this;
-        }
+  get IsLeftToRight(): boolean {
+    return this.VariableToEval == this.ConstraintToEval.Right
+  }
 
-        internal bool IsLeftToRight { get { return this.VariableToEval == this.ConstraintToEval.Right; } }
-
-        /// <summary>
-        /// </summary>
-        public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "{0} {1}{2} - {3}{4} ({5})",
-#if VERIFY || VERBOSE
-                            this.ConstraintToEval.Id,
-#else
-                            "",
-#endif
-                            IsLeftToRight ? "" : "*", this.ConstraintToEval.Left.Name,
-                            IsLeftToRight ? "*" : "", this.ConstraintToEval.Right.Name, Depth);
-        }
-    }
+  ///  <summary>
+  ///  </summary>
+  toString(): string {
+    return String.Format(
+      '{0} {1}{2} - {3}{4} ({5})',
+      '',
+      this.IsLeftToRight ? '' : '*',
+      this.ConstraintToEval.Left.Name,
+      this.IsLeftToRight ? '*' : '',
+      this.ConstraintToEval.Right.Name,
+      this.Depth,
+    )
+  }
 }

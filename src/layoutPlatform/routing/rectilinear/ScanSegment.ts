@@ -266,7 +266,7 @@ export class ScanSegment extends SegmentBase {
     // different line).
     ot.extendStart = true
     ot.extendEnd = true
-    if (null == t.seg) {
+    if (t.seg == null) {
       return false
     }
 

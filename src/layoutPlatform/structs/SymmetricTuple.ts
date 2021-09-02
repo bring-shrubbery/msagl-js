@@ -17,7 +17,7 @@ export class SymmetricTuple<T> {
   }
 
   Equals(obj: unknown): boolean {
-    if (null == obj) {
+    if (obj == null) {
       return false
     }
 

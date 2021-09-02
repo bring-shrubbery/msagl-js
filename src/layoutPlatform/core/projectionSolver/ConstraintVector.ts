@@ -1,20 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConstraintVector.cs" company="Microsoft">
-//   (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
-// <summary>
-// MSAGL class for Constraint vector management for Projection Solver.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-using System.Diagnostics;
-using System.Collections.Generic;
-
-namespace Microsoft.Msagl.Core.ProjectionSolver
-{
-    /// <summary>
-    /// </summary>
-    class ConstraintVector
+export class ConstraintVector
     {
         internal Constraint[] Vector { get; private set; }
         internal bool IsEmpty { get { return null == Vector; } }
@@ -80,7 +64,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
         internal void Reinitialize()
         {
             // Qpsc requires reinitializing the block structure
-            if (null == Vector)
+            if ( Vector == null)
             {
                 return;
             }
