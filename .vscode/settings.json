@@ -13,5 +13,5 @@
     "**/node_modules/**": true
   },
   "git.autofetch": true,
-  "jest.jestCommandLine": "node_modules/.bin/jest --"
+  "jest.jestCommandLine": "npm t --"
 }
