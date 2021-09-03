@@ -1,6 +1,6 @@
 ///  just a convenient interface to the real solver
 
-import {IEnumerable} from 'linq-to-typescript'
+import {from, IEnumerable} from 'linq-to-typescript'
 import {RealNumberSpan} from '../../utils/RealNumberSpan'
 import {Solution} from './Solution'
 import {Solver} from './Solver'
@@ -182,12 +182,9 @@ export class SolverShell {
   //         }
   AdjustConstraintsForMovedFixedVars(): boolean {
     const movedFixedVars = new Set<number>(
-      this.fixedVars
-        .Where(() => {},
-        !SolverShell.Close(kv.Value, this.GetVariableResolvedPosition(kv.Key)))
-        .Select(() => {}, p.Key),
+      from(this.fixedVars.entries()).where(([k, v]) => !SolverShell.Close(v, this.GetVariableResolvedPosition(k))).select(([k,_]) => k).toArray()
     )
-    if (movedFixedVars.Count == 0) {
+    if (movedFixedVars.size == 0) {
       return false
     }
 
@@ -195,13 +192,14 @@ export class SolverShell {
   }
 
   static Close(a: number, b: number): boolean {
-    return Math.Abs(a - b) < 0.0005
+    return Math.abs(a - b) < 0.0005
     // so if a fixed variable moved less than 0.0001 we do not care!
   }
 
   AdjustConstraintsForMovedFixedVarSet(movedFixedVars: Set<number>): boolean {
-    while (movedFixedVars.Count > 0) {
-      const fixedVar = movedFixedVars.First()
+    while (movedFixedVars.size > 0) {
+      const fixedVar = from(movedFixedVars).first()
+
       if (!this.AdjustSubtreeOfFixedVar(fixedVar, /* ref */ movedFixedVars)) {
         return false
       }
@@ -212,18 +210,18 @@ export class SolverShell {
 
   AdjustSubtreeOfFixedVar(
     fixedVar: number,
-    /* ref */ movedFixedVars: Set<number>,
+    movedFixedVars: Set<number>,
   ): boolean {
-    let successInAdjusting: boolean
+    const t = {successInAdjusting: false}
     const neighbors = this.AdjustConstraintsOfNeighborsOfFixedVariable(
       fixedVar,
-      /* out */ successInAdjusting,
+      t,
     )
-    if (!successInAdjusting) {
+    if (!t.successInAdjusting) {
       return false
     }
 
-    if (!neighbors.Any()) {
+    if (!neighbors.any()) {
       return false
     }
 
@@ -241,21 +239,21 @@ export class SolverShell {
   ///  <returns></returns>
   AdjustConstraintsOfNeighborsOfFixedVariable(
     fixedVar: number,
-    /* out */ successInAdjusing: boolean,
+    t:{ successInAdjusing: boolean}
   ): IEnumerable<number> {
-    const nbs = this.variables[fixedVar].Block.Variables
+    const nbs = this.variables.get(fixedVar).Block.Variables
     const currentSpan = new RealNumberSpan()
     const idealSpan = new RealNumberSpan()
     let scale = 1
     for (const u of nbs) {
-      if (!this.fixedVars.ContainsKey(<number>u.UserData)) {
-        // TODO: Warning!!! continue If
+      if (!this.fixedVars.has(<number>u.UserData)) {
+        continue
       }
 
       currentSpan.AddValue(u.ActualPos)
       idealSpan.AddValue(u.DesiredPos)
-      if (idealSpan.Length > 0) {
-        scale = Math.Max(scale, currentSpan.Length / idealSpan.Length)
+      if (idealSpan.length > 0) {
+        scale = Math.max(scale, currentSpan.length / idealSpan.length)
       }
     }
 
@@ -264,31 +262,23 @@ export class SolverShell {
     }
 
     // just relax the constraints
-    successInAdjusing = this.FixActiveConstraints(nbs, scale)
-    return nbs.Select(() => {}, <number>u.UserData)
+    t.successInAdjusing = this.FixActiveConstraints(from(nbs), scale)
+    return from(nbs).select((u) =>  <number>u.UserData)
   }
 
   ///  if all active constraint gaps are less than this epsilon we should stop trying adjusting
 
-  /* const */ static FailToAdjustEpsilon = 0.001
+  readonly FailToAdjustEpsilon = 0.001
 
   FixActiveConstraints(neighbs: IEnumerable<Variable>, scale: number): boolean {
     let ret = false
-    for (const c of from) {
-      v
+    for (const c of neighbs.selectMany(v=>v.LeftConstraints).where(c=>c.IsActive)) {
+      if (c.Gap > this.FailToAdjustEpsilon)
+          ret = true;
+      this.solver.SetConstraintUpdate(c, c.Gap/scale);
     }
 
-    let from: neighbs
-    c
-    let where: v.LeftConstraints
-    let select: c.IsActive
-    c
-    if (c.Gap > FailToAdjustEpsilon) {
-      ret = true
-    }
-
-    this.solver.SetConstraintUpdate(c, c.Gap / scale)
-    return ret
+    return ret;
   }
 
   ///  Obtain the solved position for a node.
@@ -307,7 +297,7 @@ export class SolverShell {
 
   public InitSolver() {
     this.solver = new Solver()
-    this.variables.Clear()
+    this.variables.clear()
   }
 
   ///  Add a variable with a known and unchanging position.
@@ -315,7 +305,7 @@ export class SolverShell {
   ///  <param name="id">Caller's unique identifier for the node</param>
   ///  <param name="position">Desired position.</param>
   public AddFixedVariable(id: number, position: number) {
-    this.AddVariableWithIdealPosition(id, position, FixedVarWeight)
+    this.AddVariableWithIdealPositionNN(id, position, SolverShell.FixedVarWeight)
     this.fixedVars[id] = position
   }
 
