@@ -1,3 +1,4 @@
+import { Stack } from 'stack-typescript'
 import {String} from 'typescript-string-operations'
 import {Assert} from '../../utils/assert'
 import {Constraint} from './Constraint'
@@ -104,7 +105,7 @@ export class Block {
       0 == this.allConstraints.DfDvStack.length,
       'Leftovers of ComputeDfDvStack',
     )
-    this.allConstraints.DfDvStack.Clear()
+    this.allConstraints.DfDvStack = new Stack()
     //  Variables for initializing the first node.
     const dummyConstraint = new Constraint(initialVarToEval)
     this.dfDvDummyParentNode = new DfDvNode(dummyConstraint)
@@ -114,13 +115,13 @@ export class Block {
       initialVarToEval,
       null,
     )
-    this.allConstraints.DfDvStack.Push(firstNode)
+    this.allConstraints.DfDvStack.push(firstNode)
     //  Iteratively recurse, processing all children of a constraint before the constraint itself.
     //  Loop termination is by testing for completion based on node==firstNode which is faster than
     //  (non-inlined) Stack.length.
     for (;;) {
       //  Leave the node on the stack until we've processed all of its children.
-      const node = this.allConstraints.DfDvStack.Peek()
+      const node = this.allConstraints.DfDvStack.top
       const prevStackCount: number = this.allConstraints.DfDvStack.length
       if (!node.ChildrenHaveBeenPushed) {
         node.ChildrenHaveBeenPushed = true
@@ -193,10 +194,10 @@ export class Block {
       //  the stack and process it.  If it's the initial node, we've already updated DummyConstraint.Lagrangian
       //  from all child nodes, and it's of the DummyParentNode as well so this will add the final dfdv.
       Assert.assert(
-        this.allConstraints.DfDvStack.Peek() == node,
-        "DfDvStack.Peek() should be 'node'",
+        this.allConstraints.DfDvStack.top == node,
+        "DfDvStack.top should be 'node'",
       )
-      this.allConstraints.DfDvStack.Pop()
+      this.allConstraints.DfDvStack.pop()
       this.ProcessDfDvLeafNode(node)
       if (node == firstNode) {
         Assert.assert(
@@ -255,7 +256,7 @@ export class Block {
 
   //  Directly evaluate a leaf node rather than defer it to stack push/pop.
   ProcessDfDvLeafNodeDirectly(node: DfDvNode) {
-    this.Debug_MarkForCycleCheck(node.ConstraintToEval)
+    // this.Debug_MarkForCycleCheck(node.ConstraintToEval)
     this.ProcessDfDvLeafNode(node)
   }
 
@@ -266,14 +267,14 @@ export class Block {
     variableDoneEval: Variable,
   ): DfDvNode {
     const node: DfDvNode =
-      this.allConstraints.DfDvRecycleStack.Count > 0
-        ? this.allConstraints.DfDvRecycleStack.Pop().Set(
+      this.allConstraints.DfDvRecycleStack.size > 0
+        ? this.allConstraints.DfDvRecycleStack.pop().Set(
             parent,
             constraintToEval,
             variableToEval,
             variableDoneEval,
           )
-        : new DfDvNode(
+        : DfDvNode.constructorDCVV(
             parent,
             constraintToEval,
             variableToEval,
@@ -295,21 +296,21 @@ export class Block {
 
   //  Called by RecurseGetConnectedVariables.
   AddVariableAndPushDfDvNode(lstVars: Array<Variable>, node: DfDvNode) {
-    this.Debug_CycleCheck(node.ConstraintToEval)
+    // this.Debug_CycleCheck(node.ConstraintToEval)
     lstVars.push(node.VariableToEval)
     this.PushOnDfDvStack(node)
   }
 
   PushOnDfDvStack(node: DfDvNode) {
-    this.Debug_MarkForCycleCheck(node.ConstraintToEval)
-    this.allConstraints.DfDvStack.Push(node)
+    // this.Debug_MarkForCycleCheck(node.ConstraintToEval)
+    this.allConstraints.DfDvStack.push(node)
   }
 
   CheckForConstraintPathTarget(node: DfDvNode) {
     if (this.pathTargetVariable == node.VariableToEval) {
       //  Add every variable from pathTargetVariable up the callchain up to but not including initialVarToEval.
       while (node.Parent != this.dfDvDummyParentNode) {
-        this.constraintPath.Add(
+        this.constraintPath.push(
           new ConstraintDirectionPair(
             node.ConstraintToEval,
             node.IsLeftToRight,
@@ -324,7 +325,7 @@ export class Block {
   }
 
   Expand(violatedConstraint: Constraint) {
-    Debug_ClearDfDv(false)
+    // Debug_ClearDfDv(false)
     //  Calculate the derivative at the point of each constraint.
     //  violatedConstraint's edge may be the minimum so pass null for variableDoneEval.
     //
@@ -336,7 +337,7 @@ export class Block {
       this.constraintPath = new Array<ConstraintDirectionPair>()
     }
 
-    this.constraintPath.Clear()
+    this.constraintPath = []
     this.pathTargetVariable = violatedConstraint.Right
     this.ComputeDfDv(violatedConstraint.Left)
     //  Now find the forward non-equality constraint on the path that has the minimal Lagrangina.
@@ -348,7 +349,7 @@ export class Block {
       //  make the "active" status false for that edge.  The active non-Equality constraint
       //  with the minimal Lagrangian *that points rightward* is our split point (do *not*
       //  split Equality constraints).
-      for (const pathItem: ConstraintDirectionPair of this.constraintPath) {
+      for (const pathItem of this.constraintPath) {
         if (
           pathItem.IsForward &&
           (minLagrangianConstraint == null ||
@@ -366,7 +367,7 @@ export class Block {
       }
     }
 
-    this.constraintPath.Clear()
+    this.constraintPath = []
     this.pathTargetVariable = null
     if (minLagrangianConstraint == null) {
       //  If no forward non-equality edge was found, violatedConstraint would have created a cycle.
@@ -423,7 +424,7 @@ export class Block {
     }
 
     let minLagrangianConstraint: Constraint = null
-    Debug_ClearDfDv(false)
+    // Debug_ClearDfDv(false)
     //  Pick a variable from the active constraint list - it doesn't matter which; any variable in
     //  the block is active (except for the initial one-var-per-block case), so ComputeDfDv will evaluate
     //  it along the active path.  Eventually all variables needing to be repositioned will be part of
@@ -477,7 +478,7 @@ export class Block {
     //  also the .Right of a constraint of a variable to the left of varRight.
     //  minLagrangianConstraint.Left is "already evaluated" because we don't want the path evaluation to
     //  back up to it (because we're splitting minLagrangianConstraint by deactivating it).
-    this.DebugVerifyBlockConnectivity()
+    // this.DebugVerifyBlockConnectivity()
     this.TransferConnectedVariables(
       newSplitBlock,
       constraintToSplit.Right,
@@ -489,8 +490,8 @@ export class Block {
       //  The new block's sums were not updated as its variables were added directly to its
       //  variables list, so fully recalculate.
       newSplitBlock.UpdateReferencePos()
-      this.DebugVerifyBlockConnectivity()
-      newSplitBlock.DebugVerifyBlockConnectivity()
+      // this.DebugVerifyBlockConnectivity()
+      // newSplitBlock.DebugVerifyBlockConnectivity()
     } else {
       //  If there were unsatisfiable constraints, we may have tried to transfer all variables;
       //  of that case we simply ignored the transfer operation and left all variables of 'this' block.
@@ -506,7 +507,7 @@ export class Block {
   AddVariable(variable: Variable): void {
     //  Don't recalculate position yet; that will be done after all Block.AddVariable calls and then
     //  block-merge processing are done.
-    this.Variables.Add(variable)
+    this.Variables.push(variable)
     variable.Block = this
     if (1 == this.Variables.length) {
       //  The block's information is set to that of the initial variable's "actual" state; we won't
@@ -595,7 +596,7 @@ export class Block {
     varDoneEval: Variable,
   ) {
     //  First set up cycle-detection of TEST_MSAGL mode.
-    Debug_ClearDfDv(false)
+    // Debug_ClearDfDv(false)
     this.RecurseGetConnectedVariables(lstVars, varToEval, varDoneEval)
   }
 
@@ -611,12 +612,12 @@ export class Block {
       0 == this.allConstraints.DfDvStack.length,
       'Leftovers of ComputeDfDvStack',
     )
-    this.allConstraints.DfDvStack.Clear()
+    this.allConstraints.DfDvStack = new Stack<DfDvNode>();
     Assert.assert(0 == lstVars.length, 'Leftovers of lstVars')
     //  Variables for initializing the first node.
     const dummyConstraint = new Constraint(initialVarToEval)
     this.dfDvDummyParentNode = new DfDvNode(dummyConstraint)
-    this.allConstraints.DfDvStack.Push(
+    this.allConstraints.DfDvStack.push(
       this.GetDfDvNode(
         this.dfDvDummyParentNode,
         dummyConstraint,
@@ -629,7 +630,7 @@ export class Block {
     //  with prior behaviour.
     while (this.allConstraints.DfDvStack.length > 0) {
       //  Leave the node on the stack until we've processed all of its children.
-      const node = this.allConstraints.DfDvStack.Peek()
+      const node = this.allConstraints.DfDvStack.top
       const prevStackCount: number = this.allConstraints.DfDvStack.length
       if (!node.ChildrenHaveBeenPushed) {
         node.ChildrenHaveBeenPushed = true
@@ -689,10 +690,10 @@ export class Block {
 
       //  We are at a non-leaf node and have "recursed" through all its descendents, so we're done with it.
       Assert.assert(
-        this.allConstraints.DfDvStack.Peek() == node,
-        "DfDvStack.Peek() should be 'node'",
+        this.allConstraints.DfDvStack.top == node,
+        "DfDvStack.top should be 'node'",
       )
-      this.allConstraints.RecycleDfDvNode(this.allConstraints.DfDvStack.Pop())
+      this.allConstraints.RecycleDfDvNode(this.allConstraints.DfDvStack.pop())
     }
 
     //  endwhile stack is not empty
@@ -707,7 +708,7 @@ export class Block {
     const numVarsToMove: number = newSplitBlock.Variables.length
     //  cache for perf
     //  The constraints transferred to the new block need to have any stale cycle-detection values cleared out.
-    newSplitBlock.Debug_ClearDfDv(true)
+    // newSplitBlock.Debug_ClearDfDv(true)
     //  Avoid the creation of an inner loop on Array<T>.Remove (which does linear scan and shift
     //  to preserve the order of members).  We don't care about variable ordering within the block
     //  so we can just repeatedly swap of the end one over whichever we're removing.
@@ -739,21 +740,19 @@ export class Block {
       numVarsToMove == this.Variables.length - (lastKeepIndex - 1),
       'variable should not be found twice (probable cycle-detection problem',
     )
-    this.Variables.RemoveRange(
-      lastKeepIndex + 1,
-      this.Variables.length - (lastKeepIndex - 1),
-    )
+    this.Variables = this.Variables.slice( 0,      lastKeepIndex + 1)
+    
     if (0 == this.Variables.length) {
       //  This is probably due to unsatisfiable constraints; we've transferred all the variables,
       //  so just don't split at all; move the variables back into the current block rather than
       //  leaving an empty block of the list.  Caller will detect the empty newSplitBlock and ignore it.
       for (let moveIndex = 0; moveIndex < numVarsToMove; moveIndex++) {
         const variableToMove = newSplitBlock.Variables[moveIndex]
-        this.Variables.Add(variableToMove)
+        this.Variables.push(variableToMove)
         variableToMove.Block = this
       }
 
-      newSplitBlock.Variables.Clear()
+      newSplitBlock.Variables= []
     }
   }
 

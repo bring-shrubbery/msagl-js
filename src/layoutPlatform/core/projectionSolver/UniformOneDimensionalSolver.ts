@@ -125,7 +125,7 @@ export class UniformOneDimensionalSolver {
   RegisterBoundVar(bound: number) {
     if (!this.boundsToInt.has(bound)) {
       const varIndex: number = this.varList.length + this.boundsToInt.size
-      this.boundsToInt[bound] = varIndex
+      this.boundsToInt.set(bound, varIndex)
       this.solverShell.AddFixedVariable(varIndex, bound)
     }
   }
@@ -159,7 +159,7 @@ export class UniformOneDimensionalSolver {
     idealPosition: number,
     width: number,
   ) {
-    this.idealPositions[id] = idealPosition
+    this.idealPositions.set(id, idealPosition)
     this.AddVariableNNBN(id, currentPosition, false, width)
   }
 

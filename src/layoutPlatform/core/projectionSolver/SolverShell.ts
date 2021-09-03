@@ -226,7 +226,7 @@ export class SolverShell {
     }
 
     for (const i of neighbors) {
-      movedFixedVars.Remove(i)
+      movedFixedVars.delete(i)
     }
 
     return true
@@ -239,7 +239,7 @@ export class SolverShell {
   ///  <returns></returns>
   AdjustConstraintsOfNeighborsOfFixedVariable(
     fixedVar: number,
-    t:{ successInAdjusing: boolean}
+    t:{ successInAdjusting: boolean}
   ): IEnumerable<number> {
     const nbs = this.variables.get(fixedVar).Block.Variables
     const currentSpan = new RealNumberSpan()
@@ -262,7 +262,7 @@ export class SolverShell {
     }
 
     // just relax the constraints
-    t.successInAdjusing = this.FixActiveConstraints(from(nbs), scale)
+    t.successInAdjusting = this.FixActiveConstraints(from(nbs), scale)
     return from(nbs).select((u) =>  <number>u.UserData)
   }
 
@@ -305,8 +305,8 @@ export class SolverShell {
   ///  <param name="id">Caller's unique identifier for the node</param>
   ///  <param name="position">Desired position.</param>
   public AddFixedVariable(id: number, position: number) {
-    this.AddVariableWithIdealPositionNN(id, position, SolverShell.FixedVarWeight)
-    this.fixedVars[id] = position
+    this.AddVariableWithIdealPositionNNN(id, position, SolverShell.FixedVarWeight)
+    this.fixedVars.set(id, position)
   }
 
   ///
@@ -314,7 +314,7 @@ export class SolverShell {
   ///  <param name="v"></param>
   ///  <returns></returns>
   public ContainsVariable(v: number): boolean {
-    return this.variables.ContainsKey(v)
+    return this.variables.has(v)
   }
 
   ///  returns the ideal position of the node that had been set at the variable construction

@@ -240,11 +240,11 @@
 //     var station = Glued(metroline[i], gluedMap);
 //     if (seenStations.Contains(station)) {
 //       //we made a cycle - need to cut it out
-//       while (ret.Peek() != station)
+//       while (ret.top != station)
 //         seenStations.Delete(ret.Pop());
 //       continue;
 //     }
-//     if (Point.closeDistEps(station.Position, ret.Peek().Position))
+//     if (Point.closeDistEps(station.Position, ret.top.Position))
 //       continue;
 //     seenStations.Insert(station);
 //     ret.Push(station);

@@ -212,7 +212,7 @@
 //             if (seen.Contains(p.point)) {
 //                 var pp = p.next;
 //                 do {
-//                     var u = stack.Peek();
+//                     var u = stack.top;
 //                     if (u != v) {
 //                         seen.Remove(u);
 //                         stack.Pop();
