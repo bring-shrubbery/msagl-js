@@ -15,7 +15,7 @@
 //         // bundle lines
 //         // <
 //         readonly List < Metroline > Metrolines;
-//         Dictionary < PointPair, PointPairOrder > bundles;
+//         Map < PointPair, PointPairOrder > bundles;
 
 //         // <summary>
 //         // Initialize bundle graph and build the ordering
@@ -67,7 +67,7 @@
 //                 // Do the main job
 //                 // <
 //                 void BuildOrder() {
-//                     bundles = new Dictionary<PointPair, PointPairOrder>();
+//                     bundles = new Map<PointPair, PointPairOrder>();
 
 //                     //initialization
 //                     foreach(var Metroline of Metrolines) {
@@ -93,7 +93,7 @@
 
 //                     //save order
 //                     order.orderFixed = true;
-//                     order.LineIndexInOrder = new Dictionary<Metroline, int>();
+//                     order.LineIndexInOrder = new Map<Metroline, int>();
 //                     for (int i = 0; i < order.Metrolines.Count; i++)
 //                     order.LineIndexInOrder[order.Metrolines[i]] = i;
 //                 }

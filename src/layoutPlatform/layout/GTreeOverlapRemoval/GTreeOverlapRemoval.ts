@@ -303,7 +303,7 @@ export class GTreeOverlapRemoval {
   //  Shows the current state of the algorithm for debug purposes.
   ShowAndMoveBoxesRemoveLater(treeEdges: Array<MstEdge>, proximityEdges: Array<MstEdge>, nodeSizes: Size[], nodePos: Point[], rootId: number) {
     let l = new Array<DebugCurve>();
-    for (let tuple in proximityEdges) {
+    for (let tuple of proximityEdges) {
       l.Add(new DebugCurve(100, 0.5, "black", new LineSegment(nodePos[tuple.Item1], nodePos[tuple.Item2])));
     }
 

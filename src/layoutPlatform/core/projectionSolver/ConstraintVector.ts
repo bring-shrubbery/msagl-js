@@ -76,7 +76,7 @@ export class ConstraintVector {
       return
     }
 
-    for (const constraint in this.Vector) {
+    for (const constraint of this.Vector) {
       constraint.Reinitialize()
     }
 

@@ -14,7 +14,7 @@
 //         readonly Set<VisibilityVertex> targets;
 //         VisibilityVertex _current;
 //         VisibilityVertex closestTarget;
-//         double upperBound = double.PositiveInfinity;
+//         double upperBound = Number.POSITIVE_INFINITY;
 //         VisibilityGraph _visGraph;
 //         internal MultipleSourceMultipleTargetsShortestPathOnVisibilityGraph(IEnumerable<VisibilityVertex> sourceVisVertices,
 //             IEnumerable < VisibilityVertex > targetVisVertices, VisibilityGraph visibilityGraph)

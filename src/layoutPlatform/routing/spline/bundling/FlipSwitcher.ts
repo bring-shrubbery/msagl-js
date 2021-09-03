@@ -14,8 +14,8 @@
 //     internal class FlipSwitcher {
 //         readonly MetroGraphData metroGraphData;
 
-//         Dictionary<Polyline, EdgeGeometry> polylineToEdgeGeom = new Dictionary<Polyline, EdgeGeometry>();
-//         Dictionary<Point, Set<PolylinePoint>> pathsThroughPoints = new Dictionary<Point, Set<PolylinePoint>>();
+//         Map<Polyline, EdgeGeometry> polylineToEdgeGeom = new Map<Polyline, EdgeGeometry>();
+//         Map<Point, Set<PolylinePoint>> pathsThroughPoints = new Map<Point, Set<PolylinePoint>>();
 //     Set < Point > interestingPoints = new Set<Point>();
 //     int numberOfReducedCrossings;
 
@@ -83,7 +83,7 @@
 //     }
 
 //     Polyline ProcessPolyline(Polyline polyline) {
-//         var departed = new Dictionary<Polyline, PolylinePoint>();
+//         var departed = new Map<Polyline, PolylinePoint>();
 //         for (PolylinePoint pp = polyline.startPoint.next; pp != null; pp = pp.next) {
 //             FillDepartedPolylinePoints(pp, departed);
 
@@ -100,7 +100,7 @@
 //         return null;
 //     }
 
-//     void FillDepartedPolylinePoints(PolylinePoint pp, Dictionary < Polyline, PolylinePoint > departed) {
+//     void FillDepartedPolylinePoints(PolylinePoint pp, Map < Polyline, PolylinePoint > departed) {
 //         Point prevPoint = pp.Prev.point;
 //         foreach(PolylinePoint polyPoint of pathsThroughPoints[prevPoint]) {
 //             if (!IsNeighbor(polyPoint, pp)) {

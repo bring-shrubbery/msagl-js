@@ -149,7 +149,7 @@ export class GenericBinaryHeapPriorityQueue<T> {
 
   toString(): string {
     const sb: StringBuilder = new StringBuilder()
-    for (const i in this) {
+    for (const i of this.A) {
       sb.Append(i + ',')
     }
 

@@ -3,7 +3,7 @@
 // // <
 // export class ShapeCreatorForRoutingToParents {
 //   static GetShapes(inParentEdges: IEnumerable<Edge>, outParentEdges: List<Edge>): IEnumerable<Shape> {
-//     let nodesToShapes = new Dictionary<Node, Shape>();
+//     let nodesToShapes = new Map<Node, Shape>();
 //     for (let edge of inParentEdges) {
 //       ProcessAncestorDescendantCouple((<Cluster>(edge.Target)), edge.Source, nodesToShapes);
 //       InsertEdgePortsToShapes(nodesToShapes, edge);
@@ -17,12 +17,12 @@
 //     BindShapes(nodesToShapes);
 //     return nodesToShapes.Values;
 //   }
-//   private static void InsertEdgePortsToShapes(Dictionary <Node, Shape > nodesToShapes, Edge edge) {
+//   private static void InsertEdgePortsToShapes(Map <Node, Shape > nodesToShapes, Edge edge) {
 //   nodesToShapes[edge.Target].Ports.Insert(edge.TargetPort);
 //   nodesToShapes[edge.Source].Ports.Insert(edge.SourcePort);
 // }
 
-//         static void BindShapes(Dictionary < Node, Shape > nodesToShapes) {
+//         static void BindShapes(Map < Node, Shape > nodesToShapes) {
 //   foreach(var nodeShape of nodesToShapes) {
 //     var cluster = nodeShape.Key as Cluster;
 //     if (cluster == null) continue;
@@ -35,7 +35,7 @@
 //   }
 // }
 
-//         static void ProcessAncestorDescendantCouple(Cluster ancestor, Node node, Dictionary < Node, Shape > nodesToShapes) {
+//         static void ProcessAncestorDescendantCouple(Cluster ancestor, Node node, Map < Node, Shape > nodesToShapes) {
 //   Cluster parent = Parent(node);
 //   do {
 //     foreach(var n of Children(parent))
@@ -47,7 +47,7 @@
 //   CreateShapeIfNeeeded(parent, nodesToShapes);
 // }
 
-//         static void CreateShapeIfNeeeded(Node n, Dictionary < Node, Shape > nodesToShapes) {
+//         static void CreateShapeIfNeeeded(Node n, Map < Node, Shape > nodesToShapes) {
 //   if (nodesToShapes.ContainsKey(n)) return;
 //   nodesToShapes[n] = new RelativeShape(() => n.BoundaryCurve)
 // #if TEST_MSAGL

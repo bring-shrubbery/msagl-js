@@ -51,7 +51,7 @@
 //         var pq = new GenericBinaryHeapPriorityQueue<VisibilityVertex>();
 
 //         _source.Distance = 0;
-//         _target.Distance = double.PositiveInfinity;
+//         _target.Distance = Number.POSITIVE_INFINITY;
 //         pq.Enqueue(_source, H(_source));
 
 //         while (!pq.IsEmpty()) {

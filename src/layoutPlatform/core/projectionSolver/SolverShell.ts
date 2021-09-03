@@ -1,12 +1,12 @@
 ///  <summary>
 ///  just a convenient interface to the real solver
 
-import { IEnumerable } from "linq-to-typescript"
-import { Variable } from "./Variable"
+import {IEnumerable} from 'linq-to-typescript'
+import {Variable} from './Variable'
 
 ///  </summary>
-export class SolverShell  {
-  /* const */ static FixedVarWeight: number = 1000000000
+export class SolverShell {
+  /* const */ static FixedVarWeight = 1000000000
 
   variables: Map<number, Variable> = new Map<number, Variable>()
 
@@ -29,7 +29,7 @@ export class SolverShell  {
   ///  <param name="id">Caller's unique identifier for this node</param>
   ///  <param name="position">Desired position</param>
   ///  <param name="weight">The weight of the corresponding term in the goal function</param>
-  public AddVariableWithIdealPosition(
+  public AddVariableWithIdealPositionNNN(
     id: number,
     position: number,
     weight: number,
@@ -43,8 +43,8 @@ export class SolverShell  {
   ///  </summary>
   ///  <param name="id"></param>
   ///  <param name="position"></param>
-  public AddVariableWithIdealPosition(id: number, position: number) {
-    this.AddVariableWithIdealPosition(id, position, 1)
+  public AddVariableWithIdealPositionNN(id: number, position: number) {
+    this.AddVariableWithIdealPositionNNN(id, position, 1)
   }
 
   ///  <summary>
@@ -54,19 +54,19 @@ export class SolverShell  {
   ///  <param name="idRight">Caller's unique identifier for the right node</param>
   ///  <param name="gap">Required gap</param>
   ///  <param name="isEquality">Gap is exact rather than minimum</param>
-  public AddLeftRightSeparationConstraint(
+  public AddLeftRightSeparationConstraintNNNB(
     idLeft: number,
     idRight: number,
     gap: number,
     isEquality: boolean,
   ) {
     //  The variables must already have been added by AddNodeWithDesiredPosition.
-    let varLeft = this.GetVariable(idLeft)
+    const varLeft = this.GetVariable(idLeft)
     if (varLeft == null) {
       return
     }
 
-    let varRight = this.GetVariable(idRight)
+    const varRight = this.GetVariable(idRight)
     if (varRight == null) {
       return
     }
@@ -80,12 +80,12 @@ export class SolverShell  {
   ///  <param name="idLeft">Caller's unique identifier for the left node</param>
   ///  <param name="idRight">Caller's unique identifier for the right node</param>
   ///  <param name="gap">Required minimal gap</param>
-  public AddLeftRightSeparationConstraint(
+  public AddLeftRightSeparationConstraintNNN(
     idLeft: number,
     idRight: number,
     gap: number,
   ) {
-    this.AddLeftRightSeparationConstraint(idLeft, idRight, gap, false)
+    this.AddLeftRightSeparationConstraintNNNB(idLeft, idRight, gap, false)
   }
 
   ///  <summary>
@@ -95,12 +95,12 @@ export class SolverShell  {
   ///  <param name="id2">Caller's unique identifier for the second node.</param>
   ///  <param name="weight">The weight of the corresponding term in the goal function</param>
   public AddGoalTwoVariablesAreClose(id1: number, id2: number, weight: number) {
-    let var1 = this.GetVariable(id1)
+    const var1 = this.GetVariable(id1)
     if (var1 == null) {
       return
     }
 
-    let var2 = this.GetVariable(id2)
+    const var2 = this.GetVariable(id2)
     if (var2 == null) {
       return
     }
@@ -190,7 +190,7 @@ export class SolverShell  {
   //             file.Close();
   //         }
   AdjustConstraintsForMovedFixedVars(): boolean {
-    let movedFixedVars = new Set<number>(
+    const movedFixedVars = new Set<number>(
       this.fixedVars
         .Where(() => {},
         !SolverShell.Close(kv.Value, this.GetVariableResolvedPosition(kv.Key)))
@@ -210,7 +210,7 @@ export class SolverShell  {
 
   AdjustConstraintsForMovedFixedVarSet(movedFixedVars: Set<number>): boolean {
     while (movedFixedVars.Count > 0) {
-      let fixedVar = movedFixedVars.First()
+      const fixedVar = movedFixedVars.First()
       if (!this.AdjustSubtreeOfFixedVar(fixedVar, /* ref */ movedFixedVars)) {
         return false
       }
@@ -224,7 +224,7 @@ export class SolverShell  {
     /* ref */ movedFixedVars: Set<number>,
   ): boolean {
     let successInAdjusting: boolean
-    let neighbors = this.AdjustConstraintsOfNeighborsOfFixedVariable(
+    const neighbors = this.AdjustConstraintsOfNeighborsOfFixedVariable(
       fixedVar,
       /* out */ successInAdjusting,
     )
@@ -236,7 +236,7 @@ export class SolverShell  {
       return false
     }
 
-    for (let i in neighbors) {
+    for (const i of neighbors) {
       movedFixedVars.Remove(i)
     }
 
@@ -253,11 +253,11 @@ export class SolverShell  {
     fixedVar: number,
     /* out */ successInAdjusing: boolean,
   ): IEnumerable<number> {
-    let nbs = this.variables[fixedVar].Block.Variables
-    let currentSpan = new RealNumberSpan()
-    let idealSpan = new RealNumberSpan()
-    let scale: number = 1
-    for (let u in nbs) {
+    const nbs = this.variables[fixedVar].Block.Variables
+    const currentSpan = new RealNumberSpan()
+    const idealSpan = new RealNumberSpan()
+    let scale = 1
+    for (const u of nbs) {
       if (!this.fixedVars.ContainsKey(<number>u.UserData)) {
         // TODO: Warning!!! continue If
       }
@@ -281,11 +281,11 @@ export class SolverShell  {
   ///  <summary>
   ///  if all active constraint gaps are less than this epsilon we should stop trying adjusting
   ///  </summary>
-  /* const */ static FailToAdjustEpsilon: number = 0.001
+  /* const */ static FailToAdjustEpsilon = 0.001
 
   FixActiveConstraints(neighbs: IEnumerable<Variable>, scale: number): boolean {
     let ret = false
-    for (let c in from) {
+    for (const c of from) {
       v
     }
 
@@ -308,7 +308,7 @@ export class SolverShell  {
   ///  <param name="id">Caller's unique identifier for the node.</param>
   ///  <returns>The node's solved position.</returns>
   public GetVariableResolvedPosition(id: number): number {
-    let v = this.GetVariable(id)
+    const v = this.GetVariable(id)
     return 0
     // TODO: Warning!!!, inline IF is not supported ?
     v == null

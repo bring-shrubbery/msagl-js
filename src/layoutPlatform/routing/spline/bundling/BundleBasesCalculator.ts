@@ -18,9 +18,9 @@
 
 //         List<BundleInfo> Bundles;
 //         //boundary curve with bases going outside the hub
-//         Dictionary<ICurve, List<BundleBase>> externalBases;
+//         Map<ICurve, List<BundleBase>> externalBases;
 //     //boundary curve with bases going inside the cluster
-//     Dictionary < ICurve, List < BundleBase >> internalBases;
+//     Map < ICurve, List < BundleBase >> internalBases;
 
 //     internal BundleBasesCalculator(IMetroMapOrderingAlgorithm metroOrdering, MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
 //         this.metroOrdering = metroOrdering;
@@ -64,8 +64,8 @@
 //         #region Initialization
 
 //     void AllocateBundleBases() {
-//         externalBases = new Dictionary<ICurve, List<BundleBase>>();
-//         internalBases = new Dictionary<ICurve, List<BundleBase>>();
+//         externalBases = new Map<ICurve, List<BundleBase>>();
+//         internalBases = new Map<ICurve, List<BundleBase>>();
 //         Bundles = new List<BundleInfo>();
 
 //         foreach(var station of metroGraphData.Stations) {
@@ -628,7 +628,7 @@
 //             double c4 = CenterCoeff * CenterCost(bundleInfo);
 
 //             cost += c1 / 2.0 + c2 / 2.0 + c3 + c4;
-//             Assert.assert(cost < double.PositiveInfinity);
+//             Assert.assert(cost < Number.POSITIVE_INFINITY);
 //         }
 //         return cost;
 //     }

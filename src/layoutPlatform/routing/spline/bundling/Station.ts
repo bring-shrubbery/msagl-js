@@ -52,7 +52,7 @@
 //         // <summary>
 //         // it maps each neighbor to its hub
 //         // <
-//         internal Dictionary<Station, BundleBase> BundleBases = new Dictionary<Station, BundleBase>();
+//         internal Map<Station, BundleBase> BundleBases = new Map<Station, BundleBase>();
 
 //         // <summary>
 //         // it maps a node to a set of tight polylines that can contain the node

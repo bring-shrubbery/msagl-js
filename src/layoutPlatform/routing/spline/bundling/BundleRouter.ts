@@ -1,7 +1,7 @@
 //  The class is responsible for general edge bundling with ordered bundles.
 /*
 import {IEnumerable} from 'linq-to-typescript'
-import {Dictionary} from 'lodash'
+import {Map} from 'lodash'
 import {RectangleNode} from '../../../core/geometry/RTree/RectangleNode'
 import {Port} from '../../../core/layout/Port'
 import {BundlingSettings} from '../../../core/routing/BundlingSettings'
@@ -66,8 +66,8 @@ export class BundleRouter extends Algorithm {
     loosePadding: number,
     tightHierarchy: RectangleNode<Polyline, Point>,
     looseHierarchy: RectangleNode<Polyline, Point>,
-    edgeLooseEnterable: Dictionary<EdgeGeometry, Set<Polyline>>,
-    edgeTightEnterable: Dictionary<EdgeGeometry, Set<Polyline>>,
+    edgeLooseEnterable: Map<EdgeGeometry, Set<Polyline>>,
+    edgeTightEnterable: Map<EdgeGeometry, Set<Polyline>>,
     loosePolylineOfPort: Func<Port, Polyline>,
   ) {
     ValidateArg.IsNotNull(this.geometryGraph, 'geometryGraph')
@@ -303,9 +303,9 @@ export class BundleRouter extends Algorithm {
     return path.Last().point
   }
 
-  EdgeLooseEnterable: Dictionary<EdgeGeometry, Set<Polyline>>
+  EdgeLooseEnterable: Map<EdgeGeometry, Set<Polyline>>
 
-  EdgeTightEnterable: Dictionary<EdgeGeometry, Set<Polyline>>
+  EdgeTightEnterable: Map<EdgeGeometry, Set<Polyline>>
   RoutePathsWithSteinerDijkstra(): boolean {
     this.shortestPathRouter.VisibilityGraph = this.VisibilityGraph
     this.shortestPathRouter.BundlingSettings = this.bundlingSettings
@@ -333,12 +333,12 @@ export class BundleRouter extends Algorithm {
   //      move obstacles to get more free space
   //  <
   AnalyzeEdgeSeparation(): boolean {
-    const crossedCdtEdges: Dictionary<
+    const crossedCdtEdges: Map<
       EdgeGeometry,
       Set<CdtEdge>
-    > = new Dictionary<EdgeGeometry, Set<CdtEdge>>()
+    > = new Map<EdgeGeometry, Set<CdtEdge>>()
     this.shortestPathRouter.FillCrossedCdtEdges(crossedCdtEdges)
-    const pathsOnCdtEdge: Dictionary<
+    const pathsOnCdtEdge: Map<
       CdtEdge,
       Set<EdgeGeometry>
     > = this.GetPathsOnCdtEdge(crossedCdtEdges)
@@ -368,9 +368,9 @@ export class BundleRouter extends Algorithm {
   }
 
   GetPathsOnCdtEdge(
-    crossedEdges: Dictionary<EdgeGeometry, Set<CdtEdge>>,
-  ): Dictionary<CdtEdge, Set<EdgeGeometry>> {
-    const res: Dictionary<CdtEdge, Set<EdgeGeometry>> = new Dictionary<
+    crossedEdges: Map<EdgeGeometry, Set<CdtEdge>>,
+  ): Map<CdtEdge, Set<EdgeGeometry>> {
+    const res: Map<CdtEdge, Set<EdgeGeometry>> = new Map<
       CdtEdge,
       Set<EdgeGeometry>
     >()
@@ -384,7 +384,7 @@ export class BundleRouter extends Algorithm {
   }
 
   CalculateMaxAllowedEdgeSeparation(
-    pathsOnCdtEdge: Dictionary<CdtEdge, Set<EdgeGeometry>>,
+    pathsOnCdtEdge: Map<CdtEdge, Set<EdgeGeometry>>,
   ): number {
     let l = 0.01
     let r = 10
@@ -406,7 +406,7 @@ export class BundleRouter extends Algorithm {
   }
 
   EdgeSeparationIsOk(
-    pathsOnCdtEdge: Dictionary<CdtEdge, Set<EdgeGeometry>>,
+    pathsOnCdtEdge: Map<CdtEdge, Set<EdgeGeometry>>,
     separation: number,
   ): boolean {
     // total number of cdt edges

@@ -260,15 +260,15 @@ export class ConstrainedOrdering {
 
   // CreateInitialOrderInLayers() {
   //   // the idea is to topologically ordering all nodes horizontally, by using vertical components, then fill the layers according to this order
-  //   let nodesToVerticalComponentsRoots: Dictionary<number, number> = this.CreateVerticalComponents();
+  //   let nodesToVerticalComponentsRoots: Map<number, number> = this.CreateVerticalComponents();
   //   let liftedLeftRightRelations: IEnumerable<IntPair> = this.LiftLeftRightRelationsToComponentRoots(nodesToVerticalComponentsRoots).ToArray();
   //   let orderOfVerticalComponentRoots: number[] = TopologicalSort.GetOrderOnEdges(liftedLeftRightRelations);
   //   this.FillLayersWithVerticalComponentsOrder(orderOfVerticalComponentRoots, nodesToVerticalComponentsRoots);
   //   this.LayerArrays.UpdateXFromLayers();
   // }
 
-  // FillLayersWithVerticalComponentsOrder(order: number[], nodesToVerticalComponentsRoots: Dictionary<number, number>) {
-  //   let componentRootsToComponents: Dictionary<number, Array<number>> = ConstrainedOrdering.CreateComponentRootsToComponentsMap(nodesToVerticalComponentsRoots);
+  // FillLayersWithVerticalComponentsOrder(order: number[], nodesToVerticalComponentsRoots: Map<number, number>) {
+  //   let componentRootsToComponents: Map<number, Array<number>> = ConstrainedOrdering.CreateComponentRootsToComponentsMap(nodesToVerticalComponentsRoots);
   //   let alreadyInLayers = new Array(this.LayerArrays.y.length);
   //   let runninglayerCounts = new Array(this.LayerArrays.Layers.length);
   //   for (let vertCompRoot of order) {
@@ -284,7 +284,7 @@ export class ConstrainedOrdering {
 
   // }
 
-  // EnumerateVertComponent(componentRootsToComponents: Dictionary<number, Array<number>>, vertCompRoot: number): IEnumerable<number> {
+  // EnumerateVertComponent(componentRootsToComponents: Map<number, Array<number>>, vertCompRoot: number): IEnumerable<number> {
   //   let compList: Array<number>;
   //   if (componentRootsToComponents.TryGetValue(vertCompRoot, TODOOUTcompList)) {
   //     for (let i of compList) {
@@ -333,8 +333,8 @@ export class ConstrainedOrdering {
   //   runningLayerCounts[layerIndex] = xIndex;
   // }
 
-  // static CreateComponentRootsToComponentsMap(nodesToVerticalComponentsRoots: Dictionary<number, number>): Dictionary<number, Array<number>> {
-  //   let d = new Dictionary<number, Array<number>>();
+  // static CreateComponentRootsToComponentsMap(nodesToVerticalComponentsRoots: Map<number, number>): Map<number, Array<number>> {
+  //   let d = new Map<number, Array<number>>();
   //   for (let kv of nodesToVerticalComponentsRoots) {
   //     let i: number = kv.Key;
   //     let root = kv.Value;
@@ -350,7 +350,7 @@ export class ConstrainedOrdering {
   //   return d;
   // }
 
-  // LiftLeftRightRelationsToComponentRoots(nodesToVerticalComponentsRoots: Dictionary<number, number>): IEnumerable<IntPair> {
+  // LiftLeftRightRelationsToComponentRoots(nodesToVerticalComponentsRoots: Map<number, number>): IEnumerable<IntPair> {
   //   for (let pair of this.horizontalConstraints.LeftRighInts) {
   //     yield;
   //   }
@@ -363,7 +363,7 @@ export class ConstrainedOrdering {
   //   return new IntPair(ConstrainedOrdering.GetFromDictionaryOrIdentical(nodesToVerticalComponentsRoots, pair.Item1), ConstrainedOrdering.GetFromDictionaryOrIdentical(nodesToVerticalComponentsRoots, pair.Item2));
   // }
 
-  // static GetFromDictionaryOrIdentical(d: Dictionary<number, number>, key: number): number {
+  // static GetFromDictionaryOrIdentical(d: Map<number, number>, key: number): number {
   //   let i: number;
   //   if (d.TryGetValue(key, TODOOUTi)) {
   //     return i;
@@ -376,10 +376,10 @@ export class ConstrainedOrdering {
   // //  These blocks are connected components in the vertical constraints. They don't necesserely span consequent layers.
   // //  <
 
-  // CreateVerticalComponents(): Dictionary<number, number> {
+  // CreateVerticalComponents(): Map<number, number> {
   //   let vertGraph = new BasicGraphOnEdges<PolyIntEdge>(from, pair, in, this.horizontalConstraints.VerticalInts, select, new PolyIntEdge(pair.Item1, pair.Item2));
   //   let verticalComponents = ConnectedComponentCalculator.GetComponents(vertGraph);
-  //   let nodesToComponentRoots = new Dictionary<number, number>();
+  //   let nodesToComponentRoots = new Map<number, number>();
   //   for (let component of verticalComponents) {
   //     let ca = component.ToArray();
   //     if ((ca.length == 1)) {

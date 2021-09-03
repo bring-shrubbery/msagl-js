@@ -103,7 +103,7 @@ namespace Microsoft.Msagl.Routing {
         List < Polygon > activePolygons = new List<Polygon>();
         readonly Set < Polyline > alreadyAddedOrExcludedPolylines = new Set<Polyline>();
 
-        //    Dictionary<Point, Polyline> pointsToObstacles = new Dicitonary<Point, Polyline>();
+        //    Map<Point, Polyline> pointsToObstacles = new Dicitonary<Point, Polyline>();
 
         Port sourcePort;
 
@@ -220,7 +220,7 @@ namespace Microsoft.Msagl.Routing {
         internal bool UsePolylineEndShortcutting = true;
 
         internal bool AllowedShootingStraightLines = true;
-        Dictionary < Corner, Tuple < double, double >> cornerTable;
+        Map < Corner, Tuple < double, double >> cornerTable;
         bool cacheCorners;
 
 
@@ -725,7 +725,7 @@ namespace Microsoft.Msagl.Routing {
             set {
                 cacheCorners = value;
                 if (cacheCorners)
-                    cornerTable = new Dictionary<Corner, Tuple<double, double>>();
+                    cornerTable = new Map<Corner, Tuple<double, double>>();
                 else {
                     if (cornerTable != null)
                         cornerTable.Clear();
@@ -1751,8 +1751,8 @@ namespace Microsoft.Msagl.Routing {
             SourceLoosePolyline = GetFirstHitPolyline(sourcePort.Location, ObstacleCalculator.RootOfLooseHierarchy);
             targetTightPolyline = GetFirstHitPolyline(targetPort.Location, ObstacleCalculator.RootOfTightHierarchy);
             targetLoosePolyline = GetFirstHitPolyline(targetPort.Location, ObstacleCalculator.RootOfLooseHierarchy);
-            activeRectangle = new Rectangle(new Point(double.NegativeInfinity, double.PositiveInfinity),
-                new Point(double.PositiveInfinity, double.NegativeInfinity));
+            activeRectangle = new Rectangle(new Point(Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY),
+                new Point(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY));
         }
 
 

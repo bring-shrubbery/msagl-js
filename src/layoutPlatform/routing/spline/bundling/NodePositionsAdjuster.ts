@@ -90,7 +90,7 @@
 
 //   var circlesHierarchy = GetCirclesHierarchy();
 //   if (circlesHierarchy == null) return false;
-//   var gluingMap = new Dictionary<Station, Station>();
+//   var gluingMap = new Map<Station, Station>();
 //   var gluedDomain = new Set<Station>();
 //   RectangleNodeUtils.CrossRectangleNodes<Station>(circlesHierarchy, circlesHierarchy,
 //     (i, j) => TryToGlueNodes(i, j, gluingMap, gluedDomain));
@@ -145,7 +145,7 @@
 //   }
 // }
 
-// void TryToGlueNodes(Station i, Station j, Dictionary < Station, Station > gluingMap, Set < Station > gluedDomain) {
+// void TryToGlueNodes(Station i, Station j, Map < Station, Station > gluingMap, Set < Station > gluedDomain) {
 //   Assert.assert(i != j);
 //   double d = (i.Position - j.Position).length;
 //   double r1 = Math.Max(i.Radius, 5);
@@ -157,7 +157,7 @@
 //     TryGlueOrdered(j, i, gluedDomain, gluingMap);
 // }
 
-// bool TryGlueOrdered(Station i, Station j, Set < Station > gluedDomain, Dictionary < Station, Station > gluingMap) {
+// bool TryGlueOrdered(Station i, Station j, Set < Station > gluedDomain, Map < Station, Station > gluingMap) {
 //   if (!gluingMap.ContainsKey(i) && !gluedDomain.Contains(i) && NodeGluingIsAllowed(i, j, gluingMap)) {
 //     Map(i, j, gluedDomain, gluingMap);
 //     //TimeMeasurer.DebugOutput("gluing nodes " + i.serialNumber + " and " + j.serialNumber);
@@ -166,7 +166,7 @@
 //   return false;
 // }
 
-// void Map(Station i, Station j, Set < Station > gluedDomain, Dictionary < Station, Station > gluingMap) {
+// void Map(Station i, Station j, Set < Station > gluedDomain, Map < Station, Station > gluingMap) {
 //   gluingMap[i] = j;
 //   gluedDomain.Insert(j);
 // }
@@ -174,7 +174,7 @@
 // // <summary>
 // // trying to glue i to j
 // // <
-// bool NodeGluingIsAllowed(Station i, Station j, Dictionary < Station, Station > gluingMap) {
+// bool NodeGluingIsAllowed(Station i, Station j, Map < Station, Station > gluingMap) {
 //   foreach(var adj of i.Neighbors) {
 //     var k = Glued(adj, gluingMap);
 //     //1. check that we can merge these stations (== no intersections)
@@ -190,7 +190,7 @@
 //   return true;
 // }
 
-// double ComputeCostDeltaAfterNodeGluing(Station i, Station j, Dictionary < Station, Station > gluingMap) {
+// double ComputeCostDeltaAfterNodeGluing(Station i, Station j, Map < Station, Station > gluingMap) {
 //   double d = (i.Position - j.Position).length;
 //   if (i.Radius >= d || j.Radius >= d) return 1.0;
 
@@ -226,7 +226,7 @@
 //   return gain;
 // }
 
-// void RegenerateEdge(Dictionary < Station, Station > gluingMap, int edgeIndex) {
+// void RegenerateEdge(Map < Station, Station > gluingMap, int edgeIndex) {
 //   var poly = metroGraphData.Metrolines[edgeIndex].Polyline;
 //   if (!poly.Any(p => gluingMap.ContainsKey(metroGraphData.PointToStations[p])))
 //     return;
@@ -235,7 +235,7 @@
 //     new Polyline(GluedPolyline(poly.Select(p => metroGraphData.PointToStations[p]).ToArray(), gluingMap));
 // }
 
-//         static IEnumerable < Point > GluedPolyline(Station[] metroline, Dictionary < Station, Station > gluedMap) {
+//         static IEnumerable < Point > GluedPolyline(Station[] metroline, Map < Station, Station > gluedMap) {
 //   int i;
 //   var ret = new Stack<Station>();
 //   ret.Push(metroline[0]);
@@ -257,7 +257,7 @@
 //   return ret.Reverse().Select(n => n.Position);
 // }
 
-//         static Station Glued(Station i, Dictionary < Station, Station > gluedMap) {
+//         static Station Glued(Station i, Map < Station, Station > gluedMap) {
 //   Station j;
 //   return gluedMap.TryGetValue(i, out j) ? j : i;
 // }
@@ -267,16 +267,16 @@
 //         #region Shortcut single polylines
 
 // double ink;
-// Dictionary < Metroline, double > polylineLength;
+// Map < Metroline, double > polylineLength;
 
 // // <summary>
 // // Unbundle unnecessary edges:
 // //  instead of one bundle (a->bcd) we get two bundles (a->b,a->cd) with smaller ink
 // // <
 // bool UnglueEdgesFromBundleToSaveInk(bool alwaysExecuteSA) {
-//   var segsToPolylines = new Dictionary<PointPair, Set<Metroline>>();
+//   var segsToPolylines = new Map<PointPair, Set<Metroline>>();
 //   ink = metroGraphData.Ink;
-//   polylineLength = new Dictionary<Metroline, double>();
+//   polylineLength = new Map<Metroline, double>();
 //   //create polylines
 //   foreach(var metroline of metroGraphData.Metrolines) {
 //     polylineLength[metroline] = metroline.length;
@@ -304,7 +304,7 @@
 //   return progress;
 // }
 
-// bool TrySeparateOnPolyline(Metroline metroline, Dictionary < PointPair, Set < Metroline >> segsToPolylines,
+// bool TrySeparateOnPolyline(Metroline metroline, Map < PointPair, Set < Metroline >> segsToPolylines,
 //   HashSet < Point > affectedPoints, Set < Polyline > obstaclesAllowedToIntersect) {
 //   bool progress = false;
 //   var relaxing = true;
@@ -318,7 +318,7 @@
 //   return progress;
 // }
 
-// bool TryShortcutPolypoint(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines, HashSet < Point > affectedPoints, Set < Polyline > obstaclesAllowedToIntersect) {
+// bool TryShortcutPolypoint(PolylinePoint pp, Map < PointPair, Set < Metroline >> segsToPolylines, HashSet < Point > affectedPoints, Set < Polyline > obstaclesAllowedToIntersect) {
 //   if (SeparationShortcutAllowed(pp, segsToPolylines, obstaclesAllowedToIntersect)) {
 //     affectedPoints.Add(pp.point);
 //     affectedPoints.Add(pp.next.point);
@@ -333,7 +333,7 @@
 // // <summary>
 // // allowed iff line (a,c) is legal and inkgain > 0
 // // <
-// bool SeparationShortcutAllowed(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines, Set < Polyline > obstaclesAllowedToIntersect) {
+// bool SeparationShortcutAllowed(PolylinePoint pp, Map < PointPair, Set < Metroline >> segsToPolylines, Set < Polyline > obstaclesAllowedToIntersect) {
 //   var a = pp.point;
 //   var b = pp.next.point;
 //   var c = pp.next.next.point;
@@ -356,7 +356,7 @@
 //   return true;
 // }
 
-// double GetInkgain(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines, Point a, Point b, Point c) {
+// double GetInkgain(PolylinePoint pp, Map < PointPair, Set < Metroline >> segsToPolylines, Point a, Point b, Point c) {
 //   Set < Metroline > abPolylines, bcPolylines, abcPolylines;
 //   FindPolylines(pp, segsToPolylines, out abPolylines, out bcPolylines, out abcPolylines);
 //   double gain = 0;
@@ -401,7 +401,7 @@
 //   return gain;
 // }
 
-// void RemoveShortcuttedPolypoint(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines) {
+// void RemoveShortcuttedPolypoint(PolylinePoint pp, Map < PointPair, Set < Metroline >> segsToPolylines) {
 //   var a = pp.point;
 //   var b = pp.next.point;
 //   var c = pp.next.next.point;
@@ -432,7 +432,7 @@
 //   }
 // }
 
-// void FindPolylines(PolylinePoint pp, Dictionary < PointPair, Set < Metroline >> segsToPolylines,
+// void FindPolylines(PolylinePoint pp, Map < PointPair, Set < Metroline >> segsToPolylines,
 //   out Set < Metroline > abPolylines, out Set < Metroline > bcPolylines, out Set < Metroline > abcPolylines) {
 //   Point a = pp.point;
 //   Point b = pp.next.point;
@@ -475,7 +475,7 @@
 //   if (node.Neighbors.length <= 1) return false;
 
 //   //node,adj => new via point
-//   Dictionary < Tuple < Station, Station >, Point > gluedEdges = new Dictionary<Tuple<Station, Station>, Point>();
+//   Map < Tuple < Station, Station >, Point > gluedEdges = new Map<Tuple<Station, Station>, Point>();
 //   var neighbors = node.Neighbors;
 //   for (int i = 0; i < neighbors.length; i++)
 //   TryToGlueEdges(node, neighbors[i], neighbors[(i + 1) % neighbors.length], gluedEdges, step);
@@ -493,7 +493,7 @@
 //   return true;
 // }
 
-// void TryToGlueEdges(Station node, Station a, Station b, Dictionary < Tuple < Station, Station >, Point > gluedEdges, int step) {
+// void TryToGlueEdges(Station node, Station a, Station b, Map < Tuple < Station, Station >, Point > gluedEdges, int step) {
 //   Assert.assert(a != b);
 //   var angle = Point.Angle(a.Position, node.Position, b.Position);
 //   if (angle < bundlingSettings.AngleThreshold) {
@@ -614,7 +614,7 @@
 //   return gain;
 // }
 
-// void AddEdgeToGlue(Station node, Station b, Station a, Point newp, Dictionary < Tuple < Station, Station >, Point > gluedEdges) {
+// void AddEdgeToGlue(Station node, Station b, Station a, Point newp, Map < Tuple < Station, Station >, Point > gluedEdges) {
 //   //same edge in the reverse direction
 //   if (gluedEdges.ContainsKey(new Tuple<Station, Station>(a, node))) return;
 //   if (gluedEdges.ContainsKey(new Tuple<Station, Station>(b, node))) return;

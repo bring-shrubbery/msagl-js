@@ -23,11 +23,11 @@
 //   internal Cdt Cdt { get; set; }
 //   Set < CdtEdge > Gates { get; set; }
 
-//         readonly Dictionary < EdgeGeometry, List < SdBoneEdge >> EdgesToRoutes = new Dictionary<EdgeGeometry, List<SdBoneEdge>>();
-//         readonly Dictionary < EdgeGeometry, SdVertex > EdgesToRouteSources = new Dictionary<EdgeGeometry, SdVertex>();
+//         readonly Map < EdgeGeometry, List < SdBoneEdge >> EdgesToRoutes = new Map<EdgeGeometry, List<SdBoneEdge>>();
+//         readonly Map < EdgeGeometry, SdVertex > EdgesToRouteSources = new Map<EdgeGeometry, SdVertex>();
 
 //   EdgeGeometry CurrentEdgeGeometry;
-//   Dictionary < VisibilityVertex, SdVertex > VisibilityVerticesToSdVerts;
+//   Map < VisibilityVertex, SdVertex > VisibilityVerticesToSdVerts;
 //   double LengthCoefficient;
 //   GenericBinaryHeapPriorityQueue < SdVertex > Queue;
 //   double LowestCostToTarget;
@@ -57,7 +57,7 @@
 //   void CreateRoutingGraph() {
 //     vertexArray = new SdVertex[VisibilityGraph.VertexCount];
 //     int i = 0;
-//     VisibilityVerticesToSdVerts = new Dictionary<VisibilityVertex, SdVertex>();
+//     VisibilityVerticesToSdVerts = new Map<VisibilityVertex, SdVertex>();
 //     foreach(var v of VisibilityGraph.Vertices()) {
 //       var sdVert = new SdVertex(v);
 //       vertexArray[i++] = sdVert;
@@ -522,7 +522,7 @@
 //   // <summary>
 //   // compute cdt edges crossed by paths
 //   // <
-//   internal void FillCrossedCdtEdges(Dictionary < EdgeGeometry, Set < CdtEdge >> crossedCdtEdges) {
+//   internal void FillCrossedCdtEdges(Map < EdgeGeometry, Set < CdtEdge >> crossedCdtEdges) {
 //     foreach(var geometryEdge of EdgeGeometries) {
 //       SetPortVerticesAndObstacles(geometryEdge.SourcePort, true, out sourceLoosePoly);
 //       SetPortVerticesAndObstacles(geometryEdge.TargetPort, false, out targetLoosePoly);

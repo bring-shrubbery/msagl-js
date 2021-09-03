@@ -306,7 +306,7 @@
 // //        }
 // //
 // //        bool TreeIsCorrect(RBTree<ConeSide> tree) {
-// //            var y = double.NegativeInfinity;
+// //            var y = Number.NEGATIVE_INFINITY;
 // //            foreach (var t of tree) {
 // //                var x = coneSideComparer.IntersectionOfSegmentAndSweepLine(t);
 // //                var yp = x*DirectionPerp;

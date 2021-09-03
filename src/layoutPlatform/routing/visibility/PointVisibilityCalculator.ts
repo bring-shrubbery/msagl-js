@@ -5,7 +5,7 @@
 //   RBTree<PolylinePoint> activeSidesTree;
 
 //   // A mapping from sides to their RBNodes
-//   Dictionary<PolylinePoint, RBNode<PolylinePoint>> sideNodes = new Dictionary<PolylinePoint, RBNode<PolylinePoint>>();
+//   Map<PolylinePoint, RBNode<PolylinePoint>> sideNodes = new Map<PolylinePoint, RBNode<PolylinePoint>>();
 
 //         readonly BinaryHeapWithComparer < Stem > heapForSorting;
 
@@ -13,7 +13,7 @@
 //         readonly VisibilityKind visibilityKind;
 
 //         // These are parts of hole boundaries visible from q where each node is taken in isolation
-//         readonly Dictionary < Polyline, Stem > visibleBoundaries = new Dictionary<Polyline, Stem>();
+//         readonly Map < Polyline, Stem > visibleBoundaries = new Map<Polyline, Stem>();
 
 // Point q;
 //         readonly PolylinePoint qPolylinePoint;

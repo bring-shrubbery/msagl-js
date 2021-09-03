@@ -2,7 +2,7 @@
 //  We assume that the boundaries are not set for the shape children yet
 /*
 import {IEnumerable} from 'linq-to-typescript'
-import {Dictionary} from 'lodash'
+import {Map} from 'lodash'
 import {RectangleNode} from '../core/geometry/RTree/RectangleNode'
 import {Curve} from '../math/geometry/curve'
 import {Polyline} from '../math/geometry/polyline'

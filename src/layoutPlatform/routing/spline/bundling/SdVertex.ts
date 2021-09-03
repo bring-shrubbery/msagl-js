@@ -36,7 +36,7 @@ export class SdVertex {
     if (this.IsSourceOfRouting) {
       return this.cost
     }
-    return Prev == null ? double.PositiveInfinity : cost
+    return Prev == null ? Number.POSITIVE_INFINITY : cost
   }
   set Cost(value: number) {
     this.cost = value

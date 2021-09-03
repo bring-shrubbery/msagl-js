@@ -46,7 +46,7 @@ namespace Microsoft.Msagl.Routing {
 
     GeometryGraph CreateGeometryGraph(PreGraph preGraph) {
         var graph = new GeometryGraph();
-        var nodeDictionary = new Dictionary<ICurve, Node>();
+        var nodeDictionary = new Map<ICurve, Node>();
         foreach(var curve of preGraph.nodeBoundaries) {
             var node = new Node(curve);
             nodeDictionary[curve] = node;
@@ -58,14 +58,14 @@ namespace Microsoft.Msagl.Routing {
         return graph;
     }
 
-    void AddEdgeGeometryToGraph(EdgeGeometry eg, GeometryGraph graph, Dictionary < ICurve, Node > nodeDictionary) {
+    void AddEdgeGeometryToGraph(EdgeGeometry eg, GeometryGraph graph, Map < ICurve, Node > nodeDictionary) {
         var sourceNode = GetOrCreateNode(eg.SourcePort, nodeDictionary);
         var targetNode = GetOrCreateNode(eg.TargetPort, nodeDictionary);
         var edge = new Edge(sourceNode, targetNode) { EdgeGeometry = eg };
         graph.Edges.Add(edge);
     }
 
-        private Node GetOrCreateNode(Port port, Dictionary < ICurve, Node > nodeDictionary) {
+        private Node GetOrCreateNode(Port port, Map < ICurve, Node > nodeDictionary) {
         var curve = GetPortCurve(port);
         Node node;
         if (!nodeDictionary.TryGetValue(curve, out node))

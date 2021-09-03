@@ -33,7 +33,7 @@
 //         //return true;
 
 //         Set < Polyline > obstaclesToIgnore = metroGraphData.looseIntersections.ObstaclesToIgnoreForBundle(v, u);
-//         Dictionary < Polyline, Tuple < Point, Point >> closeObstacles = FindCloseObstaclesForBundle(u.CdtTriangle, uPosition, vPosition, obstaclesToIgnore, upperBound);
+//         Map < Polyline, Tuple < Point, Point >> closeObstacles = FindCloseObstaclesForBundle(u.CdtTriangle, uPosition, vPosition, obstaclesToIgnore, upperBound);
 //         if (closeObstacles == null) return false;
 
 //         //Polyline bundle = Intersections.Create4gon(vPosition, uPosition, upperBound, upperBound);
@@ -54,10 +54,10 @@
 //     // <summary>
 //     // returns null iff the edge overlap an obstacle
 //     // <
-//     Dictionary < Polyline, Tuple < Point, Point >> FindCloseObstaclesForBundle(CdtTriangle startTriangle, Point start,
+//     Map < Polyline, Tuple < Point, Point >> FindCloseObstaclesForBundle(CdtTriangle startTriangle, Point start,
 //         Point end, Set < Polyline > obstaclesToIgnore,
 //         double upperBound) {
-//         var obstacles = new Dictionary<Polyline, Tuple<Point, Point>>();
+//         var obstacles = new Map<Polyline, Tuple<Point, Point>>();
 //         List < CdtTriangle > list;
 //         if (!ThreadLineSegmentThroughTriangles(startTriangle, start, end, obstaclesToIgnore, out list))
 //             return null;

@@ -35,7 +35,7 @@
 //     internal bool Run() {
 //         if (metroGraphData.Edges.Count() == 0) return false;
 
-//         var splittingPoints = new Dictionary<PointPair, List<Point>>();
+//         var splittingPoints = new Map<PointPair, List<Point>>();
 //         var treeOfVertices = new RTree<Point, P>();
 //         foreach(var vertex of Vertices()) {
 //             var r = new Rectangle(vertex.point);
@@ -64,7 +64,7 @@
 //         return progress;
 //     }
 
-//     void SortInsertedPoints(Dictionary < PointPair, List < Point >> splittingPoints) {
+//     void SortInsertedPoints(Map < PointPair, List < Point >> splittingPoints) {
 //         foreach(var pair of splittingPoints)
 //         SortInsideSegment(pair.Key, pair.Value);
 //     }
@@ -74,7 +74,7 @@
 //         list.Sort((a, b) => (a - edge.First).length.CompareTo((b - edge.First).length));
 //     }
 
-//     bool InsertPointsIntoPolylines(Dictionary < PointPair, List < Point >> splittingPoints) {
+//     bool InsertPointsIntoPolylines(Map < PointPair, List < Point >> splittingPoints) {
 //         bool inserted = false;
 //         foreach(var metroline of metroGraphData.Metrolines) {
 //             if (InsertPointsIntoPolyline(metroline, splittingPoints))
@@ -83,14 +83,14 @@
 //         return inserted;
 //     }
 
-//     bool InsertPointsIntoPolyline(Metroline metroline, Dictionary < PointPair, List < Point >> splittingPoints) {
+//     bool InsertPointsIntoPolyline(Metroline metroline, Map < PointPair, List < Point >> splittingPoints) {
 //         bool inserted = false;
 //         for (var pp = metroline.Polyline.startPoint; pp.next != null; pp = pp.next)
 //             if (InsertPointsOnPolypoint(pp, splittingPoints, metroline)) inserted = true;
 //         return inserted;
 //     }
 
-//     bool InsertPointsOnPolypoint(PolylinePoint pp, Dictionary < PointPair, List < Point >> splittingPoints, Metroline metroline) {
+//     bool InsertPointsOnPolypoint(PolylinePoint pp, Map < PointPair, List < Point >> splittingPoints, Metroline metroline) {
 //         var pointPair = FlipCollapser.OrderedPair(pp);
 //         var reversed = pp.point != pointPair.First;
 //         List < Point > list;
@@ -128,7 +128,7 @@
 //     //returns removed points
 //     internal static bool RemoveSelfCyclesFromPolyline(Polyline poly) {
 //         bool progress = false;
-//         Dictionary < Point, PolylinePoint > pointsToPp = new Dictionary<Point, PolylinePoint>();
+//         Map < Point, PolylinePoint > pointsToPp = new Map<Point, PolylinePoint>();
 //         for (var pp = poly.startPoint; pp != null; pp = pp.next) {
 //             var point = pp.point;
 //             PolylinePoint previous;
@@ -186,7 +186,7 @@
 //         return removed;
 //     }
 
-//     void IntersectTwoEdges(PointPair a, PointPair b, Dictionary < PointPair, List < Point >> splittingPoints, RTree < Point > tree) {
+//     void IntersectTwoEdges(PointPair a, PointPair b, Map < PointPair, List < Point >> splittingPoints, RTree < Point > tree) {
 //         Point x;
 //         if (LineSegment.Intersect(a.First, a.Second, b.First, b.Second, out x)) {
 //             Point vertex = FindExistingVertexOrCreateNew(tree, x);
@@ -207,7 +207,7 @@
 //         return x;
 //     }
 
-//     bool AddVertexToSplittingList(PointPair a, Dictionary < PointPair, List < Point >> splittingPoints, Point intersectionPoint) {
+//     bool AddVertexToSplittingList(PointPair a, Map < PointPair, List < Point >> splittingPoints, Point intersectionPoint) {
 // #if TEST_MSAGL && TEST_MSAGL
 //         double t;
 //         Assert.assert(Point.DistToLineSegment(intersectionPoint, a.First, a.Second, out t) < ApproximateComparer.IntersectionEpsilon);

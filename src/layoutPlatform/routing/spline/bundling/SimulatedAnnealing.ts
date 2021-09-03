@@ -69,7 +69,7 @@
 //         cache.InitializeCostCache();
 
 //         double step = MaxStep;
-//         double energy = double.PositiveInfinity;
+//         double energy = Number.POSITIVE_INFINITY;
 
 //         List < Point > x = new List<Point>(metroGraphData.VirtualNodes().Select(v => v.Position));
 //         int iteration = 0;

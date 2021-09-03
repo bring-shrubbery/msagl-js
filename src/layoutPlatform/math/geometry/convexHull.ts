@@ -200,7 +200,7 @@ export class ConvexHull {
       Array.from(ConvexHull.CalculateConvexHull(points)),
     )
     // #if (TEST_MSAGL)
-    // for (let point in points) {
+    // for (let point of points) {
     //     if ((Curve.PointRelativeToCurveLocation(point, convexHull) == PointLocation.Outside)) {
     //         let hullPoint = convexHull[convexHull.closestParameter(point)];
     //         //  This can be too restrictive if very close points are put into the hull.  It is probably

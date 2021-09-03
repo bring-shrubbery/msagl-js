@@ -186,7 +186,7 @@ export class RectilinearScanLine {
             let index: number = 0;
             let bbox = Rectangle.mkEmpty();
             let prevSide: BasicObstacleSide = null;
-            for (let currentSide in this.SideTree) {
+            for (let currentSide of this.SideTree) {
                 let color: string = colors[index];
                 let =: index;
                 1;

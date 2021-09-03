@@ -14,7 +14,7 @@
 //         readonly Set<VisibilityVertex> targets;
 //         VisibilityVertex current;
 //         VisibilityVertex closestTarget;
-//         double upperBound = double.PositiveInfinity;
+//         double upperBound = Number.POSITIVE_INFINITY;
 //         internal delegate void ddType(params ICurve[] curves);
 //     VisibilityGraph _visGraph;
 

@@ -280,13 +280,13 @@ export class FreeSpaceFinder extends LineSweeperBase {
   // GetCurves(point: Point, edge: AxisEdge): Array<ICurve> {
   //     let ellipse = CurveFactory.CreateEllipse(3, 3, point);
   //     let curves = new Array<ICurve>(this.Obstacles.select(() => {  }, (<ICurve>(o))));
-  //     if ((edge.RightBound < double.PositiveInfinity)) {
+  //     if ((edge.RightBound < Number.POSITIVE_INFINITY)) {
   //         let rightOffset: number = edge.RightBound;
   //         let del = (this.DirectionPerp * rightOffset);
   //         curves.Add(new LineSegment((edge.Source.point + del), (edge.Target.point + del)));
   //     }
 
-  //     if ((edge.LeftBound > double.NegativeInfinity)) {
+  //     if ((edge.LeftBound > Number.NEGATIVE_INFINITY)) {
   //         let leftOffset: number = edge.LeftBound;
   //         let del = (this.DirectionPerp * leftOffset);
   //         curves.Add(new LineSegment((edge.Source.point + del), (edge.Target.point + del)));
@@ -338,13 +338,13 @@ export class FreeSpaceFinder extends LineSweeperBase {
   //         // TODO: Warning!!!, inline IF is not supported ?
   //         (axisEdge.Direction == Direction.East);
   //         new Point(-1, 0);
-  //         if ((axisEdge.LeftBound != double.NegativeInfinity)) {
+  //         if ((axisEdge.LeftBound != Number.NEGATIVE_INFINITY)) {
   //             dd.Add(new DebugCurve(200, 0.5, color, new LineSegment((axisEdge.Source.point
   //                                     + (axisEdge.LeftBound * perp)), (axisEdge.Target.point
   //                                     + (axisEdge.LeftBound * perp)))));
   //         }
 
-  //         if ((axisEdge.RightBound != double.PositiveInfinity)) {
+  //         if ((axisEdge.RightBound != Number.POSITIVE_INFINITY)) {
   //             dd.Add(new DebugCurve(200, 0.5, color, new LineSegment((axisEdge.Source.point
   //                                     - (axisEdge.RightBound * perp)), (axisEdge.Target.point
   //                                     - (axisEdge.RightBound * perp)))));

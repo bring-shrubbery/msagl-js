@@ -29,7 +29,7 @@
 //         // <summary>
 //         // Initialize bundle graph and build the ordering
 //         // <
-//         internal LinearMetroMapOrdering(List < Metroline > MetrolinesGlobal, Dictionary < Point, Station > pointToIndex) {
+//         internal LinearMetroMapOrdering(List < Metroline > MetrolinesGlobal, Map < Point, Station > pointToIndex) {
 //             this.MetrolinesGlobal = MetrolinesGlobal;
 
 //             ConvertParameters(pointToIndex);
@@ -58,7 +58,7 @@
 //         // <
 //         int IMetroMapOrderingAlgorithm.GetLineIndexInOrder(Station u, Station v, Metroline Metroline) {
 //             MetroEdge me = MetroEdge.CreateFromTwoNodes(u.SerialNumber, v.SerialNumber);
-//             Dictionary < Metroline, int > d = lineIndexInOrder[me];
+//             Map < Metroline, int > d = lineIndexInOrder[me];
 //             if (u.SerialNumber < v.SerialNumber) {
 //                 return d[Metroline];
 //             }
@@ -67,7 +67,7 @@
 //             }
 //         }
 
-//         void ConvertParameters(Dictionary < Point, Station > pointToIndex) {
+//         void ConvertParameters(Map < Point, Station > pointToIndex) {
 //             Metrolines = new List<int[]>();
 //             positions = new Point[pointToIndex.Count];
 //             foreach(Metroline gline of MetrolinesGlobal) {
@@ -82,8 +82,8 @@
 //         }
 
 //         //order for node u of edge u->v
-//         Dictionary < MetroEdge, List < int >> order;
-//         Dictionary < MetroEdge, Dictionary < Metroline, int >> lineIndexInOrder;
+//         Map < MetroEdge, List < int >> order;
+//         Map < MetroEdge, Map < Metroline, int >> lineIndexInOrder;
 
 //         HashSet < int > nonTerminals;
 //         HashSet < MetroEdge > initialEdges;
@@ -165,7 +165,7 @@
 //         int label;
 //         bool labelCached = false;
 
-// #if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=289 Support Dictionary directly based on object's GetHashCode
+// #if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=289 Support Map directly based on object's GetHashCode
 //             private SharpKit.JavaScript.JsString _hashKey;
 //             private void UpdateHashKey()
 //         {
@@ -234,11 +234,11 @@
 // }
 //         }
 
-// Dictionary < int, LinkedList < MetroEdge >> orderedAdjacent;
-// Dictionary < Tuple < int, MetroEdge >, LinkedListNode < MetroEdge >> adjacencyIndex;
+// Map < int, LinkedList < MetroEdge >> orderedAdjacent;
+// Map < Tuple < int, MetroEdge >, LinkedListNode < MetroEdge >> adjacencyIndex;
 
-// Dictionary < MetroEdge, PathList > e2p;
-// Dictionary < int, LinkedList < MetroEdge >> paths;
+// Map < MetroEdge, PathList > e2p;
+// Map < int, LinkedList < MetroEdge >> paths;
 
 // // <summary>
 // // Do the main job
@@ -261,7 +261,7 @@
 //     nonTerminals = new HashSet<int>();
 //     initialEdges = new HashSet<MetroEdge>();
 //     //non-sorted adjacent edges. will be sorted later
-//     Dictionary < int, HashSet < MetroEdge >> adjacent = new Dictionary<int, HashSet<MetroEdge>>();
+//     Map < int, HashSet < MetroEdge >> adjacent = new Map<int, HashSet<MetroEdge>>();
 //     for (int mi = 0; mi < Metrolines.Count; mi++) {
 //         int[] Metroline = Metrolines[mi];
 //         for (int i = 0; i + 1 < Metroline.length; i++) {
@@ -286,8 +286,8 @@
 // }
 
 // void InitPathData() {
-//     paths = new Dictionary<int, LinkedList<MetroEdge>>();
-//     e2p = new Dictionary<MetroEdge, PathList>();
+//     paths = new Map<int, LinkedList<MetroEdge>>();
+//     e2p = new Map<MetroEdge, PathList>();
 //     for (int mi = 0; mi < Metrolines.Count; mi++) {
 //         int[] Metroline = Metrolines[mi];
 //         paths.Add(mi, new LinkedList<MetroEdge>());
@@ -310,9 +310,9 @@
 //     }
 // }
 
-// void InitAdjacencyData(Dictionary < int, HashSet < MetroEdge >> adjacent) {
-//     orderedAdjacent = new Dictionary<int, LinkedList<MetroEdge>>();
-//     adjacencyIndex = new Dictionary<Tuple<int, MetroEdge>, LinkedListNode<MetroEdge>>();
+// void InitAdjacencyData(Map < int, HashSet < MetroEdge >> adjacent) {
+//     orderedAdjacent = new Map<int, LinkedList<MetroEdge>>();
+//     adjacencyIndex = new Map<Tuple<int, MetroEdge>, LinkedListNode<MetroEdge>>();
 //     foreach(int v of adjacent.Keys) {
 //         List < MetroEdge > adj = new List<MetroEdge>(adjacent[v]);
 //         orderedAdjacent.Add(v, SortAdjacentEdges(v, adj));
@@ -388,11 +388,11 @@
 // }
 
 // void RestoreResult() {
-//     order = new Dictionary<MetroEdge, List<int>>();
-//     lineIndexInOrder = new Dictionary<MetroEdge, Dictionary<Metroline, int>>();
+//     order = new Map<MetroEdge, List<int>>();
+//     lineIndexInOrder = new Map<MetroEdge, Map<Metroline, int>>();
 //     foreach(MetroEdge me of initialEdges) {
 //         order.Add(me, RestoreResult(me));
-//         Dictionary < Metroline, int > d = new Dictionary<Metroline, int>();
+//         Map < Metroline, int > d = new Map<Metroline, int>();
 //         int index = 0;
 //         foreach(int v of order[me]) {
 //             d[MetrolinesGlobal[v]] = index++;
@@ -406,7 +406,7 @@
 // // <
 // void ProcessNonTerminal(int v) {
 //     //oldEdge => sorted PathLists
-//     Dictionary < MetroEdge, List < PathList >> newSubLists = RadixSort(v);
+//     Map < MetroEdge, List < PathList >> newSubLists = RadixSort(v);
 
 //     //update current data
 //     foreach(MetroEdge oldEdge of orderedAdjacent[v]) {
@@ -441,11 +441,11 @@
 // // <summary>
 // // Linear sorting of paths passing through vertex v
 // // <
-// Dictionary < MetroEdge, List < PathList >> RadixSort(int v) {
+// Map < MetroEdge, List < PathList >> RadixSort(int v) {
 //     //build a map [old_edge => list_of_paths_on_it]; the relative order of paths is important
-//     Dictionary < MetroEdge, List < PathOnEdge >> r = new Dictionary<MetroEdge, List<PathOnEdge>>();
+//     Map < MetroEdge, List < PathOnEdge >> r = new Map<MetroEdge, List<PathOnEdge>>();
 //     //first index in circular order
-//     Dictionary < MetroEdge, int > firstIndex = new Dictionary<MetroEdge, int>();
+//     Map < MetroEdge, int > firstIndex = new Map<MetroEdge, int>();
 
 //     foreach(MetroEdge oldEdge of orderedAdjacent[v]) {
 //         PathList pathList = e2p[oldEdge];
@@ -458,7 +458,7 @@
 //     }
 
 //     //oldEdge => SortedPathLists
-//     Dictionary < MetroEdge, List < PathList >> res = new Dictionary<MetroEdge, List<PathList>>();
+//     Map < MetroEdge, List < PathList >> res = new Map<MetroEdge, List<PathList>>();
 //     //build the desired order for each edge
 //     foreach(MetroEdge oldEdge of orderedAdjacent[v]) {
 //         //r[oldEdge] is the right order! (up to the circleness)

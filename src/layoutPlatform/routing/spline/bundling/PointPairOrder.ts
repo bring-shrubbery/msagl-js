@@ -5,7 +5,7 @@
 //         //order for node u of edge u->v
 //         internal List<Metroline> Metrolines = new List<Metroline>();
 //         internal bool orderFixed;
-//         internal Dictionary<Metroline, int> LineIndexInOrder;
+//         internal Map<Metroline, int> LineIndexInOrder;
 
 //         internal void Add(Metroline metroline) {
 //             Metrolines.Add(metroline);

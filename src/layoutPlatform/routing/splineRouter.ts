@@ -68,17 +68,17 @@ export class SplineRouter extends Algorithm {
 
   //visGraph: VisibilityGraph;
 
-  //ancestorSets: Dictionary<Shape, Set<Shape>>;
+  //ancestorSets: Map<Shape, Set<Shape>>;
 
-  // shapesToTightLooseCouples: Dictionary<Shape, TightLooseCouple> = new Dictionary<Shape, TightLooseCouple>();
+  // shapesToTightLooseCouples: Map<Shape, TightLooseCouple> = new Map<Shape, TightLooseCouple>();
 
-  //portsToShapes: Dictionary<Port, Shape>;
+  //portsToShapes: Map<Port, Shape>;
 
-  //portsToEnterableShapes: Dictionary<Port, Set<Shape>>;
+  //portsToEnterableShapes: Map<Port, Set<Shape>>;
 
   // portRTree: RTree<Point, Point>;
 
-  // portLocationsToLoosePolylines: Dictionary<Point, Polyline> = new Dictionary<Point, Polyline>();
+  // portLocationsToLoosePolylines: Map<Point, Polyline> = new Map<Point, Polyline>();
 
   // looseRoot: Shape;
 
@@ -87,9 +87,9 @@ export class SplineRouter extends Algorithm {
   // private /* internal */ set BundlingSettings(value: BundlingSettings) {
   // }
 
-  // enterableLoose: Dictionary<EdgeGeometry, Set<Polyline>>;
+  // enterableLoose: Map<EdgeGeometry, Set<Polyline>>;
 
-  // enterableTight: Dictionary<EdgeGeometry, Set<Polyline>>;
+  // enterableTight: Map<EdgeGeometry, Set<Polyline>>;
 
   // GeomGraph: GeomGraph;
 
@@ -190,8 +190,8 @@ export class SplineRouter extends Algorithm {
   }
 
   // CalculatePortsToEnterableShapes() {
-  //   this.portsToEnterableShapes = new Dictionary<Port, Set<Shape>>();
-  //   for (let portsToShape in this.portsToShapes) {
+  //   this.portsToEnterableShapes = new Map<Port, Set<Shape>>();
+  //   for (let portsToShape of this.portsToShapes) {
   //     let port = portsToShape.Key;
   //     let set = new Set<Shape>();
   //     if (!SplineRouter.EdgesAttachedToPortAvoidTheNode(port)) {
@@ -201,9 +201,9 @@ export class SplineRouter extends Algorithm {
   //     this.portsToEnterableShapes[port] = set;
   //   }
 
-  //   for (let rootShape in this.rootShapes) {
-  //     for (let sh in rootShape.Descendants) {
-  //       for (let port in sh.Ports) {
+  //   for (let rootShape of this.rootShapes) {
+  //     for (let sh of rootShape.Descendants) {
+  //       for (let port of sh.Ports) {
   //         let enterableSet = this.portsToEnterableShapes[port];
   //         enterableSet.InsertRange(sh.Ancestors.Where(() => { }, (s.BoundaryCurve != null)));
   //       }
@@ -219,9 +219,9 @@ export class SplineRouter extends Algorithm {
   // }
 
   // SetLoosePolylinesForAnywherePorts() {
-  //   for (let shapesToTightLooseCouple in this.shapesToTightLooseCouples) {
+  //   for (let shapesToTightLooseCouple of this.shapesToTightLooseCouples) {
   //     let shape = shapesToTightLooseCouple.Key;
-  //     for (let port in shape.Ports) {
+  //     for (let port of shape.Ports) {
   //       let aport = (<HookUpAnywhereFromInsidePort>(port));
   //       if ((aport != null)) {
   //         aport.LoosePolyline = (<Polyline>(shapesToTightLooseCouple.Value.LooseShape.BoundaryCurve));
@@ -240,7 +240,7 @@ export class SplineRouter extends Algorithm {
 
   // BindLooseShapes() {
   //   this.looseRoot = new Shape();
-  //   for (let shape in this.root.Children) {
+  //   for (let shape of this.root.Children) {
   //     let looseShape = this.shapesToTightLooseCouples[shape].LooseShape;
   //     this.BindLooseShapesUnderShape(shape);
   //     this.looseRoot.AddChild(looseShape);
@@ -250,7 +250,7 @@ export class SplineRouter extends Algorithm {
 
   // BindLooseShapesUnderShape(shape: Shape) {
   //   let loose = this.shapesToTightLooseCouples[shape].LooseShape;
-  //   for (let child in shape.Children) {
+  //   for (let child of shape.Children) {
   //     let childLooseShape = this.shapesToTightLooseCouples[child].LooseShape;
   //     loose.AddChild(childLooseShape);
   //     this.BindLooseShapesUnderShape(child);
@@ -264,7 +264,7 @@ export class SplineRouter extends Algorithm {
   //     return;
   //   }
 
-  //   for (let child: Shape in shape.Children) {
+  //   for (let child: Shape of shape.Children) {
   //     this.CalculateShapeToBoundaries(child);
   //   }
 
@@ -293,7 +293,7 @@ export class SplineRouter extends Algorithm {
   // RouteOnVisGraph() {
   //   this.ancestorSets = SplineRouter.GetAncestorSetsMap(this.root.Descendants);
   //   if ((this.BundlingSettings == null)) {
-  //     for (let edgeGroup in this._edges.GroupBy(EdgePassport)) {
+  //     for (let edgeGroup of this._edges.GroupBy(EdgePassport)) {
   //       let passport = edgeGroup.Key;
   //       let obstacleShapes: Set<Shape> = this.GetObstaclesFromPassport(passport);
   //       let interactiveEdgeRouter = this.CreateInteractiveEdgeRouter(obstacleShapes);
@@ -312,7 +312,7 @@ export class SplineRouter extends Algorithm {
   //   let multiEdges: List<GeomEdge[]>;
   //   if(RouteMultiEdgesAsBundles) {
   //     this.SplitOnRegularAndMultiedges(edgeGeometryGroup, /* out */regularEdges, /* out */multiEdges);
-  //     for (let edge in regularEdges) {
+  //     for (let edge of regularEdges) {
   //       this.RouteEdge(interactiveEdgeRouter, edge);
   //     }
 
@@ -386,7 +386,7 @@ export class SplineRouter extends Algorithm {
   //     //         }
   //     SplitOnRegularAndMultiedges(edges: IEnumerable < GeomEdge >, /* out */regularEdges: List < GeomEdge >, /* out */multiEdges: List<GeomEdge[]>) {
   //   regularEdges = new List<GeomEdge>();
-  //   let portLocationPairsToEdges = new Dictionary<PointPair, List<GeomEdge>>();
+  //   let portLocationPairsToEdges = new Map<PointPair, List<GeomEdge>>();
   //   for(let eg in edges) {
   //   if(SplineRouter.IsEdgeToParent(eg.EdgeGeometry)) {
   //   regularEdges.Add(eg);
@@ -398,7 +398,7 @@ export class SplineRouter extends Algorithm {
   //         }
 
   // multiEdges = null;
-  // for (let edgeGroup in portLocationPairsToEdges.Values) {
+  // for (let edgeGroup of portLocationPairsToEdges.Values) {
   //   if (((edgeGroup.Count == 1)
   //     || this.OverlapsDetected)) {
   //     regularEdges.AddRange(edgeGroup);
@@ -415,7 +415,7 @@ export class SplineRouter extends Algorithm {
 
   //     }
 
-  //     static RegisterInPortLocationsToEdges(eg: GeomEdge, portLocationPairsToEdges: Dictionary<PointPair, List<GeomEdge>>) {
+  //     static RegisterInPortLocationsToEdges(eg: GeomEdge, portLocationPairsToEdges: Map<PointPair, List<GeomEdge>>) {
   //   let list: List<GeomEdge>;
   //   let pp = new PointPair(eg.SourcePort.Location, eg.TargetPort.Location);
   //   if(!portLocationPairsToEdges.TryGetValue(pp, /* out */list)) {
@@ -466,14 +466,14 @@ export class SplineRouter extends Algorithm {
   // let ret = new Set<Shape>(passport.SelectMany(() => { }, p.Children.Where(() => { }, !allAncestors.Contains(child))));
   // let enqueued = new Set<Shape>(passport.Concat(ret));
   // let queue = new Queue<Shape>();
-  // for (let shape in passport.Where(() => { }, !commonAncestors.Contains(shape))) {
+  // for (let shape of passport.Where(() => { }, !commonAncestors.Contains(shape))) {
   //   queue.Enqueue(shape);
   // }
 
   // while ((queue.Count > 0)) {
   //   let a = queue.Dequeue();
-  //   for (let parent in a.Parents) {
-  //     for (let sibling in parent.Children) {
+  //   for (let parent of a.Parents) {
+  //     for (let sibling of parent.Children) {
   //       if (!allAncestors.Contains(sibling)) {
   //         ret.Insert(sibling);
   //       }
@@ -499,7 +499,7 @@ export class SplineRouter extends Algorithm {
   // }
 
   // let ret = new Set<Shape>(passport);
-  // for (let shape in passport) {
+  // for (let shape of passport) {
   //   ret = (ret + this.ancestorSets[shape]);
   // }
 
@@ -512,7 +512,7 @@ export class SplineRouter extends Algorithm {
   // }
 
   // let ret = this.ancestorSets[passport.First()];
-  // for (let shape in passport.Skip(1)) {
+  // for (let shape of passport.Skip(1)) {
   //   ret = (ret * this.ancestorSets[shape]);
   // }
 
@@ -530,7 +530,7 @@ export class SplineRouter extends Algorithm {
   //   bundleRouter.Run();
   // }
 
-  // CreateTheMapToParentLooseShapes(shape: Shape, loosePolylinesToLooseParentShapeMap: Dictionary<ICurve, Shape>) {
+  // CreateTheMapToParentLooseShapes(shape: Shape, loosePolylinesToLooseParentShapeMap: Map<ICurve, Shape>) {
   //   for(let childShape in shape.Children) {
   //   let tightLooseCouple = this.shapesToTightLooseCouples[childShape];
   //   let poly = tightLooseCouple.LooseShape.BoundaryCurve;
@@ -541,12 +541,12 @@ export class SplineRouter extends Algorithm {
   //     }
 
   // FindCdtGates(cdt: Cdt): Set < CdtEdge > {
-  //   let loosePolylinesToLooseParentShapeMap: Dictionary < ICurve, Shape> = new Dictionary<ICurve, Shape>();
+  //   let loosePolylinesToLooseParentShapeMap: Map < ICurve, Shape> = new Map<ICurve, Shape>();
   // this.CreateTheMapToParentLooseShapes(this.root, loosePolylinesToLooseParentShapeMap);
   // // looking for Cdt edges connecting two siblings; only those we define as gates
   // let gates = new Set<CdtEdge>();
-  // for (let cdtSite in cdt.PointsToSites.Values) {
-  //   for (let cdtEdge in cdtSite.Edges) {
+  // for (let cdtSite of cdt.PointsToSites.Values) {
+  //   for (let cdtEdge of cdtSite.Edges) {
   //     if (((cdtEdge.CwTriangle == null)
   //       && (cdtEdge.CcwTriangle == null))) {
   //       // TODO: Warning!!! continue If
@@ -576,9 +576,9 @@ export class SplineRouter extends Algorithm {
   //     }
 
   // CalculateEdgeEnterablePolylines() {
-  //   this.enterableLoose = new Dictionary<EdgeGeometry, Set<Polyline>>();
-  //   this.enterableTight = new Dictionary<EdgeGeometry, Set<Polyline>>();
-  //   for (let edgeGeometry in this.edgeGeometriesEnumeration) {
+  //   this.enterableLoose = new Map<EdgeGeometry, Set<Polyline>>();
+  //   this.enterableTight = new Map<EdgeGeometry, Set<Polyline>>();
+  //   for (let edgeGeometry of this.edgeGeometriesEnumeration) {
   //     let looseSet: Set<Polyline>;
   //     let tightSet: Set<Polyline>;
   //     this.GetEdgeEnterablePolylines(edgeGeometry, /* out */looseSet, /* out */tightSet);
@@ -615,7 +615,7 @@ export class SplineRouter extends Algorithm {
   // }
 
   // ScaleLooseShapesDown() {
-  //   for (let shapesToTightLooseCouple in this.shapesToTightLooseCouples) {
+  //   for (let shapesToTightLooseCouple of this.shapesToTightLooseCouples) {
   //     let tl = shapesToTightLooseCouple.Value;
   //     tl.LooseShape.BoundaryCurve = InteractiveObstacleCalculator.LoosePolylineWithFewCorners(tl.TightPolyline, (tl.Distance / BundleRouter.SuperLoosePaddingCoefficient));
   //   }
@@ -664,16 +664,16 @@ export class SplineRouter extends Algorithm {
   //     }
 
   // CalculatePortsToShapes() {
-  //   this.portsToShapes = new Dictionary<Port, Shape>();
-  //   for (let shape in this.root.Descendants) {
-  //     for (let port in shape.Ports) {
+  //   this.portsToShapes = new Map<Port, Shape>();
+  //   for (let shape of this.root.Descendants) {
+  //     for (let port of shape.Ports) {
   //       this.portsToShapes[port] = shape;
   //     }
 
   //   }
 
   //   // assign all orphan ports to the root
-  //   for (let port in this.AllPorts().Where(() => { }, !this.portsToShapes.ContainsKey(p))) {
+  //   for (let port of this.AllPorts().Where(() => { }, !this.portsToShapes.ContainsKey(p))) {
   //     this.root.Ports.Insert(port);
   //     this.portsToShapes[port] = this.root;
   //   }
@@ -704,7 +704,7 @@ export class SplineRouter extends Algorithm {
   //     throw new NotImplementedException();
   //   }
 
-  //   for (let visibilityEdge in addedEdges) {
+  //   for (let visibilityEdge of addedEdges) {
   //     VisibilityGraph.RemoveEdge(visibilityEdge);
   //   }
 
@@ -768,11 +768,11 @@ export class SplineRouter extends Algorithm {
 
   // }
 
-  // for (let shape in this.portsToEnterableShapes[edgeGeometry.SourcePort]) {
+  // for (let shape of this.portsToEnterableShapes[edgeGeometry.SourcePort]) {
   //   transparentLooseShapes.Add(this.LooseShapeOfOriginalShape(shape));
   // }
 
-  // for (let shape in this.portsToEnterableShapes[edgeGeometry.TargetPort]) {
+  // for (let shape of this.portsToEnterableShapes[edgeGeometry.TargetPort]) {
   //   transparentLooseShapes.Add(this.LooseShapeOfOriginalShape(shape));
   // }
 
@@ -825,7 +825,7 @@ export class SplineRouter extends Algorithm {
   // }
 
   // return s;
-  // for (let s in this.ancestorSets[targetShape]) {
+  // for (let s of this.ancestorSets[targetShape]) {
   //   yield;
   // }
 
@@ -857,7 +857,7 @@ export class SplineRouter extends Algorithm {
   //     }
 
   //     static SetTransparency(shapes: IEnumerable < Shape >, v: boolean) {
-  //   for (let shape: Shape in shapes) {
+  //   for (let shape: Shape of shapes) {
   //     shape.IsTransparent = v;
   //   }
 
@@ -911,7 +911,7 @@ export class SplineRouter extends Algorithm {
   // FillVisibilityGraphUnderShape(shape: Shape) {
   //   // going depth first
   //   let children = shape.Children;
-  //   for (let child: Shape in children) {
+  //   for (let child: Shape of children) {
   //     this.FillVisibilityGraphUnderShape(child);
   //   }
 
@@ -935,7 +935,7 @@ export class SplineRouter extends Algorithm {
   //   coneSpanner = new ConeSpanner(obstacles, tmpVisGraph, this.coneAngle, portLocations, looseBoundary);
   //   coneSpanner.Run();
   //   ProgressStep();
-  //   for (let edge: VisibilityEdge in tmpVisGraph.Edges) {
+  //   for (let edge: VisibilityEdge of tmpVisGraph.Edges) {
   //     this.TryToCreateNewEdgeAndSetIsPassable(edge, looseShape);
   //   }
 
@@ -1003,7 +1003,7 @@ export class SplineRouter extends Algorithm {
   // RemoveInsidePortsAndSplitBoundaryIfNeeded(boundary: Polyline): Set < Point > {
   //   let ret = new Set<Point>();
   //   if((boundary == null)) {
-  //   for (let point in this.portRTree.GetAllLeaves()) {
+  //   for (let point of this.portRTree.GetAllLeaves()) {
   //     ret.Insert(point);
   //   }
 
@@ -1013,7 +1013,7 @@ export class SplineRouter extends Algorithm {
 
   // let boundaryBox: Rectangle = boundary.BoundingBox;
   // let portLocationsInQuestion = this.portRTree.GetAllIntersecting(boundaryBox).ToArray();
-  // for (let point in portLocationsInQuestion) {
+  // for (let point of portLocationsInQuestion) {
   //   switch (Curve.PointRelativeToCurveLocation(point, boundary)) {
   //     case PointLocation.Inside:
   //       ret.Insert(point);
@@ -1079,7 +1079,7 @@ export class SplineRouter extends Algorithm {
 
   //   this.rootWasCreated = true;
   //   this.root = new Shape();
-  //   for (let rootShape in this.rootShapes) {
+  //   for (let rootShape of this.rootShapes) {
   //     this.root.AddChild(rootShape);
   //   }
 
@@ -1087,7 +1087,7 @@ export class SplineRouter extends Algorithm {
 
   // RemoveRoot() {
   //   if (this.rootWasCreated) {
-  //     for (let rootShape in this.rootShapes) {
+  //     for (let rootShape of this.rootShapes) {
   //       rootShape.RemoveParent(this.root);
   //     }
 
@@ -1108,8 +1108,8 @@ export class SplineRouter extends Algorithm {
   //     //                    edgeGeometries.Select(e => new DebugCurve(100, 1, "red", e.Curve))));
   //     //      }
   //     //  #endif
-  //     private /* internal */ static GetAncestorSetsMap(shapes: IEnumerable<Shape>): Dictionary < Shape, Set < Shape >> {
-  //   let ancSets = new Dictionary<Shape, Set<Shape>>();
+  //     private /* internal */ static GetAncestorSetsMap(shapes: IEnumerable<Shape>): Map < Shape, Set < Shape >> {
+  //   let ancSets = new Map<Shape, Set<Shape>>();
   //   for(let child in shapes.Where(() => { }, !ancSets.ContainsKey(child))) {
   //   ancSets[child] = SplineRouter.GetAncestorSet(child, ancSets);
   // }
@@ -1117,7 +1117,7 @@ export class SplineRouter extends Algorithm {
   // return ancSets;
   //     }
 
-  //     static GetAncestorSet(child: Shape, ancSets: Dictionary<Shape, Set<Shape>>): Set < Shape > {
+  //     static GetAncestorSet(child: Shape, ancSets: Map<Shape, Set<Shape>>): Set < Shape > {
   //   let ret = new Set<Shape>(child.Parents);
   //   for(let parent in child.Parents) {
   //   let grandParents: Set<Shape>;

@@ -24,7 +24,7 @@
 //         internal Set<Station> Stations;
 
 //         // info on the edges passing through a couple
-//         Dictionary<Tuple<Station, Station >, StationEdgeInfo > edgeInfoDictionary;
+//         Map<Tuple<Station, Station >, StationEdgeInfo > edgeInfoDictionary;
 
 //     // current ink
 //     double ink;
@@ -33,7 +33,7 @@
 //     List < Metroline > metrolines;
 
 //     //  position -> (node)
-//     internal Dictionary < Point, Station > PointToStations;
+//     internal Map < Point, Station > PointToStations;
 
 //         readonly EdgeGeometry[] regularEdges;
 
@@ -44,8 +44,8 @@
 //     //  objects to check crossings and calculate distances
 //     internal CdtIntersections cdtIntersections;
 
-//     Dictionary < EdgeGeometry, Set < Polyline >> EdgeLooseEnterable { get; set; }
-//     Dictionary < EdgeGeometry, Set < Polyline >> EdgeTightEnterable { get; set; }
+//     Map < EdgeGeometry, Set < Polyline >> EdgeLooseEnterable { get; set; }
+//     Map < EdgeGeometry, Set < Polyline >> EdgeTightEnterable { get; set; }
 
 //     internal Func < Port, Polyline > LoosePolylineOfPort;
 
@@ -57,7 +57,7 @@
 //     internal MetroGraphData(EdgeGeometry[] regularEdges,
 //         RectangleNode < Polyline > looseTree, RectangleNode < Polyline > tightTree,
 //         BundlingSettings bundlingSettings, Cdt cdt,
-//         Dictionary < EdgeGeometry, Set < Polyline >> edgeLooseEnterable, Dictionary < EdgeGeometry, Set < Polyline >> edgeTightEnterable, Func < Port, Polyline > loosePolylineOfPort) {
+//         Map < EdgeGeometry, Set < Polyline >> edgeLooseEnterable, Map < EdgeGeometry, Set < Polyline >> edgeTightEnterable, Func < Port, Polyline > loosePolylineOfPort) {
 //         //Assert.assert(cdt != null);
 //         this.regularEdges = regularEdges;
 //         if (cdt != null)
@@ -242,7 +242,7 @@
 //     void InitializeNodeData() {
 //         Stations = new Set<Station>();
 //         //create indexes
-//         PointToStations = new Dictionary<Point, Station>();
+//         PointToStations = new Map<Point, Station>();
 //         int i = 0;
 //         foreach(var edge of regularEdges) {
 //             Polyline poly = (Polyline)edge.Curve;
@@ -303,7 +303,7 @@
 //     // Initialize graph comprised of stations and their neighbors
 //     // <
 //     void InitializeVirtualGraph() {
-//         Dictionary < Station, Set < Station >> neighbors = new Dictionary<Station, Set<Station>>();
+//         Map < Station, Set < Station >> neighbors = new Map<Station, Set<Station>>();
 //         foreach(var metroline of metrolines) {
 //             Station u = PointToStations[metroline.Polyline.start];
 //             Station v;
@@ -335,7 +335,7 @@
 //     }
 
 //     void InitializeEdgeNodeInfo(bool initTightTree) {
-//         edgeInfoDictionary = new Dictionary<Tuple<Station, Station>, StationEdgeInfo>();
+//         edgeInfoDictionary = new Map<Tuple<Station, Station>, StationEdgeInfo>();
 
 //         InitMetroNodeInfos(initTightTree);
 //         SortNeighbors();
@@ -388,7 +388,7 @@
 //         AddTightEnterableForEnd(metroline.Polyline.End);
 //     }
 
-//     Dictionary < Point, Set < Polyline >> cachedEnterableLooseForEnd = new Dictionary<Point, Set<Polyline>>();
+//     Map < Point, Set < Polyline >> cachedEnterableLooseForEnd = new Map<Point, Set<Polyline>>();
 
 //     void AddLooseEnterableForEnd(Point point) {
 //         Station station = PointToStations[point];

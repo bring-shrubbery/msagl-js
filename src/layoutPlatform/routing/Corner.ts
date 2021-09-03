@@ -16,7 +16,7 @@
 // #endif
 //         }
 
-// #if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=289 Support Dictionary directly based on object's GetHashCode
+// #if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=289 Support Map directly based on object's GetHashCode
 //         private SharpKit.JavaScript.JsString _hashKey;
 //         private void UpdateHashKey()
 //         {
@@ -32,7 +32,7 @@
 //             this.a = a;
 //             this.b = b;
 //             this.c = c;
-// #if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=289 Support Dictionary directly based on object's GetHashCode
+// #if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=289 Support Map directly based on object's GetHashCode
 //             UpdateHashKey();
 // #endif
 //         }

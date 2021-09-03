@@ -77,7 +77,7 @@ export class VisibilityGraph {
 
   //   static CalculateGraphOfBoundaries(holes: List<Polyline>): VisibilityGraph {
   //       let graphOfHoleBoundaries = new VisibilityGraph();
-  //       for (let polyline: Polyline in holes) {
+  //       for (let polyline: Polyline of holes) {
   //           graphOfHoleBoundaries.AddHole(polyline);
   //       }
 
@@ -99,7 +99,7 @@ export class VisibilityGraph {
   //       VisibilityGraph.CheckThatPolylinesAreConvex(holes);
   //       #endif
   //       //  TEST || VERIFY
-  //       for (let poly: Polyline in holes) {
+  //       for (let poly: Polyline of holes) {
   //           for (let p: PolylinePoint = poly.StartPoint; ; p = p.next) {
   //               //  Find the first non-collinear segments and see which direction the triangle is.
   //               //  If it's consistent with Clockwise, then return the polyline, else return its Reverse.
@@ -120,7 +120,7 @@ export class VisibilityGraph {
   //   }
 
   //   static CheckThatPolylinesAreConvex(holes: IEnumerable<Polyline>) {
-  //       for (let polyline in holes) {
+  //       for (let polyline of holes) {
   //           VisibilityGraph.CheckThatPolylineIsConvex(polyline);
   //       }
 
