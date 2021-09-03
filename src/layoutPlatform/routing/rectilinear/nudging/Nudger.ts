@@ -6,6 +6,7 @@ import {
   mkRectangleNode,
   RectangleNode,
 } from '../../../core/geometry/RTree/RectangleNode'
+import { UniformOneDimensionalSolver } from '../../../core/projectionSolver/UniformOneDimensionalSolver'
 import {EdgeGeometry} from '../../../layout/core/edgeGeometry'
 import {Port} from '../../../layout/core/port'
 import {CompassVector} from '../../../math/geometry/compassVector'
@@ -28,7 +29,6 @@ import {Path} from './Path'
 import {PathEdge} from './PathEdge'
 import {PathRefiner} from './PathRefiner'
 import {StaircaseRemover} from './StaircaseRemover'
-import {UniformOneDimensionalSolver} from './UniformOneDimensionalSolver'
 
 type PointProjection = (p: Point) => number
 //  following paper "Orthogonal Connector Routing" which is included  of the project
@@ -282,7 +282,7 @@ export class Nudger {
 
     this.CreateConstraintsOfTheOrder()
     this.CreateConstraintsBetweenLongestSegments()
-    this.Solver.Solve()
+    this.Solver.SolveByRegularSolver()
     this.ShiftPathEdges()
   }
 
@@ -728,7 +728,7 @@ export class Nudger {
         )
         segment.IsFixed = true
       } else {
-        this.Solver.AddVariable(
+        this.Solver.AddVariableNNNN(
           segment.Id,
           Nudger.SegmentPosition(segment, this.NudgingDirection),
           segment.IdealPosition,

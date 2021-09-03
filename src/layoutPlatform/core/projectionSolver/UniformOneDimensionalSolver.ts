@@ -35,7 +35,7 @@ export class UniformOneDimensionalSolver {
   //         End targetDelegate;
   //         Supremum minDel;
   //         Supremum maxDel;
-  private /*  */ SetLowBound(bound: number, id: number) {
+  SetLowBound(bound: number, id: number) {
     const v = this.Var(id)
     v.LowBound = Math.max(bound, v.LowBound)
   }
@@ -44,7 +44,7 @@ export class UniformOneDimensionalSolver {
     return this.varList[id]
   }
 
-  private /*  */ SetUpperBound(id: number, bound: number) {
+  SetUpperBound(id: number, bound: number) {
     const v = this.Var(id)
     v.UpperBound = Math.min(bound, v.UpperBound)
   }
