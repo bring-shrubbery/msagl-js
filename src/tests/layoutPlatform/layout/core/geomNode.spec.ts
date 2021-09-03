@@ -5,6 +5,7 @@ import {Rectangle} from './../../../../layoutPlatform/math/geometry/rectangle'
 import {SvgDebugWriter} from './../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {DebugCurve} from './../../../../layoutPlatform/math/geometry/debugCurve'
 import {Node} from './../../../../layoutPlatform/structs/node'
+import {closeDistEps} from '../../../../layoutPlatform/utils/compare'
 test('node fit', () => {
   const boundary = CurveFactory.mkRectangleWithRoundedCorners(
     100,
@@ -27,6 +28,6 @@ test('node fit', () => {
   n.center = p
 
   expect(Point.closeDistEps(n.center, p)).toBe(true)
-  expect(Point.closeD(n.width, rect.width)).toBe(true)
-  expect(Point.closeD(n.height, rect.height)).toBe(true)
+  expect(closeDistEps(n.width, rect.width)).toBe(true)
+  expect(closeDistEps(n.height, rect.height)).toBe(true)
 })

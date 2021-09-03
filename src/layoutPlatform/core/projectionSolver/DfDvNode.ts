@@ -1,8 +1,5 @@
 import {String} from 'typescript-string-operations'
-import {Assert} from '../../utils/assert'
 import {Constraint} from './Constraint'
-import {ConstraintVector} from './ConstraintVector'
-import {DfDvNode} from './DfDvNode'
 import {Variable} from './Variable'
 ///  <summary>
 ///  variableDoneEval is NULL if we are starting an evaluation; if recursive, it's the variable
@@ -10,29 +7,26 @@ import {Variable} from './Variable'
 ///  </summary>
 export class DfDvNode {
   Parent: DfDvNode
-  ConstraintToEval(): Constraint {}
-  set ConstraintToEval(value: Constraint) {}
+  ConstraintToEval: Constraint
 
-  get VariableToEval(): Variable {}
-  set VariableToEval(value: Variable) {}
+  VariableToEval: Variable
 
-  get VariableDoneEval(): Variable {}
-  set VariableDoneEval(value: Variable) {}
+  VariableDoneEval: Variable
 
   //  For Solution.MaxConstraintTreeDepth
-  get Depth(): number {}
-  set Depth(value: number) {}
+  Depth: number
 
-  get ChildrenHaveBeenPushed(): boolean {}
-  set ChildrenHaveBeenPushed(value: boolean) {}
+  ChildrenHaveBeenPushed: boolean
 
-  constructor(
+  static constructorDCVV(
     parent: DfDvNode,
     constraintToEval: Constraint,
     variableToEval: Variable,
     variableDoneEval: Variable,
   ) {
-    this.Set(parent, constraintToEval, variableToEval, variableDoneEval)
+    const ret = new DfDvNode(constraintToEval)
+    ret.Set(parent, constraintToEval, variableToEval, variableDoneEval)
+    return ret
   }
 
   //  For DummyParentNode only.

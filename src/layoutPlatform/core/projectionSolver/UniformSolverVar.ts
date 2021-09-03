@@ -1,48 +1,46 @@
-using System.Diagnostics;
+import {Assert} from '../../utils/assert'
 
-namespace Microsoft.Msagl.Core.ProjectionSolver{
-    internal class UniformSolverVar{
-        double lowBound = double.NegativeInfinity;
-        double upperBound = double.PositiveInfinity;
-        internal bool IsFixed;
-        double position;
+export class UniformSolverVar {
+  lowBound: number = Number.NEGATIVE_INFINITY
 
-        internal double Width { get; set; }
+  upperBound: number = Number.POSITIVE_INFINITY
 
-        internal double Position{
-            get { return position; }
-            set {
-                if (value < lowBound)
-                    position = lowBound;
-                else if (value > upperBound)
-                    position = upperBound;
-                else
-                    position = value;
-            }
-        }
+  IsFixed: boolean
 
-        internal double LowBound {
-            get { return lowBound; }
-            set {
-                Debug.Assert(value<=upperBound);
-                lowBound = value;
-            }
-        }
+  position: number
 
-        internal double UpperBound {
-            get { return upperBound; }
-            set {
-                Debug.Assert(value>=LowBound);
-                upperBound = value;
-            }
-        }
+  Width: number
 
-        
-
-#if TEST_MSAGL
-        public override string ToString() {
-            return lowBound + " " + Position + " " + upperBound;
-        }
-#endif
+  get Position(): number {
+    return this.position
+  }
+  set Position(value: number) {
+    if (value < this.lowBound) {
+      this.position = this.lowBound
+    } else if (value > this.upperBound) {
+      this.position = this.upperBound
+    } else {
+      this.position = value
     }
+  }
+
+  get LowBound(): number {
+    return this.lowBound
+  }
+  set LowBound(value: number) {
+    Assert.assert(value <= this.upperBound)
+    this.lowBound = value
+  }
+
+  get UpperBound(): number {
+    return this.upperBound
+  }
+  set UpperBound(value: number) {
+    Assert.assert(value >= this.LowBound)
+    this.upperBound = value
+  }
+
+  toString(): string {
+    return this.lowBound + (' ' + (this.Position + (' ' + this.upperBound)))
+  }
 }

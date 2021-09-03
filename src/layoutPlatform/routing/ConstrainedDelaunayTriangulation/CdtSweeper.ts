@@ -11,6 +11,7 @@ import {RBNode} from '../../structs/RBTree/rbNode'
 import {RBTree} from '../../structs/RBTree/rbTree'
 import {Algorithm} from '../../utils/algorithm'
 import {Assert} from '../../utils/assert'
+import {closeDistEps} from '../../utils/compare'
 import {Cdt} from './Cdt'
 import {CdtEdge} from './CdtEdge'
 import {CdtFrontElement} from './CdtFrontElement'
@@ -461,7 +462,7 @@ export class CdtSweeper extends Algorithm {
   ): CdtSite {
     // left case
     //                 if(db)ShowFrontWithSite(pi, LineSegment.mkPP(pi.point, hittedFrontElementNode.Item.Edge.upperSite.point), LineSegment.mkPP(pi.point, hittedFrontElementNode.Item.Edge.lowerSite.point));
-    Assert.assert(Point.closeD(pi.point.x, hittedFrontElementNode.item.x))
+    Assert.assert(closeDistEps(pi.point.x, hittedFrontElementNode.item.x))
     const hittedFrontElement = hittedFrontElementNode.item
     this.InsertAndLegalizeTriangle(pi, hittedFrontElement)
     const prevToHitted = this.front.previous(hittedFrontElementNode)

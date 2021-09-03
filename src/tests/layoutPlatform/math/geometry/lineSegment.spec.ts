@@ -2,6 +2,7 @@
 import {GeomConstants} from '../../../../layoutPlatform/math/geometry/geomConstants'
 import {LineSegment} from '../../../../layoutPlatform/math/geometry/lineSegment'
 import {Point} from '../../../../layoutPlatform/math/geometry/point'
+import {closeDistEps} from '../../../../layoutPlatform/utils/compare'
 
 test('lineSegment basic case', () => {
   const a = new LineSegment(0, 0, 1, 1)
@@ -50,9 +51,9 @@ test('lineSegment mindist test 0', () => {
     ls0.start,
     ls0.end,
   )
-  expect(Point.closeD(md.dist, perp.length)).toBe(true)
-  expect(Point.closeD(md.parab, t)).toBeTruthy()
-  expect(Point.closeD(md.parcd, 0)).toBeTruthy()
+  expect(closeDistEps(md.dist, perp.length)).toBe(true)
+  expect(closeDistEps(md.parab, t)).toBeTruthy()
+  expect(closeDistEps(md.parcd, 0)).toBeTruthy()
 })
 test('lineSegment mindist test1', () => {
   const a = new Point(0, 0)
@@ -71,14 +72,14 @@ test('lineSegment mindist test1', () => {
     ls0.end,
   )
   expect(md.dist < perp.length).toBeTruthy()
-  expect(Point.closeD(md.parab, 1)).toBeTruthy()
+  expect(closeDistEps(md.parab, 1)).toBeTruthy()
 
   const lsPoint = ls.value(md.parab)
   const ls0Point = ls0.value(md.parcd)
 
   const minPerp = lsPoint.sub(ls0Point)
 
-  expect(Point.closeD(minPerp.dot(ls0dir), 0)).toBeTruthy()
+  expect(closeDistEps(minPerp.dot(ls0dir), 0)).toBeTruthy()
 })
 
 function getUniformMd(a: Point, b: Point, c: Point, d: Point): number {

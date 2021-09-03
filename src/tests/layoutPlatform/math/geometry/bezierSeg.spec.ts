@@ -2,6 +2,7 @@ import {Point} from '../../../../layoutPlatform/math/geometry/point'
 import {BezierSeg} from '../../../../layoutPlatform/math/geometry/bezierSeg'
 import {DebugCurve} from '../../../../layoutPlatform/math/geometry/debugCurve'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
+import {closeDistEps} from '../../../../layoutPlatform/utils/compare'
 describe('bezier', () => {
   test('bezier control points', () => {
     const b = [
@@ -27,9 +28,9 @@ describe('bezier', () => {
     const mid = 0.5
     const del = 0.1
     const pm = bezSeg.value(mid)
-    expect(Point.closeD(pm.x, 3 / 2)).toBeTruthy()
+    expect(closeDistEps(pm.x, 3 / 2)).toBeTruthy()
     const der = bezSeg.derivative(mid)
-    expect(Point.closeD(der.y, 0)).toBeTruthy()
+    expect(closeDistEps(der.y, 0)).toBeTruthy()
     const t = mid + del
     const otherPoint = bezSeg.value(t)
     expect(otherPoint.y < pm.y).toBeTruthy()

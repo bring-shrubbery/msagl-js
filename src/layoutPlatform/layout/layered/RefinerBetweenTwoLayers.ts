@@ -4,6 +4,7 @@ import {CurveFactory} from '../../math/geometry/curveFactory'
 import {DebugCurve} from '../../math/geometry/debugCurve'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {Point} from '../../math/geometry/point'
+import {closeDistEps} from '../../utils/compare'
 import {randomInt} from '../../utils/random'
 import {GeomGraph} from '../core/GeomGraph'
 import {Anchor} from './anchor'
@@ -140,7 +141,7 @@ export class RefinerBetweenTwoLayers {
       return false
     }
 
-    if (!Point.closeD(cotan, RefinerBetweenTwoLayers.absCotan(mainSeg))) {
+    if (!closeDistEps(cotan, RefinerBetweenTwoLayers.absCotan(mainSeg))) {
       this.currentBottomSite = CornerSite.mkSiteSPS(
         this.currentTopSite,
         this.FixCorner(
@@ -184,7 +185,7 @@ export class RefinerBetweenTwoLayers {
       return false
     }
 
-    if (!Point.closeD(cotan, RefinerBetweenTwoLayers.absCotan(mainSeg))) {
+    if (!closeDistEps(cotan, RefinerBetweenTwoLayers.absCotan(mainSeg))) {
       this.currentTopSite = CornerSite.mkSiteSPS(
         this.currentTopSite,
         this.FixCorner(

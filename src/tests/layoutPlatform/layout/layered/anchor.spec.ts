@@ -10,6 +10,7 @@ import {IntersectionInfo} from './../../../../layoutPlatform/math/geometry/inter
 import {Node} from './../../../../layoutPlatform/structs/node'
 import {GeomConstants} from '../../../../layoutPlatform/math/geometry/geomConstants'
 import {DebugCurve} from '../../../../layoutPlatform/math/geometry/debugCurve'
+import {closeDistEps} from '../../../../layoutPlatform/utils/compare'
 
 function paddingIsCorrectOnLineSeg(
   ls: LineSegment,
@@ -46,7 +47,7 @@ function withinPadding(a: number, b: number, padding: number) {
 function fixIntersections(xx: IntersectionInfo[], center: Point, ang: number) {
   for (const x of xx) {
     x.x = x.x.sub(center).rotate(-ang)
-    expect(Point.closeD(x.x.y, 0)).toBe(true)
+    expect(closeDistEps(x.x.y, 0)).toBe(true)
   }
   if (xx[0].x.x > xx[1].x.x) {
     const t = xx[0]

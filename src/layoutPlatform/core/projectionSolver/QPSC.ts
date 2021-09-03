@@ -17,7 +17,7 @@ using System.Diagnostics;
 namespace Microsoft.Msagl.Core.ProjectionSolver
 {
     // An instance of Qpsc drives the gradient-projection portion of the Projection Solver.
-    internal class Qpsc
+     class Qpsc
     {
         private readonly Parameters solverParameters;
 
@@ -102,12 +102,12 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
         {
             // Initially the summed weights of all variables to which this variable has a relationship
             // (including self as described above for the diagonal), then modified with scale.
-            internal double Value;
+             double Value;
 
             // The index of the variable j for this column in the i row (may be same as i).
-            internal readonly uint Column;
+             readonly uint Column;
 
-            internal MatrixCell(double w, uint index)
+             MatrixCell(double w, uint index)
             {
                 Value = w;
                 Column = index;
@@ -118,11 +118,11 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
         // updating constraint gaps, we must restore DesiredPos as well.
         private struct QpscVar
         {
-            internal readonly Variable Variable;
-            internal readonly double OrigWeight;
-            internal readonly double OrigScale;
-            internal readonly double OrigDesiredPos;
-            internal QpscVar(Variable v)
+             readonly Variable Variable;
+             readonly double OrigWeight;
+             readonly double OrigScale;
+             readonly double OrigDesiredPos;
+             QpscVar(Variable v)
             {
                 Variable = v;
                 OrigWeight = v.Weight;
@@ -159,7 +159,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
         double normAlphaG;
 #endif // VERIFY || VERBOSE
 
-        internal Qpsc(Parameters solverParameters, int cVariables)
+         Qpsc(Parameters solverParameters, int cVariables)
         {
             this.solverParameters = solverParameters;
 
@@ -188,9 +188,9 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
         // Done:
         //    qpsc.ProjectComplete()
 
-        internal void AddVariable(Variable variable)
+         void AddVariable(Variable variable)
         {
-            Debug.Assert((null == this.matrixQ[variable.Ordinal]) && (null == this.vectorQpscVars[variable.Ordinal].Variable), "variable.Ordinal already exists");
+            Assert.assert((null == this.matrixQ[variable.Ordinal]) && (null == this.vectorQpscVars[variable.Ordinal].Variable), "variable.Ordinal already exists");
             this.isFirstProjectCall = true;
 
             // This is the weight times desired position, multiplied by 2.0 per the partial derivative.
@@ -203,7 +203,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
             // Ensure that we've zero'd out all entries after the prior iteration.
             foreach (double dbl in this.vectorPrevY)
             {
-                Debug.Assert(0.0 == dbl, "Unexpected nonzero value in vectorPrevY");
+                Assert.assert(0.0 == dbl, "Unexpected nonzero value in vectorPrevY");
             }
 #endif // VERIFY
 
@@ -214,7 +214,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
                 foreach (var neighborWeightPair in variable.Neighbors)
                 {
                     // We should already have verified this in AddNeighbourPair.
-                    Debug.Assert(neighborWeightPair.Neighbor.Ordinal != variable.Ordinal, "self-neighbors are not allowed");
+                    Assert.assert(neighborWeightPair.Neighbor.Ordinal != variable.Ordinal, "self-neighbors are not allowed");
 
                     // For the neighbor KeyValuePairs, Key == neighboring variable and Value == relationship
                     // weight.  If we've already encountered this pair then we'll sum the relationship weights, under
@@ -237,7 +237,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
                 if (0.0 != this.vectorPrevY[ii])
                 {
                     // The diagonal must be > 0 and off-diagonal < 0.
-                    Debug.Assert((ii == variable.Ordinal) == (this.vectorPrevY[ii] > 0.0), "Diagonal must be > 0.0");
+                    Assert.assert((ii == variable.Ordinal) == (this.vectorPrevY[ii] > 0.0), "Diagonal must be > 0.0");
 
                     // All 'A' cells must be 2*(summed weights).
                     this.newMatrixRow.Add(new MatrixCell(this.vectorPrevY[ii] * 2.0, ii));
@@ -256,7 +256,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
             variable.Weight = 1.0;
         } // end AddVariable()
 
-        internal void VariablesComplete()
+         void VariablesComplete()
         {
 #if VERBOSE
             System.Diagnostics.Debug.WriteLine("Q and b (before scaling)...");
@@ -348,7 +348,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
         // @@PERF: Right now this is distinct matrix/vector operations.  Profiling shows most time
         // in Qpsc is taken by MatrixVectorMultiply.  We could gain a bit of performance by combining
         // some things but keep it simple unless that's needed.
-        internal bool PreProject()
+         bool PreProject()
         {
             if (this.isFirstProjectCall)
             {
@@ -357,7 +357,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
                 System.Diagnostics.Debug.WriteLine(" Ordinal   origDesired desired   unscaledPos     scaledPos");
                 foreach (var qvar in vectorQpscVars)
                 {
-                    Debug.Assert(qvar.Variable.ActualPos == vectorCurY[qvar.Variable.Ordinal], "FirstProject: ActualPos != CurY");
+                    Assert.assert(qvar.Variable.ActualPos == vectorCurY[qvar.Variable.Ordinal], "FirstProject: ActualPos != CurY");
                     System.Diagnostics.Debug.WriteLine("    {0} {1} {2} {3} {4}", qvar.Variable.Ordinal,
                                 qvar.OrigDesiredPos, qvar.Variable.DesiredPos,
                                 vectorCurY[qvar.Variable.Ordinal] / qvar.Variable.Scale,
@@ -451,7 +451,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
         } // end PreProject()
 
         // Called by SolveQpsc after the split/project phase.
-        internal bool PostProject()
+         bool PostProject()
         {
             //
             // Update our copy of current positions (y-bar from the paper) and deltaY (p in the Scaling paper; y-bar minus y-hat).
@@ -490,7 +490,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
 #endif // VERBOSE
 
             // dblNormSg must be >= dblNormd; account for rounding errors.
-            Debug.Assert((this.normAlphaG / normDeltaY) > 0.001, "normAlphaG must be >= normDeltaY");
+            Assert.assert((this.normAlphaG / normDeltaY) > 0.001, "normAlphaG must be >= normDeltaY");
 #endif // VERIFY || VERBOSE
 
             //
@@ -549,7 +549,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
             return beta > 0.0;
         } // end PostProject()
 
-        internal double QpscComplete()
+         double QpscComplete()
         {
             // Restore original desired position and unscale the actual position.
             foreach (QpscVar qvar in this.vectorQpscVars)
@@ -627,7 +627,7 @@ namespace Microsoft.Msagl.Core.ProjectionSolver
                     double divisor = (0 != this.previousFunctionValue) ? this.previousFunctionValue : currentFunctionValue;
                     quotient = Math.Abs(diff / divisor);
 #if EX_VERIFY
-                    Debug.Assert((previousFunctionValue > currentFunctionValue) || (quotient < 0.001),    // account for rounding error
+                    Assert.assert((previousFunctionValue > currentFunctionValue) || (quotient < 0.001),    // account for rounding error
                                 "Convergence quotient should not be significantly negative");
 #endif // EX_VERIFY
                 }

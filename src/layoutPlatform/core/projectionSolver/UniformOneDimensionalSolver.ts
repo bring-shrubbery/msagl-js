@@ -25,7 +25,7 @@ export class UniformOneDimensionalSolver {
   //         End targetDelegate;
   //         Supremum minDel;
   //         Supremum maxDel;
-  private /* internal */ SetLowBound(bound: number, id: number) {
+  private /*  */ SetLowBound(bound: number, id: number) {
     const v = this.Var(id)
     v.LowBound = Math.Max(bound, v.LowBound)
   }
@@ -34,12 +34,12 @@ export class UniformOneDimensionalSolver {
     return this.varList[id]
   }
 
-  private /* internal */ SetUpperBound(id: number, bound: number) {
+  private /*  */ SetUpperBound(id: number, bound: number) {
     const v = this.Var(id)
     v.UpperBound = Math.Min(bound, v.UpperBound)
   }
 
-  private /* internal */ Solve() {
+  private /*  */ Solve() {
     this.SolveByRegularSolver()
   }
 
@@ -133,15 +133,15 @@ export class UniformOneDimensionalSolver {
     }
   }
 
-  private /* internal */ GetVariablePosition(id: number): number {
+  private /*  */ GetVariablePosition(id: number): number {
     return this.varList[id].Position
   }
 
-  private /* internal */ AddConstraint(i: number, j: number) {
+  private /*  */ AddConstraint(i: number, j: number) {
     this.constraints.Insert(new IntPair(i, j))
   }
 
-  private /* internal */ AddVariable(
+  private /*  */ AddVariable(
     id: number,
     currentPosition: number,
     idealPosition: number,
@@ -151,7 +151,7 @@ export class UniformOneDimensionalSolver {
     this.AddVariable(id, currentPosition, false, width)
   }
 
-  private /* internal */ AddFixedVariable(id: number, position: number) {
+  private /*  */ AddFixedVariable(id: number, position: number) {
     this.AddVariable(id, position, true, 0)
     // 0 for width
   }
@@ -162,7 +162,7 @@ export class UniformOneDimensionalSolver {
     (MessageId = 'id'),
   )
   AddVariable(id: number, position: number, isFixed: boolean, width: number) {
-    Debug.Assert(id == this.varList.Count)
+    Assert.assert(id == this.varList.Count)
     this.varList.Add(
       [][((IsFixed = isFixed), (Position = position), (Width = width))],
     )

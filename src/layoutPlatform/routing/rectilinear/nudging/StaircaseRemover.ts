@@ -8,6 +8,7 @@ import {GeomConstants} from '../../../math/geometry/geomConstants'
 import {LineSegment} from '../../../math/geometry/lineSegment'
 import {Polyline} from '../../../math/geometry/polyline'
 import {Assert} from '../../../utils/assert'
+import {closeDistEps} from '../../../utils/compare'
 import {Path} from './Path'
 import {SegWithIndex} from './SegWithIndex'
 
@@ -106,7 +107,7 @@ export class StaircaseRemover {
   }
 
   static GetFlippedPoint(pts: Point[], offset: number): Point {
-    const horiz = Point.closeD(pts[offset].y, pts[offset + 1].y)
+    const horiz = closeDistEps(pts[offset].y, pts[offset + 1].y)
     return horiz
       ? new Point(pts[offset + 4].x, pts[offset].y)
       : new Point(pts[offset].x, pts[offset + 4].y)

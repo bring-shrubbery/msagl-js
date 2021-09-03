@@ -4,6 +4,7 @@ import {EdgeRoutingSettings} from '../../core/routing/EdgeRoutingSettings'
 import {LayerDirectionEnum} from './layerDirectionEnum'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 import {Point} from '../../math/geometry/point'
+import {closeDistEps} from '../../utils/compare'
 export enum SnapToGridByY {
   None,
   Top,
@@ -49,7 +50,7 @@ export class SugiyamaLayoutSettings extends LayoutSettings {
     const p = PlaneTransformation.rotation(ang)
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < 3; j++)
-        if (!Point.closeD(p.elements[i][j], this.transform.elements[i][j]))
+        if (!closeDistEps(p.elements[i][j], this.transform.elements[i][j]))
           return false
     }
     return true

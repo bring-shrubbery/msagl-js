@@ -22,6 +22,7 @@ import {Routing} from './routing'
 import {NodeKind} from './NodeKind'
 import {Assert} from '../../utils/assert'
 import {RefinerBetweenTwoLayers} from './RefinerBetweenTwoLayers'
+import {closeDistEps} from '../../utils/compare'
 export class SmoothedPolylineCalculator {
   headSite: CornerSite
 
@@ -612,7 +613,7 @@ export class SmoothedPolylineCalculator {
     const bottom: number = this.EdgePathNode(2)
     const a: Anchor = this.anchors[top]
     const b: Anchor = this.anchors[bottom]
-    if (Point.closeD(a.x, b.x)) {
+    if (closeDistEps(a.x, b.x)) {
       return
     }
 
@@ -641,7 +642,7 @@ export class SmoothedPolylineCalculator {
     const bottom: number = this.EdgePathNode(1)
     const a: Anchor = this.anchors[top]
     const b: Anchor = this.anchors[bottom]
-    if (Point.closeD(a.x, b.x)) {
+    if (closeDistEps(a.x, b.x)) {
       return
     }
 
@@ -770,7 +771,7 @@ export class SmoothedPolylineCalculator {
     b: Anchor,
     middleNodeIndex: number,
   ): boolean {
-    if (!Point.closeD(sax, sbx) && (sax - sbx) * sign > 0) {
+    if (!closeDistEps(sax, sbx) && (sax - sbx) * sign > 0) {
       return false
     }
 

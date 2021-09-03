@@ -17,6 +17,7 @@ import {PlaneTransformation} from './planeTransformation'
 import {BezierSeg} from './bezierSeg'
 import {CornerSite} from './cornerSite'
 import {from} from 'linq-to-typescript'
+import {closeDistEps} from '../../utils/compare'
 type Params = {
   start: number
   end: number
@@ -432,7 +433,7 @@ export class Curve implements ICurve {
     // the case of a very short LineSegment
     if (segLength < GeomConstants.distanceEpsilon) {
       const lsStartMinCen = lineSeg.start.sub(ellipse.center)
-      if (Point.closeD(lsStartMinCen.length, ellipse.aAxis.length)) {
+      if (closeDistEps(lsStartMinCen.length, ellipse.aAxis.length)) {
         let angle = Point.angle(ellipse.aAxis, lsStartMinCen)
         if (ellipse.parStart - GeomConstants.tolerance <= angle) {
           angle = Math.max(angle, ellipse.parStart)
@@ -455,7 +456,7 @@ export class Curve implements ICurve {
     const absSegProj = Math.abs(segProjection)
     if (rad < absSegProj - GeomConstants.distanceEpsilon) return ret //we don't have an intersection
     lineDir = perp.rotate90Cw()
-    if (Point.closeD(rad, absSegProj)) {
+    if (closeDistEps(rad, absSegProj)) {
       Curve.tryToAddPointToLineCircleCrossing(
         lineSeg,
         ellipse,

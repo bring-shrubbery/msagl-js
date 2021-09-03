@@ -49,12 +49,6 @@ export class Point {
     return a.sub(b).length <= GeomConstants.distanceEpsilon
   }
 
-  static closeD(a: number, b: number): boolean {
-    const d = a - b
-    return (
-      -GeomConstants.distanceEpsilon <= d && d <= GeomConstants.distanceEpsilon
-    )
-  }
   normalize() {
     const l = this.length
     return new Point(this.x / l, this.y / l)

@@ -5,6 +5,7 @@ import {
   Parallelogram,
 } from './../../../../layoutPlatform/math/geometry/parallelogram'
 import {GeomConstants} from './../../../../layoutPlatform/math/geometry/geomConstants'
+import {closeDistEps} from '../../../../layoutPlatform/utils/compare'
 
 test('angle test', () => {
   const eps = 0.00001
@@ -167,14 +168,14 @@ test('distToLineSegment', () => {
   const b = new Point(0, 0)
   const c = new Point(2, 0)
   let i = Point.distToLineSegment(a, b, c)
-  expect(Point.closeD(i.dist, 1)).toBe(true)
-  expect(Point.closeD(i.par, 0.5)).toBe(true)
+  expect(closeDistEps(i.dist, 1)).toBe(true)
+  expect(closeDistEps(i.par, 0.5)).toBe(true)
   a = new Point(-2, -10)
   i = Point.distToLineSegment(a, b, c)
-  expect(Point.closeD(i.dist, a.sub(b).length)).toBe(true)
+  expect(closeDistEps(i.dist, a.sub(b).length)).toBe(true)
   expect(i.par == 0).toBe(true)
   a = new Point(50, 30)
   i = Point.distToLineSegment(a, b, c)
-  expect(Point.closeD(i.dist, a.sub(c).length)).toBe(true)
+  expect(closeDistEps(i.dist, a.sub(c).length)).toBe(true)
   expect(i.par == 1).toBe(true)
 })

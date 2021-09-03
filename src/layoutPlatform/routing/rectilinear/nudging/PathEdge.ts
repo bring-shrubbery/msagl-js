@@ -7,6 +7,7 @@
 import {Point} from '../../../..'
 import {CompassVector} from '../../../math/geometry/compassVector'
 import {Direction} from '../../../math/geometry/direction'
+import {closeDistEps} from '../../../utils/compare'
 import {AxisEdge} from './AxisEdge'
 import {LongestNudgedSegment} from './LongestNudgedSegment'
 import {Path} from './Path'
@@ -67,7 +68,7 @@ export class PathEdge {
   }
 
   static VectorsAreParallel(a: Point, b: Point): boolean {
-    return Point.closeD(a.x * b.y - a.y * b.x, 0)
+    return closeDistEps(a.x * b.y - a.y * b.x, 0)
   }
 
   public static EdgesAreParallel(edge: PathEdge, pathEdge: PathEdge): boolean {

@@ -1,3 +1,4 @@
+import {closeDistEps} from '../../utils/compare'
 import {Point} from './point'
 
 // 2 by 3 matrix of plane affine transformations
@@ -25,12 +26,12 @@ export class PlaneTransformation {
 
   isIdentity(): boolean {
     return (
-      Point.closeD(this.elements[0][0], 1) &&
-      Point.closeD(this.elements[0][1], 0) &&
-      Point.closeD(this.elements[0][2], 0) &&
-      Point.closeD(this.elements[1][0], 0) &&
-      Point.closeD(this.elements[1][1], 1) &&
-      Point.closeD(this.elements[1][2], 0)
+      closeDistEps(this.elements[0][0], 1) &&
+      closeDistEps(this.elements[0][1], 0) &&
+      closeDistEps(this.elements[0][2], 0) &&
+      closeDistEps(this.elements[1][0], 0) &&
+      closeDistEps(this.elements[1][1], 1) &&
+      closeDistEps(this.elements[1][2], 0)
     )
   }
 

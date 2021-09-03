@@ -1,202 +1,146 @@
-    export class Constraint : IComparable<Constraint>
-    {
-        /// <summary>
-        /// The Left (if horizontal; Top, if vertical) variable of the constraint.
-        /// </summary>
-        public Variable Left { get; private set; }
+import {Assert} from '../../utils/assert'
+import {Variable} from './Variable'
+import {String} from 'typescript-string-operations'
+import {compareNumbers} from '../../utils/compare'
 
-        /// <summary>
-        /// The Right (if horizontal; Bottom, if vertical) variable of the constraint.
-        /// </summary>
-        public Variable Right { get; private set; }
+export class Constraint {
+  ///  <summary>
+  ///  The Left (if horizontal; Top, if vertical) variable of the constraint.
+  ///  </summary>
+  Left: Variable
+  ///  <summary>
+  ///  The Right (if horizontal; Bottom, if vertical) variable of the constraint.
+  ///  </summary>
+  Right: Variable
 
-        /// <summary>
-        /// The required separation of the points of the two Variables along the current axis.
-        /// </summary>
-        public double Gap { get; private set; }
+  ///  <summary>
+  ///  The required separation of the points of the two Variables along the current axis.
+  ///  </summary>
+  Gap: number
 
-        /// <summary>
-        /// Indicates if the distance between the two variables must be equal to the gap
-        /// (rather than greater or equal to).
-        /// </summary>
-        public bool IsEquality { get; private set; }
+  ///  <summary>
+  ///  Indicates if the distance between the two variables must be equal to the gap
+  ///  (rather than greater or equal to).
+  ///  </summary>
+  IsEquality: boolean
 
-        internal double Lagrangian { get; set; }
-        internal bool IsActive { get; private set; }
-#if TEST_MSAGL
-        internal int IdDfDv { get; set; }
-#endif // TEST_MSAGL
-        internal bool IsUnsatisfiable { get; set; }
+  Lagrangian: number
 
-        // Index in Solver.AllConstraints, to segregate active from inactive constraints.
-        internal int VectorIndex { get; private set; }
-        internal void SetActiveState(bool activeState, int newVectorIndex)
-        {
-            // Note: newVectorIndex may be the same as the old one if we are changing the state
-            // of the last inactive or first active constraint.
-            Debug.Assert(IsActive != activeState, "Constraint is already set to activationState");
-            IsActive = activeState;
-            VectorIndex = newVectorIndex;
-            if (IsActive)
-            {
-                ++Left.ActiveConstraintCount;
-                ++Right.ActiveConstraintCount;
-            }
-            else
-            {
-                --Left.ActiveConstraintCount;
-                --Right.ActiveConstraintCount;
-            }
-        }
-        internal void SetVectorIndex(int vectorIndex)
-        {
-            // This is separate from set_VectorIndex because we can't restrict the caller to a specific
-            // class and we only want ConstraintVector to be able to call this.
-            this.VectorIndex = vectorIndex;
-        }
+  IsActive: boolean
 
-        internal void Reinitialize()
-        {
-            // Called by Qpsc or equivalence-constraint-regapping initial block restructuring.
-            // All variables have been moved to their own blocks again, so reset solution states.
-            IsActive = false;
-            IsUnsatisfiable = false;
-            this.ClearDfDv();
-        }
+  IsUnsatisfiable: boolean
+  //  Index in Solver.AllConstraints, to segregate active from inactive constraints.
+  VectorIndex: number
 
-        // This is an internal function, not a propset, because we only want it called by the Solver.
-        internal void UpdateGap(double newGap) { this.Gap = newGap; }
-
-#if VERIFY || VERBOSE
-        internal uint Id { get; private set; }
-#endif // VERIFY || VERBOSE
-
-        // The Constraint constructor takes the two variables and their required distance.
-        // The constraints will be generated either manually or by ConstraintGenerator,
-        // both of which know about the sizes when the constraints are generated (as
-        // well as any necessary padding), so the sizes are accounted for at that time
-        // and ProjectionSolver classes are not aware of Variable sizes.
-        internal Constraint(Variable left, Variable right, double gap, bool isEquality
-#if VERIFY || VERBOSE
-                            , uint constraintId
-#endif // VERIFY || VERBOSE
-)
-        {
-            this.Left = left;
-            this.Right = right;
-            this.Gap = gap;
-            this.IsEquality = isEquality;
-#if VERIFY || VERBOSE
-            Id = constraintId;
-#endif // VERIFY || VERBOSE
-
-            this.Lagrangian = 0.0;
-            this.IsActive = false;
-        }
-
-        // For Solver.ComputeDfDv's DummyParentNode's constraint only.
-        internal Constraint(Variable variable)
-        {
-            this.Left = this.Right = variable;
-        }
-
-        /// <summary>
-        /// Generates a string representation of the Constraint.
-        /// </summary>
-        /// <returns>A string representation of the Constraint.</returns>
-        public override string ToString()
-        {
-#if VERIFY || VERBOSE
-            return string.Format(System.Globalization.CultureInfo.InvariantCulture,
-                                "  Cst ({8}/{9}-{10}): [{0}] [{1}] {2} {3:F5} vio {4:F5} Lm {5:F5}/{6:F5} {7}actv",
-                                this.Left, this.Right, this.IsEquality ? "==" : ">=", this.Gap,
-                                this.Violation, this.Lagrangian, this.Lagrangian * 2,
-                                this.IsActive ? "+" : (this.IsUnsatisfiable ? "!" : "-"),
-                                this.Id, this.Left.Block.Id, this.Right.Block.Id);
-#else  // VERIFY || VERBOSE
-            return string.Format(System.Globalization.CultureInfo.InvariantCulture,
-                                "  Cst: [{0}] [{1}] {2} {3:F5} vio {4:F5} Lm {5:F5}/{6:F5} {7}actv",
-                                this.Left, this.Right, this.IsEquality ? "==" : ">=", this.Gap,
-                                this.Violation, this.Lagrangian, this.Lagrangian * 2,
-                                this.IsActive ? "+" : (this.IsUnsatisfiable ? "!" : "-"));
-#endif // VERIFY || VERBOSE
-        }
-
-        internal double Violation
-        {
-            // If the difference in position is negative or zero, it means the startpos of the Rhs
-            // node is greater than or equal to the gap and thus there's no violation.
-            // This uses an absolute (unscaled) positional comparison (multiplying by scale
-            // "undoes" the division-by-scale in Block.UpdateVariablePositions).
-            // Note: this is too big for the CLR to inline so it is "manually inlined" in 
-            // high-call-volume places; these are marked with Inline_Violation.
-            get { return (this.Left.ActualPos * this.Left.Scale) + this.Gap - (this.Right.ActualPos * this.Right.Scale); }
-        }
-
-        internal void ClearDfDv()
-        {
-#if TEST_MSAGL
-            this.IdDfDv = 0;
-#endif // TEST_MSAGL
-            this.Lagrangian = 0.0;
-        }
-
-        #region IComparable<Constraint> Members
-        /// <summary>
-        /// Compare this Constraint to rhs by their Variables in ascending order (this == lhs, other == rhs).
-        /// </summary>
-        /// <param name="other">The object being compared to.</param>
-        /// <returns>-1 if this.Left/Right are "less"; +1 if this.Left/Right are "greater"; 0 if this.Left/Right
-        ///         and rhs.Left/Right are equal.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1307:SpecifyStringComparison", MessageId = "System.String.CompareTo(System.String)")]
-        public int CompareTo(Constraint other)
-        {
-            ValidateArg.IsNotNull(other, "other");
-            int cmp = this.Left.CompareTo(other.Left);
-            if (0 == cmp)
-            {
-                cmp = this.Right.CompareTo(other.Right);
-            }
-            if (0 == cmp)
-            {
-                cmp = this.Gap.CompareTo(other.Gap);
-            }
-            return cmp;
-        }
-        #endregion // IComparable<Constraint> Members
-
-#if NOTNEEDED_FXCOP // This entails a perf hit due to ==/!= becoming a non-inlined function call in some cases.
-                    // We only create one Constraint object per constraint so do not need anything but reference
-                    // ==/!=, so we suppress:1036 above.  Add UnitTests for these if they're enabled.
-        #region RequiredOverridesForIComparable
-
-        // Omitting getHashCode violates rule: OverrideGetHashCodeOnOverridingEquals.
-        public override int GetHashCode() {
-            return this.Left.GetHashCode() ^ this.Right.GetHashCode();
-        }
-        // Omitting any of the following violates rule: OverrideMethodsOnComparableTypes.
-        public override bool Equals(Object obj) {
-            if (!(obj is Constraint))
-                return false;
-            return (this.CompareTo((Constraint)obj) == 0);
-        }
-        public static bool operator ==(Constraint lhs, Constraint rhs) {
-            if ( (object)lhs == null) {          // Cast to object to avoid recursive op==
-                return ( (object)rhs == null);
-            }
-            return lhs.Equals(rhs);
-        }
-        public static bool operator !=(Constraint lhs, Constraint rhs) {
-            return !(lhs == rhs);
-        }
-        public static bool operator <(Constraint lhs, Constraint rhs) {
-            return (lhs.CompareTo(rhs) < 0);
-        }
-        public static bool operator >(Constraint lhs, Constraint rhs) {
-            return (lhs.CompareTo(rhs) > 0);
-        }
-        #endregion // RequiredOverridesForIComparable
-#endif // NOTNEEDED_FXCOP
-
+  SetActiveState(activeState: boolean, newVectorIndex: number) {
+    //  Note: newVectorIndex may be the same as the old one if we are changing the state
+    //  of the last inactive or first active constraint.
+    Assert.assert(
+      this.IsActive != activeState,
+      'Constraint is already set to activationState',
+    )
+    this.IsActive = activeState
+    this.VectorIndex = newVectorIndex
+    if (this.IsActive) {
+      this.Left.ActiveConstraintCount++
+      this.Right.ActiveConstraintCount++
+    } else {
+      this.Left.ActiveConstraintCount++
+      this.Right.ActiveConstraintCount++
     }
+  }
+
+  SetVectorIndex(vectorIndex: number) {
+    //  This is separate from set_VectorIndex because we can't restrict the caller to a specific
+    //  class and we only want ConstraintVector to be able to call this.
+    this.VectorIndex = vectorIndex
+  }
+
+  Reinitialize() {
+    //  Called by Qpsc or equivalence-constraint-regapping initial block restructuring.
+    //  All variables have been moved to their own blocks again, so reset solution states.
+    this.IsActive = false
+    this.IsUnsatisfiable = false
+    this.ClearDfDv()
+  }
+
+  //  This is an  function, not a propset, because we only want it called by the Solver.
+  UpdateGap(newGap: number) {
+    this.Gap = newGap
+  }
+
+  //  The Constraint constructor takes the two variables and their required distance.
+  //  The constraints will be generated either manually or by ConstraintGenerator,
+  //  both of which know about the sizes when the constraints are generated (as
+  //  well as any necessary padding), so the sizes are accounted for at that time
+  //  and ProjectionSolver classes are not aware of Variable sizes.
+  static constructorVVNB(
+    left: Variable,
+    right: Variable,
+    gap: number,
+    isEquality: boolean,
+  ): Constraint {
+    const v = new Constraint(left)
+    v.Left = left
+    v.Right = right
+    v.Gap = gap
+    v.IsEquality = isEquality
+    v.Lagrangian = 0
+    v.IsActive = false
+    return v
+  }
+
+  //  For Solver.ComputeDfDv's DummyParentNode's constraint only.
+  constructor(variable: Variable) {
+    this.Right = variable
+    this.Left = variable
+  }
+
+  ///  <summary>
+  ///  Generates a string representation of the Constraint.
+  ///  </summary>
+  ///  <returns>A string representation of the Constraint.</returns>
+  public /* override */ ToString(): string {
+    return String.Format(
+      '  Cst: [{0}] [{1}] {2} {3:F5} vio {4:F5} Lm {5:F5}/{6:F5} {7}actv',
+      this.Left,
+      this.Right,
+      this.IsEquality ? '==' : '>=',
+      this.Gap,
+      this.Violation,
+      this.Lagrangian,
+      this.Lagrangian * 2,
+      this.IsActive ? '+' : this.IsUnsatisfiable ? '!' : '-',
+    )
+  }
+
+  get Violation(): number {
+    return (
+      this.Left.ActualPos * this.Left.Scale +
+      (this.Gap - this.Right.ActualPos * this.Right.Scale)
+    )
+  }
+
+  ClearDfDv() {
+    this.Lagrangian = 0
+  }
+
+  ///  <summary>
+  ///  Compare this Constraint to rhs by their Variables in ascending order (this == lhs, other == rhs).
+  ///  </summary>
+  ///  <param name="other">The object being compared to.</param>
+  ///  <returns>-1 if this.Left/Right are "less"; +1 if this.Left/Right are "greater"; 0 if this.Left/Right
+  ///          and rhs.Left/Right are equal.</returns>
+  public CompareTo(other: Constraint): number {
+    let cmp: number = this.Left.CompareTo(other.Left)
+    if (0 == cmp) {
+      cmp = this.Right.CompareTo(other.Right)
+    }
+
+    if (0 == cmp) {
+      cmp = compareNumbers(this.Gap, other.Gap)
+    }
+
+    return cmp
+  }
 }

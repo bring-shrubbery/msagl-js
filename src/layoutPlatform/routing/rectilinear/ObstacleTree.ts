@@ -830,7 +830,7 @@ export class ObstacleTree {
           testSeg == xxs[0].seg0,
           'incorrect parameter ordering to GetAllIntersections',
         )
-        if (!Point.closeD(Math.floor(xxs[0].par1), Math.floor(xxs[1].par1))) {
+        if (!closeDistEps(Math.floor(xxs[0].par1), Math.floor(xxs[1].par1))) {
           return HitTestBehavior.Stop
         }
       }

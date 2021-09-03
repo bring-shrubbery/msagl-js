@@ -12,6 +12,7 @@ import {Path} from './Path'
 import {PathMerger} from './PathMerger'
 import {PointByDelegateComparer} from './PointByDelegateComparer'
 import SortedMap = require('collections/sorted-map')
+import {closeDistEps} from '../../../utils/compare'
 type PointProjection = (p: Point) => number
 ///  </summary>
 export class PathRefiner {
@@ -63,7 +64,7 @@ export class PathRefiner {
     const verticalPoints = new Array<LinkedPoint>()
     for (const pnt of pathsFirstLinked) {
       for (let p = pnt; p.Next != null; p = p.Next) {
-        if (Point.closeD(p.Point.x, p.Next.Point.x)) {
+        if (closeDistEps(p.Point.x, p.Next.Point.x)) {
           verticalPoints.push(p)
         } else {
           horizontalPoints.push(p)
@@ -141,7 +142,7 @@ export class PathRefiner {
     for (const vert of initialVerts) {
       for (let v = vert; v.Next != null; v = v.Next) {
         if (
-          Point.closeD(
+          closeDistEps(
             projectionToPerp(v.Point),
             projectionToPerp(v.Next.Point),
           )

@@ -7,6 +7,7 @@ import {Point} from '../../../../layoutPlatform/math/geometry/point'
 import {Edge} from '../../../../layoutPlatform/structs/edge'
 import {Graph} from '../../../../layoutPlatform/structs/graph'
 import {Node} from '../../../../layoutPlatform/structs/node'
+import {closeDistEps} from '../../../../layoutPlatform/utils/compare'
 import {createGeometry} from '../layered/layeredLayout.spec'
 
 test('single source distances', () => {
@@ -104,6 +105,6 @@ test('ss distances with decrease', () => {
   const res = ss.Result
   expect(res[0]).toBe(0)
   expect(res[1]).toBe(1)
-  expect(Point.closeD(res[2], 0.3)).toBe(true)
+  expect(closeDistEps(res[2], 0.3)).toBe(true)
   expect(res[3]).toBe(1)
 })

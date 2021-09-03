@@ -15,6 +15,7 @@ import {GeomConstants} from '../../../math/geometry/geomConstants'
 import {LineSegment} from '../../../math/geometry/lineSegment'
 import {Polyline} from '../../../math/geometry/polyline'
 import {Assert} from '../../../utils/assert'
+import {closeDistEps} from '../../../utils/compare'
 import {Shape} from '../../shape'
 import {SegmentBase} from '../../visibility/SegmentBase'
 import {VisibilityEdge} from '../../visibility/VisibilityEdge'
@@ -680,10 +681,10 @@ export class Nudger {
     switch (direction) {
       case Direction.North:
       case Direction.South:
-        return Point.closeD(edge.SourcePoint.x, edge.TargetPoint.x)
+        return closeDistEps(edge.SourcePoint.x, edge.TargetPoint.x)
         break
       default:
-        return Point.closeD(edge.SourcePoint.y, edge.TargetPoint.y)
+        return closeDistEps(edge.SourcePoint.y, edge.TargetPoint.y)
         break
     }
   }
@@ -1052,10 +1053,10 @@ export class Nudger {
 
   static ProjectionsAreClose(a: Point, dir: Direction, b: Point): boolean {
     if (dir == Direction.East || dir == Direction.West) {
-      return Point.closeD(a.x, b.x)
+      return closeDistEps(a.x, b.x)
     }
 
-    return Point.closeD(a.y, b.y)
+    return closeDistEps(a.y, b.y)
   }
 
   static ExtendPolylineToSourcePort(t: {points: Point[]}, location: Point) {

@@ -11,6 +11,7 @@ import {BezierSeg} from './../../../../layoutPlatform/math/geometry/bezierSeg'
 import {ICurve} from './../../../../layoutPlatform/math/geometry/icurve'
 import {Rectangle} from './../../../../layoutPlatform/math/geometry/rectangle'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
+import {closeDistEps} from '../../../../layoutPlatform/utils/compare'
 
 test('adjustStartEndEndParametersToDomain', () => {
   const c = new Curve()
@@ -67,7 +68,7 @@ function intersectOnDiameter(a: Point, b: Point) {
   let xx = Curve.getAllIntersections(ls, circ, false)
   expect(xx.length == 2).toBeTruthy()
   expect(
-    Point.closeD(xx[0].x.sub(xx[1].x).length, b.sub(a).length),
+    closeDistEps(xx[0].x.sub(xx[1].x).length, b.sub(a).length),
   ).toBeTruthy()
   for (const x of xx) {
     expect(

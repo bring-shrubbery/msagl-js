@@ -6,6 +6,7 @@ import {Point} from './point'
 import {GeomConstants} from './geomConstants'
 import {PlaneTransformation} from './planeTransformation'
 import {ClosestPointOnCurve} from './closestPointOnCurve'
+import {closeDistEps} from '../../utils/compare'
 export class Ellipse implements ICurve {
   box: Rectangle
 
@@ -137,8 +138,8 @@ export class Ellipse implements ICurve {
 
   setBoundingBox() {
     if (
-      Point.closeD(this.parStart, 0) &&
-      Point.closeD(this.parEnd, Math.PI * 2)
+      closeDistEps(this.parStart, 0) &&
+      closeDistEps(this.parEnd, Math.PI * 2)
     )
       this.box = this.fullBox()
     else {
