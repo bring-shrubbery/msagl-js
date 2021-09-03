@@ -472,10 +472,10 @@ export class Qpsc {
       const diff: number = this.previousFunctionValue - currentFunctionValue
       let quotient = 0
       if (diff != 0) {
-        const divisor: number = this.previousFunctionValue
-        // TODO: Warning!!!, inline IF is not supported ?
-        0 != this.previousFunctionValue
-        currentFunctionValue
+        const divisor =
+          0 != this.previousFunctionValue
+            ? this.previousFunctionValue
+            : currentFunctionValue
         quotient = Math.abs(diff / divisor)
       }
 

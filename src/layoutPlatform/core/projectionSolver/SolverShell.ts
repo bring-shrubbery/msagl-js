@@ -129,7 +129,7 @@ export class SolverShell {
 
   ///  <param name="parameters">Parameter object class specific to the underlying solver</param>
   ///  <returns>Pass or fail</returns>
-  public SolveP(parameters: Object) {
+  public SolveP(parameters: any) {
     const t = {executionLimitExceeded: false}
     this.SolvePNS(parameters, t)
   }
@@ -156,7 +156,7 @@ export class SolverShell {
         }
       }
 
-      this.solution = this.solver.Solve(solverParameters)
+      this.solution = this.solver.SolvePar(solverParameters)
       t.executionLimitExceeded = this.solution.ExecutionLimitExceeded
       fixedVarsMoved = this.AdjustConstraintsForMovedFixedVars()
     } while (fixedVarsMoved && this.solution.ExecutionLimitExceeded == false)
