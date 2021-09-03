@@ -12,15 +12,15 @@
 // using Microsoft.Msagl.DebugHelpers;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // Calculates node radii with 'water algorithm'
 //     // <
 //     public class HubRadiiCalculator {
-//         // <summary>
+
 //         // bundle data
 //         // <
 //         readonly MetroGraphData metroGraphData;
-//         // <summary>
+
 //         // Algorithm settings
 //         // <
 //         readonly BundlingSettings bundlingSettings;
@@ -30,7 +30,6 @@
 //             this.bundlingSettings = bundlingSettings;
 //         }
 
-//         // <summary>
 //         // calculate node radii with fixed hubs
 //         // <
 //         internal void CreateNodeRadii() {
@@ -55,7 +54,6 @@
 //         }
 //     }
 
-//     // <summary>
 //     // Grow hubs
 //     // <
 //     bool GrowHubs(bool useHalfEdgesAsIdealR) {
@@ -141,7 +139,6 @@
 //         return Math.Max(r, 0.1);
 //     }
 
-//         // <summary>
 //         // Returns the ideal radius of the hub
 //         // <
 //         static double CalculateIdealHubRadius(MetroGraphData metroGraphData, BundlingSettings bundlingSettings, Station node) {
@@ -156,14 +153,12 @@
 //         return r;
 //     }
 
-//     // <summary>
 //     // Returns the ideal radius of the hub
 //     // <
 //     internal static double CalculateIdealHubRadiusWithNeighbors(MetroGraphData metroGraphData, BundlingSettings bundlingSettings, Station node) {
 //         return CalculateIdealHubRadiusWithNeighbors(metroGraphData, bundlingSettings, node, node.Position);
 //     }
 
-//     // <summary>
 //     // Returns the ideal radius of the hub
 //     // <
 //     internal static double CalculateIdealHubRadiusWithNeighbors(MetroGraphData metroGraphData, BundlingSettings bundlingSettings, Station node, Point newPosition) {
@@ -182,7 +177,6 @@
 //         return r;
 //     }
 
-//         // <summary>
 //         // Returns the ideal radius of the hub
 //         // <
 //         static double CalculateIdealHubRadiusWithAdjacentEdges(MetroGraphData metroGraphData, BundlingSettings bundlingSettings, Station node) {
@@ -202,7 +196,6 @@
 //         return GetMinRadiusForTwoAdjacentBundles(r, nodePosition, adj0.Position, adj1.Position, w0, w1, metroGraphData, bundlingSettings);
 //     }
 
-//     // <summary>
 //     // Radius we need to draw to separate adjacent bundles ab and ac
 //     // <
 //     internal static double GetMinRadiusForTwoAdjacentBundles(double r, Point a, Point b, Point c, double widthAB, double widthAC,

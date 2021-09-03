@@ -35,8 +35,6 @@ export class BlockVector {
     this.Vector.pop()
   }
 
-  ///  <summary>
-  ///  </summary>
   toString(): string {
     return this.Vector.toString()
   }

@@ -12,16 +12,15 @@
 // using Microsoft.Msagl.DebugHelpers;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // Adjust current bundle-routing with a number of heuristic
 //     // <
 //     public class NodePositionsAdjuster {
-//         // <summary>
+
 //         // Algorithm settings
 //         // <
 //         readonly BundlingSettings bundlingSettings;
 
-//         // <summary>
 //         // bundle data
 //         // <
 //         readonly MetroGraphData metroGraphData;
@@ -31,7 +30,6 @@
 //             this.bundlingSettings = bundlingSettings;
 //         }
 
-//         // <summary>
 //         // apply a number of heuristics to improve current routing
 //         // <
 //         internal static void FixRouting(MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
@@ -83,7 +81,6 @@
 
 //         #region Gluing coinciding nodes
 
-// // <summary>
 // // unite the nodes that are close to each other
 // // <
 // bool GlueConflictingNodes() {
@@ -171,7 +168,6 @@
 //   gluedDomain.Insert(j);
 // }
 
-// // <summary>
 // // trying to glue i to j
 // // <
 // bool NodeGluingIsAllowed(Station i, Station j, Map < Station, Station > gluingMap) {
@@ -269,7 +265,6 @@
 // double ink;
 // Map < Metroline, double > polylineLength;
 
-// // <summary>
 // // Unbundle unnecessary edges:
 // //  instead of one bundle (a->bcd) we get two bundles (a->b,a->cd) with smaller ink
 // // <
@@ -330,7 +325,6 @@
 //   return false;
 // }
 
-// // <summary>
 // // allowed iff line (a,c) is legal and inkgain > 0
 // // <
 // bool SeparationShortcutAllowed(PolylinePoint pp, Map < PointPair, Set < Metroline >> segsToPolylines, Set < Polyline > obstaclesAllowedToIntersect) {
@@ -453,7 +447,6 @@
 
 //         #region Fix collinear neighbors
 
-// // <summary>
 // // Fix the situation where a station has two neighbors that are almost in the same directions
 // // <
 // bool GlueCollinearNeighbors(int step) {
@@ -650,7 +643,6 @@
 
 //         #region Split edges that are constrained by the obstacles
 
-// // <summary>
 // // split each edge that is too much constrained by the obstacles
 // // <
 // bool RelaxConstrainedEdges() {
@@ -672,7 +664,7 @@
 // bool RelaxConstrainedEdge(Station a, Station b, HashSet < Point > affectedPoints) {
 //   //find conflicting obstacles
 //   double idealWidth = metroGraphData.GetWidth(a, b, bundlingSettings.EdgeSeparation);
-//   List < Tuple < Point, Point >> closestPoints;
+//   Array < Tuple < Point, Point >> closestPoints;
 //             /*bool res =*/ metroGraphData.cdtIntersections.BundleAvoidsObstacles(a, b, a.Position, b.Position, 0.99 * idealWidth / 2.0, out closestPoints);
 //   // Assert.assert(res); //todo still unsolved
 
@@ -729,7 +721,6 @@
 
 //         #region Switch flips to reduce path crossings
 
-// // <summary>
 // // switch flips
 // // <
 // bool RemoveDoublePathCrossings() {

@@ -10,7 +10,7 @@ export class AxisEdgesContainer {
   }
 
   ///  it is not necessarely the upper point but some point above the source
-  ///  </summary>
+
   UpPoint: Point
 
   AddEdge(edge: AxisEdge) {

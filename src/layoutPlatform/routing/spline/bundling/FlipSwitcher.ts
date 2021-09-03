@@ -147,7 +147,7 @@
 //         RegisterInterestingPoint(aLast.point);
 //         numberOfReducedCrossings++;
 
-//         /*dc = new List<DebugCurve>();
+//         /*dc = new Array<DebugCurve>();
 //         Polyline pl = new Polyline(polylineA);
 //         pl.Shift(new Point(1, 0));
 //         dc.Add(new DebugCurve("blue", pl));
@@ -250,7 +250,7 @@
 //             int left1 = Point.GetOrientationOf3Vectors(a1p.point - bs, b0n.point - bs, a0n.point - bs);
 //             /*
 //             if (left0 == 0 || left1 ==0) {
-//                 List<DebugCurve> dc = new List<DebugCurve>();
+//                 Array<DebugCurve> dc = new Array<DebugCurve>();
 //                 Polyline pl = new Polyline(a0.Polyline);
 //                 Point sh = new Point(3, 0);
 //                 pl.Shift(sh);
@@ -276,8 +276,8 @@
 //     }
 
 //     void Swap(PolylinePoint aFirst, PolylinePoint bFirst, PolylinePoint aLast, PolylinePoint bLast, bool forwardOrderA, bool forwardOrderB) {
-//         List < PolylinePoint > intermediateAPoints = GetRangeOnPolyline(Next(aFirst, forwardOrderA), aLast, forwardOrderA);
-//         List < PolylinePoint > intermediateBPoints = GetRangeOnPolyline(Next(bFirst, forwardOrderB), bLast, forwardOrderB);
+//         Array < PolylinePoint > intermediateAPoints = GetRangeOnPolyline(Next(aFirst, forwardOrderA), aLast, forwardOrderA);
+//         Array < PolylinePoint > intermediateBPoints = GetRangeOnPolyline(Next(bFirst, forwardOrderB), bLast, forwardOrderB);
 
 //         //changing a
 //         ChangePolylineSegment(aFirst, aLast, forwardOrderA, intermediateBPoints);
@@ -293,7 +293,7 @@
 //         Assert.assert(PolylineIsOK(bFirst.Polyline));
 //     }
 
-//     void ChangePolylineSegment(PolylinePoint aFirst, PolylinePoint aLast, bool forwardOrderA, List < PolylinePoint > intermediateBPoints) {
+//     void ChangePolylineSegment(PolylinePoint aFirst, PolylinePoint aLast, bool forwardOrderA, Array < PolylinePoint > intermediateBPoints) {
 //         PolylinePoint curA = aFirst;
 //         foreach(PolylinePoint b of intermediateBPoints) {
 //             var newp = new PolylinePoint(b.point) { Polyline = curA.Polyline };
@@ -317,8 +317,8 @@
 //         }
 //     }
 
-//     List < PolylinePoint > GetRangeOnPolyline(PolylinePoint start, PolylinePoint end, bool forwardOrder) {
-//         List < PolylinePoint > res = new List<PolylinePoint>();
+//     Array < PolylinePoint > GetRangeOnPolyline(PolylinePoint start, PolylinePoint end, bool forwardOrder) {
+//         Array < PolylinePoint > res = new Array<PolylinePoint>();
 //         for (PolylinePoint pp = start; pp != end; pp = Next(pp, forwardOrder))
 //         res.Add(pp);
 

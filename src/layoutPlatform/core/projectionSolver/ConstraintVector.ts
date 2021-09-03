@@ -1,6 +1,10 @@
+import {Stack} from 'stack-typescript'
+import {Assert} from '../../utils/assert'
+import {Constraint} from './Constraint'
+import {DfDvNode} from './DfDvNode'
+import {Parameters} from './Parameters'
 export class ConstraintVector {
-  get Vector(): Constraint[] {}
-  set Vector(value: Constraint[]) {}
+  Vector: Constraint[]
 
   get IsEmpty(): boolean {
     return this.Vector == null
@@ -9,7 +13,7 @@ export class ConstraintVector {
   Create(numConstraints: number) {
     this.Vector = new Array(numConstraints)
     //  Initialize this to out of range.
-    firstActiveConstraintIndex = numConstraints
+    this.firstActiveConstraintIndex = numConstraints
   }
 
   private nextConstraintIndex: number
@@ -17,7 +21,7 @@ export class ConstraintVector {
   Add(constraint: Constraint) {
     Assert.assert(!constraint.IsActive, 'Constraint should not be active')
     constraint.SetVectorIndex(this.nextConstraintIndex)
-    this.Vector[nextConstraintIndex++] = constraint
+    this.Vector[this.nextConstraintIndex++] = constraint
   }
 
   private firstActiveConstraintIndex: number
@@ -42,7 +46,7 @@ export class ConstraintVector {
     Assert.assert(constraint.IsActive, 'Constraint is not active')
     //  Swap it from the active region to the end of the inactive region of the Vector.
     Assert.assert(
-      this.firstActiveConstraintIndex < this.Vector.Length,
+      this.firstActiveConstraintIndex < this.Vector.length,
       'All constraints are already inactive',
     )
     Assert.assert(
@@ -80,7 +84,7 @@ export class ConstraintVector {
       constraint.Reinitialize()
     }
 
-    this.firstActiveConstraintIndex = this.Vector.Length
+    this.firstActiveConstraintIndex = this.Vector.length
   }
 
   //  Some convenient constraint-related "globals" for communication between the Solver and Blocks.
@@ -94,8 +98,8 @@ export class ConstraintVector {
 
   RecycleDfDvNode(node: DfDvNode) {
     //  In the case of long constraint chains make sure this does not end up as big as the number of constraints in the block.
-    if (this.DfDvRecycleStack.Count < 1024) {
-      this.DfDvRecycleStack.Push(node)
+    if (this.DfDvRecycleStack.length < 1024) {
+      this.DfDvRecycleStack.push(node)
     }
   }
 
@@ -122,9 +126,7 @@ export class ConstraintVector {
   //  This also means that ComputeDfDv should never encounter cycles.
   NumberOfUnsatisfiableConstraints: number
 
-  ///  <summary>
-  ///  </summary>
-  public /* override */ ToString(): string {
-    return this.Vector.ToString()
+  toString(): string {
+    return this.Vector.toString()
   }
 }

@@ -8,7 +8,6 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     internal class BundleBase {
 
-//         // <summary>
 //         // only one of those is not null
 //         // <
 //         internal BundleInfo OutgoingBundleInfo;
@@ -21,22 +20,18 @@
 
 //         internal OrientedHubSegment[] OrientedHubSegments;
 
-//         // <summary>
 //         // boundary of cluster or hub containing this base
 //         // <
 //         internal ICurve Curve;
 
-//         // <summary>
 //         // this bundle base sits on a cluster boundary and the opposite base sits on a child of the cluster
 //         // <
 //         internal bool IsParent;
 
-//         // <summary>
 //         // if true then the base sits on a real node or cluster, otherwise it belongs to an intermediate hub
 //         // <
 //         internal bool BelongsToRealNode;
 
-//         // <summary>
 //         // position of the station containing the base
 //         // (could be a center of a hub, or a point on the boundary of a cluster)
 //         // <
@@ -45,7 +40,6 @@
 //         //need for debug only
 //         internal int stationIndex;
 
-//         // <summary>
 //         // constructor
 //         // <
 //         internal BundleBase(int count, ICurve boundaryCurve, Point position, bool belongsToRealNode, int stationIndex) {
@@ -82,7 +76,7 @@
 //     internal Point InitialMidPoint { get; set; }
 
 //     double parRight;
-//     // <summary>
+
 //     // corresponds to the left point of the base
 //     // <
 //     internal double ParRight {
@@ -94,7 +88,7 @@
 //     }
 
 //     double parLeft;
-//     // <summary>
+
 //     // corresponds to the right point of the base
 //     // <
 //     internal double ParLeft {

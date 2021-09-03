@@ -25,7 +25,6 @@ export class MetroMapOrdering {
     this.nodePositions = nodePositions
   }
 
-  //  <summary>
   //  Reorder only points having identical nodePositions
   //  <
   static UpdateLayerArrays0(
@@ -40,7 +39,6 @@ export class MetroMapOrdering {
     ).UpdateLayerArrays()
   }
 
-  //  <summary>
   //  Reorder virtual nodes between the same pair of real nodes
   //  <
   static UpdateLayerArrays1(

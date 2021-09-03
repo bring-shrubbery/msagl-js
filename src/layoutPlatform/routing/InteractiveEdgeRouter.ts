@@ -41,17 +41,17 @@ using Microsoft.Msagl.DebugHelpers;
 #endif
 
 namespace Microsoft.Msagl.Routing {
-    // <summary>
+    
     // the router between nodes
     // <
     public class InteractiveEdgeRouter : Algorithm {
 
-        // <summary>
+        
         // the obstacles for routing
         // <
         public IEnumerable < ICurve > Obstacles { get; private set; }
 
-        // <summary>
+        
         // the minimum angle between a node boundary curve and and an edge
         // curve at the place where the edge curve intersects the node boundary
         // <
@@ -64,14 +64,14 @@ namespace Microsoft.Msagl.Routing {
             set { _sourceTightPolyline = value; }
         }
 
-        // <summary>
+        
         //
         // <
         Polyline SourceLoosePolyline { get; set; }
 
         Polyline targetTightPolyline;
 
-        // <summary>
+        
         //
         // <
         Polyline TargetTightPolyline {
@@ -99,15 +99,15 @@ namespace Microsoft.Msagl.Routing {
             set { visibilityGraph = value; }
         }
 
-        //List<Polyline> activeTightPolylines = new List<Polyline>();
-        List < Polygon > activePolygons = new List<Polygon>();
+        //Array<Polyline> activeTightPolylines = new Array<Polyline>();
+        Array < Polygon > activePolygons = new Array<Polygon>();
         readonly Set < Polyline > alreadyAddedOrExcludedPolylines = new Set<Polyline>();
 
         //    Map<Point, Polyline> pointsToObstacles = new Dicitonary<Point, Polyline>();
 
         Port sourcePort;
 
-        // <summary>
+        
         // the port of the edge start
         // <
         public Port SourcePort {
@@ -133,7 +133,7 @@ namespace Microsoft.Msagl.Routing {
 
         Port targetPort;
 
-        // <summary>
+        
         // the port of the edge end
         // <
         Port TargetPort {
@@ -142,14 +142,14 @@ namespace Microsoft.Msagl.Routing {
         }
 
 
-        // <summary>
+        
         // the curve should not come closer than Padding to the nodes
         // <
         public double TightPadding { get; set; }
 
         double loosePadding;
 
-        // <summary>
+        
         // we further pad each node but not more than LoosePadding.
         // <
         public double LoosePadding {
@@ -180,12 +180,12 @@ namespace Microsoft.Msagl.Routing {
         Polyline _polyline;
 
 
-        // <summary>
+        
         //
         // <
         double OffsetForPolylineRelaxing { get; set; }
 
-        // <summary>
+        
         // Set up the router and calculate the set of obstacles over which to route.
         // <
 
@@ -201,7 +201,7 @@ namespace Microsoft.Msagl.Routing {
         public InteractiveEdgeRouter(IEnumerable < ICurve > obstacles, double padding, double loosePadding,
             double coneSpannerAngle): this(obstacles, padding, loosePadding, coneSpannerAngle, false) { }
 
-        // <summary>
+        
         // The expected number of progress steps this algorithm will take.
         // <
         public int ExpectedProgressSteps { get; private set; }
@@ -209,12 +209,12 @@ namespace Microsoft.Msagl.Routing {
         bool targetIsInsideOfSourceTightPolyline;
         bool sourceIsInsideOfTargetTightPolyline;
         internal bool UseEdgeLengthMultiplier;
-        // <summary>
+        
         // if set to true the algorithm will try to shortcut a shortest polyline inner points
         // <
         internal bool UseInnerPolylingShortcutting = true;
 
-        // <summary>
+        
         // if set to true the algorithm will try to shortcut a shortest polyline start and end
         // <
         internal bool UsePolylineEndShortcutting = true;
@@ -224,7 +224,7 @@ namespace Microsoft.Msagl.Routing {
         bool cacheCorners;
 
 
-        // <summary>
+        
         // An empty constructor for calling it from inside of MSAGL
         // <
         internal InteractiveEdgeRouter() {
@@ -236,7 +236,7 @@ namespace Microsoft.Msagl.Routing {
         void ExtendVisibilityGraphToLocation(Point location) {
             if (VisibilityGraph == null)
                 VisibilityGraph = new VisibilityGraph();
-            List < Polygon > addedPolygons = null;
+            Array < Polygon > addedPolygons = null;
             if (!activeRectangle.Contains(location)) {
                 if (activeRectangle.IsEmpty)
                     activeRectangle = new Rectangle(SourcePort.Location, location);
@@ -361,9 +361,9 @@ namespace Microsoft.Msagl.Routing {
             yield return polygon.Polyline;
         }
 
-        List < Polygon > GetAddedPolygonesAndMaybeExtendActiveRectangle() {
+        Array < Polygon > GetAddedPolygonesAndMaybeExtendActiveRectangle() {
             Rectangle rect = activeRectangle;
-            var addedPolygones = new List<Polygon>();
+            var addedPolygones = new Array<Polygon>();
             bool added;
             do {
                 added = false;
@@ -385,7 +385,7 @@ namespace Microsoft.Msagl.Routing {
 
         #region commented out code
 
-        // List<Polyline> GetActivePolylines(Rectangle rectangleOfVisibilityGraph) {
+        // Array<Polyline> GetActivePolylines(Rectangle rectangleOfVisibilityGraph) {
         //    return this.activeTightPolylines;
         //}
 
@@ -398,7 +398,7 @@ namespace Microsoft.Msagl.Routing {
 
 #if TEST_MSAGL
         // void ShowPolylineAndObstaclesWithGraph() {
-        //    List<ICurve> ls = new List<ICurve>();
+        //    Array<ICurve> ls = new Array<ICurve>();
         //    foreach (Polyline poly of this.obstacleCalculator.TightObstacles)
         //        ls.Add(poly);
         //    foreach (Polyline poly of this.obstacleCalculator.LooseObstacles)
@@ -495,16 +495,16 @@ namespace Microsoft.Msagl.Routing {
                 PolylineIntersectsPolyRectangleNodeOfTightHierarchy(ls, rect.Right);
         }
 
-        internal static List < IntersectionInfo > IntersectionsOfLineAndRectangleNodeOverPolyline(LineSegment ls,
+        internal static Array < IntersectionInfo > IntersectionsOfLineAndRectangleNodeOverPolyline(LineSegment ls,
             RectangleNode < Polyline >
             rectNode) {
-            var ret = new List<IntersectionInfo>();
+            var ret = new Array<IntersectionInfo>();
             IntersectionsOfLineAndRectangleNodeOverPolyline(ls, rectNode, ret);
             return ret;
         }
 
         static void IntersectionsOfLineAndRectangleNodeOverPolyline(LineSegment ls, RectangleNode < Polyline > rectNode,
-            List < IntersectionInfo > listOfIntersections) {
+            Array < IntersectionInfo > listOfIntersections) {
             if (rectNode == null)
                 return;
             if (!ls.BoundingBox.Intersects(rectNode.Rectangle))
@@ -528,7 +528,7 @@ namespace Microsoft.Msagl.Routing {
             if (!targetIsFloating && TargetPort != null && !sourceIsInsideOfTargetTightPolyline)
                 if (!InsideOfTheAllowedConeOfBoundaryPort(ls.start, TargetPort as CurvePort))
                     return false;
-            List < IntersectionInfo > xx = IntersectionsOfLineAndRectangleNodeOverPolyline(ls,
+            Array < IntersectionInfo > xx = IntersectionsOfLineAndRectangleNodeOverPolyline(ls,
                 ObstacleCalculator.
                     RootOfTightHierarchy);
             foreach(IntersectionInfo ii of xx) {
@@ -617,9 +617,9 @@ namespace Microsoft.Msagl.Routing {
 
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        List < DebugCurve > CreateListWithObstaclesAndPolyline(params ICurve[] curves)
+        Array < DebugCurve > CreateListWithObstaclesAndPolyline(params ICurve[] curves)
         {
-            var ls = new List<DebugCurve>(ObstacleCalculator.RootOfLooseHierarchy.GetAllLeaves().Select(e => new DebugCurve(100, 0.01, "green", e)));
+            var ls = new Array<DebugCurve>(ObstacleCalculator.RootOfLooseHierarchy.GetAllLeaves().Select(e => new DebugCurve(100, 0.01, "green", e)));
             ls.AddRange(curves.Select(c => new DebugCurve(100, 0.01, "red", c)));
             ls.AddRange(ObstacleCalculator.RootOfTightHierarchy.GetAllLeaves().Select(e => new DebugCurve(100, 0.01, "blue", e)));
 
@@ -630,7 +630,7 @@ namespace Microsoft.Msagl.Routing {
         }
 #endif
 
-        // <summary>
+        
         // smoothing the corners of the polyline
         // <
 
@@ -716,7 +716,7 @@ namespace Microsoft.Msagl.Routing {
             cornerTable[new Corner(a.point, b.point, c.point)] = new Tuple<double, double>(b.PreviousBezierSegmentFitCoefficient, b.NextBezierSegmentFitCoefficient);
         }
 
-        // <summary>
+        
         // is set to true will cache three points defining the corner
         // to avoid obstacle avoidance calculation
         // <
@@ -734,7 +734,7 @@ namespace Microsoft.Msagl.Routing {
             }
         }
 
-        // <summary>
+        
         //
         // <
 
@@ -823,7 +823,7 @@ namespace Microsoft.Msagl.Routing {
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         private void ShowIsPassable(VisibilityVertex sourceVisVertex, VisibilityVertex targetVisVertex)
         {
-            var dd = new List<DebugCurve>(
+            var dd = new Array<DebugCurve>(
                 visibilityGraph.Edges.Select(
                     e =>
                         new DebugCurve(100, 0.5, e.IsPassable == null || e.IsPassable() ? "green" : "red",
@@ -855,7 +855,7 @@ namespace Microsoft.Msagl.Routing {
         }
 
 
-        // <summary>
+        
         // returns true if the nodes overlap or just positioned too close
         // <
         public bool OverlapsDetected {
@@ -888,7 +888,7 @@ namespace Microsoft.Msagl.Routing {
 
         //  int count;
 
-        // <summary>
+        
         //
         // <
 
@@ -940,7 +940,7 @@ namespace Microsoft.Msagl.Routing {
             return edgeGeometry;
         }
 
-        // <summary>
+        
         // routes the edge to the port
         // <
 
@@ -1109,7 +1109,7 @@ namespace Microsoft.Msagl.Routing {
             if (VisibilityGraph == null)
                 VisibilityGraph = new VisibilityGraph();
 
-            List < Polygon > addedPolygons = null;
+            Array < Polygon > addedPolygons = null;
             Point targetLocation = targetPort.Location;
             if (!activeRectangle.Contains(targetLocation)) {
                 if (activeRectangle.IsEmpty)
@@ -1374,7 +1374,7 @@ namespace Microsoft.Msagl.Routing {
         }
 
         void ExtendVisibilityGraphToTargetBoundaryPort(Point takenOutTargetPortLocation) {
-            List < Polygon > addedPolygons = null;
+            Array < Polygon > addedPolygons = null;
             if (VisibilityGraph == null)
                 VisibilityGraph = new VisibilityGraph();
 
@@ -1414,7 +1414,7 @@ namespace Microsoft.Msagl.Routing {
             }
         }
 
-        // <summary>
+        
         // returns the hit object
         // <
 
@@ -1441,7 +1441,7 @@ namespace Microsoft.Msagl.Routing {
                         : HitTestBehavior.Continue);
         }
 
-        // <summary>
+        
         //
         // <
         public void Clean() {
@@ -1456,7 +1456,7 @@ namespace Microsoft.Msagl.Routing {
             activeRectangle.SetToEmpty();
         }
 
-        // <summary>
+        
         // setting source port and the loose polyline of the port
         // <
 
@@ -1481,7 +1481,7 @@ namespace Microsoft.Msagl.Routing {
             }
         }
 
-        // <summary>
+        
         //
         // <
         protected override void RunInternal() {
@@ -1494,7 +1494,7 @@ namespace Microsoft.Msagl.Routing {
         }
 
         internal void CalculateWholeVisibilityGraphOnExistingGraph() {
-            activePolygons = new List<Polygon>(AllPolygons());
+            activePolygons = new Array<Polygon>(AllPolygons());
             foreach(Polyline polylineLocal of ObstacleCalculator.LooseObstacles)
             VisibilityGraph.AddHole(polylineLocal);
 
@@ -1504,7 +1504,7 @@ namespace Microsoft.Msagl.Routing {
                 { ConeAngle = ConeSpannerAngle };
             }
             else {
-                visibilityGraphGenerator = new InteractiveTangentVisibilityGraphCalculator(new List<Polygon>(),
+                visibilityGraphGenerator = new InteractiveTangentVisibilityGraphCalculator(new Array<Polygon>(),
                     activePolygons,
                     visibilityGraph);
             }
@@ -1730,7 +1730,7 @@ namespace Microsoft.Msagl.Routing {
         }
 
         IEnumerable < VisibilityVertex > Targets(Polyline targetLoosePoly) {
-            return new List<VisibilityVertex>(targetLoosePoly.Select(p => visibilityGraph.FindVertex(p)));
+            return new Array<VisibilityVertex>(targetLoosePoly.Select(p => visibilityGraph.FindVertex(p)));
         }
 
         void ExtendVisibilityGraphFromFloatingSourcePort() {
@@ -1762,7 +1762,7 @@ namespace Microsoft.Msagl.Routing {
         }
 
 
-        // <summary>
+        
         // <
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]

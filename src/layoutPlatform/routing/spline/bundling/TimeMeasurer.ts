@@ -2,7 +2,7 @@
 // using Microsoft.Msagl.DebugHelpers;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // Outputs run time in debug mode
 //     // <
 //     internal class TimeMeasurer {

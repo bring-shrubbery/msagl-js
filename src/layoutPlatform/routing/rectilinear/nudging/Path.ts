@@ -8,20 +8,18 @@ import {PathEdge} from './PathEdge'
 ///  represents the path for an EdgeGeometry
 export class Path {
   ///  the corresponding edge geometry
-  ///  </summary>
+
   EdgeGeometry: EdgeGeometry
 
-  ///  <summary>
   ///  the path points
-  ///  </summary>
+
   PathPoints: IEnumerable<Point>
   get Width(): number {
     return this.EdgeGeometry.lineWidth
   }
 
-  ///  <summary>
   ///  constructor
-  ///  </summary>
+
   ///  <param name="edgeGeometry"></param>
   constructor(edgeGeometry: EdgeGeometry) {
     this.EdgeGeometry = edgeGeometry
@@ -58,9 +56,8 @@ export class Path {
     edge.Path = this
   }
 
-  ///  <summary>
   ///
-  ///  </summary>
+
   ///  <returns></returns>
   public /* override */ ToString(): string {
     return String.Format(

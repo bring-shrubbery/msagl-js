@@ -8,11 +8,11 @@
 // using Microsoft.Msagl.Core.Geometry.Curves;
 
 // namespace Microsoft.Msagl.Routing {
-//     // <summary>
+
 //     // A shape wrapping an ICurve delegate, providing additional information.
 //     // <
 //     public class RelativeShape : Shape {
-//         // <summary>
+
 //         // The curve of the shape.
 //         // <
 //         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "BoundaryCurve"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "RelativeShape")]
@@ -29,7 +29,6 @@
 
 //         readonly Func < ICurve > curveDelegate;
 
-//         // <summary>
 //         // Constructor taking the ID and the curve delegate for the shape.
 //         // <
 

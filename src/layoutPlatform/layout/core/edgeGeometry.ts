@@ -20,7 +20,7 @@ export class EdgeGeometry {
   }
 
   /* 
-   // <summary>
+   
    //     Translate all the geometries with absolute positions by the specified delta
    // <
 
@@ -53,12 +53,12 @@ export class EdgeGeometry {
  }
  
  
-         // <summary>
+         
          // <
          public event EventHandler < LayoutChangeEventArgs > LayoutChangeEvent;
  
  
-         // <summary>
+         
          // <
 
          public void RaiseLayoutChangeEvent(object newValue) {

@@ -10,25 +10,23 @@
 // namespace Microsoft.Msagl.Routing.Visibility {
 //     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
 //     internal class InteractiveTangentVisibilityGraphCalculator : Algorithm {
-//         // <summary>
+
 //         // the list of obstacles
 //         // <
 //         ICollection < Polygon > polygons;
 
-//         // <summary>
 //         // From these polygons we calculate visibility edges to all other polygons
 //         // <
 //         IEnumerable < Polygon > addedPolygons;
 
 //         VisibilityGraph visibilityGraph;
-//         List < Diagonal > diagonals;
-//         List < Tangent > tangents;
+//         Array < Diagonal > diagonals;
+//         Array < Tangent > tangents;
 //         RBTree < Diagonal > activeDiagonalTree;
 //         Polygon currentPolygon;
 //         ActiveDiagonalComparerWithRay activeDiagonalComparer = new ActiveDiagonalComparerWithRay();
 //         bool useLeftPTangents;
 
-//         // <summary>
 //         // we calculate tangents between activePolygons and between activePolygons and existingObsacles
 //         // <
 //         protected override void RunInternal() {
@@ -57,8 +55,8 @@
 //         }
 
 //         private void AllocateDataStructures() {
-//             tangents = new List<Tangent>();
-//             diagonals = new List<Diagonal>();
+//             tangents = new Array<Tangent>();
+//             diagonals = new Array<Diagonal>();
 //             activeDiagonalTree = new RBTree<Diagonal>(this.activeDiagonalComparer);
 //         }
 
@@ -82,7 +80,7 @@
 //                 }
 
 // #if TEST_MSAGL
-//                 //List<ICurve> cs = new List<ICurve>();
+//                 //Array<ICurve> cs = new Array<ICurve>();
 
 //                 //foreach (Diagonal d of this.activeDiagonalTree) {
 //                 //    cs.Add(new LineSegment(d.start, d.End));
@@ -101,7 +99,6 @@
 //             VisibilityGraph.addEdge(visibilityGraph.GetVertex(t.start), visibilityGraph.GetVertex(t.End));
 //         }
 
-//         // <summary>
 //         // this function will also add the first tangent to the visible edges if needed
 //         // <
 //         private void InitActiveDiagonals() {
@@ -132,7 +129,7 @@
 // #if TEST_MSAGL && TEST_MSAGL
 
 //         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         private void AddPolylinesForShow(List < ICurve > curves) {
+//         private void AddPolylinesForShow(Array < ICurve > curves) {
 //             foreach(Polygon p of this.AllObstacles)
 //             curves.Add(p.Polyline);
 //         }
@@ -168,7 +165,6 @@
 //                 Point.getTriangleOrientation(pivot, pointOnRay, b) != TriangleOrientation.Clockwise;
 //         }
 
-//         // <summary>
 //         // compare tangents by measuring the counterclockwise angle between the tangent and the edge
 //         // <
 

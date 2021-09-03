@@ -26,7 +26,6 @@ import {AxisEdgeLowPointEvent} from './AxisEdgeLowPointEvent'
 import {AxisEdgesContainer} from './AxisEdgesContainer'
 import {PathEdge} from './PathEdge'
 
-///  </summary>
 export class FreeSpaceFinder extends LineSweeperBase {
   static AreaComparisonEpsilon: number = GeomConstants.intersectionEpsilon
 
@@ -35,9 +34,9 @@ export class FreeSpaceFinder extends LineSweeperBase {
   edgeContainersTree: RBTree<AxisEdgesContainer>
 
   PathOrders: Map<AxisEdge, Array<PathEdge>>
-  ///  <summary>
+
   ///
-  ///  </summary>
+
   ///  <param name="direction"></param>
   ///  <param name="obstacles"></param>
   ///  <param name="axisEdgesToObstaclesTheyOriginatedFrom"></param>
@@ -67,9 +66,9 @@ export class FreeSpaceFinder extends LineSweeperBase {
 
   //    Array<Path> EdgePaths { get; set; }
   // VisibilityGraph PathVisibilityGraph { get; set; }
-  ///  <summary>
+
   ///  calculates the right offsets
-  ///  </summary>
+
   FindFreeSpace() {
     this.InitTheQueueOfEvents()
     this.ProcessEvents()
@@ -173,9 +172,8 @@ export class FreeSpaceFinder extends LineSweeperBase {
     )
   }
 
-  ///  <summary>
   ///
-  ///  </summary>
+
   ///  <param name="edge"></param>
   ///  <param name="point">a point on the edge on Z level</param>
   ConstraintEdgeWithObstaclesAtZ(edge: AxisEdge, point: Point) {
@@ -376,9 +374,8 @@ export class FreeSpaceFinder extends LineSweeperBase {
     return this.edgeContainersTree.insert(new AxisEdgesContainer(source))
   }
 
-  ///  <summary>
   ///
-  ///  </summary>
+
   ///  <param name="point">the point has to be on the same line as the container</param>
   ///  <returns></returns>
   GetAxisEdgesContainerNode(point: Point): RBNode<AxisEdgesContainer> {

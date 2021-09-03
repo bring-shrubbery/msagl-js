@@ -781,7 +781,7 @@ export class CdtSweeper extends Algorithm {
     const i = edge.CwTriangle.TriEdges.index(edge)
     //            if (i == -1)
     //            {
-    //                List<DebugCurve> ls = new List<DebugCurve>();
+    //                Array<DebugCurve> ls = new Array<DebugCurve>();
     //                ls.Add(new DebugCurve(new Ellipse(2, 2, pi.point)));
     //                for (int j = 0; j < 3; j++)
     //                {
@@ -986,7 +986,7 @@ function Flip(pi: CdtSite, edge: CdtEdge): CdtEdge {
 }
 // #if TEST_MSAGL && TEST_MSAGL
 //     static void ShowFlip(CdtSite pi, CdtTriangle t, CdtTriangle ot) {
-//         List<DebugCurve> ls=new List<DebugCurve>();
+//         Array<DebugCurve> ls=new Array<DebugCurve>();
 //         ls.Add(new DebugCurve(new Ellipse(2,2, pi.point)));
 //         for(int i=0;i<3;i++) {
 //             var e=t.Edges[i];

@@ -9,27 +9,25 @@
 // using Microsoft.Msagl.DebugHelpers;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // Linear algorithm as described in our paper
 //     // Edge Routing with Ordered Bunldles
 //     // <
 //     public class LinearMetroMapOrdering : IMetroMapOrderingAlgorithm {
-//         // <summary>
+
 //         // bundle lines
 //         // <
-//         readonly List < Metroline > MetrolinesGlobal;
+//         readonly Array < Metroline > MetrolinesGlobal;
 
-//         List < int[] > Metrolines;
+//         Array < int[] > Metrolines;
 
-//         // <summary>
 //         // Station positions
 //         // <
 //         Point[] positions;
 
-//         // <summary>
 //         // Initialize bundle graph and build the ordering
 //         // <
-//         internal LinearMetroMapOrdering(List < Metroline > MetrolinesGlobal, Map < Point, Station > pointToIndex) {
+//         internal LinearMetroMapOrdering(Array < Metroline > MetrolinesGlobal, Map < Point, Station > pointToIndex) {
 //             this.MetrolinesGlobal = MetrolinesGlobal;
 
 //             ConvertParameters(pointToIndex);
@@ -37,12 +35,11 @@
 //             BuildOrder();
 //         }
 
-//         // <summary>
 //         // Get the ordering of lines on station u with respect to the edge (u->v)
 //         // <
 //         IEnumerable < Metroline > IMetroMapOrderingAlgorithm.GetOrder(Station u, Station v) {
 //             MetroEdge me = MetroEdge.CreateFromTwoNodes(u.SerialNumber, v.SerialNumber);
-//             List < int > orderedMetrolineListForUv = order[me];
+//             Array < int > orderedMetrolineListForUv = order[me];
 //             if (u.SerialNumber < v.SerialNumber) {
 //                 foreach(int MetrolineIndex of orderedMetrolineListForUv)
 //                 yield return MetrolinesGlobal[MetrolineIndex];
@@ -53,7 +50,6 @@
 //             }
 //         }
 
-//         // <summary>
 //         // Get the index of line on the edge (u->v) and node u
 //         // <
 //         int IMetroMapOrderingAlgorithm.GetLineIndexInOrder(Station u, Station v, Metroline Metroline) {
@@ -68,10 +64,10 @@
 //         }
 
 //         void ConvertParameters(Map < Point, Station > pointToIndex) {
-//             Metrolines = new List<int[]>();
+//             Metrolines = new Array<int[]>();
 //             positions = new Point[pointToIndex.Count];
 //             foreach(Metroline gline of MetrolinesGlobal) {
-//                 List < int > line = new List<int>();
+//                 Array < int > line = new Array<int>();
 //                 foreach(Point p of gline.Polyline) {
 //                     line.Add(pointToIndex[p].SerialNumber);
 //                     positions[pointToIndex[p].SerialNumber] = p;
@@ -82,22 +78,21 @@
 //         }
 
 //         //order for node u of edge u->v
-//         Map < MetroEdge, List < int >> order;
+//         Map < MetroEdge, Array < int >> order;
 //         Map < MetroEdge, Map < Metroline, int >> lineIndexInOrder;
 
 //         HashSet < int > nonTerminals;
 //         HashSet < MetroEdge > initialEdges;
 
-//         // <summary>
 //         // Edge in graph H
 //         // label is used to distinguish multiple edges
 //         // <
 //         class MetroEdge {
-//             List<int> nodes;
+//             Array<int> nodes;
 
 //             internal static MetroEdge CreateFromTwoNodes(int u, int v) {
 //                 MetroEdge res = new MetroEdge();
-//                 res.nodes = new List<int>();
+//                 res.nodes = new Array<int>();
 //                 res.nodes.Add(Math.Min(u, v));
 //                 res.nodes.Add(Math.Max(u, v));
 
@@ -118,8 +113,8 @@
 //                     return CreateFromTwoEdges(v, e2.nodes, e1.nodes);
 //             }
 
-//             internal static MetroEdge CreateFromTwoEdges(int v, List<int> e1, List < int > e2) {
-//             List < int > nodes = new List<int>(e1.Count + e2.Count - 1);
+//             internal static MetroEdge CreateFromTwoEdges(int v, Array<int> e1, Array < int > e2) {
+//             Array < int > nodes = new Array<int>(e1.Count + e2.Count - 1);
 //             if (e1[0] != v) {
 //                 for (int i = 0; i < e1.Count; i++)
 //                 nodes.Add(e1[i]);
@@ -187,7 +182,7 @@
 
 //             return label;
 //         }
-//             // <summary>
+
 //             // overrides the equality
 //             // <
 
@@ -211,13 +206,12 @@
 
 //     }
 
-//     // <summary>
 //     // unordered list of paths on a specified edge
 //     // <
 //     class PathList {
 //         internal MetroEdge edge;
 //         internal HashSet<PathOnEdge> paths;
-//         internal List<PathList> subLists;
+//         internal Array<PathList> subLists;
 
 //         public override string ToString() {
 //         return edge.ToString() + " (" + paths.Count + ")";
@@ -240,7 +234,6 @@
 // Map < MetroEdge, PathList > e2p;
 // Map < int, LinkedList < MetroEdge >> paths;
 
-// // <summary>
 // // Do the main job
 // // <
 // void BuildOrder() {
@@ -314,12 +307,12 @@
 //     orderedAdjacent = new Map<int, LinkedList<MetroEdge>>();
 //     adjacencyIndex = new Map<Tuple<int, MetroEdge>, LinkedListNode<MetroEdge>>();
 //     foreach(int v of adjacent.Keys) {
-//         List < MetroEdge > adj = new List<MetroEdge>(adjacent[v]);
+//         Array < MetroEdge > adj = new Array<MetroEdge>(adjacent[v]);
 //         orderedAdjacent.Add(v, SortAdjacentEdges(v, adj));
 //     }
 // }
 
-// LinkedList < MetroEdge > SortAdjacentEdges(int v, List < MetroEdge > adjacent) {
+// LinkedList < MetroEdge > SortAdjacentEdges(int v, Array < MetroEdge > adjacent) {
 //     MetroEdge mn = adjacent.First();
 //     int mnv = OppositeNode(mn, v);
 //     adjacent.Sort(delegate(MetroEdge edge1, MetroEdge edge2) {
@@ -341,10 +334,9 @@
 //     return res;
 // }
 
-// // <summary>
 // // update adjacencies of node 'a': put new edges instead of oldEdge
 // // <
-// void UpdateAdjacencyData(int a, MetroEdge oldEdge, List < PathList > newSubList) {
+// void UpdateAdjacencyData(int a, MetroEdge oldEdge, Array < PathList > newSubList) {
 //     //find a (cached) position of oldEdge in order
 //     LinkedListNode < MetroEdge > node = adjacencyIndex[new Tuple<int, MetroEdge>(a, oldEdge)];
 //     Assert.assert(node.Value == oldEdge);
@@ -354,22 +346,21 @@
 //         MetroEdge newEdge = pl.edge;
 
 //         if (oldEdge.Source() == a)
-//             node = node.List.AddAfter(node, newEdge);
+//             node = node.Array.AddAfter(node, newEdge);
 //         else
-//             node = node.List.AddBefore(node, newEdge);
+//             node = node.Array.AddBefore(node, newEdge);
 
 //         adjacencyIndex.Add(new Tuple<int, MetroEdge>(a, newEdge), node);
 //     }
 
 //     adjacencyIndex.Remove(new Tuple<int, MetroEdge>(a, oldEdge));
-//     inode.List.Remove(inode);
+//     inode.Array.Remove(inode);
 // }
 
-// // <summary>
 // // recursively build an order on the edge
 // // <
-// List < int > RestoreResult(MetroEdge edge) {
-//     List < int > res = new List<int>();
+// Array < int > RestoreResult(MetroEdge edge) {
+//     Array < int > res = new Array<int>();
 
 //     PathList pl = e2p[edge];
 //     if (pl.subLists == null) {
@@ -378,7 +369,7 @@
 //     }
 //     else {
 //         foreach(PathList subList of pl.subLists) {
-//             List < int > subResult = RestoreResult(subList.edge);
+//             Array < int > subResult = RestoreResult(subList.edge);
 //             if (!(edge.Source() == subList.edge.Source() || edge.Target() == subList.edge.Target()))
 //                 subResult.Reverse();
 //             res.AddRange(subResult);
@@ -388,7 +379,7 @@
 // }
 
 // void RestoreResult() {
-//     order = new Map<MetroEdge, List<int>>();
+//     order = new Map<MetroEdge, Array<int>>();
 //     lineIndexInOrder = new Map<MetroEdge, Map<Metroline, int>>();
 //     foreach(MetroEdge me of initialEdges) {
 //         order.Add(me, RestoreResult(me));
@@ -401,17 +392,16 @@
 //     }
 // }
 
-// // <summary>
 // // Remove vertex v from the graph. Update graph and paths correspondingly
 // // <
 // void ProcessNonTerminal(int v) {
 //     //oldEdge => sorted PathLists
-//     Map < MetroEdge, List < PathList >> newSubLists = RadixSort(v);
+//     Map < MetroEdge, Array < PathList >> newSubLists = RadixSort(v);
 
 //     //update current data
 //     foreach(MetroEdge oldEdge of orderedAdjacent[v]) {
 //         Assert.assert(e2p.ContainsKey(oldEdge));
-//         List < PathList > newSubList = newSubLists[oldEdge];
+//         Array < PathList > newSubList = newSubLists[oldEdge];
 
 //         //update e2p[oldEdge]
 //         e2p[oldEdge].paths = null;
@@ -438,12 +428,11 @@
 //     }
 // }
 
-// // <summary>
 // // Linear sorting of paths passing through vertex v
 // // <
-// Map < MetroEdge, List < PathList >> RadixSort(int v) {
+// Map < MetroEdge, Array < PathList >> RadixSort(int v) {
 //     //build a map [old_edge => list_of_paths_on_it]; the relative order of paths is important
-//     Map < MetroEdge, List < PathOnEdge >> r = new Map<MetroEdge, List<PathOnEdge>>();
+//     Map < MetroEdge, Array < PathOnEdge >> r = new Map<MetroEdge, Array<PathOnEdge>>();
 //     //first index in circular order
 //     Map < MetroEdge, int > firstIndex = new Map<MetroEdge, int>();
 
@@ -458,14 +447,14 @@
 //     }
 
 //     //oldEdge => SortedPathLists
-//     Map < MetroEdge, List < PathList >> res = new Map<MetroEdge, List<PathList>>();
+//     Map < MetroEdge, Array < PathList >> res = new Map<MetroEdge, Array<PathList>>();
 //     //build the desired order for each edge
 //     foreach(MetroEdge oldEdge of orderedAdjacent[v]) {
 //         //r[oldEdge] is the right order! (up to the circleness)
-//         List < PathOnEdge > paths = r[oldEdge];
+//         Array < PathOnEdge > paths = r[oldEdge];
 //         Assert.assert(paths.Count > 0);
 
-//         List < PathList > subLists = new List<PathList>();
+//         Array < PathList > subLists = new Array<PathList>();
 //         HashSet < PathOnEdge > curPathSet = new HashSet<PathOnEdge>();
 
 //         for (int j = 0; j < paths.Count; j++) {
@@ -496,7 +485,6 @@
 //     return res;
 // }
 
-// // <summary>
 // // extract the next edge on a given path after node v
 // // <
 // MetroEdge FindNextEdgeOnPath(int v, PathOnEdge pathOnEdge) {
@@ -513,7 +501,6 @@
 //     throw new NotSupportedException();
 // }
 
-// // <summary>
 // // return an opposite vertex of a given edge
 // // <
 // int OppositeNode(MetroEdge edge, int v) {
@@ -523,7 +510,6 @@
 //     return -1;
 // }
 
-// // <summary>
 // // replace edges (av) and (vb) with edge (ab) on a given path
 // // <
 // void UpdatePath(PathOnEdge pathOnEdge, int v, MetroEdge newEdge) {
@@ -539,14 +525,14 @@
 //         Assert.assert((b == newEdge.Source() || b == newEdge.Target()));
 
 //         f.Value = newEdge;
-//         f.List.Remove(f.next);
+//         f.Array.Remove(f.next);
 //     }
 //     else if (f.Previous != null && (b = OppositeNode(f.Previous.Value, v)) != -1) {
 //         Assert.assert((a == newEdge.Source() || a == newEdge.Target()));
 //         Assert.assert((b == newEdge.Source() || b == newEdge.Target()));
 
 //         f.Value = newEdge;
-//         f.List.Remove(f.Previous);
+//         f.Array.Remove(f.Previous);
 //     }
 //     else
 //         throw new NotSupportedException();

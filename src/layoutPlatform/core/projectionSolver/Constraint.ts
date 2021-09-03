@@ -4,24 +4,21 @@ import {String} from 'typescript-string-operations'
 import {compareNumbers} from '../../utils/compare'
 
 export class Constraint {
-  ///  <summary>
   ///  The Left (if horizontal; Top, if vertical) variable of the constraint.
-  ///  </summary>
+
   Left: Variable
-  ///  <summary>
+
   ///  The Right (if horizontal; Bottom, if vertical) variable of the constraint.
-  ///  </summary>
+
   Right: Variable
 
-  ///  <summary>
   ///  The required separation of the points of the two Variables along the current axis.
-  ///  </summary>
+
   Gap: number
 
-  ///  <summary>
   ///  Indicates if the distance between the two variables must be equal to the gap
   ///  (rather than greater or equal to).
-  ///  </summary>
+
   IsEquality: boolean
 
   Lagrangian: number
@@ -96,9 +93,8 @@ export class Constraint {
     this.Left = variable
   }
 
-  ///  <summary>
   ///  Generates a string representation of the Constraint.
-  ///  </summary>
+
   ///  <returns>A string representation of the Constraint.</returns>
   public /* override */ ToString(): string {
     return String.Format(
@@ -125,9 +121,8 @@ export class Constraint {
     this.Lagrangian = 0
   }
 
-  ///  <summary>
   ///  Compare this Constraint to rhs by their Variables in ascending order (this == lhs, other == rhs).
-  ///  </summary>
+
   ///  <param name="other">The object being compared to.</param>
   ///  <returns>-1 if this.Left/Right are "less"; +1 if this.Left/Right are "greater"; 0 if this.Left/Right
   ///          and rhs.Left/Right are equal.</returns>

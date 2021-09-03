@@ -4,7 +4,7 @@
 // using Microsoft.Msagl.Core.Geometry.Curves;
 
 // namespace Microsoft.Msagl.Routing.Visibility {
-//     // <summary>
+
 //     // represents a chunk of a hole boundary
 //     // <
 //     internal class Stem {

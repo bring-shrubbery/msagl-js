@@ -153,7 +153,7 @@ export class SegmentIntersector {
   }
   ScanInsert(seg: ScanSegment) {
     Assert.assert(
-      null == this.verticalSegmentsScanLine.find(seg),
+      this.verticalSegmentsScanLine.find(seg) == null,
       'seg already exists in the rbtree',
     )
     //  RBTree's internal operations on insert/remove etc. mean the node can't cache the

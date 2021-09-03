@@ -7,7 +7,6 @@ import {PointMap} from '../../../utils/PointMap'
 import {LinkedPoint} from './LinkedPoint'
 import {Path} from './Path'
 
-///  </summary>
 export class PathMerger {
   constructor(paths: Iterable<Path>) {
     this.Paths = paths
@@ -16,9 +15,8 @@ export class PathMerger {
   Paths: Iterable<Path>
   verticesToPathOffsets = new PointMap<Map<Path, LinkedPoint>>()
 
-  ///  <summary>
   ///  Avoid a situation where two paths cross each other more than once. Remove self loops.
-  ///  </summary>
+
   MergePaths() {
     this.InitVerticesToPathOffsetsAndRemoveSelfCycles()
     for (const path of this.Paths) {
@@ -159,9 +157,8 @@ export class PathMerger {
     }
   }
 
-  ///  <summary>
   ///  checks that a is before b of the path
-  ///  </summary>
+
   ///  <param name="a"></param>
   ///  <param name="b"></param>
   ///  <returns>true is a is before b of the path</returns>

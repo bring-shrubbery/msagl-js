@@ -12,7 +12,7 @@
 // using Microsoft.Msagl.Routing.Visibility;
 
 // namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
-//     // <summary>
+
 //     // sweeps a given direction of cones and adds discovered edges to the graph
 //     // <
 //     internal class LineSweeper : LineSweeperBase, IConeSweeper {
@@ -139,7 +139,7 @@
 //         }
 
 //         void AddEdgesAndRemoveRemainingConesByPoint(Point point) {
-//             var conesToRemove = new List<Cone>();
+//             var conesToRemove = new Array<Cone>();
 //             foreach(var leftConeSide of leftConeSides) {
 //                 if (Point.PointToTheRightOfLineOrOnLine(point, leftConeSide.start,
 //                     leftConeSide.start + leftConeSide.Direction))
@@ -419,7 +419,7 @@
 //             if (node == null || !Point.IntervalIntersectsRay(leftPoint, rightPoint,
 //                 node.Item.start, node.Item.Direction, out x))
 //                 return;
-//             var conesToRemove = new List<Cone>();
+//             var conesToRemove = new Array<Cone>();
 //             do {
 //                 conesToRemove.Add(node.Item.Cone);
 //                 node = tree.next(node);
@@ -832,7 +832,6 @@
 //             Assert.assert(b != null);
 //         }
 
-//         // <summary>
 //         //
 //         // <
 
@@ -1010,7 +1009,7 @@
 //             var cone = coneRightSide.Cone;
 //             var leftConeSide = cone.LeftSide;
 //             if (VertexIsToTheLeftOfSegment(vertexEvent, leftConeSide)) return;
-//             var visibleCones = new List < Cone > { cone };
+//             var visibleCones = new Array < Cone > { cone };
 //             coneSideComparer.SetOperand(leftConeSide);
 //             rbNode = leftConeSides.Find(leftConeSide);
 

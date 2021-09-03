@@ -13,16 +13,15 @@
 // using Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // Adjust current bundle-routing
 //     // <
 //     public class SimulatedAnnealing {
-//         // <summary>
+
 //         // bundle data
 //         // <
 //         readonly MetroGraphData metroGraphData;
 
-//         // <summary>
 //         // Algorithm settings
 //         // <
 //         readonly BundlingSettings bundlingSettings;
@@ -33,7 +32,6 @@
 //         //  used for fast calculation of intersections
 //         readonly IntersectionCache cache;
 
-//         // <summary>
 //         // fix routing by simulated annealing algorithm
 //         // <
 //         internal static bool FixRouting(MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
@@ -58,7 +56,6 @@
 
 //     HashSet < Station > stationsForOptimizations;
 
-//     // <summary>
 //     // Use constraint edge routing to reduce ink
 //     // <
 //     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters",
@@ -71,7 +68,7 @@
 //         double step = MaxStep;
 //         double energy = Number.POSITIVE_INFINITY;
 
-//         List < Point > x = new List<Point>(metroGraphData.VirtualNodes().Select(v => v.Position));
+//         Array < Point > x = new Array<Point>(metroGraphData.VirtualNodes().Select(v => v.Position));
 //         int iteration = 0;
 //         while (iteration++ < MaxIterations) {
 //             bool coordinatesChanged = TryMoveNodes();
@@ -85,8 +82,8 @@
 //             //TimeMeasurer.DebugOutput("energy: " + energy);
 
 //             step = UpdateMaxStep(step, oldEnergy, energy);
-//             List < Point > oldX = x;
-//             x = new List<Point>(metroGraphData.VirtualNodes().Select(v => v.Position));
+//             Array < Point > oldX = x;
+//             x = new Array<Point>(metroGraphData.VirtualNodes().Select(v => v.Position));
 //             if (step < MinStep || Converged(step, oldX, x)) break;
 //         }
 
@@ -110,10 +107,9 @@
 //         }
 //     }
 
-//     // <summary>
 //     // stop SA if relative changes are small
 //     // <
-//     bool Converged(double step, List < Point > oldx, List < Point > newx) {
+//     bool Converged(double step, Array < Point > oldx, Array < Point > newx) {
 //         //return false;
 
 //         double num = 0, den = 0;
@@ -165,7 +161,6 @@
 //         return coordinatesChanged;
 //     }
 
-//     // <summary>
 //     // Move node to decrease the cost of the drawing
 //     // Returns true iff position has changed
 //     // <
@@ -192,7 +187,6 @@
 //         return true;
 //     }
 
-//     // <summary>
 //     // Calculate the direction to improve the ink function
 //     // <
 //     Point BuildDirection(Station node) {
@@ -227,7 +221,6 @@
 //         return stepLength;
 //     }
 
-//     // <summary>
 //     // Computes cost delta when moving the node
 //     // the cost will be negative if a new position overlaps obstacles
 //     // <
@@ -243,7 +236,6 @@
 //         return rGain + inkGain + plGain + bundleGain;
 //     }
 
-//     // <summary>
 //     // force to decrease ink
 //     // <
 //     Point BuildForceForInk(Station node) {
@@ -260,7 +252,6 @@
 //         return force;
 //     }
 
-//     // <summary>
 //     // direction to decrease path lengths
 //     // <
 //     Point BuildForceForPathLengths(Station node) {
@@ -284,14 +275,13 @@
 //         return force;
 //     }
 
-//     // <summary>
 //     // direction to increase radii
 //     // <
 //     Point BuildForceForRadius(Station node) {
 //         Point direction = new Point();
 
 //         double idealR = node.cachedIdealRadius;
-//         List < Tuple < Polyline, Point >> touchedObstacles;
+//         Array < Tuple < Polyline, Point >> touchedObstacles;
 //         bool res = metroGraphData.looseIntersections.HubAvoidsObstacles(node, node.Position, idealR, out touchedObstacles);
 //         Assert.assert(res);
 
@@ -309,7 +299,6 @@
 //         return force;
 //     }
 
-//     // <summary>
 //     // direction to push a bundle away from obstacle
 //     // <
 //     Point BuildForceForBundle(Station node) {
@@ -317,7 +306,7 @@
 //         foreach(var adj of node.Neighbors) {
 //             double idealWidth = metroGraphData.GetWidth(node, adj, bundlingSettings.EdgeSeparation);
 
-//             List < Tuple < Point, Point >> closestPoints;
+//             Array < Tuple < Point, Point >> closestPoints;
 //             bool res = metroGraphData.cdtIntersections.BundleAvoidsObstacles(node, adj, node.Position, adj.Position, idealWidth / 2, out closestPoints);
 //             if (!res) {
 // #if TEST_MSAGL && TEST_MSAGL

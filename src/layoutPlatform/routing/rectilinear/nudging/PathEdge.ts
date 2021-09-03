@@ -1,7 +1,6 @@
-///  <summary>
 ///  A place holder for an edge in a path to keep it inside of a linked list representing a path.
 ///  Each PathEdge belongs to only one path
-///  </summary>
+
 ///  PathEdge passes through the AxisEdge that it points to but may go to the different direction.
 
 import {Point} from '../../../..'
@@ -35,11 +34,10 @@ export class PathEdge {
 
   longestNudgedSegment: LongestNudgedSegment
 
-  ///  <summary>
   ///  It is the offset of the edge from the underlying line segment
   ///  [VisibilityEdge.SourcePoint, VisibilityEdge.TargetPoint] in to the direction of the VisibilityEdge.Perpendicular.
   ///  Offset holder is the same for the maximal parallel sequence of connected PathEdges
-  ///  </summary>
+
   get LongestNudgedSegment(): LongestNudgedSegment {
     return this.longestNudgedSegment
   }
@@ -51,10 +49,9 @@ export class PathEdge {
     }
   }
 
-  ///  <summary>
   ///  A fixed edge cannot be shifted from its visibility edge; offset is always 0.
   ///  Such an edge can be, for example, a terminal edge going to a port.
-  ///  </summary>
+
   IsFixed = false
 
   get Source(): Point {
@@ -84,16 +81,15 @@ export class PathEdge {
       : this.AxisEdge.Direction
   }
 
-  ///  <summary>
   ///  if set to true then in the path the edge is reversed
-  ///  </summary>
+
   Reversed = false
   index = -1
 
   // not set yet
-  ///  <summary>
+
   ///  the index of the edge in the order
-  ///  </summary>
+
   get Index(): number {
     return this.index
   }

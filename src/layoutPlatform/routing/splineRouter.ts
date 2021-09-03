@@ -147,7 +147,7 @@ export class SplineRouter extends Algorithm {
   // _edges: GeomEdge[];
 
   //
-  //     public constructor(graph: GeomGraph, tightPadding: number, loosePadding: number, coneAngle: number, inParentEdges: List < GeomEdge >, outParentEdges: List<GeomEdge>) {
+  //     public constructor(graph: GeomGraph, tightPadding: number, loosePadding: number, coneAngle: number, inParentEdges: Array < GeomEdge >, outParentEdges: Array<GeomEdge>) {
   //   this.GeomGraph = graph;
   //   this.LoosePadding = loosePadding;
   //   this.tightPadding = this.tightPadding;
@@ -308,8 +308,8 @@ export class SplineRouter extends Algorithm {
   // }
 
   // RouteEdgesWithTheSamePassport(edgeGeometryGroup: IGrouping < Set < Shape >, GeomEdge >, interactiveEdgeRouter: InteractiveEdgeRouter, obstacleShapes: Set<Shape>) {
-  //   let regularEdges: List<GeomEdge>;
-  //   let multiEdges: List<GeomEdge[]>;
+  //   let regularEdges: Array<GeomEdge>;
+  //   let multiEdges: Array<GeomEdge[]>;
   //   if(RouteMultiEdgesAsBundles) {
   //     this.SplitOnRegularAndMultiedges(edgeGeometryGroup, /* out */regularEdges, /* out */multiEdges);
   //     for (let edge of regularEdges) {
@@ -347,7 +347,7 @@ export class SplineRouter extends Algorithm {
   // }
 
   // ScaleDownLooseHierarchy(interactiveEdgeRouter: InteractiveEdgeRouter, obstacleShapes: Set<Shape>) {
-  //   let loosePolys = new List<Polyline>();
+  //   let loosePolys = new Array<Polyline>();
   //   for(let obstacleShape in obstacleShapes) {
   //   let tl = this.shapesToTightLooseCouples[obstacleShape];
   //   loosePolys.Add(InteractiveObstacleCalculator.LoosePolylineWithFewCorners(tl.TightPolyline, (tl.Distance / BundleRouter.SuperLoosePaddingCoefficient)));
@@ -358,7 +358,7 @@ export class SplineRouter extends Algorithm {
   // interactiveEdgeRouter.AddActivePolygons(loosePolys.Select(() => { }, new Polygon(polyline)));
   //     }
 
-  // RouteMultiEdges(multiEdges: List < GeomEdge[] >, interactiveEdgeRouter: InteractiveEdgeRouter, parents: Set<Shape>) {
+  // RouteMultiEdges(multiEdges: Array < GeomEdge[] >, interactiveEdgeRouter: InteractiveEdgeRouter, parents: Set<Shape>) {
   //   let mer = new MultiEdgeRouter(multiEdges, interactiveEdgeRouter, parents.SelectMany(() => { }, p.Children).Select(() => { }, s.BoundaryCurve), [][
   //     InkImportance = 0.00001,
   //     EdgeSeparation = MultiEdgesSeparation], MakeTransparentShapesOfEdgeGeometryAndGetTheShapes);
@@ -384,9 +384,9 @@ export class SplineRouter extends Algorithm {
   //     //                 }
   //     //             }
   //     //         }
-  //     SplitOnRegularAndMultiedges(edges: IEnumerable < GeomEdge >, /* out */regularEdges: List < GeomEdge >, /* out */multiEdges: List<GeomEdge[]>) {
-  //   regularEdges = new List<GeomEdge>();
-  //   let portLocationPairsToEdges = new Map<PointPair, List<GeomEdge>>();
+  //     SplitOnRegularAndMultiedges(edges: IEnumerable < GeomEdge >, /* out */regularEdges: Array < GeomEdge >, /* out */multiEdges: Array<GeomEdge[]>) {
+  //   regularEdges = new Array<GeomEdge>();
+  //   let portLocationPairsToEdges = new Map<PointPair, Array<GeomEdge>>();
   //   for(let eg in edges) {
   //   if(SplineRouter.IsEdgeToParent(eg.EdgeGeometry)) {
   //   regularEdges.Add(eg);
@@ -405,7 +405,7 @@ export class SplineRouter extends Algorithm {
   //   }
   //   else {
   //     if ((multiEdges == null)) {
-  //       multiEdges = new List<GeomEdge[]>();
+  //       multiEdges = new Array<GeomEdge[]>();
   //     }
 
   //     multiEdges.Add(edgeGroup.ToArray());
@@ -415,14 +415,14 @@ export class SplineRouter extends Algorithm {
 
   //     }
 
-  //     static RegisterInPortLocationsToEdges(eg: GeomEdge, portLocationPairsToEdges: Map<PointPair, List<GeomEdge>>) {
-  //   let list: List<GeomEdge>;
+  //     static RegisterInPortLocationsToEdges(eg: GeomEdge, portLocationPairsToEdges: Map<PointPair, Array<GeomEdge>>) {
+  //   let list: Array<GeomEdge>;
   //   let pp = new PointPair(eg.SourcePort.Location, eg.TargetPort.Location);
   //   if(!portLocationPairsToEdges.TryGetValue(pp, /* out */list)) {
-  //   list = new List<GeomEdge>();
+  //   list = new Array<GeomEdge>();
   // }
 
-  // portLocationPairsToEdges[pp] = new List<GeomEdge>();
+  // portLocationPairsToEdges[pp] = new Array<GeomEdge>();
   // list.Add(eg);
   //     }
 
@@ -682,7 +682,7 @@ export class SplineRouter extends Algorithm {
 
   // RouteEdgeGeometry(edge: GeomEdge, iRouter: InteractiveEdgeRouter) {
   //   let edgeGeometry = edge.EdgeGeometry;
-  //   let addedEdges = new List<VisibilityEdge>();
+  //   let addedEdges = new Array<VisibilityEdge>();
   //   if (!(edgeGeometry.SourcePort instanceof HookUpAnywhereFromInsidePort)) {
   //     addedEdges.AddRange(this.AddVisibilityEdgesFromPort(edgeGeometry.SourcePort));
   //   }
@@ -756,11 +756,11 @@ export class SplineRouter extends Algorithm {
   // point;
   //     }
 
-  // MakeTransparentShapesOfEdgeGeometryAndGetTheShapes(edgeGeometry: EdgeGeometry): List < Shape > {
+  // MakeTransparentShapesOfEdgeGeometryAndGetTheShapes(edgeGeometry: EdgeGeometry): Array < Shape > {
   //   // it is OK here to repeat a shape in the returned list
   //   let sourceShape: Shape = this.portsToShapes[edgeGeometry.SourcePort];
   //   let targetShape: Shape = this.portsToShapes[edgeGeometry.TargetPort];
-  //   let transparentLooseShapes = new List<Shape>();
+  //   let transparentLooseShapes = new Array<Shape>();
   //   for(let shape in this.GetTransparentShapes(edgeGeometry.SourcePort, edgeGeometry.TargetPort, sourceShape, targetShape).ToArray()) {
   //   if ((shape != null)) {
   //     transparentLooseShapes.Add(this.LooseShapeOfOriginalShape(shape));
@@ -955,7 +955,7 @@ export class SplineRouter extends Algorithm {
   // //  #if TEST_MSAGL
   // //      [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
   // //      static internal void ShowVisGraph(VisibilityGraph tmpVisGraph, IEnumerable<Polyline> obstacles, IEnumerable<ICurve> greenCurves, IEnumerable<ICurve> redCurves) {
-  // //        var l = new List<DebugCurve>(tmpVisGraph.Edges.Select(e => new DebugCurve(100, 1,
+  // //        var l = new Array<DebugCurve>(tmpVisGraph.Edges.Select(e => new DebugCurve(100, 1,
   // //            e.IsPassable != null && e.IsPassable() ? "green" : "black"
   // //            , new LineSegment(e.SourcePoint, e.TargetPoint))));
   // //        if (obstacles != null)

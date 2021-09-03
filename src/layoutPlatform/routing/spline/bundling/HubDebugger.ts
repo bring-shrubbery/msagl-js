@@ -9,7 +9,7 @@
 // using Microsoft.Msagl.Core.Routing;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // this class nudges the edges
 //     // <
 //     public class HubDebugger {
@@ -36,7 +36,7 @@
 
 //         static internal void ShowHubs(MetroGraphData mgd, BundlingSettings bundlingSettings, Station highlightedNode) {
 //         HubDebugger hd = new HubDebugger(mgd, bundlingSettings);
-//         List < DebugCurve > debugCurves = hd.CreateDebugCurves();
+//         Array < DebugCurve > debugCurves = hd.CreateDebugCurves();
 //         debugCurves.Add(new DebugCurve(100, 1, "magenta", CurveFactory.CreateCircle(3, highlightedNode.Position)));
 //         debugCurves.Add(new DebugCurve(100, 0.1, "green", highlightedNode.BoundaryCurve));
 //         LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(debugCurves);
@@ -47,8 +47,8 @@
 //         this.bundlingSettings = bundlingSettings;
 //     }
 
-//     internal List < DebugCurve > CreateDebugCurves(params ICurve[] iCurves) {
-//         List < DebugCurve > curves = new List<DebugCurve>();
+//     internal Array < DebugCurve > CreateDebugCurves(params ICurve[] iCurves) {
+//         Array < DebugCurve > curves = new Array<DebugCurve>();
 //         curves.AddRange(Obstacles());
 //         //curves.AddRange(BBoxes());
 
@@ -100,7 +100,7 @@
 //     }
 
 //     IEnumerable < DebugCurve > IdealBundles() {
-//         List < DebugCurve > dc = new List<DebugCurve>();
+//         Array < DebugCurve > dc = new Array<DebugCurve>();
 //         foreach(var edge of mgd.VirtualEdges()) {
 //             var node = edge.Item1;
 //             var adj = edge.Item2;
@@ -113,7 +113,7 @@
 //     }
 
 //     IEnumerable < DebugCurve > Paths() {
-//         List < DebugCurve > dc = new List<DebugCurve>();
+//         Array < DebugCurve > dc = new Array<DebugCurve>();
 //         foreach(var metroline of mgd.Metrolines) {
 //             dc.Add(new DebugCurve(100, 1, "black", metroline.Polyline));
 //         }

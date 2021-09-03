@@ -14,7 +14,6 @@ import {AxisEdge} from './AxisEdge'
 import {Path} from './Path'
 import {PathEdge} from './PathEdge'
 
-///  </summary>
 export class CombinatorialNudger {
   static readonly NotOrdered: number = Number.MAX_VALUE
 
@@ -154,9 +153,8 @@ export class CombinatorialNudger {
         )
   }
 
-  ///  <summary>
   ///
-  ///  </summary>
+
   ///  <param name="x"></param>
   ///  <param name="y"></param>
   ///  <param name="axisEdge">axisEdge together with the axisEdgeIsReversed parameter define direction of the movement over the paths</param>

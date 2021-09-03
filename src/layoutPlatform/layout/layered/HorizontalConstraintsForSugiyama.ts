@@ -101,7 +101,7 @@ export class HorizontalConstraintsForSugiyama {
   //see UpDownMonotone.png
   //        void MakeUpDownRelationsMonotone(number[] yLayers) {
   //            BasicGraph<IntPair> upDownGraph = new BasicGraph<IntPair>(from c in this.verticalInts select new IntPair(c.First,c.Second));
-  //            List<Tuple<number, number>> upDownToRemove = new List<Tuple<number, number>>();
+  //            Array<Tuple<number, number>> upDownToRemove = new Array<Tuple<number, number>>();
   //            foreach (IEnumerable<number> componentNodes of ConnectedComponentCalculator<IntPair>.GetComponents(GraphOfLeftRightRelations())) {
   //                ResolveConflictsUboveComponent(upDownGraph, componentNodes, upDownToRemove, yLayers);
   //                ResolveConflictsBelowComponent(upDownGraph, componentNodes, upDownToRemove, yLayers);

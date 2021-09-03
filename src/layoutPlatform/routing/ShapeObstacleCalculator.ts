@@ -61,7 +61,7 @@ export class ShapeObstacleCalculator {
       // #endif
     }
 
-    //  <summary>
+    
     //  this test is valid in our situation were the tight polylines are disjoint and the shape can cross only one of them
     //  <
 
@@ -72,7 +72,7 @@ export class ShapeObstacleCalculator {
     }
 
     CreateTigthLooseCouples() {
-      let couples = new List<TightLooseCouple>();
+      let couples = new Array<TightLooseCouple>();
       for (let tightPolyline of this.tightHierarchy.GetAllLeaves()) {
         let distance = InteractiveObstacleCalculator.FindMaxPaddingForTightPolyline(this.tightHierarchy, tightPolyline, this.LoosePadding);
         let loosePoly = InteractiveObstacleCalculator.LoosePolylineWithFewCorners(tightPolyline, distance);

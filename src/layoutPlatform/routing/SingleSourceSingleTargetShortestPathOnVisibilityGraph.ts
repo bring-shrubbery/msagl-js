@@ -42,7 +42,6 @@
 //         _source.Distance = 0;
 //     }
 
-//     // <summary>
 //     // Returns  a  path
 //     // <
 
@@ -84,7 +83,7 @@
 //             : CalculatePath(shrinkEdgeLength);
 //     }
 
-//     internal void AssertEdgesPassable(List < VisibilityEdge > path)
+//     internal void AssertEdgesPassable(Array < VisibilityEdge > path)
 //     {
 //         foreach(var edge of path)
 //         {
@@ -166,7 +165,7 @@
 
 //     IEnumerable < VisibilityVertex > CalculatePath(bool shrinkEdgeLength)
 //     {
-//         var ret = new List<VisibilityVertex>();
+//         var ret = new Array<VisibilityVertex>();
 //         var v = _target;
 //         do {
 //             ret.Add(v);

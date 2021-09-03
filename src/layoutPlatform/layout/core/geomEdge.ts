@@ -100,7 +100,7 @@ export class GeomEdge extends GeomObject {
   toString() {
     return this.source.toString() + '->' + this.target
   }
-  // <summary>
+
   // The bounding box of the edge curve
   // <
   /*
@@ -135,7 +135,7 @@ export class GeomEdge extends GeomObject {
   */
 
   /*
-          // <summary>
+          
           // the polyline of the untrimmed spline
           // <
           public SmoothedPolyline UnderlyingPolyline {
@@ -153,7 +153,7 @@ export class GeomEdge extends GeomObject {
   }
 
   /*  
-    // <summary>
+    
     // Transform the curve, arrowheads and label according to the given matrix
     // <
 
@@ -179,7 +179,7 @@ export class GeomEdge extends GeomObject {
         Label.Center = matrix * LabelBBox.Center;
     }
     
-            // <summary>
+            
             // Translate the edge curve arrowheads and label by the specified delta
             // <
 
@@ -194,7 +194,7 @@ export class GeomEdge extends GeomObject {
       }
     }
     
-                    // <summary>
+                    
                     // transforms relative to given rectangles
                     // <
                     public void TransformRelativeTo(Rectangle oldBounds, Rectangle newBounds)
@@ -212,7 +212,7 @@ export class GeomEdge extends GeomObject {
       }
     }
     
-            // <summary>
+            
             // Checks if an arrowhead is needed at the source
             // <
             public bool ArrowheadAtSource
@@ -223,7 +223,7 @@ export class GeomEdge extends GeomObject {
       }
     }
     
-            // <summary>
+            
             // Checks if an arrowhead is needed at the target
             // <
             public bool ArrowheadAtTarget
@@ -234,7 +234,7 @@ export class GeomEdge extends GeomObject {
       }
     }
     
-            // <summary>
+            
             // Routes a self edge inside the given "howMuchToStickOut" parameter
             // <
 
@@ -258,7 +258,7 @@ export class GeomEdge extends GeomObject {
       return smoothedPolyline.CreateCurve();
     }
     
-            // <summary>
+            
             //
             // <
 
@@ -267,7 +267,7 @@ export class GeomEdge extends GeomObject {
     }
     
     
-            // <summary>
+            
             //
             // <
             public override event EventHandler < LayoutChangeEventArgs > BeforeLayoutChangeEvent {

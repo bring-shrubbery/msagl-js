@@ -2,11 +2,11 @@
 // // using Microsoft.Msagl.Core.Geometry.Curves;
 
 // // namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
-// //     // <summary>
+
 // //     // represents a cone side that is broken by the obstacle
 // //     // <
 // //     internal class BrokenConeSide: ConeSide {
-// //         // <summary>
+
 // //         // point where it starts
 // //         // <
 // //         internal Point start;
@@ -15,7 +15,6 @@
 // //             get { return start; }
 // //         }
 
-// //         // <summary>
 // //         // it is the side of the cone that intersects the obstacle side
 // //         // <
 // //         internal ConeSide ConeSide { get; set; }

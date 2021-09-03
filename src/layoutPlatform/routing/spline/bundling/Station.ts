@@ -24,52 +24,42 @@
 //             this.Position = position;
 //         }
 
-//         // <summary>
 //         // id of the station (used for comparison)
 //         // <
 //         internal readonly int SerialNumber;
 
-//         // <summary>
 //         // if true the station is a center of an obstacle
 //         // <
 //         internal readonly bool IsRealNode;
 
-//         // <summary>
 //         // radius of the corresponding hub
 //         // <
 //         internal double Radius;
 
-//         // <summary>
 //         // position of the corresponding hub
 //         // <
 //         internal Point Position;
 
-//         // <summary>
 //         // neighbors sorted in counter-clockwise order around the station
 //         // <
 //         internal Station[] Neighbors;
 
-//         // <summary>
 //         // it maps each neighbor to its hub
 //         // <
 //         internal Map<Station, BundleBase> BundleBases = new Map<Station, BundleBase>();
 
-//         // <summary>
 //         // it maps a node to a set of tight polylines that can contain the node
 //         // <
 //         internal Set<Polyline> EnterableTightPolylines;
 
-//         // <summary>
 //         // it maps a node to a set of loose polylines that can contain the node
 //         // <
 //         internal Set<Polyline> EnterableLoosePolylines;
 
-//         // <summary>
 //         // MetroNodeInfos corresponding to the node
 //         // <
-//         internal List<MetroNodeInfo> MetroNodeInfos = new List<MetroNodeInfo>();
+//         internal Array<MetroNodeInfo> MetroNodeInfos = new Array<MetroNodeInfo>();
 
-//         // <summary>
 //         // curve of the hub
 //         // <
 //         internal ICurve BoundaryCurve;
@@ -86,7 +76,6 @@
 
 //         #region cache
 
-//     // <summary>
 //     // triangle of cdt where the station is situated
 //     // <
 //     internal CdtTriangle CdtTriangle;

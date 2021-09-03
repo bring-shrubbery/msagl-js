@@ -1,10 +1,11 @@
-///  <summary>
 ///  just a convenient interface to the real solver
 
 import {IEnumerable} from 'linq-to-typescript'
+import {RealNumberSpan} from '../../utils/RealNumberSpan'
+import {Solution} from './Solution'
+import {Solver} from './Solver'
 import {Variable} from './Variable'
-
-///  </summary>
+import {Parameters} from './Parameters'
 export class SolverShell {
   /* const */ static FixedVarWeight = 1000000000
 
@@ -16,16 +17,14 @@ export class SolverShell {
 
   fixedVars: Map<number, number> = new Map<number, number>()
 
-  ///  <summary>
   ///  Constructor.
-  ///  </summary>
+
   public constructor() {
     this.InitSolver()
   }
 
-  ///  <summary>
   ///  Add a node that we would like as close to position i as possible, with the requested weight.
-  ///  </summary>
+
   ///  <param name="id">Caller's unique identifier for this node</param>
   ///  <param name="position">Desired position</param>
   ///  <param name="weight">The weight of the corresponding term in the goal function</param>
@@ -35,21 +34,19 @@ export class SolverShell {
     weight: number,
   ) {
     //  This throws an ArgumentException if a variable with id is already there.
-    this.variables.Add(id, this.solver.AddVariable(id, position, weight))
+    this.variables.set(id, this.solver.AddVariableANN(id, position, weight))
   }
 
-  ///  <summary>
   ///  Add a node that we would like as close to position i as possible, with the requested weight.
-  ///  </summary>
+
   ///  <param name="id"></param>
   ///  <param name="position"></param>
   public AddVariableWithIdealPositionNN(id: number, position: number) {
     this.AddVariableWithIdealPositionNNN(id, position, 1)
   }
 
-  ///  <summary>
   ///  Add a constraint that leftNode+gap eq|leq RightNode.
-  ///  </summary>
+
   ///  <param name="idLeft">Caller's unique identifier for the left node</param>
   ///  <param name="idRight">Caller's unique identifier for the right node</param>
   ///  <param name="gap">Required gap</param>
@@ -71,12 +68,11 @@ export class SolverShell {
       return
     }
 
-    this.solver.AddConstraint(varLeft, varRight, gap, isEquality)
+    this.solver.AddConstraintVVNB(varLeft, varRight, gap, isEquality)
   }
 
-  ///  <summary>
   ///  Add a constraint that leftNode+gap leq RightNode.
-  ///  </summary>
+
   ///  <param name="idLeft">Caller's unique identifier for the left node</param>
   ///  <param name="idRight">Caller's unique identifier for the right node</param>
   ///  <param name="gap">Required minimal gap</param>
@@ -88,13 +84,16 @@ export class SolverShell {
     this.AddLeftRightSeparationConstraintNNNB(idLeft, idRight, gap, false)
   }
 
-  ///  <summary>
   ///  Add a goal that minimizes the distance between two nodes, i.e. weight*((id1-id2)^2).
-  ///  </summary>
+
   ///  <param name="id1">Caller's unique identifier for the first node.</param>
   ///  <param name="id2">Caller's unique identifier for the second node.</param>
   ///  <param name="weight">The weight of the corresponding term in the goal function</param>
-  public AddGoalTwoVariablesAreClose(id1: number, id2: number, weight: number) {
+  public AddGoalTwoVariablesAreCloseNNN(
+    id1: number,
+    id2: number,
+    weight: number,
+  ) {
     const var1 = this.GetVariable(id1)
     if (var1 == null) {
       return
@@ -108,67 +107,59 @@ export class SolverShell {
     this.solver.AddNeighborPair(var1, var2, weight)
   }
 
-  ///  <summary>
   ///
-  ///  </summary>
+
   ///  <param name="id1"></param>
   ///  <param name="id2"></param>
   public AddGoalTwoVariablesAreClose(id1: number, id2: number) {
-    this.AddGoalTwoVariablesAreClose(id1, id2, 1)
+    this.AddGoalTwoVariablesAreCloseNNN(id1, id2, 1)
   }
 
   GetVariable(i: number): Variable {
-    let v: Variable
-    return this.variables.TryGetValue(i, /* out */ v)
-    // TODO: Warning!!!, inline IF is not supported ?
-    // TODO: Warning!!!! NULL EXPRESSION DETECTED...
+    return this.variables.get(i)
   }
 
-  ///  <summary>
   ///  Execute the solver, filling in the Solution object and the values to be returned by GetVariableResolvedPosition.
-  ///  </summary>
+
   public Solve() {
-    this.Solve(null)
+    this.SolveP(null)
   }
 
-  ///  <summary>
   ///  Execute the solver, filling in the Solution object and the values to be returned by GetVariableResolvedPosition.
-  ///  </summary>
+
   ///  <param name="parameters">Parameter object class specific to the underlying solver</param>
   ///  <returns>Pass or fail</returns>
-  public Solve(parameters: Object) {
-    let executionLimitExceeded: boolean
-    this.Solve(parameters, /* out */ executionLimitExceeded)
+  public SolveP(parameters: Object) {
+    const t = {executionLimitExceeded: false}
+    this.SolvePNS(parameters, t)
   }
 
-  ///  <summary>
   ///  Execute the solver, filling in the Solution object and the values to be returned by GetVariableResolvedPosition.
-  ///  </summary>
+
   ///  <param name="parameters">Parameter object class specific to the underlying solver</param>
   ///  <param name="executionLimitExceeded">if true, one or more limits such as iteration count
   ///          or timeout were exceeded</param>
   ///  <returns>Pass or fail</returns>
-  @SuppressMessage('Microsoft.Usage', 'CA2208')
-  public Solve(
-    parameters: Object,
-    /* out */ executionLimitExceeded: boolean,
+  public SolvePNS(
+    parameters: any,
+    t: {executionLimitExceeded: boolean},
   ): boolean {
     let fixedVarsMoved: boolean
-    for (; fixedVarsMoved && this.solution.ExecutionLimitExceeded == false; ) {
+    do {
       this.solution = null
       //  Remove any stale solution in case parameters validation or Solve() throws.
       let solverParameters: Parameters = null
       if (null != parameters) {
         solverParameters = <Parameters>parameters
         if (solverParameters == null) {
-          throw new ArgumentException('parameters')
+          throw new Error('parameters')
         }
       }
 
       this.solution = this.solver.Solve(solverParameters)
-      executionLimitExceeded = this.solution.ExecutionLimitExceeded
+      t.executionLimitExceeded = this.solution.ExecutionLimitExceeded
       fixedVarsMoved = this.AdjustConstraintsForMovedFixedVars()
-    }
+    } while (fixedVarsMoved && this.solution.ExecutionLimitExceeded == false)
 
     return this.solution.ExecutionLimitExceeded == false
   }
@@ -243,9 +234,8 @@ export class SolverShell {
     return true
   }
 
-  ///  <summary>
   ///  returns the block of the fixed variable
-  ///  </summary>
+
   ///  <param name="fixedVar"></param>
   ///  <param name="successInAdjusing"></param>
   ///  <returns></returns>
@@ -278,9 +268,8 @@ export class SolverShell {
     return nbs.Select(() => {}, <number>u.UserData)
   }
 
-  ///  <summary>
   ///  if all active constraint gaps are less than this epsilon we should stop trying adjusting
-  ///  </summary>
+
   /* const */ static FailToAdjustEpsilon = 0.001
 
   FixActiveConstraints(neighbs: IEnumerable<Variable>, scale: number): boolean {
@@ -302,9 +291,8 @@ export class SolverShell {
     return ret
   }
 
-  ///  <summary>
   ///  Obtain the solved position for a node.
-  ///  </summary>
+
   ///  <param name="id">Caller's unique identifier for the node.</param>
   ///  <returns>The node's solved position.</returns>
   public GetVariableResolvedPosition(id: number): number {
@@ -315,17 +303,15 @@ export class SolverShell {
     v.ActualPos
   }
 
-  ///  <summary>
   ///
-  ///  </summary>
+
   public InitSolver() {
     this.solver = new Solver()
     this.variables.Clear()
   }
 
-  ///  <summary>
   ///  Add a variable with a known and unchanging position.
-  ///  </summary>
+
   ///  <param name="id">Caller's unique identifier for the node</param>
   ///  <param name="position">Desired position.</param>
   public AddFixedVariable(id: number, position: number) {
@@ -333,28 +319,25 @@ export class SolverShell {
     this.fixedVars[id] = position
   }
 
-  ///  <summary>
   ///
-  ///  </summary>
+
   ///  <param name="v"></param>
   ///  <returns></returns>
   public ContainsVariable(v: number): boolean {
     return this.variables.ContainsKey(v)
   }
 
-  ///  <summary>
   ///  returns the ideal position of the node that had been set at the variable construction
-  ///  </summary>
+
   ///  <param name="v"></param>
   ///  <returns></returns>
   public GetVariableIdealPosition(v: number): number {
     return this.variables[v].DesiredPos
   }
 
-  ///  <summary>
   ///  Returns the solution object class specific to the underlying solver, or null if there has
   ///  been no call to Solve() or it threw an exception.
-  ///  </summary>
+
   public get Solution(): Object {
     return this.solution
   }

@@ -14,7 +14,7 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //   internal class SdShortestPath {
 //     internal VisibilityGraph VisibilityGraph { get; set; }
-//   internal Func < EdgeGeometry, List < Shape >> MakeTransparentShapesOfEdgeGeometry { get; set; }
+//   internal Func < EdgeGeometry, Array < Shape >> MakeTransparentShapesOfEdgeGeometry { get; set; }
 //   internal BundlingSettings BundlingSettings { get; set; }
 //   internal EdgeGeometry[] EdgeGeometries { get; set; }
 //   internal RectangleNode < Polyline > ObstacleHierarchy { get; set; }
@@ -23,7 +23,7 @@
 //   internal Cdt Cdt { get; set; }
 //   Set < CdtEdge > Gates { get; set; }
 
-//         readonly Map < EdgeGeometry, List < SdBoneEdge >> EdgesToRoutes = new Map<EdgeGeometry, List<SdBoneEdge>>();
+//         readonly Map < EdgeGeometry, Array < SdBoneEdge >> EdgesToRoutes = new Map<EdgeGeometry, Array<SdBoneEdge>>();
 //         readonly Map < EdgeGeometry, SdVertex > EdgesToRouteSources = new Map<EdgeGeometry, SdVertex>();
 
 //   EdgeGeometry CurrentEdgeGeometry;
@@ -36,7 +36,7 @@
 //   Polyline sourceLoosePoly;
 //   Polyline targetLoosePoly;
 
-//   internal SdShortestPath(Func < EdgeGeometry, List < Shape >> makeTransparentShapesOfEdgeGeometryAndGetTheShapes, Cdt cdt, Set < CdtEdge > gates) {
+//   internal SdShortestPath(Func < EdgeGeometry, Array < Shape >> makeTransparentShapesOfEdgeGeometryAndGetTheShapes, Cdt cdt, Set < CdtEdge > gates) {
 //     MakeTransparentShapesOfEdgeGeometry = makeTransparentShapesOfEdgeGeometryAndGetTheShapes;
 //     Cdt = cdt;
 //     Gates = gates;
@@ -67,7 +67,6 @@
 //     CreateGraphElements();
 //   }
 
-//   // <summary>
 //   // routing of the edges minimizing (ink+path length+capacity penalty)
 //   // <
 //   internal void RouteEdges() {
@@ -131,10 +130,9 @@
 //       Cdt.RestoreEdgeCapacities();
 //   }
 
-//   // <summary>
 //   // Reroute edge
 //   // <
-//   List < SdBoneEdge > RerouteEdge(EdgeGeometry edgeGeometry) {
+//   Array < SdBoneEdge > RerouteEdge(EdgeGeometry edgeGeometry) {
 //     var route = EdgesToRoutes[edgeGeometry];
 
 //     foreach(var edge of route)
@@ -143,7 +141,7 @@
 //     return RouteEdge(edgeGeometry);
 //   }
 
-//   List < SdBoneEdge > RouteEdge(EdgeGeometry edgeGeometry) {
+//   Array < SdBoneEdge > RouteEdge(EdgeGeometry edgeGeometry) {
 //     CurrentEdgeGeometry = edgeGeometry;
 //     for (int i = 0; i < vertexArray.length; i++) {
 //       var sdv = vertexArray[i];
@@ -157,7 +155,7 @@
 //     foreach(var shape of transparentShapes)
 //     shape.IsTransparent = false;
 
-//     /*List<LineSegment> ls = new List<LineSegment>();
+//     /*Array<LineSegment> ls = new Array<LineSegment>();
 //     foreach (var e of ret)
 //         ls.Add(new LineSegment(e.SourcePoint, e.TargetPoint));
 //     SplineRouter.ShowVisGraph(this.VisibilityGraph, ObstacleHierarchy.GetAllLeaves(), null, ls);*/
@@ -165,13 +163,13 @@
 //     return ret;
 //   }
 
-//   List < SdBoneEdge > RouteEdgeWithGroups() {
+//   Array < SdBoneEdge > RouteEdgeWithGroups() {
 //     for (int i = 0; i < 2; i++) {
 //       SetLengthCoefficient();
 //       Queue = new GenericBinaryHeapPriorityQueue<SdVertex>();
 //       SetPortVerticesAndObstacles(CurrentEdgeGeometry.SourcePort, true, out sourceLoosePoly);
 //       SetPortVerticesAndObstacles(CurrentEdgeGeometry.TargetPort, false, out targetLoosePoly);
-//       List < SdBoneEdge > ret = RouteOnKnownSourceTargetVertices((CurrentEdgeGeometry.TargetPort.Location - CurrentEdgeGeometry.SourcePort.Location).normalize(), i == 0);
+//       Array < SdBoneEdge > ret = RouteOnKnownSourceTargetVertices((CurrentEdgeGeometry.TargetPort.Location - CurrentEdgeGeometry.SourcePort.Location).normalize(), i == 0);
 //       if (ret != null)
 //         return ret;
 //       for (int j = 0; j < vertexArray.length; j++) {
@@ -183,7 +181,7 @@
 //     throw new Error(); //cannot find a path
 //   }
 
-//   List < SdBoneEdge > RouteOnKnownSourceTargetVertices(Point pathDirection, bool lookingForMonotonePath) {
+//   Array < SdBoneEdge > RouteOnKnownSourceTargetVertices(Point pathDirection, bool lookingForMonotonePath) {
 //     LowestCostToTarget = Double.PositiveInfinity;
 //     ClosestTargetVertex = null;
 //     while (Queue.Count > 0) {
@@ -265,12 +263,12 @@
 //         //        }
 // #endif
 
-//   List < SdBoneEdge > GetPathAndUpdateRelatedCosts() {
+//   Array < SdBoneEdge > GetPathAndUpdateRelatedCosts() {
 //     //restore the path by moving backwards
 //     var current = ClosestTargetVertex;
 //     if (current == null)
 //       return null;
-//     var result = new List<SdBoneEdge>();
+//     var result = new Array<SdBoneEdge>();
 
 //     while (current.PrevEdge != null) {
 //       result.Add(current.PrevEdge);
@@ -519,7 +517,6 @@
 //     return bundlingSettings.CapacityOverflowCoefficient * (bundlingSettings.PathLengthImportance + bundlingSettings.InkImportance);
 //   }
 
-//   // <summary>
 //   // compute cdt edges crossed by paths
 //   // <
 //   internal void FillCrossedCdtEdges(Map < EdgeGeometry, Set < CdtEdge >> crossedCdtEdges) {

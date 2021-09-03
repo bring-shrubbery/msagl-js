@@ -12,7 +12,7 @@
 // using Microsoft.Msagl.DebugHelpers;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // this class nudges the edges
 //     // <
 //     internal class EdgeNudger : Algorithm {
@@ -20,7 +20,6 @@
 //         readonly MetroGraphData metroGraphData;
 //         IMetroMapOrderingAlgorithm metroOrdering;
 
-//         // <summary>
 //         // Constructor
 //         // <
 //         internal EdgeNudger(MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
@@ -42,7 +41,6 @@
 //             new HubRadiiCalculator(metroGraphData, bundlingSettings).CreateNodeRadii();
 //         }
 
-//         // <summary>
 //         // bundle-map ordering
 //         // <
 //         void CreateMetroOrdering() {
@@ -194,15 +192,15 @@
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //         static IEnumerable < DebugCurve > BetweenHubs(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
 //             foreach(Metroline ml of metroGraphData.Metrolines) {
-//                 List < Tuple < Point, Point >> segs = GetInterestingSegs(metroGraphData, metroMapOrdering, ml);
+//                 Array < Tuple < Point, Point >> segs = GetInterestingSegs(metroGraphData, metroMapOrdering, ml);
 //                 string color = GetMonotoneColor(ml.Polyline.start, ml.Polyline.End, segs);
 //                 foreach(var seg of segs)
 //                 yield return new DebugCurve(100, ml.Width, color, new LineSegment(seg.Item1, seg.Item2));
 //             }
 //         }
 
-//         static List < Tuple < Point, Point >> GetInterestingSegs(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroMapOrdering, Metroline line) {
-//             var ret = new List<Tuple<Point, Point>>();
+//         static Array < Tuple < Point, Point >> GetInterestingSegs(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroMapOrdering, Metroline line) {
+//             var ret = new Array<Tuple<Point, Point>>();
 //             Point start = FindCurveStart(metroGraphData, metroMapOrdering, line);
 //             var cubicSegs = HubSegsOfLine(metroGraphData, metroMapOrdering, line);
 //             foreach(var seg of cubicSegs) {
@@ -215,7 +213,7 @@
 //             return ret;
 //         }
 
-//         static string GetMonotoneColor(Point start, Point end, List < Tuple < Point, Point >> segs) {
+//         static string GetMonotoneColor(Point start, Point end, Array < Tuple < Point, Point >> segs) {
 //             return "green";
 //             //            Point dir = end - start;
 //             //            bool monotone = segs.All(seg => (seg.Second - seg.First)*dir >= 0);
@@ -224,7 +222,7 @@
 
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //         static IEnumerable < DebugCurve > DebugHubBases(MetroGraphData metroGraphData) {
-//             List < DebugCurve > dc = new List<DebugCurve>();
+//             Array < DebugCurve > dc = new Array<DebugCurve>();
 //             foreach(var s of metroGraphData.Stations)
 //             foreach(var h of s.BundleBases.Values) {
 //                 dc.Add(new DebugCurve(100, 1, "red", new LineSegment(h.LeftPoint, h.RightPoint)));
@@ -246,7 +244,7 @@
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 //         static IEnumerable < DebugCurve > DebugSegs(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroMapOrdering) {
 
-//             var ls = new List<ICurve>();
+//             var ls = new Array<ICurve>();
 //             foreach(var s of metroGraphData.VirtualNodes()) {
 //                 foreach(var b of s.BundleBases.Values) {
 //                     foreach(var h of b.OrientedHubSegments) {
@@ -280,7 +278,7 @@
 //         #endregion
 
 //         #region BiArcs
-//         // <summary>
+
 //         // Following "Biarc approximation of NURBS curves", Les A. Piegl, and Wayne Tiller. The paper has a bug in V, where they write that v=p0+p4, it is p0-p4.
 //         // Also I treat special cases differently.
 //         // <
@@ -330,7 +328,7 @@
 //                 //switch to Bezier
 //                 var curve2 = StandardBezier(p0, ts, p4, te);
 // #if TEST_MSAGL && TEST_MSAGL
-//                 /*List<DebugCurve> dc = new List<DebugCurve>();
+//                 /*Array<DebugCurve> dc = new Array<DebugCurve>();
 //                 dc.Add(new DebugCurve(curve));
 //                 dc.Add(new DebugCurve(0.3, "black", curve2));
 //                 dc.Add(new DebugCurve(0.1, "red", new LineSegment(p0, p0 + 3 * ts)));
@@ -343,7 +341,6 @@
 //             return curve;
 //         }
 
-//         // <summary>
 //         // returns the arc that a,b,c touches
 //         // <
 
@@ -423,7 +420,6 @@
 //             return ret;
 //         }
 
-//         // <summary>
 //         // fans the couple i,i+1
 //         // <
 //         bool FanCouple(BundleBase bundleHub, int i, Point center, double radius) {
@@ -529,7 +525,6 @@
 //                 highP = closestPointOnLine + maxOffset * offsetNow / offsetLen;
 //         }
 
-//         // <summary>
 //         //
 //         // <
 

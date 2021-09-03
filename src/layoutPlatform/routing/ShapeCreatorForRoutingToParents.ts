@@ -1,8 +1,7 @@
-﻿// // <summary>
-// // written in assumption of a single parent
+﻿// // written in assumption of a single parent
 // // <
 // export class ShapeCreatorForRoutingToParents {
-//   static GetShapes(inParentEdges: IEnumerable<Edge>, outParentEdges: List<Edge>): IEnumerable<Shape> {
+//   static GetShapes(inParentEdges: IEnumerable<Edge>, outParentEdges: Array<Edge>): IEnumerable<Shape> {
 //     let nodesToShapes = new Map<Node, Shape>();
 //     for (let edge of inParentEdges) {
 //       ProcessAncestorDescendantCouple((<Cluster>(edge.Target)), edge.Source, nodesToShapes);
@@ -66,7 +65,7 @@
 //   return node.ClusterParent;
 // }
 
-// internal static bool NumberOfActiveNodesIsUnderThreshold(List < Edge > inParentEdges, List < Edge > outParentEdges, int threshold) {
+// internal static bool NumberOfActiveNodesIsUnderThreshold(Array < Edge > inParentEdges, Array < Edge > outParentEdges, int threshold) {
 //   var usedNodeSet = new Set<Node>();
 //   foreach(var edge of inParentEdges)
 //   if (SetOfActiveNodesIsLargerThanThreshold((Cluster)edge.Target, edge.Source, usedNodeSet, threshold))

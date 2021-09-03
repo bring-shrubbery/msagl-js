@@ -16,11 +16,11 @@
 //         readonly MetroGraphData metroGraphData;
 //         readonly BundlingSettings bundlingSettings;
 
-//         List<BundleInfo> Bundles;
+//         Array<BundleInfo> Bundles;
 //         //boundary curve with bases going outside the hub
-//         Map<ICurve, List<BundleBase>> externalBases;
+//         Map<ICurve, Array<BundleBase>> externalBases;
 //     //boundary curve with bases going inside the cluster
-//     Map < ICurve, List < BundleBase >> internalBases;
+//     Map < ICurve, Array < BundleBase >> internalBases;
 
 //     internal BundleBasesCalculator(IMetroMapOrderingAlgorithm metroOrdering, MetroGraphData metroGraphData, BundlingSettings bundlingSettings) {
 //         this.metroOrdering = metroOrdering;
@@ -64,9 +64,9 @@
 //         #region Initialization
 
 //     void AllocateBundleBases() {
-//         externalBases = new Map<ICurve, List<BundleBase>>();
-//         internalBases = new Map<ICurve, List<BundleBase>>();
-//         Bundles = new List<BundleInfo>();
+//         externalBases = new Map<ICurve, Array<BundleBase>>();
+//         internalBases = new Map<ICurve, Array<BundleBase>>();
+//         Bundles = new Array<BundleInfo>();
 
 //         foreach(var station of metroGraphData.Stations) {
 //             if (station.BoundaryCurve == null)
@@ -112,7 +112,7 @@
 
 //     void SetBundleBaseNeighbors() {
 //         foreach(var c of externalBases.Keys) {
-//             List < BundleBase > list = externalBases[c];
+//             Array < BundleBase > list = externalBases[c];
 //             SortBundlesCounterClockwise(list);
 
 //             //set left
@@ -120,7 +120,7 @@
 //         }
 
 //         foreach(var c of internalBases.Keys) {
-//             List < BundleBase > list = internalBases[c];
+//             Array < BundleBase > list = internalBases[c];
 //             SortBundlesCounterClockwise(list);
 
 //             //set left
@@ -128,7 +128,7 @@
 //         }
 //     }
 
-//     void SortBundlesCounterClockwise(List < BundleBase > list) {
+//     void SortBundlesCounterClockwise(Array < BundleBase > list) {
 //         if (list.Count > 2) {
 //             Point pivot = list[0].OppositeBase.Position;
 //             Point center = list[0].CurveCenter;
@@ -138,7 +138,7 @@
 //         }
 //     }
 
-//     void SetLeftRightBases(List < BundleBase > bases) {
+//     void SetLeftRightBases(Array < BundleBase > bases) {
 //         int count = bases.Count;
 //         if (count <= 1)
 //             return;
@@ -220,7 +220,7 @@
 //         }
 //     }
 
-//     void AdjustCurrentBundleWidthsOnCurve(List < BundleBase > bases) {
+//     void AdjustCurrentBundleWidthsOnCurve(Array < BundleBase > bases) {
 //         int count = bases.Count;
 //         if (count <= 1)
 //             return;
@@ -296,7 +296,6 @@
 //         rBase.ParLeft = rBase.AdjustParam(r1);
 //     }
 
-//     // <summary>
 //     // find a cut point for 2 segments
 //     // <
 
@@ -592,7 +591,6 @@
 //         return Math.Exp(len / mn * 10) - 1;
 //     }
 
-//     // <summary>
 //     // returns the length of the overlapped interval in parameter space
 //     // <
 

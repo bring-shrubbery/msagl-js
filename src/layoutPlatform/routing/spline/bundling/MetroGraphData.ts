@@ -12,7 +12,7 @@
 // using Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // Wrapper for geometry graph with coinciding edges:
 //     //  'real' nodes stand for edge ends (source,target)
 //     //  'virtual' nodes stand for polyline control points
@@ -30,7 +30,7 @@
 //     double ink;
 
 //     // Edges
-//     List < Metroline > metrolines;
+//     Array < Metroline > metrolines;
 
 //     //  position -> (node)
 //     internal Map < Point, Station > PointToStations;
@@ -49,7 +49,6 @@
 
 //     internal Func < Port, Polyline > LoosePolylineOfPort;
 
-//     // <summary>
 //     // triangulation
 //     // <
 //     internal Cdt Cdt;
@@ -88,7 +87,7 @@
 //         return Stations.Where(s => !s.IsRealNode);
 //     }
 
-//     internal List < Metroline > Metrolines { get { return metrolines; } }
+//     internal Array < Metroline > Metrolines { get { return metrolines; } }
 
 //     internal RectangleNode < Polyline > LooseTree { get { return looseIntersections.obstacleTree; } }
 
@@ -98,7 +97,6 @@
 //         return edgeInfoDictionary.Keys;
 //     }
 
-//     // <summary>
 //     // number of real edges passing the edge uv
 //     // <
 //     internal int RealEdgeCount(Station u, Station v) {
@@ -109,14 +107,12 @@
 //         return 0;
 //     }
 
-//     // <summary>
 //     // real edges passing the node
 //     // <
-//     internal List < MetroNodeInfo > MetroNodeInfosOfNode(Station node) {
+//     internal Array < MetroNodeInfo > MetroNodeInfosOfNode(Station node) {
 //         return node.MetroNodeInfos;
 //     }
 
-//     // <summary>
 //     // real edges passing the edge uv
 //     // <
 //     internal StationEdgeInfo GetIjInfo(Station u, Station v) {
@@ -124,7 +120,6 @@
 //         return edgeInfoDictionary[couple];
 //     }
 
-//     // <summary>
 //     // Move node to the specified position
 //     // <
 //     internal void MoveNode(Station node, Point newPosition) {
@@ -176,7 +171,6 @@
 //         return width;
 //     }
 
-//     // <summary>
 //     // Initialize data
 //     // <
 //     internal void Initialize(bool initTightTree) {
@@ -199,7 +193,6 @@
 
 //     }
 
-//     // <summary>
 //     // remove self-cycles
 //     // <
 //     void SimplifyRegularEdges() {
@@ -207,7 +200,6 @@
 //         SimplifyRegularEdge(edge);
 //     }
 
-//     // <summary>
 //     // change the polyline by removing cycles
 //     // <
 //     void SimplifyRegularEdge(EdgeGeometry edge) {
@@ -278,7 +270,7 @@
 //     }
 
 //     void InitializeEdgeData() {
-//         metrolines = new List<Metroline>();
+//         metrolines = new Array<Metroline>();
 //         for (int i = 0; i < regularEdges.length; i++) {
 //             EdgeGeometry geomEdge = regularEdges[i];
 //             InitEdgeData(geomEdge, i);
@@ -299,7 +291,6 @@
 //                 LoosePolylineOfPort(geomEdge.TargetPort));
 //     }
 
-//     // <summary>
 //     // Initialize graph comprised of stations and their neighbors
 //     // <
 //     void InitializeVirtualGraph() {

@@ -10,7 +10,10 @@
     "importHelpers": true,
     "downlevelIteration": true
   },
-  "include": ["src/layoutPlatform/*", "src/index.ts"],
+  "include": [
+    "src/layoutPlatform/*",
+    "src/index.ts"
+  ],
   "exclude": ["dist", "node_modules", "**/*.spec.ts"],
   "typeRoots": ["./src/typings", "./node_modules/@types/"]
 }

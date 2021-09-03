@@ -68,7 +68,7 @@
 
 //             //}
 
-//            var  l = new List<DebugCurve>();
+//            var  l = new Array<DebugCurve>();
 //             l.Add(new DebugCurve(0.05, "red", new LineSegment(start, end)));
 //             var piercedEdge = currentTriangle.Edges[2];
 //             l.Add(new DebugCurve(0.05, "blue", new LineSegment(piercedEdge.upperSite.point, piercedEdge.lowerSite.point)));
@@ -98,9 +98,9 @@
 
 //     internal void FindNextPierced() {
 //         Assert.assert(negativeSign < positiveSign);
-//         /*List<DebugCurve> l = null;
+//         /*Array<DebugCurve> l = null;
 //         if (db) {
-//             l = new List<DebugCurve>();
+//             l = new Array<DebugCurve>();
 //             l.Add(new DebugCurve(0.05, "red", new LineSegment(start, end)));
 //             l.Add(new DebugCurve(0.05, "blue", new LineSegment(piercedEdge.upperSite.point, piercedEdge.lowerSite.point)));
 //             l.Add(new DebugCurve(new Ellipse(3, 3, end)));
@@ -169,14 +169,14 @@
 //     }
 
 //     //        void ShowDebug(IEnumerable<CdtTriangle> cdtTriangles, CdtEdge cdtEdge, CdtTriangle cdtTriangle) {
-//     //            var l = new List<DebugCurve> { new DebugCurve(10,"red",new LineSegment(start,end)) };
+//     //            var l = new Array<DebugCurve> { new DebugCurve(10,"red",new LineSegment(start,end)) };
 //     //            if(cdtEdge!=null)
 //     //                l.Add(new DebugCurve(100,3,"navy", new LineSegment(cdtEdge.upperSite.point,cdtEdge.lowerSite.point)));
 //     //            AddTriangleToListOfDebugCurves(l,cdtTriangle,100,2,"brown");
 //     //            LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(l);
 //     //
 //     //        }
-//     //        static void AddTriangleToListOfDebugCurves(List<DebugCurve> debugCurves,CdtTriangle triangle,byte transparency,double width,string color) {
+//     //        static void AddTriangleToListOfDebugCurves(Array<DebugCurve> debugCurves,CdtTriangle triangle,byte transparency,double width,string color) {
 //     //            foreach(var cdtEdge of triangle.Edges) {
 //     //                debugCurves.Add(new DebugCurve(transparency,width,color,new LineSegment(cdtEdge.upperSite.point,cdtEdge.lowerSite.point)));
 //     //            }

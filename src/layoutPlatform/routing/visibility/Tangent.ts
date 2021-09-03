@@ -35,7 +35,7 @@
 //     }
 
 //     Diagonal diagonal;
-//     // <summary>
+
 //     // the diagonal will be not a null only when it is active
 //     // <
 //     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]

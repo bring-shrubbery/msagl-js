@@ -177,7 +177,7 @@ export class RectilinearScanLine {
   /*
         Test_GetScanLineDebugCurves(): Array<DebugCurve> {
             //  ReSharper restore InconsistentNaming
-            //           var debugCurves = new List<DebugCurve>();
+            //           var debugCurves = new Array<DebugCurve>();
             //  Alternate the colors between green and blue, so that any inconsistency will stand out.
             //  Use red to highlight that.
             let colors: string[] = [

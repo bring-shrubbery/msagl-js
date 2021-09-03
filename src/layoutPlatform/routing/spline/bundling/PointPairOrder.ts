@@ -3,7 +3,7 @@
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
 //     internal class PointPairOrder {
 //         //order for node u of edge u->v
-//         internal List<Metroline> Metrolines = new List<Metroline>();
+//         internal Array<Metroline> Metrolines = new Array<Metroline>();
 //         internal bool orderFixed;
 //         internal Map<Metroline, int> LineIndexInOrder;
 

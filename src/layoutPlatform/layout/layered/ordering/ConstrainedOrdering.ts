@@ -372,7 +372,6 @@ export class ConstrainedOrdering {
   //   return key;
   // }
 
-  // //  <summary>
   // //  These blocks are connected components in the vertical constraints. They don't necesserely span consequent layers.
   // //  <
 
@@ -696,7 +695,6 @@ export class ConstrainedOrdering {
 
   // }
 
-  // //  <summary>
   // //  when we call this function we know that a LayerInfo is needed
   // //  <
 

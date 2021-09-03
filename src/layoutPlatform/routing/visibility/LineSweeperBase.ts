@@ -53,7 +53,6 @@ export class LineSweeperBase {
 
   SweepDirection: Point
 
-  //  <summary>
   //  sweep direction rotated by 90 degrees clockwise
   //  <
   protected get DirectionPerp(): Point {
@@ -165,7 +164,6 @@ export class LineSweeperBase {
     return candidate
   }
 
-  //  <summary>
   //  imagine that direction points up,
   //  lower events have higher priorities,
   //  for events at the same level events to the left have higher priority

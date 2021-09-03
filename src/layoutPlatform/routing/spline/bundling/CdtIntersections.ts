@@ -8,7 +8,7 @@
 // using Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // Check intersections between edges and obstacles using triangulation (faster than kd-tree)
 //     // <
 //     internal class CdtIntersections {
@@ -22,14 +22,13 @@
 //             this.bundlingSettings = bundlingSettings;
 //         }
 
-//         // <summary>
 //         // returns false iff the edge overlap an obstacle
 //         // otherwise it calulates distances to the closest obstacles
 //         // <
 //         internal bool BundleAvoidsObstacles(Station v, Station u, Point vPosition, Point uPosition, double upperBound,
-//             out List<Tuple<Point, Point>> closestDist) {
+//             out Array<Tuple<Point, Point>> closestDist) {
 
-//         closestDist = new List<Tuple<Point, Point>>();
+//         closestDist = new Array<Tuple<Point, Point>>();
 //         //return true;
 
 //         Set < Polyline > obstaclesToIgnore = metroGraphData.looseIntersections.ObstaclesToIgnoreForBundle(v, u);
@@ -51,14 +50,13 @@
 //         return true;
 //     }
 
-//     // <summary>
 //     // returns null iff the edge overlap an obstacle
 //     // <
 //     Map < Polyline, Tuple < Point, Point >> FindCloseObstaclesForBundle(CdtTriangle startTriangle, Point start,
 //         Point end, Set < Polyline > obstaclesToIgnore,
 //         double upperBound) {
 //         var obstacles = new Map<Polyline, Tuple<Point, Point>>();
-//         List < CdtTriangle > list;
+//         Array < CdtTriangle > list;
 //         if (!ThreadLineSegmentThroughTriangles(startTriangle, start, end, obstaclesToIgnore, out list))
 //             return null;
 
@@ -105,13 +103,12 @@
 //         return obstacles;
 //     }
 
-//     // <summary>
 //     // returns false iff the edge overlap an obstacle
 //     // <
 //     bool ThreadLineSegmentThroughTriangles(CdtTriangle currentTriangle, Point start, Point end, Set < Polyline > obstaclesToIgnore,
-//         out List < CdtTriangle > triangles) {
+//         out Array < CdtTriangle > triangles) {
 //         Assert.assert(Cdt.PointIsInsideOfTriangle(start, currentTriangle));
-//         triangles = new List<CdtTriangle>();
+//         triangles = new Array<CdtTriangle>();
 
 //         if (Cdt.PointIsInsideOfTriangle(end, currentTriangle)) {
 //             triangles.Add(currentTriangle);
@@ -176,17 +173,15 @@
 //         throw new NotSupportedException();
 //     }
 
-//     // <summary>
 //     // checks if an edge intersects obstacles
 //     // otherwise it calulates distances to the closest obstacles
 //     // <
 //     internal bool EdgeIsLegal(Station v, Station u, Point vPosition, Point uPosition) {
-//         List < CdtTriangle > list;
+//         Array < CdtTriangle > list;
 //         Set < Polyline > obstaclesToIgnore = metroGraphData.looseIntersections.ObstaclesToIgnoreForBundle(v, u);
 //         return ThreadLineSegmentThroughTriangles(v.CdtTriangle, vPosition, uPosition, obstaclesToIgnore, out list);
 //     }
 
-//     // <summary>
 //     // checks if an edge intersects obstacles
 //     // otherwise it calulates distances to the closest obstacles
 //     // <

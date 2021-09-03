@@ -26,18 +26,15 @@ export class AdjacentSwapsWithConstraints {
   //  for each vertex v let P[v] be the array of predeccessors of v
   P: number[][]
 
-  //  <summary>
   //  The array contains a dictionary per vertex
   //  The value POrder[v][u] gives the offset of u in the array P[v]
   //  <
   POrder: Map<number, number>[]
 
-  //  <summary>
   //  for each vertex v let S[v] be the array of successors of v
   //  <
   S: number[][]
 
-  //  <summary>
   //  The array contains a dictionary per vertex
   //  The value SOrder[v][u] gives the offset of u in the array S[v]
   //  <
@@ -105,7 +102,6 @@ export class AdjacentSwapsWithConstraints {
     return this.properLayeredGraph.IsVirtualNode(v)
   }
 
-  // // <summary>
   // // swaps two vertices only if reduces the number of intersections
   // // <
 
@@ -129,7 +125,6 @@ export class AdjacentSwapsWithConstraints {
     return t.cuv - t.cvu
   }
 
-  //  <summary>
   //  calculates the number of intersections between edges adjacent to u and v
   //  <
 
@@ -296,7 +291,6 @@ export class AdjacentSwapsWithConstraints {
     return true
   }
 
-  //  <summary>
   //  Is called just after median layer swap is done
   //  <
   InitArrays() {
@@ -411,7 +405,6 @@ export class AdjacentSwapsWithConstraints {
     }
   }
 
-  //  <summary>
   //  swaps i-th element with i+1
   //  <
 
@@ -425,7 +418,6 @@ export class AdjacentSwapsWithConstraints {
     }
   }
 
-  //  <summary>
   //  Sweep layer from left to right and fill S,P arrays as we go.
   //  The arrays P and S will be sorted according to X. Note that we will not keep them sorted
   //  as we doing adjacent swaps. Initial sorting only needed to calculate initial clr,crl values.
@@ -442,7 +434,7 @@ export class AdjacentSwapsWithConstraints {
         const sHasNow: number = so.size
         this.S[p].push(l)
         // l takes the first available slot in S[p]
-        so.set(l,sHasNow)
+        so.set(l, sHasNow)
       }
 
       for (const s of this.properLayeredGraph.Succ(l)) {

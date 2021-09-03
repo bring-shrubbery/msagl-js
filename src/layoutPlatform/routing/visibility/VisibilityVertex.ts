@@ -54,7 +54,7 @@ export class VisibilityVertex {
     return this.point.toString()
   }
 
-  //  These iterate from the end of the list because List.Remove is linear in
+  //  These iterate from the end of the list because Array.Remove is linear in
   //  the number of items, so callers have been optimized where possible to
   //  remove only the last or next-to-last edges (but in some cases such as
   //  rectilinear, this optimization isn't always possible).

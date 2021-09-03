@@ -8,13 +8,12 @@
 // using Microsoft.Msagl.DebugHelpers;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     //
 //     // <
 //     interface IMetroMapOrderingAlgorithm {
 //         IEnumerable<Metroline> GetOrder(Station u, Station v);
 
-//         // <summary>
 //         // Get the index of line on the edge (u->v) and node u
 //         // <
 //         int GetLineIndexInOrder(Station u, Station v, Metroline metroLine);

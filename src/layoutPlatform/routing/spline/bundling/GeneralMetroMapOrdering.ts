@@ -7,26 +7,24 @@
 // using Microsoft.Msagl.DebugHelpers;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // greedy bundle map ordering based on path comparison
 //     // <
 //     public class GeneralMetroMapOrdering : IMetroMapOrderingAlgorithm {
-//         // <summary>
+
 //         // bundle lines
 //         // <
-//         readonly List < Metroline > Metrolines;
+//         readonly Array < Metroline > Metrolines;
 //         Map < PointPair, PointPairOrder > bundles;
 
-//         // <summary>
 //         // Initialize bundle graph and build the ordering
 //         // <
-//         internal GeneralMetroMapOrdering(List < Metroline > Metrolines) {
+//         internal GeneralMetroMapOrdering(Array < Metroline > Metrolines) {
 //             this.Metrolines = Metrolines;
 
 //             BuildOrder();
 //         }
 
-//         // <summary>
 //         // Get the ordering of lines on station u with respect to the edge (u->v)
 //         // <
 // #if SHARPKIT //http://code.google.com/p/sharpkit/issues/detail?id=203
@@ -48,7 +46,6 @@
 //                 }
 //             }
 
-//         // <summary>
 //         // Get the index of line on the edge (u->v) and node u
 //         // <
 // #if SHARPKIT //http://code.google.com/p/sharpkit/issues/detail?id=203
@@ -63,7 +60,6 @@
 //                     return !reversed ? d[Metroline] : d.Count - 1 - d[Metroline];
 //                 }
 
-//                 // <summary>
 //                 // Do the main job
 //                 // <
 //                 void BuildOrder() {
@@ -84,7 +80,6 @@
 //                     BuildOrder(edge.Key, edge.Value);
 //                 }
 
-//                 // <summary>
 //                 // Build order for edge (u->v)
 //                 // <
 //                 void BuildOrder(PointPair pair, PointPairOrder order) {
@@ -98,7 +93,6 @@
 //                     order.LineIndexInOrder[order.Metrolines[i]] = i;
 //                 }
 
-//                 // <summary>
 //                 // Compare two lines on station u with respect to edge (u->v)
 //                 // <
 //                 int CompareLines(Metroline ml0, Metroline ml1, Point u, Point v) {
@@ -161,7 +155,6 @@
 //                     return r * mlToIndex[ml0].CompareTo(mlToIndex[ml1]);
 //                 }
 
-//                 // <summary>
 //                 // Reimplement it in more efficient way!!! (cache indexes)
 //                 // <
 //                 void FindStationOnLine(Point u, Point v, Metroline Metroline, out PolylinePoint polyPoint, out Func < PolylinePoint, PolylinePoint > next,
@@ -192,7 +185,6 @@
 //                     return p.Prev;
 //                 }
 
-//         // <summary>
 //         // Compare polar angles of v1 and v2 with respect to v0
 //         // (v1 lyes to the left of v2 ?)
 //         // <

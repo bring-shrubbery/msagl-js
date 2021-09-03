@@ -14,7 +14,7 @@
 // #endif
 
 // namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
-//     // <summary>
+
 //     // Sweeps a given direction of cones and adds discovered edges to the graph.
 //     // The cones can only start at ports here.
 //     // <
@@ -206,7 +206,7 @@
 //             if (node == null || !Point.IntervalIntersectsRay(leftPoint, rightPoint,
 //                 node.Item.start, node.Item.Direction, out x))
 //                 return;
-//             var conesToRemove = new List<Cone>();
+//             var conesToRemove = new Array<Cone>();
 //             do {
 //                 conesToRemove.Add(node.Item.Cone);
 //                 node = tree.next(node);
@@ -609,7 +609,6 @@
 //             Assert.assert(b != null);
 //         }
 
-//         // <summary>
 //         //
 //         // <
 
@@ -722,7 +721,7 @@
 //             Cone cone = coneRightSide.Cone;
 //             ConeSide leftConeSide = cone.LeftSide;
 //             if (VertexIsToTheLeftOfSegment(vertexEvent, leftConeSide)) return;
-//             var visibleCones = new List < Cone > { cone };
+//             var visibleCones = new Array < Cone > { cone };
 //             coneSideComparer.SetOperand(leftConeSide);
 //             rbNode = leftConeSides.Find(leftConeSide);
 

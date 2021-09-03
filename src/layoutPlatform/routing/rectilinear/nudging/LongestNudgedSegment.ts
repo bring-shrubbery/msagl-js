@@ -12,9 +12,8 @@ export class LongestNudgedSegment extends SegmentBase {
     this.Id = variable
   }
 
-  ///  <summary>
   ///  has to be North or East
-  ///  </summary>
+
   CompassDirection: Direction = Direction.None
 
   // the segment can go only North or East independently of the edge directions
@@ -32,9 +31,8 @@ export class LongestNudgedSegment extends SegmentBase {
     return this.end
   }
 
-  ///  <summary>
   ///  the list of edges holding the same offset and direction
-  ///  </summary>
+
   get Edges(): Array<PathEdge> {
     return this.edges
   }
@@ -89,9 +87,8 @@ export class LongestNudgedSegment extends SegmentBase {
 
   isFixed: boolean
 
-  ///  <summary>
   ///  the segments constraining "this" from the right
-  ///  </summary>
+
   get IsFixed(): boolean {
     return this.isFixed
   }
@@ -101,9 +98,8 @@ export class LongestNudgedSegment extends SegmentBase {
 
   Id = -1
 
-  ///  <summary>
   ///  the maximal width of the edges
-  ///  </summary>
+
   public get Width(): number {
     return from(this.edges).max((e) => e.Width)
   }

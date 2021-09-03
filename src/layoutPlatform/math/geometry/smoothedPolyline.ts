@@ -44,7 +44,6 @@ export class SmoothedPolyline {
     this.headSite = head
   }
 
-  // <summary>
   // the last site of the polyline
   // <
   get lastSite(): CornerSite {
@@ -71,7 +70,6 @@ export class SmoothedPolyline {
     }
   }
 
-  // <summary>
   // Creates a curve by using the underlying polyline
   // <
 

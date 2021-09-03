@@ -21,7 +21,7 @@
 // [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 // internal VisibilityVertex QVertex { get; set; }
 
-//         readonly List < PolylinePoint > sortedListOfPolypoints = new List<PolylinePoint>();
+//         readonly Array < PolylinePoint > sortedListOfPolypoints = new Array<PolylinePoint>();
 //                                      //the sorted list of possibly visible vertices
 
 //         readonly IEnumerable < Polyline > holes;
@@ -157,7 +157,7 @@
 //   foreach(PolylinePoint polylinePoint of sortedListOfPolypoints)
 //   SweepPolylinePoint(polylinePoint);
 // #if TEST_MSAGL
-//             //List<ICurve> l = new List<ICurve>();
+//             //Array<ICurve> l = new Array<ICurve>();
 //             //foreach (PEdge pe of this.visibilityGraph.Edges) {
 //             //    if (!Point.closeDistEps(pe.SourcePoint, pe.TargetPoint && pe.Target.PolylinePoint.Polyline!=pe.Source.PolylinePoint.Polyline))
 //             //        l.Add(new LineSegment(pe.SourcePoint, pe.TargetPoint));
@@ -237,7 +237,7 @@
 // // ReSharper disable UnusedMember.Local
 // void DrawActiveEdgesAndVisibleGraph() {
 //   // ReSharper restore UnusedMember.Local
-//   var l = new List<ICurve>();
+//   var l = new Array<ICurve>();
 //   foreach(VisibilityEdge pe of visibilityGraph.Edges)
 //   l.Add(new LineSegment(pe.SourcePoint, pe.TargetPoint));
 

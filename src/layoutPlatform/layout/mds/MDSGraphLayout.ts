@@ -191,7 +191,7 @@ export class MdsGraphLayout extends Algorithm {
   //     tree: RectangleNode<Node, Point>,
   //     maxNumberOfHits: number,
   //   ): number {
-  //     //  var l = new List<Point>();
+  //     //  var l = new Array<Point>();
   //     let numberOfHits = 0
   //     for (let i = 0; i < numberOfChecks; i++) {
   //       const point: Point = MdsGraphLayout.RandomPointFromBox(

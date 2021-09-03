@@ -28,7 +28,6 @@ export abstract class ObstacleSide extends SegmentBase {
     return this.EndVertex.point
   }
 
-  // //  <summary>
   // //  <
 
   // public  ToString(): string {

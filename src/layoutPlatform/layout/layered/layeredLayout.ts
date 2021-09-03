@@ -848,7 +848,6 @@ export class LayeredLayout extends Algorithm {
       this.anchors[i].x = xLayers[i]
   }
 
-  // // <summary>
   // // A quote from Gansner93.
   // // The method involves constructing an auxiliary graph as illustrated in figure 4-2.
   // // This transformation is the graphical analogue of the algebraic

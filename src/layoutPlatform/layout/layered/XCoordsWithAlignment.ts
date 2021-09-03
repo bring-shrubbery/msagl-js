@@ -57,7 +57,6 @@ export class XCoordsWithAlignment {
     return (this.LR ? 0 : 1) + 2 * (this.BT ? 0 : 1)
   }
 
-  //  <summary>
   //  Returns true if v is a virtual vertex
   //  <
 
@@ -371,7 +370,6 @@ export class XCoordsWithAlignment {
     return this.LR ? i <= pos : pos <= i
   }
 
-  //  <summary>
   //  Parameterized left relation
   //  <
 
@@ -389,7 +387,6 @@ export class XCoordsWithAlignment {
     return this.LR ? i - 1 : i + 1
   }
 
-  // // <summary>
   // // Eliminates conflicts with at least one inner edge inside of one layer
   // // <
 
@@ -495,7 +492,6 @@ export class XCoordsWithAlignment {
     return this.BT ? this.graph.InEdges(v) : this.graph.OutEdges(v)
   }
 
-  // // <summary>
   // // This function marks conflicting edges with targets positioned between innerEdge and newInnerEdge targets.
   // // <
 
@@ -523,7 +519,6 @@ export class XCoordsWithAlignment {
     }
   }
 
-  // // <summary>
   // // Returns the inner non-conflicting edge incoming into i-th position
   // // of the layer or null if there is no such edge
   // // <
@@ -580,7 +575,6 @@ export class XCoordsWithAlignment {
     this.markedEdges.clear()
   }
 
-  // // <summary>
   // // private constructor
   // // <
 
@@ -724,7 +718,6 @@ export class XCoordsWithAlignment {
     }
   }
 
-  //  <summary>
   //  Organizes the vertices into blocks. A block is a maximal path in the alignment subgraph.
   //  The alignment is defined by array align. Every vertex is connected to the top vertex of
   //  the block by using root array. The alignment is cyclic. If we start from a root vertex v and
@@ -786,7 +779,6 @@ export class XCoordsWithAlignment {
   //  Assigning xcoords starting from roots
   static infinity = 10000000
 
-  //  <summary>
   //  Calculates the minimum separation between two neighboring vertices: if u is to the left of v on the same layer return positive
   //  number, otherwise negative.
   //  <

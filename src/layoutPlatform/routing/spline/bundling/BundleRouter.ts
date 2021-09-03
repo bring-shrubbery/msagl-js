@@ -134,7 +134,7 @@ export class BundleRouter extends Algorithm {
     this.FixArrowheads()
   }
 
-  //  <summary>
+  
   //  set endpoint of the edge from child to parent (cluster) to the boundary of the parent
   //  TODO: is there a better solution?
   //  <
@@ -193,7 +193,7 @@ export class BundleRouter extends Algorithm {
   //          // ReSharper disable UnusedMember.Local
   //          void ShowGraphLocal() {
   //              // ReSharper restore UnusedMember.Local
-  //              var l = new List<ICurve>();
+  //              var l = new Array<ICurve>();
   //              l.Clear();
   //              foreach (var e of geometryGraph.Edges) {
   //                  {
@@ -324,7 +324,7 @@ export class BundleRouter extends Algorithm {
     return true
   }
 
-  //  <summary>
+  
   //  calculates maximum possible edge separation for the computed routing
   //    if it is greater than bundlingSettings.EdgeSeparation, then proceed
   //    if it is smaller, then either

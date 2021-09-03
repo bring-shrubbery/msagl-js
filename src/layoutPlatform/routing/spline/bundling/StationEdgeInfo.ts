@@ -14,7 +14,7 @@
 //         internal int Count;
 //         internal double Width;
 
-//         internal List<Metroline> Metrolines = new List<Metroline>();
+//         internal Array<Metroline> Metrolines = new Array<Metroline>();
 
 //         #region cache
 

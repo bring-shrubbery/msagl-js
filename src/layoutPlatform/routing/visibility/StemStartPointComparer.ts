@@ -5,7 +5,7 @@
 // using Microsoft.Msagl.Core;
 
 // namespace Microsoft.Msagl.Routing.Visibility {
-//     // <summary>
+
 //     // compares couples only by looking at the couple first point
 //     // we need the couple to hold the stem
 //     // <

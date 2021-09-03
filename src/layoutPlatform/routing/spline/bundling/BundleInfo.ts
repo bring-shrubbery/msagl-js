@@ -19,7 +19,7 @@
 //         readonly internal double[] HalfWidthArray;
 //         readonly double longEnoughSideLength;
 
-//         List<Polyline> tightObstaclesInTheBoundingBox;
+//         Array<Polyline> tightObstaclesInTheBoundingBox;
 //         internal double TotalRequiredWidth;
 
 //         internal BundleInfo(BundleBase sourceBase, BundleBase targetBase, Set<Polyline> obstaclesToIgnore, double edgeSeparation, double[] halfWidthArray) {

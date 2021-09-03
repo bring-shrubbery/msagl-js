@@ -157,9 +157,8 @@ export class Variable {
     )
   }
 
-  // <summary>
   // Gets the string representation of UserData.
-  // </summary>
+
   // <returns>A string representation of Node.Object.</returns>
   get Name(): string {
     return this.UserData == null ? '-0-' : this.UserData.toString()

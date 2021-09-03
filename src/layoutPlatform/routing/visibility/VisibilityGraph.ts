@@ -56,7 +56,7 @@ export class VisibilityGraph {
   pointToVertexMap: PointMap<VisibilityVertex> = new PointMap<VisibilityVertex>()
 
   //   static GetVisibilityGraphForShortestPath(pathStart: Point, pathEnd: Point, obstacles: IEnumerable<Polyline>, /* out */sourceVertex: VisibilityVertex, /* out */targetVertex: VisibilityVertex): VisibilityGraph {
-  //       let holes = new List<Polyline>(VisibilityGraph.OrientHolesClockwise(obstacles));
+  //       let holes = new Array<Polyline>(VisibilityGraph.OrientHolesClockwise(obstacles));
   //       let visibilityGraph = VisibilityGraph.CalculateGraphOfBoundaries(holes);
   //       let polygons = holes.Select(() => {  }, new Polygon(holes)).ToList();
   //       TangentVisibilityGraphCalculator.AddTangentVisibilityEdgesToGraph(polygons, visibilityGraph);
@@ -68,14 +68,14 @@ export class VisibilityGraph {
   //   //  Calculates the tangent visibility graph
 
   //   public static FillVisibilityGraphForShortestPath(obstacles: IEnumerable<Polyline>): VisibilityGraph {
-  //       let holes = new List<Polyline>(VisibilityGraph.OrientHolesClockwise(obstacles));
+  //       let holes = new Array<Polyline>(VisibilityGraph.OrientHolesClockwise(obstacles));
   //       let visibilityGraph = VisibilityGraph.CalculateGraphOfBoundaries(holes);
   //       let polygons = holes.Select(() => {  }, new Polygon(hole)).ToList();
   //       TangentVisibilityGraphCalculator.AddTangentVisibilityEdgesToGraph(polygons, visibilityGraph);
   //       return visibilityGraph;
   //   }
 
-  //   static CalculateGraphOfBoundaries(holes: List<Polyline>): VisibilityGraph {
+  //   static CalculateGraphOfBoundaries(holes: Array<Polyline>): VisibilityGraph {
   //       let graphOfHoleBoundaries = new VisibilityGraph();
   //       for (let polyline: Polyline of holes) {
   //           graphOfHoleBoundaries.AddHole(polyline);

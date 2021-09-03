@@ -1,10 +1,10 @@
 import {String} from 'typescript-string-operations'
 import {Constraint} from './Constraint'
 import {Variable} from './Variable'
-///  <summary>
+
 ///  variableDoneEval is NULL if we are starting an evaluation; if recursive, it's the variable
 ///  on that side from the parent call, which was already processed.
-///  </summary>
+
 export class DfDvNode {
   Parent: DfDvNode
   ConstraintToEval: Constraint
@@ -56,8 +56,6 @@ export class DfDvNode {
     return this.VariableToEval == this.ConstraintToEval.Right
   }
 
-  ///  <summary>
-  ///  </summary>
   toString(): string {
     return String.Format(
       '{0} {1}{2} - {3}{4} ({5})',

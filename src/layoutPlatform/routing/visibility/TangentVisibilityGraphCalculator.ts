@@ -7,20 +7,20 @@
 // namespace Microsoft.Msagl.Routing.Visibility {
 //     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
 //     internal class TangentVisibilityGraphCalculator {
-//         // <summary>
+
 //         // the list of obstacles
 //         // <
-//         List<Polygon> polygons;
+//         Array<Polygon> polygons;
 
 //         VisibilityGraph visibilityGraph;
-//         List<Diagonal> diagonals;
-//         List<Tangent> tangents;
+//         Array<Diagonal> diagonals;
+//         Array<Tangent> tangents;
 //         RBTree<Diagonal> activeDiagonalTree;
 //         Polygon currentPolygon;
 //         ActiveDiagonalComparerWithRay activeDiagonalComparer = new ActiveDiagonalComparerWithRay();
 //         bool useLeftPTangents;
 
-//         internal static void AddTangentVisibilityEdgesToGraph(List<Polygon> holes, VisibilityGraph visibilityGraph) {
+//         internal static void AddTangentVisibilityEdgesToGraph(Array<Polygon> holes, VisibilityGraph visibilityGraph) {
 
 //         if (holes.Count > 1) {
 //             TangentVisibilityGraphCalculator calculator = new TangentVisibilityGraphCalculator(holes, visibilityGraph, true);
@@ -46,8 +46,8 @@
 //     }
 
 //         private void AllocateDataStructures(int i) {
-//         tangents = new List<Tangent>();
-//         diagonals = new List<Diagonal>();
+//         tangents = new Array<Tangent>();
+//         diagonals = new Array<Diagonal>();
 //         activeDiagonalTree = new RBTree<Diagonal>(this.activeDiagonalComparer);
 //         this.currentPolygon = polygons[i];
 //     }
@@ -71,7 +71,7 @@
 //             }
 
 // #if TEST_MSAGL
-//                 //List<ICurve> cs = new List<ICurve>();
+//                 //Array<ICurve> cs = new Array<ICurve>();
 
 //                 //foreach (Diagonal d of this.activeDiagonalTree) {
 //                 //    cs.Add(new LineSegment(d.start, d.End));
@@ -90,7 +90,6 @@
 //         VisibilityGraph.addEdge(visibilityGraph.GetVertex(t.start), visibilityGraph.GetVertex(t.End));
 //     }
 
-//         // <summary>
 //         // this function will also add the first tangent to the visible edges if needed
 //         // <
 //         private void InitActiveDiagonals() {
@@ -118,7 +117,7 @@
 //     }
 // #if TEST_MSAGL && TEST_MSAGL
 //     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         private void AddPolylinesForShow(List < ICurve > curves) {
+//         private void AddPolylinesForShow(Array < ICurve > curves) {
 //         foreach(Polygon p of this.polygons)
 //         curves.Add(p.Polyline);
 //     }
@@ -153,7 +152,6 @@
 //             Point.getTriangleOrientation(pivot, pointOnRay, b) != TriangleOrientation.Clockwise;
 //     }
 
-//     // <summary>
 //     // compare tangents by measuring the counterclockwise angle between the tangent and the edge
 //     // <
 
@@ -169,7 +167,7 @@
 
 //         this.tangents.Sort(new Comparison<Tangent>(TangentComparison));
 //         //debug
-//         //List<ICurve> cc = new List<ICurve>();
+//         //Array<ICurve> cc = new Array<ICurve>();
 //         //foreach (Tangent t of this.tangents)
 //         //    cc.Add(new LineSegment(t.start.point, t.End.point));
 //         //foreach (Polygon p of polygons)
@@ -202,7 +200,7 @@
 //         this.diagonals.Add(new Diagonal(t0, t1));
 //     }
 
-//     TangentVisibilityGraphCalculator(List < Polygon > holes, VisibilityGraph visibilityGraph, bool useLeftPTangents) {
+//     TangentVisibilityGraphCalculator(Array < Polygon > holes, VisibilityGraph visibilityGraph, bool useLeftPTangents) {
 //         this.polygons = holes;
 //         this.visibilityGraph = visibilityGraph;
 //         this.useLeftPTangents = useLeftPTangents;

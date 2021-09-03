@@ -113,9 +113,8 @@ export class StaircaseRemover {
       : new Point(pts[offset].x, pts[offset + 4].y)
   }
 
-  ///  <summary>
   ///  ignoring crossing at a
-  ///  </summary>
+
   ///  <param name="a"></param>
   ///  <param name="b"></param>
   ///  <param name="segsToIgnore"></param>
@@ -128,9 +127,8 @@ export class StaircaseRemover {
     )
   }
 
-  ///  <summary>
   ///  ignoring crossing at ls.Start
-  ///  </summary>
+
   ///  <param name="ls"></param>
   ///  <param name="rTree"></param>
   ///  <param name="segsToIgnore"></param>

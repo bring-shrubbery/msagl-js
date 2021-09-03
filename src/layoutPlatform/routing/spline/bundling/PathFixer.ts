@@ -35,7 +35,7 @@
 //     internal bool Run() {
 //         if (metroGraphData.Edges.Count() == 0) return false;
 
-//         var splittingPoints = new Map<PointPair, List<Point>>();
+//         var splittingPoints = new Map<PointPair, Array<Point>>();
 //         var treeOfVertices = new RTree<Point, P>();
 //         foreach(var vertex of Vertices()) {
 //             var r = new Rectangle(vertex.point);
@@ -64,17 +64,17 @@
 //         return progress;
 //     }
 
-//     void SortInsertedPoints(Map < PointPair, List < Point >> splittingPoints) {
+//     void SortInsertedPoints(Map < PointPair, Array < Point >> splittingPoints) {
 //         foreach(var pair of splittingPoints)
 //         SortInsideSegment(pair.Key, pair.Value);
 //     }
 
-//     void SortInsideSegment(PointPair edge, List < Point > list) {
+//     void SortInsideSegment(PointPair edge, Array < Point > list) {
 //         Assert.assert(list.Count > 0, "an edge should not be present with an empty list");
 //         list.Sort((a, b) => (a - edge.First).length.CompareTo((b - edge.First).length));
 //     }
 
-//     bool InsertPointsIntoPolylines(Map < PointPair, List < Point >> splittingPoints) {
+//     bool InsertPointsIntoPolylines(Map < PointPair, Array < Point >> splittingPoints) {
 //         bool inserted = false;
 //         foreach(var metroline of metroGraphData.Metrolines) {
 //             if (InsertPointsIntoPolyline(metroline, splittingPoints))
@@ -83,17 +83,17 @@
 //         return inserted;
 //     }
 
-//     bool InsertPointsIntoPolyline(Metroline metroline, Map < PointPair, List < Point >> splittingPoints) {
+//     bool InsertPointsIntoPolyline(Metroline metroline, Map < PointPair, Array < Point >> splittingPoints) {
 //         bool inserted = false;
 //         for (var pp = metroline.Polyline.startPoint; pp.next != null; pp = pp.next)
 //             if (InsertPointsOnPolypoint(pp, splittingPoints, metroline)) inserted = true;
 //         return inserted;
 //     }
 
-//     bool InsertPointsOnPolypoint(PolylinePoint pp, Map < PointPair, List < Point >> splittingPoints, Metroline metroline) {
+//     bool InsertPointsOnPolypoint(PolylinePoint pp, Map < PointPair, Array < Point >> splittingPoints, Metroline metroline) {
 //         var pointPair = FlipCollapser.OrderedPair(pp);
 //         var reversed = pp.point != pointPair.First;
-//         List < Point > list;
+//         Array < Point > list;
 //         if (!splittingPoints.TryGetValue(pointPair, out list))
 //             return false;
 
@@ -186,7 +186,7 @@
 //         return removed;
 //     }
 
-//     void IntersectTwoEdges(PointPair a, PointPair b, Map < PointPair, List < Point >> splittingPoints, RTree < Point > tree) {
+//     void IntersectTwoEdges(PointPair a, PointPair b, Map < PointPair, Array < Point >> splittingPoints, RTree < Point > tree) {
 //         Point x;
 //         if (LineSegment.Intersect(a.First, a.Second, b.First, b.Second, out x)) {
 //             Point vertex = FindExistingVertexOrCreateNew(tree, x);
@@ -207,16 +207,16 @@
 //         return x;
 //     }
 
-//     bool AddVertexToSplittingList(PointPair a, Map < PointPair, List < Point >> splittingPoints, Point intersectionPoint) {
+//     bool AddVertexToSplittingList(PointPair a, Map < PointPair, Array < Point >> splittingPoints, Point intersectionPoint) {
 // #if TEST_MSAGL && TEST_MSAGL
 //         double t;
 //         Assert.assert(Point.DistToLineSegment(intersectionPoint, a.First, a.Second, out t) < ApproximateComparer.IntersectionEpsilon);
 // #endif
 //         if (!ApproximateComparer.CloseIntersections(intersectionPoint, a.First) &&
 //             !ApproximateComparer.CloseIntersections(intersectionPoint, a.Second)) {
-//             List < Point > list;
+//             Array < Point > list;
 //             if (!splittingPoints.TryGetValue(a, out list))
-//                 splittingPoints[a] = list = new List<Point>();
+//                 splittingPoints[a] = list = new Array<Point>();
 //             if (!list.Contains(intersectionPoint)) {
 //                 list.Add(intersectionPoint);
 //                 return true;

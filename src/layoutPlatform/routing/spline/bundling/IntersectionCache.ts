@@ -12,7 +12,7 @@
 // using Microsoft.Msagl.Routing.ConstrainedDelaunayTriangulation;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // Stores intersections between edges, hubs, and obstacles to speed up simulated annealing
 //     // <
 //     internal class IntersectionCache {

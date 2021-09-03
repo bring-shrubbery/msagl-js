@@ -13,14 +13,14 @@ using Microsoft.Msagl.Core.GraphAlgorithms;
 
 namespace Microsoft.Msagl.Routing {
     internal class MultiEdgeRouter {
-        readonly List<EdgeGeometry[]> multiEdgeGeometries;
+        readonly Array<EdgeGeometry[]> multiEdgeGeometries;
         readonly InteractiveEdgeRouter interactiveEdgeRouter;
         readonly BundlingSettings bundlingSettings;
-        readonly Func < EdgeGeometry, List < Shape >> transparentShapeSetter;
+        readonly Func < EdgeGeometry, Array < Shape >> transparentShapeSetter;
         readonly RectangleNode < ICurve > nodeTree;
 
 
-    internal MultiEdgeRouter(List < Edge[] > multiEdgeGeoms, InteractiveEdgeRouter interactiveEdgeRouter, IEnumerable < ICurve > nodeBoundaryCurves, BundlingSettings bundlingSettings, Func < EdgeGeometry, List < Shape >> transparentShapeSetter) {
+    internal MultiEdgeRouter(Array < Edge[] > multiEdgeGeoms, InteractiveEdgeRouter interactiveEdgeRouter, IEnumerable < ICurve > nodeBoundaryCurves, BundlingSettings bundlingSettings, Func < EdgeGeometry, Array < Shape >> transparentShapeSetter) {
         multiEdgeGeometries = multiEdgeGeoms.Select(l => l.Select(e => e.EdgeGeometry).ToArray()).ToList();
 
         this.interactiveEdgeRouter = interactiveEdgeRouter;
@@ -78,12 +78,12 @@ namespace Microsoft.Msagl.Routing {
             (point, c) => Curve.PointRelativeToCurveLocation(point, c) != PointLocation.Outside ? HitTestBehavior.Stop : HitTestBehavior.Continue).UserData;
         return curve;
     }
-    // <summary>
+    
     // creates a set of pregraphs suitable for bundle routing
     // <
 
     IEnumerable < PreGraph > GetIndependantPreGraphs() {
-        List < PreGraph > preGraphs = CreateInitialPregraphs();
+        Array < PreGraph > preGraphs = CreateInitialPregraphs();
         do {
             int count = preGraphs.Count;
             UniteConnectedPreGraphs(ref preGraphs);
@@ -93,12 +93,12 @@ namespace Microsoft.Msagl.Routing {
         return preGraphs;
     }
 
-    void UniteConnectedPreGraphs(ref List < PreGraph > preGraphs) {
+    void UniteConnectedPreGraphs(ref Array < PreGraph > preGraphs) {
         BasicGraphOnEdges < IntPair > intersectionGraph = GetIntersectionGraphOfPreGraphs(preGraphs);
         if (intersectionGraph == null)
             return;
         var connectedComponents = ConnectedComponentCalculator<IntPair>.GetComponents(intersectionGraph);
-        var newPreGraphList = new List<PreGraph>();
+        var newPreGraphList = new Array<PreGraph>();
         foreach(var component of connectedComponents) {
             PreGraph preGraph = null;
             foreach(var i of component) {
@@ -120,22 +120,22 @@ namespace Microsoft.Msagl.Routing {
         pg.AddNodeBoundary(curve);
     }
 
-        static BasicGraphOnEdges < IntPair > GetIntersectionGraphOfPreGraphs(List < PreGraph > preGraphs) {
+        static BasicGraphOnEdges < IntPair > GetIntersectionGraphOfPreGraphs(Array < PreGraph > preGraphs) {
         var intersectingPairs = EnumeratePairsOfIntersectedPreGraphs(preGraphs);
         if (intersectingPairs.Any())
             return new BasicGraphOnEdges<IntPair>(intersectingPairs, preGraphs.Count);
         return null;
     }
 
-        static IEnumerable < IntPair > EnumeratePairsOfIntersectedPreGraphs(List < PreGraph > preGraphs) {
+        static IEnumerable < IntPair > EnumeratePairsOfIntersectedPreGraphs(Array < PreGraph > preGraphs) {
         var rn = RectangleNode<int, Point>.CreateRectangleNodeOnData(Enumerable.Range(0, preGraphs.Count), i => preGraphs[i].boundingBox);
-        var list = new List<IntPair>();
+        var list = new Array<IntPair>();
         RectangleNodeUtils.CrossRectangleNodes<int>(rn, rn, (a, b) => list.Add(new IntPair(a, b)));
         return list;
     }
 
-    List < PreGraph > CreateInitialPregraphs() {
-        return new List<PreGraph>(multiEdgeGeometries.Select(CreatePregraphFromSetOfEdgeGeometries));
+    Array < PreGraph > CreateInitialPregraphs() {
+        return new Array<PreGraph>(multiEdgeGeometries.Select(CreatePregraphFromSetOfEdgeGeometries));
     }
 
         private PreGraph CreatePregraphFromSetOfEdgeGeometries(EdgeGeometry[] egs) {

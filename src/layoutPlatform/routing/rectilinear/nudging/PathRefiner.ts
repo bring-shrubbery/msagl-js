@@ -14,7 +14,7 @@ import {PointByDelegateComparer} from './PointByDelegateComparer'
 import SortedMap = require('collections/sorted-map')
 import {closeDistEps} from '../../../utils/compare'
 type PointProjection = (p: Point) => number
-///  </summary>
+
 export class PathRefiner {
   static RefinePaths(paths: Iterable<Path>, mergePaths: boolean) {
     PathRefiner.AdjustPaths(paths)
@@ -31,9 +31,8 @@ export class PathRefiner {
     }
   }
 
-  ///  <summary>
   ///  make sure that every two different points of paths are separated by at least 10e-6
-  ///  </summary>
+
   ///  <param name="paths"></param>
   static AdjustPaths(paths: Iterable<Path>) {
     for (const path of paths) {
@@ -88,9 +87,8 @@ export class PathRefiner {
     PathRefiner.RefineInDirection(Direction.East, pathFirstPoints)
   }
 
-  ///  <summary>
   ///  refines all segments that are parallel to "direction"
-  ///  </summary>
+
   ///  <param name="direction"></param>
   ///  <param name="pathFirstPoints"></param>
   static RefineInDirection(
@@ -153,10 +151,9 @@ export class PathRefiner {
     }
   }
 
-  ///  <summary>
   ///  refine vertices belonging to a bucket;
   ///  pathLinkedVertices belong to a line parallel to the direction of the refinement
-  ///  </summary>
+
   ///  <param name="pathLinkedVertices"></param>
   ///  <param name="projectionToDirection"></param>
   static RefineCollinearBucket(

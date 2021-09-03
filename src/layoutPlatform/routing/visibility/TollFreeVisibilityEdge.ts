@@ -5,7 +5,7 @@
 // // // Copyright Microsoft Corporation.
 
 // // namespace Microsoft.Msagl.Routing.Visibility {
-// //     // <summary>
+
 // //     // passing through such an edge does not cost anything
 // //     // <
 // //     internal class TollFreeVisibilityEdge : VisibilityEdge {

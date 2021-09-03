@@ -269,7 +269,7 @@ export class VerticalConstraintsForSugiyama {
   }
 
   createIntConstraintsFromExtremeLayer(setOfNodes: Set<GeomNode>): number[] {
-    //return new List<number>(from node in setOfNodes let index = NodeIndex(node) where index != -1 select index);
+    //return new Array<number>(from node in setOfNodes let index = NodeIndex(node) where index != -1 select index);
     return Array.from(setOfNodes)
       .map((n) => this.nodeIndex(n))
       .filter((i) => i != -1)

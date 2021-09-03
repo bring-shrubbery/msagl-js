@@ -45,7 +45,7 @@ InterpF -> ROOT;
 InterpScan -> TokenStream;
 InterpTypes -> InterpTypes;
 InterpTypes -> ROOT;
-List -> Thread;
+Array -> Thread;
 LoadState -> LoadState;
 LoadState -> LoadStateRep;
 LoadState -> ROOT;

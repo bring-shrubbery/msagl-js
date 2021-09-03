@@ -233,7 +233,6 @@ export class Arrowhead {
     return success
   }
 
-  // <summary>
   // Creates a spline between two nodes big enough to draw arrowheads
   // <
 

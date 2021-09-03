@@ -30,7 +30,6 @@
 //         source.Distance = 0;
 //     }
 
-//     // <summary>
 //     // Returns  a  path
 //     // <
 
@@ -97,7 +96,7 @@
 //     IEnumerable < VisibilityVertex > CalculatePath() {
 //         if (closestTarget == null)
 //             return null;
-//         var ret = new List<VisibilityVertex>();
+//         var ret = new Array<VisibilityVertex>();
 //         var v = closestTarget;
 //         do {
 //             ret.Add(v);

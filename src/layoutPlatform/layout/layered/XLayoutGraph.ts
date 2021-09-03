@@ -45,7 +45,6 @@ export class XLayoutGraph extends BasicGraphOnEdges<PolyIntEdge> {
     this.layerArrays = layerArrays
   }
 
-  //  <summary>
   //  following Gansner etc 93 returning weight multplier bigger if there are virtual nodes
   //  <
 

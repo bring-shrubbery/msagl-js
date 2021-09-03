@@ -53,7 +53,6 @@ export class SmoothedPolylineCalculator {
 
   settings: SugiyamaLayoutSettings
 
-  //  <summary>
   //  Creates a smoothed polyline
   //  <
   constructor(

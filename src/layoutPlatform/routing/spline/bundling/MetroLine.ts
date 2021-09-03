@@ -6,7 +6,7 @@
 // using Microsoft.Msagl.Core.Geometry.Curves;
 
 // namespace Microsoft.Msagl.Routing.Spline.Bundling {
-//     // <summary>
+
 //     // holds the data of a path
 //     // <
 // #if SHARPKIT //http://code.google.com/p/sharpkit/issues/detail?id=203

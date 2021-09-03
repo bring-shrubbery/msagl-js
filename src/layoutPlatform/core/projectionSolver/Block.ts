@@ -70,9 +70,8 @@ export class Block {
     this.allConstraints = allConstraints
   }
 
-  ///  <summary>
   ///  Generate a string representation of the Block.
-  ///  </summary>
+
   ///  <returns>A string representation of the Block.</returns>
   toString(): string {
     return String.Format(
@@ -185,7 +184,7 @@ export class Block {
 
         //  If we just pushed one or more nodes, loop back up and "recurse" into them.
         if (this.allConstraints.DfDvStack.length > prevStackCount) {
-          continue 
+          continue
         }
       }
 
@@ -266,9 +265,20 @@ export class Block {
     variableToEval: Variable,
     variableDoneEval: Variable,
   ): DfDvNode {
-    const node: DfDvNode = (this.allConstraints.DfDvRecycleStack.Count > 0)
-    ? this.allConstraints.DfDvRecycleStack.Pop().Set(parent, constraintToEval, variableToEval, variableDoneEval)
-    : new DfDvNode(parent, constraintToEval, variableToEval, variableDoneEval);
+    const node: DfDvNode =
+      this.allConstraints.DfDvRecycleStack.Count > 0
+        ? this.allConstraints.DfDvRecycleStack.Pop().Set(
+            parent,
+            constraintToEval,
+            variableToEval,
+            variableDoneEval,
+          )
+        : new DfDvNode(
+            parent,
+            constraintToEval,
+            variableToEval,
+            variableDoneEval,
+          )
 
     node.Depth = node.Parent.Depth + 1
     if (this.allConstraints.MaxConstraintTreeDepth < node.Depth) {
@@ -547,11 +557,13 @@ export class Block {
   UpdateReferencePosFromSums() {
     //  This is called from Solver.MergeBlocks as well as internally.
     if (
-      !(Number.isFinite(this.sumAd) &&
-      Number.isFinite(this.sumAb) &&
-      Number.isFinite(this.sumA2)
-    )) {
-      throw new Error("infinite numbers")
+      !(
+        Number.isFinite(this.sumAd) &&
+        Number.isFinite(this.sumAb) &&
+        Number.isFinite(this.sumA2)
+      )
+    ) {
+      throw new Error('infinite numbers')
     }
 
     this.ReferencePos = (this.sumAd - this.sumAb) / this.sumA2
@@ -629,8 +641,8 @@ export class Block {
             //  If the node has no constraints other than the one we're now processing, it's a leaf
             //  and we don't need the overhead of pushing to and popping from the stack.
             if (1 == constraint.Right.ActiveConstraintCount) {
-            //   this.Debug_CycleCheck(constraint)
-            //   this.Debug_MarkForCycleCheck(constraint)
+              //   this.Debug_CycleCheck(constraint)
+              //   this.Debug_MarkForCycleCheck(constraint)
               lstVars.push(constraint.Right)
             } else {
               //  variableToEval is now considered "done"
@@ -651,8 +663,8 @@ export class Block {
           if (constraint.IsActive && constraint.Left != node.VariableDoneEval) {
             //  See comments of .LeftConstraints
             if (1 == constraint.Left.ActiveConstraintCount) {
-            //   this.Debug_CycleCheck(constraint)
-            //   this.Debug_MarkForCycleCheck(constraint)
+              //   this.Debug_CycleCheck(constraint)
+              //   this.Debug_MarkForCycleCheck(constraint)
               lstVars.push(constraint.Left)
             } else {
               this.AddVariableAndPushDfDvNode(
@@ -747,5 +759,5 @@ export class Block {
 
   //  end TransferConnectedVariables()
 
-//  Debug_PostMerge(blockFrom: Block) {}
+  //  Debug_PostMerge(blockFrom: Block) {}
 }

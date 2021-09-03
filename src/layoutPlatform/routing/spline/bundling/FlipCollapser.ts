@@ -25,7 +25,7 @@
 //         }
 
 //         //        void ShowFlip(Polyline a, Polyline b) {
-//         //            var l = new List<DebugCurve>();
+//         //            var l = new Array<DebugCurve>();
 //         //
 //         //            l.AddRange(
 //         //                Cdt.GetTriangles().Select(
@@ -40,7 +40,7 @@
 //         /*
 //                 IEnumerable<CdtEdge> GetCdtEdgesCrossedBySegmentStartingFromSiteAtStart(CdtSiteFeature f, PolylinePoint pp, out CdtFeature nextFeature) {
 //                     Assert.assert(f.Prev == null);
-//                     var ret = new List<CdtEdge>();
+//                     var ret = new Array<CdtEdge>();
 //                     var site = f.Site;
 //                     foreach (var t of site.Triangles) {
 //                         var si = t.Sites.Index(site);
@@ -63,7 +63,7 @@
 //         */
 
 //         /*
-//                 Set<CdtEdge> GetCdtEdgesCrossedByPath0(List<PolylinePoint> polyPoints) {
+//                 Set<CdtEdge> GetCdtEdgesCrossedByPath0(Array<PolylinePoint> polyPoints) {
 //                     PolylinePoint prevPolyPoint = null, prevPrevPolyPoint=null;
 //                     var ret = new Set<CdtEdge>();
 //                     foreach (var polylinePoint of polyPoints) {
@@ -73,7 +73,7 @@
 //                         prevPrevPolyPoint = prevPolyPoint;
 //                         prevPolyPoint = polylinePoint;
 //                     }
-//         //            var l = new List<DebugCurve>();
+//         //            var l = new Array<DebugCurve>();
 //         //
 //         //            l.AddRange(
 //         //                Cdt.GetTriangles().Select(

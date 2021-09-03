@@ -301,7 +301,7 @@ export class RectangleNode<T, P> {
       const node = stack.pop()
       if (node.irect.intersects_rect(rectanglePar)) {
         if (node.IsLeaf) {
-          if (null == hitTestAccept || hitTestAccept(node.UserData)) {
+          if (hitTestAccept == null || hitTestAccept(node.UserData)) {
             yield node.UserData
           }
         } else {
