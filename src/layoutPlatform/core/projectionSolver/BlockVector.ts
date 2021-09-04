@@ -7,7 +7,7 @@ export class BlockVector {
     return this.Vector.length
   }
 
-  Item(index: number): Block {
+  item(index: number): Block {
     return this.Vector[index]
   }
 

@@ -5,7 +5,7 @@ import {Parameters} from './Parameters'
 import {Variable} from './Variable'
 //  Store original weight to be restored when done.  With the ability to re-Solve() after
 //  updating constraint gaps, we must restore DesiredPos as well.
-class QpscVar {
+export class QpscVar {
   Variable: Variable
 
   OrigWeight: number
@@ -232,7 +232,7 @@ export class Qpsc {
       }
     }
 
-    this.matrixQ[variable.Ordinal] = this.newMatrixRow
+    this.matrixQ[variable.Ordinal] = Array.from(this.newMatrixRow)
     this.newMatrixRow = []
     this.vectorQpscVars[variable.Ordinal] = new QpscVar(variable)
     //  For the non-Qpsc loop, we consider weights in block reference-position calculation.

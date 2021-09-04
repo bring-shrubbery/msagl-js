@@ -20,12 +20,11 @@ import {DrawingLabel} from '../drawing/drawingLabel'
 
 export enum OrderingEnum {
   in,
-  out, 
+  out,
 }
 
 export enum DirTypeEnum {
   forward,
-
   back,
 
   both,

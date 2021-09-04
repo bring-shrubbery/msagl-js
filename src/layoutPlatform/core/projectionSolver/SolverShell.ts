@@ -182,7 +182,13 @@ export class SolverShell {
   //         }
   AdjustConstraintsForMovedFixedVars(): boolean {
     const movedFixedVars = new Set<number>(
-      from(this.fixedVars.entries()).where(([k, v]) => !SolverShell.Close(v, this.GetVariableResolvedPosition(k))).select(([k,_]) => k).toArray()
+      from(this.fixedVars.entries())
+        .where(
+          ([k, v]) =>
+            !SolverShell.Close(v, this.GetVariableResolvedPosition(k)),
+        )
+        .select(([k, _]) => k)
+        .toArray(),
     )
     if (movedFixedVars.size == 0) {
       return false
@@ -239,7 +245,7 @@ export class SolverShell {
   ///  <returns></returns>
   AdjustConstraintsOfNeighborsOfFixedVariable(
     fixedVar: number,
-    t:{ successInAdjusting: boolean}
+    t: {successInAdjusting: boolean},
   ): IEnumerable<number> {
     const nbs = this.variables.get(fixedVar).Block.Variables
     const currentSpan = new RealNumberSpan()
@@ -263,7 +269,7 @@ export class SolverShell {
 
     // just relax the constraints
     t.successInAdjusting = this.FixActiveConstraints(from(nbs), scale)
-    return from(nbs).select((u) =>  <number>u.UserData)
+    return from(nbs).select((u) => <number>u.UserData)
   }
 
   ///  if all active constraint gaps are less than this epsilon we should stop trying adjusting
@@ -272,13 +278,14 @@ export class SolverShell {
 
   FixActiveConstraints(neighbs: IEnumerable<Variable>, scale: number): boolean {
     let ret = false
-    for (const c of neighbs.selectMany(v=>v.LeftConstraints).where(c=>c.IsActive)) {
-      if (c.Gap > this.FailToAdjustEpsilon)
-          ret = true;
-      this.solver.SetConstraintUpdate(c, c.Gap/scale);
+    for (const c of neighbs
+      .selectMany((v) => v.LeftConstraints)
+      .where((c) => c.IsActive)) {
+      if (c.Gap > this.FailToAdjustEpsilon) ret = true
+      this.solver.SetConstraintUpdate(c, c.Gap / scale)
     }
 
-    return ret;
+    return ret
   }
 
   ///  Obtain the solved position for a node.
@@ -305,7 +312,11 @@ export class SolverShell {
   ///  <param name="id">Caller's unique identifier for the node</param>
   ///  <param name="position">Desired position.</param>
   public AddFixedVariable(id: number, position: number) {
-    this.AddVariableWithIdealPositionNNN(id, position, SolverShell.FixedVarWeight)
+    this.AddVariableWithIdealPositionNNN(
+      id,
+      position,
+      SolverShell.FixedVarWeight,
+    )
     this.fixedVars.set(id, position)
   }
 
@@ -322,13 +333,13 @@ export class SolverShell {
   ///  <param name="v"></param>
   ///  <returns></returns>
   public GetVariableIdealPosition(v: number): number {
-    return this.variables[v].DesiredPos
+    return this.variables.get(v).DesiredPos
   }
 
   ///  Returns the solution object class specific to the underlying solver, or null if there has
   ///  been no call to Solve() or it threw an exception.
 
-  public get Solution(): Object {
+  public get Solution(): Solution {
     return this.solution
   }
 }

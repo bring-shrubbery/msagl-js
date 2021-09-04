@@ -7,20 +7,16 @@
 
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Microsoft.Msagl.Core.ProjectionSolver {
-  /// The algorithm used by the ProjectionSolver.
+export enum SolverAlgorithm {
+  /// Iterative Project/Split only.
 
-  public enum SolverAlgorithm {
-    /// Iterative Project/Split only.
+  ProjectOnly,
 
-    ProjectOnly,
+  /// Diagonally-scaled gradient projection/Qpsc (Quadratic Programming for Separation Constraints).
 
-    /// Diagonally-scaled gradient projection/Qpsc (Quadratic Programming for Separation Constraints).
+  QpscWithScaling,
 
-    QpscWithScaling,
+  /// Gradient projection/Qpsc (Quadratic Programming for Separation Constraints) without diagonal scaling.
 
-    /// Gradient projection/Qpsc (Quadratic Programming for Separation Constraints) without diagonal scaling.
-
-    QpscWithoutScaling,
-  }
+  QpscWithoutScaling,
 }

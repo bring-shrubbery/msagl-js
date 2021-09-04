@@ -101,7 +101,7 @@ export class UniformOneDimensionalSolver {
   }
 
   GetBoundId(bound: number): number {
-    return this.boundsToInt[bound]
+    return this.boundsToInt.get(bound)
   }
 
   CreateVariablesForBounds() {

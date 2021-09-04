@@ -15,7 +15,9 @@ import {BlockVector} from './BlockVector'
 import {Constraint} from './Constraint'
 import {ConstraintVector} from './ConstraintVector'
 import {Parameters} from './Parameters'
+import {Qpsc} from './QPSC'
 import {Solution} from './Solution'
+import {SolverAlgorithm} from './SolverAlgorithm'
 import {Variable} from './Variable'
 import {ViolationCache} from './ViolationCache'
 
@@ -650,7 +652,7 @@ export class Solver {
     const numBlocks: number = this.allBlocks.Count
     //  cache for perf
     for (let ii = 0; ii < numBlocks; ii++) {
-      const block: Block = this.allBlocks[ii]
+      const block: Block = this.allBlocks.item(ii)
       const numVars: number = block.Variables.length
       for (let jj = 0; jj < numVars; jj++) {
         const variable = block.Variables[jj]
@@ -687,7 +689,7 @@ export class Solver {
     qpsc.VariablesComplete()
     this.ReinitializeBlocks()
     this.MergeEqualityConstraints()
-    this.VerifyConstraintsAreFeasible()
+    // this.VerifyConstraintsAreFeasible()
     //  Iterations
     let foundSplit = false
     const foundViolation = false
@@ -735,21 +737,14 @@ export class Solver {
     return this.RunProject(/* out */ foundViolation)
   }
 
-  @System.Diagnostics.CodeAnalysis.SuppressMessage(
-    'Microsoft.Performance',
-    'CA1822:MarkMembersAsStatic',
-  )
-  @Conditional('TEST_MSAGL')
-  private VerifyConstraintsAreFeasible() {}
-
   private ReinitializeBlocks() {
     //  For Qpsc we want to discard the previous block structure, because it did not consider
     //  neighbors, and the gradient may want to pull things in an entirely different way.
     //  We must also do this for a re-Solve that updated the gap of an equality constraint.
-    const oldBlocks = this.allBlocks.Vector.ToArray()
-    this.allBlocks.Vector.Clear()
-    for (const oldBlock: Block of oldBlocks) {
-      for (const variable: Variable of oldBlock.Variables) {
+    const oldBlocks = Array.from(this.allBlocks.Vector)
+    this.allBlocks.Vector = []
+    for (const oldBlock of oldBlocks) {
+      for (const variable of oldBlock.Variables) {
         variable.Reinitialize()
         const newBlock = new Block(variable, this.allConstraints)
         this.allBlocks.Add(newBlock)
@@ -771,13 +766,13 @@ export class Solver {
         //  will remain retain its current satisfied state and does not need to be activated (which
         //  would potentially lead to cycles; this is consistent with the non-equality constraint
         //  approach of not activating constraints that are not violated).
-        if (Math.Abs(constraint.Violation) > this.solverParams.GapTolerance) {
+        if (Math.abs(constraint.Violation) > this.solverParams.GapTolerance) {
           //  This is an equivalence conflict, such as a + 3 == b; b + 3 == c; a + 9 == c.
           constraint.IsUnsatisfiable = true
           this.allConstraints.NumberOfUnsatisfiableConstraints++
         }
 
-        // TODO: Warning!!! continue If
+        continue
       }
 
       this.MergeBlocks(constraint)
@@ -797,7 +792,7 @@ export class Solver {
     this.violationCache.Clear()
     this.lastModifiedBlock = null
     let useViolationCache: boolean =
-      this.allBlocks.length > this.violationCacheMinBlockCutoff
+      this.allBlocks.Count > this.violationCacheMinBlockCutoff
     //  The first iteration gets the first violated constraint.
     let cIterations = 1
     let maxViolation: number
@@ -846,7 +841,7 @@ export class Solver {
 
       //  Now we've potentially changed one or many variables' positions so recalculate the max violation.
       useViolationCache =
-        this.allBlocks.length > this.violationCacheMinBlockCutoff
+        this.allBlocks.Count > this.violationCacheMinBlockCutoff
       if (!useViolationCache) {
         this.violationCache.Clear()
       }
@@ -870,7 +865,7 @@ export class Solver {
     }
 
     //  If we got here, we had at least one violation.
-    this.allConstraints.Debug_AssertConsistency()
+    // this.allConstraints.Debug_AssertConsistency()
     return true
   }
 
@@ -910,9 +905,9 @@ export class Solver {
     }
 
     blockTo.UpdateReferencePosFromSums()
-    blockTo.DebugVerifyReferencePos()
+    //blockTo.DebugVerifyReferencePos()
     //  Do any final bookkeeping necessary.
-    blockTo.Debug_PostMerge(blockFrom)
+    //  blockTo.Debug_PostMerge(blockFrom)
     //  Make the (no-longer-) violated constraint active.
     this.allConstraints.ActivateConstraint(violatedConstraint)
     //  We have no further use for blockFrom as nobody references it.
@@ -926,17 +921,17 @@ export class Solver {
     //  from an existing block.  Then add those to our block list in a second pass (to avoid
     //  a "collection modified during enumeration" exception).
     const newBlocks = new Array<Block>()
-    const numBlocks: number = this.allBlocks.length
+    const numBlocks: number = this.allBlocks.Count
     //  Cache for perf
     for (let ii = 0; ii < numBlocks; ii++) {
-      const block = this.allBlocks[ii]
+      const block = this.allBlocks.item(ii)
       Assert.assert(
         0 != block.Variables.length,
         'block must have nonzero variable count',
       )
       const newSplitBlock = block.Split(this.IsQpsc)
       if (null != newSplitBlock) {
-        newBlocks.Add(newSplitBlock)
+        newBlocks.push(newSplitBlock)
       }
     }
 
@@ -1021,7 +1016,7 @@ export class Solver {
             closeDistEps(constraint.Violation, violation),
             'LeftConstraints: constraint.Violation must == violation',
           )
-          if (ApproximateComparer.Greater(violation, maxViolation)) {
+          if (greaterDistEps(violation, maxViolation)) {
             //  Cache the previous high violation.  Pass the violation as a tiny perf optimization
             //  to save re-doing the double operations in this inner loop.
             if (
@@ -1124,7 +1119,7 @@ export class Solver {
       )
       let cacheInsertConstraint: Constraint = null
       let cacheInsertViolation = 0
-      if (ApproximateComparer.Greater(violation, maxViolation)) {
+      if (greaterDistEps(violation, maxViolation)) {
         if (maxViolation > this.violationCache.LowViolation) {
           cacheInsertConstraint = maxViolatedConstraint
           cacheInsertViolation = maxViolation
