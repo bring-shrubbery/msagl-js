@@ -987,8 +987,8 @@ export class Solver {
     //  number of constraints.  Use the Variables as a proxy for the constraint count of the block.
     //  @@PERF: the block could keep a constraint count to make ViolationCache cutoff more accurate.
     let maxViolatedConstraint: Constraint = null
+    if (this.lastModifiedBlock == null) return
     if (
-      null != this.lastModifiedBlock &&
       this.lastModifiedBlock.Variables.length < this.numberOfVariables + 1 &&
       this.violationCache.FilterBlock(this.lastModifiedBlock)
     ) {
