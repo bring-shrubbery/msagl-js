@@ -47,10 +47,10 @@ export class Solver {
   //  variable Lists (Array indexing is faster than Array).
   private allConstraints: ConstraintVector = new ConstraintVector()
 
-  private numberOfConstraints: number
+  private numberOfConstraints = 0
 
   //  Updated on AddConstraint; used to create AllConstraints
-  private numberOfVariables: number
+  private numberOfVariables = 0
 
   //  Also for speed, a separate list of Equality constraints (which we expect to be fairly rare).
   private equalityConstraints: Array<Constraint> = new Array<Constraint>()
@@ -376,7 +376,7 @@ export class Solver {
   ///          constraints is returned, where each list contains a single cycle, which may be of length one for
   ///          unsatisfiable equality constraints.  Otherwise, the return value is null.</returns>
   public SolvePar(solverParameters: Parameters): Solution {
-    if (null != solverParameters) {
+    if (solverParameters) {
       this.solverParams = <Parameters>solverParameters.Clone()
     }
 
@@ -780,7 +780,7 @@ export class Solver {
   }
 
   private Project(): boolean {
-    if (0 == this.numberOfConstraints) {
+    if (this.numberOfConstraints == 0) {
       //  We are here for the neighbours-only case.
       return false
     }
@@ -795,17 +795,17 @@ export class Solver {
       this.allBlocks.Count > this.violationCacheMinBlockCutoff
     //  The first iteration gets the first violated constraint.
     let cIterations = 1
-    let maxViolation: number
+    const t = {maxViolation: 0}
     let maxViolatedConstraint: Constraint = this.GetMaxViolatedConstraint(
-      /* out */ maxViolation,
+      t,
       useViolationCache,
     )
-    if (maxViolatedConstraint == null) {
+    if (!maxViolatedConstraint) {
       return false
     }
 
     //  We have at least one violation, so process them until there are no more.
-    while (null != maxViolatedConstraint) {
+    while (maxViolatedConstraint) {
       Assert.assert(
         !maxViolatedConstraint.IsUnsatisfiable,
         'maxViolatedConstraint should not be unsatisfiable',
@@ -847,8 +847,9 @@ export class Solver {
       }
 
       cIterations++
+      const t = {maxViolation: 0}
       maxViolatedConstraint = this.GetMaxViolatedConstraint(
-        /* out */ maxViolation,
+        t,
         useViolationCache,
       )
     }
@@ -948,16 +949,16 @@ export class Solver {
 
   //  end SplitBlocks
   private GetMaxViolatedConstraint(
-    /* out */ maxViolation: number,
+    t: {maxViolation: number},
     useViolationCache: boolean,
   ): Constraint {
     //  Get the most-violated constraint in the Solver.  Active constraints are calculated
     //  to keep their constraint minimally satisfied, so any nonzero active-constraint
     //  violation is due to rounding error; therefore just look for inactive constraints.
     //  Pass maxViolation to subroutines because it is initialized to a limiting value.
-    maxViolation = this.solverParams.GapTolerance
+    t.maxViolation = this.solverParams.GapTolerance
     const maxViolatedConstraint: Constraint = this.SearchViolationCache(
-      maxViolation,
+      t.maxViolation,
     )
     if (null != maxViolatedConstraint) {
       return maxViolatedConstraint
@@ -965,7 +966,7 @@ export class Solver {
 
     //  Nothing in ViolationCache or we've got too many Constraints in the block, so search
     //  the list of all constraints.
-    return this.SearchAllConstraints(maxViolation, useViolationCache)
+    return this.SearchAllConstraints(t.maxViolation, useViolationCache)
   }
 
   //  end GetMaxViolatedConstraint()
