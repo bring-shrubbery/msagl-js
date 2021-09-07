@@ -26,7 +26,7 @@ class ConstraintListForVariable {
   Constraints: Array<Constraint>
 
   //  The number of Constraints that are LeftConstraints for the variable keying this object.
-  NumberOfLeftConstraints: number
+  NumberOfLeftConstraints = 0
 
   constructor(constraints: Array<Constraint>, numberOfLeftConstraints: number) {
     this.Constraints = constraints
@@ -79,11 +79,11 @@ export class Solver {
 
   private lastModifiedBlock: Block
 
-  private violationCacheMinBlockCutoff: number
+  private violationCacheMinBlockCutoff = 0
 
   private hasNeighbourPairs: boolean
 
-  private nextVariableOrdinal: number
+  private nextVariableOrdinal = 0
 
   //  May be overridden by the caller's Parameters object passed to Solve.
   private solverParams: Parameters = new Parameters()

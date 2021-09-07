@@ -16,7 +16,7 @@ export class ConstraintVector {
     this.firstActiveConstraintIndex = numConstraints
   }
 
-  private nextConstraintIndex: number
+  private nextConstraintIndex = 0
 
   Add(constraint: Constraint) {
     Assert.assert(!constraint.IsActive, 'Constraint should not be active')
@@ -33,7 +33,7 @@ export class ConstraintVector {
       this.firstActiveConstraintIndex > 0,
       'All constraints are already active',
     )
-    this.firstActiveConstraintIndex++
+    this.firstActiveConstraintIndex--
     Assert.assert(
       !this.Vector[this.firstActiveConstraintIndex].IsActive,
       'Constraint in inactive region is active',

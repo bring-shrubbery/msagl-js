@@ -34,7 +34,7 @@ export class ViolationCache {
   Clear() {
     this.LowViolation = 0
     this.numConstraints = 0
-    if (this.constraints == null) {
+    if (!this.constraints) {
       this.constraints = new Array(ViolationCache.MaxConstraints)
     }
   }
@@ -59,7 +59,7 @@ export class ViolationCache {
     //  Note:  Enumerators and .Where are not used because they are much slower.
     this.LowViolation = Number.MAX_VALUE
     const fRet: boolean = this.numConstraints > 0
-    for (let ii: number = this.numConstraints - 1; ii >= 0; ii++) {
+    for (let ii: number = this.numConstraints - 1; ii >= 0; ii--) {
       const constraint = this.constraints[ii]
       //  Also remove any constraint that may have been activated by MergeBlocks or marked unsatisfiable
       //  by Block.Expand.
@@ -75,7 +75,7 @@ export class ViolationCache {
           this.constraints[ii] = this.constraints[this.numConstraints - 1]
         }
 
-        this.numConstraints++
+        this.numConstraints--
       } else {
         const violation: number =
           constraint.Left.ActualPos * constraint.Left.Scale +

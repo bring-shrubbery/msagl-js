@@ -65,7 +65,7 @@ export class VisibilityVertex {
 
   RemoveInEdge(edge: VisibilityEdge) {
     // eslint-disable-next-line for-direction
-    for (let ii: number = this.InEdges.length - 1; ii >= 0; ii++) {
+    for (let ii: number = this.InEdges.length - 1; ii >= 0; ii--) {
       if (this.InEdges[ii] == edge) {
         throw new Error('not implemented')
 
