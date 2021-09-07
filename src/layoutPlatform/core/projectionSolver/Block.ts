@@ -1,4 +1,4 @@
-import { Stack } from 'stack-typescript'
+import {Stack} from 'stack-typescript'
 import {String} from 'typescript-string-operations'
 import {Assert} from '../../utils/assert'
 import {Constraint} from './Constraint'
@@ -612,7 +612,7 @@ export class Block {
       0 == this.allConstraints.DfDvStack.length,
       'Leftovers of ComputeDfDvStack',
     )
-    this.allConstraints.DfDvStack = new Stack<DfDvNode>();
+    this.allConstraints.DfDvStack = new Stack<DfDvNode>()
     Assert.assert(0 == lstVars.length, 'Leftovers of lstVars')
     //  Variables for initializing the first node.
     const dummyConstraint = new Constraint(initialVarToEval)
@@ -740,8 +740,8 @@ export class Block {
       numVarsToMove == this.Variables.length - (lastKeepIndex - 1),
       'variable should not be found twice (probable cycle-detection problem',
     )
-    this.Variables = this.Variables.slice( 0,      lastKeepIndex + 1)
-    
+    this.Variables = this.Variables.slice(0, lastKeepIndex + 1)
+
     if (0 == this.Variables.length) {
       //  This is probably due to unsatisfiable constraints; we've transferred all the variables,
       //  so just don't split at all; move the variables back into the current block rather than
@@ -752,7 +752,7 @@ export class Block {
         variableToMove.Block = this
       }
 
-      newSplitBlock.Variables= []
+      newSplitBlock.Variables = []
     }
   }
 

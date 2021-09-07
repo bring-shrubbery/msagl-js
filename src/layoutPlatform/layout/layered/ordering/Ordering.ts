@@ -6,7 +6,7 @@ import {LayerArrays} from '../LayerArrays'
 import {ProperLayeredGraph} from '../ProperLayeredGraph'
 import {SugiyamaLayoutSettings} from '../SugiyamaLayoutSettings'
 import {OrderingMeasure} from './OrderingMeasure'
-import {SortedMap} from "@esfx/collections-sortedmap"
+import {SortedMap} from '@esfx/collections-sortedmap'
 import {CancelToken} from '../../../utils/cancelToken'
 import {LayerEdge} from '../LayerEdge'
 import {Stack} from 'stack-typescript'

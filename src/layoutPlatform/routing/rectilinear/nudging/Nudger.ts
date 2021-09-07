@@ -6,7 +6,7 @@ import {
   mkRectangleNode,
   RectangleNode,
 } from '../../../core/geometry/RTree/RectangleNode'
-import { UniformOneDimensionalSolver } from '../../../core/projectionSolver/UniformOneDimensionalSolver'
+import {UniformOneDimensionalSolver} from '../../../core/projectionSolver/UniformOneDimensionalSolver'
 import {EdgeGeometry} from '../../../layout/core/edgeGeometry'
 import {Port} from '../../../layout/core/port'
 import {CompassVector} from '../../../math/geometry/compassVector'
