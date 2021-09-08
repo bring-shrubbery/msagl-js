@@ -84,7 +84,7 @@ export class Variable {
   //  Constraints where 'this' is constraint.Right
   RightConstraints: Constraint[]
 
-  ActiveConstraintCount: number
+  ActiveConstraintCount = 0
 
   //  The (x1-x2)^2 neighbor relationships: Key == NeighborVar, Value == Weight of relationship
   Neighbors: Array<NeighborAndWeight>

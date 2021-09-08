@@ -32,3 +32,19 @@ test('three vars test, one real constr', () => {
     closeDistEps(v0.ActualPos - v1.ActualPos, v1.ActualPos - v2.ActualPos),
   ).toBe(true)
 })
+
+test('four vars test', () => {
+  const s = new Solver()
+  const v0 = s.AddVariableAN('v0', 0)
+  const v1 = s.AddVariableAN('v1', 1)
+  const v2 = s.AddVariableAN('v2', 2)
+  const v3 = s.AddVariableAN('v3', 3)
+  s.AddConstraint(v0, v1, 2)
+  s.AddConstraint(v2, v3, 2)
+  s.AddEqualityConstraint(v1, v2, 0)
+  s.Solve()
+  expect(v0.ActualPos).toBeLessThan(v1.ActualPos)
+  expect(v2.ActualPos).toBeLessThan(v3.ActualPos)
+  expect(closeDistEps(v1.ActualPos - v0.ActualPos, 2)).toBe(true)
+  expect(v1.ActualPos).toBe(v2.ActualPos)
+})
