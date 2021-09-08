@@ -146,7 +146,7 @@ export class Variable {
   //  Gets a string representation of the Variable; calls UserData.ToString as part of this.
 
   //  <returns>A string representation of the variable.</returns>
-  public /* override */ ToString(): string {
+  public toString(): string {
     return String.Format(
       '{0} {1:F5} ({2:F5}) {3:F5} {4:F5}',
       this.Name,

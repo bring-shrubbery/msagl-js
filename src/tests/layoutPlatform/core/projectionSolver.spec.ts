@@ -1,4 +1,5 @@
 import {Solver} from '../../../layoutPlatform/core/projectionSolver/Solver'
+import {Variable} from '../../../layoutPlatform/core/projectionSolver/Variable'
 import {closeDistEps} from '../../../layoutPlatform/utils/compare'
 test('two vars test', () => {
   const s = new Solver()
@@ -42,9 +43,25 @@ test('four vars test', () => {
   s.AddConstraint(v0, v1, 2)
   s.AddConstraint(v2, v3, 2)
   s.AddEqualityConstraint(v1, v2, 0)
-  s.Solve()
+  const sol = s.Solve()
   expect(v0.ActualPos).toBeLessThan(v1.ActualPos)
   expect(v2.ActualPos).toBeLessThan(v3.ActualPos)
   expect(closeDistEps(v1.ActualPos - v0.ActualPos, 2)).toBe(true)
   expect(v1.ActualPos).toBe(v2.ActualPos)
+})
+test('cycle', () => {
+  const s = new Solver()
+  const vars = new Array<Variable>()
+
+  for (let i = 0; i < 5; i++) {
+    vars.push(s.AddVariableAN(i, i))
+  }
+  for (let i = 0; i < 5; i++) {
+    s.AddConstraint(vars[i], vars[(i + 1) % 5], 2)
+  }
+  let unres = 0
+  for (let i = 0; i < 5; i++) {
+    if (vars[i].ActualPos >= vars[(i + 1) % 5].ActualPos) unres++
+  }
+  expect(unres).toBe(1)
 })
