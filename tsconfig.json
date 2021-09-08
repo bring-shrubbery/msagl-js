@@ -5,10 +5,11 @@
     "declaration": true,
     "outDir": "./dist",
     "sourceMap": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true ,
     "lib": ["dom", "es2018"],
     "importHelpers": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "esModuleInterop":true
   },
   "include": [
     "src/layoutPlatform/*",

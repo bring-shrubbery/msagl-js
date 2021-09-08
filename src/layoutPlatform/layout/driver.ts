@@ -29,28 +29,15 @@ export function layoutGraph(
   }
   const removedEdges = removeEdgesLeadingOutOfGraph()
 
-  for (const n of geomG.shallowNodes()) {
-    if (n.isGraph()) {
-      layoutGraph(<GeomGraph>n, cancelToken, layoutSettingsFunc)
-      const bb = n.boundingBox
-      if (bb) {
-        n.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
-          bb.width,
-          bb.height,
-          Math.min(10, bb.width / 10),
-          Math.min(10, bb.height / 10),
-          bb.center,
-        )
-      }
-    }
-  }
+  layoutShallowSubgraphs()
   const liftedEdges = createLiftedEdges(geomG.graph)
   const connectedGraphs: GeomGraph[] = getConnectedComponents(geomG)
-  if (connectedGraphs.length == 1) {
-    layoutConnectedComponent(geomG, cancelToken, layoutSettingsFunc)
-    routeEdges()
-    return
-  }
+  // if (connectedGraphs.length == 1) {
+  //   layoutConnectedComponent(geomG, cancelToken, layoutSettingsFunc)
+  //   routeEdges()
+  //   for (const e of removedEdges) e.add()
+  //   return
+  // }
   layoutComps()
 
   liftedEdges.forEach((e) => {
@@ -65,6 +52,26 @@ export function layoutGraph(
   for (const e of removedEdges) e.add()
 
   if (geomG.graph.parent == null) routeEdges()
+
+  function layoutShallowSubgraphs() {
+    for (const n of geomG.shallowNodes()) {
+      if (n.isGraph()) {
+        const g = <GeomGraph>n
+        layoutGraph(g, cancelToken, layoutSettingsFunc)
+        g.updateBoundingBox()
+        const bb = n.boundingBox
+        if (bb) {
+          n.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
+            bb.width,
+            bb.height,
+            Math.min(10, bb.width / 10),
+            Math.min(10, bb.height / 10),
+            bb.center,
+          )
+        }
+      }
+    }
+  }
 
   function routeEdges() {
     for (const u of geomG.deepNodes()) {
@@ -128,7 +135,7 @@ function createLiftedEdges(graph: Graph): Array<[GeomEdge, Edge]> {
   for (const u of graph.deepNodes) {
     const liftedU = graph.liftNode(u)
     if (liftedU == null) continue
-    for (const uv of u.outEdges) {
+    for (const uv of u.outEdges.values()) {
       const v = uv.target
       const liftedV = graph.liftNode(v)
       if (

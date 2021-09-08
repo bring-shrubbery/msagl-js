@@ -661,14 +661,10 @@ export class LayeredLayout extends Algorithm {
     this.engineLayerArrays = layerArrays
     this.StraightensShortEdges()
 
-    const aspectRatio = this.CalculateOriginalGraphBox()
+    this.CalculateOriginalGraphBox()
 
-    if (this.sugiyamaSettings.AspectRatio != 0)
-      this.StretchToDesiredAspectRatio(
-        aspectRatio,
-        this.sugiyamaSettings.AspectRatio,
-      )
-
+    
+   // address this.sugiyamaSettings.AspectRatio at the final stage
     return layerArrays
   }
 

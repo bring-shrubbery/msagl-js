@@ -12,6 +12,7 @@ import {Ellipse} from '../../math/geometry/ellipse'
 
 export class GeomGraph extends GeomNode {
   translate(delta: Point) {
+    if (delta.x == 0 && delta.y == 0) return
     const m = new PlaneTransformation(1, 0, delta.x, 0, 1, delta.y)
     this.transform(m)
   }
@@ -52,6 +53,7 @@ export class GeomGraph extends GeomNode {
     return true
   }
   transform(matrix: PlaneTransformation) {
+    if (matrix.isIdentity()) return
     if (this.boundaryCurve != null)
       this.boundaryCurve = this.boundaryCurve.transform(matrix)
 
@@ -199,9 +201,9 @@ export class GeomGraph extends GeomNode {
     return gn
   }
 
-  updateBoundingBox() {
+  updateBoundingBox(): void {
     if (this.graph.isEmpty()) return
-    const rect = Rectangle.mkEmpty()
+    const rect = (this._boundingBox = Rectangle.mkEmpty())
     let padding = 0
     for (const e of this.graph.edges) {
       const ge = GeomObject.getGeom(e) as GeomEdge
@@ -215,14 +217,19 @@ export class GeomGraph extends GeomNode {
         padding = Math.max(padding, gn.padding)
       }
     }
+    this.addLabelToGraphBB()
+
+    rect.pad(Math.max(padding, this.Margins))
+    this.boundingBox = rect
+  }
+
+  addLabelToGraphBB() {
+    const rect = this._boundingBox
     if (this.labelSize) {
       rect.top += this.labelSize.height
       if (rect.width < this.labelSize.width) {
         rect.width = this.labelSize.width
       }
     }
-
-    rect.pad(padding)
-    this.boundingBox = rect
   }
 }

@@ -1,4 +1,5 @@
-import parse = require('dotparser')
+import parse from 'dotparser'
+
 import fs = require('fs')
 import {Color} from '../drawing/color'
 import {DrawingGraph} from '../drawing/drawingGraph'
@@ -72,10 +73,10 @@ function parseEdge(so: any, to: any, dg: DrawingGraph, o: any): DrawingEdge[] {
       tn = nc.getNode(t)
     }
   } else if (to.type == 'subgraph') {
-    const drObjs = []
+    const drObjs = new Array<DrawingEdge>()
     for (const ch of to.children) {
       if (ch.type === 'node_stmt') {
-        drObjs.push(parseEdge(so, ch.node_id, dg, o))
+        for (const e of parseEdge(so, ch.node_id, dg, o)) drObjs.push(e)
       } else if (ch.type === 'attr_stmt') {
       } else {
         throw new Error('not implemented')
@@ -491,7 +492,7 @@ function parseColor(s: string): Color {
     if (p.rgba != null) {
       return new Color(p.rgba[3] * 255, p.rgba[0], p.rgba[1], p.rgba[2])
     }
-    if (p.rdg != null) {
+    if (p.rgb != null) {
       return Color.mkRGB(p.rgb[0], p.rgb[1], p.rgb[2])
     }
   }
@@ -553,7 +554,7 @@ function parseFloatQuatriple(str: any): any {
   ]
 }
 function getEntitiesSubg(o: any, dg: DrawingGraph): DrawingObject[] {
-  let ret = []
+  let ret: DrawingObject[] = []
   for (const ch of o.children) {
     if (ch.type == 'edge_stmt') {
       const edgeList: any[] = ch.edge_list
@@ -570,7 +571,7 @@ function getEntitiesSubg(o: any, dg: DrawingGraph): DrawingObject[] {
         dg.graph.addNode(subg)
         const sdg = new DrawingGraph(subg)
         parseGraph(ch, sdg)
-        ret.push(subg)
+        ret.push(sdg)
       } else {
         ret = ret.concat(getEntitiesSubg(ch, dg))
       }

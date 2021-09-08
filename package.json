@@ -32,6 +32,7 @@
   "dependencies": {
     "@esfx/collections": "^1.0.0-pre.19",
     "@esfx/collections-sortedmap": "^1.0.0-pre.19",
+    "@types/parse-color": "^1.0.0",
     "collections": "^5.1.12",
     "file-system": "^1.2.2",
     "linq-to-typescript": "^8.1.0",
@@ -47,7 +48,7 @@
     "@types/jest": "^26.0.4",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
-    "dotparser": "^1.0.0",
+    "dotparser": "^1.1.0",
     "eslint": "7.15.0",
     "eslint-plugin-react": "^7.23.2",
     "husky": "4.3.6",

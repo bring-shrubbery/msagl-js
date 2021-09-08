@@ -299,10 +299,12 @@ export class SvgDebugWriter {
       const box = n.boundingBox
       if (n.isGraph()) {
         const gg = <GeomGraph>n
-        const labelBox = Rectangle.mkPP(
-          box.leftBottom,
-          new Point(box.right, box.bottom - gg.labelSize.height),
+        // we are in the flipped world
+        const labelBox = Rectangle.mkSizeCenter(
+          gg.labelSize,
+          new Point(box.center.x, box.top - gg.labelSize.height / 2),
         )
+
         this.writeLabel(n.id, labelBox)
       } else {
         this.writeLabel(n.id, box)

@@ -263,11 +263,9 @@ test('layer and node separation', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
-test('clust3', () => {
+test('clust.gv', () => {
   const ss = new SugiyamaLayoutSettings()
-  const dg = runLayout('src/tests/data/graphvis/clust3.gv', ss)
-  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/testclust3.svg')
-  t.writeGraph(<GeomGraph>GeomObject.getGeom(dg.graph))
+  runLayout('src/tests/data/graphvis/clust.gv', ss)
 })
 
 test('arrowhead size default', () => {
