@@ -82,9 +82,9 @@ export class SplineRouter extends Algorithm {
 
   // looseRoot: Shape;
 
-  // private /* internal */ get BundlingSettings(): BundlingSettings {
+  // get BundlingSettings(): BundlingSettings {
   // }
-  // private /* internal */ set BundlingSettings(value: BundlingSettings) {
+  // set BundlingSettings(value: BundlingSettings) {
   // }
 
   // enterableLoose: Map<EdgeGeometry, Set<Polyline>>;
@@ -97,7 +97,7 @@ export class SplineRouter extends Algorithm {
 
   // routeMultiEdgesAsBundles: boolean = true;
 
-  // private /* internal */ UseEdgeLengthMultiplier: boolean;
+  // UseEdgeLengthMultiplier: boolean;
 
   // //  if set to true the algorithm will try to shortcut a shortest polyline inner points
   // public UsePolylineEndShortcutting: boolean = true;
@@ -105,12 +105,12 @@ export class SplineRouter extends Algorithm {
   // //  if set to true the algorithm will try to shortcut a shortest polyline start and end
   // public UseInnerPolylingShortcutting: boolean = true;
 
-  // private /* internal */ AllowedShootingStraightLines: boolean = true;
+  // AllowedShootingStraightLines: boolean = true;
 
-  // private /* internal */ get MultiEdgesSeparation(): number {
+  // get MultiEdgesSeparation(): number {
   //   return this.multiEdgesSeparation;
   // }
-  // private /* internal */ set MultiEdgesSeparation(value: number) {
+  // set MultiEdgesSeparation(value: number) {
   //   this.multiEdgesSeparation = value;
   // }
 
@@ -283,7 +283,7 @@ export class SplineRouter extends Algorithm {
   //     public set OverlapsDetected(value: boolean)  {
   // }
 
-  //     private /* internal */ get AdjustedLoosePadding(): number {
+  //     get AdjustedLoosePadding(): number {
   //   return this.LoosePadding;
   //   // TODO: Warning!!!, inline IF is not supported ?
   //   (this.BundlingSettings == null);
@@ -728,9 +728,9 @@ export class SplineRouter extends Algorithm {
   //     public set ArrowHeadRatio(value: number)  {
   // }
 
-  //     private /* internal */ get LineSweeperPorts(): Point[] {
+  //     get LineSweeperPorts(): Point[] {
   // }
-  //     private /* internal */ set LineSweeperPorts(value: Point[])  {
+  //     set LineSweeperPorts(value: Point[])  {
   // }
 
   // //
@@ -947,9 +947,9 @@ export class SplineRouter extends Algorithm {
   //     //  If set to true then a smaller visibility graph is created.
   //     //  An edge is added to the visibility graph only if it is found at least twice:
   //     //  once sweeping with a direction d and the second time with -d
-  //     private /* internal */ get Bidirectional(): boolean {
+  //     get Bidirectional(): boolean {
   // }
-  //     private /* internal */ set Bidirectional(value: boolean)  {
+  //     set Bidirectional(value: boolean)  {
   // }
 
   // //  #if TEST_MSAGL
@@ -1108,7 +1108,7 @@ export class SplineRouter extends Algorithm {
   //     //                    edgeGeometries.Select(e => new DebugCurve(100, 1, "red", e.Curve))));
   //     //      }
   //     //  #endif
-  //     private /* internal */ static GetAncestorSetsMap(shapes: IEnumerable<Shape>): Map < Shape, Set < Shape >> {
+  //     static GetAncestorSetsMap(shapes: IEnumerable<Shape>): Map < Shape, Set < Shape >> {
   //   let ancSets = new Map<Shape, Set<Shape>>();
   //   for(let child in shapes.Where(() => { }, !ancSets.ContainsKey(child))) {
   //   ancSets[child] = SplineRouter.GetAncestorSet(child, ancSets);

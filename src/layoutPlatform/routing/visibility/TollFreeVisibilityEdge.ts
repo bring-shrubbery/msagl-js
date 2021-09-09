@@ -1,18 +1,19 @@
-// // //
-// // // TransientVisibilityEdge.cs
-// // // MSAGL class for temporary visibility edges for Rectilinear Edge Routing.
-// // //
-// // // Copyright Microsoft Corporation.
+import {VisibilityEdge} from './VisibilityEdge'
+import {VisibilityVertex} from './VisibilityVertex'
 
-// // namespace Microsoft.Msagl.Routing.Visibility {
+export class TollFreeVisibilityEdge extends VisibilityEdge {
+  static constructorVV(
+    source: VisibilityVertex,
+    target: VisibilityVertex,
+  ): TollFreeVisibilityEdge {
+    return new TollFreeVisibilityEdge(source, target, 0)
+  }
 
-// //     // passing through such an edge does not cost anything
-// //     // <
-// //     internal class TollFreeVisibilityEdge : VisibilityEdge {
-// //         internal TollFreeVisibilityEdge(VisibilityVertex source, VisibilityVertex target)
-// //             : this(source, target, 0) { }
-
-// //         internal TollFreeVisibilityEdge(VisibilityVertex source, VisibilityVertex target, double weight)
-// //             : base(source, target, weight) { }
-// //     }
-// // }
+  constructor(
+    source: VisibilityVertex,
+    target: VisibilityVertex,
+    weight: number,
+  ) {
+    super(source, target, weight)
+  }
+}
