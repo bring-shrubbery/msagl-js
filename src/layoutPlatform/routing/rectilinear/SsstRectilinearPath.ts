@@ -791,6 +791,6 @@ export class SsstRectilinearPath {
 
     this.visitedVertices = []
     this.queue = null
-    // this.TestClearIterations()
+    //  this.TestClearIterations()
   }
 }
