@@ -4,9 +4,8 @@
 // 
 //  Copyright Microsoft Corporation.
 
-import { from, IEnumerable, IEnumerable, InvalidOperationException } from "linq-to-typescript";
-import { constructor } from "parse-color";
-import { Edge, ICurve, ICurve, Point } from "../../..";
+import { from,  IEnumerable, InvalidOperationException } from "linq-to-typescript";
+import { CancelToken, Edge, GeomEdge, GeomGraph, ICurve, Point } from "../../..";
 import { EdgeGeometry } from "../../layout/core/edgeGeometry";
 import { Curve } from "../../math/geometry/curve";
 import { DebugCurve } from "../../math/geometry/debugCurve";
@@ -17,14 +16,18 @@ import { Polyline } from "../../math/geometry/polyline";
 import { SmoothedPolyline } from "../../math/geometry/smoothedPolyline";
 import { Algorithm } from "../../utils/algorithm";
 import { Shape } from "../shape";
+import { ShapeCreator } from "../ShapeCreator";
 import { SplineRouter } from "../splineRouter";
 import { VisibilityEdge } from "../visibility/VisibilityEdge";
 import { VisibilityGraph } from "../visibility/VisibilityGraph";
 import { VisibilityVertex } from "../visibility/VisibilityVertex";
+import { Path } from "./nudging/Path";
 import { Obstacle } from "./obstacle";
 import { ObstacleTree } from "./ObstacleTree";
 import { PointComparer } from "./PointComparer";
+import { PortManager } from "./PortManager";
 import { SparseVisibilityGraphGenerator } from "./SparseVisibiltyGraphGenerator";
+import { SsstRectilinearPath } from "./SsstRectilinearPath";
 import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
     
     
@@ -83,7 +86,7 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
                 this.EdgeGeometries.push(edgeGeometry);
             }
             else {
-                this.selfEdges.Add(edgeGeometry);
+                this.selfEdges.push(edgeGeometry);
             }
             
         }
@@ -295,33 +298,35 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         // </summary>
          PortManager: PortManager;
         
-         get AncestorsSets(): Map<Shape, Set<Shape>> {
-        }
-         set AncestorsSets(value: Map<Shape, Set<Shape>>)  {
-        }
+         AncestorsSets: Map<Shape, Set<Shape>>
         
-        public constructor () : 
-                this(null) {
+        static constructorEmpty (): RectilinearEdgeRouter {
+                return RectilinearEdgeRouter.constructorC(null)
             //  pass-through default arguments to parameterized ctor
+        }
+        static constructorC(cancelToket: CancelToken): RectilinearEdgeRouter {
+            return new RectilinearEdgeRouter(from([]), RectilinearEdgeRouter.DefaultPadding, RectilinearEdgeRouter.DefaultCornerFitRadius,
+                /* useSparseVisibilityGraph:*/ false, /* useObstacleRectangles:*/ false) 
         }
         
         
         //  The padding from an obstacle's curve to its enclosing polyline.
         
-        public /* const */ static DefaultPadding: number = 1;
+        static DefaultPadding = 1;
         
         
         //  The default radius of the arc inscribed into path corners.
         
-        public /* const */ static DefaultCornerFitRadius: number = 3;
+        static DefaultCornerFitRadius: number = 3;
         
         
         //  Constructor that takes the obstacles but uses defaults for other arguments.
         
         //  <param name="obstacles">The collection of shapes to route around. Contains all source and target shapes
         //  as well as any intervening obstacles.</param>
-        public constructor (Obstacle: IEnumerable<Shape>) : 
-                this(Obstacle, DefaultPadding, DefaultCornerFitRadius, /* useSparseVisibilityGraph:*/ false, /* useObstacleRectangles:*/ false) {
+        static constructorI (Obstacle: IEnumerable<Shape>) : RectilinearEdgeRouter {
+             return new RectilinearEdgeRouter(Obstacle, RectilinearEdgeRouter.DefaultPadding, RectilinearEdgeRouter.DefaultCornerFitRadius,
+                     /* useSparseVisibilityGraph:*/ false, /* useObstacleRectangles:*/ false) 
             
         }
         
@@ -334,8 +339,8 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         //  <param name="cornerFitRadius">The radius of the arc inscribed into path corners</param>
         //  <param name="useSparseVisibilityGraph">If true, use a sparse visibility graph, which saves memory for large graphs
         //  but may select suboptimal paths</param>
-        public constructor (obstacles: IEnumerable<Shape>, padding: number, cornerFitRadius: number, useSparseVisibilityGraph: boolean) : 
-                this(obstacles, padding, cornerFitRadius, useSparseVisibilityGraph, /* useObstacleRectangles:*/ false) {
+        static constructorINNB (obstacles: IEnumerable<Shape>, padding: number, cornerFitRadius: number, useSparseVisibilityGraph: boolean) : RectilinearEdgeRouter {
+                return new RectilinearEdgeRouter(obstacles, padding, cornerFitRadius, useSparseVisibilityGraph, /* useObstacleRectangles:*/ false) 
             
         }
         
@@ -349,16 +354,15 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         //  <param name="useSparseVisibilityGraph">If true, use a sparse visibility graph, which saves memory for large graphs
         //  but may select suboptimal paths</param>
         //  <param name="useObstacleRectangles">Use obstacle bounding boxes in visibility graph</param>
-        public constructor (obstacles: IEnumerable<Shape>, padding: number, cornerFitRadius: number, useSparseVisibilityGraph: boolean, useObstacleRectangles: boolean) {
+        public constructor (obstacles: IEnumerable<Shape>, 
+            padding: number, 
+            cornerFitRadius: number, 
+            useSparseVisibilityGraph: boolean, useObstacleRectangles: boolean) {
+                super(null)
             this.Padding = padding;
             this.CornerFitRadius = cornerFitRadius;
             this.BendPenaltyAsAPercentageOfDistance = SsstRectilinearPath.DefaultBendPenaltyAsAPercentageOfDistance;
-            if (useSparseVisibilityGraph) {
                 this.GraphGenerator = new SparseVisibilityGraphGenerator();
-            }
-            else {
-                this.GraphGenerator = new FullVisibilityGraphGenerator();
-            }
             
             this.UseObstacleRectangles = useObstacleRectangles;
             this.PortManager = new PortManager(this.GraphGenerator);
@@ -373,8 +377,10 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         //  <param name="cornerFitRadius">The radius of the arc inscribed into path corners</param>
         //  <param name="useSparseVisibilityGraph">If true, use a sparse visibility graph, which saves memory for large graphs
         //  but may select suboptimal paths</param>
-        public constructor (graph: GeometryGraph, padding: number, cornerFitRadius: number, useSparseVisibilityGraph: boolean) : 
-                this(graph, padding, cornerFitRadius, useSparseVisibilityGraph, /* useObstacleRectangles:*/ false) {
+        static constructorGNNB (graph: GeomGraph,
+             padding: number, cornerFitRadius: number, useSparseVisibilityGraph: boolean) :RectilinearEdgeRouter {
+                 return this.constructorGNNBB(graph, padding, cornerFitRadius,
+                     useSparseVisibilityGraph, /* useObstacleRectangles:*/ false) 
             
         }
         
@@ -387,19 +393,19 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         //  <param name="useSparseVisibilityGraph">If true, use a sparse visibility graph, which saves memory for large graphs
         //  but may select suboptimal paths</param>
         //  <param name="useObstacleRectangles">If true, use obstacle bounding boxes in visibility graph</param>
-        public constructor (graph: GeometryGraph, padding: number, cornerFitRadius: number, useSparseVisibilityGraph: boolean, useObstacleRectangles: boolean) : 
-                this(ShapeCreator.GetShapes(graph), padding, cornerFitRadius, useSparseVisibilityGraph, useObstacleRectangles) {
-            
-            for (let edge of graph.Edges) {
-                this.AddEdgeGeometryToRoute(edge.EdgeGeometry);
+        static constructorGNNBB (graph: GeomGraph, padding: number, cornerFitRadius: number, useSparseVisibilityGraph: boolean, useObstacleRectangles: boolean) : RectilinearEdgeRouter { 
+            const ret = new RectilinearEdgeRouter(ShapeCreator.GetShapes(graph), padding, cornerFitRadius, useSparseVisibilityGraph, useObstacleRectangles)
+            for (let edge of graph.edges()) {
+            ret.AddEdgeGeometryToRoute(edge.edgeGeometry);
             }
-            
+            return ret
+
         }
         
         
         //  Executes the algorithm.
         
-        protected /* override */ RunInternal() {
+        run() {
             this.RouteEdges();
         }
         
@@ -414,31 +420,27 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         }
         
          GeneratePaths() {
-            let edgePaths = this.EdgeGeometries.Select(() => {  }, new Path(eg)).ToList();
-            this.FillEdgePathsWithShortestPaths(edgePaths);
-            this.NudgePaths(edgePaths);
+            let edgePaths = this.EdgeGeometries.map((eg) =>  new Path(eg));
+            this.FillEdgePathsWithShortestPaths(from(edgePaths));
+            this.NudgePaths(from(edgePaths));
             this.RouteSelfEdges();
             this.FinaliseEdgeGeometries();
         }
         
         RouteSelfEdges() {
-            for (let edge of selfEdges) {
-                edge.Curve = Edge.RouteSelfEdge(edge.SourcePort.Curve, Math.max(this.Padding, (2 * edge.GetMaxArrowheadLength())), /* out */SmoothedPolyline, sp);
+            for (let edge of this.selfEdges) {
+                const t = {smoothedPolyline:null}
+                edge.curve = GeomEdge.RouteSelfEdge(edge.sourcePort.Curve, Math.max(this.Padding, (2 * edge.GetMaxArrowheadLength())), t);
             }
             
         }
         
-        private GetGraphDebugCurves(): IEnumerable<DebugCurve> {
-            let l: Array<DebugCurve> = this.VisibilityGraph.Edges.Select(() => {  }, new DebugCurve(50, 0.1, "blue", new LineSegment(e.SourcePoint, e.TargetPoint))).ToList();
-            l.AddRange(this.Obstacles.Select(() => {  }, new DebugCurve(1, "green", o.BoundaryCurve)));
-            return l;
-        }
+        
         
         private FillEdgePathsWithShortestPaths(edgePaths: IEnumerable<Path>) {
             this.PortManager.BeginRouteEdges();
-            let shortestPathRouter = new MsmtRectilinearPath(this.BendPenaltyAsAPercentageOfDistance);
+            let shortestPathRouter = new SsstRectilinearPath(this.BendPenaltyAsAPercentageOfDistance);
             for (let edgePath: Path of edgePaths) {
-                this.ProgressStep();
                 this.AddControlPointsAndGeneratePath(shortestPathRouter, edgePath);
             }
             
@@ -481,8 +483,8 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         }
         
          GeneratePath(shortestPathRouter: MsmtRectilinearPath, edgePath: Path, lastChance: boolean = false): boolean {
-            let sourceVertices = this.PortManager.FindVertices(edgePath.EdgeGeometry.SourcePort);
-            let targetVertices = this.PortManager.FindVertices(edgePath.EdgeGeometry.TargetPort);
+            let sourceVertices = this.PortManager.FindVertices(edgePath.EdgeGeometry.sourcePort);
+            let targetVertices = this.PortManager.FindVertices(edgePath.EdgeGeometry.targetPort);
             return RectilinearEdgeRouter.GetSingleStagePath(edgePath, shortestPathRouter, sourceVertices, targetVertices, lastChance);
         }
         
@@ -500,16 +502,16 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
                 //  Probably a fully-landlocked obstacle such as RectilinearTests.Route_Between_Two_Separately_Landlocked_Obstacles
                 //  or disconnected subcomponents due to excessive overlaps, such as Rectilinear(File)Tests.*Disconnected*.  In this
                 //  case, just put the single-bend path in there, even though it most likely cuts across unrelated obstacles.
-                if (PointComparer.IsPureDirection(edgePath.EdgeGeometry.SourcePort.Location, edgePath.EdgeGeometry.TargetPort.Location)) {
-                    edgePath.EdgeGeometry.SourcePort.Location;
-                    edgePath.EdgeGeometry.TargetPort.Location;
+                if (PointComparer.IsPureDirection(edgePath.EdgeGeometry.sourcePort.Location, edgePath.EdgeGeometry.targetPort.Location)) {
+                    edgePath.EdgeGeometry.sourcePort.Location;
+                    edgePath.EdgeGeometry.targetPort.Location;
                     
                     return;
                 }
                 
-                edgePath.EdgeGeometry.SourcePort.Location;
-                new Point(edgePath.EdgeGeometry.SourcePort.Location.X, edgePath.EdgeGeometry.TargetPort.Location.Y);
-                edgePath.EdgeGeometry.TargetPort.Location;
+                edgePath.EdgeGeometry.sourcePort.Location;
+                new Point(edgePath.EdgeGeometry.sourcePort.Location.X, edgePath.EdgeGeometry.targetPort.Location.Y);
+                edgePath.EdgeGeometry.targetPort.Location;
                 
             }
             
@@ -533,12 +535,12 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
             //  ReSharper disable InconsistentNaming
             const let w0: number = 0.1;
             const let w1: number = 3;
-            let arr: Point[] = p.ToArray();
+            let arr: Point[] = p.toArray();
             let d: number = ((w1 - w0) 
-                        / (arr.Length - 1));
+                        / (arr.length - 1));
             let l = new Array<DebugCurve>();
             for (let i: number = 0; (i 
-                        < (arr.Length - 1)); i++) {
+                        < (arr.length - 1)); i++) {
                 l.Add(new DebugCurve(100, (w0 
                                     + (i * d)), "blue", new LineSegment(arr[i], arr[(i + 1)])));
             }
@@ -573,7 +575,7 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         }
         
          FinaliseEdgeGeometries() {
-            for (let edgeGeom: EdgeGeometry of this.EdgeGeometries.Concat(this.selfEdges)) {
+            for (let edgeGeom: EdgeGeometry of this.EdgeGeometries.concat(this.selfEdges)) {
                 if ((edgeGeom.Curve == null)) {
                     // TODO: Warning!!! continue If
                 }
@@ -595,7 +597,7 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         }
         
         private static CalculateArrowheads(edgeGeom: EdgeGeometry) {
-            Arrowheads.TrimSplineAndCalculateArrowheads(edgeGeom, edgeGeom.SourcePort.Curve, edgeGeom.TargetPort.Curve, edgeGeom.Curve, true);
+            Arrowheads.TrimSplineAndCalculateArrowheads(edgeGeom, edgeGeom.sourcePort.Curve, edgeGeom.targetPort.Curve, edgeGeom.curve, true);
         }
         
         private get ObstacleTree(): ObstacleTree {
@@ -604,7 +606,7 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         
         private GenerateObstacleTree() {
             if (((this.Obstacles == null) 
-                        || !this.Obstacles.Any())) {
+                        || !this.Obstacles.any())) {
                 throw new InvalidOperationException(this.#ifTEST_MSAGL, "No obstacles have been added", this.#endif,  TEST);
             }
             
@@ -616,7 +618,7 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         
          InitObstacleTree() {
             this.AncestorsSets = SplineRouter.GetAncestorSetsMap(this.Obstacles);
-            this.ObstacleTree.Init(this.ShapeToObstacleMap.Values, this.AncestorsSets, this.ShapeToObstacleMap);
+            this.ObstacleTree.Init(this.ShapeToObstacleMap.values, this.AncestorsSets, this.ShapeToObstacleMap);
         }
         
         private InternalClear(retainObstacles: boolean) {
@@ -628,7 +630,7 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
             }
             else {
                 this.PortManager.Clear();
-                this.ShapeToObstacleMap.Clear();
+                this.ShapeToObstacleMap.clear();
                 this.EdgeGeometries.Clear();
             }
             
@@ -636,14 +638,14 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         
         private ClearShortestPaths() {
             for (let edgeGeom: EdgeGeometry of this.EdgeGeometries) {
-                edgeGeom.Curve = null;
+                edgeGeom.curve = null;
             }
             
         }
         
          GenerateVisibilityGraph() {
             if (((this.Obstacles == null) 
-                        || !this.Obstacles.Any())) {
+                        || !this.Obstacles.any())) {
                 throw new InvalidOperationException(this.#ifTEST_MSAGL, "No obstacles have been set", this.#endif);
             }
             
@@ -683,7 +685,7 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         
          static FitArcsIntoCorners(radius: number, polyline: Point[]): ICurve {
             let ellipses: IEnumerable<Ellipse> = RectilinearEdgeRouter.GetFittedArcSegs(radius, polyline);
-            let curve = new Curve(polyline.Length);
+            let curve = new Curve(polyline.length);
             let prevEllipse: Ellipse = null;
             for (let ellipse: Ellipse of ellipses) {
                 let ellipseIsAlmostCurve: boolean = RectilinearEdgeRouter.EllipseIsAlmostLineSegment(ellipse);
@@ -709,34 +711,34 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
             }
             
             if ((curve.Segments.Count > 0)) {
-                Curve.continueWithLineSegmentP(curve, polyline[(polyline.Length - 1)]);
+                Curve.continueWithLineSegmentP(curve, polyline[(polyline.length - 1)]);
             }
             else {
-                Curve.addLineSegment(curve, polyline[0], polyline[(polyline.Length - 1)]);
+                Curve.addLineSegment(curve, polyline[0], polyline[(polyline.length - 1)]);
             }
             
             return curve;
         }
         
         static CornerPoint(ellipse: Ellipse): Point {
-            return (ellipse.Center 
-                        + (ellipse.AxisA + ellipse.AxisB));
+            return (ellipse.center 
+                        + (ellipse.aAxis + ellipse.aAxis));
         }
         
         private static EllipseIsAlmostLineSegment(ellipse: Ellipse): boolean {
-            return ((ellipse.AxisA.LengthSquared < 0.0001) 
-                        || (ellipse.AxisB.LengthSquared < 0.0001));
+            return ((ellipse.aAxis.LengthSquared < 0.0001) 
+                        || (ellipse.aAxis.LengthSquared < 0.0001));
         }
         
         private static GetFittedArcSegs(radius: number, polyline: Point[]): IEnumerable<Ellipse> {
             let leg: Point = (polyline[1] - polyline[0]);
-            let dir: Point = leg.Normalize();
-            let rad0: number = Math.min(radius, (leg.Length / 2));
+            let dir: Point = leg.normalize();
+            let rad0: number = Math.min(radius, (leg.length / 2));
             for (let i: number = 1; (i 
-                        < (polyline.Length - 1)); i++) {
+                        < (polyline.length - 1)); i++) {
                 let ret: Ellipse = null;
                 leg = (polyline[(i + 1)] - polyline[i]);
-                let legLength: number = leg.Length;
+                let legLength: number = leg.length;
                 if ((legLength < ApproximateComparer.IntersectionEpsilon)) {
                     ret = new Ellipse(0, 0, polyline[i]);
                 }
@@ -746,7 +748,7 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
                     ret = new Ellipse(0, 0, polyline[i]);
                 }
                 
-                let nrad0: number = Math.min(radius, (leg.Length / 2));
+                let nrad0: number = Math.min(radius, (leg.length / 2));
                 let axis0: Point = ((nrad0 * ndir) 
                             * -1);
                 let axis1: Point = (rad0 * dir);

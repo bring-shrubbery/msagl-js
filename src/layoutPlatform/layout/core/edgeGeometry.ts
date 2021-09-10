@@ -19,8 +19,8 @@ export class EdgeGeometry {
     this.curve = poly.createCurve()
   }
 
-  /* 
-   
+  /*
+
    //     Translate all the geometries with absolute positions by the specified delta
    // <
 
@@ -29,36 +29,39 @@ export class EdgeGeometry {
      RaiseLayoutChangeEvent(delta);
      if (Curve != null)
        Curve.Translate(delta);
- 
+
      if (SmoothedPolyline != null)
        for (Site s = SmoothedPolyline.HeadSite, s0 = SmoothedPolyline.HeadSite;
          s != null;
      s = s.next, s0 = s0.next)
      s.point = s0.point + delta;
- 
+
      if (SourceArrowhead != null)
        SourceArrowhead.TipPosition += delta;
      if (TargetArrowhead != null)
        TargetArrowhead.TipPosition += delta;
- 
+
    }
- 
-   internal number GetMaxArrowheadLength() {
-   number l = 0;
-   if (SourceArrowhead != null)
-     l = SourceArrowhead.length;
-   if (TargetArrowhead != null && TargetArrowhead.length > l)
-     return TargetArrowhead.length;
-   return l;
- }
- 
- 
-         
+ */
+  GetMaxArrowheadLength(): number {
+    let l = 0
+    if (this.sourceArrowhead != null) {
+      l = this.sourceArrowhead.length
+    }
+
+    if (this.targetArrowhead != null && this.targetArrowhead.length > l) {
+      return this.targetArrowhead.length
+    }
+
+    return l
+  }
+
+  /*
          // <
          public event EventHandler < LayoutChangeEventArgs > LayoutChangeEvent;
- 
- 
-         
+
+
+
          // <
 
          public void RaiseLayoutChangeEvent(object newValue) {

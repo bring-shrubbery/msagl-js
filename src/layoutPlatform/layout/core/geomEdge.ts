@@ -8,6 +8,7 @@ import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
 import {GeomLabel} from './geomLabel'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 import {Port} from './port'
+import {Point} from '../../..'
 
 export class GeomEdge extends GeomObject {
   get sourcePort(): Port {
@@ -238,27 +239,32 @@ export class GeomEdge extends GeomObject {
             // Routes a self edge inside the given "howMuchToStickOut" parameter
             // <
 
+*/
 
+  static RouteSelfEdge(
+    boundaryCurve: ICurve,
+    howMuchToStickOut: number,
+    t: {smoothedPolyline: SmoothedPolyline},
+  ): ICurve {
+    // we just need to find the box of the corresponding node
+    const w = boundaryCurve.boundingBox.width
+    const h = boundaryCurve.boundingBox.height
+    const center = boundaryCurve.boundingBox.center
+    const p0 = new Point(center.x - w / 4, center.y)
+    const p1 = new Point(
+      center.x - w / 4,
+      center.y - (h / 2 - howMuchToStickOut),
+    )
+    const p2 = new Point(
+      center.x + w / 4,
+      center.y - (h / 2 - howMuchToStickOut),
+    )
+    const p3 = new Point(center.x + w / 4, center.y)
+    t.smoothedPolyline = SmoothedPolyline.mkFromPoints([p0, p1, p2, p3])
+    return t.smoothedPolyline.createCurve()
+  }
 
-
-            static internal ICurve RouteSelfEdge(ICurve boundaryCurve, double howMuchToStickOut, out SmoothedPolyline smoothedPolyline)
-    {
-      //we just need to find the box of the corresponding node
-      var w = boundaryCurve.BoundingBox.Width;
-      var h = boundaryCurve.BoundingBox.Height;
-      var center = boundaryCurve.BoundingBox.Center;
-    
-      var p0 = new Point(center.x - w / 4, center.y);
-      var p1 = new Point(center.x - w / 4, center.y - h / 2 - howMuchToStickOut);
-      var p2 = new Point(center.x + w / 4, center.y - h / 2 - howMuchToStickOut);
-      var p3 = new Point(center.x + w / 4, center.y);
-    
-      smoothedPolyline = SmoothedPolyline.FromPoints(new [] { p0, p1, p2, p3 });
-    
-      return smoothedPolyline.CreateCurve();
-    }
-    
-            
+  /*          
             //
             // <
 
