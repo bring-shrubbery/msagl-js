@@ -5,7 +5,7 @@
 //  Copyright Microsoft Corporation.
 
 import { from,  IEnumerable, InvalidOperationException } from "linq-to-typescript";
-import { CancelToken, Edge, GeomEdge, GeomGraph, ICurve, Point } from "../../..";
+import { CancelToken, GeomEdge, GeomGraph, ICurve, Point } from "../../..";
 import { EdgeGeometry } from "../../layout/core/edgeGeometry";
 import { Curve } from "../../math/geometry/curve";
 import { DebugCurve } from "../../math/geometry/debugCurve";
@@ -13,7 +13,6 @@ import { Ellipse } from "../../math/geometry/ellipse";
 import { GeomConstants } from "../../math/geometry/geomConstants";
 import { LineSegment } from "../../math/geometry/lineSegment";
 import { Polyline } from "../../math/geometry/polyline";
-import { SmoothedPolyline } from "../../math/geometry/smoothedPolyline";
 import { Algorithm } from "../../utils/algorithm";
 import { Shape } from "../shape";
 import { ShapeCreator } from "../ShapeCreator";
@@ -21,6 +20,7 @@ import { SplineRouter } from "../splineRouter";
 import { VisibilityEdge } from "../visibility/VisibilityEdge";
 import { VisibilityGraph } from "../visibility/VisibilityGraph";
 import { VisibilityVertex } from "../visibility/VisibilityVertex";
+import { MsmtRectilinearPath } from "./MsmtRectilinearPath";
 import { Path } from "./nudging/Path";
 import { Obstacle } from "./obstacle";
 import { ObstacleTree } from "./ObstacleTree";
@@ -439,7 +439,7 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         
         private FillEdgePathsWithShortestPaths(edgePaths: IEnumerable<Path>) {
             this.PortManager.BeginRouteEdges();
-            let shortestPathRouter = new SsstRectilinearPath(this.BendPenaltyAsAPercentageOfDistance);
+            let shortestPathRouter = new MsmtRectilinearPath(this.BendPenaltyAsAPercentageOfDistance);
             for (let edgePath: Path of edgePaths) {
                 this.AddControlPointsAndGeneratePath(shortestPathRouter, edgePath);
             }
@@ -458,7 +458,7 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         }
         
          GeneratePathThroughVisibilityIntersection(edgePath: Path, intersectPoints: Point[]) {
-            edgePath.PathPoints = intersectPoints;
+            edgePath.PathPoints = from(intersectPoints)
         }
         
          SpliceVisibilityAndGeneratePath(shortestPathRouter: MsmtRectilinearPath, edgePath: Path) {
@@ -474,13 +474,6 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
         
         //  ReSharper disable UnusedMember.Local
         
-        private ShowEdgePath(path: Path) {
-            //  ReSharper restore UnusedMember.Local
-            let dd: Array<DebugCurve> = Nudger.GetObstacleBoundaries(this.PaddedObstacles, "black");
-            dd.AddRange(Nudger.PathDebugCurvesFromPoint(path));
-            dd.AddRange(this.VisibilityGraph.Edges.Select(() => {  }, new DebugCurve(0.5, "blue", new LineSegment(e.SourcePoint, e.TargetPoint))));
-            LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(dd);
-        }
         
          GeneratePath(shortestPathRouter: MsmtRectilinearPath, edgePath: Path, lastChance: boolean = false): boolean {
             let sourceVertices = this.PortManager.FindVertices(edgePath.EdgeGeometry.sourcePort);

@@ -6,10 +6,10 @@
     ///  This stores information mapping the App-level Ports (e.g. FloatingPort, RelativeFloatingPort,
     ///  and MultiLocationFloatingPort) to the router's BasicScanPort subclasses (ObstaclePort and FreePoint).
 
-import { Port } from "dotparser";
 import { IEnumerable } from "linq-to-typescript";
 import { Point, Rectangle, ICurve } from "../../..";
 import { EdgeGeometry } from "../../layout/core/edgeGeometry";
+import { Port } from "../../layout/core/port";
 import { CompassVector } from "../../math/geometry/compassVector";
 import { PointLocation, Curve } from "../../math/geometry/curve";
 import { Direction } from "../../math/geometry/direction";
@@ -21,6 +21,7 @@ import { VisibilityEdge } from "../visibility/VisibilityEdge";
 import { VisibilityGraph } from "../visibility/VisibilityGraph";
 import { VisibilityVertex } from "../visibility/VisibilityVertex";
 import { Obstacle } from "./obstacle";
+import { ObstaclePort } from "./ObstaclePort";
 import { ObstacleTree } from "./ObstacleTree";
 import { PointComparer } from "./PointComparer";
 import { ScanDirection } from "./ScanDirection";
