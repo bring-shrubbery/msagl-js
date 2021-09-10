@@ -1,9 +1,10 @@
-import {IEnumerable} from 'linq-to-typescript'
+import {from, IEnumerable} from 'linq-to-typescript'
 import {String} from 'typescript-string-operations'
 import {Point, Rectangle} from '../../..'
 import {CompassVector} from '../../math/geometry/compassVector'
 import {Curve, PointLocation} from '../../math/geometry/curve'
 import {Direction} from '../../math/geometry/direction'
+import {GeomConstants} from '../../math/geometry/geomConstants'
 import {IntersectionInfo} from '../../math/geometry/intersectionInfo'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Polyline} from '../../math/geometry/polyline'
@@ -99,15 +100,15 @@ export class ObstaclePortEntrance {
       oport.Obstacle.VisibilityPolyline,
       true,
     )
-    Assert.assert(1 == xxs.Count, 'Expected one intersection')
-    this.VisibilityBorderIntersect = ApproximateComparer.Round(
-      xxs[0].IntersectionPoint,
-    )
+    Assert.assert(1 == xxs.length, 'Expected one intersection')
+    this.VisibilityBorderIntersect = GeomConstants.RoundPoint(xxs[0].x)
+    const t = {pacList: null}
     this.MaxVisibilitySegment = obstacleTree.CreateMaxVisibilitySegment(
       this.VisibilityBorderIntersect,
       this.OutwardDirection,
-      /* out */ this.pointAndCrossingsList,
+      t,
     )
+    this.pointAndCrossingsList = t.pacList
     //  Groups are never in a clump (overlapped) but they may still have their port entrance overlapped.
     if (
       this.Obstacle.isOverlapped ||
@@ -150,32 +151,36 @@ export class ObstaclePortEntrance {
   private InteriorEdgeCrossesObstacle(obstacleTree: ObstacleTree): boolean {
     //  File Test: Nudger_Overlap4
     //  Use the VisibilityBoundingBox for groups because those are what the tree consists of.
-    const rect = new Rectangle(
+    const rect = Rectangle.mkPP(
       this.UnpaddedBorderIntersect,
       this.VisibilityBorderIntersect,
     )
-    return this.InteriorEdgeCrossesObstacle(
+    return this.InteriorEdgeCrossesObstacleRFI(
       rect,
-      () => {},
-      obs.VisibilityPolyline,
-      obstacleTree.Root.GetLeafRectangleNodesIntersectingRectangle(rect)
-        .Where(() => {},
-        !Node.UserData.IsGroup && Node.UserData != this.Obstacle)
-        .Select(() => {}, node.UserData),
+      (obs) => obs.VisibilityPolyline,
+      from(obstacleTree.Root.GetLeafRectangleNodesIntersectingRectangle(rect))
+        .where(
+          (node) => !node.UserData.IsGroup && node.UserData != this.Obstacle,
+        )
+        .select((node) => node.UserData),
     )
   }
 
   private InteriorEdgeCrossesConvexHullSiblings(): boolean {
     //  There is no RectangleNode tree that includes convex hull non-primary siblings, so we just iterate;
     //  this will only be significant to perf in extremely overlapped cases that we are not optimizing for.
-    const rect = new Rectangle(
+    const rect = Rectangle.mkPP(
       this.UnpaddedBorderIntersect,
       this.VisibilityBorderIntersect,
     )
-    return this.InteriorEdgeCrossesObstacle(
+    return this.InteriorEdgeCrossesObstacleRFI(
       rect,
       (obs) => obs.PaddedPolyline,
-      this.Obstacle.ConvexHull.Obstacles.filter((obs) => obs != this.Obstacle),
+      from(
+        this.Obstacle.ConvexHull.Obstacles.filter(
+          (obs) => obs != this.Obstacle,
+        ),
+      ),
     )
   }
 
@@ -184,23 +189,25 @@ export class ObstaclePortEntrance {
     whichPolylineToUse: (o: Obstacle) => Polyline,
     candidates: IEnumerable<Obstacle>,
   ): boolean {
-    const lineSeg: LineSegment = null
-    for (const blocker in candidates) {
+    let lineSeg: LineSegment = null
+    for (const blocker of candidates) {
       const blockerPolyline = whichPolylineToUse(blocker)
       if (
         !StaticGraphUtility.RectangleInteriorsIntersect(
           rect,
-          blockerPolyline.BoundingBox,
+          blockerPolyline.boundingBox,
         )
       ) {
-        // TODO: Warning!!! continue If
+        continue
       }
+      lineSeg =
+        lineSeg ??
+        LineSegment.mkPP(
+          this.UnpaddedBorderIntersect,
+          this.VisibilityBorderIntersect,
+        )
 
-      new LineSegment(
-        this.UnpaddedBorderIntersect,
-        this.VisibilityBorderIntersect,
-      )
-      const xx = Curve.CurveCurveIntersectionOne(
+      const xx = Curve.intersectionOne(
         lineSeg,
         blockerPolyline,
         /* liftIntersection:*/ false,
@@ -225,7 +232,8 @@ export class ObstaclePortEntrance {
 
   get HasGroupCrossings(): boolean {
     return (
-      this.pointAndCrossingsList != null && this.pointAndCrossingsList.Count > 0
+      this.pointAndCrossingsList != null &&
+      this.pointAndCrossingsList.Count() > 0
     )
   }
 
@@ -234,10 +242,9 @@ export class ObstaclePortEntrance {
       return false
     }
 
-    const pac = this.pointAndCrossingsList.First
-    // TODO: Warning!!!, inline IF is not supported ?
-    StaticGraphUtility.IsAscending(this.OutwardDirection)
-    this.pointAndCrossingsList.Last
+    const pac = StaticGraphUtility.IsAscending(this.OutwardDirection)
+      ? this.pointAndCrossingsList.First
+      : this.pointAndCrossingsList.Last
     return (
       PointComparer.GetDirections(
         this.MaxVisibilitySegment.start,

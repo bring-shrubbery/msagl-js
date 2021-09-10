@@ -670,10 +670,9 @@ export class Solver {
 
   //  Implements the full solve_QPSC from the Ipsep_Cola and Scaling papers.
   private SolveQpsc() {
-    this.solverSolution.AlgorithmUsed = SolverAlgorithm.QpscWithScaling
-    // TODO: Warning!!!, inline IF is not supported ?
-    this.solverParams.Advanced.ScaleInQpsc
-    SolverAlgorithm.QpscWithoutScaling
+    this.solverSolution.AlgorithmUsed = this.solverParams.Advanced.ScaleInQpsc
+      ? SolverAlgorithm.QpscWithScaling
+      : SolverAlgorithm.QpscWithoutScaling
     if (!this.QpscMakeFeasible()) {
       return
     }

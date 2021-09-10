@@ -37,12 +37,12 @@ export    class ShapeCreator {
                 }
                 
                 if ((c == graph.RootCluster)) {
-                    // TODO: Warning!!! continue If
+                    continue 
                 }
                 
                 let parent;
                 if (c.IsCollapsed) {
-                    // TODO: Warning!!! continue If
+                    continue
                 }
                 
                 for (let v of c.Nodes) {

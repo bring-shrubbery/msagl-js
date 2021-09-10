@@ -455,12 +455,12 @@ export    class PortManager {
             
             for (let sourceEntrance in sourceOport.PortEntrances) {
                 if (!sourceEntrance.WantVisibilityIntersection) {
-                    // TODO: Warning!!! continue If
+                    continue
                 }
                 
                 for (let targetEntrance in targetOport.PortEntrances) {
                     if (!targetEntrance.WantVisibilityIntersection) {
-                        // TODO: Warning!!! continue If
+                        continue
                     }
                     
                     let points = PortManager.GetPathPointsFromOverlappingCollinearVisibility(sourceEntrance, targetEntrance);

@@ -549,13 +549,13 @@ export class SplineRouter extends Algorithm {
   //   for (let cdtEdge of cdtSite.Edges) {
   //     if (((cdtEdge.CwTriangle == null)
   //       && (cdtEdge.CcwTriangle == null))) {
-  //       // TODO: Warning!!! continue If
+  //       continue
   //     }
 
   //     let a = (<Polyline>(cdtSite.Owner));
   //     let b = (<Polyline>(cdtEdge.lowerSite.Owner));
   //     if ((a == b)) {
-  //       // TODO: Warning!!! continue If
+  //       continue
   //     }
 
   //     let aParent: Shape;

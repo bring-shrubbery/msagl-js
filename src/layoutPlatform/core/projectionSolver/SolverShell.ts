@@ -294,10 +294,7 @@ export class SolverShell {
   ///  <returns>The node's solved position.</returns>
   public GetVariableResolvedPosition(id: number): number {
     const v = this.GetVariable(id)
-    return 0
-    // TODO: Warning!!!, inline IF is not supported ?
-    v == null
-    v.ActualPos
+    return v == null ? 0 : v.ActualPos
   }
 
   ///

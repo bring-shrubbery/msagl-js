@@ -321,7 +321,7 @@ export class ConstrainedOrdering {
   //   if (this.horizontalConstraints.BlockRootToBlock.TryGetValue(i, TODOOUTblock)) {
   //     for (let v of block) {
   //       if (alreadyInLayers[v]) {
-  //         // TODO: Warning!!! continue If
+  //         continue
   //       }
 
   //       layer[xIndex++] = v;
@@ -382,7 +382,7 @@ export class ConstrainedOrdering {
   //   for (let component of verticalComponents) {
   //     let ca = component.ToArray();
   //     if ((ca.length == 1)) {
-  //       // TODO: Warning!!! continue If
+  //       continue
   //     }
 
   //     let componentRoot: number = -1;

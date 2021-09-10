@@ -139,7 +139,7 @@ export class VisibilityGraph {
   //           c = c.next;
   //           let currentOrient = Point.getTriangleOrientation(a.point, b.point, c.point);
   //           if ((currentOrient == TriangleOrientation.Collinear)) {
-  //               // TODO: Warning!!! continue If
+  //               continue
   //           }
 
   //           if ((orient == TriangleOrientation.Collinear)) {

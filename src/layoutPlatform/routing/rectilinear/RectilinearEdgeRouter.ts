@@ -570,7 +570,7 @@ import { VisibilityGraphGenerator } from "./VisibilityGraphGenerator";
          FinaliseEdgeGeometries() {
             for (let edgeGeom: EdgeGeometry of this.EdgeGeometries.concat(this.selfEdges)) {
                 if ((edgeGeom.Curve == null)) {
-                    // TODO: Warning!!! continue If
+                    continue
                 }
                 
                 let poly = (<Polyline>(edgeGeom.Curve));

@@ -51,11 +51,11 @@ export class PointAndCrossingsList {
     )
   }
 
-  private get /* internal */ First(): PointAndCrossings {
+  get First(): PointAndCrossings {
     return this.ListOfPointsAndCrossings[0]
   }
 
-  private get /* internal */ Last(): PointAndCrossings {
+  get Last(): PointAndCrossings {
     return this.ListOfPointsAndCrossings[
       this.ListOfPointsAndCrossings.length - 1
     ]
