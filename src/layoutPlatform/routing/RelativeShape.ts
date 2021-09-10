@@ -1,40 +1,25 @@
-// //
-// // RelativeShape.cs
-// // MSAGL RelativeShape class for Rectilinear Edge Routing.
-// //
-// // Copyright Microsoft Corporation.
+//  A shape wrapping an ICurve delegate, providing additional information.
 
-// using System;
-// using Microsoft.Msagl.Core.Geometry.Curves;
+import {ICurve} from '../..'
+import {Shape} from './shape'
 
-// namespace Microsoft.Msagl.Routing {
+//  <
+export class RelativeShape extends Shape {
+  //  The curve of the shape.
+  //  <
+  public get BoundaryCurve(): ICurve {
+    return this.curveDelegate()
+  }
+  public set BoundaryCurve(value: ICurve) {
+    throw new Error('Cannot set BoundaryCurve directly for RelativeShape')
+  }
 
-//     // A shape wrapping an ICurve delegate, providing additional information.
-//     // <
-//     public class RelativeShape : Shape {
+  curveDelegate: () => ICurve
 
-//         // The curve of the shape.
-//         // <
-//         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "BoundaryCurve"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "RelativeShape")]
-//         public override ICurve BoundaryCurve {
-//             get { return curveDelegate(); }
-//             set {
-//                 throw new Error(
-// #if TEST_MSAGL
-//                         "Cannot set BoundaryCurve directly for RelativeShape"
-// #endif // TEST
-//                 );
-//             }
-//         }
-
-//         readonly Func < ICurve > curveDelegate;
-
-//         // Constructor taking the ID and the curve delegate for the shape.
-//         // <
-
-//         public RelativeShape(Func < ICurve > curveDelegate)
-//         {
-//             this.curveDelegate = curveDelegate;
-//         }
-//     }
-// }
+  //  Constructor taking the ID and the curve delegate for the shape.
+  //  <
+  constructor(curveDelegate: () => ICurve) {
+    super(null)
+    this.curveDelegate = curveDelegate
+  }
+}

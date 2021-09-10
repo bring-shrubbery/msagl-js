@@ -2,10 +2,10 @@
     ///  <summary>
     ///  Class for creating Shape elements from a Graph.
 
-import { Port } from "dotparser";
 import { from, IEnumerable } from "linq-to-typescript";
 import { GeomGraph, Edge, GeomNode } from "../..";
 import { RelativeFloatingPort } from "../layout/core/relativeFloatingPort";
+import { RelativeShape } from "./RelativeShape";
 import { Shape } from "./shape";
 
     ///  </summary>
@@ -25,32 +25,30 @@ export    class ShapeCreator {
                 nodesToShapes.set(v,  ShapeCreator.CreateShapeWithCenterPort(v));
             }
             
-            for (let c of graph.RootCluster.AllClustersDepthFirst()) {
-                if (!c.IsCollapsed) {
-                    for (let v of c.Nodes) {
-                        if (!nodesToShapes.ContainsKey(v)) {
-                            nodesToShapes[v] = ShapeCreator.CreateShapeWithCenterPort(v);
+            for (let c of graph.subgraphs()) {
+                if (!c.graph.isCollapsed) {
+                    for (let v of c.shallowNodes()) {
+                        if (!nodesToShapes.has(v)) {
+                            nodesToShapes.set(v, ShapeCreator.CreateShapeWithCenterPort(v))
                         }
                         
                     }
                     
                 }
                 
-                if ((c == graph.RootCluster)) {
-                    continue 
-                }
+                
                 
                 let parent;
-                if (c.IsCollapsed) {
+                if (c.graph.isCollapsed) {
                     continue
                 }
                 
-                for (let v of c.Nodes) {
+                for (let v of c.shallowNodes()) {
                     parent.AddChild(nodesToShapes[v]);
                 }
                 
-                for (let d of c.Clusters) {
-                    parent.AddChild(nodesToShapes[d]);
+                for (let d of c.subgraphs()) {
+                    parent.AddChild(nodesToShapes.get(d));
                 }
                 
             }
@@ -83,10 +81,10 @@ export    class ShapeCreator {
         ///  <returns>Shape obstacle for the node with simple port</returns>
         static CreateShapeWithCenterPort(node: GeomNode): Shape {
             //  Debug.Assert(ApproximateComparer.Close(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
-            let shape = new RelativeShape(() => {  }, node.BoundaryCurve);
-            let port = new RelativeFloatingPort(() => {  }, node.BoundaryCurve, () => {  }, node.Center);
-            shape.Ports.Insert(port);
-            for (let e of node.InEdges) {
+            let shape = new RelativeShape(() =>   node.boundaryCurve  );
+            let port = RelativeFloatingPort.mk(() =>  node.boundaryCurve, () => node.center);
+            shape.Ports.add(port);
+            for (let e of node.inEdges()) {
                 ShapeCreator.FixPortAtTarget(shape, port, e);
             }
             
