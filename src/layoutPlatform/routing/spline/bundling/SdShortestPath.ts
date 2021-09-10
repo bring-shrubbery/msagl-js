@@ -454,7 +454,7 @@
 //   }
 
 //   VisibilityVertex FindVertex(Point p) {
-//     return VisibilityGraph.FindVertex(p) ?? VisibilityGraph.FindVertex(ApproximateComparer.Round(p));
+//     return VisibilityGraph.FindVertex(p) ?? VisibilityGraph.FindVertex(GeomConstants.RoundPoint(p));
 //     /*  if (r == null) {
 //           SplineRouter.ShowVisGraph(this.VisibilityGraph, this.ObstacleHierarchy.GetAllLeaves(), null,
 //           new[] { new Ellipse(5, 5, p) });

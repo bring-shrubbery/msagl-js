@@ -15,6 +15,7 @@ export class GroupBoundaryCrossing {
   Group: Obstacle
   //  The direction from the vertex on the group boundary toward the inside of the group.
   DirectionToInside: Direction
+  static BoundaryWidth = GeomConstants.distanceEpsilon
 
   constructor(group: Obstacle, dirToInside: Direction) {
     Assert.assert(

@@ -125,7 +125,7 @@ export    class PortManager {
                 return null;
             }
             
-            let roundedLocation = ApproximateComparer.Round(port.Location);
+            let roundedLocation = GeomConstants.RoundPoint(port.Location);
             if ((PointLocation.Outside == Curve.PointRelativeToCurveLocation(roundedLocation, obstacle.InputShape.BoundaryCurve))) {
                 //  Obstacle.Port is outside Obstacle.Shape; handle it as a FreePoint.
                 return null;
@@ -163,7 +163,7 @@ export    class PortManager {
                 return vertices;
             }
             
-            vertices.Add(this.VisGraph.FindVertex(ApproximateComparer.Round(port.Location)));
+            vertices.Add(this.VisGraph.FindVertex(GeomConstants.RoundPoint(port.Location)));
             return vertices;
         }
         
@@ -517,7 +517,7 @@ export    class PortManager {
         
         private CreateObstaclePortEntrancesFromPoints(oport: ObstaclePort) {
             let graphBox = this.graphGenerator.ObstacleTree.GraphBox;
-            let curveBox = new Rectangle(ApproximateComparer.Round(oport.PortCurve.BoundingBox.LeftBottom), ApproximateComparer.Round(oport.PortCurve.BoundingBox.RightTop));
+            let curveBox = new Rectangle(GeomConstants.RoundPoint(oport.PortCurve.BoundingBox.LeftBottom), GeomConstants.RoundPoint(oport.PortCurve.BoundingBox.RightTop));
             //  This Port does not have a PortEntry, so we'll have visibility edges to its location
             //  in the Horizontal and Vertical directions (possibly all 4 directions, if not on boundary).
             // 
@@ -529,7 +529,7 @@ export    class PortManager {
             //  to the padded extreme boundary ScanSegment, and the Nudger will modify paths as appropriate
             //  to remove unnecessary bends.
             //  Use the unrounded port location to intersect with its curve.
-            let location: Point = ApproximateComparer.Round(oport.PortLocation);
+            let location: Point = GeomConstants.RoundPoint(oport.PortLocation);
             let xx1: Point;
             let xx0: Point;
             let found: boolean = false;
@@ -585,8 +585,8 @@ export    class PortManager {
             //  Important:  the LineSegment must be the first arg to GetAllIntersections so RawIntersection works.
             let xxs: IList<IntersectionInfo> = Curve.GetAllIntersections(lineSeg, curve, true);
             StaticGraphUtility.Assert((2 == xxs.Count), "Expected two intersections", this.ObstacleTree, this.VisGraph);
-            xx0 = ApproximateComparer.Round(xxs[0].IntersectionPoint);
-            xx1 = ApproximateComparer.Round(xxs[1].IntersectionPoint);
+            xx0 = GeomConstants.RoundPoint(xxs[0].IntersectionPoint);
+            xx1 = GeomConstants.RoundPoint(xxs[1].IntersectionPoint);
         }
         
         private CreatePortEntrancesAtBorderIntersections(curveBox: Rectangle, oport: ObstaclePort, location: Point, unpaddedBorderIntersect0: Point, unpaddedBorderIntersect1: Point) {
@@ -900,7 +900,7 @@ export    class PortManager {
             }
             
             //  FreePoint.
-            return new Rectangle(ApproximateComparer.Round(port.Location));
+            return new Rectangle(GeomConstants.RoundPoint(port.Location));
         }
         
         AddToLimitRectangle(location: Point) {
@@ -911,8 +911,8 @@ export    class PortManager {
         }
         
         FindWaypointVertices(waypoints: IEnumerable<Point>): IEnumerable<VisibilityVertex> {
-            //  We can't modify EdgeGeometry.Waypoints as the caller owns that, so ApproximateComparer.Round on lookup.
-            return waypoints.Select(() => {  }, this.VisGraph.FindVertex(ApproximateComparer.Round(w)));
+            //  We can't modify EdgeGeometry.Waypoints as the caller owns that, so GeomConstants.RoundPoint on lookup.
+            return waypoints.Select(() => {  }, this.VisGraph.FindVertex(GeomConstants.RoundPoint(w)));
         }
         
         private FindOrCreateFreePoint(location: Point): FreePoint {
@@ -933,9 +933,9 @@ export    class PortManager {
         //  This is private because it depends on LimitRectangle
         private AddFreePointToGraph(location: Point): FreePoint {
             //  This is a FreePoint, either a Waypoint or a Port not in an Obstacle.Ports list.
-            //  We can't modify the Port.Location as the caller owns that, so ApproximateComparer.Round it
+            //  We can't modify the Port.Location as the caller owns that, so GeomConstants.RoundPoint it
             //  at the point at which we acquire it.
-            location = ApproximateComparer.Round(location);
+            location = GeomConstants.RoundPoint(location);
             //  If the point already exists before FreePoint creation, there's nothing to do.
             let vertex = this.VisGraph.FindVertex(location);
             let freePoint = this.FindOrCreateFreePoint(location);

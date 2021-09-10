@@ -59,7 +59,7 @@ export class Path {
   ///
 
   ///  <returns></returns>
-  public /* override */ ToString(): string {
+  ToString(): string {
     return String.Format(
       '{0}->{1}',
       this.EdgeGeometry.sourcePort.Location,

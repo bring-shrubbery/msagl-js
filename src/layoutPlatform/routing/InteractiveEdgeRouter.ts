@@ -1172,7 +1172,7 @@ namespace Microsoft.Msagl.Routing {
         VisibilityVertex GetVertex(Point point) {
             VisibilityVertex v = visibilityGraph.FindVertex(point);
             if (v == null && LookForRoundedVertices)
-                v = visibilityGraph.FindVertex(ApproximateComparer.Round(point));
+                v = visibilityGraph.FindVertex(GeomConstants.RoundPoint(point));
             return v;
         }
 
