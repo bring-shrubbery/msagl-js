@@ -1,3 +1,4 @@
+import {Shape} from './shape'
 import {
   IEnumerable,
   IGrouping,
@@ -27,7 +28,6 @@ import {CdtEdge} from './ConstrainedDelaunayTriangulation/CdtEdge'
 import {Polygon} from './visibility/Polygon'
 import {VisibilityEdge} from './visibility/VisibilityEdge'
 
-class Shape {}
 //  routing splines around shapes
 export class SplineRouter extends Algorithm {
   //  setting this to true forces the calculation to go on even when node overlaps are present
@@ -1108,25 +1108,33 @@ export class SplineRouter extends Algorithm {
   //     //                    edgeGeometries.Select(e => new DebugCurve(100, 1, "red", e.Curve))));
   //     //      }
   //     //  #endif
-  //     static GetAncestorSetsMap(shapes: IEnumerable<Shape>): Map < Shape, Set < Shape >> {
-  //   let ancSets = new Map<Shape, Set<Shape>>();
-  //   for(let child in shapes.Where(() => { }, !ancSets.ContainsKey(child))) {
-  //   ancSets[child] = SplineRouter.GetAncestorSet(child, ancSets);
-  // }
+  static GetAncestorSetsMap(
+    shapes: IEnumerable<Shape>,
+  ): Map<Shape, Set<Shape>> {
+    const ancSets = new Map<Shape, Set<Shape>>()
+    for (const child of shapes.where((child) => !ancSets.has(child))) {
+      ancSets.set(child, SplineRouter.GetAncestorSet(child, ancSets))
+    }
+    return ancSets
+  }
 
-  // return ancSets;
-  //     }
-
-  //     static GetAncestorSet(child: Shape, ancSets: Map<Shape, Set<Shape>>): Set < Shape > {
-  //   let ret = new Set<Shape>(child.Parents);
-  //   for(let parent in child.Parents) {
-  //   let grandParents: Set<Shape>;
-  //   ret = (ret + ancSets.TryGetValue(parent, /* out */grandParents));
-  //   // TODO: Warning!!!, inline IF is not supported ?
-  //   // TODO: Warning!!!! NULL EXPRESSION DETECTED...
-  //   ;
-  // }
-
+  static GetAncestorSet(
+    child: Shape,
+    ancSets: Map<Shape, Set<Shape>>,
+  ): Set<Shape> {
+    const ret = new Set<Shape>(child.Parents)
+    for (const parent of child.Parents) {
+      let addition = ancSets.get(parent)
+      if (!addition) {
+        ancSets.set(
+          parent,
+          (addition = SplineRouter.GetAncestorSet(parent, ancSets)),
+        )
+      }
+      for (const t of addition) ret.add(t)
+      return ret
+    }
+  }
   // return ret;
   //     }
 

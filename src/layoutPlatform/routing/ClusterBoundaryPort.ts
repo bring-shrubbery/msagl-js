@@ -1,10 +1,7 @@
-﻿/*
-import {RelativeFloatingPort} from '../core/layout/RelativeFloatingPort'
-import {ICurve} from '../math/geometry/icurve'
-import {Point} from '../math/geometry/point'
+﻿import {ICurve, Point} from '../..'
+import {RelativeFloatingPort} from '../layout/core/relativeFloatingPort'
 import {Polyline} from '../math/geometry/polyline'
 
-// this is a port for routing from a cluster
 export class ClusterBoundaryPort extends RelativeFloatingPort {
   loosePolyline: Polyline
 
@@ -15,13 +12,26 @@ export class ClusterBoundaryPort extends RelativeFloatingPort {
     this.loosePolyline = value
   }
 
+  /// <summary>
+  /// constructor
+  /// </summary>
+  /// <param name="curveDelegate"></param>
+  /// <param name="centerDelegate"></param>
+  /// <param name="locationOffset"></param>
   public constructor(
     curveDelegate: () => ICurve,
     centerDelegate: () => Point,
-    locationOffset: Point = new Point(0, 0),
+    locationOffset: Point,
   ) {
     super(curveDelegate, centerDelegate, locationOffset)
   }
-}
 
-*/
+  /// <summary>
+  /// constructor
+  /// </summary>
+  /// <param name="curveDelegate"></param>
+  /// <param name="centerDelegate"></param>
+  public mk(curveDelegate: () => ICurve, centerDelegate: () => Point) {
+    return new ClusterBoundaryPort(curveDelegate, centerDelegate, null)
+  }
+}

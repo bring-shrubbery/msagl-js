@@ -5,6 +5,11 @@ import {Node} from './node'
 import {NodeCollection} from './nodeCollection'
 
 export class Graph extends Node {
+  *subgraphs(): IterableIterator<Graph> {
+    for (const n of this.deepNodes) {
+      if (n instanceof Graph) yield <Graph>n
+    }
+  }
   isEmpty() {
     return this.shallowNodeCount == 0
   }

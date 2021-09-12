@@ -9,6 +9,7 @@ import {CurveFactory} from '../../math/geometry/curveFactory'
 import {Point} from '../../math/geometry/point'
 import {Curve} from '../../math/geometry/curve'
 import {Ellipse} from '../../math/geometry/ellipse'
+import {Entity} from '../../structs/entity'
 
 export class GeomGraph extends GeomNode {
   translate(delta: Point) {
@@ -162,6 +163,12 @@ export class GeomGraph extends GeomNode {
 
   static mk(id: string, labelSize: Size): GeomGraph {
     return new GeomGraph(new Graph(id), labelSize)
+  }
+
+  *subgraphs(): IterableIterator<GeomGraph> {
+    for (const g of this.graph.subgraphs()) {
+      yield <GeomGraph>GeomObject.getGeom(g)
+    }
   }
 
   constructor(graph: Graph, labelSize: Size) {
