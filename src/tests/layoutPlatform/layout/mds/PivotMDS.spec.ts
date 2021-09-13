@@ -13,23 +13,25 @@ import {sortedList} from '../sortedBySizeListOfgvFiles'
 import {join} from 'path'
 import {MdsLayoutSettings} from '../../../../layoutPlatform/layout/mds/MDSLayoutSettings'
 import {layoutGraph} from '../../../../layoutPlatform/layout/driver'
+import { EdgeRoutingMode } from '../../../../layoutPlatform/core/routing/EdgeRoutingMode'
 
 test('graph with subgraphs', () => {
-  const dg = runLayout('src/tests/data/graphvis/clust.gv')
+  const dg = runMDSLayout('src/tests/data/graphvis/clust.gv')
   outputGraph(<GeomGraph>GeomObject.getGeom(dg.graph), 'clustMDS')
 })
 
-function runLayout(fname: string) {
+export function runMDSLayout(fname: string, edgeRoutingMode=EdgeRoutingMode.StraightLine) {
   const dg = parseDotGraph(fname)
   if (dg == null) return null
   const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const settings = new MdsLayoutSettings()
+  settings.edgeRoutingMode=edgeRoutingMode
   layoutGraph(gg, null, () => settings)
   return dg
 }
 
 test('b7 pivot mds', () => {
-  const dg = runLayout('src/tests/data/graphvis/b7.gv')
+  const dg = runMDSLayout('src/tests/data/graphvis/b7.gv')
   outputGraph(<GeomGraph>GeomObject.getGeom(dg.graph), 'b7Mds.svg')
 })
 
@@ -41,7 +43,7 @@ test('layout 0-50 gv files with MDS', () => {
     if (++i > 50) return
     let dg: DrawingGraph
     try {
-      dg = runLayout(join(path, f))
+      dg = runMDSLayout(join(path, f))
     } catch (Error) {
       console.log('i = ' + i + ', ' + f + ' error:' + Error.message)
       expect(1).toBe(0)
@@ -62,7 +64,7 @@ test('layout 50-100 gv files with MDS', () => {
     if (i < 50) continue
     let dg: DrawingGraph
     try {
-      dg = runLayout(join(path, f))
+      dg = runMDSLayout(join(path, f))
     } catch (Error) {
       console.log(f + ' error:' + Error.message)
       expect(1).toBe(0)
@@ -83,7 +85,7 @@ test('layout 100-150 gv files with MDS', () => {
     if (i < 100) continue
     let dg: DrawingGraph
     try {
-      dg = runLayout(join(path, f))
+      dg = runMDSLayout(join(path, f))
     } catch (Error) {
       console.log(f + ' error:' + Error.message)
       expect(1).toBe(0)
@@ -104,7 +106,7 @@ test('layout 150-200 gv files with MDS', () => {
     if (i < 150) continue
     let dg: DrawingGraph
     try {
-      dg = runLayout(join(path, f))
+      dg = runMDSLayout(join(path, f))
       if (dg != null) {
         const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pivot' + f + '.svg')
         t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
@@ -125,7 +127,7 @@ test('layout 200-250 gv files with MDS', () => {
     if (i < 200) continue
     let dg: DrawingGraph
     try {
-      dg = runLayout(join(path, f))
+      dg = runMDSLayout(join(path, f))
     } catch (Error) {
       console.log(f + ' error:' + Error.message)
       expect(1).toBe(0)
@@ -145,7 +147,7 @@ test('layout from 250 and up  gv files with MDS', () => {
     if (i < 250) continue
     let dg: DrawingGraph
     try {
-      dg = runLayout(join(path, f))
+      dg = runMDSLayout(join(path, f))
     } catch (Error) {
       console.log(f + ' error:' + Error.message)
       expect(1).toBe(0)

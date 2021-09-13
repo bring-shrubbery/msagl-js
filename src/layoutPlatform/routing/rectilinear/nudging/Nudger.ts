@@ -536,7 +536,7 @@ export class Nudger {
   // }
 
   static LineSegOfLongestSeg(ls: LongestNudgedSegment, dir: Direction): ICurve {
-    const projectionToDir = dir == Direction.East ? (p) => p.X : (p) => p.Y
+    const projectionToDir = dir == Direction.East ? (p:Point) => p.x : (p:Point) => p.y
 
     const mm = {min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY}
     for (const edge of ls.Edges) {
@@ -904,7 +904,7 @@ export class Nudger {
 
   CreateLongestNudgedSegments() {
     const projectionToPerp =
-      this.NudgingDirection == Direction.East ? (p) => -p.y : (p) => p.x
+      this.NudgingDirection == Direction.East ? (p:Point) => -p.y : (p:Point) => p.x
 
     this.LongestNudgedSegs = new Array<LongestNudgedSegment>()
     for (const path of this.Paths) {

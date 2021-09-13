@@ -11,8 +11,9 @@ import {LinkedPointSplitter} from './LinkedPointSplitter'
 import {Path} from './Path'
 import {PathMerger} from './PathMerger'
 import {PointByDelegateComparer} from './PointByDelegateComparer'
-import SortedMap = require('collections/sorted-map')
 import {closeDistEps} from '../../../utils/compare'
+import {SortedMap} from '@esfx/collections-sortedmap'
+
 type PointProjection = (p: Point) => number
 
 export class PathRefiner {
@@ -95,7 +96,8 @@ export class PathRefiner {
     direction: Direction,
     pathFirstPoints: Iterable<LinkedPoint>,
   ) {
-    const t = {
+    const t:{projectionToPerp: PointProjection,
+      projectionToDirection: PointProjection} = {
       projectionToPerp: undefined,
       projectionToDirection: undefined,
     }
@@ -164,28 +166,28 @@ export class PathRefiner {
       new PointByDelegateComparer(projectionToDirection),
     )
     for (const pathLinkedPoint of pathLinkedVertices) {
-      if (!dict.ContainsKey(pathLinkedPoint.Point)) {
-        dict[pathLinkedPoint.Point] = 0
+      if (!dict.has(pathLinkedPoint.Point)) {
+        dict.set(pathLinkedPoint.Point,  0)
       }
 
-      if (!dict.ContainsKey(pathLinkedPoint.Next.Point)) {
-        dict[pathLinkedPoint.Next.Point] = 0
+      if (!dict.has(pathLinkedPoint.Next.Point)) {
+        dict.set(pathLinkedPoint.Next.Point, 0)
       }
     }
 
-    const arrayOfPoints = new Array(dict.Count)
+    const arrayOfPoints = new Array(dict.size)
     let i = 0
-    for (const point of dict.Keys) {
+    for (const point of dict.keys()) {
       arrayOfPoints[i++] = point
     }
 
     for (i = 0; i < arrayOfPoints.length; i++) {
-      dict[arrayOfPoints[i]] = i
+      dict.set(arrayOfPoints[i], i)
     }
 
     for (const pathLinkedVertex of pathLinkedVertices) {
-      i = dict[pathLinkedVertex.Point]
-      const j: number = dict[pathLinkedVertex.Next.Point]
+      i = dict.get(pathLinkedVertex.Point)
+      const j: number = dict.get(pathLinkedVertex.Next.Point)
       if (Math.abs(j - i) > 1) {
         PathRefiner.InsertPoints(pathLinkedVertex, arrayOfPoints, i, j)
       }

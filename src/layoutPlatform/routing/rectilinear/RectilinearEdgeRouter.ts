@@ -30,6 +30,8 @@ import {PortManager} from './PortManager'
 import {SparseVisibilityGraphGenerator} from './SparseVisibiltyGraphGenerator'
 import {SsstRectilinearPath} from './SsstRectilinearPath'
 import {VisibilityGraphGenerator} from './VisibilityGraphGenerator'
+import { Arrowhead } from '../../layout/core/arrowhead'
+import { SmoothedPolyline } from '../../math/geometry/smoothedPolyline'
 
 //  Provides rectilinear edge routing functionality
 
@@ -430,7 +432,7 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   RouteSelfEdges() {
     for (const edge of this.selfEdges) {
-      const t = {smoothedPolyline: null}
+      const t:{smoothedPolyline:SmoothedPolyline} = {smoothedPolyline: null}
       edge.curve = GeomEdge.RouteSelfEdge(
         edge.sourcePort.Curve,
         Math.max(this.Padding, 2 * edge.GetMaxArrowheadLength()),
@@ -444,7 +446,7 @@ export class RectilinearEdgeRouter extends Algorithm {
     const shortestPathRouter = new MsmtRectilinearPath(
       this.BendPenaltyAsAPercentageOfDistance,
     )
-    for (const edgePath: Path of edgePaths) {
+    for (const edgePath of edgePaths) {
       this.AddControlPointsAndGeneratePath(shortestPathRouter, edgePath)
     }
 
@@ -628,7 +630,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   }
 
   FinaliseEdgeGeometries() {
-    for (const edgeGeom: EdgeGeometry of this.EdgeGeometries.concat(
+    for (const edgeGeom of this.EdgeGeometries.concat(
       this.selfEdges,
     )) {
       if (edgeGeom.curve == null) {
@@ -654,7 +656,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   }
 
   private static CalculateArrowheads(edgeGeom: EdgeGeometry) {
-    trimSplineAndCalculateArrowheads(
+    Arrowhead.trimSplineAndCalculateArrowheadsII(
       edgeGeom,
       edgeGeom.sourcePort.Curve,
       edgeGeom.targetPort.Curve,
@@ -700,7 +702,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   }
 
   private ClearShortestPaths() {
-    for (const edgeGeom: EdgeGeometry of this.EdgeGeometries) {
+    for (const edgeGeom of this.EdgeGeometries) {
       edgeGeom.curve = null
     }
   }
@@ -744,7 +746,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   // }
 
   static FitArcsIntoCorners(radius: number, polyline: Point[]): ICurve {
-    const ellipses: IEnumerable<Ellipse> = RectilinearEdgeRouter.GetFittedArcSegs(
+    const ellipses  = RectilinearEdgeRouter.GetFittedArcSegs(
       radius,
       polyline,
     )
@@ -815,30 +817,23 @@ export class RectilinearEdgeRouter extends Algorithm {
 
       const ndir: Point = leg.div(legLength)
       if (Math.abs(ndir.dot(dir)) > 0.9) {
-        ret = new Ellipse(0, 0, new Point(0, 0), new Point(0, 0), polyline[i])
+        yield new Ellipse(0, 0, new Point(0, 0), new Point(0, 0), polyline[i])
+
       }
 
       const nrad0: number = Math.min(radius, leg.length / 2)
-      const axis0: Point = nrad0 * ndir * -1
-      const axis1: Point = rad0 * dir
+      const axis0: Point = ndir.mul(-nrad0)
+      const axis1: Point = dir.mul(rad0)
       yield new Ellipse(
         0,
         Math.PI / 2,
         axis0,
         axis1,
-        polyline[i] - (axis1 - axis0),
+        polyline[i].sub(axis1.add(axis0))
       )
       dir = ndir
       rad0 = nrad0
     }
   }
 }
-function trimSplineAndCalculateArrowheads(
-  edgeGeom: EdgeGeometry,
-  Curve: ICurve,
-  Curve: ICurve,
-  curve: ICurve,
-  arg4: boolean,
-) {
-  throw new Error('Function not implemented.')
-}
+

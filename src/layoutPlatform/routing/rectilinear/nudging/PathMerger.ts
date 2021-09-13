@@ -1,6 +1,7 @@
 /// Avoid a situation where two paths cross each other more than once. Remove self loops.
 ///
 
+import { from, IEnumerable } from 'linq-to-typescript'
 import {Point} from '../../../..'
 import {Assert} from '../../../utils/assert'
 import {PointMap} from '../../../utils/PointMap'
@@ -115,7 +116,7 @@ export class PathMerger {
       this.ReplacePiece(
         arrivalToLooping,
         departureFromLooping,
-        pointsToInsert.Reverse(),
+        from(pointsToInsert).reverse(),
         loopingPath,
       )
     }
@@ -133,7 +134,7 @@ export class PathMerger {
   ReplacePiece(
     a: LinkedPoint,
     b: LinkedPoint,
-    points: Iterable<Point>,
+    points: IEnumerable<Point>,
     loopingPath: Path,
   ) {
     let prevPoint = a
@@ -141,9 +142,9 @@ export class PathMerger {
       const lp = new LinkedPoint(point)
       prevPoint.Next = lp
       prevPoint = lp
-      const pathOffset = this.verticesToPathOffsets[point]
-      Assert.assert(!pathOffset.ContainsKey(loopingPath))
-      pathOffset[loopingPath] = prevPoint
+      const pathOffset = this.verticesToPathOffsets.get(point)
+      Assert.assert(!pathOffset.has(loopingPath))
+      pathOffset.set(loopingPath, prevPoint)
     }
 
     prevPoint.Next = b
