@@ -91,10 +91,10 @@ export class PathMerger {
       stemPath,
       departureFromLooping.Point,
     )
-    const pointsToInsert: Iterable<Point> = PathMerger.GetPointsInBetween(
+    const pointsToInsert = from(PathMerger.GetPointsInBetween(
       departurePointOnStem,
       arrivalToStem,
-    )
+    ))
     if (PathMerger.Before(departureFromLooping, arrivalToLooping)) {
       this.CleanDisappearedPiece(
         departureFromLooping,
@@ -116,7 +116,7 @@ export class PathMerger {
       this.ReplacePiece(
         arrivalToLooping,
         departureFromLooping,
-        from(pointsToInsert).reverse(),
+        pointsToInsert.reverse(),
         loopingPath,
       )
     }
@@ -189,7 +189,7 @@ export class PathMerger {
   InitVerticesToPathOffsetsAndRemoveSelfCycles() {
     for (const path of this.Paths) {
       for (
-        let linkedPoint = <LinkedPoint>path.PathPoints;
+        let linkedPoint = <LinkedPoint><unknown>path.PathPoints;
         linkedPoint != null;
         linkedPoint = linkedPoint.Next
       ) {
@@ -212,7 +212,7 @@ export class PathMerger {
           this.CleanDisappearedPiece(loopPoint, linkedPoint, path)
           loopPoint.Next = linkedPoint.Next
         } else {
-          pathOffsets[path] = linkedPoint
+          pathOffsets.set(path, linkedPoint)
         }
       }
     }

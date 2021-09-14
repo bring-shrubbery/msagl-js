@@ -1,4 +1,4 @@
-import {from, IEnumerable} from 'linq-to-typescript'
+  import {from, IEnumerable} from 'linq-to-typescript'
 import {String} from 'typescript-string-operations'
 import {Point, Rectangle} from '../../..'
 import {CompassVector} from '../../math/geometry/compassVector'

@@ -50,7 +50,7 @@ export class VisibilityVertex {
     this.point = point
   }
 
-  public ToString(): string {
+  public toString(): string {
     return this.point.toString()
   }
 

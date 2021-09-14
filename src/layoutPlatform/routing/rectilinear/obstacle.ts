@@ -7,6 +7,7 @@ import {Polyline} from '../../math/geometry/polyline'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
 import {Rectangle} from '../../math/geometry/rectangle'
 import {Assert} from '../../utils/assert'
+import { subSets } from '../../utils/setOperations'
 import {InteractiveEdgeRouter} from '../InteractiveEdgeRouter'
 import {InteractiveObstacleCalculator} from '../interactiveObstacleCalculator'
 import {Shape} from '../shape'
@@ -25,6 +26,17 @@ export class Obstacle {
   ConvexHull: OverlapConvexHull
   OverlapsGroupCorner: boolean
   looseVisibilityPolyline: Polyline
+
+   GetPortChanges(t:{addedPorts: Set<Port>, removedPorts: Set<Port>}): boolean {
+    t.addedPorts = subSets(this.InputShape.Ports,this.Ports);
+    t.removedPorts = subSets(this.Ports, this.InputShape.Ports);
+    if (((0 == t.addedPorts.size) && (0 == t.removedPorts.size))) {
+        return false;
+    }
+    
+    this.Ports = new Set<Port>(this.InputShape.Ports);
+    return true;
+}
   get IsInConvexHull() {
     return this.ConvexHull != null
   }
@@ -240,4 +252,11 @@ export class Obstacle {
     Obstacle.RoundVerticesAndSimplify(loosePolyline)
     return loosePolyline
   }
+  get IsTransparentAncestor(): boolean {
+    return (this.InputShape == null)?false:
+    this.InputShape.IsTransparent;
+}
+ set IsTransparentAncestor(value: boolean)  {
+    this.InputShape.IsTransparent = value;
+}
 }

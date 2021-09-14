@@ -36,7 +36,8 @@ export class ShapeCreator {
         }
       }
 
-      let parent
+      const parent:Shape = ShapeCreator.CreateShapeWithClusterBoundaryPort(c)
+      nodesToShapes.set(c, parent)
       if (c.graph.isCollapsed) {
         continue
       }

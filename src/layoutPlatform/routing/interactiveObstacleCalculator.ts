@@ -33,6 +33,9 @@ export class InteractiveObstacleCalculator {
     return true
   }
 
+  static CurveIsClockwise(iCurve: ICurve, pointInside: Point): boolean {
+    return Point.getTriangleOrientation(pointInside, iCurve.start, (iCurve.start.add(iCurve.derivative(iCurve.parStart)))) == TriangleOrientation.Clockwise);
+  }
   static PaddedPolylineBoundaryOfNode(
     curve: ICurve,
     padding: number,

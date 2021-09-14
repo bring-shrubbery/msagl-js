@@ -48,7 +48,7 @@ export class MsmtRectilinearPath {
     targets: IEnumerable<VisibilityVertex>,
   ): VertexEntry {
     const ssstCalculator = new SsstRectilinearPath()
-    const t = {
+    const t:{bestEntry:VertexEntry, bestCost:number} = {
       bestEntry: null,
       //  This contains the best (lowest) path cost after normalizing origins to the center of the sources
       //  and targets.  This is used to avoid selecting a vertex pair whose path has more bends than another pair of
