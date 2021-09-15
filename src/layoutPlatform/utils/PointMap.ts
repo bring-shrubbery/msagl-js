@@ -30,8 +30,7 @@ export class PointMap<T> {
   delete(x: number, y: number) {
     const m = this.mapOfMaps.get(x)
     if (m != null) {
-      m.delete(y)
-      this.size_--
+      if (m.delete(y)) this.size_--
     }
   }
 

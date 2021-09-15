@@ -4,8 +4,9 @@ import {Direction} from '../../math/geometry/direction'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
 import {Obstacle} from './obstacle'
+import {ObstaclePortEntrance} from './ObstaclePortEntrance'
 import {ObstacleTree} from './ObstacleTree'
-import {PointComparer} from './PointComparer'
+import {TransientGraphUtility} from './TransientGraphUtility'
 
 export class ObstaclePort {
   Port: Port
@@ -41,7 +42,7 @@ export class ObstaclePort {
       obstacleTree,
     )
     this.PortEntrances.push(entrance)
-    this.VisibilityRectangle.add(entrance.MaxVisibilitySegment.End)
+    this.VisibilityRectangle.add(entrance.MaxVisibilitySegment.end)
     this.HasCollinearEntrances =
       this.HasCollinearEntrances || entrance.IsCollinearWithPort
   }
@@ -60,7 +61,7 @@ export class ObstaclePort {
 
   RemoveFromGraph() {
     //  Currently all transient removals and edge restorations are done by TransientGraphUtility itself.
-    for (const entrance in this.PortEntrances) {
+    for (const entrance of this.PortEntrances) {
       entrance.RemoveFromGraph()
     }
 

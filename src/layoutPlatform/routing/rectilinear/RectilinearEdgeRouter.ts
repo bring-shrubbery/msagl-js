@@ -30,8 +30,8 @@ import {PortManager} from './PortManager'
 import {SparseVisibilityGraphGenerator} from './SparseVisibiltyGraphGenerator'
 import {SsstRectilinearPath} from './SsstRectilinearPath'
 import {VisibilityGraphGenerator} from './VisibilityGraphGenerator'
-import { Arrowhead } from '../../layout/core/arrowhead'
-import { SmoothedPolyline } from '../../math/geometry/smoothedPolyline'
+import {Arrowhead} from '../../layout/core/arrowhead'
+import {SmoothedPolyline} from '../../math/geometry/smoothedPolyline'
 
 //  Provides rectilinear edge routing functionality
 
@@ -432,7 +432,7 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   RouteSelfEdges() {
     for (const edge of this.selfEdges) {
-      const t:{smoothedPolyline:SmoothedPolyline} = {smoothedPolyline: null}
+      const t: {smoothedPolyline: SmoothedPolyline} = {smoothedPolyline: null}
       edge.curve = GeomEdge.RouteSelfEdge(
         edge.sourcePort.Curve,
         Math.max(this.Padding, 2 * edge.GetMaxArrowheadLength()),
@@ -483,10 +483,10 @@ export class RectilinearEdgeRouter extends Algorithm {
       edgePath.EdgeGeometry,
       this.ShapeToObstacleMap,
     )
-    this.PortManager.TransUtil.DevTrace_VerifyAllVertices(this.VisibilityGraph)
-    this.PortManager.TransUtil.DevTrace_VerifyAllEdgeIntersections(
-      this.VisibilityGraph,
-    )
+    // this.PortManager.TransUtil.DevTrace_VerifyAllVertices(this.VisibilityGraph)
+    // this.PortManager.TransUtil.DevTrace_VerifyAllEdgeIntersections(
+    //   this.VisibilityGraph,
+    // )
     if (!this.GeneratePath(shortestPathRouter, edgePath)) {
       this.RetryPathsWithAdditionalGroupsEnabled(shortestPathRouter, edgePath)
     }
@@ -630,9 +630,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   }
 
   FinaliseEdgeGeometries() {
-    for (const edgeGeom of this.EdgeGeometries.concat(
-      this.selfEdges,
-    )) {
+    for (const edgeGeom of this.EdgeGeometries.concat(this.selfEdges)) {
       if (edgeGeom.curve == null) {
         continue
       }
@@ -746,10 +744,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   // }
 
   static FitArcsIntoCorners(radius: number, polyline: Point[]): ICurve {
-    const ellipses  = RectilinearEdgeRouter.GetFittedArcSegs(
-      radius,
-      polyline,
-    )
+    const ellipses = RectilinearEdgeRouter.GetFittedArcSegs(radius, polyline)
     const curve = new Curve()
     let prevEllipse: Ellipse = null
     for (const ellipse of ellipses) {
@@ -818,7 +813,6 @@ export class RectilinearEdgeRouter extends Algorithm {
       const ndir: Point = leg.div(legLength)
       if (Math.abs(ndir.dot(dir)) > 0.9) {
         yield new Ellipse(0, 0, new Point(0, 0), new Point(0, 0), polyline[i])
-
       }
 
       const nrad0: number = Math.min(radius, leg.length / 2)
@@ -829,11 +823,10 @@ export class RectilinearEdgeRouter extends Algorithm {
         Math.PI / 2,
         axis0,
         axis1,
-        polyline[i].sub(axis1.add(axis0))
+        polyline[i].sub(axis1.add(axis0)),
       )
       dir = ndir
       rad0 = nrad0
     }
   }
 }
-

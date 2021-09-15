@@ -60,8 +60,7 @@ export class TransientGraphUtility {
 
   FindOrAddVertex(location: Point): VisibilityVertex {
     const vertex = this.VisGraph.FindVertex(location)
-    return
-    this.AddVertex(location)
+    return vertex ?? this.AddVertex(location)
   }
 
   FindOrAddEdgeVV(
@@ -688,23 +687,25 @@ export class TransientGraphUtility {
       dirToInside,
     )
     if (crossings != null) {
-      let outerVertex
+      const outerVertex =
+        this.VisGraph.FindVertex(pac.Location) ?? this.AddVertex(pac.Location)
       this.AddVertex(pac.Location)
-      if (currentVertex.point != outerVertex.Point) {
+      if (currentVertex.point != outerVertex.point) {
         this.FindOrAddEdgeVV(currentVertex, outerVertex)
       }
 
       const interiorPoint = crossings[0].GetInteriorVertexPoint(pac.Location)
-      let interiorVertex
+      const interiorVertex =
+        this.VisGraph.FindVertex(interiorPoint) ?? this.AddVertex(interiorPoint)
       this.AddVertex(interiorPoint)
       //  FindOrAddEdge splits an existing edge so may not return the portion bracketed by outerVertex and interiorVertex.
       this.FindOrAddEdgeVV(outerVertex, interiorVertex)
       const edge = this.VisGraph.FindEdgePP(
-        outerVertex.Point,
-        interiorVertex.Point,
+        outerVertex.point,
+        interiorVertex.point,
       )
       const crossingsArray = crossings.map((c) => c.Group.InputShape)
-      return crossingsArray.some((s) => s.IsTransparent)
+      edge.IsPassable = () => crossingsArray.some((s) => s.IsTransparent)
     }
   }
 

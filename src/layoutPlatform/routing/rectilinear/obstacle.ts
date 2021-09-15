@@ -7,7 +7,7 @@ import {Polyline} from '../../math/geometry/polyline'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
 import {Rectangle} from '../../math/geometry/rectangle'
 import {Assert} from '../../utils/assert'
-import { subSets } from '../../utils/setOperations'
+import {subSets} from '../../utils/setOperations'
 import {InteractiveEdgeRouter} from '../InteractiveEdgeRouter'
 import {InteractiveObstacleCalculator} from '../interactiveObstacleCalculator'
 import {Shape} from '../shape'
@@ -27,16 +27,16 @@ export class Obstacle {
   OverlapsGroupCorner: boolean
   looseVisibilityPolyline: Polyline
 
-   GetPortChanges(t:{addedPorts: Set<Port>, removedPorts: Set<Port>}): boolean {
-    t.addedPorts = subSets(this.InputShape.Ports,this.Ports);
-    t.removedPorts = subSets(this.Ports, this.InputShape.Ports);
-    if (((0 == t.addedPorts.size) && (0 == t.removedPorts.size))) {
-        return false;
+  GetPortChanges(t: {addedPorts: Set<Port>; removedPorts: Set<Port>}): boolean {
+    t.addedPorts = subSets(this.InputShape.Ports, this.Ports)
+    t.removedPorts = subSets(this.Ports, this.InputShape.Ports)
+    if (0 == t.addedPorts.size && 0 == t.removedPorts.size) {
+      return false
     }
-    
-    this.Ports = new Set<Port>(this.InputShape.Ports);
-    return true;
-}
+
+    this.Ports = new Set<Port>(this.InputShape.Ports)
+    return true
+  }
   get IsInConvexHull() {
     return this.ConvexHull != null
   }
@@ -85,6 +85,9 @@ export class Obstacle {
     }
   }
   constructor(shape: Shape, makeRect: boolean, padding: number) {
+    if (shape == null) {
+      return
+    }
     if (makeRect) {
       const paddedBox = shape.BoundingBox.clone()
       paddedBox.pad(padding)
@@ -109,6 +112,7 @@ export class Obstacle {
       GeomConstants.RoundPoint(a),
       GeomConstants.RoundPoint(b),
     ])
+    obs.PaddedPolyline.closed = true
     obs.Ordinal = scanlineOrdinal
     return obs
   }
@@ -253,10 +257,9 @@ export class Obstacle {
     return loosePolyline
   }
   get IsTransparentAncestor(): boolean {
-    return (this.InputShape == null)?false:
-    this.InputShape.IsTransparent;
-}
- set IsTransparentAncestor(value: boolean)  {
-    this.InputShape.IsTransparent = value;
-}
+    return this.InputShape == null ? false : this.InputShape.IsTransparent
+  }
+  set IsTransparentAncestor(value: boolean) {
+    this.InputShape.IsTransparent = value
+  }
 }

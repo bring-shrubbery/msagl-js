@@ -853,7 +853,10 @@ export abstract class VisibilityGraphGenerator {
       vertexEvent instanceof OpenVertexEvent
         ? sideNode.item.Start
         : sideNode.item.End
-    const t = {lowNborSideNode: null, highNborSideNode: null}
+    const t: {
+      lowNborSideNode: RBNode<BasicObstacleSide>
+      highNborSideNode: RBNode<BasicObstacleSide>
+    } = {lowNborSideNode: null, highNborSideNode: null}
     this.FindInitialNeighborSides(sideNode, t)
     this.SkipToNeighbor(
       this.ScanDirection.OppositeDirection,
@@ -984,7 +987,7 @@ export abstract class VisibilityGraphGenerator {
     lowSideNode: RBNode<BasicObstacleSide>,
     highSideNode: RBNode<BasicObstacleSide>,
     vertexEvent: BasicVertexEvent,
-  )
+  ): void
 
   ProcessEventO(openVertEvent: OpenVertexEvent) {
     //  First insert the two new lines into the scanline.  Note: Although the lines are clockwise oriented,

@@ -18,6 +18,7 @@ import {Rectangle} from '../../math/geometry/rectangle'
 import {GetConnectedComponents} from '../../math/graphAlgorithms/ConnectedComponentCalculator'
 import {mkGraphOnEdges} from '../../structs/basicGraphOnEdges'
 import {Assert} from '../../utils/assert'
+import {closeDistEps} from '../../utils/compare'
 import {IntPair} from '../../utils/IntPair'
 import {IntPairSet} from '../../utils/IntPairSet'
 import {Shape} from '../shape'
@@ -131,7 +132,7 @@ export class ObstacleTree {
     CrossRectangleNodes<Obstacle, Obstacle, Point>(
       this.Root,
       this.Root,
-      this.CheckForInitialOverlaps,
+      (a, b) => this.CheckForInitialOverlaps(a, b),
     )
     return this.hasOverlaps
   }
@@ -148,7 +149,7 @@ export class ObstacleTree {
       return
     }
 
-    const t = {bIsInsideA: undefined, aIsInsideB: undefined}
+    const t = {bIsInsideA: false, aIsInsideB: false}
     if (ObstacleTree.ObstaclesIntersect(a, b, t)) {
       this.hasOverlaps = true
       return
@@ -225,7 +226,7 @@ export class ObstacleTree {
       return
     }
 
-    const t = {bIsInsideA: undefined, aIsInsideB: undefined}
+    const t = {bIsInsideA: false, aIsInsideB: false}
 
     if (
       !ObstacleTree.ObstaclesIntersect(a, b, t) &&
@@ -262,7 +263,7 @@ export class ObstacleTree {
       return
     }
 
-    const t = {bIsInsideA: undefined, aIsInsideB: undefined}
+    const t = {bIsInsideA: false, aIsInsideB: false}
     if (
       !ObstacleTree.ObstaclesIntersect(a, b, t) &&
       !t.aIsInsideB &&
@@ -320,7 +321,7 @@ export class ObstacleTree {
       return
     }
 
-    const t = {bIsInsideA: undefined, aIsInsideB: undefined}
+    const t = {bIsInsideA: false, aIsInsideB: false}
     const curvesIntersect = ObstacleTree.ObstaclesIntersect(a, b, t)
     if (!curvesIntersect && !t.aIsInsideB && !t.bIsInsideA) {
       return
@@ -495,7 +496,7 @@ export class ObstacleTree {
     let loosePolyline = obstacle.looseVisibilityPolyline
     ObstacleTree.GrowGroupAroundLoosePolyline(group, loosePolyline)
     //  Due to rounding we may still report this to be close or intersecting; grow it again if so.
-    const t = {bIsInsideA: undefined, aIsInsideB: undefined}
+    const t = {bIsInsideA: false, aIsInsideB: false}
     while (
       ObstacleTree.ObstaclesIntersect(obstacle, group, t) ||
       !t.aIsInsideB

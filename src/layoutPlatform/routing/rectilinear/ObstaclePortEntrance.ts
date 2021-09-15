@@ -1,4 +1,4 @@
-  import {from, IEnumerable} from 'linq-to-typescript'
+import {from, IEnumerable} from 'linq-to-typescript'
 import {String} from 'typescript-string-operations'
 import {Point, Rectangle} from '../../..'
 import {CompassVector} from '../../math/geometry/compassVector'
@@ -102,7 +102,7 @@ export class ObstaclePortEntrance {
     )
     Assert.assert(1 == xxs.length, 'Expected one intersection')
     this.VisibilityBorderIntersect = GeomConstants.RoundPoint(xxs[0].x)
-    const t = {pacList: null}
+    const t = {pacList: <PointAndCrossingsList>null}
     this.MaxVisibilitySegment = obstacleTree.CreateMaxVisibilitySegment(
       this.VisibilityBorderIntersect,
       this.OutwardDirection,

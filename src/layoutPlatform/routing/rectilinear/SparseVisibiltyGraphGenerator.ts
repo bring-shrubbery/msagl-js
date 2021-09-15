@@ -142,13 +142,17 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
       false,
     )
     for (let slot = 0; slot < this.horizontalScanSegmentVector.Length; slot++) {
-      this.horizontalCoordMap[
-        this.horizontalScanSegmentVector[slot].Coord
-      ] = slot
+      this.horizontalCoordMap.set(
+        this.horizontalScanSegmentVector.Item(slot).Coord,
+        slot,
+      )
     }
 
     for (let slot = 0; slot < this.verticalScanSegmentVector.Length; slot++) {
-      this.verticalCoordMap[this.verticalScanSegmentVector[slot].Coord] = slot
+      this.verticalCoordMap.set(
+        this.verticalScanSegmentVector.Item(slot).Coord,
+        slot,
+      )
     }
   }
 
@@ -172,7 +176,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     //  Normal event ordering will apply - and will thus order the ScanSegments created in the vectors.
     if (scanDir.IsHorizontal) {
       for (const coord of this.yCoordAccumulator) {
-        super.eventQueue.Enqueue(
+        this.eventQueue.Enqueue(
           new AxisCoordinateEvent(
             new Point(
               this.ObstacleTree.GraphBox.left -
@@ -187,7 +191,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     }
 
     for (const coord of this.xCoordAccumulator) {
-      super.eventQueue.Enqueue(
+      this.eventQueue.Enqueue(
         new AxisCoordinateEvent(
           new Point(
             coord,
@@ -201,7 +205,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
 
   ProcessCustomEvent(evt: SweepEvent) {
     if (!this.ProcessAxisCoordinate(evt)) {
-      super.ProcessCustomEvent(evt)
+      this.ProcessCustomEvent(evt)
     }
   }
 
@@ -247,15 +251,15 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     highSideNode: RBNode<BasicObstacleSide>,
     vertexEvent: BasicVertexEvent,
   ) {
-    const vertexPoints = super.ScanDirection.IsHorizontal
+    const vertexPoints = this.ScanDirection.IsHorizontal
       ? this.horizontalVertexPoints
       : this.verticalVertexPoints
     vertexPoints.add(vertexEvent.Site)
     //  For easier reading...
     const lowNborSide = this.LowNeighborSides.LowNeighbor.item
     const highNborSide = this.HighNeighborSides.HighNeighbor.item
-    const highDir = super.ScanDirection.Dir
-    const lowDir = super.ScanDirection.OppositeDirection
+    const highDir = this.ScanDirection.Dir
+    const lowDir = this.ScanDirection.OppositeDirection
     //  Generate the neighbor side intersections, regardless of overlaps; these are the type-2 Steiner points.
     const lowSteiner = this.ScanLineIntersectSide(vertexEvent.Site, lowNborSide)
     const highSteiner = this.ScanLineIntersectSide(
@@ -301,7 +305,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     //  This ensures that we "go around" the obstacle, as with the non-orthogonal edges in the paper.
     let highCorner: Point
     let lowCorner: Point
-    const t = {lowCorner: undefined, highCorner: undefined}
+    const t = {lowCorner: <Point>undefined, highCorner: <Point>undefined}
     SparseVisibilityGraphGenerator.GetBoundingCorners(
       lowSideNode.item.Obstacle.VisibilityBoundingBox,
       vertexEvent instanceof OpenVertexEvent,
@@ -342,14 +346,14 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
   }
 
   private CreateScanSegmentsOnAxisCoordinate(site: Point) {
-    super.CurrentGroupBoundaryCrossingMap.Clear()
+    this.CurrentGroupBoundaryCrossingMap.Clear()
     //  Iterate the ScanLine and create ScanSegments.  There will always be at least the two sentinel sides.
-    const sideNode = super.scanLine.Lowest()
-    let nextNode = super.scanLine.NextHighR(sideNode)
+    const sideNode = this.scanLine.Lowest()
+    let nextNode = this.scanLine.NextHighR(sideNode)
     let overlapDepth = 0
     let start = site
     let isInsideOverlappedObstacle = false
-    for (; null != nextNode; nextNode = super.scanLine.NextHighR(nextNode)) {
+    for (; null != nextNode; nextNode = this.scanLine.NextHighR(nextNode)) {
       if (this.SkipSide(start, nextNode.item)) {
         continue
       }
@@ -377,7 +381,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
           nextNode.item,
           ScanSegment.NormalWeight,
         )
-        super.CurrentGroupBoundaryCrossingMap.Clear()
+        this.CurrentGroupBoundaryCrossingMap.Clear()
         overlapDepth = 1
         isInsideOverlappedObstacle = nextNode.item.Obstacle.isOverlapped
         continue
@@ -401,12 +405,12 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
               ScanSegment.OverlappedWeight,
             )
           : this.ScanLineIntersectSide(start, nextNode.item)
-      super.CurrentGroupBoundaryCrossingMap.Clear()
+      this.CurrentGroupBoundaryCrossingMap.Clear()
       isInsideOverlappedObstacle = false
     }
 
     //  The final piece.
-    const end = super.ScanDirection.IsHorizontal
+    const end = this.ScanDirection.IsHorizontal
       ? new Point(
           this.ObstacleTree.GraphBox.right +
             SparseVisibilityGraphGenerator.SentinelOffset,
@@ -422,13 +426,13 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
       start,
       end,
       ScanSegment.NormalWeight,
-      super.CurrentGroupBoundaryCrossingMap.GetOrderedListBetween(start, end),
+      this.CurrentGroupBoundaryCrossingMap.GetOrderedListBetween(start, end),
     )
     this.parallelSegmentVector.ScanSegmentsCompleteForCurrentSlot()
   }
 
   private HandleGroupCrossing(site: Point, groupSide: BasicObstacleSide) {
-    if (!super.ScanLineCrossesObstacle(site, groupSide.Obstacle)) {
+    if (!this.ScanLineCrossesObstacle(site, groupSide.Obstacle)) {
       return
     }
 
@@ -438,10 +442,10 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     //  the sparse VG, we always create these edges at group boundaries so we don't skip over them.
     const dirToInsideOfGroup: Direction =
       groupSide instanceof LowObstacleSide
-        ? super.ScanDirection.Dir
-        : super.ScanDirection.OppositeDirection
+        ? this.ScanDirection.Dir
+        : this.ScanDirection.OppositeDirection
     const intersect = this.ScanLineIntersectSide(site, groupSide)
-    const crossing = super.CurrentGroupBoundaryCrossingMap.AddIntersection(
+    const crossing = this.CurrentGroupBoundaryCrossingMap.AddIntersection(
       intersect,
       groupSide.Obstacle,
       dirToInsideOfGroup,
@@ -458,11 +462,11 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
   private AddPerpendicularCoordForGroupCrossing(intersect: Point) {
     const nonCrossingPerpSlot = this.FindPerpendicularSlot(intersect, 0)
     if (-1 != nonCrossingPerpSlot) {
-      this.perpendicularSegmentVector[
-        nonCrossingPerpSlot
-      ].AddPendingPerpendicularCoord(
-        this.parallelSegmentVector.CurrentSlot.Coord,
-      )
+      this.perpendicularSegmentVector
+        .Item(nonCrossingPerpSlot)
+        .AddPendingPerpendicularCoord(
+          this.parallelSegmentVector.CurrentSlot.Coord,
+        )
     }
   }
 
@@ -473,7 +477,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
 
     //  Skip sides of obstacles that we do not actually pass through.
     const bbox = side.Obstacle.VisibilityBoundingBox
-    if (super.ScanDirection.IsHorizontal) {
+    if (this.ScanDirection.IsHorizontal) {
       return start.y == bbox.bottom || start.y == bbox.top
     }
 
@@ -523,8 +527,8 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     const bboxSteinerPoints = Array.from(this.boundingBoxSteinerPoints).sort(
       this.currentAxisPointComparer,
     )
-    super.ScanDirection = ScanDirection.HorizontalInstance
-    this.SetVectorsAndCoordMaps(super.ScanDirection)
+    this.ScanDirection = ScanDirection.HorizontalInstance
+    this.SetVectorsAndCoordMaps(this.ScanDirection)
     this.GenerateSparseIntersections(vertexPoints, bboxSteinerPoints)
   }
 
@@ -537,8 +541,8 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     const bboxSteinerPoints = Array.from(this.boundingBoxSteinerPoints).sort(
       this.currentAxisPointComparer,
     )
-    super.ScanDirection = ScanDirection.VerticalInstance
-    this.SetVectorsAndCoordMaps(super.ScanDirection)
+    this.ScanDirection = ScanDirection.VerticalInstance
+    this.SetVectorsAndCoordMaps(this.ScanDirection)
     this.GenerateSparseIntersections(vertexPoints, bboxSteinerPoints)
   }
 
@@ -737,9 +741,9 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     parallelItem: ScanSegmentVectorItem,
     perpSlot: number,
   ) {
-    const perpItem: ScanSegmentVectorItem = this.perpendicularSegmentVector[
-      perpSlot
-    ]
+    const perpItem: ScanSegmentVectorItem = this.perpendicularSegmentVector.Item(
+      perpSlot,
+    )
     parallelItem.CurrentSegment.AddSparseVertexCoord(perpItem.Coord)
     perpItem.AddPerpendicularCoord(parallelItem.Coord)
   }

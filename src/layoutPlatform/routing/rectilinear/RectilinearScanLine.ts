@@ -22,7 +22,7 @@ export class RectilinearScanLine {
 
   constructor(scanDir: ScanDirection, start: Point) {
     this.scanDirection = scanDir
-    this.SideTree = new RBTree<BasicObstacleSide>(this.Compare)
+    this.SideTree = new RBTree<BasicObstacleSide>((a, b) => this.Compare(a, b))
     this.linePositionAtLastInsertOrRemove = start
   }
   Insert(side: BasicObstacleSide, scanPos: Point): RBNode<BasicObstacleSide> {
