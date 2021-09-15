@@ -8,4 +8,7 @@ export abstract class SegmentBase {
   get Direction(): Point {
     return this.End.sub(this.Start)
   }
+  toString(): string {
+    return this.Start + ' ' + this.End
+  }
 }

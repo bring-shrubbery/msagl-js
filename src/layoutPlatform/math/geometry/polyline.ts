@@ -375,7 +375,7 @@ export class Polyline implements ICurve {
     return a.next ?? (this.closed ? this.startPoint : null)
   }
   prev(a: PolylinePoint): PolylinePoint {
-    return a.prev ?? this.closed ? this.endPoint : null
+    return a.prev ?? (this.closed ? this.endPoint : null)
   }
   toCurve(): Curve {
     const c = new Curve()

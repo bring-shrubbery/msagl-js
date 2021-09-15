@@ -303,8 +303,6 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
 
     //  Add the corners of the bounding box of the vertex obstacle, if they are visible to the event site.
     //  This ensures that we "go around" the obstacle, as with the non-orthogonal edges in the paper.
-    let highCorner: Point
-    let lowCorner: Point
     const t = {lowCorner: <Point>undefined, highCorner: <Point>undefined}
     SparseVisibilityGraphGenerator.GetBoundingCorners(
       lowSideNode.item.Obstacle.VisibilityBoundingBox,
@@ -313,17 +311,17 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
       t,
     )
     if (
-      PointComparer.IsPureLower(lowSteiner, lowCorner) ||
+      PointComparer.IsPureLower(lowSteiner, t.lowCorner) ||
       lowNborSide.Obstacle.IsInSameClump(vertexEvent.Obstacle)
     ) {
-      vertexPoints.add(lowCorner)
+      vertexPoints.add(t.lowCorner)
     }
 
     if (
-      PointComparer.IsPureLower(highCorner, highSteiner) ||
+      PointComparer.IsPureLower(t.highCorner, highSteiner) ||
       highNborSide.Obstacle.IsInSameClump(vertexEvent.Obstacle)
     ) {
-      vertexPoints.add(highCorner)
+      vertexPoints.add(t.highCorner)
     }
   }
 

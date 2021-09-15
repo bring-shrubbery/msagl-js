@@ -128,7 +128,7 @@ export class Obstacle {
       return false
     }
 
-    for (; ppt != this.PaddedPolyline.startPoint; ) {
+    do {
       ppt = nextPpt
       nextPpt = ppt.nextOnPolyline
       const nextDir = CompassVector.DirectionFromPointToPoint(
@@ -141,7 +141,7 @@ export class Obstacle {
       }
 
       dir = nextDir
-    }
+    } while (ppt != this.PaddedPolyline.startPoint)
 
     return true
   }

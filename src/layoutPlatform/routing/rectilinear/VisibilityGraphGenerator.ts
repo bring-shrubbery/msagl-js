@@ -1025,7 +1025,7 @@ export abstract class VisibilityGraphGenerator {
     //  ReflectionEvents, then the Active*Side to that side may cover them, or if we're overlapped,
     //  the Active*Side of the overlapping obstacle may if there is a non-overlapped segment extension.
     //  Check the neighbors in both directions.
-    let lowReflector
+    let lowReflector // TODO - bug
     this.LowNeighborSides.LowNeighborSide
     if (this.SideReflectsUpward(lowReflector)) {
       this.LoadReflectionEvents(obstacle.ActiveLowSide)

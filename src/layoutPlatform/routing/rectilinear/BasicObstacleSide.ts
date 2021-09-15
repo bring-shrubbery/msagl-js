@@ -20,20 +20,8 @@ export abstract class BasicObstacleSide extends ObstacleSide {
   }
 
   endVertex: PolylinePoint
-  slope: number
-  get Slope(): number {
-    return this.slope
-  }
-  set Slope(value: number) {
-    this.slope = value
-  }
-  slopeInverse: number
-  get SlopeInverse(): number {
-    return this.slopeInverse
-  }
-  set SlopeInverse(value: number) {
-    this.slopeInverse = value
-  }
+  Slope = 0
+  SlopeInverse = 0
 
   constructor(
     obstacle: Obstacle,
