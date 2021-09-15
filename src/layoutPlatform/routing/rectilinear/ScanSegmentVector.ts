@@ -23,7 +23,7 @@ export class ScanSegmentVector {
 
   //  The index of the scan segment vector we're appending to on the ScanSegment-generation sweep.
 
-  CurrentSlotIndex: number
+  CurrentSlotIndex = 0
 
   get Length(): number {
     return this.vector.length

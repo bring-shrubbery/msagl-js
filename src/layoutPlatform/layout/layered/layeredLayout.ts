@@ -663,8 +663,7 @@ export class LayeredLayout extends Algorithm {
 
     this.CalculateOriginalGraphBox()
 
-    
-   // address this.sugiyamaSettings.AspectRatio at the final stage
+    // address this.sugiyamaSettings.AspectRatio at the final stage
     return layerArrays
   }
 

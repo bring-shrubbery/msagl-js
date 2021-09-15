@@ -2,7 +2,7 @@
 ///  Class for creating Shape elements from a Graph.
 
 import {from, IEnumerable} from 'linq-to-typescript'
-import {GeomGraph, Edge, GeomNode, GeomEdge} from '../..'
+import {GeomGraph, GeomNode, GeomEdge} from '../..'
 import {Port} from '../layout/core/port'
 import {RelativeFloatingPort} from '../layout/core/relativeFloatingPort'
 import {Assert} from '../utils/assert'
@@ -36,7 +36,7 @@ export class ShapeCreator {
         }
       }
 
-      const parent:Shape = ShapeCreator.CreateShapeWithClusterBoundaryPort(c)
+      const parent: Shape = ShapeCreator.CreateShapeWithClusterBoundaryPort(c)
       nodesToShapes.set(c, parent)
       if (c.graph.isCollapsed) {
         continue

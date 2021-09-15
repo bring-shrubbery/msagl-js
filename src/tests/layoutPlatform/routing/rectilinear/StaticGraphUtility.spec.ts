@@ -173,7 +173,12 @@ test('SegmentIntersectionLLOutPoint', () => {
   const l0 = LineSegment.mkPP(new Point(0, 0), new Point(2, 0))
   const l1 = LineSegment.mkPP(new Point(0, -1), new Point(0, 1))
 
-  expect(StaticGraphUtility.SegmentsIntersectLL(l0, l1)).toBe(true)
+  expect(
+    Point.closeDistEps(
+      new Point(0, 0),
+      StaticGraphUtility.SegmentsIntersectLL(l0, l1),
+    ),
+  ).toBe(true)
 })
 test('EdgeDirectionVE', () => {
   const g = new VisibilityGraph()

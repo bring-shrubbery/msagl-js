@@ -13,19 +13,22 @@ import {sortedList} from '../sortedBySizeListOfgvFiles'
 import {join} from 'path'
 import {MdsLayoutSettings} from '../../../../layoutPlatform/layout/mds/MDSLayoutSettings'
 import {layoutGraph} from '../../../../layoutPlatform/layout/driver'
-import { EdgeRoutingMode } from '../../../../layoutPlatform/core/routing/EdgeRoutingMode'
+import {EdgeRoutingMode} from '../../../../layoutPlatform/core/routing/EdgeRoutingMode'
 
 test('graph with subgraphs', () => {
   const dg = runMDSLayout('src/tests/data/graphvis/clust.gv')
   outputGraph(<GeomGraph>GeomObject.getGeom(dg.graph), 'clustMDS')
 })
 
-export function runMDSLayout(fname: string, edgeRoutingMode=EdgeRoutingMode.StraightLine) {
+export function runMDSLayout(
+  fname: string,
+  edgeRoutingMode = EdgeRoutingMode.StraightLine,
+) {
   const dg = parseDotGraph(fname)
   if (dg == null) return null
   const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const settings = new MdsLayoutSettings()
-  settings.edgeRoutingMode=edgeRoutingMode
+  settings.edgeRoutingMode = edgeRoutingMode
   layoutGraph(gg, null, () => settings)
   return dg
 }

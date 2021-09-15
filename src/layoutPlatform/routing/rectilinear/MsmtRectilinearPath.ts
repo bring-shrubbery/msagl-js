@@ -2,7 +2,6 @@ import {IEnumerable} from 'linq-to-typescript'
 import {Point} from '../../..'
 import {closeDistEps} from '../../utils/compare'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
-import {PointComparer} from './PointComparer'
 import {ScanSegment} from './ScanSegment'
 import {SsstRectilinearPath} from './SsstRectilinearPath'
 import {VertexEntry} from './VertexEntry'
@@ -48,7 +47,7 @@ export class MsmtRectilinearPath {
     targets: IEnumerable<VisibilityVertex>,
   ): VertexEntry {
     const ssstCalculator = new SsstRectilinearPath()
-    const t:{bestEntry:VertexEntry, bestCost:number} = {
+    const t: {bestEntry: VertexEntry; bestCost: number} = {
       bestEntry: null,
       //  This contains the best (lowest) path cost after normalizing origins to the center of the sources
       //  and targets.  This is used to avoid selecting a vertex pair whose path has more bends than another pair of

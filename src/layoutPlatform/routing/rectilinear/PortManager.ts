@@ -99,7 +99,7 @@ export class PortManager {
   }
 
   constructor(graphGenerator: VisibilityGraphGenerator) {
-    this.TransUtil = new TransientGraphUtility(this.graphGenerator)
+    this.TransUtil = new TransientGraphUtility(graphGenerator)
     this.graphGenerator = this.graphGenerator
   }
 
@@ -1363,13 +1363,12 @@ export class PortManager {
     //  Turn on pivot vertex to either side to find the next edge to connect to.  If the freepoint is
     //  overlapped (inside an obstacle), just find the closest ScanSegment outside the obstacle and
     //  start extending from there; otherwise, we can have the FreePoint calculate its max visibility.
-    const end = this.InBoundsGraphBoxIntersect(freePoint.Point, lateralDir)
-    // TODO: Warning!!!, inline IF is not supported ?
-    freePoint.IsOverlapped
-    freePoint.MaxVisibilityInDirectionForNonOverlappedFreePoint(
-      lateralDir,
-      this.TransUtil,
-    )
+    const end = freePoint.IsOverlapped
+      ? this.InBoundsGraphBoxIntersect(freePoint.Point, lateralDir)
+      : freePoint.MaxVisibilityInDirectionForNonOverlappedFreePoint(
+          lateralDir,
+          this.TransUtil,
+        )
     const lateralEdge = this.FindorCreateNearestPerpEdgePPDN(
       end,
       freePoint.Point,

@@ -1,12 +1,11 @@
-
-import{RectilinearEdgeRouter} from '../routing/rectilinear/RectilinearEdgeRouter'
+import {RectilinearEdgeRouter} from '../routing/rectilinear/RectilinearEdgeRouter'
 import {
   GeomGraph,
   CancelToken,
   SugiyamaLayoutSettings,
   LayeredLayout,
 } from '../..'
-import { EdgeRoutingMode } from '../core/routing/EdgeRoutingMode'
+import {EdgeRoutingMode} from '../core/routing/EdgeRoutingMode'
 import {CurveFactory} from '../math/geometry/curveFactory'
 import {Point} from '../math/geometry/point'
 import {Rectangle} from '../math/geometry/rectangle'
@@ -19,24 +18,21 @@ import {LayoutSettings} from './layered/SugiyamaLayoutSettings'
 import {MdsLayoutSettings} from './mds/MDSLayoutSettings'
 import {PivotMDS} from './mds/PivotMDS'
 
-function routeEdges(geomG:GeomGraph, edgeRoutingMode:EdgeRoutingMode) {
-  if (edgeRoutingMode==EdgeRoutingMode.StraightLine) {
-  routeStraightEdges(geomG)
-} else {
-  routeRectEdges(geomG)
+function routeEdges(geomG: GeomGraph, edgeRoutingMode: EdgeRoutingMode) {
+  if (edgeRoutingMode == EdgeRoutingMode.StraightLine) {
+    routeStraightEdges(geomG)
+  } else {
+    routeRectEdges(geomG)
+  }
 }
-}
-
 
 function routeStraightEdges(geomG: GeomGraph) {
   for (const u of geomG.deepNodes()) {
     for (const e of u.outEdges()) {
-      if (e.curve == null)
-        StraightLineEdges.RouteEdge(e, 0)
+      if (e.curve == null) StraightLineEdges.RouteEdge(e, 0)
     }
     for (const e of u.selfEdges()) {
-      if (e.curve == null)
-        StraightLineEdges.RouteEdge(e, 0)
+      if (e.curve == null) StraightLineEdges.RouteEdge(e, 0)
     }
   }
 }
@@ -76,7 +72,8 @@ export function layoutGraph(
 
   for (const e of removedEdges) e.add()
 
-  if (geomG.graph.parent == null) routeEdges(geomG, layoutSettingsFunc(geomG).edgeRoutingMode)
+  if (geomG.graph.parent == null)
+    routeEdges(geomG, layoutSettingsFunc(geomG).edgeRoutingMode)
 
   function layoutShallowSubgraphs() {
     for (const n of geomG.shallowNodes()) {
@@ -97,8 +94,6 @@ export function layoutGraph(
       }
     }
   }
-
-  
 
   function removeEdgesLeadingOutOfGraph(): Set<Edge> {
     const ret = new Set<Edge>()
@@ -213,4 +208,3 @@ function routeRectEdges(geomG: GeomGraph) {
   const rr = RectilinearEdgeRouter.constructorGNNB(geomG, 1, 3, true)
   rr.run()
 }
-

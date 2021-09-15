@@ -1,14 +1,14 @@
 import {join} from 'path'
-import { GeomGraph } from "../../../..";
-import { DrawingGraph } from "../../../../drawing/drawingGraph";
-import { EdgeRoutingMode } from '../../../../layoutPlatform/core/routing/EdgeRoutingMode';
-import { GeomObject } from "../../../../layoutPlatform/layout/core/geomObject";
-import { SvgDebugWriter } from "../../../../layoutPlatform/math/geometry/svgDebugWriter";
-import { runMDSLayout } from "../../layout/mds/PivotMDS.spec";
-import { sortedList } from "../../layout/sortedBySizeListOfgvFiles";
+import {GeomGraph} from '../../../..'
+import {DrawingGraph} from '../../../../drawing/drawingGraph'
+import {EdgeRoutingMode} from '../../../../layoutPlatform/core/routing/EdgeRoutingMode'
+import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
+import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
+import {runMDSLayout} from '../../layout/mds/PivotMDS.spec'
+import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
 
-test('first 50 dot files',()=>{
-    const path = 'src/tests/data/graphvis/'
+test('first 50 dot files', () => {
+  const path = 'src/tests/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
     if (f.match('big(.*).gv')) continue // the parser bug

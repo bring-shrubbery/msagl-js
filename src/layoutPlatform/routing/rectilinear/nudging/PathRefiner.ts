@@ -96,8 +96,10 @@ export class PathRefiner {
     direction: Direction,
     pathFirstPoints: Iterable<LinkedPoint>,
   ) {
-    const t:{projectionToPerp: PointProjection,
-      projectionToDirection: PointProjection} = {
+    const t: {
+      projectionToPerp: PointProjection
+      projectionToDirection: PointProjection
+    } = {
       projectionToPerp: undefined,
       projectionToDirection: undefined,
     }
@@ -167,7 +169,7 @@ export class PathRefiner {
     )
     for (const pathLinkedPoint of pathLinkedVertices) {
       if (!dict.has(pathLinkedPoint.Point)) {
-        dict.set(pathLinkedPoint.Point,  0)
+        dict.set(pathLinkedPoint.Point, 0)
       }
 
       if (!dict.has(pathLinkedPoint.Next.Point)) {

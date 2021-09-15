@@ -5,7 +5,6 @@ import {CompassVector} from '../../math/geometry/compassVector'
 import {Curve, PointLocation} from '../../math/geometry/curve'
 import {Direction} from '../../math/geometry/direction'
 import {GeomConstants} from '../../math/geometry/geomConstants'
-import {IntersectionInfo} from '../../math/geometry/intersectionInfo'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Polyline} from '../../math/geometry/polyline'
 import {Assert} from '../../utils/assert'
@@ -140,11 +139,12 @@ export class ObstaclePortEntrance {
   private SetUnpaddedToPaddedBorderWeightFromHullSiblingOverlaps(
     obstacleTree: ObstacleTree,
   ) {
-    if (this.InteriorEdgeCrossesObstacle(obstacleTree)) {
-      this.unpaddedToPaddedBorderWeight = ScanSegment.OverlappedWeight
-      // TODO: Warning!!!, inline IF is not supported ?
+    if (
       this.Obstacle.IsGroup
-      this.InteriorEdgeCrossesConvexHullSiblings()
+        ? this.InteriorEdgeCrossesObstacle(obstacleTree)
+        : this.InteriorEdgeCrossesConvexHullSiblings()
+    ) {
+      this.unpaddedToPaddedBorderWeight = ScanSegment.OverlappedWeight
     }
   }
 

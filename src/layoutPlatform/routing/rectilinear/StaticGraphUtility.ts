@@ -107,16 +107,14 @@ export class StaticGraphUtility {
   }
 
   static SegmentsIntersectLL(first: LineSegment, second: LineSegment): Point {
-    return (
-      StaticGraphUtility.IntervalsIntersect(
-        first.start,
-        first.end,
-        second.start,
-        second.end,
-      ) 
+    return StaticGraphUtility.IntervalsIntersect(
+      first.start,
+      first.end,
+      second.start,
+      second.end,
     )
   }
-  
+
   static IntervalsOverlapSS(first: SegmentBase, second: SegmentBase): boolean {
     return StaticGraphUtility.IntervalsOverlapPPPP(
       first.Start,

@@ -1,6 +1,6 @@
 import {Point} from '../../../..'
 import {compareNumbers} from '../../../utils/compare'
-import { Comparison, Comparer } from "@esfx/equatable";
+import {Comparer} from '@esfx/equatable'
 export class PointByDelegateComparer implements Comparer<Point> {
   projection: (p: Point) => number
 

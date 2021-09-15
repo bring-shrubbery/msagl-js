@@ -1,7 +1,7 @@
 /// Avoid a situation where two paths cross each other more than once. Remove self loops.
 ///
 
-import { from, IEnumerable } from 'linq-to-typescript'
+import {from, IEnumerable} from 'linq-to-typescript'
 import {Point} from '../../../..'
 import {Assert} from '../../../utils/assert'
 import {PointMap} from '../../../utils/PointMap'
@@ -91,10 +91,9 @@ export class PathMerger {
       stemPath,
       departureFromLooping.Point,
     )
-    const pointsToInsert = from(PathMerger.GetPointsInBetween(
-      departurePointOnStem,
-      arrivalToStem,
-    ))
+    const pointsToInsert = from(
+      PathMerger.GetPointsInBetween(departurePointOnStem, arrivalToStem),
+    )
     if (PathMerger.Before(departureFromLooping, arrivalToLooping)) {
       this.CleanDisappearedPiece(
         departureFromLooping,
@@ -189,7 +188,7 @@ export class PathMerger {
   InitVerticesToPathOffsetsAndRemoveSelfCycles() {
     for (const path of this.Paths) {
       for (
-        let linkedPoint = <LinkedPoint><unknown>path.PathPoints;
+        let linkedPoint = <LinkedPoint>(<unknown>path.PathPoints);
         linkedPoint != null;
         linkedPoint = linkedPoint.Next
       ) {

@@ -81,10 +81,11 @@ export class StaircaseRemover {
     }
 
     const segs = [
-    new SegWithIndex(t.pts, 0),
-    new SegWithIndex(t.pts, 1),
-    new SegWithIndex(t.pts, 2),
-    new SegWithIndex(t.pts, 3)]
+      new SegWithIndex(t.pts, 0),
+      new SegWithIndex(t.pts, 1),
+      new SegWithIndex(t.pts, 2),
+      new SegWithIndex(t.pts, 3),
+    ]
 
     let segToReplace = 0
     for (let i = 0; ; ) {
