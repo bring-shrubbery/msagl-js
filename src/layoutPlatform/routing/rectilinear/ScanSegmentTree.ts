@@ -17,7 +17,7 @@ export class ScanSegmentTree {
 
   constructor(scanDir: ScanDirection) {
     this.ScanDirection = scanDir
-    this.segmentTree = new RBTree<ScanSegment>(this.Compare)
+    this.segmentTree = new RBTree<ScanSegment>((a, b) => this.Compare(a, b))
     this.findIntersectorPred = this.CompareIntersector
     this.findPointPred = this.CompareToPoint
   }

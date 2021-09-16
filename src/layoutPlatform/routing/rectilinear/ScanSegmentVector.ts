@@ -66,7 +66,7 @@ export class ScanSegmentVector {
 
   //  Returns an enumeration of the vector of ScanSegmentVectorItems.
 
-  *Items(): Iterable<ScanSegmentVectorItem> {
+  Items(): ScanSegmentVectorItem[] {
     return this.vector
   }
 

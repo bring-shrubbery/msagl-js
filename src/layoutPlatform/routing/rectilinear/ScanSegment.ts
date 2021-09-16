@@ -2,6 +2,7 @@ import {from} from 'linq-to-typescript'
 import {Curve} from '../../math/geometry/curve'
 import {Point} from '../../math/geometry/point'
 import {Assert} from '../../utils/assert'
+import {compareNumbers} from '../../utils/compare'
 import {SegmentBase} from '../visibility/SegmentBase'
 import {VisibilityEdge} from '../visibility/VisibilityEdge'
 import {VisibilityGraph} from '../visibility/VisibilityGraph'
@@ -391,9 +392,9 @@ export class ScanSegment extends SegmentBase {
     }
 
     this.AppendGroupCrossingsThroughPoint(vg, this.Start)
-    for (const perpCoord of from(this.sparsePerpendicularCoords).orderBy(
-      (d) => d,
-    )) {
+    for (const perpCoord of Array.from(
+      this.sparsePerpendicularCoords.values(),
+    ).sort(compareNumbers)) {
       const vertexLocation = this.CreatePointFromPerpCoord(perpCoord)
       Assert.assert(
         this.ContainsPoint(vertexLocation),

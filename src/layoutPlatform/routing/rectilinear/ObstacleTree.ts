@@ -209,10 +209,8 @@ export class ObstacleTree {
       return
     }
 
-    CrossRectangleNodes(
-      rectangularObstacles,
-      rectangularObstacles,
-      this.EvaluateOverlappedPairForClump,
+    CrossRectangleNodes(rectangularObstacles, rectangularObstacles, (a, b) =>
+      this.EvaluateOverlappedPairForClump(a, b),
     )
   }
 
@@ -253,7 +251,7 @@ export class ObstacleTree {
     CrossRectangleNodes(
       allPrimaryNonGroupObstacles,
       allPrimaryNonGroupObstacles,
-      this.EvaluateOverlappedPairForConvexHull,
+      (a, b) => this.EvaluateOverlappedPairForConvexHull(a, b),
     )
   }
 
