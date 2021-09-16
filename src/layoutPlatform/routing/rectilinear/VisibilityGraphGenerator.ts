@@ -1025,18 +1025,18 @@ export abstract class VisibilityGraphGenerator {
     //  ReflectionEvents, then the Active*Side to that side may cover them, or if we're overlapped,
     //  the Active*Side of the overlapping obstacle may if there is a non-overlapped segment extension.
     //  Check the neighbors in both directions.
-    let lowReflector // TODO - bug
-    this.LowNeighborSides.LowNeighborSide
+    const lowReflector =
+      this.LowNeighborSides.GroupSideInterveningBeforeLowNeighbor ??
+      this.LowNeighborSides.LowNeighborSide
     if (this.SideReflectsUpward(lowReflector)) {
       this.LoadReflectionEvents(obstacle.ActiveLowSide)
     }
-
-    let highReflector
-    this.HighNeighborSides.HighNeighborSide
+    const highReflector =
+      this.HighNeighborSides.GroupSideInterveningBeforeHighNeighbor ??
+      this.HighNeighborSides.HighNeighborSide
     if (this.SideReflectsUpward(highReflector)) {
       this.LoadReflectionEvents(obstacle.ActiveHighSide)
     }
-
     //  If this is a flat side it must absorb any outstanding reflection sites.
     if (obstacle.ActiveHighSide.Start != obstacle.ActiveLowSide.Start) {
       //  Create a temp HighObstacleSide so the "next vertex" moves in the correct direction.

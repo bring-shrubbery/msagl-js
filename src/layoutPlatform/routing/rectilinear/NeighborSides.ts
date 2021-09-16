@@ -28,7 +28,7 @@ export class NeighborSides {
 
   ///  Dereferences the node if non-null to return the side Item.
 
-  HighNeighborSide(): BasicObstacleSide {
+  get HighNeighborSide(): BasicObstacleSide {
     return this.HighNeighbor == null ? null : this.HighNeighbor.item
   }
 

@@ -19,6 +19,7 @@ import {Rectangle} from '../../math/geometry/rectangle'
 import {RBNode} from '../../structs/RBTree/rbNode'
 import {Assert} from '../../utils/assert'
 import {comparePointsYFirst} from '../../utils/compare'
+import {PointSet} from '../../utils/PointSet'
 import {SweepEvent} from '../spline/coneSpanner/SweepEvent'
 import {AxisCoordinateEvent} from './AxisCoordinateEvent'
 import {BasicObstacleSide, LowObstacleSide} from './BasicObstacleSide'
@@ -39,16 +40,16 @@ import {VisibilityGraphGenerator} from './VisibilityGraphGenerator'
 export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
   ///  The points of obstacle vertices encountered on horizontal scan.
 
-  private horizontalVertexPoints: Set<Point> = new Set<Point>()
+  private horizontalVertexPoints = new PointSet()
 
   ///  The points of obstacle vertices encountered on vertical scan.
 
-  private verticalVertexPoints: Set<Point> = new Set<Point>()
+  private verticalVertexPoints: PointSet = new PointSet()
 
   ///  The Steiner points generated at the bounding box of obstacles.
   ///  These help ensure that we can "go around" the obstacle, as with the non-orthogonal edges in the paper.
 
-  private boundingBoxSteinerPoints: Set<Point> = new Set<Point>()
+  private boundingBoxSteinerPoints: PointSet = new PointSet()
 
   ///  Accumulates distinct vertex projections to the X axis during sweep.
 
@@ -518,13 +519,13 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
   private GenerateSparseIntersectionsAlongHorizontalAxis() {
     this.currentAxisPointComparer = comparePointsYFirst
 
-    const vertexPoints = Array.from(this.horizontalVertexPoints).sort(
+    const vertexPoints = Array.from(this.horizontalVertexPoints.values()).sort(
       this.currentAxisPointComparer,
     )
 
-    const bboxSteinerPoints = Array.from(this.boundingBoxSteinerPoints).sort(
-      this.currentAxisPointComparer,
-    )
+    const bboxSteinerPoints = Array.from(
+      this.boundingBoxSteinerPoints.values(),
+    ).sort(this.currentAxisPointComparer)
     this.ScanDirection = ScanDirection.HorizontalInstance
     this.SetVectorsAndCoordMaps(this.ScanDirection)
     this.GenerateSparseIntersections(vertexPoints, bboxSteinerPoints)
@@ -532,13 +533,13 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
 
   private GenerateSparseIntersectionsAlongVerticalAxis() {
     this.currentAxisPointComparer = (a, b) => a.compareTo(b)
-    const vertexPoints = Array.from(this.verticalVertexPoints).sort(
+    const vertexPoints = Array.from(this.verticalVertexPoints.values()).sort(
       this.currentAxisPointComparer,
     )
 
-    const bboxSteinerPoints = Array.from(this.boundingBoxSteinerPoints).sort(
-      this.currentAxisPointComparer,
-    )
+    const bboxSteinerPoints = Array.from(
+      this.boundingBoxSteinerPoints.values(),
+    ).sort(this.currentAxisPointComparer)
     this.ScanDirection = ScanDirection.VerticalInstance
     this.SetVectorsAndCoordMaps(this.ScanDirection)
     this.GenerateSparseIntersections(vertexPoints, bboxSteinerPoints)

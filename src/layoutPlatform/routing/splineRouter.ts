@@ -881,10 +881,10 @@ export class SplineRouter extends Algorithm {
   // }
 
   //     CalculateVisibilityGraph() {
-  //   let setOfPortLocations = new Set<Point>(this.LineSweeperPorts);
+  //   let setOfPortLocations = new PointSet(this.LineSweeperPorts);
   //         // TODO: Warning!!!, inline IF is not supported ?
   //         (this.LineSweeperPorts != null);
-  // new Set<Point>();
+  // new PointSet();
   // this.ProcessHookAnyWherePorts(setOfPortLocations);
   // this.portRTree = new RTree<Point, Point>(setOfPortLocations.Select(() => { }, new KeyValuePair<IRectangle<Point>, Point>(new Rectangle(p), p)));
   // this.visGraph = new VisibilityGraph();
@@ -893,7 +893,7 @@ export class SplineRouter extends Algorithm {
   //         //   GeomGraph.Nodes.Select(n => n.BoundaryCurve).Concat(root.Descendants.Select(d => d.BoundaryCurve)), null);
   //     }
 
-  //     private ProcessHookAnyWherePorts(setOfPortLocations: Set<Point>) {
+  //     private ProcessHookAnyWherePorts(setOfPortLocations: PointSet) {
   //   for(let edgeGeometry in this.edgeGeometriesEnumeration) {
   //   if (!(edgeGeometry.SourcePort instanceof ((HookUpAnywhereFromInsidePort || edgeGeometry.SourcePort) instanceof ClusterBoundaryPort))) {
   //     setOfPortLocations.Insert(edgeGeometry.SourcePort.Location);
@@ -1001,7 +1001,7 @@ export class SplineRouter extends Algorithm {
   // }
 
   // RemoveInsidePortsAndSplitBoundaryIfNeeded(boundary: Polyline): Set < Point > {
-  //   let ret = new Set<Point>();
+  //   let ret = new PointSet();
   //   if((boundary == null)) {
   //   for (let point of this.portRTree.GetAllLeaves()) {
   //     ret.Insert(point);

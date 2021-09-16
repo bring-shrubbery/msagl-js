@@ -206,7 +206,7 @@
 //         Polyline polyline = (Polyline)edge.Curve;
 
 //         var stack = new Stack<Point>();
-//         var seen = new Set<Point>();
+//         var seen = new PointSet();
 //         for (var p = polyline.endPoint; p != null; p = p.Prev) {
 //             var v = p.point;
 //             if (seen.Contains(p.point)) {

@@ -16,7 +16,7 @@
 
 //         Map<Polyline, EdgeGeometry> polylineToEdgeGeom = new Map<Polyline, EdgeGeometry>();
 //         Map<Point, Set<PolylinePoint>> pathsThroughPoints = new Map<Point, Set<PolylinePoint>>();
-//     Set < Point > interestingPoints = new Set<Point>();
+//     Set < Point > interestingPoints = new PointSet();
 //     int numberOfReducedCrossings;
 
 //     IEnumerable < Polyline > Polylines {

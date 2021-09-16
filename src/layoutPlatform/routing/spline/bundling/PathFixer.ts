@@ -9,9 +9,9 @@
 //     internal class PathFixer {
 //         MetroGraphData metroGraphData;
 //         Func<Metroline, Point, bool> polylineAcceptsPoint;
-//         Set<Point> foundCrossings = new Set<Point>();
-//         Set<Point> crossingsThatShouldBecomeHubs = new Set<Point>();
-//         Set<Point> pointsToDelete;
+//         PointSet foundCrossings = new PointSet();
+//         PointSet crossingsThatShouldBecomeHubs = new PointSet();
+//         PointSet pointsToDelete;
 
 //         public PathFixer(MetroGraphData metroGraphData, Func<Metroline, Point, bool> polylineAcceptsPoint) {
 //         this.metroGraphData = metroGraphData;
