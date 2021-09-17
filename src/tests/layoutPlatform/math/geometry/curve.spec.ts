@@ -13,6 +13,21 @@ import {Rectangle} from './../../../../layoutPlatform/math/geometry/rectangle'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {closeDistEps} from '../../../../layoutPlatform/utils/compare'
 
+test('polylineAroundClosedCurve', () => {
+  const c = CurveFactory.mkRectangleWithRoundedCorners(
+    100,
+    50,
+    15,
+    15,
+    new Point(0, 0),
+  )
+  const pc = Curve.polylineAroundClosedCurve(c)
+  expect(Point.closeDistEps(pc.boundingBox.center, c.boundingBox.center)).toBe(
+    true,
+  )
+  SvgDebugWriter.dumpICurves('/tmp/polylineAroundClosedCurve.svg', [c, pc])
+})
+
 test('adjustStartEndEndParametersToDomain', () => {
   const c = new Curve()
   c.addSegment(LineSegment.mkPP(new Point(0, 0), new Point(1, 2)))

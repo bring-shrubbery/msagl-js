@@ -35,7 +35,7 @@ export class Polyline implements ICurve {
   requireInit_: boolean
   private isClosed_: boolean
   pBNode: PN
-  bBox: Rectangle
+  private bBox: Rectangle
   private count_: number
   requireInit() {
     this.requireInit_ = true

@@ -53,7 +53,7 @@ export class Shape {
   //  Constructor taking the ID and the curve of the shape.
 
   public constructor(boundaryCurve: ICurve) {
-    this.boundaryCurve = boundaryCurve
+    this.BoundaryCurve = boundaryCurve
   }
 
   //  A group is a shape that has children.

@@ -31,8 +31,11 @@ export class IntPairSet {
   }
 
   *values(): IterableIterator<IntPair> {
-    for (let i = 0; i < this.arrayOfSets.length; i++)
-      for (const j of this.arrayOfSets[i]) yield new IntPair(i, j)
+    for (let i = 0; i < this.arrayOfSets.length; i++) {
+      const arr = this.arrayOfSets[i]
+      if (!arr) continue
+      for (const j of arr.values()) yield new IntPair(i, j)
+    }
   }
   add(p: IntPair) {
     let s = this.arrayOfSets[p.x]

@@ -11,7 +11,8 @@ export class RelativeShape extends Shape {
     return this.curveDelegate()
   }
   public set BoundaryCurve(value: ICurve) {
-    throw new Error('Cannot set BoundaryCurve directly for RelativeShape')
+    if (value)
+      throw new Error('Cannot set BoundaryCurve directly for RelativeShape')
   }
 
   curveDelegate: () => ICurve

@@ -94,8 +94,7 @@ export class ObstacleTree {
     this.allObstacles = Array.from(obstacles)
     let scanlineOrdinal: number = Obstacle.FirstNonSentinelOrdinal
     for (const obstacle of this.allObstacles) {
-      scanlineOrdinal++
-      obstacle.Ordinal = scanlineOrdinal
+      obstacle.Ordinal = scanlineOrdinal++
     }
   }
 
@@ -406,7 +405,7 @@ export class ObstacleTree {
   }
 
   private CreateClumps() {
-    const graph = mkGraphOnEdges(this.overlapPairs.values())
+    const graph = mkGraphOnEdges(Array.from(this.overlapPairs.values()))
     const connectedComponents = GetConnectedComponents(graph)
     for (const component of connectedComponents) {
       //  GetComponents returns at least one self-entry for each index - including the < FirstNonSentinelOrdinal ones.
@@ -414,7 +413,7 @@ export class ObstacleTree {
         continue
       }
 
-      const clump = component.map(this.OrdinalToObstacle)
+      const clump = component.map((i: number) => this.OrdinalToObstacle(i))
       for (const obstacle of clump) {
         obstacle.clump = clump
       }
@@ -423,7 +422,7 @@ export class ObstacleTree {
 
   private CreateConvexHulls(): boolean {
     let found = false
-    const graph = mkGraphOnEdges(this.overlapPairs.values())
+    const graph = mkGraphOnEdges(Array.from(this.overlapPairs.values()))
     const connectedComponents = GetConnectedComponents(graph)
     for (const component of connectedComponents) {
       //  GetComponents returns at least one self-entry for each index - including the < FirstNonSentinelOrdinal ones.

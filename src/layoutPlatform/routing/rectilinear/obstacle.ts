@@ -19,7 +19,13 @@ export class Obstacle {
   static readonly FirstSentinelOrdinal = 1
 
   static readonly FirstNonSentinelOrdinal = 10
-  PaddedPolyline: Polyline
+  private _PaddedPolyline: Polyline
+  public get PaddedPolyline(): Polyline {
+    return this._PaddedPolyline
+  }
+  public set PaddedPolyline(value: Polyline) {
+    this._PaddedPolyline = value
+  }
   IsRectangle: boolean
   InputShape: Shape
   Ports: Set<Port>

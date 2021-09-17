@@ -75,7 +75,7 @@ export class HorizontalConstraintsForSugiyama {
 
   BasicGraphFromLeftRightIntNeibs(): BasicGraphOnEdges<IntPair> {
     return mkGraphOnEdges(
-      from(this.LeftRightIntNeibs.values()).select(
+      Array.from(this.LeftRightIntNeibs.values()).map(
         (p) => new IntPair(p.x, p.y),
       ),
     )
@@ -127,7 +127,7 @@ export class HorizontalConstraintsForSugiyama {
         .where((ip) => ip.x != ip.x),
     )
     const feedbackSet = CycleRemoval.getFeedbackSet(
-      mkGraphOnEdges(from(this.LeftRighInts.values())),
+      mkGraphOnEdges(Array.from(this.LeftRighInts.values())),
     )
     for (const ip of feedbackSet)
       this.LeftRighInts.remove(new IntPair(ip.source, ip.target))
