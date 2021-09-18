@@ -17,15 +17,14 @@ export class GeomGraph extends GeomNode {
     const m = new PlaneTransformation(1, 0, delta.x, 0, 1, delta.y)
     this.transform(m)
   }
-  private _boundingBox: Rectangle
+  _boundingBox: Rectangle
   labelSize: Size
   public get boundingBox(): Rectangle {
-    return this.boundaryCurve
-      ? this.boundaryCurve.boundingBox
-      : this._boundingBox
+    return this._boundingBox
   }
   public set boundingBox(value: Rectangle) {
     this._boundingBox = value
+    /*
     if (this.boundaryCurve) {
       // suppose it is a rectangle with rounded corners
       if (this.boundaryCurve instanceof Curve) {
@@ -48,7 +47,7 @@ export class GeomGraph extends GeomNode {
           value.center,
         )
       }
-    }
+    }*/
   }
   isGraph(): boolean {
     return true
@@ -93,14 +92,17 @@ export class GeomGraph extends GeomNode {
   MinimalWidth = 0
   MinimalHeight = 0
   pumpTheBoxToTheGraphWithMargins(minSeparation: number): Rectangle {
-    const b = Rectangle.mkEmpty()
-    this.pumpTheBoxToTheGraph(b)
-    b.pad(Math.max(this.Margins, minSeparation))
-    if (this.MinimalWidth > 0) b.width = Math.max(b.width, this.MinimalWidth)
+    const t = {b: Rectangle.mkEmpty()}
+    this.pumpTheBoxToTheGraph(t)
+    t.b.pad(Math.max(this.Margins, minSeparation))
+    if (this.MinimalWidth > 0)
+      t.b.width = Math.max(t.b.width, this.MinimalWidth)
     if (this.MinimalHeight > 0)
-      b.height = Math.max(b.height, this.MinimalHeight)
+      t.b.height = Math.max(t.b.height, this.MinimalHeight)
 
-    return b
+    this._boundingBox = t.b
+
+    return t.b
   }
 
   // Fields which are set by Msagl
@@ -115,20 +117,20 @@ export class GeomGraph extends GeomNode {
     this.transform(t)
   }
 
-  pumpTheBoxToTheGraph(b: Rectangle) {
+  pumpTheBoxToTheGraph(t: {b: Rectangle}) {
     for (const e of this.edges()) {
       if (e.underCollapsedCluster()) continue
       if (e.curve != null) {
         const cb = e.curve.boundingBox
         cb.pad(e.lineWidth)
-        b.addRec(cb)
+        t.b.addRecSelf(cb)
       }
-      if (e.label != null) b.addRec(e.label.boundingBox)
+      if (e.label != null) t.b.addRecSelf(e.label.boundingBox)
     }
 
     for (const n of this.shallowNodes()) {
       if (n.underCollapsedCluster() || !n.boundingBox) continue
-      b.addRec(n.boundingBox)
+      t.b.addRecSelf(n.boundingBox)
     }
   }
 
@@ -209,29 +211,31 @@ export class GeomGraph extends GeomNode {
   }
 
   updateBoundingBox(): void {
-    if (this.graph.isEmpty()) return
-    const rect = (this._boundingBox = Rectangle.mkEmpty())
+    if (this.graph.isEmpty()) {
+      this._boundingBox = Rectangle.mkEmpty()
+      return
+    }
+    const rect = Rectangle.mkEmpty()
     let padding = 0
     for (const e of this.graph.edges) {
       const ge = GeomObject.getGeom(e) as GeomEdge
       if (ge.curve == null) continue
-      this.boundingBox.addRec(ge.boundingBox)
+      rect.addRecSelf(ge.boundingBox)
       padding = Math.max(padding, ge.lineWidth)
     }
     for (const gn of this.shallowNodes()) {
       if (gn.boundingBox) {
-        rect.addRec(gn.boundingBox)
+        rect.addRecSelf(gn.boundingBox)
         padding = Math.max(padding, gn.padding)
       }
     }
-    this.addLabelToGraphBB()
+    this.addLabelToGraphBB(rect)
 
     rect.pad(Math.max(padding, this.Margins))
     this.boundingBox = rect
   }
 
-  addLabelToGraphBB() {
-    const rect = this._boundingBox
+  addLabelToGraphBB(rect: Rectangle) {
     if (this.labelSize) {
       rect.top += this.labelSize.height
       if (rect.width < this.labelSize.width) {

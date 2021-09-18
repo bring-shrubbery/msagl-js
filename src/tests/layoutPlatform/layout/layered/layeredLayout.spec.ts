@@ -265,7 +265,9 @@ test('layer and node separation', () => {
 
 test('clust.gv', () => {
   const ss = new SugiyamaLayoutSettings()
-  runLayout('src/tests/data/graphvis/clust.gv', ss)
+  const dg = runLayout('src/tests/data/graphvis/clust.gv', ss)
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/clust.gv.svg')
+  t.writeGraph(<GeomGraph>GeomObject.getGeom(dg.graph))
 })
 
 test('arrowhead size default', () => {
@@ -318,7 +320,7 @@ test('fsm.gv brandes', () => {
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   // console.log(qualityMetric(GeomObject.getGeom(dg.graph) as GeomGraph))
 })
-xtest('fsm.gv', () => {
+test('fsm.gv', () => {
   const ss = new SugiyamaLayoutSettings()
   const dg = runLayout('src/tests/data/graphvis/fsm.gv', ss)
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/fsmNetworkSimplex.svg')
@@ -339,19 +341,19 @@ xtest('b100', () => {
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/b100.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
-xtest('pmpipe.gv', () => {
+test('pmpipe.gv', () => {
   const dg = runLayout('src/tests/data/graphvis/pmpipe.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pmpipe.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
-xtest('layered layout hookup longflat', () => {
+test('layered layout hookup longflat', () => {
   const dg = runLayout('src/tests/data/graphvis/longflat.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/longflat.svg')
   t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
-xtest('layered layout empty graph', () => {
+test('layered layout empty graph', () => {
   const gg = GeomGraph.mk('graph', Rectangle.mkEmpty())
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(gg, ss, new CancelToken())
@@ -512,7 +514,7 @@ test('layout all gv files from list', () => {
   }
 })
 
-xtest('layout all gv files', () => {
+test('layout all gv files', () => {
   const path = 'src/tests/data/graphvis/'
   fs.readdir(path, (err, files) => {
     expect(err).toBe(null)

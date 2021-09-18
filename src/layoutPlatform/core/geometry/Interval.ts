@@ -16,9 +16,13 @@ export class Interval implements IRectangle<number> {
   }
   add_rect(rectangle: IRectangle<number>): IRectangle<number> {
     const r = (rectangle as unknown) as Interval
-    this.add_d(r.start)
-    this.add_d(r.end)
-    return this
+    const ret: Interval = this.clone()
+    ret.add_d(r.start)
+    ret.add_d(r.end)
+    return ret
+  }
+  clone(): Interval {
+    return new Interval(this.start, this.end)
   }
   contains_point(n: number): boolean {
     return this.contains_d(n)

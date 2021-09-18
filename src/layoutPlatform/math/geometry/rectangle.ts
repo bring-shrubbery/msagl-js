@@ -215,7 +215,7 @@ export class Rectangle implements IRectangle<Point> {
   static rectangleOnRectangles(rectangles: Rectangle[]) {
     const r = Rectangle.mkEmpty()
     for (const p of rectangles) {
-      r.addRec(p)
+      r.addRecSelf(p)
     }
     return r
   }
@@ -261,7 +261,7 @@ export class Rectangle implements IRectangle<Point> {
       top: a.top_,
       bottom: a.bottom_,
     })
-    r.addRec(b)
+    r.addRecSelf(b)
     return r
   }
 
@@ -311,11 +311,22 @@ export class Rectangle implements IRectangle<Point> {
     return wider || higher
   }
 
+
   // adding rectangle
-  addRec(rectangle: Rectangle) {
+  addRecSelf(rectangle: Rectangle) {
+    
     this.add(rectangle.leftTop)
     this.add(rectangle.rightBottom)
-    return this
+    
+  }
+
+
+  // adding rectangle
+  addRec(rectangle: Rectangle): Rectangle {
+    const ret = this.clone()
+    ret.add(rectangle.leftTop)
+    ret.add(rectangle.rightBottom)
+    return ret
   }
 
   // Return copy of specified rectangle translated by the specified delta

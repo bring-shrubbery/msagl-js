@@ -36,7 +36,7 @@ export class SvgDebugWriter {
   static getBoundingBox(dcurves: DebugCurve[]): Rectangle {
     const r = Rectangle.mkEmpty()
     for (const c of dcurves) {
-      r.addRec(c.icurve.boundingBox)
+      r.addRecSelf(c.icurve.boundingBox)
     }
     const s = Math.max(r.width, r.height)
     r.pad(s / 20)
@@ -286,13 +286,8 @@ export class SvgDebugWriter {
   }
 
   writeGraph(g: GeomGraph) {
-    let box = g.boundingBox
-    if (box == undefined) {
-      box = Rectangle.mkEmpty()
-      for (const n of g.shallowNodes()) box.addRec(n.boundingBox)
-      for (const e of g.edges()) box.addRec(e.boundingBox)
-    }
-    this.open(box)
+    g.updateBoundingBox()
+    this.open(g.boundingBox)
     for (const n of g.deepNodes()) {
       if (!n.boundaryCurve) continue
       this.writeDebugCurve(DebugCurve.mkDebugCurveI(n.boundaryCurve))
@@ -302,7 +297,7 @@ export class SvgDebugWriter {
         // we are in the flipped world
         const labelBox = Rectangle.mkSizeCenter(
           gg.labelSize,
-          new Point(box.center.x, box.top - gg.labelSize.height / 2),
+          new Point(box.center.x, box.bottom - gg.labelSize.height / 2),
         )
 
         this.writeLabel(n.id, labelBox)

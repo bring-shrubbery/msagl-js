@@ -81,8 +81,8 @@ export function layoutGraph(
         const g = <GeomGraph>n
         layoutGraph(g, cancelToken, layoutSettingsFunc)
         g.updateBoundingBox()
-        const bb = n.boundingBox
-        if (bb) {
+        const bb = g._boundingBox
+        if (bb && !bb.isEmpty()) {
           n.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
             bb.width,
             bb.height,

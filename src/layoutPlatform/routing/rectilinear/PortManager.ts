@@ -1172,7 +1172,7 @@ export class PortManager {
 
     //  Return the endpoint-containing rectangle marking the limits of edge-chain extension for a single path.
     this.portSpliceLimitRectangle = this.GetPortRectangle(edgeGeom.sourcePort)
-    this.portSpliceLimitRectangle.addRec(
+    this.portSpliceLimitRectangle.addRecSelf(
       this.GetPortRectangle(edgeGeom.targetPort),
     )
   }

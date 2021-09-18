@@ -1627,7 +1627,7 @@ export class Curve implements ICurve {
     const b = this.segs[0].boundingBox.clone()
 
     for (let i = 1; i < this.segs.length; i++)
-      b.addRec(this.segs[i].boundingBox)
+      b.addRecSelf(this.segs[i].boundingBox)
 
     return b
   }

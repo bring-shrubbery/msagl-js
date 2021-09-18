@@ -63,7 +63,7 @@ export class GeomEdge extends GeomObject {
     if (this.underlyingPolyline != null)
       for (const p of this.underlyingPolyline.points()) rect.add(p)
 
-    if (this.curve != null) rect.addRec(this.curve.boundingBox)
+    if (this.curve != null)  rect.addRecSelf(this.curve.boundingBox)
 
     if (this.edgeGeometry != null) {
       if (this.edgeGeometry.sourceArrowhead != null)
@@ -72,7 +72,7 @@ export class GeomEdge extends GeomObject {
         rect.add(this.edgeGeometry.targetArrowhead.tipPosition)
     }
     if (this.edge.label) {
-      rect.addRec(this.label.boundingBox)
+      rect.addRecSelf(this.label.boundingBox)
     }
 
     const del = this.lineWidth
