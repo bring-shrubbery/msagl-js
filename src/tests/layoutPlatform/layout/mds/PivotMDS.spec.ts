@@ -33,7 +33,7 @@ export function runMDSLayout(
   return dg
 }
 
-test('b7 pivot mds', () => {
+xtest('b7 pivot mds', () => {
   const dg = runMDSLayout('src/tests/data/graphvis/b7.gv')
   outputGraph(<GeomGraph>GeomObject.getGeom(dg.graph), 'b7Mds.svg')
 })
@@ -144,10 +144,10 @@ test('layout 200-250 gv files with MDS', () => {
 
 test('layout from 250 and up  gv files with MDS', () => {
   const path = 'src/tests/data/graphvis/'
-  const i = 0
+  let i = 0
   for (const f of sortedList) {
     if (f.match('big(.*).gv')) continue // the parser bug
-    if (i < 250) continue
+    if (i++ < 250) continue
     let dg: DrawingGraph
     try {
       dg = runMDSLayout(join(path, f))
@@ -156,7 +156,7 @@ test('layout from 250 and up  gv files with MDS', () => {
       expect(1).toBe(0)
     }
     if (dg != null) {
-      const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pivot' + f + '.svg')
+      const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + f + '_pivot.svg')
       t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
   }

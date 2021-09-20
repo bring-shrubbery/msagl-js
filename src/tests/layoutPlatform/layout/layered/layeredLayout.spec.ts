@@ -493,7 +493,7 @@ test('brandes', () => {
   }
 })
 
-test('layout all gv files from list', () => {
+test('layout first 150 gv files from list', () => {
   const path = 'src/tests/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
@@ -514,7 +514,7 @@ test('layout all gv files from list', () => {
   }
 })
 
-test('layout all gv files', () => {
+xtest('layout all gv files', () => {
   const path = 'src/tests/data/graphvis/'
   fs.readdir(path, (err, files) => {
     expect(err).toBe(null)
