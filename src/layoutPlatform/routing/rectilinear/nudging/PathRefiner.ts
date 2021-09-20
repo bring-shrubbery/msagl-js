@@ -37,9 +37,9 @@ export class PathRefiner {
   ///  <param name="paths"></param>
   static AdjustPaths(paths: Iterable<Path>) {
     for (const path of paths) {
-      const arg = path.PathPoints.select((p) => p.clone())
-      const adjusted = PathRefiner.AdjustPathPoints(arg.toArray())
-      path.PathPoints = from(adjusted)
+      const arg = (<Array<Point>>path.PathPoints).map((p) => p.clone())
+      const adjusted = PathRefiner.AdjustPathPoints(arg)
+      path.PathPoints = adjusted
     }
   }
 
@@ -79,7 +79,7 @@ export class PathRefiner {
     pathsToPathLinkedPoints: Map<Path, LinkedPoint>,
   ) {
     for (const [k, v] of pathsToPathLinkedPoints) {
-      k.PathPoints = from(v.GetEnumerator())
+      k.PathPoints = v
     }
   }
 
@@ -221,9 +221,10 @@ export class PathRefiner {
   }
 
   static CreateLinkedVertexOfEdgePath(path: Path): LinkedPoint {
-    const pathPoint = new LinkedPoint(path.PathPoints.first())
+    const arr = from(path.PathPoints as Array<Point>)
+    const pathPoint = new LinkedPoint(arr.first())
     const first = pathPoint
-    path.PathPoints.skip(1).aggregate(pathPoint, (lp, p) => {
+    arr.skip(1).aggregate(pathPoint, (lp, p) => {
       lp.Next = new LinkedPoint(p)
       return lp.Next
     })

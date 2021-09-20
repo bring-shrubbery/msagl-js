@@ -11,6 +11,7 @@ import {VisibilityEdge} from '../../visibility/VisibilityEdge'
 import {VisibilityGraph} from '../../visibility/VisibilityGraph'
 import {VisibilityVertex} from '../../visibility/VisibilityVertex'
 import {AxisEdge} from './AxisEdge'
+import {LinkedPoint} from './LinkedPoint'
 import {Path} from './Path'
 import {PathEdge} from './PathEdge'
 
@@ -60,7 +61,11 @@ export class CombinatorialNudger {
     }
 
     function* it(): IterableIterator<Point> {
-      for (const p of path.PathPoints) yield p
+      if (path.PathPoints instanceof LinkedPoint) {
+        return (<LinkedPoint>path.PathPoints).GetEnumerator()
+      } else {
+        for (const p of path.PathPoints) yield p
+      }
     }
   }
 

@@ -3,6 +3,7 @@ import {String} from 'typescript-string-operations'
 import {Point} from '../../../..'
 import {EdgeGeometry} from '../../../layout/core/edgeGeometry'
 import {Assert} from '../../../utils/assert'
+import {LinkedPoint} from './LinkedPoint'
 import {PathEdge} from './PathEdge'
 
 ///  represents the path for an EdgeGeometry
@@ -13,11 +14,11 @@ export class Path {
 
   ///  the path points
 
-  private _pathPoints: IEnumerable<Point>
-  public get PathPoints(): IEnumerable<Point> {
+  private _pathPoints: Array<Point> | LinkedPoint
+  public get PathPoints(): Array<Point> | LinkedPoint {
     return this._pathPoints
   }
-  public set PathPoints(value: IEnumerable<Point>) {
+  public set PathPoints(value: Array<Point> | LinkedPoint) {
     this._pathPoints = value
   }
   get Width(): number {

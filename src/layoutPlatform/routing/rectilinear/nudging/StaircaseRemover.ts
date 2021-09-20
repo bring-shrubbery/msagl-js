@@ -53,7 +53,7 @@ export class StaircaseRemover {
   ProcessPath(path: Path): boolean {
     const t = {pts: <Point[]>(<any>path.PathPoints), canHaveStaircase: false}
     if (this.ProcessPoints(t)) {
-      path.PathPoints = from(t.pts)
+      path.PathPoints = t.pts
       return true
     }
 
@@ -239,7 +239,7 @@ export class StaircaseRemover {
   }
 
   InsertPathSegs(path: Path) {
-    this.InsertSegs(path.PathPoints.toArray())
+    this.InsertSegs(<Array<Point>>path.PathPoints)
   }
 
   InsertSegs(pts: Point[]) {

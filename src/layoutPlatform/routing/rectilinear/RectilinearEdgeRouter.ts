@@ -472,7 +472,7 @@ export class RectilinearEdgeRouter extends Algorithm {
     edgePath: Path,
     intersectPoints: Point[],
   ) {
-    edgePath.PathPoints = from(intersectPoints)
+    edgePath.PathPoints = intersectPoints
   }
 
   SpliceVisibilityAndGeneratePath(

@@ -80,12 +80,13 @@ export class Nudger {
   }
 
   MapPathToItsObstacles(path: Path) {
+    const fr = from(path.PathPoints as Array<Point>)
     const startNode = this.HierarchyOfObstacles.FirstHitNodeWithPredicate(
-      path.PathPoints.first(),
+      fr.first(),
       Nudger.ObstacleTest,
     )
     const endNode = this.HierarchyOfObstacles.FirstHitNodeWithPredicate(
-      path.PathPoints.last(),
+      fr.last(),
       Nudger.ObstacleTest,
     )
     if (null != startNode && null != endNode) {
@@ -233,7 +234,7 @@ export class Nudger {
     const ret = new Array<ICurve>()
     for (const path of paths) {
       const poly = new Polyline()
-      for (const point of path.PathPoints) {
+      for (const point of <Array<Point>>path.PathPoints) {
         poly.addPoint(point)
       }
 
@@ -310,7 +311,7 @@ export class Nudger {
 
   ShiftPathEdges() {
     for (const path of this.Paths) {
-      path.PathPoints = from(this.GetShiftedPoints(path).toArray())
+      path.PathPoints = this.GetShiftedPoints(path).toArray()
     }
   }
 
@@ -1012,7 +1013,7 @@ export class Nudger {
   }
 
   static BuildPolylineForPath(path: Path): IEnumerable<Point> {
-    const t = {points: path.PathPoints.select((p) => p.clone()).toArray()}
+    const t = {points: (path.PathPoints as Array<Point>).map((p) => p.clone())}
     Nudger.ExtendPolylineToPorts(t, path)
     for (let i = 0; i < t.points.length - 1; i++) {
       Assert.assert(

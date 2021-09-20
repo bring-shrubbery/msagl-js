@@ -27,7 +27,7 @@ export class MsmtRectilinearPath {
   GetPath(
     sources: IEnumerable<VisibilityVertex>,
     targets: IEnumerable<VisibilityVertex>,
-  ): IEnumerable<Point> {
+  ): Array<Point> {
     return SsstRectilinearPath.RestorePathV({
       entry: this.GetPathStage(null, sources, null, targets),
     })

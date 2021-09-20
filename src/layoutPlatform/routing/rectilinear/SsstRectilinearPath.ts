@@ -341,14 +341,14 @@ export class SsstRectilinearPath {
     }
   }
 
-  static RestorePathV(t: {entry: VertexEntry}): IEnumerable<Point> {
+  static RestorePathV(t: {entry: VertexEntry}): Array<Point> {
     return SsstRectilinearPath.RestorePath(t, null)
   }
 
   static RestorePath(
     t: {entry: VertexEntry},
     firstVertexInStage: VisibilityVertex,
-  ): IEnumerable<Point> {
+  ): Array<Point> {
     if (t.entry == null) {
       return null
     }
@@ -379,7 +379,7 @@ export class SsstRectilinearPath {
     }
 
     list.reverse()
-    return from(list)
+    return list
   }
 
   private QueueReversedEntryToNeighborVertexIfNeeded(
