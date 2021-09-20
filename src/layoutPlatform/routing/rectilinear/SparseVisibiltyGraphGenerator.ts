@@ -570,7 +570,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     this.perpendicularSegmentVector.ResetForIntersections()
     this.parallelSegmentVector.ResetForIntersections()
     //  Position the enumerations to the first point.
-    let i = 0
+    let i = 1
     const steinerPointsCounter = {j: 0}
     for (const item of this.parallelSegmentVector.Items()) {
       for (;;) {
@@ -718,7 +718,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
   ): number {
     const coord = segmentVector.GetParallelCoord(site)
     const slot = coordMap.get(coord)
-    if (slot) {
+    if (slot != undefined) {
       return slot
     }
 
@@ -760,7 +760,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     let high: number = this.perpendicularSegmentVector.Length - 1
     //  Terminate when we are one away because we don't have an edge from a point to itself.
     while (high - low > 1) {
-      const mid: number = low + (high - low) / 2
+      const mid: number = low + Math.floor((high - low) / 2)
       //  We only use the half of the graph that the site is in, so arbitrarily decide that it is
       //  in the lower half if it is at the midpoint.
       if (siteSlot <= mid) {

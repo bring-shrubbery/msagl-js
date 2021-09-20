@@ -202,14 +202,13 @@ export class SsstRectilinearPath {
     entryDirToVertex: Direction,
     dirToTarget: Direction,
   ): number {
-    return this.GetNumberOfBendsForPureDirection(entryDirToVertex, dirToTarget)
-    // TODO: Warning!!!, inline IF is not supported ?
-    CompassVector.IsPureDirection(dirToTarget)
-    SsstRectilinearPath.GetBendsForNotPureDirection(
-      dirToTarget,
-      entryDirToVertex,
-      this.EntryDirectionsToTarget,
-    )
+    return CompassVector.IsPureDirection(dirToTarget)
+      ? this.GetNumberOfBendsForPureDirection(entryDirToVertex, dirToTarget)
+      : SsstRectilinearPath.GetBendsForNotPureDirection(
+          dirToTarget,
+          entryDirToVertex,
+          this.EntryDirectionsToTarget,
+        )
   }
 
   private GetNumberOfBendsForPureDirection(

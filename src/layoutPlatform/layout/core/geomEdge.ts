@@ -63,7 +63,7 @@ export class GeomEdge extends GeomObject {
     if (this.underlyingPolyline != null)
       for (const p of this.underlyingPolyline.points()) rect.add(p)
 
-    if (this.curve != null)  rect.addRecSelf(this.curve.boundingBox)
+    if (this.curve != null) rect.addRecSelf(this.curve.boundingBox)
 
     if (this.edgeGeometry != null) {
       if (this.edgeGeometry.sourceArrowhead != null)

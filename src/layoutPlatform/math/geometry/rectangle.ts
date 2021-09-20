@@ -311,15 +311,11 @@ export class Rectangle implements IRectangle<Point> {
     return wider || higher
   }
 
-
   // adding rectangle
   addRecSelf(rectangle: Rectangle) {
-    
     this.add(rectangle.leftTop)
     this.add(rectangle.rightBottom)
-    
   }
-
 
   // adding rectangle
   addRec(rectangle: Rectangle): Rectangle {

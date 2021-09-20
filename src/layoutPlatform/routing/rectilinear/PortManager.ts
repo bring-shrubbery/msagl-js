@@ -100,7 +100,7 @@ export class PortManager {
 
   constructor(graphGenerator: VisibilityGraphGenerator) {
     this.TransUtil = new TransientGraphUtility(graphGenerator)
-    this.graphGenerator = this.graphGenerator
+    this.graphGenerator = graphGenerator
   }
 
   Clear() {
@@ -514,16 +514,17 @@ export class PortManager {
           continue
         }
 
-        const points = PortManager.GetPathPointsFromOverlappingCollinearVisibility(
-          sourceEntrance,
-          targetEntrance,
-        )
-        // TODO: Warning!!!, inline IF is not supported ?
-        sourceEntrance.IsVertical == targetEntrance.IsVertical
-        PortManager.GetPathPointsFromIntersectingVisibility(
-          sourceEntrance,
-          targetEntrance,
-        )
+        const points =
+          sourceEntrance.IsVertical == targetEntrance.IsVertical
+            ? PortManager.GetPathPointsFromOverlappingCollinearVisibility(
+                sourceEntrance,
+                targetEntrance,
+              )
+            : PortManager.GetPathPointsFromIntersectingVisibility(
+                sourceEntrance,
+                targetEntrance,
+              )
+
         if (points != null) {
           return points
         }

@@ -22,7 +22,7 @@ import {RectilinearEdgeRouter} from '../../../../layoutPlatform/routing/rectilin
 import {runMDSLayout} from '../../layout/mds/PivotMDS.spec'
 import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
 
-xtest('three nodes', () => {
+test('three nodes', () => {
   const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
 
   const a = addNode(

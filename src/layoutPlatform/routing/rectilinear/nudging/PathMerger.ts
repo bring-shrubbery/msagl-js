@@ -188,7 +188,7 @@ export class PathMerger {
   InitVerticesToPathOffsetsAndRemoveSelfCycles() {
     for (const path of this.Paths) {
       for (
-        let linkedPoint = <LinkedPoint>(<unknown>path.PathPoints);
+        let linkedPoint = <LinkedPoint>(<unknown>path.PathPoints); // bug here TODO!!!!!
         linkedPoint != null;
         linkedPoint = linkedPoint.Next
       ) {

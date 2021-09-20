@@ -33,9 +33,9 @@
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/layout/layered/layeredLayout.spec.ts",
+        "src/tests/layoutPlatform/routing/rectilinear/RectilinearEdgeRouter.spec.ts",
         "-t",
-        "brandes"
+        "three nodes"
       ],
       "console": "internalConsole"
     }

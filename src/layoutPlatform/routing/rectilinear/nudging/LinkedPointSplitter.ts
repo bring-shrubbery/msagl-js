@@ -138,7 +138,9 @@ export class LinkedPointSplitter {
     this.tree.remove(linkedPoint)
   }
 
-  tree: RBTree<LinkedPoint>
+  tree: RBTree<LinkedPoint> = new RBTree<LinkedPoint>((a, b) =>
+    compareNumbers(a.Point.x, b.Point.x),
+  )
 
   ProcessLowLinkedPointEvent(linkedPoint: LinkedPoint) {
     this.tree.insert(linkedPoint)

@@ -13,7 +13,13 @@ export class Path {
 
   ///  the path points
 
-  PathPoints: IEnumerable<Point>
+  private _pathPoints: IEnumerable<Point>
+  public get PathPoints(): IEnumerable<Point> {
+    return this._pathPoints
+  }
+  public set PathPoints(value: IEnumerable<Point>) {
+    this._pathPoints = value
+  }
   get Width(): number {
     return this.EdgeGeometry.lineWidth
   }

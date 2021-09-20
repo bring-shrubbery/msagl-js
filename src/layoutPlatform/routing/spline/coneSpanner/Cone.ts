@@ -17,8 +17,8 @@ export class Cone {
   coneSweeper: IConeSweeper
 
   constructor(apex: Point, coneSweeper: IConeSweeper) {
-    this.apex = this.apex
-    this.coneSweeper = this.coneSweeper
+    this.apex = apex
+    this.coneSweeper = coneSweeper
   }
 
   get Apex(): Point {
