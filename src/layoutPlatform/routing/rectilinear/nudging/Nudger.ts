@@ -220,7 +220,7 @@ export class Nudger {
   }
 
   GetPathOrdersAndPathGraph() {
-    const combinatorialNudger = new CombinatorialNudger(from(this.Paths))
+    const combinatorialNudger = new CombinatorialNudger(this.Paths)
     this.PathOrders = combinatorialNudger.GetOrder()
     this.PathVisibilityGraph = combinatorialNudger.PathVisibilityGraph
   }

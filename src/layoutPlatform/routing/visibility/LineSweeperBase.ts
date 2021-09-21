@@ -34,7 +34,9 @@ export class LineSweeperBase {
     this.Obstacles = obstacles
     this.SweepDirection = sweepDirection
     this.DirectionPerp = sweepDirection.rotate(-Math.PI / 2)
-    this.EventQueue = new BinaryHeapWithComparer<SweepEvent>(this.Compare)
+    this.EventQueue = new BinaryHeapWithComparer<SweepEvent>((a, b) =>
+      this.Compare(a, b),
+    )
     this.ObstacleSideComparer = new ObstacleSideComparer(this)
     this.LeftObstacleSideTree = new RBTree<SegmentBase>(
       this.ObstacleSideComparer.Compare,

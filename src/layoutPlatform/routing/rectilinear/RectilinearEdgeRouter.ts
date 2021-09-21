@@ -225,7 +225,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   }
 
   RebuildTreeAndGraph() {
-    const hadTree: boolean = this.ObstacleTree.Root != null
+    const hadTree: boolean = this.ObsTree.Root != null
     const hadVg: boolean = this.GraphGenerator.VisibilityGraph != null
     this.InternalClear(/* retainObstacles:*/ true)
     if (hadTree) {
@@ -600,10 +600,9 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   NudgePaths(edgePaths: IEnumerable<Path>) {
     //  If we adjusted for spatial ancestors, this nudging can get very weird, so refetch in that case.
-    const ancestorSets = SplineRouter.GetAncestorSetsMap(this.Obstacles)
-    // TODO: Warning!!!, inline IF is not supported ?
-    this.ObstacleTree.SpatialAncestorsAdjusted
-    this.AncestorsSets
+    const ancestorSets = this.ObsTree.SpatialAncestorsAdjusted
+      ? SplineRouter.GetAncestorSetsMap(this.Obstacles)
+      : this.AncestorsSets
     //  Using VisibilityPolyline retains any reflection/staircases on the convex hull borders; using
     //  PaddedPolyline removes them.
     Nudger.NudgePaths(
@@ -663,7 +662,7 @@ export class RectilinearEdgeRouter extends Algorithm {
     )
   }
 
-  private get ObstacleTree(): ObstacleTree {
+  private get ObsTree(): ObstacleTree {
     return this.GraphGenerator.ObstacleTree
   }
 
@@ -672,14 +671,14 @@ export class RectilinearEdgeRouter extends Algorithm {
       throw new Error('No obstacles have been added')
     }
 
-    if (this.ObstacleTree.Root == null) {
+    if (this.ObsTree.Root == null) {
       this.InitObstacleTree()
     }
   }
 
   InitObstacleTree() {
     this.AncestorsSets = SplineRouter.GetAncestorSetsMap(this.Obstacles)
-    this.ObstacleTree.Init(
+    this.ObsTree.Init(
       this.ShapeToObstacleMap.values(),
       this.AncestorsSets,
       this.ShapeToObstacleMap,

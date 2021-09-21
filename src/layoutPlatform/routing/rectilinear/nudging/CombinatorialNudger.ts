@@ -30,7 +30,7 @@ export class CombinatorialNudger {
     Array<PathEdge>
   >()
 
-  constructor(paths: IEnumerable<Path>) {
+  constructor(paths: Array<Path>) {
     this.OriginalPaths = paths
   }
 
@@ -62,7 +62,9 @@ export class CombinatorialNudger {
 
     function* it(): IterableIterator<Point> {
       if (path.PathPoints instanceof LinkedPoint) {
-        return (<LinkedPoint>path.PathPoints).GetEnumerator()
+        for (let p = <LinkedPoint>path.PathPoints; p != null; p = p.Next) {
+          yield p.Point
+        }
       } else {
         for (const p of path.PathPoints) yield p
       }
@@ -89,8 +91,11 @@ export class CombinatorialNudger {
         return new PathEdge(this.GetAxisEdge(p0, p1), width)
 
       case Direction.South:
-      case Direction.West:
-        return new PathEdge(this.GetAxisEdge(p1, p0), width)
+      case Direction.West: {
+        const e = new PathEdge(this.GetAxisEdge(p1, p0), width)
+        e.Reversed = true
+        return e
+      }
 
       default:
         throw new Error('Not a rectilinear path')
