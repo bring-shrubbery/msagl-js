@@ -7,7 +7,7 @@ import {Point} from '../../../../layoutPlatform/math/geometry/point'
 import {Edge} from '../../../../layoutPlatform/structs/edge'
 import {Graph} from '../../../../layoutPlatform/structs/graph'
 import {Node} from '../../../../layoutPlatform/structs/node'
-import {createGeometry} from '../layered/layeredLayout.spec'
+import {createGeometry} from '../layered/utilsForTests'
 
 test('all pairs distances', () => {
   const graph = new Graph()

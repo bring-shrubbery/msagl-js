@@ -1,10 +1,7 @@
 import {join} from 'path'
 import {
-  CancelToken,
   GeomGraph,
   Graph,
-  LayeredLayout,
-  SugiyamaLayoutSettings,
   Node,
   GeomNode,
   CurveFactory,

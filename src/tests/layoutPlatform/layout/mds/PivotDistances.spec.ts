@@ -5,9 +5,9 @@ import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugW
 import {parseDotGraph} from '../../../../tools/dotparser'
 import {
   createGeometry,
-  labelRectFunc,
   nodeBoundaryFunc,
-} from '../layered/layeredLayout.spec'
+  labelRectFunc,
+} from '../layered/utilsForTests'
 
 test('pivot distances', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')

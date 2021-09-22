@@ -4,7 +4,6 @@ import {LayeredLayout} from '../../../../layoutPlatform/layout/layered/layeredLa
 import {Graph} from '../../../../layoutPlatform/structs/graph'
 import {GeomNode} from '../../../../layoutPlatform/layout/core/geomNode'
 import {GeomEdge} from '../../../../layoutPlatform/layout/core/geomEdge'
-import {CurveFactory} from '../../../../layoutPlatform/math/geometry/curveFactory'
 import {Point} from '../../../../layoutPlatform/math/geometry/point'
 import {CancelToken} from '../../../../layoutPlatform/utils/cancelToken'
 import {GeomGraph} from '../../../../layoutPlatform/layout/core/GeomGraph'
@@ -14,7 +13,6 @@ import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
 import {StringBuilder} from 'typescript-string-operations'
 import {interpolateICurve} from '../../../../layoutPlatform/math/geometry/curve'
 import {LayerDirectionEnum} from '../../../../layoutPlatform/layout/layered/layerDirectionEnum'
-import {ICurve} from '../../../../layoutPlatform/math/geometry/icurve'
 import {
   Rectangle,
   Size,
@@ -24,13 +22,17 @@ import {join} from 'path'
 import fs = require('fs')
 import {DrawingGraph} from '../../../../drawing/drawingGraph'
 import {Arrowhead} from '../../../../layoutPlatform/layout/core/arrowhead'
-import {GeomLabel} from '../../../../layoutPlatform/layout/core/geomLabel'
-import {Assert} from '../../../../layoutPlatform/utils/assert'
 import {Node} from '../../../../layoutPlatform/structs/node'
 import {Edge} from '../../../../layoutPlatform/structs/edge'
 import {LineSegment} from '../../../../layoutPlatform/math/geometry/lineSegment'
 import {sortedList} from '../sortedBySizeListOfgvFiles'
 import {layoutGraph} from '../../../../layoutPlatform/layout/driver'
+import {
+  createGeometry,
+  nodeBoundaryFunc,
+  labelRectFunc,
+  outputGraph,
+} from './utilsForTests'
 
 type P = [number, number]
 
@@ -419,22 +421,6 @@ function runLayout(fname: string, settings: SugiyamaLayoutSettings = null) {
 //   return dg
 // }
 
-export function outputGraph(g: GeomGraph, name: string) {
-  const strB = new StringBuilder()
-  for (const n of g.shallowNodes()) {
-    const s = n.id + ', center = ' + n.center
-    strB.AppendLine(s)
-  }
-  strB.AppendLine('edges')
-  for (const e of g.edges()) {
-    strB.AppendLine(edgeString(e, true)) // true to get an array of poins
-  }
-
-  //  console.log(strB.ToString())
-  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + name + '.svg')
-  t.writeGraph(g)
-}
-
 export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   const s = e.source.id + '->' + e.target.id
   return (
@@ -572,44 +558,7 @@ function addArrow(start: Point, end: Point, arrowAngle: number): Point[] {
   dir = dir.mul(l * Math.tan(arrowAngle * 0.5 * (Math.PI / 180.0)))
   return [start, start.add(dir), end, start.sub(dir), start]
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function nodeBoundaryFunc(id: string): ICurve {
-  return CurveFactory.mkRectangleWithRoundedCorners(
-    40.1, // tsize.width,
-    30.2, // tsize.height,
-    40.1 / 10, // tsize.width / 10,
-    30.2 / 10, // tsize.height / 10,
-    new Point(0, 0),
-  )
-}
-export function labelRectFunc(text: string): Rectangle {
-  return Rectangle.mkPP(new Point(0, 0), new Point(text.length * 10, 10.5))
-}
-export function createGeometry(
-  g: Graph,
-  nodeBoundaryFunc: (s: string) => ICurve,
-  labelRect: (s: string) => Rectangle,
-): GeomGraph {
-  for (const n of g.shallowNodes) {
-    if (n.isGraph) {
-      const subG = (n as unknown) as Graph
-      new GeomGraph(subG, nodeBoundaryFunc(n.id).boundingBox.size)
-      createGeometry(subG, nodeBoundaryFunc, labelRect)
-    } else {
-      const gn = new GeomNode(n)
-      //const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
-      gn.boundaryCurve = nodeBoundaryFunc(n.id)
-    }
-  }
-  for (const e of g.edges) {
-    const ge = new GeomEdge(e)
-    if (e.label) {
-      Assert.assert(e.label != null)
-      ge.label = new GeomLabel(labelRect(e.label.text), e.label)
-    }
-  }
-  return new GeomGraph(g, nodeBoundaryFunc(g.id).boundingBox)
-}
+
 function crossed(u: GeomEdge, v: GeomEdge): boolean {
   const r = LineSegment.IntersectPPPP(
     u.source.center,

@@ -3,17 +3,17 @@ import {DrawingGraph} from '../../../../drawing/drawingGraph'
 import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {parseDotGraph} from '../../../../tools/dotparser'
-import {
-  createGeometry,
-  nodeBoundaryFunc,
-  labelRectFunc,
-  outputGraph,
-} from '../layered/layeredLayout.spec'
 import {sortedList} from '../sortedBySizeListOfgvFiles'
 import {join} from 'path'
 import {MdsLayoutSettings} from '../../../../layoutPlatform/layout/mds/MDSLayoutSettings'
 import {layoutGraph} from '../../../../layoutPlatform/layout/driver'
 import {EdgeRoutingMode} from '../../../../layoutPlatform/core/routing/EdgeRoutingMode'
+import {
+  createGeometry,
+  labelRectFunc,
+  nodeBoundaryFunc,
+  outputGraph,
+} from '../layered/utilsForTests'
 
 test('graph with subgraphs', () => {
   const dg = runMDSLayout('src/tests/data/graphvis/clust.gv')
