@@ -311,15 +311,13 @@ export class Nudger {
 
   ShiftPathEdges() {
     for (const path of this.Paths) {
-      path.PathPoints = this.GetShiftedPoints(path).toArray()
+      path.PathPoints = this.GetShiftedPoints(path)
     }
   }
 
-  GetShiftedPoints(path: Path): IEnumerable<Point> {
-    return from(
-      Nudger.RemoveSwitchbacksAndMiddlePoints(
-        from(this.GetShiftedPointsSimple(path)),
-      ),
+  GetShiftedPoints(path: Path): Array<Point> {
+    return Nudger.RemoveSwitchbacksAndMiddlePoints(
+      this.GetShiftedPointsSimple(path),
     )
   }
 
@@ -332,12 +330,14 @@ export class Nudger {
     return dx < dy ? new Point(a.x, b.y) : new Point(b.x, a.y)
   }
 
-  *GetShiftedPointsSimple(path: Path): IterableIterator<Point> {
+  GetShiftedPointsSimple(path: Path): Array<Point> {
+    const ret = []
     const edge = path.FirstEdge
-    yield this.ShiftedPoint(edge.Source, edge.LongestNudgedSegment)
+    ret.push(this.ShiftedPoint(edge.Source, edge.LongestNudgedSegment))
     for (const e of path.PathEdges()) {
-      yield this.ShiftedEdgePositionOfTarget(e)
+      ret.push(this.ShiftedEdgePositionOfTarget(e))
     }
+    return ret
   }
 
   ShiftedEdgePositionOfTarget(e: PathEdge): Point {
@@ -1080,42 +1080,36 @@ export class Nudger {
     }
   }
 
-  static *RemoveSwitchbacksAndMiddlePoints(
-    points: IEnumerable<Point>,
-  ): IterableIterator<Point> {
-    function* it(): IterableIterator<Point> {
-      for (const p of points) yield p
-    }
-    const en = it()
-    en.return
-    let a: Point = <Point>(<any>en.return)
-    yield a
-    en.next()
+  static RemoveSwitchbacksAndMiddlePoints(points: Array<Point>): Array<Point> {
+    const ret = []
 
-    let b: Point = <Point>(<any>en.return)
+    let a = points[0]
+    ret.push(a)
+    let b: Point = points[1]
     let prevDir = CompassVector.VectorDirectionPP(a, b)
-    while (en.next()) {
-      const dir = CompassVector.VectorDirectionPP(b, <Point>(<any>en.return))
+    let i = 1
+    while (++i < points.length) {
+      const dir = CompassVector.VectorDirectionPP(b, points[i])
       if (
-        dir == prevDir ||
-        CompassVector.OppositeDir(dir) == prevDir ||
-        dir == Direction.None
+        !(
+          dir == prevDir ||
+          CompassVector.OppositeDir(dir) == prevDir ||
+          dir == Direction.None
+        )
       ) {
-        b = <Point>(<any>en.return)
-      } else {
         if (!Point.closeDistEps(a, b)) {
           // make sure that we are not returning the same point twice
-          yield (a = Nudger.Rectilinearise(a, b))
+          ret.push((a = Nudger.Rectilinearise(a, b)))
         }
-
-        b = <Point>(<any>en.return)
         prevDir = dir
       }
+      b = points[i]
     }
 
     if (!Point.closeDistEps(a, b)) {
-      yield Nudger.Rectilinearise(a, b)
+      ret.push(Nudger.Rectilinearise(a, b))
     }
+    return ret
   }
 
   //  this function defines the final path coordinates

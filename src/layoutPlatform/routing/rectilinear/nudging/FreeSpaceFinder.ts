@@ -53,7 +53,9 @@ export class FreeSpaceFinder extends LineSweeperBase {
     this.DirectionPerp = new CompassVector(direction).Right.ToPoint()
     this.PathOrders = pathOrders
     this.xProjection = direction == Direction.North ? (p) => p.x : (p) => -p.y
-    this.edgeContainersTree = new RBTree<AxisEdgesContainer>(this.CompareAA)
+    this.edgeContainersTree = new RBTree<AxisEdgesContainer>((a, b) =>
+      this.CompareAA(a, b),
+    )
     this.SweepPole = CompassVector.VectorDirection(this.SweepDirection)
     Assert.assert(CompassVector.IsPureDirection(this.SweepPole))
     this.AxisEdges = axisEdges
@@ -82,15 +84,14 @@ export class FreeSpaceFinder extends LineSweeperBase {
   }
 
   ProcessEvent(sweepEvent: SweepEvent) {
-    const vertexEvent = <VertexEvent>sweepEvent
-    if (vertexEvent != null) {
-      this.ProcessVertexEvent(vertexEvent)
+    if (sweepEvent instanceof VertexEvent) {
+      this.ProcessVertexEvent(<VertexEvent>sweepEvent)
     } else {
-      const lowEdgeEvent = <AxisEdgeLowPointEvent>sweepEvent
       this.Z = this.GetZP(sweepEvent.Site)
-      if (lowEdgeEvent != null) {
-        this.ProcessLowEdgeEvent(lowEdgeEvent)
+      if (sweepEvent instanceof AxisEdgeLowPointEvent) {
+        this.ProcessLowEdgeEvent(<AxisEdgeLowPointEvent>sweepEvent)
       } else {
+        Assert.assert(sweepEvent instanceof AxisEdgeHighPointEvent)
         this.ProcessHighEdgeEvent(<AxisEdgeHighPointEvent>sweepEvent)
       }
     }
@@ -399,14 +400,15 @@ export class FreeSpaceFinder extends LineSweeperBase {
 
   ProcessVertexEvent(vertexEvent: VertexEvent) {
     this.Z = this.GetZS(vertexEvent)
-    const leftVertexEvent = <LeftVertexEvent>vertexEvent
-    if (leftVertexEvent != null) {
-      this.ProcessLeftVertex(leftVertexEvent, vertexEvent.Vertex.nextOnPolyline)
+    if (vertexEvent instanceof LeftVertexEvent) {
+      this.ProcessLeftVertex(
+        <LeftVertexEvent>vertexEvent,
+        vertexEvent.Vertex.nextOnPolyline,
+      )
     } else {
-      const rightVertexEvent = <RightVertexEvent>vertexEvent
-      if (rightVertexEvent != null) {
+      if (vertexEvent instanceof RightVertexEvent) {
         this.ProcessRightVertex(
-          rightVertexEvent,
+          <RightVertexEvent>vertexEvent,
           vertexEvent.Vertex.prevOnPolyline,
         )
       } else {
