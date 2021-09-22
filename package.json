@@ -34,7 +34,7 @@
     "@esfx/collections-sortedmap": "^1.0.0-pre.19",
     "@types/parse-color": "^1.0.1",
     "collections": "^5.1.12",
-    "file-system": "^1.2.9",
+    "file-system": "^1.2.2",
     "linq-to-typescript": "^8.1.0",
     "npm": "^7.22.0",
     "queue-typescript": "^1.0.1",
