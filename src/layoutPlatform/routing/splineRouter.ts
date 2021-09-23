@@ -1132,8 +1132,8 @@ export class SplineRouter extends Algorithm {
         )
       }
       for (const t of addition) ret.add(t)
-      return ret
     }
+    return ret
   }
   // return ret;
   //     }

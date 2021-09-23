@@ -634,11 +634,11 @@ export class RectilinearEdgeRouter extends Algorithm {
         continue
       }
 
-      const poly = <Polyline>edgeGeom.curve
-      if (poly != null) {
+      const poly = edgeGeom.curve instanceof Polyline
+      if (poly) {
         edgeGeom.curve = RectilinearEdgeRouter.FitArcsIntoCorners(
           this.CornerFitRadius,
-          Array.from(poly.points()),
+          Array.from((<Polyline>edgeGeom.curve).points()),
         )
       }
 
