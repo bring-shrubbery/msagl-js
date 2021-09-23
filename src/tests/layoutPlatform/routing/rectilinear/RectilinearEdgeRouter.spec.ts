@@ -147,7 +147,7 @@ function addNode(gg: GeomGraph, id: string, c: ICurve): Node {
   geomNodea.boundaryCurve = c
   return node
 }
-test('first 50 dot files', () => {
+xtest('first 50 dot files', () => {
   const path = 'src/tests/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
