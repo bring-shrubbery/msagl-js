@@ -31,7 +31,7 @@ import {
   labelRectFunc,
   outputGraph,
   edgeString,
-} from './utils'
+} from './curveOutputUtils'
 
 type P = [number, number]
 

@@ -8,7 +8,7 @@ import {Edge} from '../../../../layoutPlatform/structs/edge'
 import {Graph} from '../../../../layoutPlatform/structs/graph'
 import {Node} from '../../../../layoutPlatform/structs/node'
 import {closeDistEps} from '../../../../layoutPlatform/utils/compare'
-import {createGeometry} from '../layered/utils'
+import {createGeometry} from '../layered/curveOutputUtils'
 
 test('single source distances', () => {
   const graph = new Graph()

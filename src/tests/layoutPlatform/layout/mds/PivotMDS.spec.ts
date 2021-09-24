@@ -4,7 +4,7 @@ import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {sortedList} from '../sortedBySizeListOfgvFiles'
 import {join} from 'path'
-import {outputGraph, runMDSLayout} from '../layered/utils'
+import {outputGraph, runMDSLayout} from '../layered/curveOutputUtils'
 
 test('graph with subgraphs', () => {
   const dg = runMDSLayout('src/tests/data/graphvis/clust.gv')
@@ -99,7 +99,7 @@ test('layout 150-200 gv files with MDS', () => {
   }
 })
 
-test('layout 200-250 gv files with MDS', () => {
+xtest('layout 200-250 gv files with MDS', () => {
   const path = 'src/tests/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
