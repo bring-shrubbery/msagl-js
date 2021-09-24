@@ -1,22 +1,22 @@
 import {StringBuilder} from 'typescript-string-operations'
 import {
-  ICurve,
-  Rectangle,
-  GeomGraph,
-  GeomNode,
   GeomEdge,
+  Point,
+  interpolateICurve,
+  MdsLayoutSettings,
+  layoutGraph,
+  GeomGraph,
+  ICurve,
+  CurveFactory,
+  Rectangle,
+  GeomNode,
   GeomLabel,
   Graph,
-  CurveFactory,
-  Point,
-  layoutGraph,
-  MdsLayoutSettings,
-  interpolateICurve,
-} from '../../../..'
-import {EdgeRoutingMode} from '../../../../layoutPlatform/core/routing/EdgeRoutingMode'
-import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
-import {Assert} from '../../../../layoutPlatform/utils/assert'
-import {parseDotGraph} from '../../../../tools/dotparser'
+} from '../..'
+import {EdgeRoutingMode} from '../../layoutPlatform/core/routing/EdgeRoutingMode'
+import {SvgDebugWriter} from '../../layoutPlatform/math/geometry/svgDebugWriter'
+import {Assert} from '../../layoutPlatform/utils/assert'
+import {parseDotGraph} from '../../tools/dotparser'
 export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   const s = e.source.id + '->' + e.target.id
   return (

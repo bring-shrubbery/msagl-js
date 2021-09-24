@@ -4,7 +4,7 @@ import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {sortedList} from '../sortedBySizeListOfgvFiles'
 import {join} from 'path'
-import {outputGraph, runMDSLayout} from '../layered/curveOutputUtils'
+import {outputGraph, runMDSLayout} from '../../../utils/testUtils'
 
 test('graph with subgraphs', () => {
   const dg = runMDSLayout('src/tests/data/graphvis/clust.gv')

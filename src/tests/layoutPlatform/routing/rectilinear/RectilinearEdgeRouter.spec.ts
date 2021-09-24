@@ -16,7 +16,7 @@ import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {Size} from '../../../../layoutPlatform/math/geometry/rectangle'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {RectilinearEdgeRouter} from '../../../../layoutPlatform/routing/rectilinear/RectilinearEdgeRouter'
-import {runMDSLayout} from '../../layout/layered/utils'
+import {runMDSLayout} from '../../../utils/testUtils'
 
 import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
 xtest('empty graph', () => {
