@@ -16,7 +16,8 @@ import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {Size} from '../../../../layoutPlatform/math/geometry/rectangle'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {RectilinearEdgeRouter} from '../../../../layoutPlatform/routing/rectilinear/RectilinearEdgeRouter'
-import {runMDSLayout} from '../../layout/mds/PivotMDS.spec'
+import {runMDSLayout} from '../../layout/layered/utils'
+
 import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
 xtest('empty graph', () => {
   const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
@@ -153,8 +154,8 @@ test('first 50 dot files', () => {
   for (const f of sortedList) {
     if (f.match('big(.*).gv')) continue // the parser bug
 
-    // ++i
-    if (++i != 23) continue
+    ++i
+    //if (++i != 15) continue
 
     let dg: DrawingGraph
     try {

@@ -802,11 +802,11 @@ export class RectilinearEdgeRouter extends Algorithm {
     let dir: Point = leg.normalize()
     let rad0: number = Math.min(radius, leg.length / 2)
     for (let i = 1; i < polyline.length - 1; i++) {
-      let ret: Ellipse = null
       leg = polyline[i + 1].sub(polyline[i])
       const legLength: number = leg.length
       if (legLength < GeomConstants.intersectionEpsilon) {
-        ret = new Ellipse(0, 0, new Point(0, 0), new Point(0, 0), polyline[i])
+        yield new Ellipse(0, 0, new Point(0, 0), new Point(0, 0), polyline[i])
+        continue
       }
 
       const ndir: Point = leg.div(legLength)

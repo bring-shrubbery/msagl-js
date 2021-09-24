@@ -3,11 +3,7 @@ import {MdsLayoutSettings} from '../../../../layoutPlatform/layout/mds/MDSLayout
 import {PivotDistances} from '../../../../layoutPlatform/layout/mds/PivotDistances'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {parseDotGraph} from '../../../../tools/dotparser'
-import {
-  createGeometry,
-  nodeBoundaryFunc,
-  labelRectFunc,
-} from '../layered/utilsForTests'
+import {createGeometry, nodeBoundaryFunc, labelRectFunc} from '../layered/utils'
 
 test('pivot distances', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')

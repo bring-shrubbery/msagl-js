@@ -32,7 +32,7 @@ import {
   nodeBoundaryFunc,
   labelRectFunc,
   outputGraph,
-} from './utilsForTests'
+} from './utils'
 
 type P = [number, number]
 

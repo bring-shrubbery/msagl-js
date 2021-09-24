@@ -9,10 +9,27 @@ import {
   Graph,
   CurveFactory,
   Point,
+  layoutGraph,
+  MdsLayoutSettings,
 } from '../../../..'
+import {EdgeRoutingMode} from '../../../../layoutPlatform/core/routing/EdgeRoutingMode'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {Assert} from '../../../../layoutPlatform/utils/assert'
+import {parseDotGraph} from '../../../../tools/dotparser'
 import {edgeString} from './layeredLayout.spec'
+
+export function runMDSLayout(
+  fname: string,
+  edgeRoutingMode = EdgeRoutingMode.StraightLine,
+) {
+  const dg = parseDotGraph(fname)
+  if (dg == null) return null
+  const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
+  const settings = new MdsLayoutSettings()
+  settings.edgeRoutingMode = edgeRoutingMode
+  layoutGraph(gg, null, () => settings)
+  return dg
+}
 
 export function outputGraph(g: GeomGraph, name: string) {
   const strB = new StringBuilder()
