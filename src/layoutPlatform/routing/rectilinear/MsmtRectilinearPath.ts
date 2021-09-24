@@ -1,6 +1,6 @@
-import {IEnumerable} from 'linq-to-typescript'
+import {from, IEnumerable} from 'linq-to-typescript'
 import {Point} from '../../..'
-import {closeDistEps} from '../../utils/compare'
+import {closeDistEps, comparePointsXFirst} from '../../utils/compare'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
 import {ScanSegment} from './ScanSegment'
 import {SsstRectilinearPath} from './SsstRectilinearPath'
@@ -25,8 +25,8 @@ export class MsmtRectilinearPath {
   ///  <param name="targets">One or more target vertices</param>
   ///  <returns>A single enumeration of path points.</returns>
   GetPath(
-    sources: IEnumerable<VisibilityVertex>,
-    targets: IEnumerable<VisibilityVertex>,
+    sources: Array<VisibilityVertex>,
+    targets: Array<VisibilityVertex>,
   ): Array<Point> {
     return SsstRectilinearPath.RestorePathV({
       entry: this.GetPathStage(null, sources, null, targets),
@@ -42,9 +42,9 @@ export class MsmtRectilinearPath {
   ///  <param name="targetVertexEntries">The VertexEntry array that is in the target at the end of the stage.</param>
   private GetPathStage(
     sourceVertexEntries: VertexEntry[],
-    sources: IEnumerable<VisibilityVertex>,
+    sources: Array<VisibilityVertex>,
     targetVertexEntries: VertexEntry[],
-    targets: IEnumerable<VisibilityVertex>,
+    targets: Array<VisibilityVertex>,
   ): VertexEntry {
     const ssstCalculator = new SsstRectilinearPath()
     const t: {bestEntry: VertexEntry; bestCost: number} = {
@@ -87,8 +87,8 @@ export class MsmtRectilinearPath {
     //  Process closest pairs first, so we can skip longer ones (jump out of SsstRectilinear sooner, often immediately).
     //  This means that we'll be consistent on tiebreaking for equal scores with differing bend counts (the shorter
     //  path will win).  In overlapped graphs the shortest path may have more higher-weight edges.
-    for (const [sv, tv] of sources.selectMany((source) =>
-      targets
+    for (const [sv, tv] of from(sources).selectMany((source) =>
+      from(targets)
         .select((target) => [source, target])
         .orderBy(([s, t]) =>
           SsstRectilinearPath.ManhattanDistance(s.point, t.point),
@@ -184,12 +184,14 @@ export class MsmtRectilinearPath {
   }
 
   private static GetBarycenterOfUniquePortLocations(
-    vertices: IEnumerable<VisibilityVertex>,
+    vertices: Array<VisibilityVertex>,
   ): Point {
     let center = new Point(0, 0)
     let prevVertex: VisibilityVertex = null
     let count = 0
-    for (const vertex of vertices.orderBy((s) => s.point)) {
+    for (const vertex of vertices.sort((a, b) =>
+      comparePointsXFirst(a.point, b.point),
+    )) {
       if (
         prevVertex != null &&
         Point.closeIntersections(vertex.point, prevVertex.point)

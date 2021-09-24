@@ -1092,7 +1092,7 @@ export class PortManager {
       intSegBefore,
     )
     t.segsegVertex = this.VisGraph.FindVertex(segsegIntersect)
-    if (t.segsegVertex == null) {
+    if (!t.segsegVertex) {
       //  This happens only for UseSparseVisibilityGraph; in that case we must create the
       //  intersection vertex in the direction of both segments so we can start walking.
       t.segsegVertex = this.TransUtil.AddVertex(segsegIntersect)

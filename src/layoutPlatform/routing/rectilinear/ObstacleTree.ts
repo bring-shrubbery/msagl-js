@@ -305,10 +305,8 @@ export class ObstacleTree {
       return
     }
 
-    CrossRectangleNodes(
-      groupObstacles,
-      allPrimaryObstacles,
-      this.EvaluateOverlappedPairForGroup,
+    CrossRectangleNodes(groupObstacles, allPrimaryObstacles, (a, b) =>
+      this.EvaluateOverlappedPairForGroup(a, b),
     )
   }
 

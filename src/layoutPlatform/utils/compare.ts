@@ -14,6 +14,11 @@ export function comparePointsYFirst(a: Point, b: Point) {
   return cmp ? cmp : compareNumbers(a.x, b.x)
 }
 
+export function comparePointsXFirst(a: Point, b: Point) {
+  const cmp = compareNumbers(a.x, b.x)
+  return cmp ? cmp : compareNumbers(a.y, b.y)
+}
+
 export function closeDistEps(a: number, b: number): boolean {
   const d = a - b
   return (

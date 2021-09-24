@@ -18,8 +18,8 @@ export class ScanSegmentTree {
   constructor(scanDir: ScanDirection) {
     this.ScanDirection = scanDir
     this.segmentTree = new RBTree<ScanSegment>((a, b) => this.Compare(a, b))
-    this.findIntersectorPred = this.CompareIntersector
-    this.findPointPred = this.CompareToPoint
+    this.findIntersectorPred = (a) => this.CompareIntersector(a)
+    this.findPointPred = (a) => this.CompareToPoint(a)
   }
   get Segments(): IterableIterator<ScanSegment> {
     return this.segmentTree.allNodes()

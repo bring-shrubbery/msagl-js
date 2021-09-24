@@ -471,7 +471,8 @@ export class ScanSegment extends SegmentBase {
       }
 
       found = true
-      let crossingVertex: VisibilityVertex
+      const crossingVertex =
+        vg.FindVertex(pac.Location) ?? vg.AddVertexP(pac.Location)
       vg.AddVertexP(pac.Location)
       if (null != lowDirCrossings || null != highDirCrossings) {
         this.AddLowCrossings(vg, crossingVertex, lowDirCrossings)
@@ -503,8 +504,7 @@ export class ScanSegment extends SegmentBase {
     const interiorPoint: Point = crossing.GetInteriorVertexPoint(
       crossingVertex.point,
     )
-    return
-    vg.AddVertexP(interiorPoint)
+    return vg.FindVertex(interiorPoint) ?? vg.AddVertexP(interiorPoint)
   }
 
   private AddCrossingEdge(

@@ -13,7 +13,7 @@ export class PointAndCrossingsList {
   //  Internal to allow testing.
   ListOfPointsAndCrossings: Array<PointAndCrossings> = []
 
-  index: number
+  index = 0
 
   Count(): number {
     return this.ListOfPointsAndCrossings.length

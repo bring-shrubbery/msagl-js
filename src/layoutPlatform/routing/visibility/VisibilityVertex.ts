@@ -65,14 +65,13 @@ export class VisibilityVertex {
 
   RemoveInEdge(edge: VisibilityEdge) {
     // eslint-disable-next-line for-direction
-    for (let ii: number = this.InEdges.length - 1; ii >= 0; ii--) {
-      if (this.InEdges[ii] == edge) {
-        throw new Error('not implemented')
-
-        //this.InEdges.removeAt(ii)
-        break
-      }
+    const i = this.InEdges.indexOf(edge)
+    if (i == -1) return
+    const last = this.InEdges.length - 1
+    if (i != last) {
+      this.InEdges[i] = this.InEdges[last]
     }
+    this.InEdges.pop()
   }
 
   //  avoiding using delegates in calling RBTree.FindFirst because of the memory allocations

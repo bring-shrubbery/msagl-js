@@ -80,6 +80,7 @@ export class Nudger {
   }
 
   MapPathToItsObstacles(path: Path) {
+    if (!path.PathPoints) return
     const fr = from(path.PathPoints as Array<Point>)
     const startNode = this.HierarchyOfObstacles.FirstHitNodeWithPredicate(
       fr.first(),

@@ -350,7 +350,7 @@ export class SsstRectilinearPath {
     firstVertexInStage: VisibilityVertex,
   ): Array<Point> {
     if (t.entry == null) {
-      return null
+      return []
     }
 
     const list = new Array<Point>()

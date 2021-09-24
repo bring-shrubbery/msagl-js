@@ -18,14 +18,14 @@ import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugW
 import {RectilinearEdgeRouter} from '../../../../layoutPlatform/routing/rectilinear/RectilinearEdgeRouter'
 import {runMDSLayout} from '../../layout/mds/PivotMDS.spec'
 import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
-test('empty graph', () => {
+xtest('empty graph', () => {
   const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
 
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/emptyrectr.svg')
   t.writeGraph(gg)
 })
 
-test('two nodes', () => {
+xtest('two nodes', () => {
   const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
 
   const a = addNode(
@@ -55,7 +55,7 @@ test('two nodes', () => {
   t.writeGraph(gg)
 })
 
-test('three nodes', () => {
+xtest('three nodes', () => {
   const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
 
   const a = addNode(
@@ -92,7 +92,7 @@ test('three nodes', () => {
   t.writeGraph(gg)
 })
 
-test('four nodes', () => {
+xtest('four nodes', () => {
   const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
 
   const a = addNode(
@@ -147,12 +147,14 @@ function addNode(gg: GeomGraph, id: string, c: ICurve): Node {
   geomNodea.boundaryCurve = c
   return node
 }
-xtest('first 50 dot files', () => {
+test('first 50 dot files', () => {
   const path = 'src/tests/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
     if (f.match('big(.*).gv')) continue // the parser bug
-    if (++i != 14) continue
+
+    // ++i
+    if (++i != 23) continue
 
     let dg: DrawingGraph
     try {

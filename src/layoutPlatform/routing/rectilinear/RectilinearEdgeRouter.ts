@@ -524,8 +524,8 @@ export class RectilinearEdgeRouter extends Algorithm {
     lastChance: boolean,
   ): boolean {
     edgePath.PathPoints = shortestPathRouter.GetPath(
-      from(sourceVertices),
-      from(targetVertices),
+      sourceVertices,
+      targetVertices,
     )
     if (lastChance) {
       RectilinearEdgeRouter.EnsureNonNullPath(edgePath)

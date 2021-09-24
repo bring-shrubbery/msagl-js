@@ -86,15 +86,53 @@ export class TransientGraphUtility {
       sourceVertex,
       targetVertex,
     )
-    let bracketTarget: VisibilityVertex
-    let bracketSource: VisibilityVertex
     //  Is there an edge in the chain from sourceVertex in the direction of targetVertex
     //  that brackets targetvertex?
     //       <sourceVertex> -> ..1.. -> ..2.. <end>   3
     //  Yes if targetVertex is at the x above 1 or 2, No if it is at 3.  If false, bracketSource
     //  will be set to the vertex at <end> (if there are any edges in that direction at all).
-    let splitVertex: VisibilityVertex = targetVertex
-    const t = {bracketSource: bracketSource, bracketTarget: bracketTarget}
+    const t = {
+      bracketSource: <VisibilityVertex>undefined,
+      bracketTarget: <VisibilityVertex>undefined,
+      splitVertex: <VisibilityVertex>undefined,
+    }
+    TransientGraphUtility.GetBrackets(
+      sourceVertex,
+      targetVertex,
+      dirToTarget,
+      t,
+    )
+
+    //  If null != edge then targetVertex is between bracketSource and bracketTarget and SplitEdge returns the
+    //  first half-edge (and weight is ignored as the split uses the edge weight).
+    let edge = this.VisGraph.FindEdgePP(
+      t.bracketSource.point,
+      t.bracketTarget.point,
+    )
+    edge =
+      edge != null
+        ? this.SplitEdge(edge, t.splitVertex)
+        : this.CreateEdge(t.bracketSource, t.bracketTarget, weight)
+
+    return edge
+  }
+
+  private static GetBrackets(
+    sourceVertex: VisibilityVertex,
+    targetVertex: VisibilityVertex,
+    dirToTarget: Direction,
+    t: {
+      bracketSource: VisibilityVertex
+      bracketTarget: VisibilityVertex
+      splitVertex: VisibilityVertex
+    },
+  ) {
+    //  Is there an edge in the chain from sourceVertex in the direction of targetVertex
+    //  that brackets targetvertex?
+    //       <sourceVertex> -> ..1.. -> ..2.. <end>   3
+    //  Yes if targetVertex is at the x above 1 or 2, No if it is at 3.  If false, bracketSource
+    //  will be set to the vertex at <end> (if there are any edges in that direction at all).
+    t.splitVertex = targetVertex
     if (
       !TransientGraphUtility.FindBracketingVertices(
         sourceVertex,
@@ -109,39 +147,28 @@ export class TransientGraphUtility {
       //  Yes if bracketSource is at the x above 1 or 2, No if it is at 3.  If false, bracketTarget
       //  will be set to the vertex at <end> (if there are any edges in that direction at all).
       //  If true, then bracketSource and splitVertex must be updated.
-      let tempSource: VisibilityVertex
-      const t = {bracketSource: bracketTarget, bracketTarget: tempSource}
+      const tt = {
+        bracketSource: <VisibilityVertex>null,
+        bracketTarget: <VisibilityVertex>null,
+      }
       if (
         TransientGraphUtility.FindBracketingVertices(
           targetVertex,
           sourceVertex.point,
           CompassVector.OppositeDir(dirToTarget),
-          t,
+          tt,
         )
       ) {
         Assert.assert(
-          bracketSource == sourceVertex,
+          t.bracketSource == sourceVertex,
           'Mismatched bracketing detection',
         )
-        bracketSource = tempSource
-        splitVertex = sourceVertex
+        t.bracketSource = tt.bracketTarget
+        t.bracketTarget = tt.bracketSource
+        t.splitVertex = sourceVertex
       }
     }
-
-    //  If null != edge then targetVertex is between bracketSource and bracketTarget and SplitEdge returns the
-    //  first half-edge (and weight is ignored as the split uses the edge weight).
-    let edge = this.VisGraph.FindEdgePP(
-      bracketSource.point,
-      bracketTarget.point,
-    )
-    edge =
-      edge != null
-        ? this.SplitEdge(edge, splitVertex)
-        : this.CreateEdge(bracketSource, bracketTarget, weight)
-
-    return edge
   }
-
   static FindBracketingVertices(
     sourceVertex: VisibilityVertex,
     targetPoint: Point,
