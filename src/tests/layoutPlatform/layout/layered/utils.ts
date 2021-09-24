@@ -11,12 +11,62 @@ import {
   Point,
   layoutGraph,
   MdsLayoutSettings,
+  interpolateICurve,
 } from '../../../..'
 import {EdgeRoutingMode} from '../../../../layoutPlatform/core/routing/EdgeRoutingMode'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {Assert} from '../../../../layoutPlatform/utils/assert'
 import {parseDotGraph} from '../../../../tools/dotparser'
-import {edgeString} from './layeredLayout.spec'
+export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
+  const s = e.source.id + '->' + e.target.id
+  return (
+    s +
+    ', curve(' +
+    (edgesAsArrays
+      ? interpolateEdgeAsString()
+      : SvgDebugWriter.curveString(e.curve)) +
+    ')'
+  )
+  function interpolateEdgeAsString(): string {
+    const ps = interpolateEdge(e)
+    let s = '[' + ps[0].toString()
+    for (let i = 1; i < ps.length; i++) {
+      s += ' ' + ps[i].toString()
+    }
+    return s + ']'
+  }
+}
+
+function interpolateEdge(edge: GeomEdge): Point[] {
+  if (edge.edgeGeometry == null) return []
+  let ret = new Array<Point>()
+  if (edge.edgeGeometry.sourceArrowhead != null)
+    ret = ret.concat(
+      addArrow(
+        edge.curve.start,
+        edge.edgeGeometry.sourceArrowhead.tipPosition,
+        25,
+      ),
+    )
+  ret = ret.concat(interpolateICurve(edge.curve, 1))
+  if (edge.edgeGeometry.targetArrowhead != null) {
+    ret = ret.concat(
+      addArrow(
+        edge.curve.end,
+        edge.edgeGeometry.targetArrowhead.tipPosition,
+        25,
+      ),
+    )
+  }
+  return ret
+}
+function addArrow(start: Point, end: Point, arrowAngle: number): Point[] {
+  let dir = end.sub(start)
+  const l = dir.length
+  dir = dir.div(l).rotate90Ccw()
+  dir = dir.mul(l * Math.tan(arrowAngle * 0.5 * (Math.PI / 180.0)))
+  return [start, start.add(dir), end, start.sub(dir), start]
+}
 
 export function runMDSLayout(
   fname: string,

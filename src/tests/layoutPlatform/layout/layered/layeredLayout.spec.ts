@@ -4,14 +4,12 @@ import {LayeredLayout} from '../../../../layoutPlatform/layout/layered/layeredLa
 import {Graph} from '../../../../layoutPlatform/structs/graph'
 import {GeomNode} from '../../../../layoutPlatform/layout/core/geomNode'
 import {GeomEdge} from '../../../../layoutPlatform/layout/core/geomEdge'
-import {Point} from '../../../../layoutPlatform/math/geometry/point'
 import {CancelToken} from '../../../../layoutPlatform/utils/cancelToken'
 import {GeomGraph} from '../../../../layoutPlatform/layout/core/GeomGraph'
 import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {parseDotGraph, parseDotString} from '../../../../tools/dotparser'
 import {StringBuilder} from 'typescript-string-operations'
-import {interpolateICurve} from '../../../../layoutPlatform/math/geometry/curve'
 import {LayerDirectionEnum} from '../../../../layoutPlatform/layout/layered/layerDirectionEnum'
 import {
   Rectangle,
@@ -32,6 +30,7 @@ import {
   nodeBoundaryFunc,
   labelRectFunc,
   outputGraph,
+  edgeString,
 } from './utils'
 
 type P = [number, number]
@@ -421,26 +420,6 @@ function runLayout(fname: string, settings: SugiyamaLayoutSettings = null) {
 //   return dg
 // }
 
-export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
-  const s = e.source.id + '->' + e.target.id
-  return (
-    s +
-    ', curve(' +
-    (edgesAsArrays
-      ? interpolateEdgeAsString(e)
-      : SvgDebugWriter.curveString(e.curve)) +
-    ')'
-  )
-}
-
-function interpolateEdgeAsString(e: GeomEdge): string {
-  const ps = interpolateEdge(e)
-  let s = '[' + ps[0].toString()
-  for (let i = 1; i < ps.length; i++) {
-    s += ' ' + ps[i].toString()
-  }
-  return s + ']'
-}
 test('root', () => {
   const fname = 'src/tests/data/graphvis/root.gv'
   const dg = runLayout(fname)
@@ -527,36 +506,6 @@ function duplicateDisconnected(g: GeomGraph, suffix: string) {
   for (const e of edges) {
     g.setEdge(e.source.id + suffix, e.target.id + suffix)
   }
-}
-function interpolateEdge(edge: GeomEdge): Point[] {
-  if (edge.edgeGeometry == null) return []
-  let ret = new Array<Point>()
-  if (edge.edgeGeometry.sourceArrowhead != null)
-    ret = ret.concat(
-      addArrow(
-        edge.curve.start,
-        edge.edgeGeometry.sourceArrowhead.tipPosition,
-        25,
-      ),
-    )
-  ret = ret.concat(interpolateICurve(edge.curve, 1))
-  if (edge.edgeGeometry.targetArrowhead != null) {
-    ret = ret.concat(
-      addArrow(
-        edge.curve.end,
-        edge.edgeGeometry.targetArrowhead.tipPosition,
-        25,
-      ),
-    )
-  }
-  return ret
-}
-function addArrow(start: Point, end: Point, arrowAngle: number): Point[] {
-  let dir = end.sub(start)
-  const l = dir.length
-  dir = dir.div(l).rotate90Ccw()
-  dir = dir.mul(l * Math.tan(arrowAngle * 0.5 * (Math.PI / 180.0)))
-  return [start, start.add(dir), end, start.sub(dir), start]
 }
 
 function crossed(u: GeomEdge, v: GeomEdge): boolean {
