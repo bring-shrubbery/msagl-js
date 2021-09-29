@@ -31,4 +31,19 @@ edge points down. Here is an API example in Typescript
 The generated layout should look like this:
 ![Alt text](./showAPI.svg)
 
+Multi Dimensional Scaling layout should work too, but the routing is
+only with straight lines for now. If the lines 
+``` typescript
+const ss = new SugiyamaLayoutSettings()
+const ll = new LayeredLayout(g, ss, new CancelToken())
+``` 
+are replaced by 
+``` typescript
+const settings = new MdsLayoutSettings()
+  settings.edgeRoutingMode = EdgeRoutingMode.StraightLine
+  layoutGraph(g, null, () => settings)``` 
+  then the layout should look like this ![Alt text](./mdsShowAPI.svg)
+  
+
+
 ![Test Status](https://github.com/msaglJS/msagl-js/workflows/Test%20Status/badge.svg?branch=master)
