@@ -30,6 +30,5 @@ edge points down. Here is an API example in Typescript
 ```
 The generated layout should look like this:
 ![Alt text](./showAPI.svg)
-<img src="./showAPI.svg">
 
 ![Test Status](https://github.com/msaglJS/msagl-js/workflows/Test%20Status/badge.svg?branch=master)
