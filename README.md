@@ -32,7 +32,7 @@ The generated layout should look like this:
 
 ## Multi Dimensional Scaling
 Multi Dimensional Scaling layout should work too, but the routing is
-only with straight lines for now. If the lines 
+only with straight lines for now. If the lines from the code above 
 ``` typescript
 const ss = new SugiyamaLayoutSettings()
 const ll = new LayeredLayout(g, ss, new CancelToken())
