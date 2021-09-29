@@ -1,4 +1,5 @@
 # msagl-js
+## Sugiyama Scheme
 Currently the Sugiyma Scheme seems working. It creates a layout with
 layers, where, if your directed graph does not have cycles, every
 edge points down. Here is an API example in Typescript
@@ -25,12 +26,9 @@ edge points down. Here is an API example in Typescript
   const ll = new LayeredLayout(g, ss, new CancelToken())
   ll.run()
  /// ... consume graph 'g' here
- 
+``` 
 
-```
-The generated layout should look like this:
-![Alt text](./showAPI.svg)
-
+## Multi Dimensional Scaling
 Multi Dimensional Scaling layout should work too, but the routing is
 only with straight lines for now. If the lines 
 ``` typescript
@@ -40,8 +38,12 @@ const ll = new LayeredLayout(g, ss, new CancelToken())
 are replaced by 
 ``` typescript
 const settings = new MdsLayoutSettings()
-  settings.edgeRoutingMode = EdgeRoutingMode.StraightLine
-  layoutGraph(g, null, () => settings)``` 
+settings.edgeRoutingMode = EdgeRoutingMode.StraightLine
+layoutGraph(g, null, () => settings)``` 
+
+then the generated layout should look like this:
+![Alt text](./showAPI.svg)
+
   then the layout should look like this ![Alt text](./mdsShowAPI.svg)
   
 
