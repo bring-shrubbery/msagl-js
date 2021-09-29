@@ -28,7 +28,7 @@ edge points down. Here is an API example in Typescript
  
 
 ```
-The generated layout should look as shown below
+The generated layout should look like this:
 ![Alt text](./showAPI.svg)
 <img src="./showAPI.svg">
 
