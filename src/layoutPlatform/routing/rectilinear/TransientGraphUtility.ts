@@ -31,7 +31,7 @@ export class TransientGraphUtility {
   //  Edges joining two non-transient vertices; these must be replaced.
   edgesToRestore: Array<VisibilityEdge> = new Array<VisibilityEdge>()
 
-  LimitPortVisibilitySpliceToEndpointBoundingBox: boolean
+  LimitPortVisibilitySpliceToEndpointBoundingBox = false
 
   //  Owned by creator of this class.
   GraphGenerator: VisibilityGraphGenerator
@@ -164,9 +164,10 @@ export class TransientGraphUtility {
           'Mismatched bracketing detection',
         )
         t.bracketSource = tt.bracketTarget
-        t.bracketTarget = tt.bracketSource
         t.splitVertex = sourceVertex
       }
+
+      t.bracketTarget = tt.bracketSource
     }
   }
   static FindBracketingVertices(
@@ -589,7 +590,7 @@ export class TransientGraphUtility {
     const spliceTargetDir: Direction = CompassVector.OppositeDir(
       spliceSourceDir,
     )
-    let spliceTarget: VisibilityVertex
+    const t = {spliceTarget: <VisibilityVertex>null}
     if (
       this.ExtendSpliceWorker(
         spliceSource,
@@ -598,18 +599,18 @@ export class TransientGraphUtility {
         maxDesiredSegment,
         maxVisibilitySegment,
         isOverlapped,
-        /* out */ spliceTarget,
+        t,
       )
     ) {
       //  We ended on the source side and may have dead-ends on the target side so reverse sides.
       this.ExtendSpliceWorker(
-        spliceTarget,
+        t.spliceTarget,
         extendDir,
         spliceSourceDir,
         maxDesiredSegment,
         maxVisibilitySegment,
         isOverlapped,
-        /* out */ spliceTarget,
+        t,
       )
     }
 
@@ -739,29 +740,30 @@ export class TransientGraphUtility {
   //  The return value is whether we should try a second pass if this is called on the first pass,
   //  using spliceTarget to wrap up dead-ends on the target side.
   ExtendSpliceWorker(
-    spliceSource: VisibilityVertex,
+    spliceSourcePar: VisibilityVertex,
     extendDir: Direction,
     spliceTargetDir: Direction,
     maxDesiredSegment: LineSegment,
     maxVisibilitySegment: LineSegment,
     isOverlapped: boolean,
-    /* out */ spliceTarget: VisibilityVertex,
+    t: {spliceTarget: VisibilityVertex},
   ): boolean {
     //  This is called after having created at least one extension vertex (initially, the
-    //  first one added outside the obstacle), so we know extendVertex will be there. spliceSource
-    //  is the vertex to the OppositeDir(spliceTargetDir) of that extendVertex.
+    //  first one added outside the obstacle), so we know extendVertex
+    // will be there. spliceSource  is the vertex to the OppositeDir(spliceTargetDir) of that extendVertex.
     let extendVertex: VisibilityVertex = StaticGraphUtility.FindAdjacentVertex(
-      spliceSource,
+      spliceSourcePar,
       spliceTargetDir,
     )
-    spliceTarget = StaticGraphUtility.FindAdjacentVertex(
+    t.spliceTarget = StaticGraphUtility.FindAdjacentVertex(
       extendVertex,
       spliceTargetDir,
     )
+    const st = {spliceSource: spliceSourcePar}
     for (;;) {
       if (
         !TransientGraphUtility.GetNextSpliceSource(
-          /* ref */ spliceSource,
+          st,
           spliceTargetDir,
           extendDir,
         )
@@ -773,7 +775,7 @@ export class TransientGraphUtility {
       //  spliceTarget is in the opposite direction of the extension-line-to-spliceSource.
       const nextExtendPoint: Point = StaticGraphUtility.FindBendPointBetween(
         extendVertex.point,
-        spliceSource.point,
+        st.spliceSource.point,
         CompassVector.OppositeDir(spliceTargetDir),
       )
       //  We test below for being on or past maxDesiredSegment; here we may be skipping
@@ -788,18 +790,18 @@ export class TransientGraphUtility {
         break
       }
 
-      spliceTarget = TransientGraphUtility.GetSpliceTarget(
-        /* ref */ spliceSource,
+      t.spliceTarget = TransientGraphUtility.GetSpliceTarget(
+        st,
         spliceTargetDir,
         nextExtendPoint,
       )
       // StaticGraphUtility.Test_DumpVisibilityGraph(ObstacleTree, VisGraph);
-      if (spliceTarget == null) {
+      if (t.spliceTarget == null) {
         //  This may be because spliceSource was created just for Group boundaries.  If so,
         //  skip to the next nextExtendVertex location.
         if (
           this.IsSkippableSpliceSourceWithNullSpliceTarget(
-            spliceSource,
+            st.spliceSource,
             extendDir,
           )
         ) {
@@ -810,7 +812,7 @@ export class TransientGraphUtility {
         //  Don't splice across lateral group boundaries.
         if (
           this.ObstacleTree.SegmentCrossesAnObstacle(
-            spliceSource.point,
+            st.spliceSource.point,
             nextExtendPoint,
           )
         ) {
@@ -824,13 +826,13 @@ export class TransientGraphUtility {
       )
       if (nextExtendVertex != null) {
         if (
-          spliceTarget == null ||
+          t.spliceTarget == null ||
           this.VisGraph.FindEdgePP(extendVertex.point, nextExtendPoint) != null
         ) {
           //  We are probably along a ScanSegment so visibility in this direction has already been determined.
           //  Stop and don't try to continue extension from the opposite side.  If we continue splicing here
           //  it might go across an obstacle.
-          if (spliceTarget == null) {
+          if (t.spliceTarget == null) {
             this.FindOrAddEdge(
               extendVertex,
               nextExtendVertex,
@@ -861,7 +863,7 @@ export class TransientGraphUtility {
       //  This will split the edge if targetVertex is non-null; otherwise we are at a dead-end
       //  on the target side so must not create a vertex as it would be inside an obstacle.
       this.FindOrAddEdge(
-        spliceSource,
+        st.spliceSource,
         nextExtendVertex,
         isOverlapped ? ScanSegment.OverlappedWeight : ScanSegment.NormalWeight,
       )
@@ -881,28 +883,28 @@ export class TransientGraphUtility {
           PointComparer.GetDirections(nextExtendPoint, maxDesiredSegment.end))
       ) {
         //  At or past the desired max extension point, so we're done.
-        spliceTarget = null
+        t.spliceTarget = null
         break
       }
     }
 
-    return spliceTarget != null
+    return t.spliceTarget != null
   }
 
   private static GetNextSpliceSource(
-    /* ref */ spliceSource: VisibilityVertex,
+    t: {spliceSource: VisibilityVertex},
     spliceTargetDir: Direction,
     extendDir: Direction,
   ): boolean {
     let nextSpliceSource: VisibilityVertex = StaticGraphUtility.FindAdjacentVertex(
-      spliceSource,
+      t.spliceSource,
       extendDir,
     )
     if (nextSpliceSource == null) {
       //  See if there is a source further away from the extension line - we might have
       //  been on freePoint line (or another nearby PortEntry line) that dead-ended.
       //  Look laterally from the previous spliceSource first.
-      nextSpliceSource = spliceSource
+      nextSpliceSource = t.spliceSource
       for (;;) {
         nextSpliceSource = StaticGraphUtility.FindAdjacentVertex(
           nextSpliceSource,
@@ -923,12 +925,12 @@ export class TransientGraphUtility {
       }
     }
 
-    spliceSource = nextSpliceSource
+    t.spliceSource = nextSpliceSource
     return true
   }
 
   private static GetSpliceTarget(
-    /* ref */ spliceSource: VisibilityVertex,
+    t: {spliceSource: VisibilityVertex},
     spliceTargetDir: Direction,
     nextExtendPoint: Point,
   ): VisibilityVertex {
@@ -936,15 +938,15 @@ export class TransientGraphUtility {
     //  edge that has a vertex closer to the extension line; in that case keep walking until we
     //  have the closest vertex on the Source side of the extension line as spliceSource.
     const prevDir: Direction = PointComparer.GetDirections(
-      spliceSource.point,
+      t.spliceSource.point,
       nextExtendPoint,
     )
     let nextDir: Direction = prevDir
-    let spliceTarget = spliceSource
+    let spliceTarget = t.spliceSource
     while (nextDir == prevDir) {
-      spliceSource = spliceTarget
+      t.spliceSource = spliceTarget
       spliceTarget = StaticGraphUtility.FindAdjacentVertex(
-        spliceSource,
+        t.spliceSource,
         spliceTargetDir,
       )
       if (spliceTarget == null) {

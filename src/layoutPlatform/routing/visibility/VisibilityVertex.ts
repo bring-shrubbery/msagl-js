@@ -13,7 +13,7 @@ export class VisibilityVertex {
 
   _inEdges = new Array<VisibilityEdge>()
 
-  get InEdges(): Array<VisibilityEdge> {
+  get InEdges(): Iterable<VisibilityEdge> {
     return this._inEdges
   }
 
@@ -25,7 +25,15 @@ export class VisibilityVertex {
   }
 
   get Degree(): number {
-    return this.InEdges.length + this.OutEdges.count
+    return this._inEdges.length + this.OutEdges.count
+  }
+
+  InEdgesLength(): number {
+    return this._inEdges.length
+  }
+
+  addInEdge(e: VisibilityEdge) {
+    this._inEdges.push(e)
   }
 
   //  needed for shortest path calculations
@@ -65,13 +73,13 @@ export class VisibilityVertex {
 
   RemoveInEdge(edge: VisibilityEdge) {
     // eslint-disable-next-line for-direction
-    const i = this.InEdges.indexOf(edge)
+    const i = this._inEdges.indexOf(edge)
     if (i == -1) return
-    const last = this.InEdges.length - 1
+    const last = this._inEdges.length - 1
     if (i != last) {
-      this.InEdges[i] = this.InEdges[last]
+      this._inEdges[i] = this._inEdges[last]
     }
-    this.InEdges.pop()
+    this._inEdges.pop()
   }
 
   //  avoiding using delegates in calling RBTree.FindFirst because of the memory allocations

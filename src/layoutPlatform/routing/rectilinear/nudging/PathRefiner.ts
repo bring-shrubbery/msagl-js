@@ -17,7 +17,7 @@ import {SortedMap} from '@esfx/collections-sortedmap'
 type PointProjection = (p: Point) => number
 
 export class PathRefiner {
-  static RefinePaths(paths: Iterable<Path>, mergePaths: boolean) {
+  static RefinePaths(paths: Array<Path>, mergePaths: boolean) {
     PathRefiner.AdjustPaths(paths)
     const pathsToFirstLinkedVertices = PathRefiner.CreatePathsToFirstLinkedVerticesMap(
       paths,
@@ -35,7 +35,7 @@ export class PathRefiner {
   ///  make sure that every two different points of paths are separated by at least 10e-6
 
   ///  <param name="paths"></param>
-  static AdjustPaths(paths: Iterable<Path>) {
+  static AdjustPaths(paths: Array<Path>) {
     for (const path of paths) {
       const arg = (<Array<Point>>path.PathPoints).map((p) => p.clone())
       const adjusted = PathRefiner.AdjustPathPoints(arg)
@@ -44,7 +44,9 @@ export class PathRefiner {
   }
 
   static AdjustPathPoints(points: Array<Point>): Array<Point> {
+    if (!points || points.length == 0) return
     const arr = []
+
     let p: Point = GeomConstants.RoundPoint(points[0])
     arr.push(p)
     for (let i = 1; i < points.length; i++) {

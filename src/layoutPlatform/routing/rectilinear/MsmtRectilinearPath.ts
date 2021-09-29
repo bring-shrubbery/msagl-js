@@ -1,4 +1,4 @@
-import {from, IEnumerable} from 'linq-to-typescript'
+import {from} from 'linq-to-typescript'
 import {Point} from '../../..'
 import {closeDistEps, comparePointsXFirst} from '../../utils/compare'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
@@ -87,13 +87,13 @@ export class MsmtRectilinearPath {
     //  Process closest pairs first, so we can skip longer ones (jump out of SsstRectilinear sooner, often immediately).
     //  This means that we'll be consistent on tiebreaking for equal scores with differing bend counts (the shorter
     //  path will win).  In overlapped graphs the shortest path may have more higher-weight edges.
-    for (const [sv, tv] of from(sources).selectMany((source) =>
-      from(targets)
-        .select((target) => [source, target])
-        .orderBy(([s, t]) =>
-          SsstRectilinearPath.ManhattanDistance(s.point, t.point),
-        ),
-    )) {
+    for (const [sv, tv] of from(sources)
+      .selectMany((source) =>
+        from(targets).select((target) => [source, target]),
+      )
+      .orderBy(([s, t]) =>
+        SsstRectilinearPath.ManhattanDistance(s.point, t.point),
+      )) {
       if (Point.closeDistEps(sv.point, tv.point)) {
         continue
       }

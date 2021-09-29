@@ -4,7 +4,10 @@ import {
   mkRectangleNode,
   RectangleNode,
 } from '../../core/geometry/RTree/RectangleNode'
-import {CrossRectangleNodes} from '../../core/geometry/RTree/RectangleNodeUtils'
+import {
+  CrossRectangleNodes,
+  CrossRectangleNodesSameType,
+} from '../../core/geometry/RTree/RectangleNodeUtils'
 import {CompassVector} from '../../math/geometry/compassVector'
 import {ConvexHull} from '../../math/geometry/convexHull'
 import {Curve, PointLocation} from '../../math/geometry/curve'
@@ -71,7 +74,7 @@ export class ObstacleTree {
 
   // Indicates whether one or more obstacles overlap.
 
-  private hasOverlaps: boolean
+  private hasOverlaps = false
 
   // Member to avoid unnecessary class creation just to do a lookup.
 
@@ -128,10 +131,8 @@ export class ObstacleTree {
       return false
     }
 
-    CrossRectangleNodes<Obstacle, Obstacle, Point>(
-      this.Root,
-      this.Root,
-      (a, b) => this.CheckForInitialOverlaps(a, b),
+    CrossRectangleNodesSameType<Obstacle, Point>(this.Root, this.Root, (a, b) =>
+      this.CheckForInitialOverlaps(a, b),
     )
     return this.hasOverlaps
   }

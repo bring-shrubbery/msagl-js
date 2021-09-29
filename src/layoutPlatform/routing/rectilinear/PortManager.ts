@@ -56,7 +56,7 @@ export class PortManager {
   private graphGenerator: VisibilityGraphGenerator
 
   //  Storage and implementation of RectilinearEdgeRouter property of the same name.
-  RouteToCenterOfObstacles: boolean
+  RouteToCenterOfObstacles = false
   //  Extension of port visibility splices into the visibility graph.
   get LimitPortVisibilitySpliceToEndpointBoundingBox(): boolean {
     return this.TransUtil.LimitPortVisibilitySpliceToEndpointBoundingBox
@@ -160,25 +160,22 @@ export class PortManager {
     if (oport) {
       if (this.RouteToCenterOfObstacles) {
         vertices.push(oport.CenterVertex)
-        return vertices
-      }
-
-      //  Add all vertices on the obstacle borders.  Avoid LINQ for performance.
-      for (const entrance of oport.PortEntrances) {
-        const vertex: VisibilityVertex = this.VisGraph.FindVertex(
-          entrance.UnpaddedBorderIntersect,
-        )
-        if (vertex != null) {
-          vertices.push(vertex)
+      } else {
+        //  Add all vertices on the obstacle borders.  Avoid LINQ for performance.
+        for (const entrance of oport.PortEntrances) {
+          const vertex: VisibilityVertex = this.VisGraph.FindVertex(
+            entrance.UnpaddedBorderIntersect,
+          )
+          if (vertex != null) {
+            vertices.push(vertex)
+          }
         }
       }
-
-      return vertices
+    } else {
+      vertices.push(
+        this.VisGraph.FindVertex(GeomConstants.RoundPoint(port.Location)),
+      )
     }
-
-    vertices.push(
-      this.VisGraph.FindVertex(GeomConstants.RoundPoint(port.Location)),
-    )
     return vertices
   }
 
@@ -820,7 +817,7 @@ export class PortManager {
     const borderVertex: VisibilityVertex = this.VisGraph.FindVertex(
       entrance.VisibilityBorderIntersect,
     )
-    if (borderVertex != null) {
+    if (borderVertex) {
       entrance.ExtendFromBorderVertex(
         this.TransUtil,
         borderVertex,
@@ -910,7 +907,7 @@ export class PortManager {
     )
     //  We now know the nearest perpendicular segment that intersects start->end.  Next we'll find a close
     //  parallel scansegment that intersects the perp segment, then walk to find the nearest perp edge.
-    this.FindOrCreateNearestPerpEdgeFromNearestPerpSegment(
+    return this.FindOrCreateNearestPerpEdgeFromNearestPerpSegment(
       StaticGraphUtility.IsAscending(dir) ? low : high,
       nearestPerpSeg,
       edgeIntersect,

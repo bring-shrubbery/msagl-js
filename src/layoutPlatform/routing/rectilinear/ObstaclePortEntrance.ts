@@ -376,7 +376,7 @@ export class ObstaclePortEntrance {
   ///  <summary>
   ///  </summary>
   ///  <returns></returns>
-  public /* override */ ToString(): string {
+  public toString(): string {
     return String.Format(
       '{0} {1}~{2} {3}',
       this.ObstaclePort.Location,

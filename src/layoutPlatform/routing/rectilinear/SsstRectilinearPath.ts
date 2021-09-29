@@ -605,7 +605,7 @@ export class SsstRectilinearPath {
 
   private ExtendPathAlongInEdges(
     bestEntry: VertexEntry,
-    edges: Array<VisibilityEdge>,
+    edges: Iterable<VisibilityEdge>,
     preferredBendDir: Direction,
   ) {
     //  Iteration is faster than foreach and much faster than .Where.
@@ -688,7 +688,7 @@ export class SsstRectilinearPath {
       )
     }
 
-    for (const edge of from(this.Source.InEdges).where(
+    for (const edge of from(Array.from(this.Source.InEdges)).where(
       SsstRectilinearPath.IsPassable,
     )) {
       this.ExtendPathToNeighborVertex(

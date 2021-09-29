@@ -9,16 +9,13 @@ import {from, IEnumerable, InvalidOperationException} from 'linq-to-typescript'
 import {CancelToken, GeomEdge, GeomGraph, ICurve, Point} from '../../..'
 import {EdgeGeometry} from '../../layout/core/edgeGeometry'
 import {Curve} from '../../math/geometry/curve'
-import {DebugCurve} from '../../math/geometry/debugCurve'
 import {Ellipse} from '../../math/geometry/ellipse'
 import {GeomConstants} from '../../math/geometry/geomConstants'
-import {LineSegment} from '../../math/geometry/lineSegment'
 import {Polyline} from '../../math/geometry/polyline'
 import {Algorithm} from '../../utils/algorithm'
 import {Shape} from '../shape'
 import {ShapeCreator} from '../ShapeCreator'
 import {SplineRouter} from '../splineRouter'
-import {VisibilityEdge} from '../visibility/VisibilityEdge'
 import {VisibilityGraph} from '../visibility/VisibilityGraph'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
 import {MsmtRectilinearPath} from './MsmtRectilinearPath'
@@ -409,15 +406,8 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   //  Executes the algorithm.
 
-  run() {
-    this.RouteEdges()
-  }
-
   //  Calculates the routed edges geometry, optionally forcing re-routing for existing paths.
-
-  //  <returns></returns>
-  private RouteEdges() {
-    //  Create visibility graph if not already done.
+  run() {
     this.GenerateVisibilityGraph()
     this.GeneratePaths()
   }

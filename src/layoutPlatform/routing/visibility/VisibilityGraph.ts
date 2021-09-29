@@ -226,7 +226,7 @@ export class VisibilityGraph {
   static AddEdge(edge: VisibilityEdge) {
     Assert.assert(edge.Source != edge.Target)
     edge.Source.OutEdges.insert(edge)
-    edge.Target.InEdges.push(edge)
+    edge.Target.addInEdge(edge)
   }
 
   AddEdgeF(
@@ -254,7 +254,7 @@ export class VisibilityGraph {
 
     const edge = edgeCreator(sourceV, targetV)
     sourceV.OutEdges.insert(edge)
-    targetV.InEdges.push(edge)
+    targetV.addInEdge(edge)
     return edge
   }
 
@@ -331,12 +331,9 @@ export class VisibilityGraph {
   }
 
   static RemoveEdge(edge: VisibilityEdge) {
-    edge.Source.OutEdges.remove(edge)
+    edge.Source.RemoveOutEdge(edge)
     // not efficient!
-    const arr = edge.Target.InEdges
-    const i = arr.indexOf(edge)
-    if (i != arr.length - 1) arr[i] == arr[arr.length - 1]
-    arr.pop()
+    edge.Target.RemoveInEdge(edge)
   }
 
   public ClearEdges() {

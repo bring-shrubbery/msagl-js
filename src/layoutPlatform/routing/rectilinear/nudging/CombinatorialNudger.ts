@@ -286,7 +286,7 @@ export class CombinatorialNudger {
     graph: VisibilityGraph,
   ) {
     for (const v of graph.Vertices()) {
-      const inDegree: number = v.InEdges.length
+      const inDegree: number = v.InEdgesLength()
       dictionary.set(v, inDegree)
       if (inDegree == 0) {
         queue.enqueue(v)
