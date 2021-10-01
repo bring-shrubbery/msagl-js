@@ -263,8 +263,9 @@ export class ObstaclePortEntrance {
       this.VisibilityBorderIntersect,
     )
     if (borderVertex != null) {
-      this.ExtendFromBorderVertex(
+      this.ExtendEdgeChain(
         transUtil,
+        borderVertex,
         borderVertex,
         limitRect,
         routeToCenter,
@@ -312,21 +313,6 @@ export class ObstaclePortEntrance {
       transUtil,
       borderVertex,
       targetVertex,
-      limitRect,
-      routeToCenter,
-    )
-  }
-
-  ExtendFromBorderVertex(
-    transUtil: TransientGraphUtility,
-    borderVertex: VisibilityVertex,
-    limitRect: Rectangle,
-    routeToCenter: boolean,
-  ) {
-    this.ExtendEdgeChain(
-      transUtil,
-      borderVertex,
-      borderVertex,
       limitRect,
       routeToCenter,
     )

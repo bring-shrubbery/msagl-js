@@ -721,7 +721,7 @@ export class Block {
     for (
       let currentIndex: number = this.Variables.length - 1;
       currentIndex >= 0;
-      currentIndex++
+      currentIndex--
     ) {
       const currentVariable: Variable = this.Variables[currentIndex]
       if (currentVariable.Block == newSplitBlock) {
@@ -730,14 +730,14 @@ export class Block {
           this.Variables[currentIndex] = this.Variables[lastKeepIndex]
         }
 
-        lastKeepIndex++
+        lastKeepIndex--
       }
     }
 
     //  end for each var to keep
     //  Now remove the end slots we're not keeping.  lastKeepIndex is -1 if we are removing all variables.
     Assert.assert(
-      numVarsToMove == this.Variables.length - (lastKeepIndex - 1),
+      numVarsToMove == this.Variables.length - lastKeepIndex - 1,
       'variable should not be found twice (probable cycle-detection problem',
     )
     this.Variables = this.Variables.slice(0, lastKeepIndex + 1)

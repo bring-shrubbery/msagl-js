@@ -176,6 +176,9 @@ test('6 nodes', () => {
   new GeomEdge(new Edge(a, d))
   new GeomEdge(new Edge(a, e))
   new GeomEdge(new Edge(a, f))
+  new GeomEdge(new Edge(e, f))
+  new GeomEdge(new Edge(e, b))
+
   const rr = RectilinearEdgeRouter.constructorGNNB(gg, 1, 3, true)
   rr.run()
 

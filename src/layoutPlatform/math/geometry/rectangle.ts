@@ -27,9 +27,9 @@ export class Rectangle implements IRectangle<Point> {
     })
   }
   left_: number
+  bottom_: number
   right_: number
   top_: number
-  bottom_: number
 
   constructor(t: {left: number; right: number; top: number; bottom: number}) {
     this.left_ = t.left

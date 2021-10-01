@@ -42,8 +42,8 @@ export class Constraint {
       this.Left.ActiveConstraintCount++
       this.Right.ActiveConstraintCount++
     } else {
-      this.Left.ActiveConstraintCount++
-      this.Right.ActiveConstraintCount++
+      this.Left.ActiveConstraintCount--
+      this.Right.ActiveConstraintCount--
     }
   }
 

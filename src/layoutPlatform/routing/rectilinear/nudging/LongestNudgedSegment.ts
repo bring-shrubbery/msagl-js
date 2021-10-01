@@ -85,15 +85,15 @@ export class LongestNudgedSegment extends SegmentBase {
     }
   }
 
-  isFixed: boolean
+  _isFixed = false
 
   ///  the segments constraining "this" from the right
 
   get IsFixed(): boolean {
-    return this.isFixed
+    return this._isFixed
   }
   set IsFixed(value: boolean) {
-    this.isFixed = value
+    this._isFixed = value
   }
 
   Id = -1

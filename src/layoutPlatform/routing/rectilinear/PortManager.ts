@@ -469,7 +469,7 @@ export class PortManager {
   }
 
   private CreateObstaclePortEntrancesIfNeeded(oport: ObstaclePort) {
-    if (0 != oport.PortEntrances.length) {
+    if (oport.PortEntrances.length > 0) {
       return
     }
 
@@ -818,8 +818,9 @@ export class PortManager {
       entrance.VisibilityBorderIntersect,
     )
     if (borderVertex) {
-      entrance.ExtendFromBorderVertex(
+      entrance.ExtendEdgeChain(
         this.TransUtil,
+        borderVertex,
         borderVertex,
         this.portSpliceLimitRectangle,
         this.RouteToCenterOfObstacles,
