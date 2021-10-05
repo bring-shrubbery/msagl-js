@@ -11,10 +11,12 @@ import {EdgeGeometry} from '../../../layout/core/edgeGeometry'
 import {Port} from '../../../layout/core/port'
 import {CompassVector} from '../../../math/geometry/compassVector'
 import {Curve, PointLocation} from '../../../math/geometry/curve'
+import {DebugCurve} from '../../../math/geometry/debugCurve'
 import {Direction} from '../../../math/geometry/direction'
 import {GeomConstants} from '../../../math/geometry/geomConstants'
 import {LineSegment} from '../../../math/geometry/lineSegment'
 import {Polyline} from '../../../math/geometry/polyline'
+import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
 import {Assert} from '../../../utils/assert'
 import {closeDistEps} from '../../../utils/compare'
 import {Shape} from '../../shape'
@@ -109,11 +111,9 @@ export class Nudger {
   Calculate(direction: Direction, mergePaths: boolean) {
     this.NudgingDirection = direction
     PathRefiner.RefinePaths(this.Paths, mergePaths)
-    //  ShowPathsDebug(Paths);
     this.GetPathOrdersAndPathGraph()
     this.MapAxisEdgesToTheirObstacles()
     this.DrawPaths()
-    // ShowPathsDebug(Paths);
   }
 
   MapAxisEdgesToTheirObstacles() {
@@ -278,8 +278,8 @@ export class Nudger {
   PositionShiftedEdges() {
     // we are using 2*cornerFitRadius for the minimal edge separation
     this.Solver = new UniformOneDimensionalSolver(this.EdgeSeparation)
-    for (const segment of this.LongestNudgedSegs) {
-      this.CreateVariablesOfLongestSegment(segment)
+    for (let i = 0; i < this.LongestNudgedSegs.length; i++) {
+      this.CreateVariablesOfLongestSegment(this.LongestNudgedSegs[i])
     }
 
     this.CreateConstraintsOfTheOrder()
@@ -289,7 +289,8 @@ export class Nudger {
   }
 
   MoveLongestSegsIdealPositionsInsideFeasibleIntervals() {
-    for (const seg of this.LongestNudgedSegs) {
+    for (let i = 0; i < this.LongestNudgedSegs.length; i++) {
+      const seg = this.LongestNudgedSegs[i]
       Nudger.MoveLongestSegIdealPositionsInsideFeasibleInterval(seg)
     }
   }
@@ -912,8 +913,8 @@ export class Nudger {
         : (p: Point) => p.x
 
     this.LongestNudgedSegs = new Array<LongestNudgedSegment>()
-    for (const path of this.Paths) {
-      this.CreateLongestNudgedSegmentsForPath(path, projectionToPerp)
+    for (let i = 0; i < this.Paths.length; i++) {
+      this.CreateLongestNudgedSegmentsForPath(this.Paths[i], projectionToPerp)
     }
   }
 
@@ -991,13 +992,10 @@ export class Nudger {
       const edgeDir = edge.Direction
       if (edgeDir == this.NudgingDirection || edgeDir == oppositeDir) {
         if (currentLongestSeg == null) {
-          currentLongestSeg = new LongestNudgedSegment(
+          edge.LongestNudgedSegment = currentLongestSeg = new LongestNudgedSegment(
             this.LongestNudgedSegs.length,
           )
-          edge.LongestNudgedSegment = new LongestNudgedSegment(
-            this.LongestNudgedSegs.length,
-          )
-          this.LongestNudgedSegs.push(edge.LongestNudgedSegment)
+          this.LongestNudgedSegs.push(currentLongestSeg)
         } else {
           edge.LongestNudgedSegment = currentLongestSeg
         }
@@ -1165,6 +1163,54 @@ export class Nudger {
 
     return portToShapes
   }
+
+  ShowPathsDebug(edgePaths: Iterable<Path>, fn: string) {
+    const debCurves = GetObstacleBoundaries(this.Obstacles, 'black')
+    const i = 0
+    for (const edgePath of edgePaths) {
+      for (const c of Nudger.GetEdgePathFromPathEdgesAsDebugCurves(
+        0.1,
+        1.0,
+        DebugCurve.colors[(i + 1) % DebugCurve.colors.length],
+        edgePath,
+      )) {
+        debCurves.push(c)
+      }
+    }
+
+    SvgDebugWriter.dumpDebugCurves(fn, debCurves)
+  }
+  static *GetEdgePathFromPathEdgesAsDebugCurves(
+    startWidth: number,
+    endWidth: number,
+    color: string,
+    path: Path,
+  ): IterableIterator<DebugCurve> {
+    const points = path.ArrayOfPathPoints()
+    const count: number = points.length
+    const deltaW: number = count > 1 ? (endWidth - startWidth) / (count - 1) : 1
+    // if count ==1 the value of deltaW does not matter
+    for (let i = 0; i < points.length - 1; i++) {
+      yield DebugCurve.mkDebugCurveTWCI(
+        200,
+        startWidth + deltaW * i,
+        color,
+        LineSegment.mkPP(points[i], points[i + 1]),
+      )
+    }
+  }
+}
+
+function GetObstacleBoundaries(
+  obstacles: IEnumerable<Polyline>,
+  color: string,
+): Array<DebugCurve> {
+  const debugCurves = new Array<DebugCurve>()
+  if (obstacles != null) {
+    for (const o of obstacles)
+      debugCurves.push(DebugCurve.mkDebugCurveTWCI(50, 0.3, color, o))
+  }
+  return debugCurves
 }
 
 function IntersectSets<T>(a: Set<T>, b: Set<T>) {

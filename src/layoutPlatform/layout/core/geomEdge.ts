@@ -251,14 +251,8 @@ export class GeomEdge extends GeomObject {
     const h = boundaryCurve.boundingBox.height
     const center = boundaryCurve.boundingBox.center
     const p0 = new Point(center.x - w / 4, center.y)
-    const p1 = new Point(
-      center.x - w / 4,
-      center.y - (h / 2 - howMuchToStickOut),
-    )
-    const p2 = new Point(
-      center.x + w / 4,
-      center.y - (h / 2 - howMuchToStickOut),
-    )
+    const p1 = new Point(center.x - w / 4, center.y - h / 2 - howMuchToStickOut)
+    const p2 = new Point(center.x + w / 4, center.y - h / 2 - howMuchToStickOut)
     const p3 = new Point(center.x + w / 4, center.y)
     t.smoothedPolyline = SmoothedPolyline.mkFromPoints([p0, p1, p2, p3])
     return t.smoothedPolyline.createCurve()

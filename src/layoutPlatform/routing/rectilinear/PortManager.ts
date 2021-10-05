@@ -754,7 +754,7 @@ export class PortManager {
       StaticGraphUtility.GetRectangleBound(curveBox, outDir) -
       scanDir.Coord(unpaddedBorderIntersect)
     if (axisDistanceBetweenIntersections < 0) {
-      axisDistanceBetweenIntersections = axisDistanceBetweenIntersections * -1
+      axisDistanceBetweenIntersections = -axisDistanceBetweenIntersections
     }
 
     if (axisDistanceBetweenIntersections > GeomConstants.intersectionEpsilon) {

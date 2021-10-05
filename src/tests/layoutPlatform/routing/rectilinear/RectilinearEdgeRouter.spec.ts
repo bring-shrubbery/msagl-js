@@ -84,6 +84,11 @@ test('three nodes', () => {
   )
 
   new GeomEdge(new Edge(a, b))
+  new GeomEdge(new Edge(b, a))
+  new GeomEdge(new Edge(b, c))
+  new GeomEdge(new Edge(a, b))
+  new GeomEdge(new Edge(a, c))
+  new GeomEdge(new Edge(c, a))
   new GeomEdge(new Edge(a, c))
 
   const rr = RectilinearEdgeRouter.constructorGNNB(gg, 1, 3, true)
@@ -163,14 +168,12 @@ function addNode(gg: GeomGraph, id: string, c: ICurve): Node {
 test('6 nodes', () => {
   const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
   const coords = nodeCoords()
-  let i = 0
-  let id = 'a'
-  const a = getNode()
-  const b = getNode()
-  const c = getNode()
-  const d = getNode()
-  const e = getNode()
-  const f = getNode()
+  const a = getNode(0)
+  const b = getNode(1)
+  const c = getNode(2)
+  const d = getNode(3)
+  const e = getNode(4)
+  const f = getNode(5)
   new GeomEdge(new Edge(a, b))
   new GeomEdge(new Edge(a, c))
   new GeomEdge(new Edge(a, d))
@@ -185,10 +188,10 @@ test('6 nodes', () => {
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/sixrectr.svg')
   t.writeGraph(gg)
 
-  function getNode() {
+  function getNode(i: number) {
     const n = addNode(
       gg,
-      id,
+      coords[i].id,
       CurveFactory.mkRectangleWithRoundedCorners(
         20,
         10,
@@ -197,41 +200,21 @@ test('6 nodes', () => {
         new Point(coords[i].x, coords[i].y),
       ),
     )
-    i++
-    id = String.fromCharCode(id[0].charCodeAt(0) + 1)
     return n
   }
 
   function nodeCoords() {
     return [
-      {
-        x: 246.29042498319075,
-        y: 250.71030290136258,
-      },
-      {
-        x: 240.87633023628928,
-        y: 25.099999999999994,
-      },
-      {
-        x: 383.2879724826806,
-        y: 430.0444272305972,
-      },
-      {
-        x: 118.06450522471523,
-        y: 436.41701527781333,
-      },
-      {
-        x: 30.05000000000004,
-        y: 186.1417667235024,
-      },
-      {
-        x: 459.18381276290285,
-        y: 175.83855488804224,
-      },
+      {id: 'a', x: 246, y: 250},
+      {id: 'b', x: 240, y: 25},
+      {id: 'c', x: 383, y: 430},
+      {id: 'd', x: 118, y: 436},
+      {id: 'e', x: 30, y: 186},
+      {id: 'f', x: 459, y: 175},
     ]
   }
 })
-xtest('first 50 dot files', () => {
+test('first 50 dot files', () => {
   const path = 'src/tests/data/graphvis/'
   let i = 0
   for (const f of sortedList) {

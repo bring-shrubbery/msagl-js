@@ -1,5 +1,4 @@
-import {IEnumerable} from 'linq-to-typescript'
-import {String} from 'typescript-string-operations'
+import {StringBuilder} from 'typescript-string-operations'
 import {Point} from '../../../..'
 import {EdgeGeometry} from '../../../layout/core/edgeGeometry'
 import {Assert} from '../../../utils/assert'
@@ -40,6 +39,14 @@ export class Path {
     return this.FirstEdge.Source
   }
 
+  ArrayOfPathPoints(): Point[] {
+    if (this._pathPoints instanceof LinkedPoint) {
+      return Array.from(iteratePoints(this._pathPoints))
+    } else {
+      return this._pathPoints
+    }
+  }
+
   *PathEdges(): IterableIterator<PathEdge> {
     for (let e = this.FirstEdge; e != null; e = e.Next) {
       yield e
@@ -66,11 +73,21 @@ export class Path {
   ///
 
   ///  <returns></returns>
-  ToString(): string {
-    return String.Format(
-      '{0}->{1}',
-      this.EdgeGeometry.sourcePort.Location,
-      this.EdgeGeometry.targetPort.Location,
-    )
+  toString(): string {
+    const sb: StringBuilder = new StringBuilder()
+    if (this.PathPoints instanceof LinkedPoint) sb.Append('L')
+    for (const p of iteratePoints(this.PathPoints)) sb.Append(p.toString())
+    return sb.ToString()
+  }
+}
+function* iteratePoints(
+  pathPoints: LinkedPoint | Point[],
+): IterableIterator<Point> {
+  if (pathPoints instanceof LinkedPoint) {
+    for (let p = <LinkedPoint>pathPoints; p != null; p = p.Next) {
+      yield p.Point
+    }
+  } else {
+    for (const p of pathPoints) yield p
   }
 }

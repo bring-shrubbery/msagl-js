@@ -22,7 +22,8 @@ export class PathRefiner {
     const pathsToFirstLinkedVertices = PathRefiner.CreatePathsToFirstLinkedVerticesMap(
       paths,
     )
-    PathRefiner.Refine(pathsToFirstLinkedVertices.values())
+
+    PathRefiner.Refine(Array.from(pathsToFirstLinkedVertices.values()))
     PathRefiner.CrossVerticalAndHorizontalSegs(
       pathsToFirstLinkedVertices.values(),
     )
@@ -85,7 +86,7 @@ export class PathRefiner {
     }
   }
 
-  static Refine(pathFirstPoints: Iterable<LinkedPoint>) {
+  static Refine(pathFirstPoints: Array<LinkedPoint>) {
     PathRefiner.RefineInDirection(Direction.North, pathFirstPoints)
     PathRefiner.RefineInDirection(Direction.East, pathFirstPoints)
   }

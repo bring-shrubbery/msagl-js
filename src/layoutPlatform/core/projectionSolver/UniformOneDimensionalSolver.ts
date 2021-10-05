@@ -80,7 +80,7 @@ export class UniformOneDimensionalSolver {
     for (const edge of this.graph.edges) {
       let w = 0
       if (edge.x < this.varList.length) {
-        w = w + this.varList[edge.x].Width
+        w += this.varList[edge.x].Width
       }
 
       if (edge.y < this.varList.length) {

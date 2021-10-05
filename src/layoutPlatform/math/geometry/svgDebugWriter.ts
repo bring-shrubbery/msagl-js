@@ -272,6 +272,7 @@ export class SvgDebugWriter {
     this.xw.endElement('g')
     this.xw.endDocument()
     this.xw.flush()
+    this.ws.close()
   }
 
   static dumpICurves(fileName: string, icurves: ICurve[]) {
@@ -283,6 +284,8 @@ export class SvgDebugWriter {
   static dumpDebugCurves(fileName: string, debugCurves: DebugCurve[]) {
     const w = new SvgDebugWriter(fileName)
     w.writeDebugCurves(debugCurves)
+
+    w.close()
   }
 
   writeGraph(g: GeomGraph) {

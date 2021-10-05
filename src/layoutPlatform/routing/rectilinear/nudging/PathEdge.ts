@@ -32,7 +32,7 @@ export class PathEdge {
     this.Width = width
   }
 
-  longestNudgedSegment: LongestNudgedSegment
+  private longestNudgedSegment: LongestNudgedSegment
 
   ///  It is the offset of the edge from the underlying line segment
   ///  [VisibilityEdge.SourcePoint, VisibilityEdge.TargetPoint] in to the direction of the VisibilityEdge.Perpendicular.

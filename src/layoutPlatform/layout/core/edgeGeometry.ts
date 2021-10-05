@@ -2,6 +2,8 @@ import {ICurve} from './../../math/geometry/icurve'
 import {SmoothedPolyline} from './../../math/geometry/smoothedPolyline'
 import {Arrowhead} from './arrowhead'
 import {Port} from './port'
+import {String} from 'typescript-string-operations'
+
 export class EdgeGeometry {
   sourcePort: Port
   targetPort: Port
@@ -43,6 +45,14 @@ export class EdgeGeometry {
 
    }
  */
+
+  toString(): string {
+    return String.Format(
+      '{0}->{1}',
+      this.sourcePort.Location,
+      this.targetPort.Location,
+    )
+  }
   GetMaxArrowheadLength(): number {
     let l = 0
     if (this.sourceArrowhead != null) {

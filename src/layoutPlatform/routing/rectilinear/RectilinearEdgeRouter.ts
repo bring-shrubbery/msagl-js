@@ -414,7 +414,7 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   GeneratePaths() {
     const edgePaths = this.EdgeGeometries.map((eg) => new Path(eg))
-    this.FillEdgePathsWithShortestPaths(from(edgePaths))
+    this.FillEdgePathsWithShortestPaths(edgePaths)
     this.NudgePaths(from(edgePaths))
     this.RouteSelfEdges()
     this.FinaliseEdgeGeometries()
@@ -431,7 +431,7 @@ export class RectilinearEdgeRouter extends Algorithm {
     }
   }
 
-  private FillEdgePathsWithShortestPaths(edgePaths: IEnumerable<Path>) {
+  private FillEdgePathsWithShortestPaths(edgePaths: Array<Path>) {
     this.PortManager.BeginRouteEdges()
     const shortestPathRouter = new MsmtRectilinearPath(
       this.BendPenaltyAsAPercentageOfDistance,
