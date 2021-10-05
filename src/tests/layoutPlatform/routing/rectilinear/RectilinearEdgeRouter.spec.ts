@@ -16,7 +16,7 @@ import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {Size} from '../../../../layoutPlatform/math/geometry/rectangle'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {RectilinearEdgeRouter} from '../../../../layoutPlatform/routing/rectilinear/RectilinearEdgeRouter'
-import {runMDSLayout} from '../../../utils/testUtils'
+import {runMDSLayoutNoSubgraphs} from '../../../utils/testUtils'
 
 import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
 test('empty graph', () => {
@@ -221,11 +221,11 @@ test('first 50 dot files', () => {
     if (f.match('big(.*).gv')) continue // the parser bug
 
     ++i
-    //if (++i != 17) continue
+    // if (++i != 33) continue
 
     let dg: DrawingGraph
     try {
-      dg = runMDSLayout(join(path, f), EdgeRoutingMode.Rectilinear)
+      dg = runMDSLayoutNoSubgraphs(join(path, f), EdgeRoutingMode.Rectilinear)
     } catch (Error) {
       console.log('i = ' + i + ', ' + f + ' error:' + Error.message)
       expect(1).toBe(0)

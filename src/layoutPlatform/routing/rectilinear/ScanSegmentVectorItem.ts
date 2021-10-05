@@ -128,9 +128,9 @@ export class ScanSegmentVectorItem {
 
   PointIsCurrentEndAndNextStart(point: Point): boolean {
     return (
-      point == this.CurrentSegment.End &&
+      point.equal(this.CurrentSegment.End) &&
       null != this.CurrentSegment.NextSegment &&
-      point == this.CurrentSegment.NextSegment.Start
+      point.equal(this.CurrentSegment.NextSegment.Start)
     )
   }
 

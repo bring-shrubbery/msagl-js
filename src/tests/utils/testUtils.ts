@@ -1,3 +1,4 @@
+import {from} from 'linq-to-typescript'
 import {StringBuilder} from 'typescript-string-operations'
 import {
   GeomEdge,
@@ -74,6 +75,20 @@ export function runMDSLayout(
 ) {
   const dg = parseDotGraph(fname)
   if (dg == null) return null
+  const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
+  const settings = new MdsLayoutSettings()
+  settings.edgeRoutingMode = edgeRoutingMode
+  layoutGraph(gg, null, () => settings)
+  return dg
+}
+
+export function runMDSLayoutNoSubgraphs(
+  fname: string,
+  edgeRoutingMode = EdgeRoutingMode.StraightLine,
+) {
+  const dg = parseDotGraph(fname)
+  if (dg == null) return null
+  if (from(dg.graph.subgraphs()).any()) return null
   const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const settings = new MdsLayoutSettings()
   settings.edgeRoutingMode = edgeRoutingMode

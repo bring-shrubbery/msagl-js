@@ -718,7 +718,7 @@ export class TransientGraphUtility {
       const outerVertex =
         this.VisGraph.FindVertex(pac.Location) ?? this.AddVertex(pac.Location)
       this.AddVertex(pac.Location)
-      if (currentVertex.point != outerVertex.point) {
+      if (!currentVertex.point.equal(outerVertex.point)) {
         this.FindOrAddEdgeVV(currentVertex, outerVertex)
       }
 

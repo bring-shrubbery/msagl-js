@@ -179,7 +179,7 @@ export class PathMerger {
       ;
       linkedPoint = linkedPoint.Next
     ) {
-      if (linkedPoint.Point == point) {
+      if (linkedPoint.Point.equal(point)) {
         return linkedPoint
       }
     }
