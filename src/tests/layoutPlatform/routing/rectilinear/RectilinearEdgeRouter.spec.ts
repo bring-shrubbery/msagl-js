@@ -219,9 +219,8 @@ test('first 50 dot files', () => {
   let i = 0
   for (const f of sortedList) {
     if (f.match('big(.*).gv')) continue // the parser bug
-
-    ++i
-    // if (++i != 33) continue
+    // ++i
+    if (++i != 33) continue
 
     let dg: DrawingGraph
     try {
@@ -235,5 +234,65 @@ test('first 50 dot files', () => {
       t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
     if (i > 50) return
+  }
+})
+
+test('layout 100-150 gv files with MDS rect', () => {
+  const path = 'src/tests/data/graphvis/'
+  let i = 0
+  for (const f of sortedList) {
+    if (f.match('big(.*).gv')) continue // the parser bug
+    if (++i > 150) return
+    if (i < 100) continue
+    let dg: DrawingGraph
+    try {
+      dg = runMDSLayoutNoSubgraphs(join(path, f), EdgeRoutingMode.Rectilinear)
+    } catch (Error) {
+      console.log(f + ' error:' + Error.message)
+      expect(1).toBe(0)
+    }
+    if (dg != null) {
+      const t: SvgDebugWriter = new SvgDebugWriter('/tmp/rect' + f + '.svg')
+      t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+    }
+  }
+})
+
+test('abstract rect', () => {
+  const path = 'src/tests/data/graphvis/'
+  let dg: DrawingGraph
+  try {
+    dg = runMDSLayoutNoSubgraphs(
+      join(path, 'abstract.gv'),
+      EdgeRoutingMode.Rectilinear,
+    )
+  } catch (Error) {
+    console.log('abstract.gv' + ' error:' + Error.message)
+    expect(1).toBe(0)
+  }
+  if (dg != null) {
+    const t: SvgDebugWriter = new SvgDebugWriter(
+      '/tmp/rect' + 'abstract' + '.svg',
+    )
+    t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  }
+})
+test('abstract rect', () => {
+  const path = 'src/tests/data/graphvis/'
+  let dg: DrawingGraph
+  try {
+    dg = runMDSLayoutNoSubgraphs(
+      join(path, 'abstract.gv'),
+      EdgeRoutingMode.Rectilinear,
+    )
+  } catch (Error) {
+    console.log('abstract.gv' + ' error:' + Error.message)
+    expect(1).toBe(0)
+  }
+  if (dg != null) {
+    const t: SvgDebugWriter = new SvgDebugWriter(
+      '/tmp/rect' + 'abstract' + '.svg',
+    )
+    t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   }
 })

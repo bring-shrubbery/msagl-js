@@ -89,6 +89,7 @@ export function runMDSLayoutNoSubgraphs(
   const dg = parseDotGraph(fname)
   if (dg == null) return null
   if (from(dg.graph.subgraphs()).any()) return null
+
   const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const settings = new MdsLayoutSettings()
   settings.edgeRoutingMode = edgeRoutingMode

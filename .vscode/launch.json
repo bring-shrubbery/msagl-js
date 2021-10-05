@@ -35,7 +35,7 @@
         "-i",
         "src/tests/layoutPlatform/routing/rectilinear/RectilinearEdgeRouter.spec.ts",
         "-t",
-        "first 50 dot files"
+        "abstract rect"
       ],
       "console": "internalConsole"
     }
