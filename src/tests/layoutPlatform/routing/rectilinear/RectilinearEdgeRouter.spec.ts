@@ -25,7 +25,7 @@ test('empty graph', () => {
   const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
 
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/emptyrectr.svg')
-  t.writeGraph(gg)
+  t.writeGeomGraph(gg)
 })
 
 test('two nodes', () => {
@@ -55,7 +55,7 @@ test('two nodes', () => {
   rr.run()
 
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/tworectr.svg')
-  t.writeGraph(gg)
+  t.writeGeomGraph(gg)
 })
 
 test('three nodes', () => {
@@ -97,7 +97,7 @@ test('three nodes', () => {
   rr.run()
 
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/threerectr.svg')
-  t.writeGraph(gg)
+  t.writeGeomGraph(gg)
 })
 
 test('four nodes', () => {
@@ -158,7 +158,7 @@ test('four nodes', () => {
   rr.run()
 
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/fourrectr.svg')
-  t.writeGraph(gg)
+  t.writeGeomGraph(gg)
 })
 function addNode(gg: GeomGraph, id: string, c: ICurve): Node {
   const node: Node = gg.graph.addNode(new Node(id))
@@ -188,7 +188,7 @@ test('6 nodes', () => {
   rr.run()
 
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/sixrectr.svg')
-  t.writeGraph(gg)
+  t.writeGeomGraph(gg)
 
   function getNode(i: number) {
     const n = addNode(
@@ -233,7 +233,7 @@ test('first 50 dot files', () => {
     }
     if (dg != null) {
       const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + f + 'rect.svg')
-      t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+      t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
     if (i > 50) return
   }
@@ -245,6 +245,10 @@ test('random rect', () => {
       const gg: GeomGraph = generateRandomGraph(seed, nodeCount)
       const rr = RectilinearEdgeRouter.constructorGNNB(gg, 1, 3, true)
       rr.run()
+      const svgDebugWriter = new SvgDebugWriter(
+        '/tmp/rand' + nodeCount + 'seed' + seed + '.svg',
+      )
+      svgDebugWriter.writeGeomGraph(gg)
     }
 })
 
@@ -264,7 +268,7 @@ test('layout 100-150 gv files with MDS rect', () => {
     }
     if (dg != null) {
       const t: SvgDebugWriter = new SvgDebugWriter('/tmp/rect' + f + '.svg')
-      t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+      t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
   }
 })
@@ -285,7 +289,7 @@ test('abstract rect', () => {
     const t: SvgDebugWriter = new SvgDebugWriter(
       '/tmp/rect' + 'abstract' + '.svg',
     )
-    t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+    t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   }
 })
 test('abstract rect', () => {
@@ -304,7 +308,7 @@ test('abstract rect', () => {
     const t: SvgDebugWriter = new SvgDebugWriter(
       '/tmp/rect' + 'abstract' + '.svg',
     )
-    t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+    t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   }
 })
 function generateRandomGraph(seed: number, nodeCount: number): GeomGraph {

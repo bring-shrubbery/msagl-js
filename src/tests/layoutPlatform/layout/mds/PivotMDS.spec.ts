@@ -31,7 +31,7 @@ test('layout 0-50 gv files with MDS', () => {
     }
     if (dg != null) {
       const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pivot' + f + '.svg')
-      t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+      t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
   }
 })
@@ -52,7 +52,7 @@ test('layout 50-100 gv files with MDS', () => {
     }
     if (dg != null) {
       const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pivot' + f + '.svg')
-      t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+      t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
   }
 })
@@ -73,7 +73,7 @@ test('layout 100-150 gv files with MDS', () => {
     }
     if (dg != null) {
       const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pivot' + f + '.svg')
-      t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+      t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
   }
 })
@@ -90,7 +90,7 @@ test('layout 150-200 gv files with MDS', () => {
       dg = runMDSLayout(join(path, f))
       if (dg != null) {
         const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pivot' + f + '.svg')
-        t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+        t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
       }
     } catch (Error) {
       console.log(f + ' error:' + Error.message)
@@ -115,7 +115,7 @@ xtest('layout 200-250 gv files with MDS', () => {
     }
     if (dg != null) {
       const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pivot' + f + '.svg')
-      t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+      t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
   }
 })
@@ -136,7 +136,7 @@ test('layout from 250 and up  gv files with MDS', () => {
   //   }
   //   if (dg != null) {
   //     const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + f + '_pivot.svg')
-  //     t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  //     t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   //   }
   // }
 })

@@ -288,7 +288,7 @@ export class SvgDebugWriter {
     w.close()
   }
 
-  writeGraph(g: GeomGraph) {
+  writeGeomGraph(g: GeomGraph) {
     g.updateBoundingBox()
     this.open(g.boundingBox)
     for (const n of g.deepNodes()) {

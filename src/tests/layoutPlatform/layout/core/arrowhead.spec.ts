@@ -60,7 +60,7 @@ describe('arrowhead', () => {
     g.addEdge(ab)
     const gg = new GeomGraph(g, Rectangle.mkEmpty())
     const xw = new SvgDebugWriter('/tmp/gg.svg')
-    xw.writeGraph(gg)
+    xw.writeGeomGraph(gg)
     xw.close()
   })
 })

@@ -68,7 +68,7 @@ test('self on node', () => {
     expect(e.curve == null).toBe(false)
   }
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/self.svg')
-  t.writeGraph(g)
+  t.writeGeomGraph(g)
 })
 
 test('layered layout glued graph', () => {
@@ -171,7 +171,7 @@ test('disconnected comps', () => {
 
   //  console.log(strB.ToString())
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/disconnected.svg')
-  t.writeGraph(g)
+  t.writeGeomGraph(g)
 })
 test('margins', () => {
   const dg = parseDotGraph('src/tests/data/graphvis/abstract.gv')
@@ -187,7 +187,7 @@ test('margins', () => {
   const t: SvgDebugWriter = new SvgDebugWriter(
     '/tmp/abstract_margins_' + ss.margins.left + '_' + ss.margins.top + '.svg',
   )
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
 test('clusters', () => {
@@ -233,7 +233,7 @@ test('clusters', () => {
   const ss = new SugiyamaLayoutSettings()
   layoutGraph(rootGeom, null, () => ss)
   const t = new SvgDebugWriter('/tmp/clustabc' + '.svg')
-  t.writeGraph(rootGeom)
+  t.writeGeomGraph(rootGeom)
 })
 
 test('layer and node separation', () => {
@@ -250,7 +250,7 @@ test('layer and node separation', () => {
   let t: SvgDebugWriter = new SvgDebugWriter(
     '/tmp/abstract' + ss.LayerSeparation + '_' + ss.NodeSeparation + '.svg',
   )
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   ss.NodeSeparation = 60
   ll = new LayeredLayout(
     GeomObject.getGeom(dg.graph) as GeomGraph,
@@ -261,14 +261,14 @@ test('layer and node separation', () => {
   t = new SvgDebugWriter(
     '/tmp/abstract' + ss.LayerSeparation + '_' + ss.NodeSeparation + '.svg',
   )
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
 test('clust.gv', () => {
   const ss = new SugiyamaLayoutSettings()
   const dg = runLayout('src/tests/data/graphvis/clust.gv', ss)
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/clust.gv.svg')
-  t.writeGraph(<GeomGraph>GeomObject.getGeom(dg.graph))
+  t.writeGeomGraph(<GeomGraph>GeomObject.getGeom(dg.graph))
 })
 
 test('arrowhead size default', () => {
@@ -279,7 +279,7 @@ test('arrowhead size default', () => {
   const ll = new LayeredLayout(geomGraph, ss, new CancelToken())
   ll.run()
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/longArrows.svg')
-  t.writeGraph(<GeomGraph>GeomObject.getGeom(dg.graph))
+  t.writeGeomGraph(<GeomGraph>GeomObject.getGeom(dg.graph))
 })
 
 test('arrowhead size per edge', () => {
@@ -297,7 +297,7 @@ test('arrowhead size per edge', () => {
   const ll = new LayeredLayout(geomGraph, ss, new CancelToken())
   ll.run()
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/arrowheadLength.svg')
-  t.writeGraph(geomGraph)
+  t.writeGeomGraph(geomGraph)
 })
 
 test('src/tests/data/graphvis/ER.gv', () => {
@@ -311,21 +311,21 @@ test('b.gv', () => {
   ss.BrandesThreshold = 1
   const dg = runLayout('src/tests/data/graphvis/b.gv', ss)
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/btest.svg')
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 test('fsm.gv brandes', () => {
   const ss = new SugiyamaLayoutSettings()
   ss.BrandesThreshold = 1
   const dg = runLayout('src/tests/data/graphvis/fsm.gv', ss)
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/fsmbrandes.svg')
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   // console.log(qualityMetric(GeomObject.getGeom(dg.graph) as GeomGraph))
 })
 test('fsm.gv', () => {
   const ss = new SugiyamaLayoutSettings()
   const dg = runLayout('src/tests/data/graphvis/fsm.gv', ss)
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/fsmNetworkSimplex.svg')
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
 xtest('process.gv', () => {
@@ -334,24 +334,24 @@ xtest('process.gv', () => {
   ss.BrandesThreshold = 1
   const dg = runLayout('src/tests/data/smallGraphs/process.gv', ss)
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/processBrandes.svg')
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
 xtest('b100', () => {
   const dg = runLayout('src/tests/data/graphvis/b100.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/b100.svg')
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 test('pmpipe.gv', () => {
   const dg = runLayout('src/tests/data/graphvis/pmpipe.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pmpipe.svg')
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
 test('layered layout hookup longflat', () => {
   const dg = runLayout('src/tests/data/graphvis/longflat.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/longflat.svg')
-  t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
 test('layered layout empty graph', () => {
@@ -391,7 +391,7 @@ test('layered layout nodes only', () => {
   const ll = new LayeredLayout(g, ss, new CancelToken())
   ll.run()
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/nodes_only.svg')
-  t.writeGraph(g)
+  t.writeGeomGraph(g)
 })
 
 function runLayout(fname: string, settings: SugiyamaLayoutSettings = null) {
@@ -425,7 +425,7 @@ test('root', () => {
   const dg = runLayout(fname)
   if (dg != null) {
     const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + 'root.svg')
-    t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+    t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   }
 })
 
@@ -453,7 +453,7 @@ test('brandes', () => {
     }
     if (dg != null) {
       const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + f + 'brandes.svg')
-      t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+      t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
   }
 })
@@ -474,7 +474,7 @@ test('layout first 150 gv files from list', () => {
     }
     if (dg != null) {
       const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + f + '.svg')
-      t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+      t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
     }
   }
 })
@@ -491,7 +491,7 @@ xtest('layout all gv files', () => {
       const dg = runLayout(fname)
       if (dg != null) {
         const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + f + '.svg')
-        t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+        t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
       }
     }
   })

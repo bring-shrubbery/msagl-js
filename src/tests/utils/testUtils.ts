@@ -110,7 +110,7 @@ export function outputGraph(g: GeomGraph, name: string) {
 
   //  console.log(strB.ToString())
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + name + '.svg')
-  t.writeGraph(g)
+  t.writeGeomGraph(g)
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
