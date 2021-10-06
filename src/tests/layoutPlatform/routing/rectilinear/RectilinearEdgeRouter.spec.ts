@@ -239,18 +239,9 @@ test('first 50 dot files', () => {
   }
 })
 
-xtest('full random rect', () => {
-  for (let nodeCount = 2; nodeCount < 10; nodeCount++)
-    for (let seed = 0; seed < 10; seed++) {
-      const gg: GeomGraph = generateRandomGraph(seed, nodeCount)
-      const rr = RectilinearEdgeRouter.constructorGNNB(gg, 1, 3, true)
-      rr.run()
-    }
-})
-
 test('random rect', () => {
-  for (let nodeCount = 4; nodeCount < 10; nodeCount++)
-    for (let seed = 3; seed < 10; seed++) {
+  for (let nodeCount = 4; nodeCount < 20; nodeCount++)
+    for (let seed = 3; seed < 20; seed++) {
       const gg: GeomGraph = generateRandomGraph(seed, nodeCount)
       const rr = RectilinearEdgeRouter.constructorGNNB(gg, 1, 3, true)
       rr.run()
@@ -320,7 +311,6 @@ function generateRandomGraph(seed: number, nodeCount: number): GeomGraph {
   initRandom(seed)
   const w = 20
   const h = 20
-  const labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k', 'l', 'm']
   const gg = new GeomGraph(new Graph(), new Size(0, 0))
 
   const takenPairs = new IntPairSet()
@@ -329,7 +319,7 @@ function generateRandomGraph(seed: number, nodeCount: number): GeomGraph {
     nodes.push(
       <GeomNode>(
         GeomObject.getGeom(
-          addNode(gg, labels[n], getRandomCurve(nodeCount, w, h, takenPairs)),
+          addNode(gg, labels(n), getRandomCurve(nodeCount, w, h, takenPairs)),
         )
       ),
     )
@@ -384,4 +374,8 @@ function addEdge(
   const e = new GeomEdge(new Edge(nodes[i].node, nodes[j].node))
   edges.push(e)
   return e
+}
+function labels(n: number): string {
+  const a_index = 'a'.charCodeAt(0)
+  return String.fromCharCode(a_index + n)
 }
