@@ -35,7 +35,7 @@
         "-i",
         "src/tests/layoutPlatform/routing/rectilinear/RectilinearEdgeRouter.spec.ts",
         "-t",
-        "abstract rect"
+        "random rect"
       ],
       "console": "internalConsole"
     }

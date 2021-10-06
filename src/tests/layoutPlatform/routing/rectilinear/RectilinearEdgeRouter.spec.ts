@@ -16,6 +16,8 @@ import {GeomObject} from '../../../../layoutPlatform/layout/core/geomObject'
 import {Size} from '../../../../layoutPlatform/math/geometry/rectangle'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {RectilinearEdgeRouter} from '../../../../layoutPlatform/routing/rectilinear/RectilinearEdgeRouter'
+import {IntPairSet} from '../../../../layoutPlatform/utils/IntPairSet'
+import {initRandom, randomInt} from '../../../../layoutPlatform/utils/random'
 import {runMDSLayoutNoSubgraphs} from '../../../utils/testUtils'
 
 import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
@@ -237,7 +239,16 @@ test('first 50 dot files', () => {
   }
 })
 
-test('layout 100-150 gv files with MDS rect', () => {
+test('random rect', () => {
+  for (let n = 2; n < 10; n++)
+    for (let i = 0; i < 10; i++) {
+      const gg: GeomGraph = generateRandomGraph(i, n)
+      const rr = RectilinearEdgeRouter.constructorGNNB(gg, 1, 3, true)
+      rr.run()
+    }
+})
+
+xtest('layout 100-150 gv files with MDS rect', () => {
   const path = 'src/tests/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
@@ -296,3 +307,72 @@ test('abstract rect', () => {
     t.writeGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   }
 })
+function generateRandomGraph(seed: number, nodeCount: number): GeomGraph {
+  initRandom(seed)
+  const w = 20
+  const h = 20
+  const labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k', 'l', 'm']
+  const gg = new GeomGraph(new Graph(), new Size(0, 0))
+
+  const takenPairs = new IntPairSet()
+  const nodes: GeomNode[] = []
+  for (let n = 0; n < nodeCount; n++) {
+    nodes.push(
+      <GeomNode>(
+        GeomObject.getGeom(
+          addNode(gg, labels[n], getRandomCurve(nodeCount, w, h, takenPairs)),
+        )
+      ),
+    )
+  }
+
+  // we want to add nodeCount edges as well
+  takenPairs.clear()
+  const edges: GeomEdge[] = []
+  while (edges.length < nodeCount) {
+    addEdge(nodes, takenPairs, edges)
+  }
+
+  return gg
+}
+function getRandomCurve(
+  nodes: number,
+  w: number,
+  h: number,
+  takenRects: IntPairSet,
+): ICurve {
+  const [x, y] = findNewPair(takenRects, nodes)
+  takenRects.addNN(x, y)
+  return CurveFactory.mkRectangleWithRoundedCorners(
+    w,
+    h,
+    1,
+    1,
+    new Point(2 * w * x, 2 * h * y),
+  )
+}
+
+function findNewPair(takenRects: IntPairSet, max: number): [number, number] {
+  do {
+    const x = randomInt(max)
+    const y = randomInt(max)
+    if (!takenRects.hasxy(x, y)) return [x, y]
+  } while (true)
+}
+
+function addEdge(
+  nodes: GeomNode[],
+  takenPairs: IntPairSet,
+  edges: GeomEdge[],
+): GeomEdge {
+  const i = randomInt(nodes.length)
+  let j: number
+  do {
+    j = randomInt(nodes.length)
+    if (takenPairs.hasxy(i, j)) continue
+  } while (i == j)
+  takenPairs.addNN(i, j)
+  const e = new GeomEdge(new Edge(nodes[i].node, nodes[j].node))
+  edges.push(e)
+  return e
+}

@@ -5,6 +5,7 @@ import {OptimalRectanglePacking} from '../../../../../layoutPlatform/math/geomet
 import {PackingConstants} from '../../../../../layoutPlatform/math/geometry/rectanglePacking/PackingConstants'
 import {GreedyRectanglePacking} from '../../../../../layoutPlatform/math/geometry/rectanglePacking/RectanglePacking'
 import {SvgDebugWriter} from '../../../../../layoutPlatform/math/geometry/svgDebugWriter'
+import {random} from '../../../../../layoutPlatform/utils/random'
 
 test('RectanglePackingTwoSquares', () => {
   const rectangles = []
@@ -93,8 +94,8 @@ test('RandomRectangles', () => {
   let area = 0
   const scale = 100
   for (let i = 0; i < N; i++) {
-    const width: number = scale * Math.random()
-    const height: number = scale * Math.random()
+    const width: number = scale * random()
+    const height: number = scale * random()
     area += +(width * height)
     rectangles.push(Rectangle.mkPP(new Point(0, 0), new Point(width, height)))
   }
@@ -132,8 +133,8 @@ test('PowerLawRandomRectangles', () => {
   const scale = 100
   for (let i = 0; i < n; i++) {
     const s: number = scale * Math.pow(2, i / 10)
-    const width: number = s * Math.random()
-    const height: number = s * Math.random()
+    const width: number = s * random()
+    const height: number = s * random()
     area += width * height
     rectangles.push(Rectangle.mkPP(new Point(0, 0), new Point(width, height)))
   }

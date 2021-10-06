@@ -1,3 +1,4 @@
+import {random} from '../../utils/random'
 export class MultidimensionalScaling {
   // Double-centers a matrix of such a way that the center of gravity is zero.
   // After number-centering, each row and each column sums up to zero.
@@ -81,7 +82,7 @@ export class MultidimensionalScaling {
   static RandomUnitLengthVector(n: number): number[] {
     const result = new Array<number>(n)
     for (let i = 0; i < n; i++) {
-      result[i] = Math.random()
+      result[i] = random()
     }
     MultidimensionalScaling.Normalize(result)
     return result

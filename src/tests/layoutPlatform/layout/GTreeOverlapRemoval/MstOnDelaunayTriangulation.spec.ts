@@ -6,12 +6,13 @@ import {Point} from '../../../../layoutPlatform/math/geometry/point'
 import {SvgDebugWriter} from '../../../../layoutPlatform/math/geometry/svgDebugWriter'
 import {Cdt} from '../../../../layoutPlatform/routing/ConstrainedDelaunayTriangulation/Cdt'
 import {CdtSweeper} from '../../../../layoutPlatform/routing/ConstrainedDelaunayTriangulation/CdtSweeper'
+import {random} from '../../../../layoutPlatform/utils/random'
 
 test('gtree on CDT', () => {
   const count = 100
   const points = []
   for (let i = 0; i < count; i++) {
-    points.push(new Point(Math.random(), Math.random()).mul(20))
+    points.push(new Point(random(), random()).mul(20))
   }
 
   const cdt = new Cdt(points, null, null)
