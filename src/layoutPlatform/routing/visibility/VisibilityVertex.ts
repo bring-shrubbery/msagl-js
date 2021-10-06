@@ -102,21 +102,16 @@ export class VisibilityVertex {
 
     let ret = null
     while (n != tree.nil) {
-      n = n.item.TargetPoint >= targetPoint ? (ret = n).left : n.right
+      n =
+        n.item.TargetPoint.compareTo(targetPoint) >= 0
+          ? (ret = n).left
+          : n.right
     }
     return ret
   }
 
-  /*
-RBNode<VisibilityEdge> good = null;
-            while (n != tree.Nil)
-                n = n.Item.TargetPoint >= targetPoint ? (good = n).left : n.right;
-
-            return good;
-  */
   get(target: VisibilityVertex): VisibilityEdge {
     let node = VisibilityVertex.FindFirst(this.OutEdges, target.point)
-    //  OutEdges.FindFirst(e => e.TargetPoint >= target.point);
     if (node != null) {
       if (node.item.Target == target) {
         return node.item
@@ -124,7 +119,6 @@ RBNode<VisibilityEdge> good = null;
     }
 
     node = VisibilityVertex.FindFirst(target.OutEdges, this.point)
-    //  target.OutEdges.FindFirst(e => e.TargetPoint >= Point);
     if (node != null) {
       if (node.item.Target == this) {
         return node.item
