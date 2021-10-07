@@ -239,6 +239,16 @@ test('first 50 dot files', () => {
   }
 })
 
+test('overlap rect', () => {
+  const nodeCount = 4
+  const seed = 3
+  const gg: GeomGraph = generateRandomGraph(seed, nodeCount)
+  const rr = RectilinearEdgeRouter.constructorGNNB(gg, 1, 3, true)
+  rr.run()
+  const svgDebugWriter = new SvgDebugWriter('/tmp/randoverlap.svg')
+  svgDebugWriter.writeGeomGraph(gg)
+})
+
 test('random rect', () => {
   for (let nodeCount = 4; nodeCount < 20; nodeCount++)
     for (let seed = 3; seed < 20; seed++) {

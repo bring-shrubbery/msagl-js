@@ -491,7 +491,7 @@ export class SsstRectilinearPath {
     weight: number,
     t: {numberOfBends: number; length: number},
   ): Direction {
-    length =
+    t.length =
       prevEntry.Length +
       SsstRectilinearPath.ManhattanDistance(
         prevEntry.Vertex.point,
@@ -722,8 +722,6 @@ export class SsstRectilinearPath {
       neigVer.VertexEntries != null
         ? neigVer.VertexEntries[CompassVector.ToIndex(dirToNeighbor)]
         : null
-    neigVer.VertexEntries != null
-    null
     if (neigEntry == null) {
       if (
         !this.CreateAndEnqueueReversedEntryToNeighborVertex(

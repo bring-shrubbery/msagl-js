@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import {Point} from '../../..'
 import {closeDistEps, comparePointsXFirst} from '../../utils/compare'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
@@ -87,22 +86,17 @@ export class MsmtRectilinearPath {
     //  Process closest pairs first, so we can skip longer ones (jump out of SsstRectilinear sooner, often immediately).
     //  This means that we'll be consistent on tiebreaking for equal scores with differing bend counts (the shorter
     //  path will win).  In overlapped graphs the shortest path may have more higher-weight edges.
-    for (const [sv, tv] of from(sources)
-      .selectMany((source) =>
-        from(targets).select((target) => [source, target]),
-      )
-      .orderBy(([s, t]) =>
-        SsstRectilinearPath.ManhattanDistance(s.point, t.point),
-      )) {
+    const stPairs: Array<[VisibilityVertex, VisibilityVertex]> = []
+    for (const s of sources) for (const t of targets) stPairs.push([s, t])
+    stPairs.sort(([a, b], [c, d]) => md(a, b) - md(c, d))
+    for (const [sv, tv] of stPairs) {
       if (Point.closeDistEps(sv.point, tv.point)) {
         continue
       }
       const sourceCostAdjustment =
-        SsstRectilinearPath.ManhattanDistance(sv.point, sourceCenter) *
-        interiorLengthAdjustment
+        mdP(sv, sourceCenter) * interiorLengthAdjustment
       const targetCostAdjustment =
-        SsstRectilinearPath.ManhattanDistance(tv.point, targetCenter) *
-        interiorLengthAdjustment
+        mdP(tv, targetCenter) * interiorLengthAdjustment
 
       let adjustedBestCost = t.bestCost
       if (targetVertexEntries != null) {
@@ -135,9 +129,7 @@ export class MsmtRectilinearPath {
       if (lastEntry == null) {
         continue
       }
-      const costRatio =
-        lastEntry.Cost /
-        SsstRectilinearPath.ManhattanDistance(sv.point, tv.point)
+      const costRatio = lastEntry.Cost / md(sv, tv)
       if (
         lastEntry.Cost < t.bestCost ||
         (closeDistEps(lastEntry.Cost, t.bestCost) &&
@@ -145,12 +137,16 @@ export class MsmtRectilinearPath {
       ) {
         t.bestCost = lastEntry.Cost
         t.bestEntry = lastEntry
-        bestPathCostRatio =
-          lastEntry.Cost /
-          SsstRectilinearPath.ManhattanDistance(sv.point, tv.point)
+        bestPathCostRatio = lastEntry.Cost / md(sv, tv)
       }
     }
     return t.bestEntry
+    function md(s: VisibilityVertex, t: VisibilityVertex): number {
+      return SsstRectilinearPath.ManhattanDistance(s.point, t.point)
+    }
+    function mdP(s: VisibilityVertex, t: Point): number {
+      return SsstRectilinearPath.ManhattanDistance(s.point, t)
+    }
   }
 
   private static UpdateTargetEntriesForEachDirection(
