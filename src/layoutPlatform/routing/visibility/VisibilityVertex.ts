@@ -54,7 +54,7 @@ export class VisibilityVertex {
   }
 
   constructor(point: Point) {
-    this._outEdges = new RBTree<VisibilityEdge>(this.Compare)
+    this._outEdges = new RBTree<VisibilityEdge>((a, b) => this.Compare(a, b))
     this.point = point
   }
 

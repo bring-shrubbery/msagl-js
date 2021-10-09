@@ -60,11 +60,6 @@ export class ObstaclePort {
   }
 
   RemoveFromGraph() {
-    //  Currently all transient removals and edge restorations are done by TransientGraphUtility itself.
-    for (const entrance of this.PortEntrances) {
-      entrance.RemoveFromGraph()
-    }
-
     this.CenterVertex = null
   }
 

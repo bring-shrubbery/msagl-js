@@ -27,9 +27,8 @@ export class MsmtRectilinearPath {
     sources: Array<VisibilityVertex>,
     targets: Array<VisibilityVertex>,
   ): Array<Point> {
-    return SsstRectilinearPath.RestorePathV({
-      entry: this.GetPathStage(null, sources, null, targets),
-    })
+    const t = {entry: this.GetPathStage(null, sources, null, targets)}
+    return SsstRectilinearPath.RestorePathV(t)
   }
 
   ///  <summary>
@@ -59,12 +58,8 @@ export class MsmtRectilinearPath {
     //  Calculate the bend penalty multiplier.  This is a percentage of the distance between the source and target,
     //  so that we have the same relative importance if we have objects of about size 20 that are about 100 apart
     //  as for objects of about size 200 that are about 1000 apart.
-    const sourceCenter: Point = MsmtRectilinearPath.GetBarycenterOfUniquePortLocations(
-      sources,
-    )
-    const targetCenter: Point = MsmtRectilinearPath.GetBarycenterOfUniquePortLocations(
-      targets,
-    )
+    const sourceCenter: Point = MsmtRectilinearPath.Barycenter(sources)
+    const targetCenter: Point = MsmtRectilinearPath.Barycenter(targets)
     const distance = SsstRectilinearPath.ManhattanDistance(
       sourceCenter,
       targetCenter,
@@ -179,27 +174,12 @@ export class MsmtRectilinearPath {
     return
   }
 
-  private static GetBarycenterOfUniquePortLocations(
-    vertices: Array<VisibilityVertex>,
-  ): Point {
+  private static Barycenter(vertices: Array<VisibilityVertex>): Point {
     let center = new Point(0, 0)
-    let prevVertex: VisibilityVertex = null
-    let count = 0
-    for (const vertex of vertices.sort((a, b) =>
-      comparePointsXFirst(a.point, b.point),
-    )) {
-      if (
-        prevVertex != null &&
-        Point.closeIntersections(vertex.point, prevVertex.point)
-      ) {
-        continue
-      }
-
-      prevVertex = vertex
-      count++
+    for (const vertex of vertices) {
       center = center.add(vertex.point)
     }
 
-    return center.div(count)
+    return center.div(vertices.length)
   }
 }

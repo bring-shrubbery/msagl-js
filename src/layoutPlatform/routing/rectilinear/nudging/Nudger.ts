@@ -42,7 +42,7 @@ export class Nudger {
   axisEdgesToObstaclesTheyOriginatedFrom: Map<AxisEdge, Polyline>
 
   Paths: Array<Path>
-  Obstacles: IEnumerable<Polyline>
+  Obstacles: Array<Polyline>
 
   PathVisibilityGraph: VisibilityGraph
   //   "nudges" paths to decrease the number of intersections and stores the results inside WidePaths of "paths"
@@ -54,7 +54,7 @@ export class Nudger {
   constructor(
     paths: IEnumerable<Path>,
     cornerFitRad: number,
-    obstacles: IEnumerable<Polyline>,
+    obstacles: Array<Polyline>,
     ancestorsSets: Map<Shape, Set<Shape>>,
   ) {
     this.AncestorsSets = ancestorsSets
@@ -67,7 +67,7 @@ export class Nudger {
     this.EdgeSeparation = 2 * cornerFitRad
     this.Paths = paths.toArray()
     this.HierarchyOfObstacles = CreateRectangleNodeOnEnumeration(
-      obstacles.select((p) => mkRectangleNode(p, p.boundingBox)),
+      from(obstacles.map((p) => mkRectangleNode(p, p.boundingBox))),
     )
     this.MapPathsToTheirObstacles()
   }
@@ -1121,7 +1121,7 @@ export class Nudger {
   static NudgePaths(
     paths: IEnumerable<Path>,
     cornerFitRadius: number,
-    paddedObstacles: IEnumerable<Polyline>,
+    paddedObstacles: Array<Polyline>,
     ancestorsSets: Map<Shape, Set<Shape>>,
     removeStaircases: boolean,
   ) {
@@ -1202,7 +1202,7 @@ export class Nudger {
 }
 
 function GetObstacleBoundaries(
-  obstacles: IEnumerable<Polyline>,
+  obstacles: Array<Polyline>,
   color: string,
 ): Array<DebugCurve> {
   const debugCurves = new Array<DebugCurve>()

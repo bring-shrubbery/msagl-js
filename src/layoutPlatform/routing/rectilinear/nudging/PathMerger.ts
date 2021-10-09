@@ -197,13 +197,12 @@ export class PathMerger {
           LinkedPoint
         > = this.verticesToPathOffsets.get(linkedPoint.Point)
         if (!pathOffsets) {
-          pathOffsets = new Map<Path, LinkedPoint>()
+          this.verticesToPathOffsets.set(
+            linkedPoint.Point,
+            (pathOffsets = new Map<Path, LinkedPoint>()),
+          )
         }
 
-        this.verticesToPathOffsets.set(
-          linkedPoint.Point,
-          new Map<Path, LinkedPoint>(),
-        )
         // check for the loop
         const loopPoint: LinkedPoint = pathOffsets.get(path)
         if (loopPoint) {

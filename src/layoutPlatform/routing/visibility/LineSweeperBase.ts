@@ -30,7 +30,7 @@ export class LineSweeperBase {
 
   protected Ports: PointMap<Point>
 
-  public constructor(obstacles: IEnumerable<Polyline>, sweepDirection: Point) {
+  public constructor(obstacles: Array<Polyline>, sweepDirection: Point) {
     this.Obstacles = obstacles
     this.SweepDirection = sweepDirection
     this.DirectionPerp = sweepDirection.rotate(-Math.PI / 2)
@@ -38,11 +38,11 @@ export class LineSweeperBase {
       this.Compare(a, b),
     )
     this.ObstacleSideComparer = new ObstacleSideComparer(this)
-    this.LeftObstacleSideTree = new RBTree<SegmentBase>(
-      this.ObstacleSideComparer.Compare,
+    this.LeftObstacleSideTree = new RBTree<SegmentBase>((a, b) =>
+      this.ObstacleSideComparer.Compare(a, b),
     )
-    this.RightObstacleSideTree = new RBTree<SegmentBase>(
-      this.ObstacleSideComparer.Compare,
+    this.RightObstacleSideTree = new RBTree<SegmentBase>((a, b) =>
+      this.ObstacleSideComparer.Compare(a, b),
     )
   }
 
@@ -66,7 +66,7 @@ export class LineSweeperBase {
 
   protected PreviousZ: number = Number.NEGATIVE_INFINITY
 
-  z: number
+  z = Number.NEGATIVE_INFINITY
 
   public get Z(): number {
     return this.z
@@ -75,10 +75,11 @@ export class LineSweeperBase {
     if (value > this.z + GeomConstants.tolerance) {
       this.PreviousZ = this.z
     }
+    this.z = value
   }
 
   //  protected virtual bool TreesAreCorrect() { return true; }
-  Obstacles: IEnumerable<Polyline>
+  Obstacles: Array<Polyline>
 
   protected GetZS(eve: SweepEvent): number {
     return this.SweepDirection.dot(eve.Site)

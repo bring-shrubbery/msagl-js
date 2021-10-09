@@ -64,34 +64,22 @@ test('three nodes', () => {
   const a = addNode(
     gg,
     'a',
-    CurveFactory.mkRectangleWithRoundedCorners(
-      20,
-      10,
-      1,
-      1,
-      new Point(150, 100),
-    ),
+    CurveFactory.mkRectangleWithRoundedCorners(20, 20, 1, 1, new Point(40, 0)),
   )
 
   const b = addNode(
     gg,
     'b',
-    CurveFactory.mkRectangleWithRoundedCorners(20, 10, 1, 1, new Point(100, 0)),
+    CurveFactory.mkRectangleWithRoundedCorners(20, 20, 1, 1, new Point(40, 80)),
   )
 
   const c = addNode(
     gg,
     'c',
-    CurveFactory.mkRectangleWithRoundedCorners(20, 10, 1, 1, new Point(200, 0)),
+    CurveFactory.mkRectangleWithRoundedCorners(20, 10, 1, 1, new Point(40, 40)),
   )
 
   new GeomEdge(new Edge(a, b))
-  new GeomEdge(new Edge(b, a))
-  new GeomEdge(new Edge(b, c))
-  new GeomEdge(new Edge(a, b))
-  new GeomEdge(new Edge(a, c))
-  new GeomEdge(new Edge(c, a))
-  new GeomEdge(new Edge(a, c))
 
   const rr = RectilinearEdgeRouter.constructorGNNB(gg, 1, 3, true)
   rr.run()
@@ -240,8 +228,8 @@ test('first 50 dot files', () => {
 })
 
 test('overlap rect', () => {
-  const nodeCount = 4
-  const seed = 3
+  const nodeCount = 3
+  const seed = 15
   const gg: GeomGraph = generateRandomGraph(seed, nodeCount)
   const rr = RectilinearEdgeRouter.constructorGNNB(gg, 1, 3, true)
   rr.run()
@@ -250,8 +238,8 @@ test('overlap rect', () => {
 })
 
 test('random rect', () => {
-  for (let nodeCount = 4; nodeCount < 20; nodeCount++)
-    for (let seed = 3; seed < 20; seed++) {
+  for (let nodeCount = 3; nodeCount < 20; nodeCount++)
+    for (let seed = 0; seed < 20; seed++) {
       const gg: GeomGraph = generateRandomGraph(seed, nodeCount)
       const rr = RectilinearEdgeRouter.constructorGNNB(gg, 1, 3, true)
       rr.run()

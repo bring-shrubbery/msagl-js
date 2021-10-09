@@ -118,8 +118,8 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   //  The collection of padded obstacle boundary polylines around the input shapes to route around.
 
-  get PaddedObstacles(): IEnumerable<Polyline> {
-    return from(this.ShapeToObstacleMap.values()).select(
+  get PaddedObstacles(): Array<Polyline> {
+    return Array.from(this.ShapeToObstacleMap.values()).map(
       (obs) => obs.PaddedPolyline,
     )
   }

@@ -83,7 +83,7 @@ export class VertexEntry {
 
   //  Indicates whether we are allowing further entries into this vertex from this direction.
 
-  IsClosed: boolean
+  IsClosed = false
 
   toString(): string {
     return (

@@ -22,7 +22,9 @@ export class LookaheadScan {
 
   constructor(scanDir: ScanDirection) {
     this.scanDirection = scanDir
-    this.eventTree = new RBTree<BasicReflectionEvent>(this.CompareBB)
+    this.eventTree = new RBTree<BasicReflectionEvent>((a, b) =>
+      this.CompareBB(a, b),
+    )
     this.findFirstPred = (n) => this.CompareToFindFirstPoint(n.Site) >= 0
   }
 

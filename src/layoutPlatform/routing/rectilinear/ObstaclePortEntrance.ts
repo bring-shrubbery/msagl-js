@@ -354,11 +354,6 @@ export class ObstaclePortEntrance {
     }
   }
 
-  RemoveFromGraph() {
-    //  Currently all transient removals and edge restorations are done by TransientGraphUtility itself
-    //  and ObstaclePort clears itself so there's nothing to do.
-  }
-
   ///  <summary>
   ///  </summary>
   ///  <returns></returns>

@@ -44,7 +44,7 @@ export class FreeSpaceFinder extends LineSweeperBase {
   ///  <param name="axisEdges">edges to find the empty space around</param>
   constructor(
     direction: Direction,
-    obstacles: IEnumerable<Polyline>,
+    obstacles: Array<Polyline>,
     axisEdgesToObstaclesTheyOriginatedFrom: Map<AxisEdge, Polyline>,
     pathOrders: Map<AxisEdge, Array<PathEdge>>,
     axisEdges: IEnumerable<AxisEdge>,
