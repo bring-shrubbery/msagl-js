@@ -17,12 +17,18 @@ import {GeomEdge} from './core/geomEdge'
 import {LayoutSettings} from './layered/SugiyamaLayoutSettings'
 import {MdsLayoutSettings} from './mds/MDSLayoutSettings'
 import {PivotMDS} from './mds/PivotMDS'
+import {EdgeRoutingSettings} from '../core/routing/EdgeRoutingSettings'
 
-function routeEdges(geomG: GeomGraph, edgeRoutingMode: EdgeRoutingMode) {
-  if (edgeRoutingMode == EdgeRoutingMode.StraightLine) {
+function routeEdges(
+  geomG: GeomGraph,
+  edgeRoutingSettings: EdgeRoutingSettings,
+  cornerFitRadius = 3,
+) {
+  if (edgeRoutingSettings.edgeRoutingMode == EdgeRoutingMode.StraightLine) {
     routeStraightEdges(geomG)
   } else {
-    routeRectEdges(geomG)
+    if (edgeRoutingSettings.edgeRoutingMode == EdgeRoutingMode.Rectilinear)
+      routeRectilinearEdges(geomG, edgeRoutingSettings.padding, cornerFitRadius)
   }
 }
 
@@ -72,8 +78,10 @@ export function layoutGraph(
 
   for (const e of removedEdges) e.add()
 
-  if (geomG.graph.parent == null)
-    routeEdges(geomG, layoutSettingsFunc(geomG).edgeRoutingMode)
+  if (geomG.graph.parent == null) {
+    const ls = layoutSettingsFunc(geomG)
+    routeEdges(geomG, ls.edgeRoutingSettings)
+  }
 
   function layoutShallowSubgraphs() {
     for (const n of geomG.shallowNodes()) {
@@ -204,7 +212,16 @@ function getConnectedComponents(geomGraph: GeomGraph): GeomGraph[] {
   }
   return ret
 }
-function routeRectEdges(geomG: GeomGraph) {
-  const rr = RectilinearEdgeRouter.constructorGNNB(geomG, 1, 3, true)
+function routeRectilinearEdges(
+  geomG: GeomGraph,
+  nodePadding: number,
+  cornerFitRadius: number,
+) {
+  const rr = RectilinearEdgeRouter.constructorGNNB(
+    geomG,
+    nodePadding,
+    cornerFitRadius,
+    true,
+  )
   rr.run()
 }
