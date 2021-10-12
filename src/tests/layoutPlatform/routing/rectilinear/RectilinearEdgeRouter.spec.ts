@@ -73,7 +73,7 @@ test('three nodes', () => {
     CurveFactory.mkRectangleWithRoundedCorners(20, 20, 1, 1, new Point(40, 80)),
   )
 
-  const c = addNode(
+  addNode(
     gg,
     'c',
     CurveFactory.mkRectangleWithRoundedCorners(20, 10, 1, 1, new Point(40, 40)),
