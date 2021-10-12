@@ -77,14 +77,14 @@ export function runMDSLayout(
   if (dg == null) return null
   const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const settings = new MdsLayoutSettings()
-  settings.edgeRoutingMode = edgeRoutingMode
+  settings.edgeRoutingSettings.edgeRoutingMode = edgeRoutingMode
   layoutGraph(gg, null, () => settings)
   return dg
 }
 
 export function runMDSLayoutNoSubgraphs(
   fname: string,
-  edgeRoutingMode = EdgeRoutingMode.StraightLine,
+  edgeRoutingMode: EdgeRoutingMode,
 ) {
   const dg = parseDotGraph(fname)
   if (dg == null) return null
@@ -92,7 +92,7 @@ export function runMDSLayoutNoSubgraphs(
 
   const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const settings = new MdsLayoutSettings()
-  settings.edgeRoutingMode = edgeRoutingMode
+  settings.edgeRoutingSettings.edgeRoutingMode = edgeRoutingMode
   layoutGraph(gg, null, () => settings)
   return dg
 }

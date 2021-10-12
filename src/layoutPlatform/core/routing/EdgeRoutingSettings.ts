@@ -2,7 +2,10 @@
 import {EdgeRoutingMode} from './EdgeRoutingMode'
 
 export class EdgeRoutingSettings {
-  edgeRoutingMode: EdgeRoutingMode = EdgeRoutingMode.SugiyamaSplines
+  constructor() {
+    this.EdgeRoutingMode = EdgeRoutingMode.SugiyamaSplines
+  }
+  edgeRoutingMode: EdgeRoutingMode // = EdgeRoutingMode.SugiyamaSplines
 
   //  defines the way edges are routed
   public get EdgeRoutingMode(): EdgeRoutingMode {

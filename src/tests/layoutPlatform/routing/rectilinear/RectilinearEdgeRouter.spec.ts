@@ -290,25 +290,6 @@ test('abstract rect', () => {
     t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
   }
 })
-test('abstract rect', () => {
-  const path = 'src/tests/data/graphvis/'
-  let dg: DrawingGraph
-  try {
-    dg = runMDSLayoutNoSubgraphs(
-      join(path, 'abstract.gv'),
-      EdgeRoutingMode.Rectilinear,
-    )
-  } catch (Error) {
-    console.log('abstract.gv' + ' error:' + Error.message)
-    expect(1).toBe(0)
-  }
-  if (dg != null) {
-    const t: SvgDebugWriter = new SvgDebugWriter(
-      '/tmp/rect' + 'abstract' + '.svg',
-    )
-    t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
-  }
-})
 function generateRandomGraph(seed: number, nodeCount: number): GeomGraph {
   initRandom(seed)
   const w = 20

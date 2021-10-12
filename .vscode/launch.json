@@ -5,14 +5,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Current File",
-      "type": "python",
-      "request": "launch",
-      "program": "${file}",
-      "console": "integratedTerminal",
-      "args": ["src"]
-    },
-    {
       "type": "node",
       "name": "vscode-jest-tests",
       "request": "launch",
@@ -38,7 +30,13 @@
       "name": "Run selected Jest test",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "test"],
-      "args": ["--", "-i", "src/tests/layoutPlatform/layout/mds/PivotMDS.spec.ts", "-t", "graph with subgraphs"],
+      "args": [
+        "--",
+        "-i",
+        "src/tests/layoutPlatform/routing/rectilinear/RectilinearEdgeRouter.spec.ts",
+        "-t",
+        "abstract rect"
+      ],
       "console": "internalConsole"
     }
   ]

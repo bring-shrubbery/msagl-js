@@ -4,7 +4,6 @@ import {EdgeRoutingSettings} from '../../core/routing/EdgeRoutingSettings'
 import {LayerDirectionEnum} from './layerDirectionEnum'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 import {closeDistEps} from '../../utils/compare'
-import {EdgeRoutingMode} from '../../core/routing/EdgeRoutingMode'
 export enum SnapToGridByY {
   None,
   Top,
@@ -12,7 +11,6 @@ export enum SnapToGridByY {
 }
 export class LayoutSettings {
   edgeRoutingSettings = new EdgeRoutingSettings()
-  edgeRoutingMode = EdgeRoutingMode.StraightLine
   minimalWidth = 0
   // The resulting layout should be at list this wide
   get MinimalWidth(): number {
