@@ -43,7 +43,7 @@
         "-i",
         "src/tests/layoutPlatform/routing/rectilinear/RectilinearEdgeRouter.spec.ts",
         "-t",
-        "three nodes"
+        "random rect"
       ],
       "console": "internalConsole"
     }

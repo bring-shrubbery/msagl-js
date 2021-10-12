@@ -11,6 +11,7 @@ export enum SnapToGridByY {
   Bottom,
 }
 export class LayoutSettings {
+  edgeRoutingSettings = new EdgeRoutingSettings()
   edgeRoutingMode = EdgeRoutingMode.StraightLine
   minimalWidth = 0
   // The resulting layout should be at list this wide
