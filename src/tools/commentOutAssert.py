@@ -13,7 +13,7 @@ def findBalancedParent(off, data):
         if insidestring: 
             if char=='\'': 
                 insidestring=False
-                continue
+            continue
         if (char == '(') :
              level = level +1
         elif char == ')' : 
@@ -23,12 +23,20 @@ def findBalancedParent(off, data):
     return o  
 
 
-
+def commentedOut(data, off) :
+    while off > 0 :
+       ch = data[off]
+       if ch == '\n': return False
+       if ch == '/' and data[off - 1 ]== '/': return True
+       off = off - 1
+    return False   
     
 def findAssert(offset, data) :
     off=data.find("Assert.assert", offset)
     if off < 0: return (off, -1)
-    return (off,findBalancedParent(off, data))
+    while off >= 0 and commentedOut(data, off) :
+        off =  data.find("Assert.assert", off+1)
+    return (-1,-1) if off < 0 else (off,findBalancedParent(off, data))
 
 
 def sub(filename):    
