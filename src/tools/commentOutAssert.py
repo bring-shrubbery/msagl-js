@@ -5,11 +5,11 @@ def findBalancedParent(off, data):
     o = data.find("(", off)
     
     if o <0 : return -1
-    char = data[o]
     insidestring=False
     level = 1
     while level > 0 :
         o = o+1
+        char= data[o]
         if insidestring: 
             if char=='\'': 
                 insidestring=False
