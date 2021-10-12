@@ -1,5 +1,5 @@
 ﻿import {String} from 'typescript-string-operations'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {Cdt} from './Cdt'
 import {CdtSite} from './CdtSite'
 import {CdtTriangle} from './CdtTriangle'
@@ -24,7 +24,7 @@ export class CdtEdge {
       this.upperSite = a
       this.lowerSite = b
     } else {
-      Assert.assert(above != 0)
+      /*Assert.assert(above != 0)*/
       this.lowerSite = a
       this.upperSite = b
     }
@@ -41,11 +41,11 @@ export class CdtEdge {
     return this.ccwTriangle
   }
   public set CcwTriangle(value: CdtTriangle) {
-    Assert.assert(
+    /*Assert.assert(
       value == null ||
         this.cwTriangle == null ||
         value.OppositeSite(this) != this.cwTriangle.OppositeSite(this),
-    )
+    )*/
     this.ccwTriangle = value
   }
 
@@ -53,11 +53,11 @@ export class CdtEdge {
     return this.cwTriangle
   }
   public set CwTriangle(value: CdtTriangle) {
-    Assert.assert(
+    /*Assert.assert(
       value == null ||
         this.ccwTriangle == null ||
         value.OppositeSite(this) != this.ccwTriangle.OppositeSite(this),
-    )
+    )*/
     this.cwTriangle = value
   }
 
@@ -80,7 +80,7 @@ export class CdtEdge {
   }
 
   public OtherSite(site: CdtSite): CdtSite {
-    Assert.assert(this.IsAdjacent(site))
+    /*Assert.assert(this.IsAdjacent(site))*/
     return this.upperSite == site ? this.lowerSite : this.upperSite
   }
 }

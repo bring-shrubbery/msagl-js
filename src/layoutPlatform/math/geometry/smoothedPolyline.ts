@@ -3,7 +3,7 @@ import {Point} from './../../math/geometry/point'
 import {LineSegment} from './../../math/geometry/lineSegment'
 import {Curve} from './../../math/geometry/curve'
 import {BezierSeg} from './../../math/geometry/bezierSeg'
-import {Assert} from './../../utils/assert'
+// import {Assert} from './../../utils/assert'
 export class SmoothedPolyline {
   // creates the polyline from corner points
   static mkFromPoints(points: Point[]) {
@@ -91,7 +91,7 @@ export class SmoothedPolyline {
       a = corner.b
     } while (true)
 
-    Assert.assert(a.next.next == null)
+    /*Assert.assert(a.next.next == null)*/
 
     if (curve.segs.length == 0) {
       if (!Point.closeDistEps(a.point, a.next.point)) {

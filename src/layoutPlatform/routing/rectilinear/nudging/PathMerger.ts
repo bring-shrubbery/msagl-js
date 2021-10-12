@@ -3,7 +3,7 @@
 
 import {from, IEnumerable} from 'linq-to-typescript'
 import {Point} from '../../../..'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {PointMap} from '../../../utils/PointMap'
 import {LinkedPoint} from './LinkedPoint'
 import {Path} from './Path'
@@ -142,7 +142,7 @@ export class PathMerger {
       prevPoint.Next = lp
       prevPoint = lp
       const pathOffset = this.verticesToPathOffsets.get(point)
-      Assert.assert(!pathOffset.has(loopingPath))
+      /*Assert.assert(!pathOffset.has(loopingPath))*/
       pathOffset.set(loopingPath, prevPoint)
     }
 
@@ -152,7 +152,7 @@ export class PathMerger {
   CleanDisappearedPiece(a: LinkedPoint, b: LinkedPoint, loopingPath: Path) {
     for (const point of PathMerger.GetPointsInBetween(a, b)) {
       const pathOffset = this.verticesToPathOffsets.get(point)
-      Assert.assert(pathOffset.has(loopingPath))
+      /*Assert.assert(pathOffset.has(loopingPath))*/
       pathOffset.delete(loopingPath)
     }
   }

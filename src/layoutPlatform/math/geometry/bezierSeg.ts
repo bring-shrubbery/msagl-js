@@ -6,7 +6,7 @@ import {Point} from './point'
 import {GeomConstants} from './geomConstants'
 import {PlaneTransformation} from './planeTransformation'
 import {ClosestPointOnCurve} from './closestPointOnCurve'
-import {Assert} from './../../utils/assert'
+// import {Assert} from './../../utils/assert'
 export class BezierSeg implements ICurve {
   leftDerivative(t: number) {
     return this.derivative(t)
@@ -226,8 +226,8 @@ export class BezierSeg implements ICurve {
   // returns a parameter t such that the distance between curve[t] and targetPoint is minimal
   // and t belongs to the closed segment [low,high]
   closestParameterWithinBounds(targetPoint: Point, low: number, high: number) {
-    Assert.assert(high <= 1 && low >= 0)
-    Assert.assert(low <= high)
+    /*Assert.assert(high <= 1 && low >= 0)*/
+    /*Assert.assert(low <= high)*/
     const t = (high - low) / 8
     let closest = 0
     let minDist = Number.MAX_VALUE
@@ -263,11 +263,11 @@ export class BezierSeg implements ICurve {
 
   // the signed curvature of the segment at t
   curvature(t: number) {
-    Assert.assert(t >= this.parStart && t <= this.parEnd)
+    /*Assert.assert(t >= this.parStart && t <= this.parEnd)*/
 
     const den = this.G(t)
 
-    Assert.assert(Math.abs(den) > 0.00001)
+    /*Assert.assert(Math.abs(den) > 0.00001)*/
 
     return this.F(t) / den
   }

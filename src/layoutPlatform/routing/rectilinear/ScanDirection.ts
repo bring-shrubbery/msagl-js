@@ -1,7 +1,7 @@
 import {CompassVector} from '../../math/geometry/compassVector'
 import {Direction} from '../../math/geometry/direction'
 import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {SegmentBase} from '../visibility/SegmentBase'
 import {PointComparer} from './PointComparer'
 import {StaticGraphUtility} from './StaticGraphUtility'
@@ -30,10 +30,10 @@ export class ScanDirection {
 
   //  Use the internal static xxxInstance properties to get an instance.
   constructor(directionAlongScanLine: Direction) {
-    Assert.assert(
+    /*Assert.assert(
       StaticGraphUtility.IsAscending(directionAlongScanLine),
       'directionAlongScanLine must be ascending',
-    )
+    )*/
     this.Dir = directionAlongScanLine
     this.DirectionAsPoint = CompassVector.toPoint(this.Dir)
     this.PerpDirection =

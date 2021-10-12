@@ -10,7 +10,7 @@ import {Polyline} from '../../math/geometry/polyline'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
 import {Rectangle} from '../../math/geometry/rectangle'
 import {RBNode} from '../../structs/RBTree/rbNode'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {SweepEvent} from '../spline/coneSpanner/SweepEvent'
 
 import {VisibilityGraph} from '../visibility/VisibilityGraph'
@@ -260,10 +260,10 @@ export abstract class VisibilityGraphGenerator {
   ): Point {
     //  Note: we don't assert that site and side are not PointComparer.Equal, because ScanLine calls
     //  this on sides that share vertices.
-    Assert.assert(
+    /*Assert.assert(
       !scanDir.IsFlatS(side),
       'flat sides should not be in the scanline or encountered on lookahead scan',
-    )
+    )*/
     //  We know that we will have an intersection if the side is adjacent in the scanline, so
     //  we can optimize the calculation to project along the slope of the BasicObstacleSide.
     //  Also, due to rounding, we need to make sure that when intersecting the side, we're not
@@ -572,7 +572,7 @@ export abstract class VisibilityGraphGenerator {
     //  If eventSide is null it means we had the wrong side type as a scanline neighbor.
     //  If another obstacle opened up, then that obstacle (or another intervening one) should have
     //  drained this reflection event.
-    Assert.assert(null != eventSide, 'eventSide should not be null')
+    /*Assert.assert(null != eventSide, 'eventSide should not be null')*/
     //  Between the time currentEvent was queued and the time we're now processing it, another
     //  obstacle may have opened between the previousSite and the eventSite, in which case it
     //  removed currentEvent from the queue already.  So currentEvent may be stale.  The new
@@ -582,11 +582,11 @@ export abstract class VisibilityGraphGenerator {
     //  coordinate, and would remove the site from the lookahead list before the "live" event
     //  looks for it.  See RectilinearTests.ReflectionsRemoveInterceptedSite.
     if (this.lookaheadScan.RemoveExact(currentEvent.PreviousSite)) {
-      Assert.assert(
+      /*Assert.assert(
         currentEvent.InitialObstacle ==
           currentEvent.PreviousSite.ReflectingObstacle,
         'Inconsistency: currentEvent.InitialObstacle != currentEvent.PreviousSite.ReflectingObstacle',
-      )
+      )*/
       //  ReSharper disable HeuristicUnreachableCode
       //  ReSharper disable ConditionIsAlwaysTrueOrFalse
       if (eventSide == null) {
@@ -598,10 +598,10 @@ export abstract class VisibilityGraphGenerator {
       //  ReSharper restore HeuristicUnreachableCode
       //  If the two sides intersect ahead of the scanline, we don't want the reflection.
       //  If the reflecting side is flat, no reflection is done - that's handled by OpenVertexEvent.
-      Assert.assert(
+      /*Assert.assert(
         !this.IsFlat(eventSide),
         'Flat sides should not be encountered in reflections',
-      )
+      )*/
       if (
         currentEvent.PreviousSite.IsStaircaseStep(
           currentEvent.ReflectingObstacle,
@@ -710,10 +710,10 @@ export abstract class VisibilityGraphGenerator {
     side: BasicObstacleSide,
     site: Point,
   ): void {
-    Assert.assert(
+    /*Assert.assert(
       null != this.scanLine.Find(side),
       "AddReflectionEvent could not find 'side' in the scanline",
-    )
+    )*/
     //  Add an event that will be drained when a side spanning the scanline-parallel is loaded
     //  as the sweep moves "up".
     const lowSide = <LowObstacleSide>side
@@ -783,15 +783,15 @@ export abstract class VisibilityGraphGenerator {
 
     //  endwhile there are events
     //  Ensure we have no leftovers in the scanline - we should have the two sentinels and nothing else.
-    Assert.assert(
+    /*Assert.assert(
       2 == this.scanLine.Count,
       'There are leftovers in the scanline',
-    )
+    )*/
   }
 
   ProcessCustomEvent(evt: SweepEvent) {
     //  These are events specific to the derived class; by default there are none.
-    Assert.assert(false, 'Unknown event type ' + evt)
+    /*Assert.assert(false, 'Unknown event type ' + evt)*/
   }
 
   protected ScanLineCrossesObstacle(
@@ -994,14 +994,14 @@ export abstract class VisibilityGraphGenerator {
     //  LowObstacleSide and HighObstacleSide take a parameter to know when to go counterclockwise.
     const obstacle = openVertEvent.Obstacle
     obstacle.CreateInitialSides(openVertEvent.Vertex, this.ScanDirection)
-    Assert.assert(
+    /*Assert.assert(
       !this.IsFlat(obstacle.ActiveLowSide),
       'OpenVertexEvent ActiveLowSide should not be flat',
-    )
-    Assert.assert(
+    )*/
+    /*Assert.assert(
       !this.IsFlat(obstacle.ActiveHighSide),
       'RemoveCollinearSides should have been called',
-    )
+    )*/
     //DevTraceIfFlatSide(true, obstacle.ActiveLowSide.Start, obstacle.ActiveHighSide.Start);
     //  Adding can rotate the RBTree which modifies RBNodes so get the lowSideNode after adding highSideNode.
     //  AddSideToScanLine loads any reflection events for the side.

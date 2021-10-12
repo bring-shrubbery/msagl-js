@@ -1,6 +1,6 @@
 //  Creates the convex hull of a set of points following "Computational Geometry, second edition" of O'Rourke
 
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {GeomConstants} from './geomConstants'
 import {Point, TriangleOrientation} from './point'
 import {Polyline} from './polyline'
@@ -180,7 +180,7 @@ export class ConvexHull {
       return false
     }
 
-    Assert.assert(this.StackSecondPoint == this.pivot)
+    /*Assert.assert(this.StackSecondPoint == this.pivot)*/
     return (
       this.StackTopPoint.x > this.pivot.x + GeomConstants.distanceEpsilon &&
       point.x < this.pivot.x - GeomConstants.distanceEpsilon

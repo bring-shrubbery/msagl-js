@@ -1,4 +1,4 @@
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 
 export class UniformSolverVar {
   lowBound: number = Number.NEGATIVE_INFINITY
@@ -28,7 +28,7 @@ export class UniformSolverVar {
     return this.lowBound
   }
   set LowBound(value: number) {
-    Assert.assert(value <= this.upperBound)
+    /*Assert.assert(value <= this.upperBound)*/
     this.lowBound = value
   }
 
@@ -36,7 +36,7 @@ export class UniformSolverVar {
     return this.upperBound
   }
   set UpperBound(value: number) {
-    Assert.assert(value >= this.LowBound)
+    /*Assert.assert(value >= this.LowBound)*/
     this.upperBound = value
   }
 

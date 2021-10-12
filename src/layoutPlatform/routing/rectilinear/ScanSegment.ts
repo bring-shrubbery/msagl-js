@@ -1,7 +1,7 @@
 import {from} from 'linq-to-typescript'
 import {Curve} from '../../math/geometry/curve'
 import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {compareNumbers} from '../../utils/compare'
 import {SegmentBase} from '../visibility/SegmentBase'
 import {VisibilityEdge} from '../visibility/VisibilityEdge'
@@ -114,11 +114,11 @@ export class ScanSegment extends SegmentBase {
 
   //  ctor
   Update(start: Point, end: Point) {
-    Assert.assert(
+    /*Assert.assert(
       PointComparer.EqualPP(start, end) ||
         StaticGraphUtility.IsAscending(PointComparer.GetDirections(start, end)),
       'non-ascending segment',
-    )
+    )*/
     this.startPoint = start
     this.endPoint = end
   }
@@ -128,16 +128,16 @@ export class ScanSegment extends SegmentBase {
     this.HighestVisibilityVertex = newVertex
   }
   AppendVisibilityVertex(vg: VisibilityGraph, newVertex: VisibilityVertex) {
-    Assert.assert(newVertex != null, 'newVertex must not be null')
-    Assert.assert(
+    /*Assert.assert(newVertex != null, 'newVertex must not be null')*/
+    /*Assert.assert(
       (this.LowestVisibilityVertex == null) ==
         (this.HighestVisibilityVertex == null),
       'Mismatched null Lowest/HighestVisibilityVertex',
-    )
-    Assert.assert(
+    )*/
+    /*Assert.assert(
       StaticGraphUtility.PointIsOnSegmentSP(this, newVertex.point),
       'newVertex is out of segment range',
-    )
+    )*/
     if (this.HighestVisibilityVertex == null) {
       if (!this.AddGroupCrossingsBeforeHighestVisibilityVertex(vg, newVertex)) {
         this.SetInitialVisibilityVertex(newVertex)
@@ -152,11 +152,11 @@ export class ScanSegment extends SegmentBase {
           this.HighestVisibilityVertex.point,
         )
       ) {
-        Assert.assert(
+        /*Assert.assert(
           null !=
             vg.FindEdgePP(newVertex.point, this.HighestVisibilityVertex.point),
           'unexpected low/middle insertion to ScanSegment',
-        )
+        )*/
         return
       }
 
@@ -170,26 +170,26 @@ export class ScanSegment extends SegmentBase {
     source: VisibilityVertex,
     target: VisibilityVertex,
   ): VisibilityEdge {
-    Assert.assert(source.point != target.point, 'Self-edges are not allowed')
-    Assert.assert(
+    /*Assert.assert(source.point != target.point, 'Self-edges are not allowed')*/
+    /*Assert.assert(
       PointComparer.IsPureLower(source.point, target.point),
       'Impure or reversed direction encountered',
-    )
+    )*/
     //  Make sure we aren't adding two edges in the same direction to the same vertex.
-    Assert.assert(
+    /*Assert.assert(
       StaticGraphUtility.FindAdjacentVertex(
         source,
         StaticGraphUtility.EdgeDirectionVV(source, target),
       ) == null,
       'Duplicate outEdge from Source vertex',
-    )
-    Assert.assert(
+    )*/
+    /*Assert.assert(
       StaticGraphUtility.FindAdjacentVertex(
         target,
         StaticGraphUtility.EdgeDirectionVV(target, source),
       ) == null,
       'Duplicate inEdge to Target vertex',
-    )
+    )*/
     const edge = new VisibilityEdge(source, target, this.Weight)
     VisibilityGraph.AddEdge(edge)
     return edge
@@ -299,13 +299,13 @@ export class ScanSegment extends SegmentBase {
 
       // In the case of groups, we go through the group boundary; this may coincide with a
       // reflection segment. RectilinearFileTests.ReflectionSubsumedBySegmentExitingGroup.
-      Assert.assert(
+      /*Assert.assert(
         (t.seg.Weight == ScanSegment.OverlappedWeight) ==
           (weight == ScanSegment.OverlappedWeight) ||
           Curve.closeIntersectionPoints(t.seg.End, newStart) ||
           Curve.closeIntersectionPoints(t.seg.Start, newEnd),
         'non-equal overlap-mismatched ScanSegments overlap by more than just Start/End',
-      )
+      )*/
       return false
     }
 
@@ -365,10 +365,10 @@ export class ScanSegment extends SegmentBase {
   }
 
   AddSparseVertexCoord(perpCoord: number) {
-    Assert.assert(
+    /*Assert.assert(
       this.ContainsPoint(this.CreatePointFromPerpCoord(perpCoord)),
       'vertexLocation is not on Segment',
-    )
+    )*/
     if (this.sparsePerpendicularCoords == null) {
       this.sparsePerpendicularCoords = new Set<number>()
     }
@@ -396,10 +396,10 @@ export class ScanSegment extends SegmentBase {
       this.sparsePerpendicularCoords.values(),
     ).sort(compareNumbers)) {
       const vertexLocation = this.CreatePointFromPerpCoord(perpCoord)
-      Assert.assert(
+      /*Assert.assert(
         this.ContainsPoint(vertexLocation),
         'vertexLocation is not on Segment',
-      )
+      )*/
       this.AppendVisibilityVertex(
         vg,
         vg.FindVertex(vertexLocation) ?? vg.AddVertexP(vertexLocation),
@@ -484,10 +484,10 @@ export class ScanSegment extends SegmentBase {
         if (this.LowestVisibilityVertex == null) {
           this.SetInitialVisibilityVertex(crossingVertex)
         } else {
-          Assert.assert(
+          /*Assert.assert(
             PointComparer.EqualPP(this.End, crossingVertex.point),
             'Expected this.End crossingVertex',
-          )
+          )*/
           this.AppendHighestVisibilityVertex(crossingVertex)
         }
       }
@@ -525,10 +525,10 @@ export class ScanSegment extends SegmentBase {
         )
       ) {
         edge = vg.FindEdgePP(lowVertex.point, highVertex.point)
-        Assert.assert(
+        /*Assert.assert(
           edge != null,
           'Inconsistent forward-backward sequencing in HighVisibilityVertex',
-        )
+        )*/
       } else {
         this.AppendHighestVisibilityVertex(lowVertex)
       }

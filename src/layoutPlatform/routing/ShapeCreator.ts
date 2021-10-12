@@ -5,7 +5,7 @@ import {from, IEnumerable} from 'linq-to-typescript'
 import {GeomGraph, GeomNode, GeomEdge} from '../..'
 import {Port} from '../layout/core/port'
 import {RelativeFloatingPort} from '../layout/core/relativeFloatingPort'
-import {Assert} from '../utils/assert'
+// import {Assert} from '../utils/assert'
 import {ClusterBoundaryPort} from './ClusterBoundaryPort'
 import {RelativeShape} from './RelativeShape'
 import {Shape} from './shape'
@@ -105,7 +105,7 @@ export class ShapeCreator {
   ///  <returns>Shape obstacle for the node with simple port</returns>
   static CreateShapeWithClusterBoundaryPort(node: GeomNode): Shape {
     //  Assert.assert(ApproximateComparer.Close(node.BoundaryCurve.BoundingBox, node.BoundingBox), "node's curve doesn't fit its bounds!");
-    Assert.assert(node.isGraph())
+    /*Assert.assert(node.isGraph())*/
     const shape = new RelativeShape(() => node.boundaryCurve)
     const port = ClusterBoundaryPort.mk(
       () => node.boundaryCurve,

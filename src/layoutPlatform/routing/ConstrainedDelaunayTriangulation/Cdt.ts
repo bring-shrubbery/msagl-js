@@ -12,7 +12,7 @@ import {GeomConstants} from '../../math/geometry/geomConstants'
 import {Point} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
 import {Rectangle} from '../../math/geometry/rectangle'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {PointMap} from '../../utils/PointMap'
 import {Algorithm} from './../../utils/algorithm'
 import {CdtEdge} from './CdtEdge'
@@ -125,7 +125,7 @@ export class Cdt extends Algorithm {
 
   AddConstrainedEdge(a: Point, b: Point, poly: Polyline) {
     const ab = Cdt.AbovePP(a, b)
-    Assert.assert(ab != 0)
+    /*Assert.assert(ab != 0)*/
     let upperPoint: CdtSite
     let lowerPoint: CdtSite
     if (ab > 0) {
@@ -133,14 +133,14 @@ export class Cdt extends Algorithm {
       upperPoint = this.AddSite(a, poly)
       lowerPoint = this.AddSite(b, poly)
     } else {
-      Assert.assert(ab < 0)
+      /*Assert.assert(ab < 0)*/
       upperPoint = this.AddSite(b, poly)
       lowerPoint = this.AddSite(a, poly)
     }
 
     const edge = Cdt.CreateEdgeOnOrderedCouple(upperPoint, lowerPoint)
     edge.Constrained = true
-    Assert.assert(this.EdgeIsCorrect(edge))
+    /*Assert.assert(this.EdgeIsCorrect(edge))*/
   }
 
   static GetOrCreateEdge(a: CdtSite, b: CdtSite): CdtEdge {
@@ -165,7 +165,7 @@ export class Cdt extends Algorithm {
     upperPoint: CdtSite,
     lowerPoint: CdtSite,
   ): CdtEdge {
-    Assert.assert(Cdt.AboveCC(upperPoint, lowerPoint) == 1)
+    /*Assert.assert(Cdt.AboveCC(upperPoint, lowerPoint) == 1)*/
     return new CdtEdge(upperPoint, lowerPoint)
   }
 
@@ -233,7 +233,7 @@ export class Cdt extends Algorithm {
     for (const site of this.PointsToSites.values()) {
       for (const e of site.Edges) {
         const oSite = e.lowerSite
-        Assert.assert(oSite != site)
+        /*Assert.assert(oSite != site)*/
         oSite.AddInEdge(e)
       }
     }

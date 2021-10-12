@@ -1,7 +1,7 @@
 //  Wrap the tree of events.
 
 import {BinaryHeapWithComparer} from '../../structs/BinaryHeapWithComparer'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {SweepEvent} from '../spline/coneSpanner/SweepEvent'
 import {BasicReflectionEvent} from './basicReflectionEvent'
 import {ScanDirection} from './ScanDirection'
@@ -18,7 +18,7 @@ export class EventQueue {
   }
 
   Reset(scanDir: ScanDirection) {
-    Assert.assert(0 == this.eventTree.Count, 'Stray events in EventQueue.Reset')
+    /*Assert.assert(0 == this.eventTree.Count, 'Stray events in EventQueue.Reset')*/
     this.scanDirection = scanDir
   }
 

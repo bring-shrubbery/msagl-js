@@ -6,7 +6,7 @@ import {Point, TriangleOrientation} from './point'
 import {Rectangle} from './rectangle'
 import {PolylinePoint} from './polylinePoint'
 import {GeomConstants} from './geomConstants'
-import {Assert} from './../../utils/assert'
+// import {Assert} from './../../utils/assert'
 import {Parallelogram} from './parallelogram'
 import {LineSegment} from './lineSegment'
 import {Curve} from './curve'
@@ -196,8 +196,8 @@ export class Polyline implements ICurve {
   }
 
   getAdjustedParamAndStartEndPoints(t: number): AdjustedPar {
-    Assert.assert(t >= -GeomConstants.tolerance)
-    Assert.assert(this.startPoint != null)
+    /*Assert.assert(t >= -GeomConstants.tolerance)*/
+    /*Assert.assert(this.startPoint != null)*/
     let s = this.startPoint
 
     while (s.next != null) {

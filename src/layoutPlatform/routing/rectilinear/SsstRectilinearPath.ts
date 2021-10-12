@@ -11,7 +11,7 @@ import {CompassVector} from '../../math/geometry/compassVector'
 import {Direction} from '../../math/geometry/direction'
 import {GenericBinaryHeapPriorityQueue} from '../../structs/genericBinaryHeapPriorityQueue'
 import {RBTree} from '../../structs/RBTree/rbTree'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {closeDistEps, compareNumbers} from '../../utils/compare'
 import {VisibilityEdge} from '../visibility/VisibilityEdge'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
@@ -671,7 +671,7 @@ export class SsstRectilinearPath {
       nextNeighbor = this.nextNeighbors[neigDir == preferredBendDir ? 1 : 0]
     }
 
-    Assert.assert(nextNeighbor.Vertex == null, 'bend neighbor already exists')
+    /*Assert.assert(nextNeighbor.Vertex == null, 'bend neighbor already exists')*/
     nextNeighbor.Set(<VisibilityVertexRectilinear>neigVer, edge.Weight)
   }
 
@@ -757,14 +757,14 @@ export class SsstRectilinearPath {
       const entryFromNeighbor =
         bestEntry.Vertex.VertexEntries[CompassVector.ToIndex(dirFromNeighbor)]
       if (entryFromNeighbor != null) {
-        Assert.assert(
+        /*Assert.assert(
           entryFromNeighbor.PreviousVertex == neigVer,
           'mismatch in turnback PreviousEntry',
-        )
-        Assert.assert(
+        )*/
+        /*Assert.assert(
           entryFromNeighbor.PreviousEntry.IsClosed,
           'turnback PreviousEntry should be closed',
-        )
+        )*/
         this.QueueReversedEntryToNeighborVertexIfNeeded(
           bestEntry,
           entryFromNeighbor,

@@ -10,7 +10,7 @@ import {Polyline} from '../../../math/geometry/polyline'
 import {PolylinePoint} from '../../../math/geometry/polylinePoint'
 import {RBNode} from '../../../structs/RBTree/rbNode'
 import {RBTree} from '../../../structs/RBTree/rbTree'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {compareNumbers} from '../../../utils/compare'
 import {LeftObstacleSide} from '../../spline/coneSpanner/LeftObstacleSide'
 import {LeftVertexEvent} from '../../spline/coneSpanner/LeftVertexEvent'
@@ -57,7 +57,7 @@ export class FreeSpaceFinder extends LineSweeperBase {
       this.CompareAA(a, b),
     )
     this.SweepPole = CompassVector.VectorDirection(this.SweepDirection)
-    Assert.assert(CompassVector.IsPureDirection(this.SweepPole))
+    /*Assert.assert(CompassVector.IsPureDirection(this.SweepPole))*/
     this.AxisEdges = axisEdges
     this.AxisEdgesToObstaclesTheyOriginatedFrom = axisEdgesToObstaclesTheyOriginatedFrom
   }
@@ -91,7 +91,7 @@ export class FreeSpaceFinder extends LineSweeperBase {
       if (sweepEvent instanceof AxisEdgeLowPointEvent) {
         this.ProcessLowEdgeEvent(<AxisEdgeLowPointEvent>sweepEvent)
       } else {
-        Assert.assert(sweepEvent instanceof AxisEdgeHighPointEvent)
+        /*Assert.assert(sweepEvent instanceof AxisEdgeHighPointEvent)*/
         this.ProcessHighEdgeEvent(<AxisEdgeHighPointEvent>sweepEvent)
       }
     }
@@ -178,7 +178,7 @@ export class FreeSpaceFinder extends LineSweeperBase {
   ///  <param name="edge"></param>
   ///  <param name="point">a point on the edge on Z level</param>
   ConstraintEdgeWithObstaclesAtZ(edge: AxisEdge, point: Point) {
-    Assert.assert(point == edge.Source.point || point == edge.Target.point)
+    /*Assert.assert(point == edge.Source.point || point == edge.Target.point)*/
     this.ConstraintEdgeWithObstaclesAtZFromLeft(edge, point)
     this.ConstraintEdgeWithObstaclesAtZFromRight(edge, point)
   }
@@ -419,7 +419,7 @@ export class FreeSpaceFinder extends LineSweeperBase {
   }
 
   ProcessRightVertex(rightVertexEvent: VertexEvent, nextVertex: PolylinePoint) {
-    Assert.assert(this.Z == rightVertexEvent.Site.dot(this.SweepDirection))
+    /*Assert.assert(this.Z == rightVertexEvent.Site.dot(this.SweepDirection))*/
     const site = rightVertexEvent.Site
     this.ProcessPrevSegmentForRightVertex(rightVertexEvent, site)
     const delta = nextVertex.point.sub(rightVertexEvent.Site)
@@ -479,7 +479,7 @@ export class FreeSpaceFinder extends LineSweeperBase {
   }
 
   ProcessLeftVertex(leftVertexEvent: VertexEvent, nextVertex: PolylinePoint) {
-    Assert.assert(this.Z == leftVertexEvent.Site.dot(this.SweepDirection))
+    /*Assert.assert(this.Z == leftVertexEvent.Site.dot(this.SweepDirection))*/
     const site = leftVertexEvent.Site
     this.ProcessPrevSegmentForLeftVertex(leftVertexEvent, site)
     const delta: Point = nextVertex.point.sub(leftVertexEvent.Site)

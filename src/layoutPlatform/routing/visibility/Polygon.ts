@@ -2,7 +2,7 @@ import {LineSegment} from '../../math/geometry/lineSegment'
 import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {BimodalSequence} from './BimodalSequence'
 import {TangentPair} from './TangentPair'
 
@@ -23,11 +23,11 @@ export class Polygon {
     this.points = new Array<PolylinePoint>()
     for (let pp = this.polyline.startPoint; pp; pp = pp.next)
       this.points.push(pp)
-    Assert.assert(
+    /*Assert.assert(
       polyline.count < 3 ||
         Point.getTriangleOrientation(this.pnt(0), this.pnt(1), this.pnt(2)) !=
           TriangleOrientation.Counterclockwise,
-    )
+    )*/
   }
 
   Next(i: number): number {
@@ -70,7 +70,7 @@ export class Polygon {
 
   //  the median of a chunk going clockwise from p1 to p2
   Median(p1: number, p2: number): number {
-    Assert.assert(p1 != p2)
+    /*Assert.assert(p1 != p2)*/
     // otherwise we do not know what arc is mean: the whole one or just the point
     if (p2 > p1) {
       return Math.floor((p2 + p1) / 2)
@@ -161,8 +161,8 @@ export class Polygon {
 
   //  Distance between two polygons
   static DistanceOnly(a: Polygon, b: Polygon): number {
-    Assert.assert(Polygon.PolygonIsLegalDebug(a))
-    Assert.assert(Polygon.PolygonIsLegalDebug(b))
+    /*Assert.assert(Polygon.PolygonIsLegalDebug(a))*/
+    /*Assert.assert(Polygon.PolygonIsLegalDebug(b))*/
     return Polygon.Distance(a, b).dist
   }
 

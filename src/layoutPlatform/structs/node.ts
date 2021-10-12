@@ -1,7 +1,7 @@
 import {Entity} from './entity'
 import {Edge} from './edge'
 import {Graph} from './graph'
-import {Assert} from './../utils/assert'
+// import {Assert} from './../utils/assert'
 import {NodeCollection} from './nodeCollection'
 
 export class Node extends Entity {
@@ -10,7 +10,7 @@ export class Node extends Entity {
     return this._id
   }
   public set id(value: string) {
-    Assert.assert(value != null)
+    /*Assert.assert(value != null)*/
     this._id = value
   }
   inEdges: Set<Edge> = new Set<Edge>()
@@ -22,7 +22,7 @@ export class Node extends Entity {
   }
   constructor(id: string) {
     super()
-    Assert.assert(id != null)
+    /*Assert.assert(id != null)*/
     this.id = id
   }
 
@@ -46,17 +46,17 @@ export class Node extends Entity {
   }
 
   private addInEdge(edge: Edge): void {
-    Assert.assert(edge.target == this)
+    /*Assert.assert(edge.target == this)*/
     this.inEdges.add(edge)
   }
 
   private addOutEdge(edge: Edge): void {
-    Assert.assert(edge.source == this)
+    /*Assert.assert(edge.source == this)*/
     this.outEdges.add(edge)
   }
 
   private addSelfEdge(edge: Edge): void {
-    Assert.assert(edge.source == edge.target && edge.source == this)
+    /*Assert.assert(edge.source == edge.target && edge.source == this)*/
     this.selfEdges.add(edge)
   }
 
@@ -67,7 +67,7 @@ export class Node extends Entity {
     } else if (this == e.target) {
       this.addInEdge(e)
     } else {
-      Assert.assert(false, 'attaching an edge to non adjacent node')
+      /*Assert.assert(false, 'attaching an edge to non adjacent node')*/
     }
   }
 

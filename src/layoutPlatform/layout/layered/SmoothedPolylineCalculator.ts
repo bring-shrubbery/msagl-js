@@ -20,7 +20,7 @@ import {HierarchyCalculator} from './HierarchyCalculator'
 import {BezierSeg} from '../../math/geometry/bezierSeg'
 import {Routing} from './routing'
 import {NodeKind} from './NodeKind'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {RefinerBetweenTwoLayers} from './RefinerBetweenTwoLayers'
 import {closeDistEps} from '../../utils/compare'
 export class SmoothedPolylineCalculator {
@@ -406,7 +406,7 @@ export class SmoothedPolylineCalculator {
   }
 
   get GetPolyline(): SmoothedPolyline {
-    Assert.assert(this.headSite != null)
+    /*Assert.assert(this.headSite != null)*/
     return new SmoothedPolyline(this.headSite)
   }
 
@@ -607,7 +607,7 @@ export class SmoothedPolylineCalculator {
   }
 
   OptimizeForThreeSites() {
-    Assert.assert(this.edgePath.LayerEdges.length == 2)
+    /*Assert.assert(this.edgePath.LayerEdges.length == 2)*/
     const top: number = this.EdgePathNode(0)
     const bottom: number = this.EdgePathNode(2)
     const a: Anchor = this.anchors[top]
@@ -636,7 +636,7 @@ export class SmoothedPolylineCalculator {
   }
 
   OptimizeForTwoSites() {
-    Assert.assert(this.edgePath.LayerEdges.length == 1)
+    /*Assert.assert(this.edgePath.LayerEdges.length == 1)*/
     const top: number = this.EdgePathNode(0)
     const bottom: number = this.EdgePathNode(1)
     const a: Anchor = this.anchors[top]
@@ -727,7 +727,7 @@ export class SmoothedPolylineCalculator {
   }
 
   private OriginToOriginSegCrossesAnchorSide(a: Anchor, b: Anchor): boolean {
-    Assert.assert(a.y > b.y)
+    /*Assert.assert(a.y > b.y)*/
     const seg = LineSegment.mkPP(a.origin, b.origin)
     return (
       (a.x < b.x &&
@@ -820,7 +820,7 @@ export class SmoothedPolylineCalculator {
   ): number {
     const u: number = a.y - mY
     const l: number = mY - b.y
-    Assert.assert(u >= 0 && l >= 0)
+    /*Assert.assert(u >= 0 && l >= 0)*/
     return (sax * u + sbx * l) / (u + l)
   }
 
@@ -886,7 +886,7 @@ export class SmoothedPolylineCalculator {
       )
     }
 
-    Assert.assert(this.curveIsLegal(curve))
+    /*Assert.assert(this.curveIsLegal(curve))*/
     return curve
   }
 

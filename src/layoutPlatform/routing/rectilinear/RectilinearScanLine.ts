@@ -2,7 +2,7 @@ import {Direction} from '../../math/geometry/direction'
 import {Point} from '../../math/geometry/point'
 import {RBNode} from '../../structs/RBTree/rbNode'
 import {RBTree} from '../../structs/RBTree/rbTree'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {compareBooleans, compareNumbers} from '../../utils/compare'
 import {BasicObstacleSide, LowObstacleSide} from './BasicObstacleSide'
 import {ScanDirection} from './ScanDirection'
@@ -43,10 +43,10 @@ export class RectilinearScanLine {
   }
 
   Remove(side: BasicObstacleSide, scanPos: Point) {
-    Assert.assert(
+    /*Assert.assert(
       null != this.Find(side),
       'side does not exist in the ScanLine',
-    )
+    )*/
     this.linePositionAtLastInsertOrRemove = scanPos
     this.SideTree.remove(side)
   }

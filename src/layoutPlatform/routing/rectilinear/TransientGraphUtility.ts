@@ -4,7 +4,7 @@ import {CompassVector} from '../../math/geometry/compassVector'
 import {Direction} from '../../math/geometry/direction'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {LineSegment} from '../../math/geometry/lineSegment'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {closeDistEps} from '../../utils/compare'
 import {TollFreeVisibilityEdge} from '../visibility/TollFreeVisibilityEdge'
 import {VisibilityEdge} from '../visibility/VisibilityEdge'
@@ -159,10 +159,10 @@ export class TransientGraphUtility {
           tt,
         )
       ) {
-        Assert.assert(
+        /*Assert.assert(
           t.bracketSource == sourceVertex,
           'Mismatched bracketing detection',
-        )
+        )*/
         t.bracketSource = tt.bracketTarget
         t.splitVertex = sourceVertex
       }
@@ -261,10 +261,10 @@ export class TransientGraphUtility {
       //  We should only put TransientVisibilityEdges in this list, and should never encounter
       //  a non-transient edge in the graph after we've replaced it with a transient one, so
       //  the edge should not be in the graph until we re-insert it.
-      Assert.assert(
+      /*Assert.assert(
         !(edge instanceof TollFreeVisibilityEdge),
         'Unexpected Transient edge',
-      )
+      )*/
       VisibilityGraph.AddEdge(edge)
     }
 
@@ -487,10 +487,10 @@ export class TransientGraphUtility {
       return
     }
 
-    Assert.assert(
+    /*Assert.assert(
       CompassVector.IsPureDirection(dir),
       'impure max visibility segment',
-    )
+    )*/
     //  Shoot the edge chain out to the shorter of max visibility or intersection with the limitrect.
     // StaticGraphUtility.Assert((Point.closeDistEps(maxVisibilitySegment.start, startVertex.point)
     //                 || (PointComparer.GetPureDirectionVV(maxVisibilitySegment.start, startVertex.point) == dir)), "Inconsistent direction found", this.ObstacleTree, this.VisGraph);

@@ -3,7 +3,7 @@
 //  (It is not guaranteed to retain the max-N violations strictly after the first
 //  block is processed following a cache fill, but the approximation is sufficient
 
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {Block} from './Block'
 import {Constraint} from './Constraint'
 
@@ -80,10 +80,10 @@ export class ViolationCache {
         const violation: number =
           constraint.Left.ActualPos * constraint.Left.Scale +
           (constraint.Gap - constraint.Right.ActualPos * constraint.Right.Scale)
-        Assert.assert(
+        /*Assert.assert(
           constraint.Violation == violation,
           'LeftConstraints: constraint.Violation must == violation',
-        )
+        )*/
         if (violation < this.LowViolation) {
           this.LowViolation = violation
         }
@@ -105,10 +105,10 @@ export class ViolationCache {
       const violation: number =
         constraint.Left.ActualPos * constraint.Left.Scale +
         (constraint.Gap - constraint.Right.ActualPos * constraint.Right.Scale)
-      Assert.assert(
+      /*Assert.assert(
         constraint.Violation == violation,
         'constraint.Violation must == violation',
-      )
+      )*/
       if (violation > targetViolation) {
         targetViolation = violation
         maxViolatedConstraint = constraint
@@ -121,14 +121,14 @@ export class ViolationCache {
 
   Insert(constraintToInsert: Constraint, insertViolation: number) {
     //  This should be checked by the caller (instead of here, for perf reasons).
-    Assert.assert(
+    /*Assert.assert(
       constraintToInsert.Violation > this.LowViolation,
       'constraintToInsert.Violation must be > LowViolation',
-    )
-    Assert.assert(
+    )*/
+    /*Assert.assert(
       constraintToInsert.Violation == insertViolation,
       'constraintToInsert.Violation must == insertViolation',
-    )
+    )*/
     let indexOfLowestViolation = 0
     let lowViolation: number = insertViolation
     let nextLowViolation: number = insertViolation
@@ -137,10 +137,10 @@ export class ViolationCache {
       const cacheViolation: number =
         constraint.Left.ActualPos * constraint.Left.Scale +
         (constraint.Gap - constraint.Right.ActualPos * constraint.Right.Scale)
-      Assert.assert(
+      /*Assert.assert(
         constraint.Violation == cacheViolation,
         'constraint.Violation must == cacheViolation',
-      )
+      )*/
       if (cacheViolation < lowViolation) {
         //  If we don't replace an existing block pair, then we'll replace the lowest
         //  violation in the cache, so will need to know the next-lowest violation.

@@ -1,6 +1,6 @@
 import {from, IEnumerable} from 'linq-to-typescript'
 import {Stack} from 'stack-typescript'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {IRectangle} from '../IRectangle'
 import {HitTestBehavior} from './HitTestBehavior'
 
@@ -228,7 +228,7 @@ export class RectangleNode<T, P> {
   }
 
   get IsLeftChild(): boolean {
-    Assert.assert(this.Parent != null)
+    /*Assert.assert(this.Parent != null)*/
     return this == this.Parent.Left
   }
 

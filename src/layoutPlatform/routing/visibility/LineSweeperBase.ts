@@ -5,7 +5,7 @@ import {Polyline} from '../../math/geometry/polyline'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
 import {BinaryHeapWithComparer} from '../../structs/BinaryHeapWithComparer'
 import {RBTree} from '../../structs/RBTree/rbTree'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {PointMap} from '../../utils/PointMap'
 import {EventQueue} from '../rectilinear/EventQueue'
 import {LeftObstacleSide} from '../spline/coneSpanner/LeftObstacleSide'
@@ -135,7 +135,7 @@ export class LineSweeperBase {
   }
 
   protected EnqueueEvent(eve: SweepEvent) {
-    Assert.assert(this.GetZP(eve.Site) >= this.PreviousZ)
+    /*Assert.assert(this.GetZP(eve.Site) >= this.PreviousZ)*/
     this.eventQueue.Enqueue(eve)
   }
 

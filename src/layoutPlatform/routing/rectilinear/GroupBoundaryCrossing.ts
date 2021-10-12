@@ -6,7 +6,7 @@ import {CompassVector} from '../../math/geometry/compassVector'
 import {Direction} from '../../math/geometry/direction'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {Obstacle} from './obstacle'
 
 //  array, so the actual crossing coordinates are not included.
@@ -18,10 +18,10 @@ export class GroupBoundaryCrossing {
   static BoundaryWidth = GeomConstants.distanceEpsilon
 
   constructor(group: Obstacle, dirToInside: Direction) {
-    Assert.assert(
+    /*Assert.assert(
       CompassVector.IsPureDirection(dirToInside),
       'Impure direction',
-    )
+    )*/
     this.Group = group
     this.DirectionToInside = dirToInside
   }

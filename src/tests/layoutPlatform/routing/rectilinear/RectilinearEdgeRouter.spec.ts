@@ -238,8 +238,8 @@ test('overlap rect', () => {
 })
 
 test('random rect', () => {
-  for (let nodeCount = 3; nodeCount < 20; nodeCount++)
-    for (let seed = 0; seed < 20; seed++) {
+  for (let nodeCount = 3; nodeCount < 7; nodeCount++)
+    for (let seed = 0; seed < 7; seed++) {
       const gg: GeomGraph = generateRandomGraph(seed, nodeCount)
       const rr = RectilinearEdgeRouter.constructorGNNB(gg, 1, 3, true)
       rr.run()

@@ -10,7 +10,7 @@ import {SvgDebugWriter} from '../../math/geometry/svgDebugWriter'
 import {RBNode} from '../../structs/RBTree/rbNode'
 import {RBTree} from '../../structs/RBTree/rbTree'
 import {Algorithm} from '../../utils/algorithm'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {closeDistEps} from '../../utils/compare'
 import {Cdt} from './Cdt'
 import {CdtEdge} from './CdtEdge'
@@ -257,7 +257,7 @@ export class CdtSweeper extends Algorithm {
   //  }
   //  #endif
   EdgeEvent(edge: CdtEdge) {
-    Assert.assert(edge.Constrained)
+    /*Assert.assert(edge.Constrained)*/
     if (CdtSweeper.EdgeIsProcessed(edge)) {
       return
     }
@@ -462,7 +462,7 @@ export class CdtSweeper extends Algorithm {
   ): CdtSite {
     // left case
     //                 if(db)ShowFrontWithSite(pi, LineSegment.mkPP(pi.point, hittedFrontElementNode.Item.Edge.upperSite.point), LineSegment.mkPP(pi.point, hittedFrontElementNode.Item.Edge.lowerSite.point));
-    Assert.assert(closeDistEps(pi.point.x, hittedFrontElementNode.item.x))
+    /*Assert.assert(closeDistEps(pi.point.x, hittedFrontElementNode.item.x))*/
     const hittedFrontElement = hittedFrontElementNode.item
     this.InsertAndLegalizeTriangle(pi, hittedFrontElement)
     const prevToHitted = this.front.previous(hittedFrontElementNode)
@@ -472,7 +472,7 @@ export class CdtSweeper extends Algorithm {
     this.InsertAndLegalizeTriangle(pi, prevToHitted.item)
     this.front.deleteNodeInternal(prevToHitted)
     const d = this.front.remove(hittedFrontElement)
-    Assert.assert(d != null)
+    /*Assert.assert(d != null)*/
     return leftSite
   }
 
@@ -510,7 +510,7 @@ export class CdtSweeper extends Algorithm {
 
   ShortcutTwoListElements(a: PerimeterEdge): PerimeterEdge {
     const b = a.Next
-    Assert.assert(a.End == b.Start)
+    /*Assert.assert(a.End == b.Start)*/
     let t = CdtTriangle.mkSSSEE(
       a.Start,
       a.End,
@@ -521,7 +521,7 @@ export class CdtSweeper extends Algorithm {
     )
     this.triangles.add(t)
     const newEdge = t.TriEdges.getItem(2)
-    Assert.assert(newEdge.IsAdjacent(a.Start) && newEdge.IsAdjacent(b.End))
+    /*Assert.assert(newEdge.IsAdjacent(a.Start) && newEdge.IsAdjacent(b.End))*/
     this.LegalizeEdge(a.Start, t.OppositeEdge(a.Start))
     t = newEdge.CcwTriangle ?? newEdge.CwTriangle
     this.LegalizeEdge(b.End, t.OppositeEdge(b.End))
@@ -542,7 +542,7 @@ export class CdtSweeper extends Algorithm {
   ): RBNode<CdtFrontElement> {
     const aElem = aNode.item
     const bElem = bNode.item
-    Assert.assert(aElem.RightSite == bElem.LeftSite)
+    /*Assert.assert(aElem.RightSite == bElem.LeftSite)*/
     let t: CdtTriangle = CdtTriangle.mkSSSEED(
       aElem.LeftSite,
       aElem.RightSite,
@@ -556,9 +556,9 @@ export class CdtSweeper extends Algorithm {
     // now bNode might b not valid anymore
     this.front.remove(bElem)
     const newEdge = t.TriEdges.getItem(2)
-    Assert.assert(
+    /*Assert.assert(
       newEdge.IsAdjacent(aElem.LeftSite) && newEdge.IsAdjacent(bElem.RightSite),
-    )
+    )*/
     this.LegalizeEdge(aElem.LeftSite, t.OppositeEdge(aElem.LeftSite))
     t = newEdge.CcwTriangle ?? newEdge.CwTriangle
     this.LegalizeEdge(bElem.RightSite, t.OppositeEdge(bElem.RightSite))
@@ -612,7 +612,7 @@ export class CdtSweeper extends Algorithm {
     }
 
     const d = edge.lowerSite.point.sub(edge.upperSite.point)
-    Assert.assert(d.x < 0 && d.y <= 0)
+    /*Assert.assert(d.x < 0 && d.y <= 0)*/
     return d.x >= 0.5 * d.y
   }
 
@@ -637,7 +637,7 @@ export class CdtSweeper extends Algorithm {
       }
     }
 
-    Assert.assert(leftEdge != null && rightEdge != null)
+    /*Assert.assert(leftEdge != null && rightEdge != null)*/
     this.front.insert(new CdtFrontElement(leftSite, leftEdge))
     return this.front.insert(new CdtFrontElement(pi, rightEdge))
   }
@@ -705,7 +705,7 @@ export class CdtSweeper extends Algorithm {
     }
 
     const d = edge.lowerSite.point.sub(edge.upperSite.point)
-    Assert.assert(d.x > 0 && d.y <= 0)
+    /*Assert.assert(d.x > 0 && d.y <= 0)*/
     return d.x <= -0.5 * d.y
   }
 
@@ -761,7 +761,7 @@ export class CdtSweeper extends Algorithm {
   }
 
   LegalizeEdge(pi: CdtSite, edge: CdtEdge) {
-    Assert.assert(pi != edge.upperSite && pi != edge.lowerSite)
+    /*Assert.assert(pi != edge.upperSite && pi != edge.lowerSite)*/
     if (
       edge.Constrained ||
       edge.CcwTriangle == null ||
@@ -792,7 +792,7 @@ export class CdtSweeper extends Algorithm {
     //
     //                LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(ls);
     //            }
-    Assert.assert(i >= 0)
+    /*Assert.assert(i >= 0)*/
     if (
       IsIllegal(
         pi,
@@ -869,10 +869,10 @@ function IsIllegal(pi: CdtSite, a: CdtSite, b: CdtSite, c: CdtSite): boolean {
 }
 
 function InCone(pi: CdtSite, a: CdtSite, b: CdtSite, c: CdtSite): boolean {
-  Assert.assert(
+  /*Assert.assert(
     Point.getTriangleOrientation(a.point, b.point, c.point) ==
       TriangleOrientation.Counterclockwise,
-  )
+  )*/
 
   return (
     Point.getTriangleOrientation(a.point, pi.point, b.point) ==
@@ -891,10 +891,10 @@ export function InCircle(
   b: CdtSite,
   c: CdtSite,
 ): boolean {
-  Assert.assert(
+  /*Assert.assert(
     Point.getTriangleOrientation(a.point, b.point, c.point) ==
       TriangleOrientation.Counterclockwise,
-  )
+  )*/
   const axdx = a.point.x - d.point.x
   const aydy = a.point.y - d.point.y
   const bxdx = b.point.x - d.point.x
@@ -935,8 +935,8 @@ function TriangleIsCorrect(t: CdtTriangle) {
 }
 
 function Flip(pi: CdtSite, edge: CdtEdge): CdtEdge {
-  Assert.assert(!edge.IsAdjacent(pi))
-  Assert.assert(edge.CcwTriangle.Contains(pi) || edge.CwTriangle.Contains(pi))
+  /*Assert.assert(!edge.IsAdjacent(pi))*/
+  /*Assert.assert(edge.CcwTriangle.Contains(pi) || edge.CwTriangle.Contains(pi))*/
   //get surrounding data
   let t: CdtTriangle
   let ot: CdtTriangle
@@ -947,10 +947,10 @@ function Flip(pi: CdtSite, edge: CdtEdge): CdtEdge {
     t = edge.CwTriangle
     ot = edge.CcwTriangle
   }
-  Assert.assert(t.Contains(pi))
+  /*Assert.assert(t.Contains(pi))*/
   const eIndex = t.TriEdges.index(edge)
   const eOtherIndex = ot.TriEdges.index(edge)
-  Assert.assert(eIndex > -1 && eOtherIndex > -1)
+  /*Assert.assert(eIndex > -1 && eOtherIndex > -1)*/
   const pl = ot.Sites.getItem(eOtherIndex + 2)
   const edgeBeforPi = t.TriEdges.getItem(eIndex + 1)
   const edgeBeforPl = ot.TriEdges.getItem(eOtherIndex + 1)
@@ -978,8 +978,8 @@ function Flip(pi: CdtSite, edge: CdtEdge): CdtEdge {
     newEdge.CcwTriangle = t
     newEdge.CwTriangle = ot
   }
-  Assert.assert(TriangleIsCorrect(t))
-  Assert.assert(TriangleIsCorrect(t))
+  /*Assert.assert(TriangleIsCorrect(t))*/
+  /*Assert.assert(TriangleIsCorrect(t))*/
   //ShowFlip(pi, t, ot);
   removeFromArray(edge.upperSite.Edges, edge) //forget the edge
   return newEdge

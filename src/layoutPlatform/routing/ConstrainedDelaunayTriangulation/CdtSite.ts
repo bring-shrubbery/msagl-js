@@ -1,5 +1,5 @@
 ﻿import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {CdtEdge} from './CdtEdge'
 import {CdtTriangle} from './CdtTriangle'
 import {Cdt} from './Cdt'
@@ -40,7 +40,7 @@ export class CdtSite {
   //          }
   //  #endif
   EdgeBetweenUpperSiteAndLowerSite(b: CdtSite): CdtEdge {
-    Assert.assert(Cdt.AboveCC(this, b) > 0)
+    /*Assert.assert(Cdt.AboveCC(this, b) > 0)*/
     if (this.Edges != null) {
       for (const edge of this.Edges) {
         if (edge.lowerSite == b) {

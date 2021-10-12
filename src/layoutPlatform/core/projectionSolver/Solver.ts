@@ -8,7 +8,7 @@ import {
   from,
 } from 'linq-to-typescript'
 import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {closeDistEps, greaterDistEps} from '../../utils/compare'
 import {Block} from './Block'
 import {BlockVector} from './BlockVector'
@@ -460,10 +460,10 @@ export class Solver {
       return
     }
 
-    Assert.assert(
+    /*Assert.assert(
       !this.allConstraints.IsEmpty,
       'Cannot have updated constraints if AllConstraints is empty.',
-    )
+    )*/
     //  For Qpsc, all Block.ReferencePos values are based upon Variable.DesiredPos values, and the latter
     //  have been restored from what they were on the last Qpsc iteration to their initial values).
     let mustReinitializeBlocks: boolean = this.IsQpsc
@@ -551,14 +551,14 @@ export class Solver {
         }
       }
 
-      Assert.assert(
+      /*Assert.assert(
         leftConstraintIndex == numLeftConstraints,
         'leftConstraintIndex must == numLeftConstraints',
-      )
-      Assert.assert(
+      )*/
+      /*Assert.assert(
         rightConstraintIndex == numRightConstraints,
         'rightConstraintIndex must == numRightConstraints',
-      )
+      )*/
       //  Done with per-variable constraint loading.  Now load the big list of all constraints.
       //  All constraints are stored in a LeftConstraints array (and duplicated in a RightConstraints
       //  array), so just load the LeftConstraints into AllConstraints. Array.Foreach is optimized.
@@ -805,14 +805,14 @@ export class Solver {
 
     //  We have at least one violation, so process them until there are no more.
     while (maxViolatedConstraint) {
-      Assert.assert(
+      /*Assert.assert(
         !maxViolatedConstraint.IsUnsatisfiable,
         'maxViolatedConstraint should not be unsatisfiable',
-      )
-      Assert.assert(
+      )*/
+      /*Assert.assert(
         !maxViolatedConstraint.IsEquality,
         'maxViolatedConstraint should not be equality',
-      )
+      )*/
       //  Perf note: Variables (and Blocks) use the default Object.Equals implementation, which is
       //  simply ReferenceEquals for reference types.
       if (
@@ -874,10 +874,10 @@ export class Solver {
     //  Start off evaluating left-to-right.
     let blockTo = violatedConstraint.Left.Block
     let blockFrom = violatedConstraint.Right.Block
-    Assert.assert(
+    /*Assert.assert(
       blockTo != blockFrom,
       'Merging of constraints in the same block is not allowed',
-    )
+    )*/
     //  The violation amount is the needed distance to move to tightly satisfy the constraint.
     //  Calculate this based on offsets even though the vars are in different blocks; we'll normalize
     //  that when we recalculate the block reference position and the offsets in the Right block.
@@ -925,10 +925,10 @@ export class Solver {
     //  Cache for perf
     for (let ii = 0; ii < numBlocks; ii++) {
       const block = this.allBlocks.item(ii)
-      Assert.assert(
+      /*Assert.assert(
         0 != block.Variables.length,
         'block must have nonzero variable count',
-      )
+      )*/
       const newSplitBlock = block.Split(this.IsQpsc)
       if (null != newSplitBlock) {
         newBlocks.push(newSplitBlock)
@@ -1012,10 +1012,10 @@ export class Solver {
             constraint.Left.ActualPos * constraint.Left.Scale +
             (constraint.Gap -
               constraint.Right.ActualPos * constraint.Right.Scale)
-          Assert.assert(
+          /*Assert.assert(
             closeDistEps(constraint.Violation, violation),
             'LeftConstraints: constraint.Violation must == violation',
-          )
+          )*/
           if (greaterDistEps(violation, maxViolation)) {
             //  Cache the previous high violation.  Pass the violation as a tiny perf optimization
             //  to save re-doing the double operations in this inner loop.
@@ -1044,10 +1044,10 @@ export class Solver {
             (constraint.Gap -
               constraint.Right.ActualPos * constraint.Right.Scale)
           // Assert.assert(constraint.Violation == violation, "LeftConstraints: constraint.Violation must == violation");
-          Assert.assert(
+          /*Assert.assert(
             closeDistEps(constraint.Violation, violation),
             'LeftConstraints: constraint.Violation must == violation',
-          )
+          )*/
           // if (violation > maxViolation)
           if (greaterDistEps(violation, maxViolation)) {
             if (
@@ -1113,10 +1113,10 @@ export class Solver {
       const violation: number =
         constraint.Left.ActualPos * constraint.Left.Scale +
         (constraint.Gap - constraint.Right.ActualPos * constraint.Right.Scale)
-      Assert.assert(
+      /*Assert.assert(
         closeDistEps(constraint.Violation, violation),
         'constraint.Violation must == violation',
-      )
+      )*/
       let cacheInsertConstraint: Constraint = null
       let cacheInsertViolation = 0
       if (greaterDistEps(violation, maxViolation)) {

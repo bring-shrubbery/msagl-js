@@ -2,7 +2,7 @@
 //  for x-coordinates calculation
 
 import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {LayerArrays} from './LayerArrays'
 import {PolyIntEdge} from './polyIntEdge'
 import {ProperLayeredGraph} from './ProperLayeredGraph'
@@ -61,7 +61,7 @@ export class XLayoutGraph extends BasicGraphOnEdges<PolyIntEdge> {
 
     // this edge needed only for separation vertices in the same layer
     let k = 0
-    Assert.assert(s >= this.layeredGraph.NodeCount)
+    /*Assert.assert(s >= this.layeredGraph.NodeCount)*/
     // check the graph on correctness`
     //     throw new Error();//"XLayout graph is incorrect");
     // here (s0,t0) is the edge of underlying graph

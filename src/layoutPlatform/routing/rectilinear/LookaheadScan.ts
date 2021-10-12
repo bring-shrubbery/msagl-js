@@ -5,7 +5,7 @@
 import {Point} from '../../math/geometry/point'
 import {RBNode} from '../../structs/RBTree/rbNode'
 import {RBTree} from '../../structs/RBTree/rbTree'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {BasicReflectionEvent} from './basicReflectionEvent'
 import {ScanDirection} from './ScanDirection'
 
@@ -30,10 +30,10 @@ export class LookaheadScan {
 
   Add(initialSite: BasicReflectionEvent) {
     //  Assert we can't find it - subsumption should have taken care of that.
-    Assert.assert(
+    /*Assert.assert(
       this.Find(initialSite.Site) == null,
       'Should not add the same Lookahead coordinate twice',
-    )
+    )*/
     this.eventTree.insert(initialSite)
   }
 

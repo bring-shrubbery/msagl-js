@@ -6,7 +6,7 @@ import {CancelToken} from '../../utils/cancelToken'
 import {IntPair} from '../../utils/IntPair'
 import {BasicGraphOnEdges as Graph} from '../../structs/basicGraphOnEdges'
 import {PolyIntEdge} from './polyIntEdge'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 
 // balances the layers by moving vertices with
 // the same number of input-output edges to feasible layers with fewer nodes
@@ -185,7 +185,7 @@ export class Balancing implements Algorithm {
   }
 
   CalculateLayerCounts() {
-    Assert.assert(this.layering.length > 0)
+    /*Assert.assert(this.layering.length > 0)*/
     this.vertsCounts = new Array<number>(from(this.layering).max() + 1).fill(0)
     for (const r of this.layering) {
       this.vertsCounts[r] += this.nodeCount[r]

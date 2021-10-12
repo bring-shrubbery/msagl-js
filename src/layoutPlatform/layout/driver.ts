@@ -24,7 +24,8 @@ function routeEdges(
   edgeRoutingSettings: EdgeRoutingSettings,
   cornerFitRadius = 3,
 ) {
-  if (edgeRoutingSettings.edgeRoutingMode == EdgeRoutingMode.StraightLine) {
+  if (edgeRoutingSettings.edgeRoutingMode != EdgeRoutingMode.Rectilinear) {
+    // TODO: enable other modes
     routeStraightEdges(geomG)
   } else {
     if (edgeRoutingSettings.edgeRoutingMode == EdgeRoutingMode.Rectilinear)

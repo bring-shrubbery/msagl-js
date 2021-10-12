@@ -1,5 +1,5 @@
 // A node of a GeomGraph
-import {Assert} from './../../utils/assert'
+// import {Assert} from './../../utils/assert'
 import {ICurve} from './../../math/geometry/icurve'
 import {Rectangle} from './../../math/geometry/rectangle'
 import {Point} from './../../math/geometry/point'
@@ -50,8 +50,8 @@ export class GeomNode extends GeomObject {
       // RoundedRect is special, rather then simply scaling the geometry we want to keep the corner radii constant
       const radii = CurveFactory.isRoundedRect(this.boundaryCurve)
       if (radii == undefined) {
-        Assert.assert(this.boundaryCurve.boundingBox.width > 0)
-        Assert.assert(this.boundaryCurve.boundingBox.height > 0)
+        /*Assert.assert(this.boundaryCurve.boundingBox.width > 0)*/
+        /*Assert.assert(this.boundaryCurve.boundingBox.height > 0)*/
         const scaleX = targetBounds.width / this.boundaryCurve.boundingBox.width
         const scaleY =
           targetBounds.height / this.boundaryCurve.boundingBox.height

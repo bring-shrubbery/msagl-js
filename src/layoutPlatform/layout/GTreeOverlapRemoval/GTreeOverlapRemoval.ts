@@ -3,7 +3,7 @@ import {Point} from '../../math/geometry/point'
 import {Size, Rectangle} from '../../math/geometry/rectangle'
 import {Cdt} from '../../routing/ConstrainedDelaunayTriangulation/Cdt'
 import {CdtSite} from '../../routing/ConstrainedDelaunayTriangulation/CdtSite'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {GeomNode} from '../core/geomNode'
 import {MstLineSweeper} from './MstLineSweeper'
 import {MstEdge, MstOnDelaunayTriangulation} from './MstOnDelaunayTriangulation'
@@ -137,8 +137,8 @@ export class GTreeOverlapRemoval {
         const point2: Point = edge.lowerSite.point
         const i = siteIndex.get(edge.upperSite)
         const j = siteIndex.get(edge.lowerSite)
-        Assert.assert(Point.closeDistEps(point1, nodePositions[i]))
-        Assert.assert(Point.closeDistEps(point2, nodePositions[j]))
+        /*Assert.assert(Point.closeDistEps(point1, nodePositions[i]))*/
+        /*Assert.assert(Point.closeDistEps(point2, nodePositions[j]))*/
         const mstEdge = GTreeOverlapRemoval.GetIdealEdge(
           i,
           j,
@@ -268,7 +268,7 @@ export class GTreeOverlapRemoval {
       return Math.sqrt(h * h + w * w) / 4
     }
 
-    Assert.assert(t >= 1)
+    /*Assert.assert(t >= 1)*/
 
     t = Math.max(t, 1.001) // to be  on the safe side
 
@@ -354,7 +354,7 @@ export class GTreeOverlapRemoval {
           e.idealDistance,
         )
       } else {
-        Assert.assert(visited.has(e.target)) // hmm, why does this hold?
+        /*Assert.assert(visited.has(e.target))*/ // hmm, why does this hold?
         GTreeOverlapRemoval.MoveNode(
           e.target,
           e.source,

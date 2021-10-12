@@ -1,6 +1,6 @@
 ﻿import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {Rectangle} from '../../math/geometry/rectangle'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {CdtEdge} from './CdtEdge'
 import {CdtSite} from './CdtSite'
 import {ThreeArray} from './ThreeArray'
@@ -78,10 +78,10 @@ export class CdtTriangle {
     b: CdtEdge,
     createEdgeDelegate: (a: CdtSite, b: CdtSite) => CdtEdge,
   ) {
-    Assert.assert(
+    /*Assert.assert(
       Point.getTriangleOrientation(aLeft.point, aRight.point, bRight.point) ==
         TriangleOrientation.Counterclockwise,
-    )
+    )*/
     const tri = CdtTriangle.mkSSSD(aLeft, aRight, bRight, createEdgeDelegate)
     tri.TriEdges.setItem(0, a)
     tri.TriEdges.setItem(1, b)
@@ -132,7 +132,7 @@ export class CdtTriangle {
 
   OppositeEdge(pi: CdtSite): CdtEdge {
     const index = this.Sites.index(pi)
-    Assert.assert(index != -1)
+    /*Assert.assert(index != -1)*/
     return this.TriEdges.getItem(index + 1)
   }
 

@@ -1,5 +1,5 @@
 import {from, IEnumerable} from 'linq-to-typescript'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {IRectangle} from '../IRectangle'
 import {
   RectangleNode,
@@ -44,8 +44,8 @@ function RebuildUnderNodeWithoutLeaf<T, P>(
   nodeForRebuild: RectangleNode<T, P>,
   leaf: RectangleNode<T, P>,
 ) {
-  Assert.assert(leaf.IsLeaf)
-  Assert.assert(!nodeForRebuild.IsLeaf)
+  /*Assert.assert(leaf.IsLeaf)*/
+  /*Assert.assert(!nodeForRebuild.IsLeaf)*/
   const newNode = CreateRectangleNodeOnEnumeration<T, P>(
     nodeForRebuild.GetAllLeafNodes().where((n) => n != leaf),
   )
@@ -76,7 +76,7 @@ function NumberOfIntersectedIsLessThanBoundOnNode<T, P>(
   t: {bound: number},
   conditionFunc: (t: T) => boolean,
 ): boolean {
-  Assert.assert(t.bound > 0)
+  /*Assert.assert(t.bound > 0)*/
   if (!node.irect.intersects_rect(rect)) return true
   if (node.IsLeaf) {
     if (conditionFunc(node.UserData)) return --t.bound != 0
@@ -291,7 +291,7 @@ export class RTree<T, P> {
   }
 
   RemoveLeaf(leaf: RectangleNode<T, P>) {
-    Assert.assert(leaf.IsLeaf)
+    /*Assert.assert(leaf.IsLeaf)*/
     const unbalancedNode = FindTopUnbalancedNode(leaf)
     if (unbalancedNode != null) {
       RebuildUnderNodeWithoutLeaf(unbalancedNode, leaf)
@@ -300,7 +300,7 @@ export class RTree<T, P> {
       //replace the parent with the sibling and update bounding boxes and counts
       const parent = leaf.Parent
       if (parent == null) {
-        Assert.assert(this._rootNode == leaf)
+        /*Assert.assert(this._rootNode == leaf)*/
         this._rootNode = new RectangleNode<T, P>()
       } else {
         TransferFromSibling(

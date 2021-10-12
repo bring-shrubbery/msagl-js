@@ -1,7 +1,7 @@
 //  This forms the vector of ScanSegments for the sparse VisibilityGraph.
 
 import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {VisibilityGraph} from '../visibility/VisibilityGraph'
 import {PointAndCrossingsList} from './PointAndCrossingsList'
 import {ScanSegment} from './ScanSegment'
@@ -110,7 +110,7 @@ export class ScanSegmentVector {
       }
 
       //  TODOsparse - profile - see if I really need the perpCoordMap
-      Assert.assert(false, 'Should not be here if coord is in the vector')
+      /*Assert.assert(false, 'Should not be here if coord is in the vector')*/
       return mid
     }
 
@@ -127,7 +127,7 @@ export class ScanSegmentVector {
     }
 
     //  TODOsparse - profile - see if I really need the perpCoordMap
-    Assert.assert(false, 'Should not be here if coord is in the vector')
+    /*Assert.assert(false, 'Should not be here if coord is in the vector')*/
     return low
   }
 

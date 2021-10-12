@@ -1,7 +1,7 @@
 // This forms one slot in the scan segment vector.
 
 import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {PointComparer} from './PointComparer'
 import {ScanSegment} from './ScanSegment'
 
@@ -30,7 +30,7 @@ export class ScanSegmentVectorItem {
   //  Restores state between intersection passes.
 
   ResetForIntersections() {
-    Assert.assert(null != this.FirstSegment, 'Empty ScanSegmentVectorItem')
+    /*Assert.assert(null != this.FirstSegment, 'Empty ScanSegmentVectorItem')*/
     this.CurrentSegment = this.FirstSegment
   }
 
@@ -63,10 +63,10 @@ export class ScanSegmentVectorItem {
 
     const pointCoord = this.IsHorizontal ? point.y : point.x
     if (!PointComparer.Equal(this.Coord, pointCoord)) {
-      Assert.assert(
+      /*Assert.assert(
         PointComparer.Compare(this.Coord, pointCoord) == -1,
         'point is before current Coord',
-      )
+      )*/
       while (this.MoveNext()) {
         //  Skip to the end of the linked list if this point is not on the same coordinate.
       }
@@ -105,10 +105,10 @@ export class ScanSegmentVectorItem {
       //  This is likely the reverse of the above; the point rounding mismatched to just before
       //  rather than just after the current segment.
       if (PointComparer.IsPureLower(point, this.CurrentSegment.Start)) {
-        Assert.assert(
+        /*Assert.assert(
           Point.closeIntersections(this.CurrentSegment.Start, point),
           'Skipped over the point in the ScanSegment linked list',
-        )
+        )*/
         this.CurrentSegment.Update(point, this.CurrentSegment.End)
         return true
       }

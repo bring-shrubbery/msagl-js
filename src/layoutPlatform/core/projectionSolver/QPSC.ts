@@ -1,6 +1,6 @@
 //  An instance of Qpsc drives the gradient-projection portion of the Projection Solver.
 import {number} from 'yargs'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {Parameters} from './Parameters'
 import {Variable} from './Variable'
 //  Store original weight to be restored when done.  With the ability to re-Solve() after
@@ -180,11 +180,11 @@ export class Qpsc {
   //  Done:
   //     qpsc.ProjectComplete()
   AddVariable(variable: Variable) {
-    Assert.assert(
+    /*Assert.assert(
       this.matrixQ[variable.Ordinal] == null &&
         this.vectorQpscVars[variable.Ordinal].Variable == null,
       'variable.Ordinal already exists',
-    )
+    )*/
     this.isFirstProjectCall = true
     //  This is the weight times desired position, multiplied by 2.0 per the partial derivative.
     //  We'll use this to keep as close as possible to the desired position on each iteration.
@@ -197,10 +197,10 @@ export class Qpsc {
     if (null != variable.Neighbors) {
       for (const neighborWeightPair of variable.Neighbors) {
         //  We should already have verified this in AddNeighbourPair.
-        Assert.assert(
+        /*Assert.assert(
           neighborWeightPair.Neighbor.Ordinal != variable.Ordinal,
           'self-neighbors are not allowed',
-        )
+        )*/
         //  For the neighbor KeyValuePairs, Key == neighboring variable and Value == relationship
         //  weight.  If we've already encountered this pair then we'll sum the relationship weights, under
         //  the assumption the caller will be doing something like creating edges for different reasons,
@@ -222,10 +222,10 @@ export class Qpsc {
     for (let ii = 0; ii < this.vectorPrevY.length; ii++) {
       if (0 != this.vectorPrevY[ii]) {
         //  The diagonal must be > 0 and off-diagonal < 0.
-        Assert.assert(
+        /*Assert.assert(
           (ii == variable.Ordinal) == this.vectorPrevY[ii] > 0,
           'Diagonal must be > 0.0',
-        )
+        )*/
         //  All 'A' cells must be 2*(summed weights).
         this.newMatrixRow.push(new MatrixCell(this.vectorPrevY[ii] * 2, ii))
         this.vectorPrevY[ii] = 0

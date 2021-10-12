@@ -7,7 +7,7 @@ import {Curve} from '../../../math/geometry/curve'
 import {GeomConstants} from '../../../math/geometry/geomConstants'
 import {LineSegment} from '../../../math/geometry/lineSegment'
 import {Polyline} from '../../../math/geometry/polyline'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {closeDistEps} from '../../../utils/compare'
 import {Path} from './Path'
 import {SegWithIndex} from './SegWithIndex'
@@ -269,8 +269,8 @@ function ArrayCopyANANN<T>(
   }
 }
 function ArrayCopyAAN<T>(a: T[], b: T[], length: number) {
-  Assert.assert(a.length >= length)
-  Assert.assert(b.length >= length)
+  /*Assert.assert(a.length >= length)*/
+  /*Assert.assert(b.length >= length)*/
   let i = 0
   while (length-- > 0) {
     b[i++] = a[i++]

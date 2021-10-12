@@ -5,7 +5,7 @@ import {ICurve} from '../math/geometry/icurve'
 import {Point, TriangleOrientation} from '../math/geometry/point'
 import {Polyline} from '../math/geometry/polyline'
 import {PolylinePoint} from '../math/geometry/polylinePoint'
-import {Assert} from '../utils/assert'
+// import {Assert} from '../utils/assert'
 
 export class InteractiveObstacleCalculator {
   private static PadCorner(
@@ -85,7 +85,7 @@ export class InteractiveObstacleCalculator {
         v.add(vwPerp),
         w.add(vwPerp),
       )
-      Assert.assert(a != undefined)
+      /*Assert.assert(a != undefined)*/
       return {a: a, b: a, numberOfPoints: 1}
     }
 
@@ -116,14 +116,14 @@ export class InteractiveObstacleCalculator {
     //    return Point.Angle(u, v, w) > Math.PI / 4;
   }
   static CreatePaddedPolyline(poly: Polyline, padding: number): Polyline {
-    Assert.assert(
+    /*Assert.assert(
       Point.getTriangleOrientation(
         poly.start,
         poly.startPoint.next.point,
         poly.startPoint.next.next.point,
       ) == TriangleOrientation.Clockwise,
       'Unpadded polyline is not clockwise',
-    )
+    )*/
     const ret = new Polyline()
     if (
       !InteractiveObstacleCalculator.PadCorner(
@@ -178,14 +178,14 @@ export class InteractiveObstacleCalculator {
       }
     }
 
-    Assert.assert(
+    /*Assert.assert(
       Point.getTriangleOrientation(
         ret.start,
         ret.startPoint.next.point,
         ret.startPoint.next.next.point,
       ) != TriangleOrientation.Counterclockwise,
       'Padded polyline is counterclockwise',
-    )
+    )*/
     ret.closed = true
     return ret
   }

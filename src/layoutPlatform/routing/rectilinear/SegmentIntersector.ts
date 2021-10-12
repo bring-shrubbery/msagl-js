@@ -2,7 +2,7 @@ import {IEnumerable} from 'linq-to-typescript'
 import {Point} from '../../math/geometry/point'
 import {RBNode} from '../../structs/RBTree/rbNode'
 import {RBTree} from '../../structs/RBTree/rbTree'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {VisibilityGraph} from '../visibility/VisibilityGraph'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
 import {PointComparer} from './PointComparer'
@@ -116,7 +116,7 @@ export class SegmentIntersector {
           this.ScanIntersect(evt.Segment)
           break
         default:
-          Assert.assert(false, 'Unknown SegEventType')
+          /*Assert.assert(false, 'Unknown SegEventType')*/
           break
       }
     }
@@ -146,16 +146,17 @@ export class SegmentIntersector {
     verticalScanSegments: ScanSegmentTree,
   ) {
     for (const seg of this.segmentsWithoutVisibility) {
-      ;(seg.IsVertical ? verticalScanSegments : horizontalScanSegments).Remove(
-        seg,
-      )
+      const segs = seg.IsVertical
+        ? verticalScanSegments
+        : horizontalScanSegments
+      segs.Remove(seg)
     }
   }
   ScanInsert(seg: ScanSegment) {
-    Assert.assert(
+    /*Assert.assert(
       this.verticalSegmentsScanLine.find(seg) == null,
       'seg already exists in the rbtree',
-    )
+    )*/
     //  RBTree's internal operations on insert/remove etc. mean the node can't cache the
     //  RBNode returned by insert(); instead we must do find() on each call.  But we can
     //  use the returned node to get predecessor/successor.
@@ -228,13 +229,13 @@ export class SegmentIntersector {
     //  HOpen which comes after VOpen, thus make sure VOpen comes before VClose.
     if (first.IsVertical && second.IsVertical) {
       //  Separate segments may join at Start and End due to overlap.
-      Assert.assert(
+      /*Assert.assert(
         !StaticGraphUtility.IntervalsOverlapSS(first.Segment, second.Segment) ||
           0 ==
             PointComparer.ComparePP(first.Segment.Start, second.Segment.End) ||
           0 == PointComparer.ComparePP(first.Segment.End, second.Segment.Start),
         'V subsumption failure detected in SegEvent comparison',
-      )
+      )*/
       if (0 == cmp) {
         //  false is < true.
         cmp =
@@ -249,13 +250,13 @@ export class SegmentIntersector {
     if (!first.IsVertical && !second.IsVertical) {
       //  Separate segments may join at Start and End due to overlap, so compare by Start.X;
       //  the ending segment (lowest Start.X) comes before the Open (higher Start.X).
-      Assert.assert(
+      /*Assert.assert(
         !StaticGraphUtility.IntervalsOverlapSS(first.Segment, second.Segment) ||
           0 ==
             PointComparer.ComparePP(first.Segment.Start, second.Segment.End) ||
           0 == PointComparer.ComparePP(first.Segment.End, second.Segment.Start),
         'H subsumption failure detected in SegEvent comparison',
-      )
+      )*/
       cmp = PointComparer.Compare(first.Site.x, second.Site.x)
       return cmp
     }

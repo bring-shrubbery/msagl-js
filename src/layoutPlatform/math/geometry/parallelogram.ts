@@ -1,6 +1,6 @@
 import {Point} from './point'
 import {GeomConstants} from './geomConstants'
-import {Assert} from './../../utils/assert'
+// import {Assert} from './../../utils/assert'
 
 export enum VertexId {
   Corner,

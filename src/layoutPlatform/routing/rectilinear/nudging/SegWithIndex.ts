@@ -1,5 +1,5 @@
 import {Point} from '../../../..'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 
 export class SegWithIndex {
   Points: Point[]
@@ -8,7 +8,7 @@ export class SegWithIndex {
 
   // offset
   constructor(pts: Point[], i: number) {
-    Assert.assert(i < pts.length && i >= 0)
+    /*Assert.assert(i < pts.length && i >= 0)*/
     this.Points = pts
     this.I = i
   }

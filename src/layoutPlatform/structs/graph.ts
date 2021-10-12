@@ -1,5 +1,5 @@
 import {Queue} from 'queue-typescript'
-import {Assert} from '../utils/assert'
+// import {Assert} from '../utils/assert'
 import {Edge} from './edge'
 import {Node} from './node'
 import {NodeCollection} from './nodeCollection'
@@ -49,7 +49,7 @@ export class Graph extends Node {
     this.nodeCollection.removeNode(n)
   }
   addNode(n: Node): Node {
-    Assert.assert(n.parent == null || n.parent == this)
+    /*Assert.assert(n.parent == null || n.parent == this)*/
     n.parent = this
     this.nodeCollection.addNode(n)
     return n

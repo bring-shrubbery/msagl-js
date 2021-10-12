@@ -12,7 +12,7 @@ import {PolylinePoint} from './../../math/geometry/polylinePoint'
 import {Curve} from './../../math/geometry/curve'
 import {GeomConstants} from './../../math/geometry/geomConstants'
 import {GeomNode} from './../core/geomNode'
-import {Assert} from './../../utils/assert'
+// import {Assert} from './../../utils/assert'
 export class Anchor {
   // ToString
   toString() {
@@ -147,10 +147,10 @@ export class Anchor {
   }
 
   constructor(labelCornersPreserveCoefficient: number) {
-    Assert.assert(
+    /*Assert.assert(
       0 <= labelCornersPreserveCoefficient &&
         labelCornersPreserveCoefficient <= 1,
-    )
+    )*/
     this.labelCornersPreserveCoefficient = labelCornersPreserveCoefficient
   }
   // constructor

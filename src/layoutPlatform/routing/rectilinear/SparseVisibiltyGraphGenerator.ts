@@ -17,7 +17,7 @@ import {Direction} from '../../math/geometry/direction'
 import {Point} from '../../math/geometry/point'
 import {Rectangle} from '../../math/geometry/rectangle'
 import {RBNode} from '../../structs/RBTree/rbNode'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {comparePointsYFirst} from '../../utils/compare'
 import {PointSet} from '../../utils/PointSet'
 import {SweepEvent} from '../spline/coneSpanner/SweepEvent'
@@ -221,10 +221,10 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
   }
 
   InsertPerpendicularReflectionSegment(start: Point, end: Point): boolean {
-    Assert.assert(
+    /*Assert.assert(
       false,
       'base.wantReflections is false in Sparse mode so this should never be called',
-    )
+    )*/
     //  ReSharper disable HeuristicUnreachableCode
     return false
     //  ReSharper restore HeuristicUnreachableCode
@@ -238,10 +238,10 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     highNborSide: BasicObstacleSide,
     action: BasicReflectionEvent,
   ): boolean {
-    Assert.assert(
+    /*Assert.assert(
       false,
       'base.wantReflections is false in Sparse mode so this should never be called',
-    )
+    )*/
     //  ReSharper disable HeuristicUnreachableCode
     return false
     //  ReSharper restore HeuristicUnreachableCode
@@ -387,7 +387,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
       }
 
       //  This is a HighObstacleSide.  If we've got overlap nesting, decrement the depth.
-      Assert.assert(overlapDepth > 0, 'Overlap depth must be positive')
+      /*Assert.assert(overlapDepth > 0, 'Overlap depth must be positive')*/
       overlapDepth++
       if (overlapDepth > 0) {
         continue
@@ -602,10 +602,10 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
         if (item.PointIsCurrentEndAndNextStart(vertexPoints[i])) {
           //  MoveNext will always return true because the test to enter this block returned true.
           item.MoveNext()
-          Assert.assert(
+          /*Assert.assert(
             item.HasCurrent,
             'MoveNext ended before EndAndNextStart',
-          )
+          )*/
           continue
         }
 
@@ -618,7 +618,7 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     }
 
     //  We should have exited in the "no more vertexPoints" case above.
-    Assert.assert(false, 'Mismatch in points and segments')
+    /*Assert.assert(false, 'Mismatch in points and segments')*/
   }
 
   private AddSteinerPointsToInterveningSegments(

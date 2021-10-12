@@ -1,6 +1,6 @@
 import {Edge} from '../../structs/edge'
 import {Algorithm} from '../../utils/algorithm'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {CancelToken} from '../../utils/cancelToken'
 import {GeomEdge} from '../core/geomEdge'
 import {GeomGraph} from '../core/GeomGraph'
@@ -21,7 +21,7 @@ export class PivotMDS extends Algorithm {
     return this.settings.ScaleX
   }
   public set scaleX(value: number) {
-    Assert.assert(!isNaN(value))
+    /*Assert.assert(!isNaN(value))*/
     this.settings.ScaleX = value
   }
 
@@ -30,7 +30,7 @@ export class PivotMDS extends Algorithm {
     return this.settings.ScaleY
   }
   public set scaleY(value: number) {
-    Assert.assert(!isNaN(value))
+    /*Assert.assert(!isNaN(value))*/
     this.settings.ScaleY = value
   }
 

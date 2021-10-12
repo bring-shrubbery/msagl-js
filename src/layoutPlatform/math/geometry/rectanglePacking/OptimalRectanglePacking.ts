@@ -1,4 +1,4 @@
-﻿import {Assert} from '../../../utils/assert'
+﻿// import {Assert} from '../../../utils/assert'
 import {Rectangle} from '../rectangle'
 import {OptimalPacking} from './OptimalPacking'
 import {GreedyRectanglePacking} from './RectanglePacking'
@@ -12,11 +12,11 @@ export class OptimalRectanglePacking extends OptimalPacking {
   public constructor(rectangles: Rectangle[], aspectRatio: number) {
     super(GreedyRectanglePacking.SortRectangles(rectangles), aspectRatio)
 
-    Assert.assert(
+    /*Assert.assert(
       rectangles.length > 0,
       'Expected at least one rectangle in rectangles packing',
-    )
-    Assert.assert(aspectRatio > 0, 'aspect ratio should be greater than 0')
+    )*/
+    /*Assert.assert(aspectRatio > 0, 'aspect ratio should be greater than 0')*/
     this.createPacking = (rs, width) =>
       new GreedyRectanglePacking(rs, width, true)
   }
@@ -29,8 +29,8 @@ export class OptimalRectanglePacking extends OptimalPacking {
     let totalWidth = 0
     //  initial widthLowerBound is the width of a perfect packing for the desired aspect ratio
     for (const r of this.rectangles) {
-      Assert.assert(r.width > 0, 'Width must be greater than 0')
-      Assert.assert(r.height > 0, 'Height must be greater than 0')
+      /*Assert.assert(r.width > 0, 'Width must be greater than 0')*/
+      /*Assert.assert(r.height > 0, 'Height must be greater than 0')*/
       const width: number = r.width
       totalWidth += width
       minRectWidth = Math.min(minRectWidth, width)

@@ -2,7 +2,7 @@ import {IEdge} from '../../structs/iedge'
 import {BasicGraphOnEdges} from '../../structs/basicGraphOnEdges'
 import {IntPair} from '../../utils/IntPair'
 import {IntPairSet} from '../../utils/IntPairSet'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {Stack} from 'stack-typescript'
 
 enum VertStatus {
@@ -46,7 +46,7 @@ export class CycleRemoval {
     for (let vertex = 0; vertex < graph.nodeCount; vertex++) {
       if (status[vertex] == VertStatus.Visited) continue
 
-      Assert.assert(status[vertex] != VertStatus.InStack)
+      /*Assert.assert(status[vertex] != VertStatus.InStack)*/
 
       const stack = new Stack<StackStruct>() //avoiding the recursion
       let i = 0 //  the index in the outEnum

@@ -4,7 +4,7 @@ import {mkRTree, RTree} from '../../core/geometry/RTree/RTree'
 import {Point} from '../../math/geometry/point'
 import {Size} from '../../math/geometry/rectangle'
 import {BinaryHeapPriorityQueue} from '../../structs/BinaryHeapPriorityQueue'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {GTreeOverlapRemoval} from './GTreeOverlapRemoval'
 import {MstEdge} from './MstOnDelaunayTriangulation'
 
@@ -27,7 +27,7 @@ export class MstLineSweeper {
     this._nodeSizes = nodeSizes
     this._nodePositions = nodePositions
     this._forLayers = forLayers
-    Assert.assert(nodePositions.length == nodeSizes.length)
+    /*Assert.assert(nodePositions.length == nodeSizes.length)*/
     this._q = new BinaryHeapPriorityQueue(nodeSizes.length * 2)
   }
 

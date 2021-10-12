@@ -21,7 +21,7 @@ import {Arrowhead} from '../core/arrowhead'
 import {GeomNode} from '../core/geomNode'
 import {SmoothedPolylineCalculator} from './SmoothedPolylineCalculator'
 import {GeomEdge} from '../core/geomEdge'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {StraightLineEdges} from '../../routing/StraightLineEdges'
 //import {SvgDebugWriter} from '../../math/geometry/svgDebugWriter'
 //  The class responsible for the routing of splines
@@ -313,7 +313,7 @@ export class Routing extends Algorithm {
         }
       }
     } else {
-      Assert.assert(false)
+      /*Assert.assert(false)*/
     }
 
     // not implemented

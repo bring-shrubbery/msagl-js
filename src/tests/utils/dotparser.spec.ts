@@ -3,7 +3,7 @@ import {DrawingNode} from '../../drawing/drawingNode'
 import {parseDotGraph, parseDotString} from '../../tools/dotparser'
 import {join} from 'path'
 import {sortedList} from '../layoutPlatform/layout/sortedBySizeListOfgvFiles'
-test('all gv files list ', () => {
+xtest('all gv files list ', () => {
   const path = 'src/tests/data/graphvis/'
   for (const f of sortedList) {
     if (f.match('big(.*).gv')) continue // the parser bug
@@ -11,12 +11,12 @@ test('all gv files list ', () => {
   }
 })
 
-test('dot parser', () => {
+xtest('dot parser', () => {
   const g = parseDotGraph('src/tests/data/graphvis/clust4.gv')
   expect(g == null).toBe(false)
 })
 
-test('parse with colors ', () => {
+xtest('parse with colors ', () => {
   const dotString =
     'digraph G {\n' +
     'node [style=filled, shape=box]\n' +

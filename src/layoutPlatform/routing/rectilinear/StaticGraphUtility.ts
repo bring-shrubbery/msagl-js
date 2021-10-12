@@ -3,7 +3,7 @@ import {Direction} from '../../math/geometry/direction'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Point} from '../../math/geometry/point'
 import {Rectangle} from '../../math/geometry/rectangle'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {SegmentBase} from '../visibility/SegmentBase'
 import {VisibilityEdge} from '../visibility/VisibilityEdge'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
@@ -25,10 +25,10 @@ export class StaticGraphUtility {
 
   static GetEdgeEnd(edge: VisibilityEdge, dir: Direction): VisibilityVertex {
     const edgeDir: Direction = StaticGraphUtility.EdgeDirectionVE(edge)
-    Assert.assert(
+    /*Assert.assert(
       0 != (dir & (edgeDir | CompassVector.OppositeDir(edgeDir))),
       'dir is orthogonal to edge',
-    )
+    )*/
     return dir == edgeDir ? edge.Target : edge.Source
   }
 
@@ -143,11 +143,11 @@ export class StaticGraphUtility {
     start2: Point,
     end2: Point,
   ): boolean {
-    Assert.assert(
+    /*Assert.assert(
       StaticGraphUtility.IsVerticalPP(start1, end1) ==
         StaticGraphUtility.IsVerticalPP(start2, end2),
       'segments are not in the same orientation',
-    )
+    )*/
     const vertical: boolean = StaticGraphUtility.IsVerticalPP(start1, end1)
     if (StaticGraphUtility.IsVerticalPP(start2, end2) == vertical) {
       //  This handles touching endpoints as well.
@@ -176,11 +176,11 @@ export class StaticGraphUtility {
     secondStart: Point,
     secondEnd: Point,
   ): Point {
-    Assert.assert(
+    /*Assert.assert(
       StaticGraphUtility.IsVerticalPP(firstStart, firstEnd) !=
         StaticGraphUtility.IsVerticalPP(secondStart, secondEnd),
       'cannot intersect two parallel segments',
-    )
+    )*/
     const intersect = StaticGraphUtility.SegmentIntersectionPPP(
       firstStart,
       firstEnd,
@@ -258,10 +258,10 @@ export class StaticGraphUtility {
 
   static SortAscending(a: Point, b: Point): [Point, Point] {
     const dir: Direction = PointComparer.GetDirections(a, b)
-    Assert.assert(
+    /*Assert.assert(
       Direction.None == dir || PointComparer.IsPureDirectionD(dir),
       'SortAscending with impure direction',
-    )
+    )*/
     return Direction.None == dir || StaticGraphUtility.IsAscending(dir)
       ? [a, b]
       : [b, a]

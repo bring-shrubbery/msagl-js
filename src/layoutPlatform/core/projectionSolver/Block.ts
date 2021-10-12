@@ -1,6 +1,6 @@
 import {Stack} from 'stack-typescript'
 import {String} from 'typescript-string-operations'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {Constraint} from './Constraint'
 import {ConstraintVector} from './ConstraintVector'
 import {DfDvNode} from './DfDvNode'
@@ -101,10 +101,10 @@ export class Block {
     //  the latter is of pathTargetVariable.  This is ComputePath from the doc.  The logic there is:
     //     Do the iterations of ComputeDvDv
     //     If we find the target, then traverse the parent chain to populate the list bottom-up
-    Assert.assert(
+    /*Assert.assert(
       0 == this.allConstraints.DfDvStack.length,
       'Leftovers of ComputeDfDvStack',
-    )
+    )*/
     this.allConstraints.DfDvStack = new Stack()
     //  Variables for initializing the first node.
     const dummyConstraint = new Constraint(initialVarToEval)
@@ -131,13 +131,13 @@ export class Block {
           //  VariableDoneEval).  These cycles should be caught by the null-minLagrangian IsUnsatisfiable
           //  setting of Block.Expand (but assert with IsActive not IsUnsatisfiable, as the constraint
           //  may not have been encountered yet).  Test_Unsatisfiable_Cycle_InDirect_With_SingleConstraint_Var.
-          Assert.assert(
+          /*Assert.assert(
             !constraint.IsActive ||
               !(
                 node.IsLeftToRight && constraint.Right == node.VariableDoneEval
               ),
             'this cycle should not happen',
-          )
+          )*/
           if (
             constraint.IsActive &&
             constraint.Right != node.VariableDoneEval
@@ -161,13 +161,13 @@ export class Block {
 
         for (const constraint of node.VariableToEval.RightConstraints) {
           //  See comments of .LeftConstraints.
-          Assert.assert(
+          /*Assert.assert(
             !constraint.IsActive ||
               !(
                 !node.IsLeftToRight && constraint.Left == node.VariableDoneEval
               ),
             'this cycle should not happen',
-          )
+          )*/
           if (constraint.IsActive && constraint.Left != node.VariableDoneEval) {
             const childNode = this.GetDfDvNode(
               node,
@@ -193,17 +193,17 @@ export class Block {
       //  We are at a non-leaf node and have "recursed" through all its descendents; therefore pop it off
       //  the stack and process it.  If it's the initial node, we've already updated DummyConstraint.Lagrangian
       //  from all child nodes, and it's of the DummyParentNode as well so this will add the final dfdv.
-      Assert.assert(
+      /*Assert.assert(
         this.allConstraints.DfDvStack.top == node,
         "DfDvStack.top should be 'node'",
-      )
+      )*/
       this.allConstraints.DfDvStack.pop()
       this.ProcessDfDvLeafNode(node)
       if (node == firstNode) {
-        Assert.assert(
+        /*Assert.assert(
           0 == this.allConstraints.DfDvStack.length,
           'Leftovers of DfDvStack on completion of loop',
-        )
+        )*/
         break
       }
     }
@@ -247,10 +247,10 @@ export class Block {
     if (
       constraint.Violation > this.allConstraints.SolverParameters.GapTolerance
     ) {
-      Assert.assert(
+      /*Assert.assert(
         false,
         'Violated active constraint should never be encountered',
-      )
+      )*/
     }
   }
 
@@ -371,10 +371,10 @@ export class Block {
     this.pathTargetVariable = null
     if (minLagrangianConstraint == null) {
       //  If no forward non-equality edge was found, violatedConstraint would have created a cycle.
-      Assert.assert(
+      /*Assert.assert(
         !violatedConstraint.IsUnsatisfiable,
         'An already-unsatisfiable constraint should not have been attempted',
-      )
+      )*/
       violatedConstraint.IsUnsatisfiable = true
       this.allConstraints.NumberOfUnsatisfiableConstraints++
       return
@@ -608,12 +608,12 @@ export class Block {
     //  Get all the vars at and to the right of 'var', including backtracking to get all
     //  variables that are connected from the left.  This is just like ComputeDfDv except
     //  that of this case we start with the variableDoneEval being the Left variable.
-    Assert.assert(
+    /*Assert.assert(
       0 == this.allConstraints.DfDvStack.length,
       'Leftovers of ComputeDfDvStack',
-    )
+    )*/
     this.allConstraints.DfDvStack = new Stack<DfDvNode>()
-    Assert.assert(0 == lstVars.length, 'Leftovers of lstVars')
+    /*Assert.assert(0 == lstVars.length, 'Leftovers of lstVars')*/
     //  Variables for initializing the first node.
     const dummyConstraint = new Constraint(initialVarToEval)
     this.dfDvDummyParentNode = new DfDvNode(dummyConstraint)
@@ -689,10 +689,10 @@ export class Block {
       }
 
       //  We are at a non-leaf node and have "recursed" through all its descendents, so we're done with it.
-      Assert.assert(
+      /*Assert.assert(
         this.allConstraints.DfDvStack.top == node,
         "DfDvStack.top should be 'node'",
-      )
+      )*/
       this.allConstraints.RecycleDfDvNode(this.allConstraints.DfDvStack.pop())
     }
 
@@ -736,10 +736,10 @@ export class Block {
 
     //  end for each var to keep
     //  Now remove the end slots we're not keeping.  lastKeepIndex is -1 if we are removing all variables.
-    Assert.assert(
+    /*Assert.assert(
       numVarsToMove == this.Variables.length - lastKeepIndex - 1,
       'variable should not be found twice (probable cycle-detection problem',
-    )
+    )*/
     this.Variables = this.Variables.slice(0, lastKeepIndex + 1)
 
     if (0 == this.Variables.length) {

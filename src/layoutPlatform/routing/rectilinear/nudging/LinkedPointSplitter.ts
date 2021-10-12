@@ -4,7 +4,7 @@ import {Point} from '../../../..'
 import {GeomConstants} from '../../../math/geometry/geomConstants'
 import {GenericBinaryHeapPriorityQueue} from '../../../structs/genericBinaryHeapPriorityQueue'
 import {RBTree} from '../../../structs/RBTree/rbTree'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {closeDistEps, compareNumbers} from '../../../utils/compare'
 import {LinkedPoint} from './LinkedPoint'
 
@@ -58,7 +58,7 @@ export class LinkedPointSplitter {
     let right: number
     let left: number
     let xAligned: boolean
-    Assert.assert(closeDistEps(horizontalPoint.Y, horizontalPoint.Next.Y))
+    /*Assert.assert(closeDistEps(horizontalPoint.Y, horizontalPoint.Next.Y))*/
     const y = horizontalPoint.Y
     if (horizontalPoint.Point.x < horizontalPoint.Next.Point.x) {
       left = horizontalPoint.Point.x
@@ -102,7 +102,7 @@ export class LinkedPointSplitter {
   }
 
   static TrySplitVerticalPoint(linkedPoint: LinkedPoint, point: Point) {
-    Assert.assert(closeDistEps(linkedPoint.X, linkedPoint.Next.X))
+    /*Assert.assert(closeDistEps(linkedPoint.X, linkedPoint.Next.X))*/
     if (
       LinkedPointSplitter.Low(linkedPoint) + GeomConstants.distanceEpsilon <
         point.y &&
@@ -118,7 +118,7 @@ export class LinkedPointSplitter {
     point: Point,
     xAligned: boolean,
   ): LinkedPoint {
-    Assert.assert(closeDistEps(horizontalPoint.Y, horizontalPoint.Next.Y))
+    /*Assert.assert(closeDistEps(horizontalPoint.Y, horizontalPoint.Next.Y))*/
     if (
       (xAligned &&
         horizontalPoint.X + GeomConstants.distanceEpsilon < point.x &&

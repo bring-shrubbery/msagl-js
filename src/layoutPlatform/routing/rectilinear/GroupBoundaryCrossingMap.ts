@@ -1,7 +1,7 @@
 import {String} from 'typescript-string-operations'
 import {Direction} from '../../math/geometry/direction'
 import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {PointMap} from '../../utils/PointMap'
 import {GroupBoundaryCrossing} from './GroupBoundaryCrossing'
 import {Obstacle} from './obstacle'
@@ -36,10 +36,10 @@ export class GroupBoundaryCrossingMap {
       const crossing = crossings[ii]
       if (crossing.Group == group) {
         //  At a given location for a given group, there is only one valid dirToInside.
-        Assert.assert(
+        /*Assert.assert(
           dirToInside == crossing.DirectionToInside,
           'Mismatched dirToInside',
-        )
+        )*/
         return crossing
       }
     }

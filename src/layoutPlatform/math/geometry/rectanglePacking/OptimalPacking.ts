@@ -1,7 +1,7 @@
 ﻿import {Rectangle} from '../rectangle'
 import {Packing} from './Packing'
 import {Algorithm} from '../../../utils/algorithm'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {PackingConstants} from './PackingConstants'
 
 //  Pack rectangles (without rotation) into a given aspect ratio
@@ -119,10 +119,10 @@ export abstract class OptimalPacking extends Algorithm {
     }
 
     //  x2 must be between x1 and x3
-    Assert.assert(
+    /*Assert.assert(
       (x1 < x2 && x2 < x3) || (x3 < x2 && x2 < x1),
       'x2 not bounded by x1 and x3',
-    )
+    )*/
     //  x4 will be our new midpoint candidate
     const x4: number = OptimalPacking.GetGoldenSectionStep(x2, x3)
     //  now we have two candidates (x2,x4) both between x1 and x3: choose the bracket that most reduces f
@@ -133,18 +133,18 @@ export abstract class OptimalPacking extends Algorithm {
     const rightSearch = () =>
       OptimalPacking.GoldenSectionSearch(f, x2, x4, x3, precision)
     if (fx4 < fx2) {
-      Assert.assert(
+      /*Assert.assert(
         Math.abs(x2 - x3) < Math.abs(x1 - x3),
         'Search region not narrowing!',
-      )
+      )*/
       return rightSearch()
     }
 
     if (fx4 > fx2) {
-      Assert.assert(
+      /*Assert.assert(
         Math.abs(x4 - x1) < Math.abs(x1 - x3),
         'Search region not narrowing!',
-      )
+      )*/
       return leftSearch()
     }
 

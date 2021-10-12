@@ -1,7 +1,7 @@
 import {Point} from '../../..'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {TriangleOrientation} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {LineSweeperBase} from './LineSweeperBase'
 import {SegmentBase} from './SegmentBase'
 
@@ -36,7 +36,7 @@ export class ObstacleSideComparer {
 
   IntersectionOfSideAndSweepLine(obstacleSide: SegmentBase): Point {
     const den = obstacleSide.Direction.dot(this.lineSweeper.SweepDirection)
-    Assert.assert(Math.abs(den) > GeomConstants.distanceEpsilon)
+    /*Assert.assert(Math.abs(den) > GeomConstants.distanceEpsilon)*/
     const t =
       this.lineSweeper.Z -
       obstacleSide.Start.dot(this.lineSweeper.SweepDirection) / den

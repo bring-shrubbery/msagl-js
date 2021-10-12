@@ -1,5 +1,5 @@
 import {Stack} from 'stack-typescript'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {Constraint} from './Constraint'
 import {DfDvNode} from './DfDvNode'
 import {Parameters} from './Parameters'
@@ -19,7 +19,7 @@ export class ConstraintVector {
   private nextConstraintIndex = 0
 
   Add(constraint: Constraint) {
-    Assert.assert(!constraint.IsActive, 'Constraint should not be active')
+    /*Assert.assert(!constraint.IsActive, 'Constraint should not be active')*/
     constraint.SetVectorIndex(this.nextConstraintIndex)
     this.Vector[this.nextConstraintIndex++] = constraint
   }
@@ -27,32 +27,32 @@ export class ConstraintVector {
   private firstActiveConstraintIndex: number
 
   ActivateConstraint(constraint: Constraint) {
-    Assert.assert(!constraint.IsActive, 'Constraint is already active')
+    /*Assert.assert(!constraint.IsActive, 'Constraint is already active')*/
     //  Swap it from the inactive region to the start of the active region of the Vector.
-    Assert.assert(
+    /*Assert.assert(
       this.firstActiveConstraintIndex > 0,
       'All constraints are already active',
-    )
+    )*/
     this.firstActiveConstraintIndex--
-    Assert.assert(
+    /*Assert.assert(
       !this.Vector[this.firstActiveConstraintIndex].IsActive,
       'Constraint in inactive region is active',
-    )
+    )*/
     this.SwapConstraint(constraint)
     // Debug_AssertConsistency();
   }
 
   DeactivateConstraint(constraint: Constraint) {
-    Assert.assert(constraint.IsActive, 'Constraint is not active')
+    /*Assert.assert(constraint.IsActive, 'Constraint is not active')*/
     //  Swap it from the active region to the end of the inactive region of the Vector.
-    Assert.assert(
+    /*Assert.assert(
       this.firstActiveConstraintIndex < this.Vector.length,
       'All constraints are already inactive',
-    )
-    Assert.assert(
+    )*/
+    /*Assert.assert(
       this.Vector[this.firstActiveConstraintIndex].IsActive,
       'Constraint in active region is not active',
-    )
+    )*/
     this.SwapConstraint(constraint)
     this.firstActiveConstraintIndex++
     // Debug_AssertConsistency();

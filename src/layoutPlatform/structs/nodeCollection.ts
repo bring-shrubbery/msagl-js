@@ -1,7 +1,7 @@
 import {Node} from './node'
 import {Edge} from './edge'
 import {Graph} from './graph'
-import {Assert} from '../utils/assert'
+// import {Assert} from '../utils/assert'
 export class NodeCollection {
   private *nodes_(): IterableIterator<Node> {
     for (const p of this.nodeMap.values()) yield p
@@ -107,7 +107,7 @@ export class NodeCollection {
   }
 
   addNode(node: Node) {
-    Assert.assert(node.id != null)
+    /*Assert.assert(node.id != null)*/
     if (this.getNode(node.id) == null) {
       this.nodeMap.set(node.id, node)
     }

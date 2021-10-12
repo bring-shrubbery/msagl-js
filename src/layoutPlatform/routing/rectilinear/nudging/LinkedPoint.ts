@@ -1,6 +1,6 @@
 import {Point} from '../../../..'
 import {CompassVector} from '../../../math/geometry/compassVector'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 
 ///  represents a segment of a path
 export class LinkedPoint {
@@ -43,6 +43,6 @@ export class LinkedPoint {
     const tmp = this.Next
     this.Next = nv
     nv.Next = tmp
-    Assert.assert(CompassVector.IsPureDirectionPP(this.Point, this.Next.Point))
+    /*Assert.assert(CompassVector.IsPureDirectionPP(this.Point, this.Next.Point))*/
   }
 }

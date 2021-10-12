@@ -2,7 +2,7 @@
 
 import {CompassVector} from '../../../math/geometry/compassVector'
 import {Direction} from '../../../math/geometry/direction'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {VisibilityEdge} from '../../visibility/VisibilityEdge'
 import {VisibilityVertex} from '../../visibility/VisibilityVertex'
 import {LongestNudgedSegment} from './LongestNudgedSegment'
@@ -19,9 +19,9 @@ export class AxisEdge extends VisibilityEdge {
       source.point,
       target.point,
     )
-    Assert.assert(
+    /*Assert.assert(
       this.Direction == Direction.East || this.Direction == Direction.North,
-    )
+    )*/
   }
 
   RightNeighbors = new Set<AxisEdge>()

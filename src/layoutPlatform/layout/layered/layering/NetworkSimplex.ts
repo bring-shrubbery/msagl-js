@@ -7,7 +7,7 @@ import {
 } from '../../../structs/basicGraphOnEdges'
 import {CancelToken} from '../../../utils/cancelToken'
 import {from} from 'linq-to-typescript'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {NetworkEdge} from './networkEdge'
 import {Stack} from 'stack-typescript'
 import {randomInt} from '../../../utils/random'
@@ -136,7 +136,7 @@ export class NetworkSimplex implements LayerCalculator {
       const e: NetworkEdge = this.getNonTreeEdgeIncidentToTheTreeWithMinimalAmountOfSlack()
       if (e == null) break //all edges are tree edges
       let slack = this.slack(e)
-      Assert.assert(slack != 0, 'the tree should be tight')
+      /*Assert.assert(slack != 0, 'the tree should be tight')*/
 
       if (this.vertexInTree(e.source)) slack = -slack
 
@@ -152,7 +152,7 @@ export class NetworkSimplex implements LayerCalculator {
   // If v belongs to the source component we return 1
   // otherwise we return 0
   vertexSourceTargetVal(v: number, treeEdge: NetworkEdge) {
-    Assert.assert(treeEdge.inTree)
+    /*Assert.assert(treeEdge.inTree)*/
     const s = treeEdge.source
     const t = treeEdge.target
     if (this.lim(s) > this.lim(t))
@@ -370,10 +370,10 @@ export class NetworkSimplex implements LayerCalculator {
 
   slack(e: NetworkEdge): number {
     const ret = this.layers[e.source] - this.layers[e.target] - e.separation
-    Assert.assert(
+    /*Assert.assert(
       ret >= -GeomConstants.tolerance,
       'separation is not satisfied',
-    )
+    )*/
     return ret
   }
 

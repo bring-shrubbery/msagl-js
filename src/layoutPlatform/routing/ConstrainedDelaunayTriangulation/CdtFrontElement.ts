@@ -1,4 +1,4 @@
-﻿import {Assert} from '../../utils/assert'
+﻿// import {Assert} from '../../utils/assert'
 import {CdtEdge} from './CdtEdge'
 import {CdtSite} from './CdtSite'
 
@@ -15,13 +15,13 @@ export class CdtFrontElement {
   }
 
   constructor(leftSite: CdtSite, edge: CdtEdge) {
-    Assert.assert(
+    /*Assert.assert(
       (edge.upperSite.point.x != edge.lowerSite.point.x &&
         edge.upperSite.point.x < edge.lowerSite.point.x &&
         leftSite == edge.upperSite) ||
         (edge.upperSite.point.x > edge.lowerSite.point.x &&
           leftSite == edge.lowerSite),
-    )
+    )*/
 
     this.RightSite =
       edge.upperSite == leftSite ? edge.lowerSite : edge.upperSite

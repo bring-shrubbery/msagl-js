@@ -4,7 +4,7 @@ import {PN, PNInternal, PNLeaf, ParallelogramNode} from './parallelogramNode'
 import {Point} from './point'
 import {LineSegment} from './lineSegment'
 import {IntersectionInfo} from './intersectionInfo'
-import {Assert} from './../../utils/assert'
+// import {Assert} from './../../utils/assert'
 import {Parallelogram} from './parallelogram'
 import {Ellipse} from './ellipse'
 import {Polyline} from './polyline'
@@ -207,12 +207,11 @@ export class Curve implements ICurve {
 
   // Returns the trimmed curve, wrapping around the end if start is greater than end.
   trimWithWrap(start: number, end: number): ICurve {
-    Assert.assert(start >= this.parStart && start <= this.parEnd)
-    Assert.assert(end >= this.parStart && end <= this.parEnd)
-    if (start < end) return this.trim(start, end) as Curve
+    /*Assert.assert(start >= this.parStart && start <= this.parEnd)*/
+    /*Assert.assert(end >= this.parStart && end <= this.parEnd)*/
+    if (start < end) return this.trim(start, end) as Curve // Curve must be closed to wrap
 
-    Assert.assert(Point.closeDistEps(this.start, this.end)) // Curve must be closed to wrap
-    const c = new Curve()
+    /*Assert.assert(Point.closeDistEps(this.start, this.end))*/ const c = new Curve()
     c.addSegment(this.trim(start, this.parEnd) as Curve)
     c.addSegment(this.trim(this.parStart, end) as Curve)
     return c
@@ -225,9 +224,9 @@ export class Curve implements ICurve {
   // Adds a segment to the curve
   addSegment(curve: ICurve) {
     if (curve == null) return this //nothing happens
-    Assert.assert(
+    /*Assert.assert(
       this.segs.length == 0 || Point.close(this.end, curve.start, 0.001),
-    )
+    )*/
     if (!(curve instanceof Curve)) {
       this.segs.push(curve)
       this.parEnd_ += Curve.paramSpan(curve)
@@ -269,7 +268,7 @@ export class Curve implements ICurve {
     curve1: ICurve,
     liftIntersection: boolean,
   ) {
-    Assert.assert(curve0 != curve1)
+    /*Assert.assert(curve0 != curve1)*/
     //            number c0S = curve0.parStart, c1S = curve1.parStart;
     //            if (CurvesAreCloseAtParams(curve0, curve1, c0S, c1S)) {
     //                number mc0 = 0.5 * (curve0.parStart + curve0.parEnd);
@@ -426,7 +425,7 @@ export class Curve implements ICurve {
     lineSeg: LineSegment,
     ellipse: Ellipse,
   ): IntersectionInfo[] {
-    Assert.assert(ellipse.isArc())
+    /*Assert.assert(ellipse.isArc())*/
     let lineDir = lineSeg.end.sub(lineSeg.start)
     const ret: IntersectionInfo[] = []
     const segLength = lineDir.length
@@ -466,7 +465,7 @@ export class Curve implements ICurve {
         lineDir,
       )
     } else {
-      Assert.assert(rad > absSegProj)
+      /*Assert.assert(rad > absSegProj)*/
       const otherLeg = Math.sqrt(rad * rad - segProjection * segProjection)
       const d = lineDir.mul(otherLeg)
       Curve.tryToAddPointToLineCircleCrossing(
@@ -1306,7 +1305,7 @@ export class Curve implements ICurve {
 
     bSol = Math.min(bSol, bmax)
 
-    Assert.assert(Point.closeDistEps(x, Point.convSum(bSol, bStart, bEnd)))
+    /*Assert.assert(Point.closeDistEps(x, Point.convSum(bSol, bStart, bEnd)))*/
     return {
       aSol: aSol,
       bSol: bSol,
@@ -1677,7 +1676,7 @@ export class Curve implements ICurve {
         //we are in business
         const segLow = Math.max(seg.parStart, seg.parStart + (low - offset))
         const segHigh = Math.min(seg.parEnd, seg.parStart + (high - offset))
-        Assert.assert(segHigh >= segLow)
+        /*Assert.assert(segHigh >= segLow)*/
         const t = seg.closestParameterWithinBounds(targetPoint, segLow, segHigh)
         const d = targetPoint.sub(seg.value(t))
         const dd = d.dot(d)
@@ -2047,7 +2046,7 @@ export class Curve implements ICurve {
       for (const x of Curve.getAllIntersections(rect, ls, true)) xs.push(x)
     }
 
-    Assert.assert(xs.length > 0)
+    /*Assert.assert(xs.length > 0)*/
     xs.sort((a, b) => (a.par0 < b.par0 ? -1 : a.par0 > b.par0 ? 1 : 0))
     const ret = new Polyline()
     xs.forEach((x) => ret.addPoint(x.x))
@@ -2075,8 +2074,8 @@ function isCloseToLineSeg(
   s: ICurve,
   e: number,
 ): boolean {
-  Assert.assert(Point.closeDistEps(s.value(a), ap))
-  Assert.assert(Point.closeDistEps(s.value(b), bp))
+  /*Assert.assert(Point.closeDistEps(s.value(a), ap))*/
+  /*Assert.assert(Point.closeDistEps(s.value(b), bp))*/
 
   for (const x of [1 / 3, 0.5, 2 / 3]) {
     const p = a * x + b * (1 - x) // the parameter on the curve s
@@ -2096,8 +2095,8 @@ function interpolate(
   s: ICurve,
   eps: number,
 ): Point[] {
-  Assert.assert(Point.closeDistEps(s.value(a), ap))
-  Assert.assert(Point.closeDistEps(s.value(b), bp))
+  /*Assert.assert(Point.closeDistEps(s.value(a), ap))*/
+  /*Assert.assert(Point.closeDistEps(s.value(b), bp))*/
   let r = []
   if (isCloseToLineSeg(a, ap, b, bp, s, eps)) {
     r.push(ap)

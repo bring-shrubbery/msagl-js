@@ -5,7 +5,7 @@ import {Queue} from 'queue-typescript'
 import {Point} from '../../../..'
 import {CompassVector} from '../../../math/geometry/compassVector'
 import {Direction} from '../../../math/geometry/direction'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {compareNumbers} from '../../../utils/compare'
 import {VisibilityEdge} from '../../visibility/VisibilityEdge'
 import {VisibilityGraph} from '../../visibility/VisibilityGraph'
@@ -145,7 +145,7 @@ export class CombinatorialNudger {
       return 0
     }
 
-    Assert.assert(x.AxisEdge == y.AxisEdge)
+    /*Assert.assert(x.AxisEdge == y.AxisEdge)*/
     // Nudger.ShowOrderedPaths(null, new[] { x.Path, y.Path }, x.AxisEdge.SourcePoint, x.AxisEdge.TargetPoint);
     const r: number = CombinatorialNudger.CompareInDirectionStartingFromAxisEdge(
       x,
@@ -255,7 +255,7 @@ export class CombinatorialNudger {
     axisEdge: AxisEdge,
     direction: Direction,
   ): PathEdge {
-    Assert.assert(e.AxisEdge == axisEdge)
+    /*Assert.assert(e.AxisEdge == axisEdge)*/
     return axisEdge.Direction == direction
       ? e.Reversed
         ? e.Prev
@@ -272,7 +272,7 @@ export class CombinatorialNudger {
     }
 
     const yi: number = y.Index
-    Assert.assert(yi != -1)
+    /*Assert.assert(yi != -1)*/
     return compareNumbers(xi, yi)
   }
 
@@ -293,7 +293,7 @@ export class CombinatorialNudger {
       }
     }
 
-    Assert.assert(queue.length > 0)
+    /*Assert.assert(queue.length > 0)*/
   }
 
   static *WalkGraphEdgesInTopologicalOrderIfPossible(

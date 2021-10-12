@@ -20,7 +20,7 @@ import {Polyline} from '../../math/geometry/polyline'
 import {Rectangle} from '../../math/geometry/rectangle'
 import {GetConnectedComponents} from '../../math/graphAlgorithms/ConnectedComponentCalculator'
 import {mkGraphOnEdges} from '../../structs/basicGraphOnEdges'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {closeDistEps} from '../../utils/compare'
 import {IntPair} from '../../utils/IntPair'
 import {IntPairSet} from '../../utils/IntPairSet'
@@ -102,11 +102,11 @@ export class ObstacleTree {
   }
 
   private OrdinalToObstacle(index: number): Obstacle {
-    Assert.assert(index >= Obstacle.FirstNonSentinelOrdinal, 'index too small')
-    Assert.assert(
+    /*Assert.assert(index >= Obstacle.FirstNonSentinelOrdinal, 'index too small')*/
+    /*Assert.assert(
       index < this.allObstacles.length + Obstacle.FirstNonSentinelOrdinal,
       'index too large',
-    )
+    )*/
     return this.allObstacles[index - Obstacle.FirstNonSentinelOrdinal]
   }
 
@@ -215,11 +215,11 @@ export class ObstacleTree {
   }
 
   private EvaluateOverlappedPairForClump(a: Obstacle, b: Obstacle) {
-    Assert.assert(!a.IsGroup && !b.IsGroup, 'Groups should not come here')
-    Assert.assert(
+    /*Assert.assert(!a.IsGroup && !b.IsGroup, 'Groups should not come here')*/
+    /*Assert.assert(
       a.IsRectangle && b.IsRectangle,
       'Only rectangles should come here',
-    )
+    )*/
     if (a == b || this.OverlapPairAlreadyFound(a, b)) {
       return
     }
@@ -256,7 +256,7 @@ export class ObstacleTree {
   }
 
   private EvaluateOverlappedPairForConvexHull(a: Obstacle, b: Obstacle) {
-    Assert.assert(!a.IsGroup && !b.IsGroup, 'Groups should not come here')
+    /*Assert.assert(!a.IsGroup && !b.IsGroup, 'Groups should not come here')*/
     if (a == b || this.OverlapPairAlreadyFound(a, b)) {
       return
     }
@@ -312,7 +312,7 @@ export class ObstacleTree {
   }
 
   private EvaluateOverlappedPairForGroup(a: Obstacle, b: Obstacle) {
-    Assert.assert(a.IsGroup, 'Inconsistency in overlapping group enumeration')
+    /*Assert.assert(a.IsGroup, 'Inconsistency in overlapping group enumeration')*/
     if (a == b || this.OverlapPairAlreadyFound(a, b)) {
       return
     }
@@ -619,10 +619,10 @@ export class ObstacleTree {
           )
         ) {
           if (obstacle.IsInConvexHull) {
-            Assert.assert(
+            /*Assert.assert(
               obstacle.IsPrimaryObstacle,
               'Only primary obstacles should be in the hierarchy',
-            )
+            )*/
             for (const sibling of obstacle.ConvexHull.Obstacles) {
               this.AncestorSets.get(sibling.InputShape).add(group.InputShape)
             }
@@ -823,10 +823,10 @@ export class ObstacleTree {
         //  a point somewhere on the interior of that side.  Therefore if both intersections
         //  are on the same side (integral portion of the parameter), we consider location
         //  to be on the border.  testSeg is always xxs[*].Segment0.
-        Assert.assert(
+        /*Assert.assert(
           testSeg == xxs[0].seg0,
           'incorrect parameter ordering to GetAllIntersections',
-        )
+        )*/
         if (!closeDistEps(Math.floor(xxs[0].par1), Math.floor(xxs[1].par1))) {
           return HitTestBehavior.Stop
         }
@@ -955,7 +955,7 @@ export class ObstacleTree {
         this.AddGroupIntersectionsToRestrictedRay(obstacle, intersections)
       }
 
-      Assert.assert(rectNode.IsLeaf, 'RectNode with UserData is not a Leaf')
+      /*Assert.assert(rectNode.IsLeaf, 'RectNode with UserData is not a Leaf')*/
       return
     }
 

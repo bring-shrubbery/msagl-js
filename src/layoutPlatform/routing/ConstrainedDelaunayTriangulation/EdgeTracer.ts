@@ -1,7 +1,7 @@
 ﻿import {Point} from '../../math/geometry/point'
 import {RBNode} from '../../structs/RBTree/rbNode'
 import {RBTree} from '../../structs/RBTree/rbTree'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {RealNumberSpan} from '../../utils/RealNumberSpan'
 import {CdtEdge} from './CdtEdge'
 import {CdtFrontElement} from './CdtFrontElement'
@@ -188,7 +188,7 @@ export class EdgeTracer {
         const leftSite =
           e.upperSite.point.x < e.lowerSite.point.x ? e.upperSite : e.lowerSite
         const frontElem = CdtSweeper.FindNodeInFrontBySite(this.front, leftSite)
-        Assert.assert(frontElem != null)
+        /*Assert.assert(frontElem != null)*/
         if (leftSite.point.x < this.a.point.x) {
           this.piercedToTheLeftFrontElemNode = frontElem
         } else {

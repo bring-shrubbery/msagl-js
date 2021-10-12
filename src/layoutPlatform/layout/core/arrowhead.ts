@@ -6,7 +6,7 @@ import {ICurve} from './../../math/geometry/icurve'
 import {Ellipse} from './../../math/geometry/ellipse'
 import {LineSegment} from './../../math/geometry/lineSegment'
 import {EdgeGeometry} from './edgeGeometry'
-import {Assert} from './../../utils/assert'
+// import {Assert} from './../../utils/assert'
 import {GeomEdge} from './geomEdge'
 import {from} from 'linq-to-typescript'
 export class Arrowhead {
@@ -112,9 +112,9 @@ export class Arrowhead {
     )
       return edgeGeometry.curve.parStart
     const eps = GeomConstants.distanceEpsilon * GeomConstants.distanceEpsilon
-    Assert.assert(
+    /*Assert.assert(
       edgeGeometry.curve.end.sub(edgeGeometry.curve.start).lengthSquared > eps,
-    )
+    )*/
     let arrowheadLength = edgeGeometry.sourceArrowhead.length
     let newStart: Point
     const curve = edgeGeometry.curve

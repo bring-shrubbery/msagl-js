@@ -3,7 +3,7 @@
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {Polygon} from './Polygon'
 
 // we suppose that polygons are clockwise oriented
@@ -304,7 +304,7 @@ export class TangentPair {
         else if (Point.closeDistEps(t.qClosest, this.Q.pnt(t.q2))) t.q1 = t.q2
       }
     } else {
-      Assert.assert(t.q1 == t.q2)
+      /*Assert.assert(t.q1 == t.q2)*/
       t.qClosest = this.Q.pp(t.q1).point
       t.pClosest = Point.ClosestPointAtLineSegment(
         t.qClosest,
@@ -396,7 +396,7 @@ export class TangentPair {
       else if (md.parcd == 0) t.q2 = t.q1
       else if (md.parcd == 1) t.q1 = t.q2
 
-      Assert.assert(t.p1 == t.p2 || t.q1 == t.q2)
+      /*Assert.assert(t.p1 == t.p2 || t.q1 == t.q2)*/
       return
       //we have trapeze {t.p1,t.p2,q2,q1} here
       //let t.p1,t.p2 be the low base of the trapes
@@ -422,9 +422,9 @@ export class TangentPair {
         if (angles.a1 >= Math.PI / 2) t.p1 = mp
         else t.q1 = mq
       } else {
-        Assert.assert(
+        /*Assert.assert(
           angles.a2 + angles.b2 >= Math.PI - GeomConstants.tolerance,
-        )
+        )*/
         if (angles.a2 >= Math.PI / 2) t.p2 = mp
         else t.q2 = mq
       }
@@ -433,7 +433,7 @@ export class TangentPair {
       else if (angles.a2 > Math.PI) t.p2 = mp
       else if (angles.b1 > Math.PI) t.q1 = mq
       else {
-        Assert.assert(angles.b2 > Math.PI)
+        /*Assert.assert(angles.b2 > Math.PI)*/
         t.q2 = mq
       }
     }

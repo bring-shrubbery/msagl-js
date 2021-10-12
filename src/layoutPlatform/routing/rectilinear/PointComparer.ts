@@ -2,7 +2,7 @@ import {CompassVector} from '../../math/geometry/compassVector'
 import {Direction} from '../../math/geometry/direction'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
 
 export class PointComparer {
@@ -52,22 +52,22 @@ export class PointComparer {
     }
 
     //  Just to be sure we're in sync with CompassVector
-    Assert.assert(
+    /*Assert.assert(
       cmp < 0 ==
         (Direction.East ==
           CompassVector.VectorDirectionPP(
             new Point(lhs, 0),
             new Point(rhs, 0),
           )),
-    )
-    Assert.assert(
+    )*/
+    /*Assert.assert(
       (0 == cmp) ==
         (Direction.None ==
           CompassVector.VectorDirectionPP(
             new Point(lhs, 0),
             new Point(rhs, 0),
           )),
-    )
+    )*/
     return cmp
   }
 
@@ -98,11 +98,11 @@ export class PointComparer {
     //  Be sure there is enough precision to round that far; anything larger than this is
     //  unlikely to be a graph coordinate (it's probably a line intersection way out of range).
     if (Math.log10(Math.abs(d)) < 14 - GeomConstants.distanceEpsilonPrecision) {
-      Assert.assert(
+      /*Assert.assert(
         Math.abs(GeomConstants.RoundDouble(d) - d) <
           PointComparer.DifferenceEpsilon,
         'unRounded value passed',
-      )
+      )*/
     }
   }
 

@@ -30,7 +30,7 @@ import {StaticGraphUtility} from './StaticGraphUtility'
 import {VisibilityGraphGenerator} from './VisibilityGraphGenerator'
 import {FreePoint} from './FreePoint'
 import {GeomConstants} from '../../math/geometry/geomConstants'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {TransientGraphUtility} from './TransientGraphUtility'
 import {ObstaclePortEntrance} from './ObstaclePortEntrance'
 import {PointMap} from '../../utils/PointMap'
@@ -120,10 +120,10 @@ export class PortManager {
 
   private CreateObstaclePort(obstacle: Obstacle, port: Port): ObstaclePort {
     //  This will replace any previous specification for the port (last one wins).
-    Assert.assert(
+    /*Assert.assert(
       !this.obstaclePortMap.has(port),
       'Port is used by more than one obstacle',
-    )
+    )*/
     if (port.Curve == null) {
       return null
     }
@@ -336,7 +336,7 @@ export class PortManager {
   ) {
     for (const shape of addSets(ssAncsToUse, ttAncsToUse)) {
       const group = shapeToObstacleMap.get(shape)
-      Assert.assert(group.IsGroup, 'Ancestor shape is not a group')
+      /*Assert.assert(group.IsGroup, 'Ancestor shape is not a group')*/
       group.IsTransparentAncestor = true
       this.activeAncestors.push(group)
     }
@@ -694,7 +694,7 @@ export class PortManager {
   ) {
     //  Important:  the LineSegment must be the first arg to GetAllIntersections so RawIntersection works.
     const xxs = Curve.getAllIntersections(lineSeg, curve, true)
-    Assert.assert(2 == xxs.length, 'Expected two intersections')
+    /*Assert.assert(2 == xxs.length, 'Expected two intersections')*/
     t.xx0 = GeomConstants.RoundPoint(xxs[0].x)
     t.xx1 = GeomConstants.RoundPoint(xxs[1].x)
   }
@@ -798,7 +798,7 @@ export class PortManager {
     } else if (PointComparer.EqualPP(location, curveBox.rightBottom)) {
       outDir = Direction.East
     } else {
-      Assert.assert(false, 'Expected Port to be on corner of curveBox')
+      /*Assert.assert(false, 'Expected Port to be on corner of curveBox')*/
     }
 
     oport.CreatePortEntrance(location, outDir, this.ObstacleTree)

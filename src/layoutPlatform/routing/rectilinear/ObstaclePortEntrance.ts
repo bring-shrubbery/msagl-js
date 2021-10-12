@@ -7,7 +7,7 @@ import {Direction} from '../../math/geometry/direction'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Polyline} from '../../math/geometry/polyline'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
 import {Obstacle} from './obstacle'
 import {ObstaclePort} from './ObstaclePort'
@@ -99,7 +99,7 @@ export class ObstaclePortEntrance {
       oport.Obstacle.VisibilityPolyline,
       true,
     )
-    Assert.assert(1 == xxs.length, 'Expected one intersection')
+    /*Assert.assert(1 == xxs.length, 'Expected one intersection')*/
     this.VisibilityBorderIntersect = GeomConstants.RoundPoint(xxs[0].x)
     const t = {pacList: <PointAndCrossingsList>null}
     this.MaxVisibilitySegment = obstacleTree.CreateMaxVisibilitySegment(
@@ -296,10 +296,10 @@ export class ObstaclePortEntrance {
         this.VisibilityBorderIntersect,
       )
     ) {
-      Assert.assert(
+      /*Assert.assert(
         false,
         'Unexpected reversed direction between VisibilityBorderIntersect and targetVertex',
-      )
+      )*/
       //  ReSharper disable HeuristicUnreachableCode
       this.VisibilityBorderIntersect = targetVertex.point
       borderVertex = targetVertex

@@ -1,6 +1,6 @@
 import {RBNode} from './rbNode'
 import {RBColor} from './rbColor'
-import {Assert} from './../../utils/assert'
+// import {Assert} from './../../utils/assert'
 
 export class RBTree<T> {
   readonly comparer: (a: T, b: T) => number
@@ -175,7 +175,7 @@ export class RBTree<T> {
 
   deleteSubTree(z: RBNode<T>): RBNode<T> {
     //Assert.assert(z != nil);
-    Assert.assert(z != this.nil, 'root of subtree to delete must not be null.')
+    /*Assert.assert(z != this.nil, 'root of subtree to delete must not be null.')*/
     let y: RBNode<T>
     if (z.left == this.nil || z.right == this.nil) {
       /* y has a nil node as a child */

@@ -6,7 +6,7 @@ import {Point, Rectangle} from '../../..'
 import {CompassVector} from '../../math/geometry/compassVector'
 import {Direction} from '../../math/geometry/direction'
 import {LineSegment} from '../../math/geometry/lineSegment'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {VisibilityEdge} from '../visibility/VisibilityEdge'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
 import {PointAndCrossingsList} from './PointAndCrossingsList'
@@ -167,10 +167,10 @@ export class FreePoint {
     dirToExtend: Direction,
     transUtil: TransientGraphUtility,
   ): Point {
-    Assert.assert(
+    /*Assert.assert(
       !this.IsOverlapped,
       'Do not precalculate overlapped obstacle visibility as we should extend from the outer target vertex instead',
-    )
+    )*/
     const segmentAndCrossings: SegmentAndCrossings = this.GetSegmentAndCrossings(
       this.Vertex,
       dirToExtend,

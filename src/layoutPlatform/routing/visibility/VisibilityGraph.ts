@@ -1,6 +1,6 @@
 import {Point} from '../../math/geometry/point'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {PointMap} from '../../utils/PointMap'
 import {VisibilityEdge} from './VisibilityEdge'
 import {VisibilityVertex} from './VisibilityVertex'
@@ -47,7 +47,7 @@ export class VisibilityGraph {
   }
 
   SetPreviousEdge(v: VisibilityVertex, e: VisibilityEdge) {
-    Assert.assert(v == e.Source || v == e.Target)
+    /*Assert.assert(v == e.Source || v == e.Target)*/
     this._prevEdgesMap.set(v, e)
   }
 
@@ -191,10 +191,10 @@ export class VisibilityGraph {
   }
 
   AddVertexV(vertex: VisibilityVertex) {
-    Assert.assert(
+    /*Assert.assert(
       !this.pointToVertexMap.hasP(vertex.point),
       'A vertex already exists at this location',
-    )
+    )*/
     this.pointToVertexMap.set(vertex.point, vertex)
   }
 
@@ -224,7 +224,7 @@ export class VisibilityGraph {
   }
 
   static AddEdge(edge: VisibilityEdge) {
-    Assert.assert(edge.Source != edge.Target)
+    /*Assert.assert(edge.Source != edge.Target)*/
     edge.Source.OutEdges.insert(edge)
     edge.Target.addInEdge(edge)
   }

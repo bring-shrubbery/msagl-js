@@ -17,7 +17,7 @@ import {GeomConstants} from '../../../math/geometry/geomConstants'
 import {LineSegment} from '../../../math/geometry/lineSegment'
 import {Polyline} from '../../../math/geometry/polyline'
 import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {closeDistEps} from '../../../utils/compare'
 import {Shape} from '../../shape'
 import {SegmentBase} from '../../visibility/SegmentBase'
@@ -1015,9 +1015,9 @@ export class Nudger {
     const t = {points: (path.PathPoints as Array<Point>).map((p) => p.clone())}
     Nudger.ExtendPolylineToPorts(t, path)
     for (let i = 0; i < t.points.length - 1; i++) {
-      Assert.assert(
+      /*Assert.assert(
         CompassVector.IsPureDirectionPP(t.points[i], t.points[i + 1]),
-      )
+      )*/
     }
 
     return from(t.points)

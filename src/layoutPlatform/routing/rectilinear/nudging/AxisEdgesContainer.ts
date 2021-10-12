@@ -1,5 +1,5 @@
 import {Point} from '../../../..'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {AxisEdge} from './AxisEdge'
 
 export class AxisEdgesContainer {
@@ -15,7 +15,7 @@ export class AxisEdgesContainer {
 
   AddEdge(edge: AxisEdge) {
     this.UpPoint = edge.TargetPoint
-    Assert.assert(!this.edges.has(edge))
+    /*Assert.assert(!this.edges.has(edge))*/
     this.edges.add(edge)
   }
 
@@ -25,7 +25,7 @@ export class AxisEdgesContainer {
 
   Source: Point
   RemoveAxis(edge: AxisEdge) {
-    Assert.assert(this.edges.has(edge))
+    /*Assert.assert(this.edges.has(edge))*/
     this.edges.delete(edge)
   }
 

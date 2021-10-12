@@ -1,7 +1,7 @@
 import {Point} from '../../math/geometry/point'
 import {RBNode} from '../../structs/RBTree/rbNode'
 import {RBTree} from '../../structs/RBTree/rbTree'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {PointComparer} from './PointComparer'
 import {ScanDirection} from './ScanDirection'
 import {ScanSegment} from './ScanSegment'
@@ -34,40 +34,40 @@ export class ScanSegmentTree {
     this.AssertValidSegmentForInsertion(seg)
     const node = this.segmentTree.find(seg)
     if (node != null) {
-      Assert.assert(
+      /*Assert.assert(
         seg.IsOverlapped == node.item.IsOverlapped,
         'Existing node found with different isOverlapped',
-      )
+      )*/
       return node
     }
 
     return this.segmentTree.insert(seg)
   }
   AssertValidSegmentForInsertion(seg: ScanSegment) {
-    Assert.assert(
+    /*Assert.assert(
       seg.End.x >= seg.Start.x && seg.End.y >= seg.Start.y,
       'Reversed direction in ScanSegment',
-    )
-    Assert.assert(
+    )*/
+    /*Assert.assert(
       this.ScanDirection.IsFlatPP(seg.Start, seg.End),
       'non-flat segment cannot be inserted',
-    )
+    )*/
   }
 
   Remove(seg: ScanSegment) {
-    Assert.assert(
+    /*Assert.assert(
       seg.IsVertical == this.ScanDirection.IsVertical,
       'seg.IsVertical != this.ScanDirection.IsVertical',
-    )
+    )*/
     this.segmentTree.remove(seg)
   }
 
   Find(start: Point, end: Point): ScanSegment {
-    Assert.assert(
+    /*Assert.assert(
       PointComparer.EqualPP(start, end) ||
         !this.ScanDirection.IsPerpendicularPP(start, end),
       'perpendicular segment passed',
-    )
+    )*/
     this.lookupSegment.Update(start, end)
     const node: RBNode<ScanSegment> = this.segmentTree.find(this.lookupSegment)
     if (null != node && PointComparer.EqualPP(node.item.End, end)) {
@@ -83,10 +83,10 @@ export class ScanSegmentTree {
   }
 
   FindLowestIntersectorNode(start: Point, end: Point): RBNode<ScanSegment> {
-    Assert.assert(
+    /*Assert.assert(
       this.ScanDirection.IsPerpendicularPP(start, end),
       'non-perpendicular segment passed',
-    )
+    )*/
     //  Find the last segment that starts at or before 'start'.
     this.lookupSegment.Update(start, start)
     let node: RBNode<ScanSegment> = this.segmentTree.findLast(
@@ -119,10 +119,10 @@ export class ScanSegmentTree {
 
   //  Find the highest perpendicular scanseg that intersects the segment endpoints.
   FindHighestIntersector(start: Point, end: Point): ScanSegment {
-    Assert.assert(
+    /*Assert.assert(
       this.ScanDirection.IsPerpendicularPP(start, end),
       'non-perpendicular segment passed',
-    )
+    )*/
     //  Find the last segment that starts at or before 'end'.
     this.lookupSegment.Update(end, end)
     let node: RBNode<ScanSegment> = this.segmentTree.findLast(
@@ -184,7 +184,7 @@ export class ScanSegmentTree {
 
     //  Not found.
     if (!allowUnfound) {
-      Assert.assert(false, 'Could not find expected segment')
+      /*Assert.assert(false, 'Could not find expected segment')*/
     }
 
     return null
@@ -258,11 +258,11 @@ export class ScanSegmentTree {
 
           break
         default:
-          Assert.assert(
+          /*Assert.assert(
             nextSegNode.item.Start != currentSegNode.item.Start ||
               nextSegNode.item.End < currentSegNode.item.End,
             'Identical segments are not allowed, and longer ones must come first',
-          )
+          )*/
           //  Because longer segments are ordered before shorter ones at the same start position,
           //  nextSegNode.Item must be a duplicate segment or is partially or totally overlapped.
           //  In the case of reflection lookahead segments, the side-intersection calculated from
@@ -271,13 +271,13 @@ export class ScanSegmentTree {
           if (
             currentSegNode.item.IsOverlapped != nextSegNode.item.IsOverlapped
           ) {
-            Assert.assert(
+            /*Assert.assert(
               Point.closeIntersections(
                 currentSegNode.item.End,
                 nextSegNode.item.Start,
               ),
               'Segments share a span with different IsOverlapped',
-            )
+            )*/
             if (currentSegNode.item.IsOverlapped) {
               //  If the Starts are different, then currentSegNode is the only item at its
               //  start, so we don't need to re-insert.  Otherwise, we need to remove it and

@@ -3,7 +3,7 @@ import {
   BasicGraphOnEdges,
   mkGraphOnEdgesN,
 } from '../../structs/basicGraphOnEdges'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {IntPair} from '../../utils/IntPair'
 import {SolverShell} from './SolverShell'
 import {UniformSolverVar} from './UniformSolverVar'
@@ -174,7 +174,7 @@ export class UniformOneDimensionalSolver {
     isFixed: boolean,
     width: number,
   ) {
-    Assert.assert(id == this.varList.length)
+    /*Assert.assert(id == this.varList.length)*/
     //new UniformSolverVar { IsFixed = isFixed, Position = position, Width=width
     const v = new UniformSolverVar()
     v.Position = position

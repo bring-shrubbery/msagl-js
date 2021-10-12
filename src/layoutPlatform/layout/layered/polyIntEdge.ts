@@ -3,7 +3,7 @@ import {GeomEdge} from './../core/geomEdge'
 import {ICurve} from './../../math/geometry/icurve'
 import {LayerEdge} from './LayerEdge'
 import {Anchor} from './anchor'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Curve} from '../../math/geometry/curve'
 import {Point} from '../../math/geometry/point'
@@ -37,7 +37,7 @@ class Routing {
       for (const seg of (<Curve>edgeCurve).segs)
         if ((seg.start.y - labelY) * (seg.end.y - labelY) <= 0) return seg
     } else {
-      Assert.assert(false)
+      /*Assert.assert(false)*/
     }
     return null
   }

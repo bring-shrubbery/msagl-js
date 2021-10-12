@@ -1,4 +1,4 @@
-﻿import {Assert} from '../../utils/assert'
+﻿// import {Assert} from '../../utils/assert'
 import {CdtEdge} from './CdtEdge'
 import {CdtSite} from './CdtSite'
 
@@ -14,10 +14,10 @@ export class PerimeterEdge {
   Edge: CdtEdge
 
   constructor(edge: CdtEdge) {
-    Assert.assert(
+    /*Assert.assert(
       edge.CcwTriangle == null || edge.CwTriangle == null,
       'one of the edge triangles has to be null',
-    )
+    )*/
     this.Edge = edge
   }
 }

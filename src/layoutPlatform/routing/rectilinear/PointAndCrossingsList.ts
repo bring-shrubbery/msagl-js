@@ -3,7 +3,7 @@
 import {String} from 'typescript-string-operations'
 import {Direction} from '../../math/geometry/direction'
 import {Point} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {GroupBoundaryCrossing} from './GroupBoundaryCrossing'
 import {PointAndCrossings} from './PointAndCrossings'
 import {PointComparer} from './PointComparer'
@@ -31,10 +31,10 @@ export class PointAndCrossingsList {
 
   Pop(): PointAndCrossings {
     //  Next should only be called after CurrentIsBeforeOrAt returns true.
-    Assert.assert(
+    /*Assert.assert(
       this.index < this.ListOfPointsAndCrossings.length,
       'Unexpected call to Next()',
-    )
+    )*/
     return this.ListOfPointsAndCrossings[this.index++]
   }
 

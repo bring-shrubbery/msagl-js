@@ -1,4 +1,4 @@
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {Variable} from './Variable'
 import {String} from 'typescript-string-operations'
 import {compareNumbers} from '../../utils/compare'
@@ -32,10 +32,10 @@ export class Constraint {
   SetActiveState(activeState: boolean, newVectorIndex: number) {
     //  Note: newVectorIndex may be the same as the old one if we are changing the state
     //  of the last inactive or first active constraint.
-    Assert.assert(
+    /*Assert.assert(
       this.IsActive != activeState,
       'Constraint is already set to activationState',
-    )
+    )*/
     this.IsActive = activeState
     this.VectorIndex = newVectorIndex
     if (this.IsActive) {

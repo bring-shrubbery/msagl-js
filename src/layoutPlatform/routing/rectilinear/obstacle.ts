@@ -6,7 +6,7 @@ import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
 import {Rectangle} from '../../math/geometry/rectangle'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {subSets} from '../../utils/setOperations'
 import {InteractiveEdgeRouter} from '../InteractiveEdgeRouter'
 import {InteractiveObstacleCalculator} from '../interactiveObstacleCalculator'
@@ -74,10 +74,10 @@ export class Obstacle {
   ActiveHighSide: HighObstacleSide
 
   CreateInitialSides(startPoint: PolylinePoint, scanDir: ScanDirection) {
-    Assert.assert(
+    /*Assert.assert(
       this.ActiveLowSide == null && this.ActiveHighSide == null,
       'Cannot call SetInitialSides when sides are already set',
-    )
+    )*/
     this.ActiveLowSide = new LowObstacleSide(this, startPoint, scanDir)
     this.ActiveHighSide = new HighObstacleSide(this, startPoint, scanDir)
     if (scanDir.IsFlatS(this.ActiveHighSide)) {
@@ -153,8 +153,8 @@ export class Obstacle {
   }
 
   static RoundVerticesAndSimplify(polyline: Polyline) {
-    Assert.assert(polyline.isClockwise(), 'Polyline is not clockwise')
-    Assert.assert(polyline.closed)
+    /*Assert.assert(polyline.isClockwise(), 'Polyline is not clockwise')*/
+    /*Assert.assert(polyline.closed)*/
     //  Following creation of the padded border, round off the vertices for consistency
     //  in later operations (intersections and event ordering).
     let ppt: PolylinePoint = polyline.startPoint
@@ -167,10 +167,10 @@ export class Obstacle {
     //  We've modified the points so the BoundingBox may have changed; force it to be recalculated.
     polyline.requireInit()
     //  Verify that the polyline is still clockwise.
-    Assert.assert(
+    /*Assert.assert(
       polyline.isClockwise(),
       'Polyline is not clockwise after RoundVertices',
-    )
+    )*/
   }
   // A single convex hull is shared by all obstacles contained by it and we only want one occurrence of that
   // convex hull's polyline in the visibility graph generation.

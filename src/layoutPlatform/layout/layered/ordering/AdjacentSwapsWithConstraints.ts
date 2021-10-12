@@ -2,7 +2,7 @@ import {LayerArrays} from '../LayerArrays'
 import {ProperLayeredGraph} from '../ProperLayeredGraph'
 import {ConstrainedOrdering} from './ConstrainedOrdering'
 import {LayerInfo} from './LayerInfo'
-import {Assert} from './../../../utils/assert'
+// import {Assert} from './../../../utils/assert'
 import {randomInt} from '../../../utils/random'
 export class AdjacentSwapsWithConstraints {
   static maxNumberOfAdjacentExchanges = 50
@@ -197,9 +197,9 @@ export class AdjacentSwapsWithConstraints {
 
   // in this routine u and v are adjacent, and u is to the left of v before the swap
   Swap(u: number, v: number) {
-    Assert.assert(this.UAndVAreOnSameLayer(u, v))
-    Assert.assert(this.UIsToTheLeftOfV(u, v))
-    Assert.assert(this.CanSwap(u, v))
+    /*Assert.assert(this.UAndVAreOnSameLayer(u, v))*/
+    /*Assert.assert(this.UIsToTheLeftOfV(u, v))*/
+    /*Assert.assert(this.CanSwap(u, v))*/
     const left: number = this.X[u]
     const right: number = this.X[v]
     const ln: number = this.layering[u]
@@ -251,7 +251,7 @@ export class AdjacentSwapsWithConstraints {
       }
     }
 
-    Assert.assert(this.SPAreCorrect())
+    /*Assert.assert(this.SPAreCorrect())*/
   }
 
   private SPAreCorrect(): boolean {

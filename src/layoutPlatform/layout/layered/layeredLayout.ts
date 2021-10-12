@@ -1,7 +1,7 @@
 import {RealNumberSpan} from '../../utils/RealNumberSpan'
 import {BasicGraph} from '../../structs/BasicGraph'
 import {Point, TriangleOrientation} from '../../math/geometry/point'
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {Algorithm} from '../../utils/algorithm'
 import {PolyIntEdge} from './polyIntEdge'
 import {SugiyamaLayoutSettings, SnapToGridByY} from './SugiyamaLayoutSettings'
@@ -80,7 +80,7 @@ export class LayeredLayout extends Algorithm {
 
     const intEdges: PolyIntEdge[] = []
     for (const edge of this.originalGraph.edges()) {
-      Assert.assert(!(edge.source == null || edge.target == null))
+      /*Assert.assert(!(edge.source == null || edge.target == null))*/
 
       const intEdge = new PolyIntEdge(
         this.nodeIdToIndex.get(edge.source.id),
@@ -368,7 +368,7 @@ export class LayeredLayout extends Algorithm {
     yLayers = this.ExtendLayeringToUngluedSameLayerVertices(yLayers)
 
     let layerArrays = new LayerArrays(yLayers)
-    Assert.assert(layersAreCorrect(layerArrays))
+    /*Assert.assert(layersAreCorrect(layerArrays))*/
     if (
       this.HorizontalConstraints == null ||
       this.HorizontalConstraints.IsEmpty
@@ -405,7 +405,7 @@ export class LayeredLayout extends Algorithm {
     for (const e of this.database.SkeletonEdges()) {
       const span = EdgeSpan(layering, e)
 
-      Assert.assert(span >= 0)
+      /*Assert.assert(span >= 0)*/
 
       if (span > 0) e.LayerEdges = new Array<LayerEdge>(span)
       let pe = 0 //offset in the string
@@ -466,9 +466,9 @@ export class LayeredLayout extends Algorithm {
   YLayeringAndOrderingWithoutHorizontalConstraints(
     layerArraysIn: LayerArrays,
   ): LayerArrays {
-    Assert.assert(layersAreCorrect(layerArraysIn))
+    /*Assert.assert(layersAreCorrect(layerArraysIn))*/
     const layerArrays = this.CreateProperLayeredGraph(layerArraysIn.y)
-    Assert.assert(layersAreCorrect(layerArrays))
+    /*Assert.assert(layersAreCorrect(layerArrays))*/
     Ordering.OrderLayers(
       this.properLayeredGraph,
       layerArrays,
@@ -477,7 +477,7 @@ export class LayeredLayout extends Algorithm {
       this.cancelToken,
     )
     MetroMapOrdering.UpdateLayerArrays1(this.properLayeredGraph, layerArrays)
-    Assert.assert(layersAreCorrect(layerArrays))
+    /*Assert.assert(layersAreCorrect(layerArrays))*/
     return layerArrays
   }
 
@@ -488,7 +488,7 @@ export class LayeredLayout extends Algorithm {
         this.cancelToken,
       ),
     )
-    Assert.assert(layersAreCorrect(layerArrays))
+    /*Assert.assert(layersAreCorrect(layerArrays))*/
     if (this.constrainedOrdering != null) return layerArrays
     return this.InsertLayersIfNeeded(layerArrays)
   }
@@ -517,7 +517,7 @@ export class LayeredLayout extends Algorithm {
       )
       this.properLayeredGraph = t.layeredGraph
       layerArrays = t.la
-      Assert.assert(layersAreCorrect(layerArrays))
+      /*Assert.assert(layersAreCorrect(layerArrays))*/
     }
 
     this.RecreateIntGraphFromDataBase()
@@ -1003,7 +1003,7 @@ function SnapDeltaUp(y: number, gridSize: number) {
   // how much to snap?
   const k = Math.floor(y / gridSize)
   const delta = y - k * gridSize
-  Assert.assert(delta >= 0 && delta < gridSize)
+  /*Assert.assert(delta >= 0 && delta < gridSize)*/
   if (Math.abs(delta) < 0.0001) {
     // ???
     return 0

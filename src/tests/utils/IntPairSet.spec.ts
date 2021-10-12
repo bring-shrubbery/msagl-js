@@ -1,4 +1,4 @@
-import {Assert} from '../../layoutPlatform/utils/assert'
+// import {Assert} from '../../layoutPlatform/utils/assert'
 import {IntPairSet} from '../../layoutPlatform/utils/IntPairSet'
 import {randomInt} from '../../layoutPlatform/utils/random'
 
@@ -19,7 +19,7 @@ test('IntPairSet perf', () => {
   const m = new IntPairSet()
   for (let i = 0; i < n; i++) {
     const j = randomInt(10)
-    Assert.assert(j >= 0 && j < 10)
+    /*Assert.assert(j >= 0 && j < 10)*/
     for (let k = 0; k < j; k++) m.addNN(i, k)
   }
 })

@@ -38,13 +38,7 @@
       "name": "Run selected Jest test",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run-script", "test"],
-      "args": [
-        "--",
-        "-i",
-        "src/tests/layoutPlatform/routing/rectilinear/RectilinearEdgeRouter.spec.ts",
-        "-t",
-        "random rect"
-      ],
+      "args": ["--", "-i", "src/tests/layoutPlatform/layout/mds/PivotMDS.spec.ts", "-t", "graph with subgraphs"],
       "console": "internalConsole"
     }
   ]

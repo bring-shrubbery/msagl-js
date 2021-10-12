@@ -1,4 +1,4 @@
-﻿import {Assert} from '../../../utils/assert'
+﻿// import {Assert} from '../../../utils/assert'
 import {Rectangle} from '../rectangle'
 import {ColumnPacking} from './ColumnPacking'
 import {OptimalPacking} from './OptimalPacking'
@@ -11,11 +11,11 @@ export class OptimalColumnPacking extends OptimalPacking {
   //  closest aspect ratio to the specified desired aspect ratio
   public constructor(rectangles: Rectangle[], aspectRatio: number) {
     super(rectangles, aspectRatio)
-    Assert.assert(
+    /*Assert.assert(
       rectangles.length > 0,
       'Expected more than one rectangle in rectangles',
-    )
-    Assert.assert(aspectRatio > 0, 'aspect ratio should be greater than 0')
+    )*/
+    /*Assert.assert(aspectRatio > 0, 'aspect ratio should be greater than 0')*/
 
     this.createPacking = (rs, height) => new ColumnPacking(rs, height)
   }
@@ -28,8 +28,8 @@ export class OptimalColumnPacking extends OptimalPacking {
     let totalHeight = 0
     //  initial widthLowerBound is the width of a perfect packing for the desired aspect ratio
     for (const r of this.rectangles) {
-      Assert.assert(r.width > 0, 'Width must be greater than 0')
-      Assert.assert(r.height > 0, 'Height must be greater than 0')
+      /*Assert.assert(r.width > 0, 'Width must be greater than 0')*/
+      /*Assert.assert(r.height > 0, 'Height must be greater than 0')*/
       totalHeight = totalHeight + r.height
       minRectHeight = Math.min(minRectHeight, r.height)
       maxRectHeight = Math.max(maxRectHeight, r.height)

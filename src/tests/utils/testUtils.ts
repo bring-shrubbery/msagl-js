@@ -16,7 +16,7 @@ import {
 } from '../..'
 import {EdgeRoutingMode} from '../../layoutPlatform/core/routing/EdgeRoutingMode'
 import {SvgDebugWriter} from '../../layoutPlatform/math/geometry/svgDebugWriter'
-import {Assert} from '../../layoutPlatform/utils/assert'
+// import {Assert} from '../../layoutPlatform/utils/assert'
 import {parseDotGraph} from '../../tools/dotparser'
 export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   const s = e.source.id + '->' + e.target.id
@@ -146,7 +146,7 @@ export function createGeometry(
   for (const e of g.edges) {
     const ge = new GeomEdge(e)
     if (e.label) {
-      Assert.assert(e.label != null)
+      /*Assert.assert(e.label != null)*/
       ge.label = new GeomLabel(labelRect(e.label.text), e.label)
     }
   }

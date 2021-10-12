@@ -1,4 +1,4 @@
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {copyTo} from '../../utils/copy'
 
 export class LayerArrays {
@@ -123,7 +123,7 @@ export class LayerArrays {
       const l = this.y[i]
       this.layers[l][counts[l]++] = i
     }
-    Assert.assert(layersAreCorrect(this))
+    /*Assert.assert(layersAreCorrect(this))*/
   }
 }
 export function layersAreCorrect(layerArrays: LayerArrays): boolean {

@@ -1,4 +1,4 @@
-import {Assert} from '../../utils/assert'
+// import {Assert} from '../../utils/assert'
 import {Block} from './Block'
 
 export class BlockVector {
@@ -18,17 +18,17 @@ export class BlockVector {
   Add(block: Block) {
     block.VectorIndex = this.Vector.length
     this.Vector.push(block)
-    Assert.assert(
+    /*Assert.assert(
       this.Vector[block.VectorIndex] == block,
       'Inconsistent block.VectorIndex',
-    )
+    )*/
   }
 
   Remove(block: Block) {
-    Assert.assert(
+    /*Assert.assert(
       this.Vector[block.VectorIndex] == block,
       'Inconsistent block.VectorIndex',
-    )
+    )*/
     const swapBlock: Block = this.Vector[this.Vector.length - 1]
     this.Vector[block.VectorIndex] = swapBlock
     swapBlock.VectorIndex = block.VectorIndex

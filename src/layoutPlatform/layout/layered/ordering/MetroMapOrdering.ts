@@ -4,7 +4,7 @@
 
 import {from} from 'linq-to-typescript'
 import {Point} from '../../../math/geometry/point'
-import {Assert} from '../../../utils/assert'
+// import {Assert} from '../../../utils/assert'
 import {compareNumbers} from '../../../utils/compare'
 import {PointMap} from '../../../utils/PointMap'
 import {LayerArrays, layersAreCorrect} from '../LayerArrays'
@@ -45,14 +45,14 @@ export class MetroMapOrdering {
     properLayeredGraph: ProperLayeredGraph,
     layerArrays: LayerArrays,
   ) {
-    Assert.assert(layersAreCorrect(layerArrays))
+    /*Assert.assert(layersAreCorrect(layerArrays))*/
     const nodePositions = MetroMapOrdering.BuildInitialNodePositions(
       properLayeredGraph,
       layerArrays,
     )
-    Assert.assert(layersAreCorrect(layerArrays))
+    /*Assert.assert(layersAreCorrect(layerArrays))*/
     this.UpdateLayerArrays0(properLayeredGraph, layerArrays, nodePositions)
-    Assert.assert(layersAreCorrect(layerArrays))
+    /*Assert.assert(layersAreCorrect(layerArrays))*/
   }
 
   static BuildInitialNodePositions(
@@ -142,10 +142,10 @@ export class MetroMapOrdering {
 
   Comparison(inverseToOrder: Map<number, number>) {
     return (node1: number, node2: number) => {
-      Assert.assert(
+      /*Assert.assert(
         this.properLayeredGraph.IsVirtualNode(node1) &&
           this.properLayeredGraph.IsVirtualNode(node2),
-      )
+      )*/
       const succ1: number = from(this.properLayeredGraph.Succ(node1)).first()
       const succ2: number = from(this.properLayeredGraph.Succ(node2)).first()
       let pred1: number = from(this.properLayeredGraph.Pred(node1)).first()
@@ -169,7 +169,7 @@ export class MetroMapOrdering {
 
         const o1: number = inverseToOrder.get(succ1)
         const o2: number = inverseToOrder.get(succ2)
-        Assert.assert(o1 != -1 && o2 != -1)
+        /*Assert.assert(o1 != -1 && o2 != -1)*/
         return compareNumbers(o1, o2)
       }
 
