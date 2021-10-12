@@ -213,7 +213,7 @@ function getConnectedComponents(geomGraph: GeomGraph): GeomGraph[] {
   }
   return ret
 }
-function routeRectilinearEdges(
+export function routeRectilinearEdges(
   geomG: GeomGraph,
   nodePadding: number,
   cornerFitRadius: number,
