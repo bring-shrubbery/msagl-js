@@ -8,6 +8,4 @@ module.exports = {
     "^.+\\.(ts|tsx)$": "ts-jest",
   },
   moduleDirectories: ["node_modules", "src"],
-  collectCoverage: true,
-  coverageReporters: ["html"],
 };
