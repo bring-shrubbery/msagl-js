@@ -28,16 +28,17 @@
       "type": "node",
       "request": "launch",
       "name": "Run selected Jest test",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run-script", "test"],
       "args": [
         "--",
         "-i",
-        "src/tests/layoutPlatform/routing/rectilinear/RectilinearEdgeRouter.spec.ts",
+        "src/tests/utils/dotparser.spec.ts",
         "-t",
-        "abstract rect"
+        "pack gv"
       ],
-      "console": "internalConsole"
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest"
     }
   ]
 }

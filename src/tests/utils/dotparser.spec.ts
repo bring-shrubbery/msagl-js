@@ -3,12 +3,16 @@ import {DrawingNode} from '../../drawing/drawingNode'
 import {parseDotGraph, parseDotString} from '../../tools/dotparser'
 import {join} from 'path'
 import {sortedList} from '../layoutPlatform/layout/sortedBySizeListOfgvFiles'
-xtest('all gv files list ', () => {
+test('all gv files list ', () => {
   const path = 'src/tests/data/graphvis/'
   for (const f of sortedList) {
-    if (f.match('big(.*).gv')) continue // the parser bug
     parseDotGraph(join(path, f))
   }
+})
+
+test('pack gv', () => {
+  const g = parseDotGraph('src/tests/data/graphvis/pack.gv')
+  expect(g == null).toBe(false)
 })
 
 xtest('dot parser', () => {

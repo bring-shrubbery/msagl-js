@@ -190,6 +190,20 @@ test('margins', () => {
   t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 
+test('undirected pach', () => {
+  const dg = parseDotGraph('src/tests/data/graphvis/pack.gv')
+  createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
+  const ss = new SugiyamaLayoutSettings()
+  const ll = new LayeredLayout(
+    GeomObject.getGeom(dg.graph) as GeomGraph,
+    ss,
+    new CancelToken(),
+  )
+  ll.run()
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/undir_pack.svg')
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+})
+
 test('clusters', () => {
   // First we create connections without any geometry data yet
   // create the root graph
@@ -420,7 +434,7 @@ function runLayout(fname: string, settings: SugiyamaLayoutSettings = null) {
 //   return dg
 // }
 
-test('root', () => {
+xtest('root', () => {
   const fname = 'src/tests/data/graphvis/root.gv'
   const dg = runLayout(fname)
   if (dg != null) {

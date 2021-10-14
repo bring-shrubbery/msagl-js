@@ -100,8 +100,8 @@ function parseEdge(so: any, to: any, dg: DrawingGraph, o: any): DrawingEdge[] {
   return [drawingEdge]
 }
 
-function parseGraph(o: any, dg: DrawingGraph) {
-  parseUnderGraph(o.children, dg)
+function parseGraph(o: any, dg: DrawingGraph, directed: boolean) {
+  parseUnderGraph(o.children, dg, directed)
 }
 
 function parseNode(o: any, dg: DrawingGraph): DrawingNode {
@@ -383,7 +383,8 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
   }
 }
 
-function parseUnderGraph(children: any, dg: DrawingGraph) {
+function parseUnderGraph(children: any, dg: DrawingGraph, directed: boolean) {
+  // TODO: create undirected edges for undirected graphs
   for (const o of children) {
     switch (o.type) {
       case 'node_stmt':
@@ -400,13 +401,13 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
         // is it really a subgraph?
         if (process_same_rank(o, dg)) {
         } else if (o.id == null) {
-          const entities: DrawingObject[] = getEntitiesSubg(o, dg)
+          const entities: DrawingObject[] = getEntitiesSubg(o, dg, directed)
           applyAttributesToEntities(o, dg, entities)
         } else {
           const subg = new Graph(o.id)
           dg.graph.addNode(subg)
           const sdg = new DrawingGraph(subg)
-          parseGraph(o, sdg)
+          parseGraph(o, sdg, directed)
         }
         break
       case 'attr_stmt':
@@ -421,10 +422,10 @@ function parseUnderGraph(children: any, dg: DrawingGraph) {
 export function parseDotString(graphStr: string): DrawingGraph {
   const ast = parse(graphStr)
   if (ast == null) return null
-  if (ast[0].type != 'digraph') return null
+
   const graph = new Graph()
   const drawingGraph = new DrawingGraph(graph)
-  parseUnderGraph(ast[0].children, drawingGraph)
+  parseUnderGraph(ast[0].children, drawingGraph, ast[0].type == 'digraph')
   return drawingGraph
 }
 export function parseDotGraph(fileName: string): DrawingGraph {
@@ -553,7 +554,11 @@ function parseFloatQuatriple(str: any): any {
     parseFloat(p[3]),
   ]
 }
-function getEntitiesSubg(o: any, dg: DrawingGraph): DrawingObject[] {
+function getEntitiesSubg(
+  o: any,
+  dg: DrawingGraph,
+  directed: boolean,
+): DrawingObject[] {
   let ret: DrawingObject[] = []
   for (const ch of o.children) {
     if (ch.type == 'edge_stmt') {
@@ -570,10 +575,10 @@ function getEntitiesSubg(o: any, dg: DrawingGraph): DrawingObject[] {
         const subg = new Graph(ch.id)
         dg.graph.addNode(subg)
         const sdg = new DrawingGraph(subg)
-        parseGraph(ch, sdg)
+        parseGraph(ch, sdg, directed)
         ret.push(sdg)
       } else {
-        ret = ret.concat(getEntitiesSubg(ch, dg))
+        ret = ret.concat(getEntitiesSubg(ch, dg, directed))
       }
     } else {
       throw new Error('Function not implemented.')
