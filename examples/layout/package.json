@@ -11,9 +11,9 @@
   "author": "xiac@microsoft.com",
   "license": "MIT",
   "dependencies": {
-    "deck.gl": "^8.6.0",
     "@danmarshall/deckgl-typings": "^4.9.7",
-    "msagl-js": "^0.0.12"
+    "deck.gl": "^8.6.0",
+    "msagl-js": "0.0.14"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.0",
