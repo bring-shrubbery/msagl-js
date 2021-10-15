@@ -28,7 +28,7 @@ edge points down. Here is an API example in Typescript
  /// ... consume graph 'g' here
 ``` 
 The generated layout should look like this:
-![Alt text](./showAPI.svg)
+![Alt text](./docs/images/showAPI.svg)
 
 ## Multi Dimensional Scaling
 Multi Dimensional Scaling layout should work too, but the routing is
@@ -44,7 +44,7 @@ settings.edgeRoutingMode = EdgeRoutingMode.StraightLine
 layoutGraph(g, null, () => settings)
 ``` 
 then the layout should look like this 
-![Alt text](./mdsShowAPI.svg)
+![Alt text](./docs/images/mdsShowAPI.svg)
   
 
 
