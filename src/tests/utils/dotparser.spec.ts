@@ -6,7 +6,12 @@ import {sortedList} from '../layoutPlatform/layout/sortedBySizeListOfgvFiles'
 test('all gv files list ', () => {
   const path = 'src/tests/data/graphvis/'
   for (const f of sortedList) {
-    parseDotGraph(join(path, f))
+    try {
+      parseDotGraph(join(path, f))
+    } catch (Error) {
+      console.log('file = ' + f + ' error:' + Error.message)
+      expect(1).toBe(0)
+    }
   }
 })
 

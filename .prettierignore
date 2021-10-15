@@ -6,3 +6,4 @@
 **/*.png
 **/*.doc*
 **/*.*_
+src/tools/commentOutAssert.py
