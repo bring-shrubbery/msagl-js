@@ -16,7 +16,7 @@ import {Direction} from '../../../math/geometry/direction'
 import {GeomConstants} from '../../../math/geometry/geomConstants'
 import {LineSegment} from '../../../math/geometry/lineSegment'
 import {Polyline} from '../../../math/geometry/polyline'
-import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
+// import {SvgDebugWriter} from '../../../math/geometry/svgDebugWriter'
 // import {Assert} from '../../../utils/assert'
 import {closeDistEps} from '../../../utils/compare'
 import {Shape} from '../../shape'
@@ -1164,22 +1164,22 @@ export class Nudger {
     return portToShapes
   }
 
-  ShowPathsDebug(edgePaths: Iterable<Path>, fn: string) {
-    const debCurves = GetObstacleBoundaries(this.Obstacles, 'black')
-    const i = 0
-    for (const edgePath of edgePaths) {
-      for (const c of Nudger.GetEdgePathFromPathEdgesAsDebugCurves(
-        0.1,
-        1.0,
-        DebugCurve.colors[(i + 1) % DebugCurve.colors.length],
-        edgePath,
-      )) {
-        debCurves.push(c)
-      }
-    }
+  // ShowPathsDebug(edgePaths: Iterable<Path>, fn: string) {
+  //   const debCurves = GetObstacleBoundaries(this.Obstacles, 'black')
+  //   const i = 0
+  //   for (const edgePath of edgePaths) {
+  //     for (const c of Nudger.GetEdgePathFromPathEdgesAsDebugCurves(
+  //       0.1,
+  //       1.0,
+  //       DebugCurve.colors[(i + 1) % DebugCurve.colors.length],
+  //       edgePath,
+  //     )) {
+  //       debCurves.push(c)
+  //     }
+  //   }
 
-    SvgDebugWriter.dumpDebugCurves(fn, debCurves)
-  }
+  //   SvgDebugWriter.dumpDebugCurves(fn, debCurves)
+  // }
   static *GetEdgePathFromPathEdgesAsDebugCurves(
     startWidth: number,
     endWidth: number,

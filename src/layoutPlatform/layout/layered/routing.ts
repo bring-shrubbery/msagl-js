@@ -23,7 +23,7 @@ import {SmoothedPolylineCalculator} from './SmoothedPolylineCalculator'
 import {GeomEdge} from '../core/geomEdge'
 // import {Assert} from '../../utils/assert'
 import {StraightLineEdges} from '../../routing/StraightLineEdges'
-//import {SvgDebugWriter} from '../../math/geometry/svgDebugWriter'
+
 //  The class responsible for the routing of splines
 export class Routing extends Algorithm {
   settings: SugiyamaLayoutSettings
