@@ -2,11 +2,7 @@ node_modules
 dist
 *~
 coverage
-vscode-profile-2021-02-11-12-04-00.cpuprofile
-vscode-profile-2021-02-11-13-14-10.cpuprofile
-vscode-profile-2021-02-11-13-32-42.cpuprofile
-vscode-profile-2021-02-11-13-36-13.cpuprofile
-vscode-profile-2021-02-11-14-09-42.cpuprofile
-vscode-profile-2021-02-11-14-16-58.cpuprofile
-vscode-profile-2021-02-11-14-38-09.cpuprofile
+vscode-profile-*
 .vs
+.vscode
+.code-workspace

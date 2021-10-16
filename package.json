@@ -27,14 +27,11 @@
     "@esfx/collections": "^1.0.0-pre.19",
     "@esfx/collections-sortedmap": "^1.0.0-pre.19",
     "@types/parse-color": "^1.0.1",
-    "collections": "^5.1.12",
-    "file-system": "^1.2.2",
     "linq-to-typescript": "^8.1.0",
     "queue-typescript": "^1.0.1",
     "reliable-random": "^0.0.1",
     "stack-typescript": "^1.0.4",
-    "typescript-string-operations": "^1.4.1",
-    "xml-writer": "^1.7.0"
+    "typescript-string-operations": "^1.4.1"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
@@ -51,7 +48,8 @@
     "parse-color": "^1.0.0",
     "prettier": "2.2.1",
     "ts-jest": "^27.0.5",
-    "typescript": "^3.9.10"
+    "typescript": "^3.9.10",
+    "xml-writer": "^1.7.0"
   },
   "husky": {
     "hooks": {
