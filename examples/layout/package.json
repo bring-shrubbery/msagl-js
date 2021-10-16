@@ -13,7 +13,7 @@
   "dependencies": {
     "@danmarshall/deckgl-typings": "^4.9.7",
     "deck.gl": "^8.6.0",
-    "msagl-js": "0.0.14"
+    "msagl-js": "0.0.15"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.0",
