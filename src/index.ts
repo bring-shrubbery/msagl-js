@@ -4,6 +4,7 @@ export {LayeredLayout} from './layoutPlatform/layout/layered/layeredLayout'
 export {CancelToken} from './layoutPlatform/utils/cancelToken'
 export {interpolateICurve} from './layoutPlatform/math/geometry/curve'
 export {LayerDirectionEnum} from './layoutPlatform/layout/layered/layerDirectionEnum'
+export {Size} from './layoutPlatform/math/geometry/rectangle'
 export {
   layoutGraph,
   routeRectilinearEdges,
