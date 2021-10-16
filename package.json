@@ -6,10 +6,8 @@
   "types": "dist/index.d.ts",
   "pkgRoot": "dist",
   "files": [
-    "dist/layoutPlatform/*",
-    "dist/index.js",
-    "dist/index.d.ts",
-    "dist/index.js.map"
+    "dist",
+    "src"
   ],
   "repository": {
     "type": "git",
@@ -19,8 +17,8 @@
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "build": "tsc",
-    "eslint": "eslint [src/**]",
+    "build": "rm -rf dist && tsc",
+    "eslint": "eslint src",
     "prettier": "prettier --write src/**"
   },
   "dependencies": {
