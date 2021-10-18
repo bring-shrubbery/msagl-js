@@ -29,6 +29,8 @@ import {
   outputGraph,
   edgeString,
 } from '../../../utils/testUtils'
+import {CurveFactory} from '@/src/math/geometry/CurveFactory'
+import {Point} from '@/src/math/geometry/point'
 
 type P = [number, number]
 
@@ -51,9 +53,31 @@ test('map test', () => {
   expect(mi.get(ip1)).toBe(undefined)
 })
 
+function setNode(
+  g: GeomGraph,
+  id: string,
+  size: {width: number; height: number},
+  xRad: number,
+  yRad: number,
+): GeomNode {
+  let node = g.graph.findNode(id)
+  if (node == null) {
+    g.graph.addNode((node = new Node(id)))
+  }
+  const geomNode = new GeomNode(node)
+  geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
+    size.width,
+    size.height,
+    xRad,
+    yRad,
+    new Point(0, 0),
+  )
+  return geomNode
+}
+
 test('self on node', () => {
   const g = GeomGraph.mk('graph', Rectangle.mkEmpty())
-  g.setNode('a', {width: 10, height: 10})
+  setNode(g, 'a', {width: 10, height: 10}, 10, 10)
   g.setEdge('a', 'a')
   const ll = new LayeredLayout(
     g,
@@ -106,12 +130,12 @@ test('show API', () => {
   // Create a new geometry graph
   const g = GeomGraph.mk('graph', new Size(0, 0))
   // Add nodes to the graph. The first argument is the node id. The second is the size string
-  g.setNode('kspacey', {width: 144, height: 100})
-  g.setNode('swilliams', {width: 160, height: 100})
-  g.setNode('bpitt', {width: 108, height: 100})
-  g.setNode('hford', {width: 168, height: 100})
-  g.setNode('lwilson', {width: 144, height: 100})
-  g.setNode('kbacon', {width: 121, height: 100})
+  setNode(g, 'kspacey', {width: 144, height: 100}, 10, 10)
+  setNode(g, 'swilliams', {width: 160, height: 100}, 10, 10)
+  setNode(g, 'bpitt', {width: 108, height: 100}, 10, 10)
+  setNode(g, 'hford', {width: 168, height: 100}, 10, 10)
+  setNode(g, 'lwilson', {width: 144, height: 100}, 10, 10)
+  setNode(g, 'kbacon', {width: 121, height: 100}, 10, 10)
 
   // Add edges to the graph.
   g.setEdge('kspacey', 'swilliams')
@@ -138,12 +162,12 @@ test('disconnected comps', () => {
   // Create a new geometry graph
   const g = GeomGraph.mk('graph', Rectangle.mkEmpty())
   // Add nodes to the graph. The first argument is the node id. The second is the size string
-  g.setNode('kspacey', {width: 144, height: 100})
-  g.setNode('swilliams', {width: 160, height: 100})
-  g.setNode('bpitt', {width: 108, height: 100})
-  g.setNode('hford', {width: 168, height: 100})
-  g.setNode('lwilson', {width: 144, height: 100})
-  g.setNode('kbacon', {width: 121, height: 100})
+  setNode(g, 'kspacey', {width: 144, height: 100}, 10, 10)
+  setNode(g, 'swilliams', {width: 160, height: 100}, 10, 10)
+  setNode(g, 'bpitt', {width: 108, height: 100}, 10, 10)
+  setNode(g, 'hford', {width: 168, height: 100}, 10, 10)
+  setNode(g, 'lwilson', {width: 144, height: 100}, 10, 10)
+  setNode(g, 'kbacon', {width: 121, height: 100}, 10, 10)
 
   // Add edges to the graph.
   g.setEdge('kspacey', 'swilliams')
@@ -392,12 +416,12 @@ export function qualityMetric(gg: GeomGraph): number {
 
 test('layered layout nodes only', () => {
   const g = new GeomGraph(new Graph('graph'), new Size(0, 0))
-  g.setNode('kspacey', {width: 144, height: 100})
-  g.setNode('swilliams', {width: 160, height: 100})
-  g.setNode('bpitt', {width: 108, height: 100})
-  g.setNode('hford', {width: 168, height: 100})
-  g.setNode('lwilson', {width: 144, height: 100})
-  g.setNode('kbacon', {width: 121, height: 100})
+  setNode(g, 'kspacey', {width: 144, height: 100}, 10, 10)
+  setNode(g, 'swilliams', {width: 160, height: 100}, 10, 10)
+  setNode(g, 'bpitt', {width: 108, height: 100}, 10, 10)
+  setNode(g, 'hford', {width: 168, height: 100}, 10, 10)
+  setNode(g, 'lwilson', {width: 144, height: 100}, 10, 10)
+  setNode(g, 'kbacon', {width: 121, height: 100}, 10, 10)
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(g, ss, new CancelToken())
   ll.run()
@@ -512,7 +536,7 @@ function duplicateDisconnected(g: GeomGraph, suffix: string) {
   const nodes: GeomNode[] = Array.from(g.shallowNodes())
   const edges: GeomEdge[] = Array.from(g.edges())
   for (const n of nodes) {
-    g.setNode(n.node.id + suffix, {width: n.width, height: n.height})
+    setNode(g, n.node.id + suffix, {width: n.width, height: n.height}, 10, 10)
   }
   for (const e of edges) {
     g.setEdge(e.source.id + suffix, e.target.id + suffix)

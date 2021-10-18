@@ -3,13 +3,39 @@ import {
   SugiyamaLayoutSettings,
   LayeredLayout,
   CancelToken,
+  Node,
+  GeomNode,
+  CurveFactory,
+  Point,
   Size,
 } from 'msagl-js'
 
 import Renderer from './renderer'
 
-function measureTextSize(str: string): Size {
-  return new Size(str.length * 8 + 8, 20)
+function measureTextSize(str: string): {width: number; height: number} {
+  return {width: str.length * 8 + 8, height: 20}
+}
+
+function setNode(
+  g: GeomGraph,
+  id: string,
+  size: {width: number; height: number},
+  xRad: number,
+  yRad: number,
+): GeomNode {
+  let node = g.graph.findNode(id)
+  if (node == null) {
+    g.graph.addNode((node = new Node(id)))
+  }
+  const geomNode = new GeomNode(node)
+  geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
+    size.width,
+    size.height,
+    xRad,
+    yRad,
+    new Point(0, 0),
+  )
+  return geomNode
 }
 
 async function main() {
@@ -22,7 +48,8 @@ async function main() {
   const g = GeomGraph.mk('graph', new Size(0, 0))
   for (const node of data.nodes) {
     nodeMap[node.id] = node
-    g.setNode(node.character, measureTextSize(node.character))
+    const wh = measureTextSize(node.character)
+    setNode(g, node.character, wh, wh.width / 10, wh.height / 10)
   }
   for (const edge of data.links) {
     g.setEdge(nodeMap[edge.source].character, nodeMap[edge.target].character)

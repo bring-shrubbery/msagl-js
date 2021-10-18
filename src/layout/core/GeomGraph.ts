@@ -74,21 +74,7 @@ export class GeomGraph extends GeomNode {
     const structEdge = this.graph.setEdge(s, t)
     return new GeomEdge(structEdge)
   }
-  setNode(id: string, size: {width: number; height: number}): GeomNode {
-    let node = this.graph.findNode(id)
-    if (node == null) {
-      this.graph.addNode((node = new Node(id)))
-    }
-    const geomNode = new GeomNode(node)
-    geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
-      size.width,
-      size.height,
-      size.width / 10,
-      size.height / 10,
-      new Point(0, 0),
-    )
-    return geomNode
-  }
+
   MinimalWidth = 0
   MinimalHeight = 0
   pumpTheBoxToTheGraphWithMargins(minSeparation: number): Rectangle {
