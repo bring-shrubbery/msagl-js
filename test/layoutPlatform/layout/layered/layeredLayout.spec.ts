@@ -29,7 +29,7 @@ import {
   outputGraph,
   edgeString,
 } from '../../../utils/testUtils'
-import {CurveFactory} from '@/src/math/geometry/CurveFactory'
+import {CurveFactory} from '@/src/math/geometry/curveFactory'
 import {Point} from '@/src/math/geometry/point'
 
 type P = [number, number]
