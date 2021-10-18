@@ -7,10 +7,10 @@ export interface EdgeLayerProps<D> extends PathLayerProps<D> {
   getArrowType?: string | ((d: D) => string)
 }
 
-export default class EdgeLayer<D, EdgeLayerProps> extends CompositeLayer<
+export default class EdgeLayer<
   D,
-  EdgeLayerProps
-> {
+  P extends EdgeLayerProps<D> = EdgeLayerProps<D>
+> extends CompositeLayer<D, P> {
   static defaultProps = {
     ...PathLayer.defaultProps,
     getArrowSize: {type: 'accessor', value: 12},
@@ -18,7 +18,6 @@ export default class EdgeLayer<D, EdgeLayerProps> extends CompositeLayer<
   }
 
   renderLayers() {
-    // @ts-ignore
     const {
       data,
       getArrowSize,
@@ -29,9 +28,9 @@ export default class EdgeLayer<D, EdgeLayerProps> extends CompositeLayer<
     } = this.props
 
     return [
-      // @ts-ignore
       new PathLayer<D>(
         this.props,
+        // @ts-ignore
         this.getSubLayerProps({
           id: 'path',
           updateTriggers: {
@@ -43,8 +42,8 @@ export default class EdgeLayer<D, EdgeLayerProps> extends CompositeLayer<
         }),
       ),
 
-      // @ts-ignore
       new IconLayer<D>(
+        // @ts-ignore
         this.getSubLayerProps({
           id: 'arrow',
           updateTriggers: {
@@ -61,8 +60,8 @@ export default class EdgeLayer<D, EdgeLayerProps> extends CompositeLayer<
             typeof getArrowType === 'string'
               ? () => getArrowType
               : getArrowType,
-          getPosition: (d) => getEndPoint(getPath(d)),
-          getAngle: (d) => getEndDirection(getPath(d)),
+          getPosition: (d: D) => getEndPoint(getPath(d) as Position[]),
+          getAngle: (d: D) => getEndDirection(getPath(d) as Position[]),
           iconAtlas,
           iconMapping,
         },

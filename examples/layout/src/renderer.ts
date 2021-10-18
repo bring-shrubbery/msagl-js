@@ -32,24 +32,32 @@ export default class Renderer {
     const centerX = (layout.originalGraph.left + layout.originalGraph.right) / 2
     const centerY = (layout.originalGraph.top + layout.originalGraph.bottom) / 2
 
-    const nodeLayer = new NodeLayer({
+    const nodeLayer = new NodeLayer<GeomNode>({
       id: 'nodes',
       data: layout.IntGraph.nodes,
       background: true,
-      getPosition: (n: GeomNode) => [n.center.x, n.center.y],
-      getText: (n: GeomNode) => n.id,
+      getPosition: (n) => [n.center.x, n.center.y],
+      getText: (n) => n.id,
       getBorderWidth: 1,
       getSize: 14,
       // @ts-ignore
       sizeUnits: 'common',
       sizeMaxPixels: 24,
+      _subLayerProps: {
+        // Background box is absolutely positioned
+        background: {
+          getSize: 1,
+          sizeScale: 1,
+          sizeMinPixels: 0,
+          sizeMaxPixels: Number.MAX_SAFE_INTEGER,
+        },
+      },
     })
 
-    const edgeLayer = new EdgeLayer({
+    const edgeLayer = new EdgeLayer<PolyIntEdge>({
       id: 'edges',
       data: layout.IntGraph.edges,
-      getPath: (e: PolyIntEdge) =>
-        [e.curve.start, e.curve.end].map((p) => [p.x, p.y]),
+      getPath: (e) => [e.curve.start, e.curve.end].map((p) => [p.x, p.y]),
       getArrowSize: 12,
       getArrowType: 'caret',
       getWidth: 1,
