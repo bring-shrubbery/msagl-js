@@ -57,7 +57,7 @@ async function main() {
   const layout = new LayeredLayout(g, layoutSettings, new CancelToken())
   layout.run()
 
-  new Renderer(layout)
+  new Renderer(g)
 }
 
 main()
