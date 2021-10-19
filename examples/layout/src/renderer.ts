@@ -56,8 +56,8 @@ export default class Renderer {
       id: 'edges',
       data: Array.from(this.geomGraph.edges()),
       getPath: (e) => interpolateICurve(e.curve, 0.5).map((p) => [p.x, p.y]),
-      getArrowSize: 12,
-      getArrowType: 'caret',
+      //getArrowSize: (e)=>e.edgeGeometry.targetArrowhead.length,
+      getArrowType: 'none',
       getWidth: 1,
       opacity: 0.5,
     })

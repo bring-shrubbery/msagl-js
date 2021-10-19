@@ -8,6 +8,8 @@ import {
   CurveFactory,
   Point,
   Size,
+  MdsLayoutSettings,
+  layoutGraph,
 } from 'msagl-js'
 
 import Renderer from './renderer'
@@ -50,13 +52,15 @@ async function main() {
     setNode(g, node.character, wh)
   }
   for (const edge of data.links) {
-    g.setEdge(nodeMap[edge.source].character, nodeMap[edge.target].character)
+    const e = g.setEdge(
+      nodeMap[edge.source].character,
+      nodeMap[edge.target].character,
+    )
+    e.edgeGeometry.targetArrowhead = null
   }
 
-  const layoutSettings = new SugiyamaLayoutSettings()
-  const layout = new LayeredLayout(g, layoutSettings, new CancelToken())
-  layout.run()
-
+  const layoutSettings = new MdsLayoutSettings()
+  layoutGraph(g, null, () => layoutSettings)
   new Renderer(g)
 }
 
