@@ -1,11 +1,8 @@
-import {Point} from '../../../../src'
-import {
-  LineSegment,
-  Polyline,
-  GeomConstants,
-} from '../../../../src/math/geometry'
-import {Polygon} from '../../../../src/routing/visibility/Polygon'
-
+import {GeomConstants} from '@/src/math/geometry/geomConstants'
+import {LineSegment} from '@/src/math/geometry/lineSegment'
+import {Point} from '@/src/math/geometry/point'
+import {Polyline} from '@/src/math/geometry/polyline'
+import {Polygon} from '@/src/routing/visibility/Polygon'
 test('more polygon dist', () => {
   const pls = GetPolylines()
   const point = new Point(373, 274)

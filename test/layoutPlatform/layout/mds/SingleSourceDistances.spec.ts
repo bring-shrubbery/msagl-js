@@ -1,16 +1,14 @@
-import {
-  Node,
-  Graph,
-  Edge,
-  CurveFactory,
-  Point,
-  GeomEdge,
-  GeomNode,
-} from '../../../../src'
-import {GeomObject} from '../../../../src/layout/core/geomObject'
-import {SingleSourceDistances} from '../../../../src/layout/mds/SingleSourceDistances'
-import {closeDistEps} from '../../../../src/utils/compare'
-import {createGeometry} from '../../../utils/testUtils'
+import {GeomEdge} from '@/src/layout/core/geomEdge'
+import {GeomNode} from '@/src/layout/core/geomNode'
+import {GeomObject} from '@/src/layout/core/geomObject'
+import {SingleSourceDistances} from '@/src/layout/mds/SingleSourceDistances'
+import {CurveFactory} from '@/src/math/geometry/curveFactory'
+import {Point} from '@/src/math/geometry/point'
+import {Edge} from '@/src/structs/edge'
+import {Graph} from '@/src/structs/graph'
+import {Node} from '@/src/structs/node'
+import {closeDistEps} from '@/src/utils/compare'
+import {createGeometry} from '@/test/utils/testUtils'
 
 test('single source distances', () => {
   const graph = new Graph()

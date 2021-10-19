@@ -1,4 +1,4 @@
-import {BimodalSequence} from '../../../../src/routing/visibility/BimodalSequence'
+import {BimodalSequence} from '@/src/routing/visibility/BimodalSequence'
 test('unimodal sequence', () => {
   let t = [0, 1, 2, 3, 1, 0, -1, -2, -3, -4, -2]
   const f = (m: number) => t[m]

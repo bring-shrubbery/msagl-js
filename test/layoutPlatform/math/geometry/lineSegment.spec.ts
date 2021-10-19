@@ -1,8 +1,8 @@
-//
-
-import {Point} from '../../../../src'
-import {LineSegment, GeomConstants} from '../../../../src/math/geometry'
-import {closeDistEps} from '../../../../src/utils/compare'
+// import {ICurve} from '@/src/math/geometry/icurve';
+import {GeomConstants} from '@/src/math/geometry/geomConstants'
+import {LineSegment} from '@/src/math/geometry/lineSegment'
+import {Point} from '@/src/math/geometry/point'
+import {closeDistEps} from '@/src/utils/compare'
 
 test('lineSegment basic case', () => {
   const a = new LineSegment(0, 0, 1, 1)

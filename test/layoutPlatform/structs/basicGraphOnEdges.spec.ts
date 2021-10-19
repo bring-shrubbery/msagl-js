@@ -1,6 +1,8 @@
-import {mkGraphOnEdgesArray} from '../../../src/structs/basicGraphOnEdges'
-import {IEdge} from '../../../src/structs/iedge'
-
+import {
+  BasicGraphOnEdges,
+  mkGraphOnEdgesArray,
+} from '@/src/structs/basicGraphOnEdges'
+import {IEdge} from '@/src/structs/iedge'
 class myedge implements IEdge {
   source: number
   target: number

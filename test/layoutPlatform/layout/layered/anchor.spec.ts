@@ -1,15 +1,16 @@
-import {Node, Point, CurveFactory, GeomNode} from '../../../../src'
-import {Anchor} from '../../../../src/layout/layered/anchor'
-import {
-  LineSegment,
-  Curve,
-  GeomConstants,
-  Polyline,
-} from '../../../../src/math/geometry'
-import {DebugCurve} from '../../../../src/math/geometry/debugCurve'
-import {IntersectionInfo} from '../../../../src/math/geometry/intersectionInfo'
-import {closeDistEps} from '../../../../src/utils/compare'
-import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
+import {GeomNode} from '@/src/layout/core/geomNode'
+import {Anchor} from '@/src/layout/layered/anchor'
+import {CurveFactory} from '@/src/math/geometry/curveFactory'
+import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
+import {Point} from '@/src/math/geometry/point'
+import {Polyline} from '@/src/math/geometry/polyline'
+import {LineSegment} from '@/src/math/geometry/lineSegment'
+import {Curve} from '@/src/math/geometry/curve'
+import {IntersectionInfo} from '@/src/math/geometry/intersectionInfo'
+import {Node} from '@/src/structs/node'
+import {GeomConstants} from '@/src/math/geometry/geomConstants'
+import {DebugCurve} from '@/src/math/geometry/debugCurve'
+import {closeDistEps} from '@/src/utils/compare'
 
 function paddingIsCorrectOnLineSeg(
   ls: LineSegment,

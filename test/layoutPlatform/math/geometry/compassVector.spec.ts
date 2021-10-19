@@ -1,5 +1,6 @@
-import {Point} from '../../../../src'
-import {CompassVector, Direction} from '../../../../src/math/geometry'
+import {CompassVector} from '@/src/math/geometry/compassVector'
+import {Direction} from '@/src/math/geometry/direction'
+import {Point} from '@/src/math/geometry/point'
 
 test('rotate', () => {
   const north = new CompassVector(Direction.North)

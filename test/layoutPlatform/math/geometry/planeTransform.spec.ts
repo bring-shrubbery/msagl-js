@@ -1,7 +1,6 @@
-import {Point} from '../../../../src'
-import {GeomConstants} from '../../../../src/math/geometry'
-import {PlaneTransformation} from '../../../../src/math/geometry/planeTransformation'
-
+import {PlaneTransformation} from '@/src/math/geometry/planeTransformation'
+import {Point} from '@/src/math/geometry/point'
+import {GeomConstants} from '@/src/math/geometry/geomConstants'
 test('mult point test', () => {
   const m = PlaneTransformation.rotation(Math.PI / 2)
   const p = new Point(1, 0)

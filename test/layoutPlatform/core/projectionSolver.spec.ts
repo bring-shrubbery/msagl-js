@@ -1,7 +1,6 @@
-import {Solver} from '../../../src/core/projectionSolver/Solver'
-import {Variable} from '../../../src/core/projectionSolver/Variable'
-import {closeDistEps} from '../../../src/utils/compare'
-
+import {Solver} from '@/src/core/projectionSolver/Solver'
+import {Variable} from '@/src/core/projectionSolver/Variable'
+import {closeDistEps} from '@/src/utils/compare'
 test('two vars test', () => {
   const s = new Solver()
   const v0 = s.AddVariableAN('v0', 0)

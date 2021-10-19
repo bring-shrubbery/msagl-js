@@ -1,19 +1,18 @@
-import {
-  Node,
-  GeomNode,
-  CurveFactory,
-  Point,
-  Edge,
-  GeomEdge,
-  GeomLabel,
-  Rectangle,
-  Graph,
-  GeomGraph,
-} from '../../../../src'
-import {Arrowhead} from '../../../../src/layout/core/arrowhead'
-import {LineSegment} from '../../../../src/math/geometry'
-import {Label} from '../../../../src/structs/label'
-import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
+import {Node} from '@/src/structs/node'
+
+import {Edge} from '@/src/structs/edge'
+import {Graph} from '@/src/structs/graph'
+import {GeomNode} from '@/src/layout/core/geomNode'
+import {GeomEdge} from '@/src/layout/core/geomEdge'
+import {GeomLabel} from '@/src/layout/core/geomLabel'
+import {GeomGraph} from '@/src/layout/core/GeomGraph'
+import {Arrowhead} from '@/src/layout/core/arrowhead'
+import {Rectangle} from '@/src/math/geometry/rectangle'
+import {CurveFactory} from '@/src/math/geometry/curveFactory'
+import {Point} from '@/src/math/geometry/point'
+import {LineSegment} from '@/src/math/geometry/lineSegment'
+import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
+import {Label} from '@/src/structs/label'
 
 describe('arrowhead', () => {
   test('trim edge no arrowheads', () => {

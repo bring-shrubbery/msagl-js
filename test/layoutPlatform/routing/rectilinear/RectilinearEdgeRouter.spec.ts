@@ -9,16 +9,16 @@ import {
   ICurve,
   Edge,
   GeomEdge,
-  Size,
-} from '../../../../src'
-import {EdgeRoutingMode} from '../../../../src/core/routing/EdgeRoutingMode'
-import {GeomObject} from '../../../../src/layout/core/geomObject'
-import {RectilinearEdgeRouter} from '../../../../src/routing/rectilinear/RectilinearEdgeRouter'
-import {IntPairSet} from '../../../../src/utils/IntPairSet'
-import {initRandom, randomInt} from '../../../../src/utils/random'
-import {DrawingGraph} from '../../../drawing/drawingGraph'
-import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
-import {runMDSLayoutNoSubgraphs} from '../../../utils/testUtils'
+} from '@/src'
+import {DrawingGraph} from '@/test/drawing/drawingGraph'
+import {EdgeRoutingMode} from '@/src/core/routing/EdgeRoutingMode'
+import {GeomObject} from '@/src/layout/core/geomObject'
+import {Size} from '@/src/math/geometry/rectangle'
+import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
+import {RectilinearEdgeRouter} from '@/src/routing/rectilinear/RectilinearEdgeRouter'
+import {IntPairSet} from '@/src/utils/IntPairSet'
+import {initRandom, randomInt} from '@/src/utils/random'
+import {runMDSLayoutNoSubgraphs} from '@/test/utils/testUtils'
 
 import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
 test('empty graph', () => {

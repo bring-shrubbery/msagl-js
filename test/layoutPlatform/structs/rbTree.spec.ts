@@ -1,8 +1,7 @@
-import {RBColor} from '../../../src/structs/RBTree/rbColor'
-import {RBNode} from '../../../src/structs/RBTree/rbNode'
-import {RBTree} from '../../../src/structs/RBTree/rbTree'
-import {randomInt} from '../../../src/utils/random'
-
+import {RBColor} from '@/src/structs/RBTree/rbColor'
+import {RBNode} from '@/src/structs/RBTree/rbNode'
+import {randomInt} from '@/src/utils/random'
+import {RBTree} from '@/src/structs/RBTree/rbTree'
 export class RbTreeUtils {
   static getRandomArray(size: number, upperBound = 1000): number[] {
     const arr: number[] = []

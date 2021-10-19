@@ -1,15 +1,13 @@
-import {
-  Node,
-  CurveFactory,
-  Edge,
-  GeomEdge,
-  GeomNode,
-  Graph,
-  Point,
-} from '../../../../src'
-import {GeomObject} from '../../../../src/layout/core/geomObject'
-import {AllPairsDistances} from '../../../../src/layout/mds/AllPairsDistances'
-import {createGeometry} from '../../../utils/testUtils'
+import {GeomEdge} from '@/src/layout/core/geomEdge'
+import {GeomNode} from '@/src/layout/core/geomNode'
+import {GeomObject} from '@/src/layout/core/geomObject'
+import {AllPairsDistances} from '@/src/layout/mds/AllPairsDistances'
+import {CurveFactory} from '@/src/math/geometry/curveFactory'
+import {Point} from '@/src/math/geometry/point'
+import {Edge} from '@/src/structs/edge'
+import {Graph} from '@/src/structs/graph'
+import {Node} from '@/src/structs/node'
+import {createGeometry} from '@/test/utils/testUtils'
 
 test('all pairs distances', () => {
   const graph = new Graph()

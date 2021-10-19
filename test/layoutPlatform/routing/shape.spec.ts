@@ -1,4 +1,4 @@
-import {Shape} from '../../../src/routing/shape'
+import {Shape} from '@/src/routing/shape'
 
 test('parents', () => {
   const a = new Shape(null)

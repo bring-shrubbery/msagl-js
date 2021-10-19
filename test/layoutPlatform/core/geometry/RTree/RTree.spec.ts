@@ -1,7 +1,8 @@
 import {from} from 'linq-to-typescript'
-import {Rectangle, Point} from '../../../../../src'
-import {mkRTree} from '../../../../../src/core/geometry/RTree/RTree'
-import {randomInt} from '../../../../../src/utils/random'
+import {mkRTree} from '@/src/core/geometry/RTree/RTree'
+import {Point} from '@/src/math/geometry/point'
+import {Rectangle} from '@/src/math/geometry/rectangle'
+import {randomInt} from '@/src/utils/random'
 
 test('RTreeQuery_IncrementalRectangles', () => {
   const RectsCount = 100

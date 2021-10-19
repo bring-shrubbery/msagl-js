@@ -1,4 +1,4 @@
-import {Graph} from '../../src'
+import {Graph} from '@/src/structs/graph'
 import {DrawingNode} from './drawingNode'
 import {DrawingObject} from './drawingObject'
 

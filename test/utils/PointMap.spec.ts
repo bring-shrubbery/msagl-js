@@ -1,4 +1,4 @@
-import {PointMap} from '../../src/utils/PointMap'
+import {PointMap} from '@/src/utils/PointMap'
 
 test('PointMap', () => {
   const m = new PointMap<number>()

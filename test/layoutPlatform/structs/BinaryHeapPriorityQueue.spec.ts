@@ -1,5 +1,4 @@
-import {BinaryHeapPriorityQueue} from '../../../src/structs/BinaryHeapPriorityQueue'
-
+import {BinaryHeapPriorityQueue} from '@/src/structs/BinaryHeapPriorityQueue'
 test('push many', () => {
   const q = new BinaryHeapPriorityQueue(31)
   for (let i = 0; i < 30; i++) {

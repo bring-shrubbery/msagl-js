@@ -1,5 +1,5 @@
-import {Graph, Node} from '../../../src'
-
+import {Node} from '@/src/structs/node'
+import {Graph} from '@/src/structs/graph'
 test('entity graphs', () => {
   const c = new Graph('c')
   const b = new Graph('b')
