@@ -5,7 +5,7 @@ import {LayerDirectionEnum} from '@/src/layout/layered/layerDirectionEnum'
 import {ShapeEnum} from './shapeEnum'
 import {StyleEnum} from './styleEnum'
 import {RankEnum} from './rankEnum'
-import {OrderingEnum, DirTypeEnum} from '@/test/utils/dotparser'
+import {DirTypeEnum, OrderingEnum} from '../utils/dotparser'
 
 export abstract class DrawingObject {
   attrCont: AttrContainer // this is the field from main graph - keep the connection with the underlying graph

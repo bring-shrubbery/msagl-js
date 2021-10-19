@@ -8,7 +8,6 @@ import {CancelToken} from '@/src/utils/cancelToken'
 import {GeomGraph} from '@/src/layout/core/GeomGraph'
 import {GeomObject} from '@/src/layout/core/geomObject'
 import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
-import {parseDotGraph, parseDotString} from '@/test/utils/dotparser'
 import {StringBuilder} from 'typescript-string-operations'
 import {LayerDirectionEnum} from '@/src/layout/layered/layerDirectionEnum'
 import {Rectangle, Size} from '@/src/math/geometry/rectangle'
@@ -31,6 +30,7 @@ import {
 import {CurveFactory} from '@/src/math/geometry/curveFactory'
 import {Point} from '@/src/math/geometry/point'
 import {DrawingGraph} from '@/src/drawing/drawingGraph'
+import {parseDotString, parseDotGraph} from '@/src/utils/dotparser'
 
 type P = [number, number]
 

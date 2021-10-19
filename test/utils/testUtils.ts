@@ -16,8 +16,8 @@ import {
 } from '@/src'
 import {EdgeRoutingMode} from '@/src/core/routing/EdgeRoutingMode'
 import {SvgDebugWriter} from './svgDebugWriter'
+import {parseDotGraph} from '@/src/utils/dotparser'
 // import {Assert} from '@/src/utils/assert'
-import {parseDotGraph} from './dotparser'
 export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   const s = e.source.id + '->' + e.target.id
   return (

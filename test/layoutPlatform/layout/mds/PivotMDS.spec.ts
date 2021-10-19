@@ -126,7 +126,7 @@ test('layout from 250 and up  gv files with MDS', () => {
   // let i = 0
   // for (const f of sortedList) {
   //   if (f.match('big(.*).gv')) continue // the parser bug
-  //   if (i++ < 250) continue
+  //   if (i++ < 250) continueP
   //   let dg: DrawingGraph
   //   try {
   //     dg = runMDSLayout(join(path, f))

@@ -11,8 +11,8 @@ import {ShapeEnum} from '@/src/drawing/shapeEnum'
 import {StyleEnum} from '@/src/drawing/styleEnum'
 import {Label} from '@/src/structs/label'
 import parse from 'dotparser'
-import colorParser = require('parse-color')
 import * as fs from 'fs'
+import parseColor from 'parse-color'
 
 export enum OrderingEnum {
   in,
@@ -113,19 +113,19 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
       const str = attr.eq
       switch (attr.id) {
         case 'color':
-          drawingObj.color = parseColor(str)
+          drawingObj.color = localParseColor(str)
           break
         case 'pencolor':
-          drawingObj.pencolor = parseColor(str)
+          drawingObj.pencolor = localParseColor(str)
           break
         case 'labelfontcolor':
-          drawingObj.labelfontcolor = parseColor(str)
+          drawingObj.labelfontcolor = localParseColor(str)
           break
         case 'fontcolor':
-          drawingObj.fontColor = parseColor(str)
+          drawingObj.fontColor = localParseColor(str)
           break
         case 'fillcolor':
-          drawingObj.fillColor = parseColor(str)
+          drawingObj.fillColor = localParseColor(str)
           break
         case 'style':
           drawingObj.styleEnum = styleEnumFromString(str)
@@ -241,7 +241,7 @@ function fillDrawingObjectAttrs(o: any, drawingObj: DrawingObject) {
           drawingObj.ltail = str
           break
         case 'bgcolor':
-          drawingObj.bgcolor = parseColor(str)
+          drawingObj.bgcolor = localParseColor(str)
           break
         case 'center':
           drawingObj.center = str == true || parseInt(str) == 1
@@ -482,8 +482,8 @@ function process_same_rank(o: any, dg: DrawingGraph): boolean {
       return false
   }
 }
-function parseColor(s: string): Color {
-  const p = colorParser(s)
+function localParseColor(s: string): Color {
+  const p = parseColor(s)
   if (p != null) {
     if (p.rgba != null) {
       return new Color(p.rgba[3] * 255, p.rgba[0], p.rgba[1], p.rgba[2])
