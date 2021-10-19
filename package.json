@@ -17,7 +17,7 @@
   "license": "MIT",
   "scripts": {
     "test": "jest",
-    "build": "rm -rf dist && tsc",
+    "build": "rm -rf dist && tsc --project tsconfig.prod.json",
     "eslint": "eslint src",
     "prettier": "prettier --write src/**"
   },

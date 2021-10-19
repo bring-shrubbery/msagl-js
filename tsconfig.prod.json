@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es2018",
+    "target": "ES6",
+    "moduleResolution": "node",
     "declaration": true,
+    "outDir": "./dist",
+    "sourceMap": true,
     "noImplicitAny": true,
     "lib": [
       "dom",
-      "es2018"
+      "es6"
     ],
+    "importHelpers": true,
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
@@ -16,15 +19,11 @@
       ],
       "@/src/*": [
         "src/*"
-      ],
-      "@/test/*": [
-        "test/*"
       ]
     }
   },
   "include": [
-    "src/**/*",
-    "test/**/*"
+    "src/**/*"
   ],
   "typeRoots": [
     "./node_modules/@types/"

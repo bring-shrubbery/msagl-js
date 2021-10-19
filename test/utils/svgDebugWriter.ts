@@ -13,9 +13,9 @@ import {allVerticesOfParall} from '@/src/math/geometry/parallelogram'
 import {GeomEdge} from '@/src/layout/core/geomEdge'
 import {GeomGraph} from '@/src/layout/core/GeomGraph'
 import {PlaneTransformation} from '@/src/math/geometry/planeTransformation'
-import fs = require('fs')
+import * as fs from 'fs'
 // @ts-ignore
-import xmlw = require('xml-writer')
+import xmlw from 'xml-writer'
 // @ts-check
 export class SvgDebugWriter {
   // Here we import the File System module of node
