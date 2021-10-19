@@ -20,8 +20,6 @@ function setNode(
   g: GeomGraph,
   id: string,
   size: {width: number; height: number},
-  xRad: number,
-  yRad: number,
 ): GeomNode {
   let node = g.graph.findNode(id)
   if (node == null) {
@@ -31,8 +29,8 @@ function setNode(
   geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
     size.width,
     size.height,
-    xRad,
-    yRad,
+    1,
+    1,
     new Point(0, 0),
   )
   return geomNode
@@ -49,7 +47,7 @@ async function main() {
   for (const node of data.nodes) {
     nodeMap[node.id] = node
     const wh = measureTextSize(node.character)
-    setNode(g, node.character, wh, wh.width / 10, wh.height / 10)
+    setNode(g, node.character, wh)
   }
   for (const edge of data.links) {
     g.setEdge(nodeMap[edge.source].character, nodeMap[edge.target].character)
