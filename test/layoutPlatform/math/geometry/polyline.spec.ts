@@ -1,11 +1,8 @@
-import {LineSegment} from '@/src/math/geometry/lineSegment'
-import {Point} from '@/src/math/geometry/point'
-import {Polyline} from '@/src/math/geometry/polyline'
-import {Curve} from '@/src/math/geometry/curve'
-import {PlaneTransformation} from '@/src/math/geometry/planeTransformation'
-import {DebugCurve} from '@/src/math/geometry/debugCurve'
-import {CurveFactory} from '@/src/math/geometry/curveFactory'
 import {from} from 'linq-to-typescript'
+import {Point, CurveFactory} from '../../../../src'
+import {Polyline, LineSegment, Curve} from '../../../../src/math/geometry'
+import {DebugCurve} from '../../../../src/math/geometry/debugCurve'
+import {PlaneTransformation} from '../../../../src/math/geometry/planeTransformation'
 test('polyline test iterator', () => {
   const poly = new Polyline()
   const ps = [

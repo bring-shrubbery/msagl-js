@@ -1,27 +1,7 @@
-import {SugiyamaLayoutSettings} from '@/src/layout/layered/SugiyamaLayoutSettings'
 import {SortedMap} from '@esfx/collections-sortedmap'
-import {LayeredLayout} from '@/src/layout/layered/layeredLayout'
-import {Graph} from '@/src/structs/graph'
-import {GeomNode} from '@/src/layout/core/geomNode'
-import {GeomEdge} from '@/src/layout/core/geomEdge'
-import {CancelToken} from '@/src/utils/cancelToken'
-import {GeomGraph} from '@/src/layout/core/GeomGraph'
-import {GeomObject} from '@/src/layout/core/geomObject'
-import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
-import {parseDotGraph, parseDotString} from '@/test/utils/dotparser'
-import {StringBuilder} from 'typescript-string-operations'
-import {LayerDirectionEnum} from '@/src/layout/layered/layerDirectionEnum'
-import {Rectangle, Size} from '@/src/math/geometry/rectangle'
 
 import {join} from 'path'
 import fs = require('fs')
-import {DrawingGraph} from '@/test/drawing/drawingGraph'
-import {Arrowhead} from '@/src/layout/core/arrowhead'
-import {Node} from '@/src/structs/node'
-import {Edge} from '@/src/structs/edge'
-import {LineSegment} from '@/src/math/geometry/lineSegment'
-import {sortedList} from '../sortedBySizeListOfgvFiles'
-import {layoutGraph} from '@/src/layout/driver'
 import {
   createGeometry,
   nodeBoundaryFunc,
@@ -29,8 +9,31 @@ import {
   outputGraph,
   edgeString,
 } from '../../../utils/testUtils'
-import {CurveFactory} from '@/src/math/geometry/curveFactory'
-import {Point} from '@/src/math/geometry/point'
+import {StringBuilder} from 'typescript-string-operations'
+import {
+  Node,
+  GeomGraph,
+  GeomNode,
+  CurveFactory,
+  Point,
+  Rectangle,
+  LayeredLayout,
+  SugiyamaLayoutSettings,
+  CancelToken,
+  Size,
+  LayerDirectionEnum,
+  Graph,
+  Edge,
+  layoutGraph,
+  GeomEdge,
+} from '../../../../src'
+import {Arrowhead} from '../../../../src/layout/core/arrowhead'
+import {GeomObject} from '../../../../src/layout/core/geomObject'
+import {LineSegment} from '../../../../src/math/geometry'
+import {sortedList} from '../../../data/sortedBySizeListOfgvFiles'
+import {DrawingGraph} from '../../../drawing/drawingGraph'
+import {parseDotString, parseDotGraph} from '../../../utils/dotparser'
+import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
 
 type P = [number, number]
 

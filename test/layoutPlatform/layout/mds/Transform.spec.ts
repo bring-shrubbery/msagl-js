@@ -1,6 +1,5 @@
-import {Transform} from '@/src/layout/mds/Transform'
-import {Point} from '@/src/math/geometry/point'
-import {closeDistEps} from '@/src/utils/compare'
+import {Transform} from '../../../../src/layout/mds/Transform'
+import {closeDistEps} from '../../../../src/utils/compare'
 
 test('transform.rotate', () => {
   const x = [1, 1]

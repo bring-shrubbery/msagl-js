@@ -1,13 +1,13 @@
-import {MdsGraphLayout} from '@/src/layout/mds/MDSGraphLayout'
-import {MdsLayoutSettings} from '@/src/layout/mds/MDSLayoutSettings'
-import {PivotDistances} from '@/src/layout/mds/PivotDistances'
-import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
-import {parseDotGraph} from '@/test/utils/dotparser'
+import {MdsLayoutSettings} from '../../../../src'
+import {MdsGraphLayout} from '../../../../src/layout/mds/MDSGraphLayout'
+import {PivotDistances} from '../../../../src/layout/mds/PivotDistances'
+import {parseDotGraph} from '../../../utils/dotparser'
+import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
 import {
   createGeometry,
   nodeBoundaryFunc,
   labelRectFunc,
-} from '@/test/utils/testUtils'
+} from '../../../utils/testUtils'
 
 test('pivot distances', () => {
   const dg = parseDotGraph('test/data/graphvis/abstract.gv')

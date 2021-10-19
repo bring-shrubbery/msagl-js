@@ -1,14 +1,16 @@
-import {LineSegment} from '@/src/math/geometry/lineSegment'
-import {Ellipse} from '@/src/math/geometry/ellipse'
-import {Point} from '@/src/math/geometry/point'
-import {Curve, interpolateICurve} from '@/src/math/geometry/curve'
-import {PlaneTransformation} from '@/src/math/geometry/planeTransformation'
-import {CurveFactory} from '@/src/math/geometry/curveFactory'
-import {BezierSeg} from '@/src/math/geometry/bezierSeg'
-import {ICurve} from '@/src/math/geometry/icurve'
-import {Rectangle} from '@/src/math/geometry/rectangle'
-import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
-import {closeDistEps} from '@/src/utils/compare'
+import {
+  CurveFactory,
+  Point,
+  interpolateICurve,
+  ICurve,
+  Rectangle,
+} from '../../../../src'
+import {Curve, LineSegment} from '../../../../src/math/geometry'
+import {BezierSeg} from '../../../../src/math/geometry/bezierSeg'
+import {Ellipse} from '../../../../src/math/geometry/ellipse'
+import {PlaneTransformation} from '../../../../src/math/geometry/planeTransformation'
+import {closeDistEps} from '../../../../src/utils/compare'
+import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
 
 test('polylineAroundClosedCurve', () => {
   const c = CurveFactory.mkRectangleWithRoundedCorners(

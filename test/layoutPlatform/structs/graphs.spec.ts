@@ -1,7 +1,6 @@
-import {Graph, shallowConnectedComponents} from '@/src/structs/graph'
-import {Edge} from '@/src/structs/edge'
-import {Node} from '@/src/structs/node'
-import {Rectangle} from '@/src/math/geometry/rectangle'
+import {Node, Graph, Edge, Rectangle} from '../../../src'
+import {shallowConnectedComponents} from '../../../src/structs/graph'
+
 test('graph create', () => {
   const g = new Graph()
   expect(g.shallowNodeCount).toBe(0)

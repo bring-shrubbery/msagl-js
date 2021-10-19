@@ -1,13 +1,10 @@
-import {Direction} from '@/src/math/geometry/direction'
-import {LineSegment} from '@/src/math/geometry/lineSegment'
-import {Point} from '@/src/math/geometry/point'
-import {Polyline} from '@/src/math/geometry/polyline'
-import {Rectangle} from '@/src/math/geometry/rectangle'
-import {StaticGraphUtility} from '@/src/routing/rectilinear/StaticGraphUtility'
-import {LeftObstacleSide} from '@/src/routing/spline/coneSpanner/LeftObstacleSide'
-import {VisibilityEdge} from '@/src/routing/visibility/VisibilityEdge'
-import {VisibilityGraph} from '@/src/routing/visibility/VisibilityGraph'
-import {VisibilityVertex} from '@/src/routing/visibility/VisibilityVertex'
+import {Point, Rectangle} from '../../../../src'
+import {Direction, Polyline, LineSegment} from '../../../../src/math/geometry'
+import {StaticGraphUtility} from '../../../../src/routing/rectilinear/StaticGraphUtility'
+import {LeftObstacleSide} from '../../../../src/routing/spline/coneSpanner/LeftObstacleSide'
+import {VisibilityEdge} from '../../../../src/routing/visibility/VisibilityEdge'
+import {VisibilityGraph} from '../../../../src/routing/visibility/VisibilityGraph'
+import {VisibilityVertex} from '../../../../src/routing/visibility/VisibilityVertex'
 
 test('EdgeDirectionVE', () => {
   const ve = new VisibilityEdge(

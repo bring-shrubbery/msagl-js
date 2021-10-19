@@ -1,15 +1,12 @@
-// import {ICurve} from '@/src/math/geometry/icurve';
+//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {LineSegment} from '@/src/math/geometry/lineSegment'
-import {Point} from '@/src/math/geometry/point'
-import {DebugCurve} from '@/src/math/geometry/debugCurve'
-import {Curve} from '@/src/math/geometry/curve'
-import {CurveFactory} from '@/src/math/geometry/curveFactory'
-import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
+
+import {Point} from '../../../../src'
+import {GeomConstants, Curve} from '../../../../src/math/geometry'
+import {Ellipse} from '../../../../src/math/geometry/ellipse'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Ellipse} from '@/src/math/geometry/ellipse'
-import {GeomConstants} from '@/src/math/geometry/geomConstants'
+
 test('ellipse value test', () => {
   const a = new Point(100, 0)
   const b = new Point(0, 200)

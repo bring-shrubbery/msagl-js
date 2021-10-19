@@ -1,9 +1,9 @@
 import {DrawingObject} from './drawingObject'
-import {Node} from '@/src/structs/node'
+
 import {Color} from './color'
 import {ShapeEnum} from './shapeEnum'
 import {DrawingLabel} from './drawingLabel'
-
+import {Node} from '../../src'
 export class DrawingNode extends DrawingObject {
   label: DrawingLabel
   padding = 2

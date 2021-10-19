@@ -1,11 +1,8 @@
-import {GeomNode} from '@/src/layout/core/geomNode'
-import {CurveFactory} from '@/src/math/geometry/curveFactory'
-import {Point} from '@/src/math/geometry/point'
-import {Rectangle} from '@/src/math/geometry/rectangle'
-import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
-import {DebugCurve} from '@/src/math/geometry/debugCurve'
-import {Node} from '@/src/structs/node'
-import {closeDistEps} from '@/src/utils/compare'
+import {Node, CurveFactory, Point, GeomNode, Rectangle} from '../../../../src'
+import {DebugCurve} from '../../../../src/math/geometry/debugCurve'
+import {closeDistEps} from '../../../../src/utils/compare'
+import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
+
 test('node fit', () => {
   const boundary = CurveFactory.mkRectangleWithRoundedCorners(
     100,

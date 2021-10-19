@@ -1,12 +1,12 @@
 import {from} from 'linq-to-typescript'
-import {MstOnDelaunayTriangulation} from '@/src/layout/GTreeOverlapRemoval/MstOnDelaunayTriangulation'
-import {DebugCurve} from '@/src/math/geometry/debugCurve'
-import {LineSegment} from '@/src/math/geometry/lineSegment'
-import {Point} from '@/src/math/geometry/point'
-import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
-import {Cdt} from '@/src/routing/ConstrainedDelaunayTriangulation/Cdt'
-import {CdtSweeper} from '@/src/routing/ConstrainedDelaunayTriangulation/CdtSweeper'
-import {random} from '@/src/utils/random'
+import {Point} from '../../../../src'
+import {MstOnDelaunayTriangulation} from '../../../../src/layout/GTreeOverlapRemoval/MstOnDelaunayTriangulation'
+import {LineSegment} from '../../../../src/math/geometry'
+import {DebugCurve} from '../../../../src/math/geometry/debugCurve'
+import {Cdt} from '../../../../src/routing/ConstrainedDelaunayTriangulation/Cdt'
+import {CdtSweeper} from '../../../../src/routing/ConstrainedDelaunayTriangulation/CdtSweeper'
+import {random} from '../../../../src/utils/random'
+import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
 
 test('gtree on CDT', () => {
   const count = 100

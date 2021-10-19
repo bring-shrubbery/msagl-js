@@ -1,5 +1,4 @@
-import {GeomConstants} from '@/src/math/geometry/geomConstants'
-import {PointComparer} from '@/src/routing/rectilinear/PointComparer'
+import {PointComparer} from '../../../../src/routing/rectilinear/PointComparer'
 
 test('equal', () => {
   expect(PointComparer.Equal(1.0, 1.0000001)).toBe(true)

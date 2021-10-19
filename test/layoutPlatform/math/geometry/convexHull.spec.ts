@@ -1,10 +1,8 @@
-import {IEnumerable} from 'linq-to-typescript'
-import {ConvexHull} from '@/src/math/geometry/convexHull'
-import {Curve, PointLocation} from '@/src/math/geometry/curve'
-import {DebugCurve} from '@/src/math/geometry/debugCurve'
-import {Point} from '@/src/math/geometry/point'
-import {Polyline} from '@/src/math/geometry/polyline'
-import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
+import {Point} from '../../../../src'
+import {Polyline, Curve, PointLocation} from '../../../../src/math/geometry'
+import {ConvexHull} from '../../../../src/math/geometry/convexHull'
+import {DebugCurve} from '../../../../src/math/geometry/debugCurve'
+import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
 
 test('repeated points', () => {
   const expected = [

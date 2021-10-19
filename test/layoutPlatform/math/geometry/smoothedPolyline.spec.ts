@@ -1,7 +1,7 @@
-import {SmoothedPolyline} from '@/src/math/geometry/smoothedPolyline'
-import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
-import {Polyline} from '@/src/math/geometry/polyline'
-import {Point} from '@/src/math/geometry/point'
+import {Point} from '../../../../src'
+import {Polyline} from '../../../../src/math/geometry'
+import {SmoothedPolyline} from '../../../../src/math/geometry/smoothedPolyline'
+import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
 
 test('smooth test', () => {
   const ps = [

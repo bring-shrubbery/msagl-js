@@ -1,7 +1,3 @@
-import {LineSegment} from '@/src/math/geometry/lineSegment'
-import {Point} from '@/src/math/geometry/point'
-import {BinaryHeapWithComparer} from '@/src/structs/BinaryHeapWithComparer'
-
 test('lines', () => {
   const short = LineSegment.mkPP(new Point(0, 0), new Point(1, 0))
   const medium = LineSegment.mkPP(new Point(0, 0), new Point(2, 0))

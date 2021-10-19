@@ -1,4 +1,4 @@
-import {Interval} from '@/src/core/geometry/Interval'
+import {Interval} from '../../../../src/core/geometry/Interval'
 
 test('interval add', () => {
   const i = new Interval(0, 1)

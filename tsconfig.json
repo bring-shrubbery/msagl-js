@@ -10,21 +10,10 @@
       "dom",
       "es2018"
     ],
+    "rootDirs": ["src"],
     "importHelpers": true,
     "downlevelIteration": true,
-    "esModuleInterop": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/src": [
-        "src/index.ts"
-      ],
-      "@/src/*": [
-        "src/*"
-      ],
-      "@/test/*": [
-        "test/*"
-      ]
-    }
+    "esModuleInterop": true    
   },
   "include": [
     "src/**/*"
