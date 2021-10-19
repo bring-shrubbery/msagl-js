@@ -1,23 +1,18 @@
+import {Edge, Graph, LayerDirectionEnum, Node} from '@/src'
+import {ArrowTypeEnum} from '@/src/drawing/arrawTypeEnum'
+import {Color} from '@/src/drawing/color'
+import {DrawingEdge} from '@/src/drawing/drawingEdge'
+import {DrawingGraph} from '@/src/drawing/drawingGraph'
+import {DrawingLabel} from '@/src/drawing/drawingLabel'
+import {DrawingNode} from '@/src/drawing/drawingNode'
+import {DrawingObject} from '@/src/drawing/drawingObject'
+import {RankEnum} from '@/src/drawing/rankEnum'
+import {ShapeEnum} from '@/src/drawing/shapeEnum'
+import {StyleEnum} from '@/src/drawing/styleEnum'
+import {Label} from '@/src/structs/label'
 import parse from 'dotparser'
-
+import colorParser = require('parse-color')
 import * as fs from 'fs'
-import {Color} from '../drawing/color'
-import {DrawingGraph} from '../drawing/drawingGraph'
-import {DrawingNode} from '../drawing/drawingNode'
-import {Edge} from '../../src/structs/edge'
-import {Graph} from '../../src/structs/graph'
-import {Node} from '../../src/structs/node'
-
-import colorParser from 'parse-color'
-import {StyleEnum} from '../drawing/styleEnum'
-import {ShapeEnum} from '../drawing/shapeEnum'
-import {DrawingObject} from '../drawing/drawingObject'
-import {DrawingEdge} from '../drawing/drawingEdge'
-import {ArrowTypeEnum} from '../drawing/arrawTypeEnum'
-import {RankEnum} from '../drawing/rankEnum'
-import {LayerDirectionEnum} from '../../src/layout/layered/layerDirectionEnum'
-import {Label} from '../../src/structs/label'
-import {DrawingLabel} from '../drawing/drawingLabel'
 
 export enum OrderingEnum {
   in,

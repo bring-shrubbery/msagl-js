@@ -15,7 +15,6 @@ import {Rectangle, Size} from '@/src/math/geometry/rectangle'
 
 import {join} from 'path'
 import * as fs from 'fs'
-import {DrawingGraph} from '@/test/drawing/drawingGraph'
 import {Arrowhead} from '@/src/layout/core/arrowhead'
 import {Node} from '@/src/structs/node'
 import {Edge} from '@/src/structs/edge'
@@ -31,6 +30,7 @@ import {
 } from '../../../utils/testUtils'
 import {CurveFactory} from '@/src/math/geometry/curveFactory'
 import {Point} from '@/src/math/geometry/point'
+import {DrawingGraph} from '@/src/drawing/drawingGraph'
 
 type P = [number, number]
 

@@ -1,10 +1,10 @@
 import {GeomGraph} from '@/src/layout/core'
-import {DrawingGraph} from '@/test/drawing/drawingGraph'
 import {GeomObject} from '@/src/layout/core/geomObject'
 import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
 import {sortedList} from '../sortedBySizeListOfgvFiles'
 import {join} from 'path'
 import {outputGraph, runMDSLayout} from '@/test/utils/testUtils'
+import {DrawingGraph} from '@/src/drawing/drawingGraph'
 
 test('graph with subgraphs', () => {
   const dg = runMDSLayout('test/data/graphvis/clust.gv')

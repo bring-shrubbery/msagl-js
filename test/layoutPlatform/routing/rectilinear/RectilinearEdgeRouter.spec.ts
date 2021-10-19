@@ -10,7 +10,6 @@ import {
   Edge,
   GeomEdge,
 } from '@/src'
-import {DrawingGraph} from '@/test/drawing/drawingGraph'
 import {EdgeRoutingMode} from '@/src/core/routing/EdgeRoutingMode'
 import {GeomObject} from '@/src/layout/core/geomObject'
 import {Size} from '@/src/math/geometry/rectangle'
@@ -21,6 +20,7 @@ import {initRandom, randomInt} from '@/src/utils/random'
 import {runMDSLayoutNoSubgraphs} from '@/test/utils/testUtils'
 
 import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
+import {DrawingGraph} from '@/src/drawing/drawingGraph'
 test('empty graph', () => {
   const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
 
