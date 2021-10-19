@@ -14,7 +14,7 @@ import {LayerDirectionEnum} from '@/src/layout/layered/layerDirectionEnum'
 import {Rectangle, Size} from '@/src/math/geometry/rectangle'
 
 import {join} from 'path'
-import fs = require('fs')
+import * as fs from 'fs'
 import {DrawingGraph} from '@/test/drawing/drawingGraph'
 import {Arrowhead} from '@/src/layout/core/arrowhead'
 import {Node} from '@/src/structs/node'

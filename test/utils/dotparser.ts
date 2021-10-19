@@ -1,6 +1,6 @@
 import parse from 'dotparser'
 
-import fs = require('fs')
+import * as fs from 'fs'
 import {Color} from '../drawing/color'
 import {DrawingGraph} from '../drawing/drawingGraph'
 import {DrawingNode} from '../drawing/drawingNode'
@@ -8,7 +8,7 @@ import {Edge} from '../../src/structs/edge'
 import {Graph} from '../../src/structs/graph'
 import {Node} from '../../src/structs/node'
 
-import colorParser = require('parse-color')
+import colorParser from 'parse-color'
 import {StyleEnum} from '../drawing/styleEnum'
 import {ShapeEnum} from '../drawing/shapeEnum'
 import {DrawingObject} from '../drawing/drawingObject'
