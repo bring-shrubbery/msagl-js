@@ -6,3 +6,4 @@ vscode-profile-*
 .vs
 .vscode
 *.code-workspace
+.DS_Store

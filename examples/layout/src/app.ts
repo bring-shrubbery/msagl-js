@@ -1,10 +1,8 @@
 import {
+  Graph,
   GeomGraph,
-  SugiyamaLayoutSettings,
-  LayeredLayout,
-  CancelToken,
-  Node,
   GeomNode,
+  GeomEdge,
   CurveFactory,
   Point,
   Size,
@@ -12,56 +10,47 @@ import {
   layoutGraph,
 } from 'msagl-js'
 
+import {loadDefaultGraph, loadDotFile} from './load-data'
+import {dropZone} from './drag-n-drop'
 import Renderer from './renderer'
+
+const renderer = new Renderer()
 
 function measureTextSize(str: string): {width: number; height: number} {
   return {width: str.length * 8 + 8, height: 20}
 }
 
-function setNode(
-  g: GeomGraph,
-  id: string,
-  size: {width: number; height: number},
-): GeomNode {
-  let node = g.graph.findNode(id)
-  if (node == null) {
-    g.graph.addNode((node = new Node(id)))
-  }
-  const geomNode = new GeomNode(node)
-  geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
-    size.width,
-    size.height,
-    1,
-    1,
-    new Point(0, 0),
-  )
-  return geomNode
-}
+function render(g: Graph) {
+  document.getElementById('graph-name').innerText = g.id
 
-async function main() {
-  const resp = await fetch(
-    'https://gist.githubusercontent.com/mohdsanadzakirizvi/6fc325042ce110e1afc1a7124d087130/raw/ab9a310cfc2003f26131a7149950947645391e28/got_social_graph.json',
-  )
-  const data = await resp.json()
+  const gg = new GeomGraph(g, new Size(0, 0))
 
-  const nodeMap: any = {}
-  const g = GeomGraph.mk('graph', new Size(0, 0))
-  for (const node of data.nodes) {
-    nodeMap[node.id] = node
-    const wh = measureTextSize(node.character)
-    setNode(g, node.character, wh)
-  }
-  for (const edge of data.links) {
-    const e = g.setEdge(
-      nodeMap[edge.source].character,
-      nodeMap[edge.target].character,
+  for (const node of g.shallowNodes) {
+    const wh = measureTextSize(node.id)
+    const geomNode = new GeomNode(node)
+    geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
+      wh.width,
+      wh.height,
+      1,
+      1,
+      new Point(0, 0),
     )
-    e.edgeGeometry.targetArrowhead = null
+  }
+  for (const edge of g.edges) {
+    new GeomEdge(edge)
   }
 
   const layoutSettings = new MdsLayoutSettings()
-  layoutGraph(g, null, () => layoutSettings)
-  new Renderer(g)
+  layoutGraph(gg, null, () => layoutSettings)
+  renderer.setGraph(gg)
 }
 
-main()
+dropZone('drop-target', async (f: File) => {
+  const graph = await loadDotFile(f)
+  render(graph)
+})
+
+;(async () => {
+  const g = await loadDefaultGraph()
+  render(g)
+})()

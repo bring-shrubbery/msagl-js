@@ -7,9 +7,9 @@ import EdgeLayer from './layers/edge-layer'
 
 export default class Renderer {
   deck: any
-  geomGraph: GeomGraph
+  geomGraph?: GeomGraph
 
-  constructor(geomGraph: GeomGraph) {
+  constructor(geomGraph?: GeomGraph) {
     this.deck = new Deck({
       views: [new OrthographicView({})],
       initialViewState: {
@@ -25,8 +25,17 @@ export default class Renderer {
     console.log(geomGraph)
   }
 
+  setGraph(geomGraph?: GeomGraph) {
+    this.geomGraph = geomGraph
+    if (this.deck.layerManager) {
+      // loaded
+      this.update()
+    }
+  }
+
   update() {
-    const {geomGraph: layout} = this
+    const {geomGraph} = this
+    if (!geomGraph) return
 
     const center = this.geomGraph.boundingBox.center
 
@@ -56,6 +65,7 @@ export default class Renderer {
       id: 'edges',
       data: Array.from(this.geomGraph.edges()),
       getPath: (e) => interpolateICurve(e.curve, 0.5).map((p) => [p.x, p.y]),
+      getColor: (_) => [255 * Math.random(), 128, 255 * Math.random()],
       //getArrowSize: (e)=>e.edgeGeometry.targetArrowhead.length,
       getArrowType: 'none',
       getWidth: 1,
