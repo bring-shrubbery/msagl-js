@@ -1,33 +1,37 @@
-// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Core.Geometry.Curves;
+//  left here means an intersection of a left cone side with an obstacle edge
 
-// namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
+import {Point} from '@/src'
+import {PolylinePoint} from '@/src/math/geometry/polylinePoint'
+import {ConeLeftSide} from './ConeLeftSide'
+import {SweepEvent} from './SweepEvent'
 
-//     // left here means an intersection of a left cone side with an obstacle edge
-//     // <
-//     internal class LeftIntersectionEvent : SweepEvent {
-//         internal ConeLeftSide coneLeftSide;
-//         Point intersectionPoint;
-//         PolylinePoint endVertex;
+export class LeftIntersectionEvent extends SweepEvent {
+  coneLeftSide: ConeLeftSide
 
-//         internal PolylinePoint EndVertex {
-//             get { return endVertex; }
-//         }
+  intersectionPoint: Point
 
-//         internal LeftIntersectionEvent(ConeLeftSide coneLeftSide,
-//             Point intersectionPoint,
-//             PolylinePoint endVertex) {
-//             this.coneLeftSide = coneLeftSide;
-//             this.intersectionPoint = intersectionPoint;
-//             this.endVertex = endVertex;
-//         }
+  endVertex: PolylinePoint
 
-//         internal override Point Site {
-//             get { return intersectionPoint; }
-//         }
+  get EndVertex(): PolylinePoint {
+    return this.endVertex
+  }
 
-//         public override string ToString() {
-//             return "LeftIntersectionEvent " + intersectionPoint;
-//         }
-//     }
-// }
+  constructor(
+    coneLeftSide: ConeLeftSide,
+    intersectionPoint: Point,
+    endVertex: PolylinePoint,
+  ) {
+    super()
+    this.coneLeftSide = coneLeftSide
+    this.intersectionPoint = intersectionPoint
+    this.endVertex = endVertex
+  }
+
+  get Site(): Point {
+    return this.intersectionPoint
+  }
+
+  toString(): string {
+    return 'LeftIntersectionEvent ' + this.intersectionPoint
+  }
+}

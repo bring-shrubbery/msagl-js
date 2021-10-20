@@ -17,6 +17,6 @@ export class ConeRightSide extends ConeSide {
   }
 
   toString(): string {
-    return 'ConeRightSide ' + (this.Start + (' ' + this.Direction))
+    return 'ConeRightSide ' + this.Start + ' ' + this.Direction
   }
 }

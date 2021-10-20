@@ -1,33 +1,39 @@
-// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Core.Geometry.Curves;
+import {Point} from '@/src'
+import {PolylinePoint} from '@/src/math/geometry/polylinePoint'
+import {ConeRightSide} from './ConeRightSide'
+import {SweepEvent} from './SweepEvent'
 
-// namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
+//  right here means an intersection of a right cone side with an obstacle edge
+export class RightIntersectionEvent extends SweepEvent {
+  coneRightSide: ConeRightSide
 
-//     // right here means an intersection of a right cone side with an obstacle edge
-//     // <
-//     internal class RightIntersectionEvent: SweepEvent {
-//         internal ConeRightSide coneRightSide;
-//         Point intersectionPoint;
-//         PolylinePoint endVertex;
+  intersectionPoint: Point
 
-//         internal PolylinePoint EndVertex {
-//             get { return endVertex; }
-//             set { endVertex = value; }
-//         }
+  endVertex: PolylinePoint
 
-//         internal RightIntersectionEvent(ConeRightSide coneRightSide,
-//             Point intersectionPoint, PolylinePoint endVertex) {
-//             this.coneRightSide = coneRightSide;
-//             this.intersectionPoint = intersectionPoint;
-//             this.endVertex = endVertex;
-//         }
+  get EndVertex(): PolylinePoint {
+    return this.endVertex
+  }
+  set EndVertex(value: PolylinePoint) {
+    this.endVertex = value
+  }
 
-//         internal override Point Site {
-//             get { return intersectionPoint; }
-//         }
+  constructor(
+    coneRightSide: ConeRightSide,
+    intersectionPoint: Point,
+    endVertex: PolylinePoint,
+  ) {
+    super()
+    this.coneRightSide = coneRightSide
+    this.intersectionPoint = intersectionPoint
+    this.endVertex = endVertex
+  }
 
-//         public override string ToString() {
-//             return "RightIntersectionEvent " + intersectionPoint;
-//         }
-//     }
-// }
+  get Site(): Point {
+    return this.intersectionPoint
+  }
+
+  toString(): string {
+    return 'RightIntersectionEvent ' + this.intersectionPoint
+  }
+}

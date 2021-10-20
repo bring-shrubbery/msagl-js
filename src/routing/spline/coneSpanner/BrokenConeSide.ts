@@ -1,42 +1,36 @@
-// // using Microsoft.Msagl.Core.Geometry;
-// // using Microsoft.Msagl.Core.Geometry.Curves;
+import {Point} from '@/src'
+import {PolylinePoint} from '@/src/math/geometry/polylinePoint'
+import {ConeSide} from './ConeSide'
 
-// // namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
+//  represents a cone side that is broken by the obstacle
+export class BrokenConeSide extends ConeSide {
+  //  point where it starts
+  start: Point
 
-// //     // represents a cone side that is broken by the obstacle
-// //     // <
-// //     internal class BrokenConeSide: ConeSide {
+  get Start(): Point {
+    return this.start
+  }
 
-// //         // point where it starts
-// //         // <
-// //         internal Point start;
+  //  it is the side of the cone that intersects the obstacle side
+  ConeSide: ConeSide
+  EndVertex: PolylinePoint
 
-// //         internal override Point Start {
-// //             get { return start; }
-// //         }
+  get End(): Point {
+    return this.EndVertex.point
+  }
 
-// //         // it is the side of the cone that intersects the obstacle side
-// //         // <
-// //         internal ConeSide ConeSide { get; set; }
+  constructor(start: Point, end: PolylinePoint, coneSide: ConeSide) {
+    super()
+    this.start = this.start
+    this.EndVertex = end
+    this.ConeSide = coneSide
+  }
 
-// //         internal PolylinePoint EndVertex { get; set; }
+  get Direction(): Point {
+    return this.End.sub(this.Start)
+  }
 
-// //         internal Point End {
-// //             get { return EndVertex.point; }
-// //         }
-
-// //         internal BrokenConeSide(Point start, PolylinePoint end, ConeSide coneSide) {
-// //             this.start = start;
-// //             EndVertex = end;
-// //             ConeSide = coneSide;
-// //         }
-
-// //         internal override Point Direction {
-// //             get { return End - Start; }
-// //         }
-
-// //         public override string ToString() {
-// //             return "BrokenConeSide: " + Start + "," + End;
-// //         }
-// //     }
-// // }
+  public toString(): string {
+    return 'BrokenConeSide: ' + (this.Start + (',' + this.End))
+  }
+}
