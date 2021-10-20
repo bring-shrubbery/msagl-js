@@ -6,9 +6,7 @@ export abstract class ConeSide {
 
   abstract get Direction(): Point
 
-  abstract get Cone(): Cone
-  abstract set Cone(value: Cone)
+  Cone: Cone
 
-  abstract get Removed(): boolean
-  abstract set Removed(value: boolean)
+  Removed = false
 }
