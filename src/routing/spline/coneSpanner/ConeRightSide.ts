@@ -1,21 +1,22 @@
-// using Microsoft.Msagl.Core.Geometry;
+import {Point} from '@/src'
+import {Cone} from './Cone'
+import {ConeSide} from './ConeSide'
 
-// namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
-//     internal class ConeRightSide:ConeSide {
-//         internal ConeRightSide(Cone cone) {
-//             this.Cone = cone;
-//         }
+export class ConeRightSide extends ConeSide {
+  constructor(cone: Cone) {
+    super()
+    super.Cone = cone
+  }
 
-//         internal override Point Start {
-//             get { return Cone.Apex; }
-//         }
+  get Start(): Point {
+    return super.Cone.Apex
+  }
 
-//         internal override Point Direction {
-//             get { return Cone.RightSideDirection; }
-//         }
+  get Direction(): Point {
+    return super.Cone.RightSideDirection
+  }
 
-//         public override string ToString() {
-//             return "ConeRightSide " + Start + " " + Direction;
-//         }
-//     }
-// }
+  toString(): string {
+    return 'ConeRightSide ' + (this.Start + (' ' + this.Direction))
+  }
+}
