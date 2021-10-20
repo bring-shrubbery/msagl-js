@@ -1,7 +1,6 @@
 import {Point} from '@/src'
 import {Cone} from './Cone'
 import {ConeSide} from './ConeSide'
-import {ConeSide} from './ConeSide'
 
 export class ConeRightSide extends ConeSide {
   constructor(cone: Cone) {
