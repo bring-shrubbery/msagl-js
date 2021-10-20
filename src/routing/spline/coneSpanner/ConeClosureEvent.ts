@@ -1,29 +1,30 @@
-// using Microsoft.Msagl.Core.Geometry;
+//  this event caused by the intersection of a ObstacleSideSegment and the other cone side of the same cone
+//  when this event happens the cone has to be removed
 
-// namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
+import {Point} from '@/src'
+import {Cone} from './Cone'
+import {SweepEvent} from './SweepEvent'
 
-//     // this event caused by the intersection of a ObstacleSideSegment and the other cone side of the same cone
-//     // when this event happens the cone has to be removed
-//     // <
-//     internal class ConeClosureEvent: SweepEvent {
-//         Cone coneToClose;
+export class ConeClosureEvent extends SweepEvent {
+  coneToClose: Cone
 
-//         internal Cone ConeToClose {
-//             get { return coneToClose; }
-//         }
-//         Point site;
+  get ConeToClose(): Cone {
+    return this.coneToClose
+  }
 
-//         internal override Point Site {
-//             get { return site; }
-//         }
+  site: Point
 
-//         internal ConeClosureEvent(Point site, Cone cone) {
-//             this.site = site;
-//             this.coneToClose = cone;
-//         }
+  get Site(): Point {
+    return this.site
+  }
 
-//         public override string ToString() {
-//             return "ConeClosureEvent " + site;
-//         }
-//     }
-// }
+  constructor(site: Point, cone: Cone) {
+    super()
+    this.site = this.site
+    this.coneToClose = cone
+  }
+
+  toString(): string {
+    return 'ConeClosureEvent ' + this.site
+  }
+}
