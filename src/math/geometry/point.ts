@@ -8,6 +8,30 @@ export enum TriangleOrientation {
 }
 
 export class Point {
+  static RayIntersectsRayInteriors(
+    aOrig: Point,
+    aDirection: Point,
+    bOrig: Point,
+    bDirection: Point,
+  ): Point | undefined {
+    const x = Point.lineLineIntersection(
+      aOrig,
+      aOrig.add(aDirection),
+      bOrig,
+      bOrig.add(bDirection),
+    )
+    if (!x) return undefined
+
+    if (
+      x.sub(aOrig).dot(aDirection.div(aDirection.l1)) >
+        GeomConstants.distanceEpsilon &&
+      x.sub(bOrig).dot(bDirection.div(bDirection.l1)) >
+        GeomConstants.distanceEpsilon
+    )
+      return x
+
+    return undefined
+  }
   static IntervalIntersectsRay(
     segStart: Point,
     segEnd: Point,

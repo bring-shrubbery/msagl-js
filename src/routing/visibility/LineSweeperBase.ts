@@ -15,9 +15,8 @@ import {SegmentBase} from './SegmentBase'
 import {PointSet} from '@/src/utils/PointSet'
 
 export class LineSweeperBase {
-  directionPerp: Point
+  directionPerp: Point //  sweep direction rotated 90 degrees clockwse
 
-  //  sweep direction rotated 90 degrees clockwse
   eventQueue: BinaryHeapWithComparer<SweepEvent>
 
   LeftObstacleSideTree: RBTree<SegmentBase>

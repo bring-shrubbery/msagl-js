@@ -16,7 +16,7 @@ export class ConeSideComparer {
   coneSweeper: IConeSweeper
 
   constructor(coneSweeper: IConeSweeper) {
-    this.coneSweeper = this.coneSweeper
+    this.coneSweeper = coneSweeper
   }
 
   public Compare(a: ConeSide, b: ConeSide): number {
