@@ -2,12 +2,6 @@ import {from, IEnumerable} from 'linq-to-typescript'
 import {Point} from '../../../math/geometry/point'
 import {ICurve} from '../../../math/geometry/icurve'
 import {Rectangle} from '../../../math/geometry/rectangle'
-import {HitTestBehavior} from '../../../core/geometry/RTree/HitTestBehavior'
-import {
-  CreateRectangleNodeOnEnumeration,
-  mkRectangleNode,
-  RectangleNode,
-} from '../../../core/geometry/RTree/RectangleNode'
 import {UniformOneDimensionalSolver} from '../../../core/projectionSolver/UniformOneDimensionalSolver'
 import {EdgeGeometry} from '../../../layout/core/edgeGeometry'
 import {Port} from '../../../layout/core/port'
@@ -32,6 +26,12 @@ import {Path} from './Path'
 import {PathEdge} from './PathEdge'
 import {PathRefiner} from './PathRefiner'
 import {StaircaseRemover} from './StaircaseRemover'
+import {HitTestBehavior} from '@/src/math/geometry/RTree/HitTestBehavior'
+import {
+  CreateRectangleNodeOnEnumeration,
+  mkRectangleNode,
+  RectangleNode,
+} from '@/src/math/geometry/RTree/RectangleNode'
 
 type PointProjection = (p: Point) => number
 //  following paper "Orthogonal Connector Routing" which is included  of the project

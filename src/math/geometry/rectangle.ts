@@ -1,7 +1,7 @@
 import {Point} from './point'
 import {Polyline} from './polyline'
 import {GeomConstants} from './geomConstants'
-import {IRectangle} from '../../core/geometry/IRectangle'
+import {IRectangle} from './IRectangle'
 
 export class Size {
   pad(padW: number): any {

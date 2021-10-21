@@ -1,6 +1,6 @@
+import {Interval} from '@/src/math/geometry/Interval'
+import {RTree, mkRTree} from '@/src/math/geometry/RTree/RTree'
 import {from} from 'linq-to-typescript'
-import {Interval} from '../../core/geometry/Interval'
-import {mkRTree, RTree} from '../../core/geometry/RTree/RTree'
 import {Point} from '../../math/geometry/point'
 import {Size} from '../../math/geometry/rectangle'
 import {BinaryHeapPriorityQueue} from '../../structs/BinaryHeapPriorityQueue'

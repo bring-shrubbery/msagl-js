@@ -1,3 +1,4 @@
+import {RectangleNode} from '@/src/math/geometry/RTree/RectangleNode'
 import {from, IEnumerable} from 'linq-to-typescript'
 import {String} from 'typescript-string-operations'
 import {
@@ -164,9 +165,10 @@ export class ObstaclePortEntrance {
       (obs) => obs.VisibilityPolyline,
       from(obstacleTree.Root.GetLeafRectangleNodesIntersectingRectangle(rect))
         .where(
-          (node) => !node.UserData.IsGroup && node.UserData != this.Obstacle,
+          (node: RectangleNode<Obstacle, Point>) =>
+            !node.UserData.IsGroup && node.UserData != this.Obstacle,
         )
-        .select((node) => node.UserData),
+        .select((node: RectangleNode<Obstacle, Point>) => node.UserData),
     )
   }
 

@@ -1,6 +1,6 @@
+import {RectangleNode} from '@/src/math/geometry/RTree/RectangleNode'
+import {RTree} from '@/src/math/geometry/RTree/RTree'
 import {from} from 'linq-to-typescript'
-import {RectangleNode} from '../../../core/geometry/RTree/RectangleNode'
-import {RTree} from '../../../core/geometry/RTree/RTree'
 import {
   Point,
   Rectangle,

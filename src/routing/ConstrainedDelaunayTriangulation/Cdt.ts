@@ -3,11 +3,6 @@ Following "Sweep-line algorithm for constrained Delaunay triangulation", by Domi
 */
 //triangulates the space between point, line segment and polygons of the Delaunay fashion
 import {from, IEnumerable} from 'linq-to-typescript'
-import {
-  CreateRectangleNodeOnEnumeration,
-  mkRectangleNode,
-  RectangleNode,
-} from '../../core/geometry/RTree/RectangleNode'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {Point} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
@@ -20,6 +15,11 @@ import {CdtSite} from './CdtSite'
 import {CdtTriangle} from './CdtTriangle'
 import {SymmetricTuple} from './../../structs/SymmetricTuple'
 import {CdtSweeper} from './CdtSweeper'
+import {
+  RectangleNode,
+  CreateRectangleNodeOnEnumeration,
+  mkRectangleNode,
+} from '@/src/math/geometry/RTree/RectangleNode'
 type SymmetricSegment = SymmetricTuple<Point>
 export class Cdt extends Algorithm {
   isolatedSitesWithObject: Array<[Point, unknown]>

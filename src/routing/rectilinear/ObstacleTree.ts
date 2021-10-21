@@ -1,29 +1,30 @@
-import {HitTestBehavior} from '../../core/geometry/RTree/HitTestBehavior'
+import {Point, Rectangle} from '@/src'
 import {
-  CreateRectangleNodeOnListOfNodes,
-  mkRectangleNode,
+  Polyline,
+  Curve,
+  PointLocation,
+  Direction,
+  LineSegment,
+  GeomConstants,
+  CompassVector,
+} from '@/src/math/geometry'
+import {ConvexHull} from '@/src/math/geometry/convexHull'
+import {IntersectionInfo} from '@/src/math/geometry/intersectionInfo'
+import {HitTestBehavior} from '@/src/math/geometry/RTree/HitTestBehavior'
+import {
   RectangleNode,
-} from '../../core/geometry/RTree/RectangleNode'
+  mkRectangleNode,
+  CreateRectangleNodeOnListOfNodes,
+} from '@/src/math/geometry/RTree/RectangleNode'
 import {
-  CrossRectangleNodes,
   CrossRectangleNodesSameType,
-} from '../../core/geometry/RTree/RectangleNodeUtils'
-import {CompassVector} from '../../math/geometry/compassVector'
-import {ConvexHull} from '../../math/geometry/convexHull'
-import {Curve, PointLocation} from '../../math/geometry/curve'
-import {Direction} from '../../math/geometry/direction'
-import {GeomConstants} from '../../math/geometry/geomConstants'
-import {IntersectionInfo} from '../../math/geometry/intersectionInfo'
-import {LineSegment} from '../../math/geometry/lineSegment'
-import {Point} from '../../math/geometry/point'
-import {Polyline} from '../../math/geometry/polyline'
-import {Rectangle} from '../../math/geometry/rectangle'
-import {GetConnectedComponents} from '../../math/graphAlgorithms/ConnectedComponentCalculator'
-import {mkGraphOnEdges} from '../../structs/basicGraphOnEdges'
-// import {Assert} from '../../utils/assert'
-import {closeDistEps} from '../../utils/compare'
-import {IntPair} from '../../utils/IntPair'
-import {IntPairSet} from '../../utils/IntPairSet'
+  CrossRectangleNodes,
+} from '@/src/math/geometry/RTree/RectangleNodeUtils'
+import {GetConnectedComponents} from '@/src/math/graphAlgorithms/ConnectedComponentCalculator'
+import {mkGraphOnEdges} from '@/src/structs/basicGraphOnEdges'
+import {closeDistEps} from '@/src/utils/compare'
+import {IntPair} from '@/src/utils/IntPair'
+import {IntPairSet} from '@/src/utils/IntPairSet'
 import {Shape} from '../shape'
 import {GroupBoundaryCrossingMap} from './GroupBoundaryCrossingMap'
 import {Obstacle} from './obstacle'
@@ -33,6 +34,7 @@ import {PointComparer} from './PointComparer'
 import {ScanDirection} from './ScanDirection'
 import {SpliceUtility} from './SpliceUtility'
 import {StaticGraphUtility} from './StaticGraphUtility'
+
 export class ObstacleTree {
   //  Ignore one (always) or both (depending on location) of these obstacles on Obstacle hit testing.
   insideHitTestIgnoreObstacle1: Obstacle
