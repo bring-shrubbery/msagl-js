@@ -90,13 +90,13 @@ export class GeomNode extends GeomObject {
 
   // the bounding box of the node
   get boundingBox() {
-    return this.boundaryCurve != null
+    return this.boundaryCurve
       ? this.boundaryCurve.boundingBox
       : Rectangle.mkEmpty()
   }
 
   set boundingBox(value: Rectangle) {
-    if (this.boundaryCurve == null) {
+    if (!this.boundaryCurve) {
       return
     }
     if (

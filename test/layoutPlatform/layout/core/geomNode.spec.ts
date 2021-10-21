@@ -6,6 +6,11 @@ import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
 import {DebugCurve} from '@/src/math/geometry/debugCurve'
 import {Node} from '@/src/structs/node'
 import {closeDistEps} from '@/src/utils/compare'
+test('no boundary curve', () => {
+  const gn = new GeomNode(null)
+  const bb = gn.boundingBox
+  expect(bb != null && bb != undefined).toBe(true)
+})
 test('node fit', () => {
   const boundary = CurveFactory.mkRectangleWithRoundedCorners(
     100,
