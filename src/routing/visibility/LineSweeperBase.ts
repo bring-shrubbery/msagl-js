@@ -5,9 +5,6 @@ import {Polyline} from '../../math/geometry/polyline'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
 import {BinaryHeapWithComparer} from '../../structs/BinaryHeapWithComparer'
 import {RBTree} from '../../structs/RBTree/rbTree'
-// import {Assert} from '../../utils/assert'
-import {PointMap} from '../../utils/PointMap'
-// import {EventQueue} from '../rectilinear/EventQueue'
 import {LeftObstacleSide} from '../spline/coneSpanner/LeftObstacleSide'
 import {LowestVertexEvent} from '../spline/coneSpanner/LowestVertexEvent'
 import {RightObstacleSide} from '../spline/coneSpanner/RightObstacleSide'
@@ -15,6 +12,7 @@ import {SweepEvent} from '../spline/coneSpanner/SweepEvent'
 import {ObstacleSideComparer} from './ObstacleSideComparer'
 import {PortObstacleEvent} from './PortObstacleEvent'
 import {SegmentBase} from './SegmentBase'
+import {PointSet} from '@/src/utils/PointSet'
 
 export class LineSweeperBase {
   directionPerp: Point
@@ -28,7 +26,7 @@ export class LineSweeperBase {
 
   RightObstacleSideTree: RBTree<SegmentBase>
 
-  protected Ports: PointMap<Point>
+  protected Ports: PointSet
 
   public constructor(obstacles: Array<Polyline>, sweepDirection: Point) {
     this.Obstacles = obstacles

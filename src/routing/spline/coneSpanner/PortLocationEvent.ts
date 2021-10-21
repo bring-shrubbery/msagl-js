@@ -1,15 +1,15 @@
-// using Microsoft.Msagl.Core.Geometry;
+import {Point} from '@/src'
+import {SweepEvent} from './SweepEvent'
 
-// namespace Microsoft.Msagl.Routing.Spline.ConeSpanner {
-//     internal class PortLocationEvent : SweepEvent {
-//         public PortLocationEvent(Point portLocation) {
-//             PortLocation = portLocation;
-//         }
+export class PortLocationEvent extends SweepEvent {
+  public constructor(portLocation: Point) {
+    super()
+    this.PortLocation = portLocation
+  }
 
-//         internal override Point Site {
-//             get {return PortLocation; }
-//         }
+  get Site(): Point {
+    return this.PortLocation
+  }
 
-//         protected Point PortLocation { get; set; }
-//     }
-// }
+  PortLocation: Point
+}

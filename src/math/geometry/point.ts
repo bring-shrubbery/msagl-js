@@ -8,6 +8,81 @@ export enum TriangleOrientation {
 }
 
 export class Point {
+  static IntervalIntersectsRay(
+    segStart: Point,
+    segEnd: Point,
+    rayOrigin: Point,
+    rayDirection: Point,
+  ): Point | undefined {
+    const x = Point.lineLineIntersection(
+      segStart,
+      segEnd,
+      rayOrigin,
+      rayOrigin.add(rayDirection),
+    )
+    if (!x) {
+      return
+    }
+
+    const ds = segStart.sub(x)
+    const de = x.sub(segEnd)
+    if (ds.dot(de) <= 0) {
+      return
+    }
+
+    if (x.sub(rayOrigin).dot(rayDirection) < 0) {
+      return
+    }
+
+    if (
+      ds.dot(ds) > GeomConstants.squareOfDistanceEpsilon &&
+      de.dot(de) >= GeomConstants.squareOfDistanceEpsilon
+    )
+      return x
+  }
+  public static PointToTheLeftOfLineOrOnLine(
+    point: Point,
+    linePoint0: Point,
+    linePoint1: Point,
+  ): boolean {
+    return Point.signedDoubledTriangleArea(point, linePoint0, linePoint1) >= 0
+  }
+
+  // returns true if "point" lies to the left of the line linePoint0, linePoint1
+  public static PointToTheLeftOfLine(
+    point: Point,
+    linePoint0: Point,
+    linePoint1: Point,
+  ): boolean {
+    return Point.signedDoubledTriangleArea(point, linePoint0, linePoint1) > 0
+  }
+  static PointIsInsideCone(
+    p: Point,
+    apex: Point,
+    leftSideConePoint: Point,
+    rightSideConePoint: Point,
+  ): boolean {
+    return (
+      Point.PointToTheRightOfLineOrOnLine(p, apex, leftSideConePoint) &&
+      Point.PointToTheLeftOfLineOrOnLine(p, apex, rightSideConePoint)
+    )
+  }
+
+  public static PointToTheRightOfLineOrOnLine(
+    point: Point,
+    linePoint0: Point,
+    linePoint1: Point,
+  ): boolean {
+    return Point.signedDoubledTriangleArea(linePoint0, linePoint1, point) <= 0
+  }
+
+  public static PointToTheRightOfLine(
+    point: Point,
+    linePoint0: Point,
+    linePoint1: Point,
+  ): boolean {
+    return Point.signedDoubledTriangleArea(linePoint0, linePoint1, point) < 0
+  }
   static closeIntersections(a: Point, b: Point): boolean {
     return Point.close(a, b, GeomConstants.intersectionEpsilon)
   }
