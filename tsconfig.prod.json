@@ -6,26 +6,15 @@
     "outDir": "./dist",
     "sourceMap": true,
     "noImplicitAny": true,
-    "lib": [
-      "dom",
-      "es6"
-    ],
+    "lib": ["dom", "es2018"],
     "importHelpers": true,
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@/src": [
-        "src/index.ts"
-      ],
-      "@/src/*": [
-        "src/*"
-      ]
+      "@/src": ["src/index.ts"],
+      "@/src/*": ["src/*"]
     }
   },
-  "include": [
-    "src/**/*"
-  ],
-  "typeRoots": [
-    "./node_modules/@types/"
-  ]
+  "include": ["src/**/*"],
+  "typeRoots": ["./node_modules/@types/"]
 }

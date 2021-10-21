@@ -4,29 +4,16 @@
     "target": "es2018",
     "declaration": true,
     "noImplicitAny": true,
-    "lib": [
-      "dom",
-      "es2018"
-    ],
+    "lib": ["dom", "es2018"],
+    "outDir": "dist_all",
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@/src": [
-        "src/index.ts"
-      ],
-      "@/src/*": [
-        "src/*"
-      ],
-      "@/test/*": [
-        "test/*"
-      ]
+      "@/src": ["src/index.ts"],
+      "@/src/*": ["src/*"],
+      "@/test/*": ["test/*"]
     }
   },
-  "include": [
-    "src/**/*",
-    "test/**/*"
-  ],
-  "typeRoots": [
-    "./node_modules/@types/"
-  ]
+  "include": ["src/**/*", "test/**/*"],
+  "typeRoots": ["./node_modules/@types/"]
 }

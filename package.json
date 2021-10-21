@@ -18,6 +18,7 @@
   "scripts": {
     "test": "jest",
     "build": "rm -rf dist && tsc --project tsconfig.prod.json",
+    "build_all": "rm -rf dist_all && tsc --project tsconfig.json",
     "eslint": "eslint src",
     "prettier": "prettier --write src/**"
   },
