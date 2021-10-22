@@ -35,9 +35,8 @@ export class BezierSeg implements ICurve {
   // <value></value>
   pNodeOverICurve(): PN {
     if (this.pBoxNode != null) return this.pBoxNode
-    return (this.pBoxNode = ParallelogramNode.createParallelogramNodeForCurveSegDefaultOffset(
-      this,
-    ))
+    return (this.pBoxNode =
+      ParallelogramNode.createParallelogramNodeForCurveSegDefaultOffset(this))
   }
   // Returns the point on the curve corresponding to parameter t
   value(t: number) {

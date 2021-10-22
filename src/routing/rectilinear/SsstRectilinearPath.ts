@@ -392,12 +392,13 @@ export class SsstRectilinearPath {
     //  never be extended from this point).
     const t = {numberOfBends: 0, length: 0}
     const neigVer = entryFromNeighbor.PreviousVertex
-    const dirToNeighbor = SsstRectilinearPath.GetLengthAndNumberOfBendsToNeighborVertex(
-      bestEntry,
-      neigVer,
-      weight,
-      t,
-    )
+    const dirToNeighbor =
+      SsstRectilinearPath.GetLengthAndNumberOfBendsToNeighborVertex(
+        bestEntry,
+        neigVer,
+        weight,
+        t,
+      )
     if (
       this.CombinedCost(t.length, t.numberOfBends) <
         this.CombinedCost(
@@ -422,12 +423,13 @@ export class SsstRectilinearPath {
       numberOfBends: 0,
       length: 0,
     }
-    const dirToNeighbor = SsstRectilinearPath.GetLengthAndNumberOfBendsToNeighborVertex(
-      bestEntry,
-      neigEntry.Vertex,
-      weight,
-      t,
-    )
+    const dirToNeighbor =
+      SsstRectilinearPath.GetLengthAndNumberOfBendsToNeighborVertex(
+        bestEntry,
+        neigEntry.Vertex,
+        weight,
+        t,
+      )
     if (
       this.CombinedCost(t.length, t.numberOfBends) <
       this.CombinedCost(neigEntry.Length, neigEntry.NumberOfBends)
@@ -449,12 +451,13 @@ export class SsstRectilinearPath {
     weight: number,
   ) {
     const t = {numberOfBends: 0, length: 0}
-    const dirToNeighbor = SsstRectilinearPath.GetLengthAndNumberOfBendsToNeighborVertex(
-      bestEntry,
-      neigVer,
-      weight,
-      t,
-    )
+    const dirToNeighbor =
+      SsstRectilinearPath.GetLengthAndNumberOfBendsToNeighborVertex(
+        bestEntry,
+        neigVer,
+        weight,
+        t,
+      )
     const cost =
       this.TotalCostFromSourceToVertex(t.length, t.numberOfBends) +
       this.HeuristicDistanceFromVertexToTarget(neigVer.point, dirToNeighbor)
@@ -498,10 +501,11 @@ export class SsstRectilinearPath {
         vertex.point,
       ) *
         weight
-    const directionToVertex: Direction = CompassVector.DirectionFromPointToPoint(
-      prevEntry.Vertex.point,
-      vertex.point,
-    )
+    const directionToVertex: Direction =
+      CompassVector.DirectionFromPointToPoint(
+        prevEntry.Vertex.point,
+        vertex.point,
+      )
     t.numberOfBends = prevEntry.NumberOfBends
     if (
       prevEntry.Direction != Direction.None &&

@@ -59,7 +59,8 @@ export class FreeSpaceFinder extends LineSweeperBase {
     this.SweepPole = CompassVector.VectorDirection(this.SweepDirection)
     /*Assert.assert(CompassVector.IsPureDirection(this.SweepPole))*/
     this.AxisEdges = axisEdges
-    this.AxisEdgesToObstaclesTheyOriginatedFrom = axisEdgesToObstaclesTheyOriginatedFrom
+    this.AxisEdgesToObstaclesTheyOriginatedFrom =
+      axisEdgesToObstaclesTheyOriginatedFrom
   }
 
   AxisEdgesToObstaclesTheyOriginatedFrom: Map<AxisEdge, Polyline>
@@ -502,9 +503,8 @@ export class FreeSpaceFinder extends LineSweeperBase {
   private RestrictEdgeFromTheLeftOfEvent(polylinePoint: PolylinePoint) {
     // ShowAtPoint(site);
     const site: Point = polylinePoint.point
-    const containerNode: RBNode<AxisEdgesContainer> = this.GetContainerNodeToTheLeftOfEvent(
-      site,
-    )
+    const containerNode: RBNode<AxisEdgesContainer> =
+      this.GetContainerNodeToTheLeftOfEvent(site)
     if (containerNode != null) {
       for (const edge of containerNode.item.Edges) {
         if (!this.NotRestricting(edge, polylinePoint.polyline)) {

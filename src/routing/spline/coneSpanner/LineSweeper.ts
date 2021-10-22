@@ -378,9 +378,8 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
         : null
     if (edgesToFix) {
       for (const edge of edgesToFix) {
-        const otherPort = (edge.Target == coneApexVert
-          ? edge.Source
-          : edge.Target
+        const otherPort = (
+          edge.Target == coneApexVert ? edge.Source : edge.Target
         ).point
         VisibilityGraph.RemoveEdge(edge)
         this.portEdgesGraph.AddEdge(otherPort, p)
@@ -831,9 +830,8 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     obstacleSideStart: Point,
     obstacleSideVertex: PolylinePoint,
   ) {
-    const node: RBNode<ConeSide> = this.GetLastNodeToTheLeftOfPointInRightSegmentTree(
-      obstacleSideStart,
-    )
+    const node: RBNode<ConeSide> =
+      this.GetLastNodeToTheLeftOfPointInRightSegmentTree(obstacleSideStart)
     if (node != null) {
       const coneRightSide = <ConeRightSide>node.item
       if (coneRightSide != null) {
@@ -1187,9 +1185,8 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
       //     if (seg != null)
       //         TryIntersectionOfConeLeftSideAndObstacleConeSide(coneLeftSide, seg);
       // }
-      const rightObstacleSide: RightObstacleSide = this.FindFirstObstacleSideToTheLeftOfPoint(
-        coneLeftSide.Start,
-      )
+      const rightObstacleSide: RightObstacleSide =
+        this.FindFirstObstacleSideToTheLeftOfPoint(coneLeftSide.Start)
       if (rightObstacleSide != null) {
         this.TryIntersectionOfConeLeftSideAndObstacleSide(
           coneLeftSide,
@@ -1221,9 +1218,8 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
       //     if (seg != null)
       //         TryIntersectionOfConeRightSideAndObstacleConeSide(coneRightSide, seg);
       // }
-      const leftObstacleSide: LeftObstacleSide = this.FindFirstObstacleSideToToTheRightOfPoint(
-        coneRightSide.Start,
-      )
+      const leftObstacleSide: LeftObstacleSide =
+        this.FindFirstObstacleSideToToTheRightOfPoint(coneRightSide.Start)
       if (leftObstacleSide != null) {
         this.TryIntersectionOfConeRightSideAndObstacleSide(
           coneRightSide,
@@ -1355,9 +1351,8 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
   //  #endif
   //         static int count;
   GoOverConesSeeingVertexEvent(vertexEvent: SweepEvent) {
-    let rbNode = this.FindFirstSegmentInTheRightTreeNotToTheLeftOfVertex(
-      vertexEvent,
-    )
+    let rbNode =
+      this.FindFirstSegmentInTheRightTreeNotToTheLeftOfVertex(vertexEvent)
     if (rbNode == null) {
       return
     }

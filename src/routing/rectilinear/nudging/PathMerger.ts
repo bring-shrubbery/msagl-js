@@ -192,10 +192,8 @@ export class PathMerger {
         linkedPoint != null;
         linkedPoint = linkedPoint.Next
       ) {
-        let pathOffsets: Map<
-          Path,
-          LinkedPoint
-        > = this.verticesToPathOffsets.get(linkedPoint.Point)
+        let pathOffsets: Map<Path, LinkedPoint> =
+          this.verticesToPathOffsets.get(linkedPoint.Point)
         if (!pathOffsets) {
           this.verticesToPathOffsets.set(
             linkedPoint.Point,

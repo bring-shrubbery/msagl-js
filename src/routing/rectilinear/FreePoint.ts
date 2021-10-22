@@ -68,9 +68,8 @@ export class FreePoint {
       targetEdge,
       this.Point,
     )
-    let targetVertex: VisibilityVertex = transUtil.VisGraph.FindVertex(
-      targetIntersect,
-    )
+    let targetVertex: VisibilityVertex =
+      transUtil.VisGraph.FindVertex(targetIntersect)
     if (null != targetVertex) {
       this.AddToAdjacentVertex(transUtil, targetVertex, dirToExtend, limitRect)
     } else {
@@ -119,11 +118,12 @@ export class FreePoint {
 
     //  If we're inside an obstacle's boundaries we'll never extend past the end of the obstacle
     //  due to encountering the boundary from the inside.  So start the extension at targetVertex.
-    const segmentAndCrossings: SegmentAndCrossings = this.GetSegmentAndCrossings(
-      this.IsOverlapped ? targetVertex : this.Vertex,
-      dirToExtend,
-      transUtil,
-    )
+    const segmentAndCrossings: SegmentAndCrossings =
+      this.GetSegmentAndCrossings(
+        this.IsOverlapped ? targetVertex : this.Vertex,
+        dirToExtend,
+        transUtil,
+      )
 
     transUtil.ExtendEdgeChainVRLPB(
       targetVertex,
@@ -143,11 +143,12 @@ export class FreePoint {
     let segmentAndCrossings = this.maxVisibilitySegmentsAndCrossings[dirIndex]
     if (segmentAndCrossings == null) {
       const t: {pacList: PointAndCrossingsList} = {pacList: null}
-      const maxVisibilitySegment = transUtil.ObstacleTree.CreateMaxVisibilitySegment(
-        startVertex.point,
-        dirToExtend,
-        t,
-      )
+      const maxVisibilitySegment =
+        transUtil.ObstacleTree.CreateMaxVisibilitySegment(
+          startVertex.point,
+          dirToExtend,
+          t,
+        )
       segmentAndCrossings = [maxVisibilitySegment, t.pacList]
       this.maxVisibilitySegmentsAndCrossings[dirIndex] = segmentAndCrossings
     } else {
@@ -174,11 +175,8 @@ export class FreePoint {
       !this.IsOverlapped,
       'Do not precalculate overlapped obstacle visibility as we should extend from the outer target vertex instead',
     )*/
-    const segmentAndCrossings: SegmentAndCrossings = this.GetSegmentAndCrossings(
-      this.Vertex,
-      dirToExtend,
-      transUtil,
-    )
+    const segmentAndCrossings: SegmentAndCrossings =
+      this.GetSegmentAndCrossings(this.Vertex, dirToExtend, transUtil)
     return segmentAndCrossings[0].end
   }
 
@@ -190,9 +188,8 @@ export class FreePoint {
       cornerPoint,
       this.Vertex.point,
     )
-    const cornerVertex: VisibilityVertex = transUtil.VisGraph.FindVertex(
-      cornerPoint,
-    )
+    const cornerVertex: VisibilityVertex =
+      transUtil.VisGraph.FindVertex(cornerPoint)
     //  For waypoints we want to be able to enter in both directions.
     transUtil.ConnectVertexToTargetVertex(
       cornerVertex,
