@@ -10,6 +10,7 @@ test('no boundary curve', () => {
   const gn = new GeomNode(null)
   const bb = gn.boundingBox
   expect(bb != null && bb != undefined).toBe(true)
+  expect(bb.width < 0).toBe(true)
 })
 test('node fit', () => {
   const boundary = CurveFactory.mkRectangleWithRoundedCorners(

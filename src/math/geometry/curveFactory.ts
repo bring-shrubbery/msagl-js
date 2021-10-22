@@ -96,8 +96,7 @@ export class CurveFactory {
     center: Point,
   ): Curve {
     if (radX == 0 || radY == 0) {
-      CurveFactory.createRectangle(width, height, center)
-      return
+      return CurveFactory.createRectangle(width, height, center)
     }
     const c = new Curve()
     const w = width / 2
