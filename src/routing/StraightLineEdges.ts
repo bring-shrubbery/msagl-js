@@ -1,11 +1,9 @@
 ﻿//  Basic geomedge router for producing straight edges.
 
-import {from, IEnumerable} from 'linq-to-typescript'
 import {GeomGraph} from '../layout/core/GeomGraph'
 import {Arrowhead} from '../layout/core/arrowhead'
 import {EdgeGeometry} from '../layout/core/edgeGeometry'
 import {GeomEdge} from '../layout/core/geomEdge'
-import {RelativeFloatingPort} from '../layout/core/relativeFloatingPort'
 import {CornerSite} from '../math/geometry/cornerSite'
 import {Curve} from '../math/geometry/curve'
 import {GeomConstants} from '../math/geometry/geomConstants'
@@ -16,6 +14,7 @@ import {Rectangle} from '../math/geometry/rectangle'
 import {SmoothedPolyline} from '../math/geometry/smoothedPolyline'
 import {Algorithm} from '../utils/algorithm'
 import {SplineRouter} from './splineRouter'
+import {RelativeFloatingPort} from '../layout/core/relativeFloatingPort'
 
 export class StraightLineEdges extends Algorithm {
   private edges: GeomEdge[]

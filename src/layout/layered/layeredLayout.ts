@@ -34,10 +34,10 @@ import {XLayoutGraph} from './XLayoutGraph'
 import {Rectangle} from '../../math/geometry/rectangle'
 import {NetworkSimplex} from './layering/NetworkSimplex'
 import {GeomConstants} from '../../math/geometry/geomConstants'
-import {EdgeRoutingMode} from '../../core/routing/EdgeRoutingMode'
-import {EdgeRoutingSettings} from '../../core/routing/EdgeRoutingSettings'
 import {Routing} from './routing'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
+import {EdgeRoutingMode} from '@/src/routing/EdgeRoutingMode'
+import {EdgeRoutingSettings} from '@/src/routing/EdgeRoutingSettings'
 
 export class LayeredLayout extends Algorithm {
   originalGraph: GeomGraph

@@ -1,5 +1,5 @@
-import {Solver} from '@/src/core/projectionSolver/Solver'
-import {Variable} from '@/src/core/projectionSolver/Variable'
+import {Solver} from '@/src/math/projectionSolver/Solver'
+import {Variable} from '@/src/math/projectionSolver/Variable'
 import {closeDistEps} from '@/src/utils/compare'
 test('two vars test', () => {
   const s = new Solver()

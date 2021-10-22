@@ -1,9 +1,9 @@
 import {VerticalConstraintsForSugiyama} from './VerticalConstraintsForSugiyama'
 import {HorizontalConstraintsForSugiyama} from './HorizontalConstraintsForSugiyama'
-import {EdgeRoutingSettings} from '../../core/routing/EdgeRoutingSettings'
 import {LayerDirectionEnum} from './layerDirectionEnum'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 import {closeDistEps} from '../../utils/compare'
+import {EdgeRoutingSettings} from '@/src/routing/EdgeRoutingSettings'
 export enum SnapToGridByY {
   None,
   Top,

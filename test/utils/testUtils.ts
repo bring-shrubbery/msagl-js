@@ -14,7 +14,7 @@ import {
   GeomLabel,
   Graph,
 } from '@/src'
-import {EdgeRoutingMode} from '@/src/core/routing/EdgeRoutingMode'
+import {EdgeRoutingMode} from '@/src/routing/EdgeRoutingMode'
 import {SvgDebugWriter} from './svgDebugWriter'
 import {parseDotGraph} from '@/src/utils/dotparser'
 // import {Assert} from '@/src/utils/assert'
@@ -134,7 +134,7 @@ export function createGeometry(
 ): GeomGraph {
   for (const n of g.shallowNodes) {
     if (n.isGraph) {
-      const subG = (n as unknown) as Graph
+      const subG = n as unknown as Graph
       new GeomGraph(subG, nodeBoundaryFunc(n.id).boundingBox.size)
       createGeometry(subG, nodeBoundaryFunc, labelRect)
     } else {

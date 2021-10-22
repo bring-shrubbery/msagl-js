@@ -10,7 +10,7 @@ import {
   Edge,
   GeomEdge,
 } from '@/src'
-import {EdgeRoutingMode} from '@/src/core/routing/EdgeRoutingMode'
+import {EdgeRoutingMode} from '@/src/routing/EdgeRoutingMode'
 import {GeomObject} from '@/src/layout/core/geomObject'
 import {Size} from '@/src/math/geometry/rectangle'
 import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'

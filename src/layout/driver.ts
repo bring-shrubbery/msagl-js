@@ -3,7 +3,6 @@ import {GeomGraph} from './core/GeomGraph'
 import {SugiyamaLayoutSettings} from './layered/SugiyamaLayoutSettings'
 import {LayeredLayout} from './layered/layeredLayout'
 import {CancelToken} from '../utils/cancelToken'
-import {EdgeRoutingMode} from '../core/routing/EdgeRoutingMode'
 import {CurveFactory} from '../math/geometry/curveFactory'
 import {Point} from '../math/geometry/point'
 import {Rectangle} from '../math/geometry/rectangle'
@@ -15,7 +14,8 @@ import {GeomEdge} from './core/geomEdge'
 import {LayoutSettings} from './layered/SugiyamaLayoutSettings'
 import {MdsLayoutSettings} from './mds/MDSLayoutSettings'
 import {PivotMDS} from './mds/PivotMDS'
-import {EdgeRoutingSettings} from '../core/routing/EdgeRoutingSettings'
+import {EdgeRoutingMode} from '../routing/EdgeRoutingMode'
+import {EdgeRoutingSettings} from '../routing/EdgeRoutingSettings'
 
 function routeEdges(
   geomG: GeomGraph,
