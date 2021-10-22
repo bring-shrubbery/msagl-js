@@ -110,10 +110,8 @@ test('RandomRectangles', () => {
     rectanglePacking.PackedWidth / rectanglePacking.PackedHeight
   expect(rectanglePacking.PackedWidth < maxWidth).toBe(true)
   expect(AreOverlapping(rectangles)).toBe(false)
-  const optimalRectanglePacking: OptimalRectanglePacking = new OptimalRectanglePacking(
-    rectangles,
-    desiredAspectRatio,
-  )
+  const optimalRectanglePacking: OptimalRectanglePacking =
+    new OptimalRectanglePacking(rectangles, desiredAspectRatio)
   optimalRectanglePacking.run()
   const optimalAspectRatio: number =
     optimalRectanglePacking.PackedWidth / optimalRectanglePacking.PackedHeight
@@ -150,10 +148,8 @@ test('PowerLawRandomRectangles', () => {
     rectanglePacking.PackedWidth / rectanglePacking.PackedHeight
   expect(rectanglePacking.PackedWidth < maxWidth).toBe(true)
   expect(AreOverlapping(rectangles)).toBe(false)
-  const optimalRectanglePacking: OptimalRectanglePacking = new OptimalRectanglePacking(
-    rectangles,
-    desiredAspectRatio,
-  )
+  const optimalRectanglePacking: OptimalRectanglePacking =
+    new OptimalRectanglePacking(rectangles, desiredAspectRatio)
   optimalRectanglePacking.run()
   const optimalAspectRatio: number =
     optimalRectanglePacking.PackedWidth / optimalRectanglePacking.PackedHeight

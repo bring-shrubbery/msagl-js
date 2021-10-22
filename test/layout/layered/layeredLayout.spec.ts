@@ -26,7 +26,7 @@ import {
   labelRectFunc,
   outputGraph,
   edgeString,
-} from '../../../utils/testUtils'
+} from '../../utils/testUtils'
 import {CurveFactory} from '@/src/math/geometry/curveFactory'
 import {Point} from '@/src/math/geometry/point'
 import {DrawingGraph} from '@/src/drawing/drawingGraph'

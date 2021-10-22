@@ -43,7 +43,7 @@ test('four vars test', () => {
   s.AddConstraint(v0, v1, 2)
   s.AddConstraint(v2, v3, 2)
   s.AddEqualityConstraint(v1, v2, 0)
-  const sol = s.Solve()
+  s.Solve()
   expect(v0.ActualPos).toBeLessThan(v1.ActualPos)
   expect(v2.ActualPos).toBeLessThan(v3.ActualPos)
   expect(closeDistEps(v1.ActualPos - v0.ActualPos, 2)).toBe(true)

@@ -5,7 +5,7 @@
     "declaration": true,
     "noImplicitAny": true,
     "lib": ["dom", "es2018"],
-    "outDir": "dist_all",
+    "noEmit": true,
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {

@@ -210,10 +210,10 @@ test('three holes and two isolated segments', () => {
 
     const trans = PlaneTransformation.rotation(ang)
 
-    const rect = (Rectangle.mkPP(new Point(10, 10), new Point(20, 20))
+    const rect = Rectangle.mkPP(new Point(10, 10), new Point(20, 20))
       .perimeter()
-      .transform(trans) as unknown) as Polyline
-    const anotherRect = (rect.clone() as unknown) as Polyline
+      .transform(trans) as unknown as Polyline
+    const anotherRect = rect.clone() as unknown as Polyline
     anotherRect.translate(new Point(-1, -20).rotate(ang))
 
     const holes = [rect, triangle, anotherRect]
