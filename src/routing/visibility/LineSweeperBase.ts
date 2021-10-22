@@ -13,6 +13,7 @@ import {ObstacleSideComparer} from './ObstacleSideComparer'
 import {PortObstacleEvent} from './PortObstacleEvent'
 import {SegmentBase} from './SegmentBase'
 import {PointSet} from '@/src/utils/PointSet'
+import {Assert} from '@/src/utils/assert'
 
 export class LineSweeperBase {
   directionPerp: Point //  sweep direction rotated 90 degrees clockwse
@@ -28,7 +29,7 @@ export class LineSweeperBase {
   protected Ports: PointSet
 
   public constructor(obstacles: Array<Polyline>, sweepDirection: Point) {
-    this.Obstacles = obstacles
+    this.Obstacles = obstacles ?? []
     this.SweepDirection = sweepDirection
     this.DirectionPerp = sweepDirection.rotate(-Math.PI / 2)
     this.EventQueue = new BinaryHeapWithComparer<SweepEvent>((a, b) =>

@@ -5,15 +5,15 @@ import {ConeSide} from './ConeSide'
 export class ConeRightSide extends ConeSide {
   constructor(cone: Cone) {
     super()
-    super.Cone = cone
+    this.Cone = cone
   }
 
   get Start(): Point {
-    return super.Cone.Apex
+    return this.Cone.Apex
   }
 
   get Direction(): Point {
-    return super.Cone.RightSideDirection
+    return this.Cone.RightSideDirection
   }
 
   toString(): string {

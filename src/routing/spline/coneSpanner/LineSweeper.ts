@@ -9,7 +9,6 @@ import {RBTree} from '@/src/structs/RBTree/rbTree'
 import {Assert} from '@/src/utils/assert'
 import {closeDistEps} from '@/src/utils/compare'
 import {PointSet} from '@/src/utils/PointSet'
-import {IEnumerable} from 'linq-to-typescript'
 import {LineSweeperBase} from '../../visibility/LineSweeperBase'
 import {PortObstacleEvent} from '../../visibility/PortObstacleEvent'
 import {TollFreeVisibilityEdge} from '../../visibility/TollFreeVisibilityEdge'
@@ -49,8 +48,8 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
 
   PortEdgesCreator: (a: VisibilityVertex, b: VisibilityVertex) => VisibilityEdge
 
-  constructor(
-    obstacles: IEnumerable<Polyline>,
+  private constructor(
+    obstacles: Array<Polyline>,
     direction: Point,
     coneRsDir: Point,
     coneLsDir: Point,
@@ -58,7 +57,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     ports: PointSet,
     borderPolyline: Polyline,
   ) {
-    super(Array.from(obstacles), direction)
+    super(obstacles, direction)
     this.visibilityGraph = visibilityGraph
     this.ConeRightSideDirection = coneRsDir
     this.ConeLeftSideDirection = coneLsDir
@@ -79,7 +78,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
   BorderPolyline: Polyline
 
   static Sweep(
-    obstacles: IEnumerable<Polyline>,
+    obstacles: Array<Polyline>,
     direction: Point,
     coneAngle: number,
     visibilityGraph: VisibilityGraph,
@@ -100,8 +99,8 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
 
   Calculate() {
     this.InitQueueOfEvents()
-    while (super.EventQueue.Count > 0) {
-      this.ProcessEvent(super.EventQueue.Dequeue())
+    while (this.EventQueue.Count > 0) {
+      this.ProcessEvent(this.EventQueue.Dequeue())
     }
 
     if (this.BorderPolyline != null) {
@@ -388,7 +387,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     this.portEdgesGraph.AddEdge(cone.Apex, p)
   }
 
-  private static /* internal */ InsertPointIntoPolylineAfter(
+  private static InsertPointIntoPolylineAfter(
     borderPolyline: Polyline,
     insertAfter: PolylinePoint,
     pointToInsert: Point,
@@ -415,28 +414,28 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
   }
 
   ProcessEvent(p: SweepEvent) {
-    const vertexEvent = <VertexEvent>p
-    if (vertexEvent != null) {
-      this.ProcessVertexEvent(vertexEvent)
+    const vertexEvent = p instanceof VertexEvent
+    if (vertexEvent) {
+      this.ProcessVertexEvent(<VertexEvent>p)
     } else {
-      const rightIntersectionEvent = <RightIntersectionEvent>p
-      if (rightIntersectionEvent != null) {
-        this.ProcessRightIntersectionEvent(rightIntersectionEvent)
+      const rightIntersectionEvent = p instanceof RightIntersectionEvent
+      if (rightIntersectionEvent) {
+        this.ProcessRightIntersectionEvent(<RightIntersectionEvent>p)
       } else {
-        const leftIntersectionEvent = <LeftIntersectionEvent>p
-        if (leftIntersectionEvent != null) {
-          this.ProcessLeftIntersectionEvent(leftIntersectionEvent)
+        const leftIntersectionEvent = p instanceof LeftIntersectionEvent
+        if (leftIntersectionEvent) {
+          this.ProcessLeftIntersectionEvent(<LeftIntersectionEvent>p)
         } else {
-          const coneClosure = <ConeClosureEvent>p
-          if (coneClosure != null) {
-            if (!coneClosure.ConeToClose.Removed) {
-              this.RemoveCone(coneClosure.ConeToClose)
+          const coneClosure = p instanceof ConeClosureEvent
+          if (coneClosure) {
+            if (!(<ConeClosureEvent>p).ConeToClose.Removed) {
+              this.RemoveCone((<ConeClosureEvent>p).ConeToClose)
             }
           } else {
             this.ProcessPortObstacleEvent(<PortObstacleEvent>p)
           }
 
-          this.Z = super.GetZS(p)
+          this.Z = this.GetZS(p)
         }
       }
     }
@@ -523,7 +522,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
       otherSide.Direction,
     )
     const cc = new ConeClosureEvent(x, brokenConeSide.Cone)
-    super.EnqueueEvent(cc)
+    this.EnqueueEvent(cc)
   }
 
   ProcessRightIntersectionEvent(
@@ -621,7 +620,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
   }
 
   ProcessVertexEvent(vertexEvent: VertexEvent) {
-    this.Z = super.GetZS(vertexEvent)
+    this.Z = this.GetZS(vertexEvent)
     // PrintOutLeftSegTree();
     // PrintOutRightSegTree();
     this.GoOverConesSeeingVertexEvent(vertexEvent)
@@ -764,8 +763,8 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     }
 
     if (
-      super.GetZP(nextSite) + GeomConstants.distanceEpsilon <
-      super.GetZS(rightVertexEvent)
+      this.GetZP(nextSite) + GeomConstants.distanceEpsilon <
+      this.GetZS(rightVertexEvent)
     ) {
       this.CreateConeOnVertex(rightVertexEvent)
     }
@@ -780,7 +779,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
           site,
         )
       ) {
-        this.EnqueueEvent(new RightVertexEvent(nextVertex))
+        this.EnqueueRightVertexEvent(new RightVertexEvent(nextVertex))
       }
 
       //   TryEnqueueRighVertexEvent(nextVertex);
@@ -795,7 +794,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
         this.InsertRightSide(new RightObstacleSide(rightVertexEvent.Vertex))
       }
 
-      this.EnqueueEvent(new RightVertexEvent(nextVertex))
+      this.EnqueueRightVertexEvent(new RightVertexEvent(nextVertex))
     }
   }
 
@@ -803,7 +802,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     rightVertexEvent: VertexEvent,
     nextVertex: PolylinePoint,
   ) {
-    this.EnqueueEvent(new RightVertexEvent(nextVertex))
+    this.EnqueueRightVertexEvent(new RightVertexEvent(nextVertex))
     // the obstacle side is inside of the cone
     // we need to create an obstacle left side segment instead of the left cone side
     const cone = new Cone(rightVertexEvent.Vertex.point, this)
@@ -845,7 +844,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
           intersection &&
           this.SegmentIsNotHorizontal(intersection, obstacleSideVertex.point)
         ) {
-          super.EnqueueEvent(
+          this.EnqueueEvent(
             this.CreateRightIntersectionEvent(
               coneRightSide,
               intersection,
@@ -902,7 +901,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
       this.ConeLeftSideDirection,
     )
     if (intersection) {
-      super.EnqueueEvent(
+      this.EnqueueEvent(
         new LeftIntersectionEvent(
           coneLeftSide,
           intersection,
@@ -966,7 +965,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
           seg.Direction,
         )
         if (intersection) {
-          super.EnqueueEvent(
+          this.EnqueueEvent(
             new LeftIntersectionEvent(seg, intersection, leftSide.EndVertex),
           )
         }
@@ -1008,7 +1007,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
       )
     }
 
-    const nextDelZ = super.GetZP(nextSite) - this.Z
+    const nextDelZ = this.GetZP(nextSite) - this.Z
     if (nextDelZ < -GeomConstants.distanceEpsilon) {
       this.RemoveRightSide(new RightObstacleSide(nextVertex))
     }
@@ -1023,12 +1022,12 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     } else if (!Point.PointToTheLeftOfLineOrOnLine(nextSite, site, coneRp)) {
       // if (angle >= coneAngle / 2) {
       this.CreateConeOnVertex(leftVertexEvent)
-      this.EnqueueEvent(new LeftVertexEvent(nextVertex))
+      this.EnqueueRightVertexEvent(new LeftVertexEvent(nextVertex))
       // we schedule LeftVertexEvent for a vertex with horizontal segment to the left on the top of the obstace
     } else if (!Point.PointToTheLeftOfLineOrOnLine(nextSite, site, coneLp)) {
       // if (angle >= -coneAngle / 2) {
       // we cannot completely obscure the cone here
-      this.EnqueueEvent(new LeftVertexEvent(nextVertex))
+      this.EnqueueRightVertexEvent(new LeftVertexEvent(nextVertex))
       // the obstacle side is inside of the cone
       // we need to create an obstacle right side segment instead of the cone side
       const cone = new Cone(leftVertexEvent.Vertex.point, this)
@@ -1051,7 +1050,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
         this.InsertLeftSide(new LeftObstacleSide(leftVertexEvent.Vertex))
       }
     } else {
-      this.EnqueueEvent(new LeftVertexEvent(nextVertex))
+      this.EnqueueRightVertexEvent(new LeftVertexEvent(nextVertex))
       if (
         this.GetZP(nextVertex.point.sub(leftVertexEvent.Site)) >
         GeomConstants.distanceEpsilon
@@ -1152,7 +1151,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
           seg.Direction,
         ))
       ) {
-        super.EnqueueEvent(
+        this.EnqueueEvent(
           this.CreateRightIntersectionEvent(
             seg,
             intersection,
@@ -1252,7 +1251,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
       coneRightSide.Direction,
     )
     if (x) {
-      super.EnqueueEvent(
+      this.EnqueueEvent(
         this.CreateRightIntersectionEvent(coneRightSide, x, seg.EndVertex),
       )
       // Show(CurveFactory.CreateDiamond(3, 3, x));
@@ -1270,7 +1269,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
       coneRightSide.Direction,
     )
     if (x) {
-      super.EnqueueEvent(
+      this.EnqueueEvent(
         this.CreateRightIntersectionEvent(coneRightSide, x, side.EndVertex),
       )
       // Show(CurveFactory.CreateDiamond(3, 3, x));
@@ -1288,7 +1287,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
       coneLeftSide.Direction,
     )
     if (x) {
-      super.EnqueueEvent(
+      this.EnqueueEvent(
         new LeftIntersectionEvent(coneLeftSide, x, seg.EndVertex),
       )
       // Show(CurveFactory.CreateDiamond(3, 3, x));
@@ -1306,7 +1305,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
       coneLeftSide.Direction,
     )
     if (x) {
-      super.EnqueueEvent(
+      this.EnqueueEvent(
         new LeftIntersectionEvent(coneLeftSide, x, side.EndVertex),
       )
       //     Show(CurveFactory.CreateDiamond(3, 3, x));
@@ -1369,7 +1368,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     rbNode = this.leftConeSides.find(leftConeSide)
     if (rbNode == null) {
       const tmpZ = this.Z
-      this.Z = Math.max(super.GetZP(leftConeSide.Start), this.PreviousZ)
+      this.Z = Math.max(this.GetZP(leftConeSide.Start), this.PreviousZ)
       // we need to return to the past a little bit when the order was still correct
       this.coneSideComparer.SetOperand(leftConeSide)
       rbNode = this.leftConeSides.find(leftConeSide)
@@ -1487,7 +1486,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     )
   }
 
-  EnqueueEvent(vertexEvent: RightVertexEvent) {
+  EnqueueRightVertexEvent(vertexEvent: RightVertexEvent) {
     if (
       this.GetZP(
         vertexEvent.Site.sub(vertexEvent.Vertex.prevOnPolyline.point),
@@ -1497,6 +1496,6 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     }
 
     // otherwise we enqueue the vertex twice; once as a LeftVertexEvent and once as a RightVertexEvent
-    super.EnqueueEvent(vertexEvent)
+    this.EnqueueEvent(vertexEvent)
   }
 }
