@@ -30,7 +30,7 @@ import {
 import {CurveFactory} from '@/src/math/geometry/curveFactory'
 import {Point} from '@/src/math/geometry/point'
 import {DrawingGraph} from '@/src/drawing/drawingGraph'
-import {parseDotString, parseDotGraph} from '@/src/utils/dotparser'
+import {parseDotString, parseDotGraph} from '@/src/drawing/dotparser'
 
 type P = [number, number]
 

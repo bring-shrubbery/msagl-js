@@ -1,7 +1,7 @@
 import {MdsGraphLayout} from '@/src/layout/mds/MDSGraphLayout'
 import {MdsLayoutSettings} from '@/src/layout/mds/MDSLayoutSettings'
 import {PivotDistances} from '@/src/layout/mds/PivotDistances'
-import {parseDotGraph} from '@/src/utils/dotparser'
+import {parseDotGraph} from '@/src/drawing/dotparser'
 import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
 import {
   createGeometry,
