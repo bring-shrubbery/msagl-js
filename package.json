@@ -1,6 +1,6 @@
 {
   "name": "msagl-js",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "MSAGL layout in js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -48,7 +48,7 @@
     "lint-staged": "10.5.3",
     "parse-color": "^1.0.0",
     "ts-jest": "^27.0.5",
-    "typescript": "^4.4.0",
+    "typescript": "^4.4.4",
     "xml-writer": "^1.7.0"
   },
   "husky": {

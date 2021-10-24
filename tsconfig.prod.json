@@ -1,20 +1,19 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es2018",
     "declaration": true,
-    "outDir": "./dist",
-    "sourceMap": true,
     "noImplicitAny": true,
     "lib": ["dom", "es2018"],
-    "importHelpers": true,
-    "esModuleInterop": true,
+      "esModuleInterop": true,
+      "outDir":"dist",
     "baseUrl": ".",
     "paths": {
       "@/src": ["src/index.ts"],
-      "@/src/*": ["src/*"]
-    }
+      "@/src/*": ["src/*"],
+     }
   },
   "include": ["src/**/*"],
   "typeRoots": ["./node_modules/@types/"]
 }
+
