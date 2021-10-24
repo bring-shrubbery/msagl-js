@@ -1,7 +1,7 @@
 //  this event caused by the intersection of a ObstacleSideSegment and the other cone side of the same cone
 //  when this event happens the cone has to be removed
 
-import {Point} from '@/src'
+import {Point} from '../../..'
 import {Cone} from './Cone'
 import {SweepEvent} from './SweepEvent'
 

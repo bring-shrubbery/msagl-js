@@ -1,6 +1,6 @@
-import {Point} from '@/src/math/geometry/point'
-import {Polyline} from '@/src/math/geometry/polyline'
-import {Obstacle} from '@/src/routing/rectilinear/obstacle'
+import {Point} from '../../../src'
+import {Polyline} from '../../../src/math/geometry'
+import {Obstacle} from '../../../src/routing/rectilinear/obstacle'
 
 test('RemoveCloseAndCollinearVerticesInPlace', () => {
   const a = new Point(0, 0)

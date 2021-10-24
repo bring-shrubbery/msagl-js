@@ -1,8 +1,7 @@
-import {Point} from '@/src/math/geometry/point'
-import {Polyline} from '@/src/math/geometry/polyline'
-import {Rectangle} from '@/src/math/geometry/rectangle'
-import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
-import {InteractiveObstacleCalculator} from '@/src/routing/interactiveObstacleCalculator'
+import {Rectangle} from '../../src'
+import {Point, Polyline} from '../../src/math/geometry'
+import {InteractiveObstacleCalculator} from '../../src/routing/interactiveObstacleCalculator'
+import {SvgDebugWriter} from '../utils/svgDebugWriter'
 
 test('padded rectangle', () => {
   const rect = Rectangle.mkPP(new Point(0, 0), new Point(100, 50))

@@ -1,7 +1,7 @@
 //  left here means an intersection of a left cone side with an obstacle edge
 
-import {Point} from '@/src'
-import {PolylinePoint} from '@/src/math/geometry/polylinePoint'
+import {Point} from '../../..'
+import {PolylinePoint} from '../../../math/geometry/polylinePoint'
 import {ConeLeftSide} from './ConeLeftSide'
 import {SweepEvent} from './SweepEvent'
 

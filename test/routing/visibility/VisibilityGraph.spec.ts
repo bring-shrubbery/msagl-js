@@ -1,5 +1,5 @@
-import {Point} from '@/src/math/geometry/point'
-import {VisibilityGraph} from '@/src/routing/visibility/VisibilityGraph'
+import {Point} from '../../../src'
+import {VisibilityGraph} from '../../../src/routing/visibility/VisibilityGraph'
 
 test('vg', () => {
   const g = new VisibilityGraph()

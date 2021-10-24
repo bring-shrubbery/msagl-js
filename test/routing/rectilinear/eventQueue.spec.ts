@@ -1,7 +1,7 @@
-import {Point} from '@/src/math/geometry/point'
-import {EventQueue} from '@/src/routing/rectilinear/EventQueue'
-import {ScanDirection} from '@/src/routing/rectilinear/ScanDirection'
-import {SweepEvent} from '@/src/routing/spline/coneSpanner/SweepEvent'
+import {Point} from '../../../src'
+import {EventQueue} from '../../../src/routing/rectilinear/EventQueue'
+import {ScanDirection} from '../../../src/routing/rectilinear/ScanDirection'
+import {SweepEvent} from '../../../src/routing/spline/coneSpanner/SweepEvent'
 
 class Event extends SweepEvent {
   p: Point

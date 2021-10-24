@@ -5,15 +5,9 @@
     "declaration": true,
     "noImplicitAny": true,
     "lib": ["dom", "es2018"],
-      "esModuleInterop": true,
-      "outDir":"dist",
-    "baseUrl": ".",
-    "paths": {
-      "@/src": ["src/index.ts"],
-      "@/src/*": ["src/*"],
-     }
+    "esModuleInterop": true,
+    "outDir": "dist"
   },
   "include": ["src/**/*"],
   "typeRoots": ["./node_modules/@types/"]
 }
-

@@ -1,5 +1,5 @@
-import {Point} from '@/src'
-import {PolylinePoint} from '@/src/math/geometry/polylinePoint'
+import {Point} from '../../..'
+import {PolylinePoint} from '../../../math/geometry/polylinePoint'
 import {ConeSide} from './ConeSide'
 
 //  represents a cone side that is broken by the obstacle

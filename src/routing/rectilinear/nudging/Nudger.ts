@@ -26,13 +26,12 @@ import {Path} from './Path'
 import {PathEdge} from './PathEdge'
 import {PathRefiner} from './PathRefiner'
 import {StaircaseRemover} from './StaircaseRemover'
-import {HitTestBehavior} from '@/src/math/geometry/RTree/HitTestBehavior'
+import {HitTestBehavior} from '../../../math/geometry/RTree/HitTestBehavior'
 import {
   CreateRectangleNodeOnEnumeration,
   mkRectangleNode,
   RectangleNode,
-} from '@/src/math/geometry/RTree/RectangleNode'
-
+} from '../../../math/geometry/RTree/RectangleNode'
 type PointProjection = (p: Point) => number
 //  following paper "Orthogonal Connector Routing" which is included  of the project
 export class Nudger {

@@ -1,4 +1,4 @@
-import {Point} from '@/src'
+import {Point} from '../../..'
 import {Cone} from './Cone'
 import {ConeSide} from './ConeSide'
 

@@ -1,4 +1,5 @@
-import {GenericBinaryHeapPriorityQueue} from '@/src/structs/genericBinaryHeapPriorityQueue'
+import {GenericBinaryHeapPriorityQueue} from '../../src/structs/genericBinaryHeapPriorityQueue'
+
 test('push many', () => {
   const q = new GenericBinaryHeapPriorityQueue<number>((a, b) => b - a)
   for (let i = 0; i < 30; i++) {

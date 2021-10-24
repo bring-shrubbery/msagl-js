@@ -1,7 +1,8 @@
-import {Point, Polyline} from '@/src/math/geometry'
-import {LineSweeper} from '@/src/routing/spline/coneSpanner/LineSweeper'
-import {VisibilityGraph} from '@/src/routing/visibility/VisibilityGraph'
-import {PointSet} from '@/src/utils/PointSet'
+import {Point} from '../../../../src'
+import {Polyline} from '../../../../src/math/geometry'
+import {LineSweeper} from '../../../../src/routing/spline/coneSpanner/LineSweeper'
+import {VisibilityGraph} from '../../../../src/routing/visibility/VisibilityGraph'
+import {PointSet} from '../../../../src/utils/PointSet'
 
 test('two ports', () => {
   const obstacles: Polyline[] = null

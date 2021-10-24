@@ -6,13 +6,7 @@
     "noImplicitAny": true,
     "lib": ["dom", "es2018"],
     "noEmit": true,
-    "esModuleInterop": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/src": ["src/index.ts"],
-      "@/src/*": ["src/*"],
-      "@/test/*": ["test/*"]
-    }
+    "esModuleInterop": true
   },
   "include": ["src/**/*", "test/**/*"],
   "typeRoots": ["./node_modules/@types/"]

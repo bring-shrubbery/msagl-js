@@ -2,25 +2,25 @@ import {join} from 'path'
 import {
   GeomGraph,
   Graph,
-  Node,
-  GeomNode,
+  Size,
   CurveFactory,
   Point,
-  ICurve,
-  Edge,
   GeomEdge,
-} from '@/src'
-import {EdgeRoutingMode} from '@/src/routing/EdgeRoutingMode'
-import {GeomObject} from '@/src/layout/core/geomObject'
-import {Size} from '@/src/math/geometry/rectangle'
-import {SvgDebugWriter} from '@/test/utils/svgDebugWriter'
-import {RectilinearEdgeRouter} from '@/src/routing/rectilinear/RectilinearEdgeRouter'
-import {IntPairSet} from '@/src/utils/IntPairSet'
-import {initRandom, randomInt} from '@/src/utils/random'
-import {runMDSLayoutNoSubgraphs} from '@/test/utils/testUtils'
+  Edge,
+  ICurve,
+  GeomNode,
+  Node,
+} from '../../../src'
+import {DrawingGraph} from '../../../src/drawing/drawingGraph'
+import {GeomObject} from '../../../src/layout/core/geomObject'
+import {EdgeRoutingMode} from '../../../src/routing/EdgeRoutingMode'
+import {RectilinearEdgeRouter} from '../../../src/routing/rectilinear/RectilinearEdgeRouter'
+import {IntPairSet} from '../../../src/utils/IntPairSet'
+import {initRandom, randomInt} from '../../../src/utils/random'
 
 import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
-import {DrawingGraph} from '@/src/drawing/drawingGraph'
+import {SvgDebugWriter} from '../../utils/svgDebugWriter'
+import {runMDSLayoutNoSubgraphs} from '../../utils/testUtils'
 test('empty graph', () => {
   const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
 

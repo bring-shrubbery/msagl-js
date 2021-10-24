@@ -1,4 +1,4 @@
-import {Point, Rectangle} from '@/src'
+import {Point, Rectangle} from '../..'
 import {
   Polyline,
   Curve,
@@ -7,24 +7,24 @@ import {
   LineSegment,
   GeomConstants,
   CompassVector,
-} from '@/src/math/geometry'
-import {ConvexHull} from '@/src/math/geometry/convexHull'
-import {IntersectionInfo} from '@/src/math/geometry/intersectionInfo'
-import {HitTestBehavior} from '@/src/math/geometry/RTree/HitTestBehavior'
+} from '../../math/geometry'
+import {ConvexHull} from '../../math/geometry/convexHull'
+import {IntersectionInfo} from '../../math/geometry/intersectionInfo'
+import {HitTestBehavior} from '../../math/geometry/RTree/HitTestBehavior'
 import {
   RectangleNode,
   mkRectangleNode,
   CreateRectangleNodeOnListOfNodes,
-} from '@/src/math/geometry/RTree/RectangleNode'
+} from '../../math/geometry/RTree/RectangleNode'
 import {
   CrossRectangleNodesSameType,
   CrossRectangleNodes,
-} from '@/src/math/geometry/RTree/RectangleNodeUtils'
-import {GetConnectedComponents} from '@/src/math/graphAlgorithms/ConnectedComponentCalculator'
-import {mkGraphOnEdges} from '@/src/structs/basicGraphOnEdges'
-import {closeDistEps} from '@/src/utils/compare'
-import {IntPair} from '@/src/utils/IntPair'
-import {IntPairSet} from '@/src/utils/IntPairSet'
+} from '../../math/geometry/RTree/RectangleNodeUtils'
+import {GetConnectedComponents} from '../../math/graphAlgorithms/ConnectedComponentCalculator'
+import {mkGraphOnEdges} from '../../structs/basicGraphOnEdges'
+import {closeDistEps} from '../../utils/compare'
+import {IntPair} from '../../utils/IntPair'
+import {IntPairSet} from '../../utils/IntPairSet'
 import {Shape} from '../shape'
 import {GroupBoundaryCrossingMap} from './GroupBoundaryCrossingMap'
 import {Obstacle} from './obstacle'

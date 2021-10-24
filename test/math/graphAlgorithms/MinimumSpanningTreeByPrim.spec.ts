@@ -1,6 +1,6 @@
-import {MinimumSpanningTreeByPrim} from '@/src/math/graphAlgorithms/MinimumSpanningTreeByPrim'
-import {mkGraphOnEdgesArray} from '@/src/structs/basicGraphOnEdges'
-import {IntPair} from '@/src/utils/IntPair'
+import {MinimumSpanningTreeByPrim} from '../../../src/math/graphAlgorithms/MinimumSpanningTreeByPrim'
+import {mkGraphOnEdgesArray} from '../../../src/structs/basicGraphOnEdges'
+import {IntPair} from '../../../src/utils/IntPair'
 
 test('rombus with diagal', () => {
   const edges = [

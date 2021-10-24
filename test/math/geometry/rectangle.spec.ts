@@ -1,5 +1,4 @@
-import {Rectangle} from '@/src/math/geometry/rectangle'
-import {Point} from '@/src/math/geometry/point'
+import {Rectangle, Point} from '../../../src'
 
 test('rectangle test', () => {
   const r = new Rectangle({left: 0, right: 1, top: 1, bottom: 0})

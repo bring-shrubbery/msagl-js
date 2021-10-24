@@ -1,6 +1,6 @@
-import {LineSegment} from '@/src/math/geometry/lineSegment'
-import {Parallelogram} from '@/src/math/geometry/parallelogram'
-import {Point} from '@/src/math/geometry/point'
+import {Point} from '../../../src'
+import {LineSegment} from '../../../src/math/geometry'
+import {Parallelogram} from '../../../src/math/geometry/parallelogram'
 
 test('parallelogram line seg intersection', () => {
   const ls0 = LineSegment.mkPP(new Point(0, 0), new Point(100, 100))

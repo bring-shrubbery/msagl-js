@@ -1,4 +1,4 @@
-import {Point} from '@/src'
+import {Point} from '../../..'
 import {SweepEvent} from './SweepEvent'
 
 export class PortLocationEvent extends SweepEvent {

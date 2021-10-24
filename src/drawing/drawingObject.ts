@@ -1,11 +1,11 @@
-import {AttrContainer} from '@/src/structs/attrContainer'
 import {ArrowTypeEnum} from './arrawTypeEnum'
 import {Color} from './color'
-import {LayerDirectionEnum} from '@/src/layout/layered/layerDirectionEnum'
 import {ShapeEnum} from './shapeEnum'
 import {StyleEnum} from './styleEnum'
 import {RankEnum} from './rankEnum'
 import {DirTypeEnum, OrderingEnum} from './dotparser'
+import {LayerDirectionEnum} from '..'
+import {AttrContainer} from '../structs/attrContainer'
 
 export abstract class DrawingObject {
   attrCont: AttrContainer // this is the field from main graph - keep the connection with the underlying graph

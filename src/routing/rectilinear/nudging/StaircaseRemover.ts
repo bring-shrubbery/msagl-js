@@ -1,5 +1,3 @@
-import {RectangleNode} from '@/src/math/geometry/RTree/RectangleNode'
-import {RTree} from '@/src/math/geometry/RTree/RTree'
 import {from} from 'linq-to-typescript'
 import {
   Point,
@@ -10,6 +8,8 @@ import {
   LineSegment,
   Polyline,
 } from '../../../math/geometry'
+import {RectangleNode} from '../../../math/geometry/RTree/RectangleNode'
+import {RTree} from '../../../math/geometry/RTree/RTree'
 // import {Assert} from '../../../utils/assert'
 import {closeDistEps} from '../../../utils/compare'
 import {Path} from './Path'

@@ -1,4 +1,5 @@
-import {UnimodalSequence} from '@/src/routing/visibility/UnimodalSequence'
+import {UnimodalSequence} from '../../../src/routing/visibility/UnimodalSequence'
+
 test('unimodal sequence', () => {
   const t = [0, 1, 2, 3, 1, 0]
   const f = (m: number) => t[m]

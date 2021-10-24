@@ -1,4 +1,3 @@
-import {RectangleNode} from '@/src/math/geometry/RTree/RectangleNode'
 import {from, IEnumerable} from 'linq-to-typescript'
 import {String} from 'typescript-string-operations'
 import {
@@ -12,6 +11,7 @@ import {
   LineSegment,
   Polyline,
 } from '../../math/geometry'
+import {RectangleNode} from '../../math/geometry/RTree/RectangleNode'
 // import {Assert} from '../../utils/assert'
 import {VisibilityVertex} from '../visibility/VisibilityVertex'
 import {Obstacle} from './obstacle'

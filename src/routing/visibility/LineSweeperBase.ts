@@ -12,8 +12,7 @@ import {SweepEvent} from '../spline/coneSpanner/SweepEvent'
 import {ObstacleSideComparer} from './ObstacleSideComparer'
 import {PortObstacleEvent} from './PortObstacleEvent'
 import {SegmentBase} from './SegmentBase'
-import {PointSet} from '@/src/utils/PointSet'
-import {Assert} from '@/src/utils/assert'
+import {PointSet} from '../../utils/PointSet'
 
 export class LineSweeperBase {
   directionPerp: Point //  sweep direction rotated 90 degrees clockwse

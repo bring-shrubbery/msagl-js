@@ -1,5 +1,5 @@
-import {Point} from '@/src'
-import {PolylinePoint} from '@/src/math/geometry/polylinePoint'
+import {Point} from '../../..'
+import {PolylinePoint} from '../../../math/geometry/polylinePoint'
 import {ConeRightSide} from './ConeRightSide'
 import {SweepEvent} from './SweepEvent'
 

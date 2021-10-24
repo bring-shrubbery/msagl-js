@@ -1,21 +1,15 @@
-import {ICurve} from '@/src/math/geometry/icurve'
-import {Curve} from '@/src/math/geometry/curve'
-import {Point} from '@/src/math/geometry/point'
-import {Polyline} from '@/src/math/geometry/polyline'
-import {Rectangle} from '@/src/math/geometry/rectangle'
-import {Ellipse} from '@/src/math/geometry/ellipse'
-import {LineSegment} from '@/src/math/geometry/lineSegment'
-import {BezierSeg} from '@/src/math/geometry/bezierSeg'
-import {DebugCurve} from '@/src/math/geometry/debugCurve'
 import {String, StringBuilder} from 'typescript-string-operations'
 import {from} from 'linq-to-typescript'
-import {allVerticesOfParall} from '@/src/math/geometry/parallelogram'
-import {GeomEdge} from '@/src/layout/core/geomEdge'
-import {GeomGraph} from '@/src/layout/core/GeomGraph'
-import {PlaneTransformation} from '@/src/math/geometry/planeTransformation'
 import * as fs from 'fs'
 // @ts-ignore
 import xmlw from 'xml-writer'
+import {Rectangle, Point, ICurve, GeomGraph, GeomEdge} from '../../src'
+import {LineSegment, Curve, Polyline} from '../../src/math/geometry'
+import {BezierSeg} from '../../src/math/geometry/bezierSeg'
+import {DebugCurve} from '../../src/math/geometry/debugCurve'
+import {Ellipse} from '../../src/math/geometry/ellipse'
+import {allVerticesOfParall} from '../../src/math/geometry/parallelogram'
+import {PlaneTransformation} from '../../src/math/geometry/planeTransformation'
 // @ts-check
 export class SvgDebugWriter {
   // Here we import the File System module of node

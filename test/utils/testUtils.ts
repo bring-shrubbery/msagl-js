@@ -13,11 +13,10 @@ import {
   GeomNode,
   GeomLabel,
   Graph,
-} from '@/src'
-import {EdgeRoutingMode} from '@/src/routing/EdgeRoutingMode'
+} from '../../src'
 import {SvgDebugWriter} from './svgDebugWriter'
-import {parseDotGraph} from '@/src/drawing/dotparser'
-// import {Assert} from '@/src/utils/assert'
+import {EdgeRoutingMode} from '../../src/routing/EdgeRoutingMode'
+import {parseDotGraph} from '../../src/drawing/dotparser'
 export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   const s = e.source.id + '->' + e.target.id
   return (

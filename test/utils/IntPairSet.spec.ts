@@ -1,6 +1,5 @@
-// import {Assert} from '@/src/utils/assert'
-import {IntPairSet} from '@/src/utils/IntPairSet'
-import {randomInt} from '@/src/utils/random'
+import {IntPairSet} from '../../src/utils/IntPairSet'
+import {randomInt} from '../../src/utils/random'
 
 test('IntPairSet', () => {
   const m = new IntPairSet()

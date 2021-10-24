@@ -19,7 +19,8 @@ import {
   RectangleNode,
   CreateRectangleNodeOnEnumeration,
   mkRectangleNode,
-} from '@/src/math/geometry/RTree/RectangleNode'
+} from '../../math/geometry/RTree/RectangleNode'
+
 type SymmetricSegment = SymmetricTuple<Point>
 export class Cdt extends Algorithm {
   isolatedSitesWithObject: Array<[Point, unknown]>

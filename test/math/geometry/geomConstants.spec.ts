@@ -1,4 +1,4 @@
-import {GeomConstants} from '@/src/math/geometry/geomConstants'
+import {GeomConstants} from '../../../src/math/geometry'
 
 test('round', () => {
   let rp = GeomConstants.RoundDouble(1.2222225)
