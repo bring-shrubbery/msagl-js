@@ -31,8 +31,8 @@ import {
   GeomEdge,
   Node,
 } from '../../../src'
-import {parseDotString, parseDotGraph} from '../../../src/drawing/dotparser'
-import {DrawingGraph} from '../../../src/drawing/drawingGraph'
+import {parseDotString, parseDotGraph} from '../../../drawing/dotparser'
+import {DrawingGraph} from '../../../drawing/drawingGraph'
 import {Arrowhead} from '../../../src/layout/core/arrowhead'
 import {GeomObject} from '../../../src/layout/core/geomObject'
 import {LineSegment} from '../../../src/math/geometry'

@@ -4,8 +4,8 @@ import {ShapeEnum} from './shapeEnum'
 import {StyleEnum} from './styleEnum'
 import {RankEnum} from './rankEnum'
 import {DirTypeEnum, OrderingEnum} from './dotparser'
-import {LayerDirectionEnum} from '..'
-import {AttrContainer} from '../structs/attrContainer'
+import {LayerDirectionEnum} from '../src'
+import {AttrContainer} from '../src/structs/attrContainer'
 
 export abstract class DrawingObject {
   attrCont: AttrContainer // this is the field from main graph - keep the connection with the underlying graph

@@ -11,7 +11,7 @@ import {
   GeomNode,
   Node,
 } from '../../../src'
-import {DrawingGraph} from '../../../src/drawing/drawingGraph'
+import {DrawingGraph} from '../../../drawing/drawingGraph'
 import {GeomObject} from '../../../src/layout/core/geomObject'
 import {EdgeRoutingMode} from '../../../src/routing/EdgeRoutingMode'
 import {RectilinearEdgeRouter} from '../../../src/routing/rectilinear/RectilinearEdgeRouter'

@@ -1,10 +1,10 @@
 import {GeomGraph} from '../../../src'
-import {DrawingGraph} from '../../../src/drawing/drawingGraph'
 import {GeomObject} from '../../../src/layout/core/geomObject'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'
 import {runMDSLayout, outputGraph} from '../../utils/testUtils'
 import {sortedList} from '../sortedBySizeListOfgvFiles'
 import {join} from 'path'
+import {DrawingGraph} from '../../../drawing/drawingGraph'
 test('graph with subgraphs', () => {
   const dg = runMDSLayout('test/data/graphvis/clust.gv')
   outputGraph(<GeomGraph>GeomObject.getGeom(dg.graph), 'clustMDS')
