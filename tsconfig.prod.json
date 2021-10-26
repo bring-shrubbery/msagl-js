@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
     "target": "es2018",
+    "moduleResolution": "node",
     "declaration": true,
+    "outDir": "./dist",
+    "sourceMap": true,
     "noImplicitAny": true,
     "lib": ["dom", "es2018"],
-    "esModuleInterop": true,
-    "outDir": "dist"
+    "importHelpers": true,
+    "esModuleInterop": true
   },
   "include": ["src/**/*"],
   "typeRoots": ["./node_modules/@types/"]
