@@ -14,6 +14,15 @@ export class PointSet {
   get size(): number {
     return this.size_
   }
+
+  static mk(points: Iterable<Point>): PointSet {
+    const ret = new PointSet()
+    for (const p of points) {
+      ret.add(p)
+    }
+    return ret
+  }
+
   addxy(x: number, y: number) {
     let m = this.mapOfSets.get(x)
     if (m == null) this.mapOfSets.set(x, (m = new Set<number>()))
