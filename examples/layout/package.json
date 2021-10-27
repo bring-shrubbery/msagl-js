@@ -16,7 +16,7 @@
     "deck.gl": "^8.6.0",
     "dotparser": "^1.1.0",
     "msagl-js": "^0.0.20",
-    "drawing-msagl-js": "^0.0.1",
+    "drawing-msagl-js": "^0.0.2",
     "typescript": "^4.4.4"
   },
   "devDependencies": {

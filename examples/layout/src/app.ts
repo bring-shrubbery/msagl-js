@@ -9,7 +9,7 @@ import {
   MdsLayoutSettings,
   layoutGraph,
 } from 'msagl-js'
-import {parseDotString} from '@/drawing-msagl-js'
+import {parseDotString} from 'drawing-msagl-js'
 import {loadDefaultGraph, loadDotFile} from './load-data'
 import {dropZone} from './drag-n-drop'
 import Renderer from './renderer'

@@ -1,6 +1,6 @@
 {
   "name": "drawing-msagl-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Drawing support for MSAGL-js",
   "types": "dist/index.d.ts",
   "pkgRoot": "dist",

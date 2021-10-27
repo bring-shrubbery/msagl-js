@@ -1,4 +1,5 @@
 import parseDot from 'dotparser'
+import {DrawingGraph, parseDotString} from 'drawing-msagl-js'
 import {Graph, Node} from 'msagl-js'
 
 export async function loadDefaultGraph(): Promise<Graph> {
@@ -19,28 +20,9 @@ export async function loadDefaultGraph(): Promise<Graph> {
   return g
 }
 
-export async function loadDotFile(file: File): Promise<Graph> {
+export async function loadDotFile(file: File): Promise<DrawingGraph> {
   const content = await file.text()
-  const ast = parseDot(content)
-  const g = new Graph(file.name)
-  const children = ast[0].children
-
-  // Add nodes first, then edges
-  children.sort((s1, s2) => (s1.type < s2.type ? 1 : -1))
-
-  for (const stmt of children) {
-    switch (stmt.type) {
-      case 'node_stmt':
-        g.addNode(new Node(stmt.node_id.id.toString()))
-        break
-      case 'edge_stmt':
-        g.setEdge(
-          stmt.edge_list[0].id.toString(),
-          stmt.edge_list[1].id.toString(),
-        )
-        break
-      default:
-    }
-  }
-  return g
+  const ret = parseDotString(content)
+  ret.graph.id = file.name
+  return ret
 }
