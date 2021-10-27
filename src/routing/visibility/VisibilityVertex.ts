@@ -13,7 +13,7 @@ export class VisibilityVertex {
 
   _inEdges = new Array<VisibilityEdge>()
 
-  get InEdges(): Iterable<VisibilityEdge> {
+  get InEdges(): Array<VisibilityEdge> {
     return this._inEdges
   }
 
