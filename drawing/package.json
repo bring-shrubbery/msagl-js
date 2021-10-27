@@ -1,0 +1,26 @@
+{
+  "name": "drawing-msagl-js",
+  "version": "0.0.1",
+  "description": "Drawing support for MSAGL-js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "pkgRoot": "dist",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msaglJS/msagl-js"
+  },
+  "private": false,
+  "license": "MIT",
+  "scripts": {
+    "build": "rm -rf dist && tsc --project tsconfig.drawing.json"
+  },
+  "dependencies": {
+    "msagl-js": "^0.0.19",
+    "dotparser": "^1.1.0",
+    "parse-color": "^1.0.0"
+  }
+}
