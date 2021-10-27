@@ -1,6 +1,5 @@
 import {Point} from '../../../../src'
-import {LineSegment, Polyline} from '../../../../src/math/geometry'
-import {DebugCurve} from '../../../../src/math/geometry/debugCurve'
+import {Polyline} from '../../../../src/math/geometry'
 import {TriangleOrientation} from '../../../../src/math/geometry/point'
 import {LineSweeper} from '../../../../src/routing/spline/coneSpanner/LineSweeper'
 import {VisibilityEdge} from '../../../../src/routing/visibility/VisibilityEdge'
@@ -8,7 +7,7 @@ import {VisibilityGraph} from '../../../../src/routing/visibility/VisibilityGrap
 import {Assert} from '../../../../src/utils/assert'
 import {PointSet} from '../../../../src/utils/PointSet'
 import {initRandom, random} from '../../../../src/utils/random'
-import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
+//import {SvgDebugWriter} from '../../../utils/svgDebugWriter'
 
 test('two ports', () => {
   const obstacles: Polyline[] = null
@@ -97,20 +96,20 @@ function RunOnRandom(i: number) {
   )
   CheckVG(vg, ps, dir)
   // SvgDebugWriter.dumpDebugCurves('/tmp/vg' + i + '.svg', getEdges())
-  function getEdges(): DebugCurve[] {
-    const ret = []
-    for (const e of vg.Edges) {
-      ret.push(
-        DebugCurve.mkDebugCurveTWCI(
-          200,
-          1,
-          'green',
-          LineSegment.mkPP(e.SourcePoint, e.TargetPoint),
-        ),
-      )
-    }
-    return ret
-  }
+  // function getEdges(): DebugCurve[] {
+  //   const ret = []
+  //   for (const e of vg.Edges) {
+  //     ret.push(
+  //       DebugCurve.mkDebugCurveTWCI(
+  //         200,
+  //         1,
+  //         'green',
+  //         LineSegment.mkPP(e.SourcePoint, e.TargetPoint),
+  //       ),
+  //     )
+  //   }
+  //   return ret
+  // }
 }
 
 function CheckVG(vg: VisibilityGraph, ps: Array<Point>, dir: Point) {
