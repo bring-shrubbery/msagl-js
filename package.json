@@ -18,7 +18,7 @@
   "scripts": {
     "test": "jest",
     "build": "rm -rf dist && tsc --project tsconfig.prod.json",
-    "build_all": "rm -rf dist_all && tsc --project tsconfig.json",
+    "typecheck": "tsc",
     "eslint": "eslint src",
     "prettier": "prettier --write src/**"
   },
@@ -27,7 +27,6 @@
     "@esfx/collections-sortedmap": "^1.0.0-pre.19",
     "@types/parse-color": "^1.0.1",
     "linq-to-typescript": "^8.1.0",
-    "prettier": "^2.4.1",
     "queue-typescript": "^1.0.1",
     "reliable-random": "^0.0.1",
     "stack-typescript": "^1.0.4",
@@ -47,6 +46,7 @@
     "jest": "^27.3.1",
     "lint-staged": "10.5.3",
     "parse-color": "^1.0.0",
+    "prettier": "^2.4.1",
     "ts-jest": "^27.0.5",
     "typescript": "^4.4.4",
     "xml-writer": "^1.7.0"
