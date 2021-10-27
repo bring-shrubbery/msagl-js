@@ -1,4 +1,4 @@
-import {Graph} from '../src/structs/graph'
+import {Graph, Node} from 'msagl-js'
 import {DrawingNode} from './drawingNode'
 import {DrawingObject} from './drawingObject'
 
@@ -21,12 +21,12 @@ export class DrawingGraph extends DrawingObject {
     sinkRanks: new Array<string>(),
   }
   get graph(): Graph {
-    return this.attrCont as Graph
+    return this.attrCont as unknown as Graph
   }
 
   findNode(id: string): DrawingNode {
     const gr = this.graph
-    const n = gr.findNode(id)
+    const n: Node = gr.findNode(id)
     if (n == null) return null
     return DrawingObject.getDrawingObj(n) as DrawingNode
   }

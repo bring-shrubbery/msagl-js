@@ -2,12 +2,10 @@
   "name": "drawing-msagl-js",
   "version": "0.0.1",
   "description": "Drawing support for MSAGL-js",
-  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "pkgRoot": "dist",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "repository": {
     "type": "git",
