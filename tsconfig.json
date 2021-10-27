@@ -3,7 +3,6 @@
     "target": "es2018",
     "moduleResolution": "node",
     "declaration": true,
-    "outDir": "./dist",
     "sourceMap": true,
     "noImplicitAny": true,
     "lib": ["dom", "es2018"],
