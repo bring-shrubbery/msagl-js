@@ -731,7 +731,10 @@ export class ObstacleTree {
     this.insideHitTestIgnoreObstacle2 = sideObstacle
     this.insideHitTestScanDirection = scanDirection
     const obstacleNode: RectangleNode<Obstacle, Point> =
-      this.Root.FirstHitNodeWithPredicate(intersect, this.InsideObstacleHitTest)
+      this.Root.FirstHitNodeWithPredicate(
+        intersect,
+        this.InsideObstacleHitTest.bind(this),
+      )
     return null != obstacleNode
   }
 
@@ -750,7 +753,10 @@ export class ObstacleTree {
     this.insideHitTestIgnoreObstacle2 = null
     this.insideHitTestScanDirection = scanDirection
     const obstacleNode: RectangleNode<Obstacle, Point> =
-      this.Root.FirstHitNodeWithPredicate(intersect, this.InsideObstacleHitTest)
+      this.Root.FirstHitNodeWithPredicate(
+        intersect,
+        this.InsideObstacleHitTest.bind(this),
+      )
     return null != obstacleNode
   }
 
