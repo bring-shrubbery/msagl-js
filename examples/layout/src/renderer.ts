@@ -1,6 +1,6 @@
 import {Deck, OrthographicView} from '@deck.gl/core'
 
-import {interpolateICurve, GeomNode, GeomGraph, Point, GeomEdge} from 'msagl-js'
+import {interpolateICurve, GeomNode, GeomGraph, GeomEdge} from 'msagl-js'
 
 import NodeLayer from './layers/node-layer'
 import EdgeLayer from './layers/edge-layer'

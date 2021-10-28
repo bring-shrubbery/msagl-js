@@ -13,6 +13,7 @@ import {
   labelRectFunc,
   outputGraph,
   edgeString,
+  parseDotGraph,
 } from '../../utils/testUtils'
 import {
   GeomGraph,
@@ -32,7 +33,6 @@ import {
   Node,
 } from '../../../src'
 import {parseDotString, DrawingGraph} from '../../../src/drawing'
-import {parseDotGraph} from '../../../src/drawing/dotparser'
 import {Arrowhead} from '../../../src/layout/core/arrowhead'
 import {GeomObject} from '../../../src/layout/core/geomObject'
 import {LineSegment} from '../../../src/math/geometry'

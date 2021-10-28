@@ -13,12 +13,9 @@ import {
 import {loadDefaultGraph, loadDotFile} from './load-data'
 import {dropZone} from './drag-n-drop'
 import Renderer from './renderer'
-
+import {DrawingGraph} from 'msagl-js/dist/drawing'
+import {measureTextSize} from './load-data'
 const renderer = new Renderer()
-
-function measureTextSize(str: string): {width: number; height: number} {
-  return {width: str.length * 8 + 8, height: 20}
-}
 
 function render(g: Graph) {
   document.getElementById('graph-name').innerText = g.id
@@ -47,10 +44,13 @@ function render(g: Graph) {
 
 dropZone('drop-target', async (f: File) => {
   const graph = await loadDotFile(f)
-  render(graph)
+  renderDrawingGraph(graph)
 })
-
 ;(async () => {
   const g = await loadDefaultGraph()
   render(g)
 })()
+
+function renderDrawingGraph(dg: DrawingGraph) {
+  dg.createGeometry(measureTextSize)
+}

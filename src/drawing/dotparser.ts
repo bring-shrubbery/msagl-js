@@ -1,5 +1,4 @@
 import parse from 'dotparser'
-import * as fs from 'fs'
 import parseColor from 'parse-color'
 import {Edge, Graph, LayerDirectionEnum, Node} from '..'
 import {Label} from '../structs/label'
@@ -29,7 +28,13 @@ export enum DirTypeEnum {
   none,
 }
 
-function parseEdge(so: any, to: any, dg: DrawingGraph, o: any): DrawingEdge[] {
+function parseEdge(
+  so: any,
+  to: any,
+  dg: DrawingGraph,
+  directed: boolean,
+  o: any,
+): DrawingEdge[] {
   const nc = dg.graph.nodeCollection
   let sn: Node
   let tn: Node
@@ -46,7 +51,8 @@ function parseEdge(so: any, to: any, dg: DrawingGraph, o: any): DrawingEdge[] {
     const drObjs = []
     for (const ch of so.children) {
       if (ch.type === 'node_stmt') {
-        for (const e of parseEdge(ch.node_id, to, dg, o)) drObjs.push(e)
+        for (const e of parseEdge(ch.node_id, to, dg, directed, o))
+          drObjs.push(e)
       } else if (ch.type === 'attr_stmt') {
       } else {
         throw new Error('not implemented')
@@ -72,7 +78,8 @@ function parseEdge(so: any, to: any, dg: DrawingGraph, o: any): DrawingEdge[] {
     const drObjs = new Array<DrawingEdge>()
     for (const ch of to.children) {
       if (ch.type === 'node_stmt') {
-        for (const e of parseEdge(so, ch.node_id, dg, o)) drObjs.push(e)
+        for (const e of parseEdge(so, ch.node_id, dg, directed, o))
+          drObjs.push(e)
       } else if (ch.type === 'attr_stmt') {
       } else {
         throw new Error('not implemented')
@@ -93,6 +100,7 @@ function parseEdge(so: any, to: any, dg: DrawingGraph, o: any): DrawingEdge[] {
     edge.label = new Label(drawingEdge.labelText)
     drawingEdge.label = new DrawingLabel(drawingEdge.labelText)
   }
+  drawingEdge.directed = directed
   return [drawingEdge]
 }
 
@@ -390,7 +398,7 @@ function parseUnderGraph(children: any, dg: DrawingGraph, directed: boolean) {
         {
           const edgeList: any[] = o.edge_list
           for (let i = 0; i < edgeList.length - 1; i++)
-            parseEdge(edgeList[i], edgeList[i + 1], dg, o)
+            parseEdge(edgeList[i], edgeList[i + 1], dg, directed, o)
         }
         break
       case 'subgraph':
@@ -423,10 +431,6 @@ export function parseDotString(graphStr: string): DrawingGraph {
   const drawingGraph = new DrawingGraph(graph)
   parseUnderGraph(ast[0].children, drawingGraph, ast[0].type == 'digraph')
   return drawingGraph
-}
-export function parseDotGraph(fileName: string): DrawingGraph {
-  const graphStr = fs.readFileSync(fileName, 'utf-8')
-  return parseDotString(graphStr)
 }
 
 function process_same_rank(o: any, dg: DrawingGraph): boolean {
@@ -560,7 +564,13 @@ function getEntitiesSubg(
     if (ch.type == 'edge_stmt') {
       const edgeList: any[] = ch.edge_list
       for (let i = 0; i < edgeList.length - 1; i++) {
-        for (const e of parseEdge(edgeList[i], edgeList[i + 1], dg, ch))
+        for (const e of parseEdge(
+          edgeList[i],
+          edgeList[i + 1],
+          dg,
+          directed,
+          ch,
+        ))
           ret.push(e)
       }
     } else if (ch.type == 'attr_stmt') {

@@ -1,8 +1,9 @@
 import {join} from 'path'
 import {parseDotString, DrawingNode} from '../../src/drawing'
 import {Color} from '../../src/drawing/color'
-import {parseDotGraph} from '../../src/drawing/dotparser'
 import {sortedList} from '../layout/sortedBySizeListOfgvFiles'
+import {parseDotGraph} from './testUtils'
+
 test('all gv files list ', () => {
   const path = 'test/data/graphvis/'
   for (const f of sortedList) {

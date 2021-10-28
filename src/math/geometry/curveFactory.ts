@@ -4,11 +4,110 @@ import {Point} from './point'
 import {LineSegment} from './lineSegment'
 import {PlaneTransformation} from './planeTransformation'
 import {ICurve} from './icurve'
+import {Polyline} from '.'
 type RoundedRectRadii = {
   radX: number
   radY: number
 }
+
 export class CurveFactory {
+  public static createHexagon(
+    width: number,
+    height: number,
+    center: Point,
+  ): ICurve {
+    const h = height / 2
+    const w = width / 2
+    const x = center.x
+    const y = center.y
+    const poly = Polyline.mkFromPoints([
+      new Point(w * -1 + x, h * -1 + y),
+      new Point(w + x, h * -1 + y),
+      new Point(w + (h + x), 0 + y),
+      new Point(w + x, h + y),
+      new Point(w * -1 + x, h + y),
+      new Point((w - h) * -1 + x, 0 + y),
+    ])
+    poly.closed = true
+    return poly
+  }
+  // This adds the padding to the edges around the inscribed rectangle of an octagon.
+  static octagonPad = 1.0 / 4
+
+  static createOctagon(width: number, height: number, center: Point): Polyline {
+    const w: number = width / 2
+    const h: number = height / 2
+    const ps: Point[] = new Array(8)
+    //  Pad out horizontally
+    ps[0] = new Point(
+      w + CurveFactory.octagonPad * w,
+      h - h * CurveFactory.octagonPad,
+    )
+    ps[3] = new Point(ps[0].x * -1, ps[0].y)
+    ps[4] = new Point(ps[3].x, ps[3].y * -1)
+    ps[7] = new Point(ps[0].x, ps[0].y * -1)
+    //  Pad out vertically
+    ps[1] = new Point(
+      w - w * CurveFactory.octagonPad,
+      h + h * CurveFactory.octagonPad,
+    )
+    ps[2] = new Point(ps[1].x * -1, ps[1].y)
+    ps[6] = new Point(ps[1].x, ps[1].y * -1)
+    ps[5] = new Point(ps[2].x, ps[2].y * -1)
+    for (let i = 0; i < 8; i++) {
+      ps[i] = ps[i].add(center)
+    }
+
+    return Polyline.mkFromPoints(ps)
+  }
+  public static createInvertedHouse(
+    width: number,
+    height: number,
+    center: Point,
+  ): ICurve {
+    const shape: ICurve = CurveFactory.createHouse(width, height, center)
+    return CurveFactory.rotateCurveAroundCenterByDegree(shape, center, 180)
+  }
+  public static createHouse(
+    width: number,
+    height: number,
+    center: Point,
+  ): ICurve {
+    const w: number = width / 2
+    const h: number = height / 2
+    const x: number = center.x
+    const y: number = center.y
+    const c: Curve = new Curve()
+    Curve.addLineSegmentCNNNN(c, x - w, y - h, x + w, y - h)
+    Curve.continueWithLineSegmentNN(c, x + w, y + h)
+    Curve.continueWithLineSegmentNN(c, x, y + 2 * h)
+    Curve.continueWithLineSegmentNN(c, x - w, y + h)
+    return Curve.closeCurve(c)
+  }
+  public static CreateDiamond(
+    width: number,
+    height: number,
+    center: Point,
+  ): ICurve {
+    const w: number = width
+    const h: number = height
+    const x: number = center.x
+    const y: number = center.y
+    const c: Curve = new Curve()
+    const p: Point[] = [
+      new Point(x, y - h),
+      new Point(x + w, y),
+      new Point(x, y + h),
+      new Point(x - w, y),
+    ]
+    c.addSegs([
+      LineSegment.mkPP(p[0], p[1]),
+      LineSegment.mkPP(p[1], p[2]),
+      LineSegment.mkPP(p[2], p[3]),
+      LineSegment.mkPP(p[3], p[0]),
+    ])
+    return c
+  }
   static rotateCurveAroundCenterByDegree(
     curve: ICurve,
     center: Point,

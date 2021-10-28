@@ -1,4 +1,5 @@
 import {from} from 'linq-to-typescript'
+import * as fs from 'fs'
 import {StringBuilder} from 'typescript-string-operations'
 import {
   GeomEdge,
@@ -16,7 +17,8 @@ import {
 } from '../../src'
 import {SvgDebugWriter} from './svgDebugWriter'
 import {EdgeRoutingMode} from '../../src/routing/EdgeRoutingMode'
-import {parseDotGraph} from '../../src/drawing/dotparser'
+import {parseDotString} from '../../src/drawing/dotparser'
+import {DrawingGraph} from '../../src/drawing'
 export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   const s = e.source.id + '->' + e.target.id
   return (
@@ -121,6 +123,11 @@ export function nodeBoundaryFunc(id: string): ICurve {
     30.2 / 10, // tsize.height / 10,
     new Point(0, 0),
   )
+}
+
+export function parseDotGraph(fileName: string): DrawingGraph {
+  const graphStr = fs.readFileSync(fileName, 'utf-8')
+  return parseDotString(graphStr)
 }
 export function labelRectFunc(text: string): Rectangle {
   return Rectangle.mkPP(new Point(0, 0), new Point(text.length * 10, 10.5))

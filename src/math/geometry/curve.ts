@@ -1713,16 +1713,21 @@ export class Curve implements ICurve {
     return curve.addSegment(LineSegment.mkPP(pointA, pointB))
   }
 
-  /*     
-       //static internal void AddLineSegment(Curve c, number x, number y, Point b) {
-       //    AddLineSegment(c, new Point(x, y), b);
-       //}
-       
-       // adds a line segment to the curve
-       public static void AddLineSegment(Curve curve, number x0, number y0, number x1, number y1) {
-       AddLineSegment(curve, new Point(x0, y0), new Point(x1, y1));
-       }
-       */
+  static addLineSegmentCNNP(c: Curve, x: number, y: number, b: Point) {
+    return Curve.addLineSegment(c, new Point(x, y), b)
+  }
+
+  //  adds a line segment to the curve
+  public static addLineSegmentCNNNN(
+    curve: Curve,
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+  ) {
+    Curve.addLineSegment(curve, new Point(x0, y0), new Point(x1, y1))
+  }
+
   // adds a line segment to the curve
   static continueWithLineSegmentNN(c: Curve, x: number, y: number) {
     Curve.addLineSegment(c, c.end, new Point(x, y))
@@ -1732,15 +1737,12 @@ export class Curve implements ICurve {
   static continueWithLineSegmentP(c: Curve, x: Point) {
     Curve.addLineSegment(c, c.end, x)
   }
-  /*
-  // 
-  public static void CloseCurve(Curve curve) {
-  ValidateArg.IsNotNull(curve, "curve");
-  ContinueWithLineSegment(curve, curve.start);
+
+  static closeCurve(curve: Curve): Curve {
+    Curve.continueWithLineSegmentP(curve, curve.start)
+    return curve
   }
-  
-  #endregion
-*/
+
   // left derivative at t
   leftDerivative(t: number) {
     const seg = this.tryToGetLeftSegment(t)
