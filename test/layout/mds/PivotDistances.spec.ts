@@ -1,5 +1,5 @@
-import {parseDotGraph} from '../../../drawing/dotparser'
 import {MdsLayoutSettings} from '../../../src'
+import {parseDotGraph} from '../../../src/drawing/dotparser'
 import {MdsGraphLayout} from '../../../src/layout/mds/MDSGraphLayout'
 import {PivotDistances} from '../../../src/layout/mds/PivotDistances'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'

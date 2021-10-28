@@ -2,7 +2,7 @@ import {DrawingObject} from './drawingObject'
 import {Color} from './color'
 import {ShapeEnum} from './shapeEnum'
 import {DrawingLabel} from './drawingLabel'
-import {Node} from '../src/structs/node'
+import {Node} from '../structs/node'
 export class DrawingNode extends DrawingObject {
   label: DrawingLabel
   padding = 2

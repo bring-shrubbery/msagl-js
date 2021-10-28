@@ -1,8 +1,9 @@
 import parse from 'dotparser'
 import * as fs from 'fs'
 import parseColor from 'parse-color'
-import {Edge, Graph, LayerDirectionEnum, Node} from '../src'
-import {Label} from '../src/structs/label'
+import {Edge, Graph, LayerDirectionEnum, Node} from '..'
+import {Label} from '../structs/label'
+
 import {ArrowTypeEnum} from './arrawTypeEnum'
 import {Color} from './color'
 import {DrawingEdge} from './drawingEdge'

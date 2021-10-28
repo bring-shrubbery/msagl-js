@@ -31,13 +31,12 @@ import {
   GeomEdge,
   Node,
 } from '../../../src'
-import {parseDotString, parseDotGraph} from '../../../drawing/dotparser'
-import {DrawingGraph} from '../../../drawing/drawingGraph'
+import {parseDotString, DrawingGraph} from '../../../src/drawing'
+import {parseDotGraph} from '../../../src/drawing/dotparser'
 import {Arrowhead} from '../../../src/layout/core/arrowhead'
 import {GeomObject} from '../../../src/layout/core/geomObject'
 import {LineSegment} from '../../../src/math/geometry'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'
-
 type P = [number, number]
 
 test('map test', () => {
