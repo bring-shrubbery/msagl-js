@@ -7,6 +7,7 @@
   "pkgRoot": "dist",
   "files": [
     "dist",
+    "drawing",
     "src"
   ],
   "repository": {
