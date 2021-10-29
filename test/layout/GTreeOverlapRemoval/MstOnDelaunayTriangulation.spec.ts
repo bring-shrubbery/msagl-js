@@ -1,12 +1,29 @@
 import {from} from 'linq-to-typescript'
-import {Point} from '../../../src'
+import {GeomNode, Point} from '../../../src'
+import {GTreeOverlapRemoval} from '../../../src/layout/GTreeOverlapRemoval/GTreeOverlapRemoval'
 import {MstOnDelaunayTriangulation} from '../../../src/layout/GTreeOverlapRemoval/MstOnDelaunayTriangulation'
-import {LineSegment} from '../../../src/math/geometry'
+import {CurveFactory, LineSegment} from '../../../src/math/geometry'
 import {DebugCurve} from '../../../src/math/geometry/debugCurve'
 import {Cdt} from '../../../src/routing/ConstrainedDelaunayTriangulation/Cdt'
 import {CdtSweeper} from '../../../src/routing/ConstrainedDelaunayTriangulation/CdtSweeper'
-import {random} from '../../../src/utils/random'
+import {initRandom, random, randomInt} from '../../../src/utils/random'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'
+
+test('randomConfigs', () => {
+  for (let i = 0; i < 200; i++) {
+    RunOnRandom(i)
+  }
+})
+
+function RunOnRandom(i: number) {
+  initRandom(i)
+  const ps = new Array<Point>()
+  const count = randomInt(10) + 3
+  for (let j = 0; j < count; j++) {
+    ps.push(new Point(random(), random()).mul(10))
+  }
+  runOnPoints(ps)
+}
 
 test('gtree on CDT', () => {
   const count = 100
@@ -64,3 +81,13 @@ test('gtree on CDT', () => {
   SvgDebugWriter.dumpDebugCurves('/tmp/mst.svg', l)
   //          LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(l);
 })
+function runOnPoints(ps: Point[]) {
+  const nodes = ps.map((p) => creatGeomNode(p))
+  GTreeOverlapRemoval.RemoveOverlaps(nodes, 11)
+}
+
+function creatGeomNode(p: Point): any {
+  const gn = new GeomNode(null)
+  gn.boundaryCurve = CurveFactory.createRectangle(10, 10, p)
+  return gn
+}

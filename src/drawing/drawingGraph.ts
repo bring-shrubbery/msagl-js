@@ -148,7 +148,7 @@ export class DrawingGraph extends DrawingObject {
     const width = nodeSize.width
     const height = nodeSize.height
     const center = new Point(0, 0)
-    const geomNode = <GeomNode>GeomObject.getGeom(n)
+    const geomNode = new GeomNode(n)
     geomNode.boundaryCurve = this.curveByShape(
       width,
       height,

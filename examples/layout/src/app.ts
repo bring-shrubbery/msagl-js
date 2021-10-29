@@ -53,4 +53,5 @@ dropZone('drop-target', async (f: File) => {
 
 function renderDrawingGraph(dg: DrawingGraph) {
   dg.createGeometry(measureTextSize)
+  renderer.setGraph(GeomGraph.getGeom(dg.graph) as GeomGraph)
 }
