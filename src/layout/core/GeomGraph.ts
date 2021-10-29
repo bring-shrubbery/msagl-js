@@ -4,8 +4,6 @@ import {GeomObject} from './geomObject'
 import {GeomNode} from './geomNode'
 import {GeomEdge} from './geomEdge'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
-import {Node} from '../../structs/node'
-import {CurveFactory} from '../../math/geometry/curveFactory'
 import {Point} from '../../math/geometry/point'
 // import {Curve} from '../../math/geometry/curve'
 // import {Ellipse} from '../../math/geometry/ellipse'
@@ -18,7 +16,7 @@ export class GeomGraph extends GeomNode {
     this.transform(m)
   }
   _boundingBox: Rectangle
-  labelSize: Size
+  labelSize = new Size(0, 0)
   public get boundingBox(): Rectangle {
     return this._boundingBox
   }
@@ -150,7 +148,9 @@ export class GeomGraph extends GeomNode {
   }
 
   static mk(id: string, labelSize: Size): GeomGraph {
-    return new GeomGraph(new Graph(id), labelSize)
+    const g = new GeomGraph(new Graph(id))
+    g.labelSize = labelSize
+    return g
   }
 
   *subgraphs(): IterableIterator<GeomGraph> {
@@ -159,9 +159,14 @@ export class GeomGraph extends GeomNode {
     }
   }
 
-  constructor(graph: Graph, labelSize: Size) {
+  static mkWithGraphAndLabel(graph: Graph, labelSize: Size): GeomGraph {
+    const g = new GeomGraph(graph)
+    g.labelSize = labelSize
+    return g
+  }
+
+  constructor(graph: Graph) {
     super(graph)
-    this.labelSize = labelSize
   }
 
   get height() {

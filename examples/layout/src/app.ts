@@ -1,45 +1,19 @@
-import {
-  Graph,
-  GeomGraph,
-  GeomNode,
-  GeomEdge,
-  CurveFactory,
-  Point,
-  Size,
-  MdsLayoutSettings,
-  layoutGraph,
-} from 'msagl-js'
+import {Graph, GeomGraph} from 'msagl-js'
 
-import {loadDefaultGraph, loadDotFile} from './load-data'
+import {loadDefaultGraph, layoutGeomGraph, loadDotFile} from './load-data'
 import {dropZone} from './drag-n-drop'
 import Renderer from './renderer'
 import {DrawingGraph} from 'msagl-js/dist/drawing'
 import {measureTextSize} from './load-data'
 const renderer = new Renderer()
 
+// expect g with geometry graph set and laid out here,
+// it is GeomGraph.getGeom(g) ready for rendering
 function render(g: Graph) {
   document.getElementById('graph-name').innerText = g.id
 
-  const gg = new GeomGraph(g, new Size(0, 0))
-
-  for (const node of g.shallowNodes) {
-    const wh = measureTextSize(node.id)
-    const geomNode = new GeomNode(node)
-    geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
-      wh.width,
-      wh.height,
-      1,
-      1,
-      new Point(0, 0),
-    )
-  }
-  for (const edge of g.edges) {
-    new GeomEdge(edge)
-  }
-
-  const layoutSettings = new MdsLayoutSettings()
-  layoutGraph(gg, null, () => layoutSettings)
-  renderer.setGraph(gg)
+  console.log(GeomGraph.getGeom(g) as GeomGraph)
+  renderer.setGraph(GeomGraph.getGeom(g) as GeomGraph)
 }
 
 dropZone('drop-target', async (f: File) => {
@@ -53,5 +27,7 @@ dropZone('drop-target', async (f: File) => {
 
 function renderDrawingGraph(dg: DrawingGraph) {
   dg.createGeometry(measureTextSize)
+  layoutGeomGraph(<GeomGraph>GeomGraph.getGeom(dg.graph), dg.hasDirectedEdge())
+
   renderer.setGraph(GeomGraph.getGeom(dg.graph) as GeomGraph)
 }

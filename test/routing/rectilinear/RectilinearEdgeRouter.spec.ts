@@ -2,7 +2,6 @@ import {join} from 'path'
 import {
   GeomGraph,
   Graph,
-  Size,
   CurveFactory,
   Point,
   GeomEdge,
@@ -22,14 +21,14 @@ import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'
 import {runMDSLayoutNoSubgraphs} from '../../utils/testUtils'
 test('empty graph', () => {
-  const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
+  const gg = new GeomGraph(new Graph('graph'))
 
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/emptyrectr.svg')
   t.writeGeomGraph(gg)
 })
 
 test('two nodes', () => {
-  const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
+  const gg = new GeomGraph(new Graph('graph'))
 
   const a = addNode(
     gg,
@@ -59,7 +58,7 @@ test('two nodes', () => {
 })
 
 test('three nodes', () => {
-  const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
+  const gg = new GeomGraph(new Graph('graph'))
 
   const a = addNode(
     gg,
@@ -89,7 +88,7 @@ test('three nodes', () => {
 })
 
 test('four nodes', () => {
-  const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
+  const gg = new GeomGraph(new Graph('graph'))
 
   const a = addNode(
     gg,
@@ -156,7 +155,7 @@ function addNode(gg: GeomGraph, id: string, c: ICurve): Node {
   return node
 }
 test('6 nodes', () => {
-  const gg = new GeomGraph(new Graph('graph'), new Size(0, 0))
+  const gg = new GeomGraph(new Graph('graph'))
   const coords = nodeCoords()
   const a = getNode(0)
   const b = getNode(1)
@@ -294,7 +293,7 @@ function generateRandomGraph(seed: number, nodeCount: number): GeomGraph {
   initRandom(seed)
   const w = 20
   const h = 20
-  const gg = new GeomGraph(new Graph(), new Size(0, 0))
+  const gg = new GeomGraph(new Graph())
 
   const takenPairs = new IntPairSet()
   const nodes: GeomNode[] = []

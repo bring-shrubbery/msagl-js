@@ -420,7 +420,7 @@ export function qualityMetric(gg: GeomGraph): number {
 }
 
 test('layered layout nodes only', () => {
-  const g = new GeomGraph(new Graph('graph'), new Size(0, 0))
+  const g = new GeomGraph(new Graph('graph'))
   setNode(g, 'kspacey', {width: 144, height: 100}, 10, 10)
   setNode(g, 'swilliams', {width: 160, height: 100}, 10, 10)
   setNode(g, 'bpitt', {width: 108, height: 100}, 10, 10)
@@ -460,7 +460,7 @@ function runLayout(fname: string, settings: SugiyamaLayoutSettings = null) {
 //   return dg
 // }
 
-xtest('root', () => {
+test('root', () => {
   const fname = 'test/data/graphvis/root.gv'
   const dg = runLayout(fname)
   if (dg != null) {
@@ -519,7 +519,7 @@ test('layout first 150 gv files from list', () => {
   }
 })
 
-xtest('layout all gv files', () => {
+test('layout all gv files', () => {
   const path = 'test/data/graphvis/'
   fs.readdir(path, (err, files) => {
     expect(err).toBe(null)

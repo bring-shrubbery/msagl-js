@@ -3,6 +3,7 @@ import {
   CurveFactory,
   Edge,
   GeomEdge,
+  GeomGraph,
   GeomLabel,
   GeomNode,
   ICurve,
@@ -46,7 +47,18 @@ export class DrawingGraph extends DrawingObject {
     return DrawingObject.getDrawingObj(n) as DrawingNode
   }
 
+  hasDirectedEdge(): boolean {
+    for (const e of this.graph.edges) {
+      const drawingEdge = <DrawingEdge>DrawingObject.getDrawingObj(e)
+      if (drawingEdge.directed) {
+        return true
+      }
+    }
+    return false
+  }
+
   createGeometry(textMeasure: (label: string) => Size): void {
+    new GeomGraph(this.graph)
     for (const n of this.graph.deepNodes) {
       this.createNodeGeometry(n, textMeasure)
     }

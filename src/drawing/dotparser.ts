@@ -39,7 +39,7 @@ function parseEdge(
   let sn: Node
   let tn: Node
   if (so.type == 'node_id') {
-    const s = so.id
+    const s = so.id.toString()
     if (!nc.hasNode(s)) {
       dg.graph.addNode((sn = new Node(s)))
       const dn = new DrawingNode(sn)
@@ -66,7 +66,7 @@ function parseEdge(
     return drObjs
   }
   if (to.type == 'node_id') {
-    const t = to.id
+    const t = to.id.toString()
     if (!nc.hasNode(t)) {
       dg.graph.addNode((tn = new Node(t)))
       const dn = new DrawingNode(tn)

@@ -1,6 +1,6 @@
 import {Deck, OrthographicView} from '@deck.gl/core'
 
-import {interpolateICurve, GeomNode, GeomGraph, GeomEdge} from 'msagl-js'
+import {interpolateICurve, GeomNode, GeomGraph, GeomEdge, Point} from 'msagl-js'
 
 import NodeLayer from './layers/node-layer'
 import EdgeLayer from './layers/edge-layer'
@@ -64,7 +64,8 @@ export default class Renderer {
     const edgeLayer = new EdgeLayer<GeomEdge>({
       id: 'edges',
       data: Array.from(this.geomGraph.edges()),
-      getPath: (e) => interpolateICurve(e.curve, 0.5).map((p) => [p.x, p.y]),
+      getPath: (e) =>
+        Array.from(interpolateEdge(e, 0.5)).map((p) => [p.x, p.y]),
       getColor: (_) => [255 * Math.random(), 128, 255 * Math.random()],
       //getArrowSize: (e)=>e.edgeGeometry.targetArrowhead.length,
       getArrowType: 'none',
@@ -79,5 +80,29 @@ export default class Renderer {
       },
       layers: [edgeLayer, nodeLayer],
     })
+
+    function* interpolateEdge(
+      e: GeomEdge,
+      tolerance: number,
+    ): IterableIterator<Point> {
+      const eg = e.edgeGeometry
+      if (eg.sourceArrowhead) {
+        yield eg.curve.start
+        const t = eg.sourceArrowhead.tipPosition.sub(eg.curve.start)
+        const pPerp = t.rotate90Ccw().div(4)
+        yield eg.curve.start.add(pPerp)
+        yield eg.sourceArrowhead.tipPosition
+        yield eg.curve.start.sub(pPerp)
+      }
+      for (const p of interpolateICurve(eg.curve, tolerance)) yield p
+      if (eg.targetArrowhead) {
+        const t = eg.targetArrowhead.tipPosition.sub(eg.curve.end)
+        const pPerp = t.rotate90Ccw().div(4)
+        yield eg.curve.end.add(pPerp)
+        yield eg.targetArrowhead.tipPosition
+        yield eg.curve.end.sub(pPerp)
+        yield eg.curve.end
+      }
+    }
   }
 }

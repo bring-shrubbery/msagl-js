@@ -1,5 +1,14 @@
-import {Graph, Node, Size} from 'msagl-js'
+import {getGeojsonFeatures} from '@deck.gl/layers/geojson-layer/geojson'
+import {
+  GeomGraph,
+  Graph,
+  Size,
+  layoutGraph,
+  SugiyamaLayoutSettings,
+  MdsLayoutSettings,
+} from 'msagl-js'
 import {DrawingGraph, parseDotString} from 'msagl-js/drawing'
+import {getDefaultCompilerOptions} from 'typescript'
 const abstract_gv =
   'digraph abstract {\n' +
   '	size="6,6";\n' +
@@ -73,8 +82,7 @@ const abstract_gv =
   '  23 -> T1;\n' +
   '  }\n'
 export async function loadDefaultGraph(): Promise<Graph> {
-  /*
-  const resp = await fetch(
+  /*const resp = await fetch(
     'https://gist.githubusercontent.com/mohdsanadzakirizvi/6fc325042ce110e1afc1a7124d087130/raw/ab9a310cfc2003f26131a7149950947645391e28/got_social_graph.json',
   )
   const data = await resp.json()
@@ -90,16 +98,32 @@ export async function loadDefaultGraph(): Promise<Graph> {
   }
   return g*/
   const dg = parseDotString(abstract_gv)
-  dg.createGeometry(measureTextSize)
+  layoutDrawingGraph(dg)
+  dg.graph.id = 'default graph'
   return dg.graph
 }
 
 export function measureTextSize(str: string): Size {
   return new Size(str.length * 8 + 8, 20)
 }
+
 export async function loadDotFile(file: File): Promise<DrawingGraph> {
   const content = await file.text()
   const dg = parseDotString(content)
-  dg.createGeometry(measureTextSize)
+  layoutDrawingGraph(dg)
+  dg.graph.id = file.name
   return dg
+}
+
+function layoutDrawingGraph(dg: DrawingGraph): void {
+  dg.createGeometry(measureTextSize)
+  layoutGeomGraph(<GeomGraph>GeomGraph.getGeom(dg.graph), dg.hasDirectedEdge())
+}
+
+export function layoutGeomGraph(geomGraph: GeomGraph, directed: boolean) {
+  if (directed) {
+    layoutGraph(geomGraph, null, () => new SugiyamaLayoutSettings())
+  } else {
+    layoutGraph(geomGraph, null, () => new MdsLayoutSettings())
+  }
 }

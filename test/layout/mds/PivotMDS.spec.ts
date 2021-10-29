@@ -56,7 +56,7 @@ test('layout 50-100 gv files with MDS', () => {
   }
 })
 
-xtest('layout 100-150 gv files with MDS', () => {
+test('layout 100-150 gv files with MDS', () => {
   const path = 'test/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
@@ -77,7 +77,7 @@ xtest('layout 100-150 gv files with MDS', () => {
   }
 })
 
-xtest('layout 150-200 gv files with MDS', () => {
+test('layout 150-200 gv files with MDS', () => {
   const path = 'test/data/graphvis/'
   let i = 0
   for (const f of sortedList) {
@@ -98,7 +98,7 @@ xtest('layout 150-200 gv files with MDS', () => {
   }
 })
 
-xtest('layout 200-250 gv files with MDS', () => {
+test('layout 200-250 gv files with MDS', () => {
   const path = 'test/data/graphvis/'
   let i = 0
   for (const f of sortedList) {

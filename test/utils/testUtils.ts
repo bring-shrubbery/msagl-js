@@ -141,7 +141,10 @@ export function createGeometry(
   for (const n of g.shallowNodes) {
     if (n.isGraph) {
       const subG = n as unknown as Graph
-      new GeomGraph(subG, nodeBoundaryFunc(n.id).boundingBox.size)
+      GeomGraph.mkWithGraphAndLabel(
+        subG,
+        nodeBoundaryFunc(n.id).boundingBox.size,
+      )
       createGeometry(subG, nodeBoundaryFunc, labelRect)
     } else {
       const gn = new GeomNode(n)
@@ -156,5 +159,5 @@ export function createGeometry(
       ge.label = new GeomLabel(labelRect(e.label.text), e.label)
     }
   }
-  return new GeomGraph(g, nodeBoundaryFunc(g.id).boundingBox)
+  return GeomGraph.mkWithGraphAndLabel(g, nodeBoundaryFunc(g.id).boundingBox)
 }

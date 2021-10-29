@@ -22,7 +22,7 @@ export abstract class DrawingObject {
   taillabel: string
   fontColor: Color
   styleEnum: StyleEnum
-  shapeEnum: ShapeEnum
+  shapeEnum = ShapeEnum.Box
   pencolor: Color
   peripheries: number
   size: [number, number]

@@ -202,7 +202,7 @@ function getConnectedComponents(geomGraph: GeomGraph): GeomGraph[] {
   let i = 0
   for (const comp of comps) {
     const g = new Graph(graph.id + i++)
-    const geomG = new GeomGraph(g, null)
+    const geomG = new GeomGraph(g)
     for (const n of comp) {
       n.parent = g
       g.addNode(n) // this changes the parent - should be restored to graph
