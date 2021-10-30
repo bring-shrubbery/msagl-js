@@ -3,7 +3,7 @@ import {Graph, GeomGraph} from 'msagl-js'
 import {loadDefaultGraph, layoutGeomGraph, loadDotFile} from './load-data'
 import {dropZone} from './drag-n-drop'
 import Renderer from './renderer'
-import {DrawingGraph} from 'msagl-js/dist/drawing'
+import {DrawingGraph} from 'msagl-js/drawing'
 import {measureTextSize} from './load-data'
 const renderer = new Renderer()
 
