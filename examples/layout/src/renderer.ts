@@ -4,6 +4,7 @@ import {interpolateICurve, GeomNode, GeomGraph, GeomEdge, Point} from 'msagl-js'
 
 import NodeLayer from './layers/node-layer'
 import EdgeLayer from './layers/edge-layer'
+import {DrawingNode, DrawingEdge} from 'msagl-js/drawing'
 
 export default class Renderer {
   deck: any
@@ -45,7 +46,8 @@ export default class Renderer {
       data: Array.from(this.geomGraph.shallowNodes()),
       background: true,
       getPosition: (n) => [n.center.x, n.center.y],
-      getText: (n) => n.id,
+      getText: (n) =>
+        (<DrawingNode>DrawingNode.getDrawingObj(n.node)).labelText,
       getBorderWidth: 1,
       getSize: 14,
       // @ts-ignore
