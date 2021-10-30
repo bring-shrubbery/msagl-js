@@ -19,6 +19,7 @@ function render(g: Graph) {
 dropZone('drop-target', async (f: File) => {
   const graph = await loadDotFile(f)
   renderDrawingGraph(graph)
+  document.getElementById('graph-name').innerText = graph.graph.id
 })
 ;(async () => {
   const g = await loadDefaultGraph()

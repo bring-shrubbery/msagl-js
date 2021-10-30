@@ -150,23 +150,28 @@ export class DrawingGraph extends DrawingObject {
   }
 
   createNodeGeometry(n: Node, textMeasure: (label: string) => Size): void {
-    if (n.isGraph) return
-
-    const drawingNode = <DrawingNode>DrawingNode.getDrawingObj(n)
-    let nodeSize = new Size(1, 1)
-    if (drawingNode.labelText) {
-      nodeSize = textMeasure(drawingNode.labelText)
+    if (n.isGraph) {
+      const subG = n as unknown as Graph
+      const subDg = <DrawingGraph>DrawingObject.getDrawingObj(n)
+      GeomGraph.mkWithGraphAndLabel(subG, textMeasure(subDg.labelText))
+      subDg.createGeometry(textMeasure)
+    } else {
+      const drawingNode = <DrawingNode>DrawingNode.getDrawingObj(n)
+      let nodeSize = new Size(1, 1)
+      if (drawingNode.labelText) {
+        nodeSize = textMeasure(drawingNode.labelText)
+      }
+      const width = nodeSize.width
+      const height = nodeSize.height
+      const center = new Point(0, 0)
+      const geomNode = new GeomNode(n)
+      geomNode.boundaryCurve = this.curveByShape(
+        width,
+        height,
+        center,
+        drawingNode.shapeEnum,
+        drawingNode,
+      )
     }
-    const width = nodeSize.width
-    const height = nodeSize.height
-    const center = new Point(0, 0)
-    const geomNode = new GeomNode(n)
-    geomNode.boundaryCurve = this.curveByShape(
-      width,
-      height,
-      center,
-      drawingNode.shapeEnum,
-      drawingNode,
-    )
   }
 }

@@ -9,6 +9,7 @@ import {
   interpolateICurve,
 } from '../../src'
 import {DrawingGraph, parseDotString} from '../../src/drawing'
+import {parseDotGraph} from '../utils/testUtils'
 
 test('drawingGraph layout', () => {
   const abstract_gv =
@@ -87,6 +88,9 @@ test('drawingGraph layout', () => {
   layoutDrawingGraph(dg)
 })
 export function measureTextSize(str: string): Size {
+  if (!str) {
+    return null
+  }
   return new Size(str.length * 8 + 8, 20)
 }
 function layoutDrawingGraph(dg: DrawingGraph): void {
@@ -101,3 +105,8 @@ export function layoutGeomGraph(geomGraph: GeomGraph, directed: boolean) {
     layoutGraph(geomGraph, null, () => new MdsLayoutSettings())
   }
 }
+test('clusters', () => {
+  const dg = parseDotGraph('test/data/graphvis/clust3.gv')
+  dg.createGeometry(measureTextSize)
+  layoutGeomGraph(<GeomGraph>GeomGraph.getGeom(dg.graph), dg.hasDirectedEdge())
+})

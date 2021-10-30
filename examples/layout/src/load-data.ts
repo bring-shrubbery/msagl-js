@@ -104,6 +104,7 @@ export async function loadDefaultGraph(): Promise<Graph> {
 }
 
 export function measureTextSize(str: string): Size {
+  if (!str) return null
   return new Size(str.length * 8 + 8, 20)
 }
 
