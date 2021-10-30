@@ -39,6 +39,7 @@ export default class Renderer {
 
     const center = this.geomGraph.boundingBox.center
 
+    // todo: grap color and other rendering attributes from DrawingNode.getDrawingObject(n)
     const nodeLayer = new NodeLayer<GeomNode>({
       id: 'nodes',
       data: Array.from(this.geomGraph.shallowNodes()),
@@ -61,11 +62,14 @@ export default class Renderer {
       },
     })
 
+    // todo: grap color and other rendering attributes from DrawingNode.getDrawingObject(e)
+    // todo - render edge labels
     const edgeLayer = new EdgeLayer<GeomEdge>({
       id: 'edges',
       data: Array.from(this.geomGraph.edges()),
       getPath: (e) =>
         Array.from(interpolateEdge(e, 0.5)).map((p) => [p.x, p.y]),
+
       getColor: (_) => [255 * Math.random(), 128, 255 * Math.random()],
       //getArrowSize: (e)=>e.edgeGeometry.targetArrowhead.length,
       getArrowType: 'none',
