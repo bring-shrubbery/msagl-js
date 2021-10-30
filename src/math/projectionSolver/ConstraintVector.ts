@@ -61,8 +61,9 @@ export class ConstraintVector {
   private SwapConstraint(constraint: Constraint) {
     //  Swap out the constraint at the current active/inactive border index (which has been updated
     //  according to the direction we're moving it).
-    const swapConstraint: Constraint =
-      this.Vector[this.firstActiveConstraintIndex]
+    const swapConstraint: Constraint = this.Vector[
+      this.firstActiveConstraintIndex
+    ]
     swapConstraint.SetVectorIndex(constraint.VectorIndex)
     this.Vector[constraint.VectorIndex] = swapConstraint
     //  Toggle the state of the constraint being updated.

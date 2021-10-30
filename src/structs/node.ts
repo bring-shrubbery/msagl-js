@@ -32,7 +32,7 @@ export class Node extends Entity {
 
   *graphs(): IterableIterator<Graph> {
     if (this.isGraph) {
-      const nc: NodeCollection = (this as unknown as Graph).nodeCollection
+      const nc: NodeCollection = ((this as unknown) as Graph).nodeCollection
       for (const g of nc.graphs) {
         yield g
       }
@@ -90,13 +90,15 @@ export class Node extends Entity {
   }
 
   *getAncestors(): IterableIterator<Graph> {
-    let g: Graph = this.parent as unknown as Graph
+    let g: Graph = (this.parent as unknown) as Graph
     while (g != null) {
       yield g
-      g = g.parent as unknown as Graph
+      g = (g.parent as unknown) as Graph
     }
   }
   isUnderCollapsedGraph(): boolean {
-    return this.parent != null && (this.parent as unknown as Graph).isCollapsed
+    return (
+      this.parent != null && ((this.parent as unknown) as Graph).isCollapsed
+    )
   }
 }

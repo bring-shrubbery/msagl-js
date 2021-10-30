@@ -453,8 +453,7 @@ export class ScanSegment extends SegmentBase {
     ) {
       //  We will only create crossing Edges that the segment actually crosses, not those it ends before crossing.
       //  For those terminal crossings, the adjacent segment creates the interior vertex and crossing edge.
-      const pac: PointAndCrossings =
-        this.GroupBoundaryPointAndCrossingsList.Pop()
+      const pac: PointAndCrossings = this.GroupBoundaryPointAndCrossingsList.Pop()
       let lowDirCrossings: GroupBoundaryCrossing[] = null
       let highDirCrossings: GroupBoundaryCrossing[] = null
       if (PointComparer.ComparePP(pac.Location, this.Start) > 0) {
@@ -563,8 +562,11 @@ export class ScanSegment extends SegmentBase {
     crossings: GroupBoundaryCrossing[],
   ) {
     if (crossings != null) {
-      const interiorVertex: VisibilityVertex =
-        ScanSegment.GetCrossingInteriorVertex(vg, crossingVertex, crossings[0])
+      const interiorVertex: VisibilityVertex = ScanSegment.GetCrossingInteriorVertex(
+        vg,
+        crossingVertex,
+        crossings[0],
+      )
       this.AddCrossingEdge(vg, interiorVertex, crossingVertex, crossings)
       //  low-to-high
     }
@@ -576,8 +578,11 @@ export class ScanSegment extends SegmentBase {
     crossings: GroupBoundaryCrossing[],
   ) {
     if (crossings != null) {
-      const interiorVertex: VisibilityVertex =
-        ScanSegment.GetCrossingInteriorVertex(vg, crossingVertex, crossings[0])
+      const interiorVertex: VisibilityVertex = ScanSegment.GetCrossingInteriorVertex(
+        vg,
+        crossingVertex,
+        crossings[0],
+      )
       this.AddCrossingEdge(vg, crossingVertex, interiorVertex, crossings)
       //  low-to-high
     }

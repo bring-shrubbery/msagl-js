@@ -147,13 +147,12 @@ export class CombinatorialNudger {
 
     /*Assert.assert(x.AxisEdge == y.AxisEdge)*/
     // Nudger.ShowOrderedPaths(null, new[] { x.Path, y.Path }, x.AxisEdge.SourcePoint, x.AxisEdge.TargetPoint);
-    const r: number =
-      CombinatorialNudger.CompareInDirectionStartingFromAxisEdge(
-        x,
-        y,
-        x.AxisEdge,
-        x.AxisEdge.Direction,
-      )
+    const r: number = CombinatorialNudger.CompareInDirectionStartingFromAxisEdge(
+      x,
+      y,
+      x.AxisEdge,
+      x.AxisEdge.Direction,
+    )
     return r != 0
       ? r
       : -CombinatorialNudger.CompareInDirectionStartingFromAxisEdge(

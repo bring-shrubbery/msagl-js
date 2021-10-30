@@ -15,7 +15,7 @@ export class Interval implements IRectangle<number> {
     this.add_d(n)
   }
   add_rect(rectangle: IRectangle<number>): IRectangle<number> {
-    const r = rectangle as unknown as Interval
+    const r = (rectangle as unknown) as Interval
     const ret: Interval = this.clone()
     ret.add_d(r.start)
     ret.add_d(r.end)
@@ -28,7 +28,7 @@ export class Interval implements IRectangle<number> {
     return this.contains_d(n)
   }
   contains_rect(rect: IRectangle<number>): boolean {
-    const r = rect as unknown as Interval
+    const r = (rect as unknown) as Interval
     return this.contains_d(r.start) && this.contains_d(r.end)
   }
 
@@ -40,7 +40,7 @@ export class Interval implements IRectangle<number> {
     )
   }
   intersects_rect(rectangle: IRectangle<number>): boolean {
-    const r = rectangle as unknown as Interval
+    const r = (rectangle as unknown) as Interval
     return this.intersects(r)
   }
 

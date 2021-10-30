@@ -76,8 +76,7 @@ export class SmoothedPolylineCalculator {
   }
 
   private BuildEastHierarchy(): PN {
-    const boundaryAnchorsCurves: Array<Polyline> =
-      this.FindEastBoundaryAnchorCurves()
+    const boundaryAnchorsCurves: Array<Polyline> = this.FindEastBoundaryAnchorCurves()
     const l = new Array<PN>()
     for (const c of boundaryAnchorsCurves) {
       l.push(c.pNodeOverICurve())
@@ -88,8 +87,7 @@ export class SmoothedPolylineCalculator {
   }
 
   private BuildWestHierarchy(): PN {
-    const boundaryAnchorCurves: Array<Polyline> =
-      this.FindWestBoundaryAnchorCurves()
+    const boundaryAnchorCurves: Array<Polyline> = this.FindWestBoundaryAnchorCurves()
     const l = new Array<PN>()
     for (const a of boundaryAnchorCurves) {
       l.push(a.pNodeOverICurve())

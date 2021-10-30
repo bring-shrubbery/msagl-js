@@ -64,8 +64,7 @@ export class ObstacleTree {
 
   // // The map of all group boundary crossings for the current RestrictSegmentWithObstacles call.
 
-  CurrentGroupBoundaryCrossingMap: GroupBoundaryCrossingMap =
-    new GroupBoundaryCrossingMap()
+  CurrentGroupBoundaryCrossingMap: GroupBoundaryCrossingMap = new GroupBoundaryCrossingMap()
 
   // The list of all obstacles (not just those in the Root, which may have accretions of obstacles in convex hulls).
 
@@ -730,11 +729,13 @@ export class ObstacleTree {
     this.insideHitTestIgnoreObstacle1 = eventObstacle
     this.insideHitTestIgnoreObstacle2 = sideObstacle
     this.insideHitTestScanDirection = scanDirection
-    const obstacleNode: RectangleNode<Obstacle, Point> =
-      this.Root.FirstHitNodeWithPredicate(
-        intersect,
-        this.InsideObstacleHitTest.bind(this),
-      )
+    const obstacleNode: RectangleNode<
+      Obstacle,
+      Point
+    > = this.Root.FirstHitNodeWithPredicate(
+      intersect,
+      this.InsideObstacleHitTest.bind(this),
+    )
     return null != obstacleNode
   }
 
@@ -752,11 +753,13 @@ export class ObstacleTree {
     this.insideHitTestIgnoreObstacle1 = null
     this.insideHitTestIgnoreObstacle2 = null
     this.insideHitTestScanDirection = scanDirection
-    const obstacleNode: RectangleNode<Obstacle, Point> =
-      this.Root.FirstHitNodeWithPredicate(
-        intersect,
-        this.InsideObstacleHitTest.bind(this),
-      )
+    const obstacleNode: RectangleNode<
+      Obstacle,
+      Point
+    > = this.Root.FirstHitNodeWithPredicate(
+      intersect,
+      this.InsideObstacleHitTest.bind(this),
+    )
     return null != obstacleNode
   }
 
@@ -991,9 +994,8 @@ export class ObstacleTree {
         continue
       }
 
-      const distSquared = intersect.sub(
-        this.currentRestrictedRay.start,
-      ).lengthSquared
+      const distSquared = intersect.sub(this.currentRestrictedRay.start)
+        .lengthSquared
       if (distSquared < localLeastDistSquared) {
         //  Rounding may falsely report two intersections as different when they are actually "Close",
         //  e.g. a horizontal vs. vertical intersection on a slanted edge.
@@ -1026,15 +1028,14 @@ export class ObstacleTree {
       }
 
       this.restrictedRayLengthSquared = localLeastDistSquared
-      this.currentRestrictedRay.end =
-        SpliceUtility.MungeClosestIntersectionInfo(
+      this.currentRestrictedRay.end = SpliceUtility.MungeClosestIntersectionInfo(
+        this.currentRestrictedRay.start,
+        closestIntersectionInfo,
+        !StaticGraphUtility.IsVerticalPP(
           this.currentRestrictedRay.start,
-          closestIntersectionInfo,
-          !StaticGraphUtility.IsVerticalPP(
-            this.currentRestrictedRay.start,
-            this.currentRestrictedRay.end,
-          ),
-        )
+          this.currentRestrictedRay.end,
+        ),
+      )
     }
   }
 
@@ -1047,9 +1048,8 @@ export class ObstacleTree {
       const intersect = GeomConstants.RoundPoint(intersectionInfo.x)
       //  Skip intersections that are past the end of the restricted segment (though there may still be some
       //  there if we shorten it later, but we'll skip them later).
-      const distSquared = intersect.sub(
-        this.currentRestrictedRay.start,
-      ).lengthSquared
+      const distSquared = intersect.sub(this.currentRestrictedRay.start)
+        .lengthSquared
       if (distSquared > this.restrictedRayLengthSquared) {
         continue
       }

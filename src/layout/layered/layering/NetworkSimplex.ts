@@ -133,8 +133,7 @@ export class NetworkSimplex implements LayerCalculator {
     this.initLayers()
 
     while (this.tightTree() < this.nodeCount) {
-      const e: NetworkEdge =
-        this.getNonTreeEdgeIncidentToTheTreeWithMinimalAmountOfSlack()
+      const e: NetworkEdge = this.getNonTreeEdgeIncidentToTheTreeWithMinimalAmountOfSlack()
       if (e == null) break //all edges are tree edges
       let slack = this.slack(e)
       /*Assert.assert(slack != 0, 'the tree should be tight')*/

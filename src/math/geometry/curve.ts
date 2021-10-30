@@ -211,8 +211,7 @@ export class Curve implements ICurve {
     /*Assert.assert(end >= this.parStart && end <= this.parEnd)*/
     if (start < end) return this.trim(start, end) as Curve // Curve must be closed to wrap
 
-    /*Assert.assert(Point.closeDistEps(this.start, this.end))*/ const c =
-      new Curve()
+    /*Assert.assert(Point.closeDistEps(this.start, this.end))*/ const c = new Curve()
     c.addSegment(this.trim(start, this.parEnd) as Curve)
     c.addSegment(this.trim(this.parStart, end) as Curve)
     return c

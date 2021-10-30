@@ -19,8 +19,9 @@ type PointProjection = (p: Point) => number
 export class PathRefiner {
   static RefinePaths(paths: Array<Path>, mergePaths: boolean) {
     PathRefiner.AdjustPaths(paths)
-    const pathsToFirstLinkedVertices =
-      PathRefiner.CreatePathsToFirstLinkedVerticesMap(paths)
+    const pathsToFirstLinkedVertices = PathRefiner.CreatePathsToFirstLinkedVerticesMap(
+      paths,
+    )
 
     PathRefiner.Refine(Array.from(pathsToFirstLinkedVertices.values()))
     PathRefiner.CrossVerticalAndHorizontalSegs(

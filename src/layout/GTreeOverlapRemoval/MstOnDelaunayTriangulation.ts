@@ -53,8 +53,10 @@ export class MstOnDelaunayTriangulation {
       siteIndex.set(siteArray[i], i)
     }
 
-    const intPairsToCdtEdges: IntPairMap<CdtEdge> =
-      MstOnDelaunayTriangulation.GetEdges(siteArray, siteIndex)
+    const intPairsToCdtEdges: IntPairMap<CdtEdge> = MstOnDelaunayTriangulation.GetEdges(
+      siteArray,
+      siteIndex,
+    )
     const graph = mkGraphOnEdgesArray(Array.from(intPairsToCdtEdges.keys()))
     const mstOnBasicGraph = new MinimumSpanningTreeByPrim(
       graph,

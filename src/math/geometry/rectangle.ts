@@ -38,7 +38,7 @@ export class Rectangle implements IRectangle<Point> {
     this.bottom_ = t.bottom
   }
   add_rect(rectangle: IRectangle<Point>): IRectangle<Point> {
-    return this.addRec(rectangle as unknown as Rectangle)
+    return this.addRec((rectangle as unknown) as Rectangle)
   }
   contains_point(point: Point): boolean {
     return this.contains(point)

@@ -450,8 +450,9 @@ export class RectilinearEdgeRouter extends Algorithm {
     shortestPathRouter: MsmtRectilinearPath,
     edgePath: Path,
   ) {
-    const intersectPoints: Point[] =
-      this.PortManager.GetPortVisibilityIntersection(edgePath.EdgeGeometry)
+    const intersectPoints: Point[] = this.PortManager.GetPortVisibilityIntersection(
+      edgePath.EdgeGeometry,
+    )
     if (intersectPoints != null) {
       this.GeneratePathThroughVisibilityIntersection(edgePath, intersectPoints)
       return
@@ -739,8 +740,9 @@ export class RectilinearEdgeRouter extends Algorithm {
     const curve = new Curve()
     let prevEllipse: Ellipse = null
     for (const ellipse of ellipses) {
-      const ellipseIsAlmostCurve: boolean =
-        RectilinearEdgeRouter.EllipseIsAlmostLineSegment(ellipse)
+      const ellipseIsAlmostCurve: boolean = RectilinearEdgeRouter.EllipseIsAlmostLineSegment(
+        ellipse,
+      )
       if (prevEllipse != null) {
         if (ellipseIsAlmostCurve) {
           Curve.continueWithLineSegmentP(

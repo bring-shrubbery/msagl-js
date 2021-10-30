@@ -436,8 +436,8 @@ export class Block {
     this.ComputeDfDv(this.Variables[0])
     //  We only split the block if it has a non-equality constraint with a Lagrangian that is more than a
     //  rounding error below 0.0.
-    let minLagrangian: number =
-      this.allConstraints.SolverParameters.Advanced.MinSplitLagrangianThreshold
+    let minLagrangian: number = this.allConstraints.SolverParameters.Advanced
+      .MinSplitLagrangianThreshold
     const numVars = this.Variables.length
     //  cache for perf
     for (let ii = 0; ii < numVars; ii++) {

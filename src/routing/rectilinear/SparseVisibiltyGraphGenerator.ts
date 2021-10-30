@@ -271,12 +271,11 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     //  Go in the opposite direction from the neighbor intersection to find the border between the Steiner
     //  point and vertexEvent.Site (unless vertexEvent.Site is inside the bounding box).
     if (this.ObstacleTree.GraphBox.contains(lowSteiner)) {
-      const bboxIntersectBeforeLowSteiner =
-        StaticGraphUtility.RectangleBorderIntersect(
-          lowNborSide.Obstacle.VisibilityBoundingBox,
-          lowSteiner,
-          highDir,
-        )
+      const bboxIntersectBeforeLowSteiner = StaticGraphUtility.RectangleBorderIntersect(
+        lowNborSide.Obstacle.VisibilityBoundingBox,
+        lowSteiner,
+        highDir,
+      )
       if (
         PointComparer.IsPureLower(
           bboxIntersectBeforeLowSteiner,
@@ -288,12 +287,11 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     }
 
     if (this.ObstacleTree.GraphBox.contains(highSteiner)) {
-      const bboxIntersectBeforeHighSteiner =
-        StaticGraphUtility.RectangleBorderIntersect(
-          highNborSide.Obstacle.VisibilityBoundingBox,
-          highSteiner,
-          lowDir,
-        )
+      const bboxIntersectBeforeHighSteiner = StaticGraphUtility.RectangleBorderIntersect(
+        highNborSide.Obstacle.VisibilityBoundingBox,
+        highSteiner,
+        lowDir,
+      )
       if (
         PointComparer.IsPureLower(
           vertexEvent.Site,
@@ -742,8 +740,9 @@ export class SparseVisibilityGraphGenerator extends VisibilityGraphGenerator {
     parallelItem: ScanSegmentVectorItem,
     perpSlot: number,
   ) {
-    const perpItem: ScanSegmentVectorItem =
-      this.perpendicularSegmentVector.Item(perpSlot)
+    const perpItem: ScanSegmentVectorItem = this.perpendicularSegmentVector.Item(
+      perpSlot,
+    )
     parallelItem.CurrentSegment.AddSparseVertexCoord(perpItem.Coord)
     perpItem.AddPerpendicularCoord(parallelItem.Coord)
   }

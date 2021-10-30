@@ -53,8 +53,7 @@ export class VisibilityGraph {
 
   //  the default is just to return a new VisibilityVertex
   VertexFactory = (p: Point) => new VisibilityVertex(p)
-  pointToVertexMap: PointMap<VisibilityVertex> =
-    new PointMap<VisibilityVertex>()
+  pointToVertexMap: PointMap<VisibilityVertex> = new PointMap<VisibilityVertex>()
 
   //   static GetVisibilityGraphForShortestPath(pathStart: Point, pathEnd: Point, obstacles: IEnumerable<Polyline>, /* out */sourceVertex: VisibilityVertex, /* out */targetVertex: VisibilityVertex): VisibilityGraph {
   //       let holes = new Array<Polyline>(VisibilityGraph.OrientHolesClockwise(obstacles));

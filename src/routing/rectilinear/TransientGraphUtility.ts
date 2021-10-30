@@ -26,12 +26,10 @@ import {VisibilityVertexRectilinear} from './VisibilityVertexRectiline'
 
 export class TransientGraphUtility {
   //  Vertices added to the graph for routing.
-  AddedVertices: Array<VisibilityVertexRectilinear> =
-    new Array<VisibilityVertexRectilinear>()
+  AddedVertices: Array<VisibilityVertexRectilinear> = new Array<VisibilityVertexRectilinear>()
 
   //  Edges added to the graph for routing.
-  AddedEdges: Array<TollFreeVisibilityEdge> =
-    new Array<TollFreeVisibilityEdge>()
+  AddedEdges: Array<TollFreeVisibilityEdge> = new Array<TollFreeVisibilityEdge>()
 
   //  Edges joining two non-transient vertices; these must be replaced.
   edgesToRestore: Array<VisibilityEdge> = new Array<VisibilityEdge>()
@@ -291,8 +289,10 @@ export class TransientGraphUtility {
     // StaticGraphUtility.Assert((0
     //                 == (CompassVector.OppositeDir(dir) & PointComparer.GetDirections(startVertex.point, pointLocation))), "the ray from 'dir' is away from pointLocation", this.ObstacleTree, this.VisGraph);
     while (true) {
-      const nextVertex: VisibilityVertex =
-        StaticGraphUtility.FindAdjacentVertex(startVertex, dir)
+      const nextVertex: VisibilityVertex = StaticGraphUtility.FindAdjacentVertex(
+        startVertex,
+        dir,
+      )
       if (nextVertex == null) {
         break
       }
@@ -326,8 +326,10 @@ export class TransientGraphUtility {
     const currentDirTowardLocation: Direction = dirTowardLocation
     //  First move toward pointLocation far as we can.
     while (Direction.None != currentDirTowardLocation) {
-      const nextVertex: VisibilityVertex =
-        StaticGraphUtility.FindAdjacentVertex(currentVertex, dirTowardLocation)
+      const nextVertex: VisibilityVertex = StaticGraphUtility.FindAdjacentVertex(
+        currentVertex,
+        dirTowardLocation,
+      )
       if (nextVertex == null) {
         break
       }
@@ -410,8 +412,9 @@ export class TransientGraphUtility {
     // StaticGraphUtility.Assert((Point.closeDistEps(sourceVertex.point, targetIntersect) || PointComparer.IsPureDirection(sourceVertex.point, targetIntersect)), "non-orthogonal edge request", this.ObstacleTree, this.VisGraph);
     // StaticGraphUtility.Assert(StaticGraphUtility.PointIsOnSegmentSP(targetEdge.SourcePoint, targetEdge.TargetPoint, targetIntersect), "targetIntersect is not on targetEdge", this.ObstacleTree, this.VisGraph);
     //  If the target vertex does not exist, we must split targetEdge to add it.
-    let targetVertex: VisibilityVertex =
-      this.VisGraph.FindVertex(targetIntersect)
+    let targetVertex: VisibilityVertex = this.VisGraph.FindVertex(
+      targetIntersect,
+    )
     if (targetVertex == null) {
       targetVertex = this.AddVertex(targetIntersect)
       this.SplitEdge(targetEdge, targetVertex)
@@ -587,8 +590,9 @@ export class TransientGraphUtility {
     }
 
     //  Store this off before ExtendSpliceWorker, which overwrites it.
-    const spliceTargetDir: Direction =
-      CompassVector.OppositeDir(spliceSourceDir)
+    const spliceTargetDir: Direction = CompassVector.OppositeDir(
+      spliceSourceDir,
+    )
     const t = {spliceTarget: <VisibilityVertex>null}
     if (
       this.ExtendSpliceWorker(
@@ -709,8 +713,10 @@ export class TransientGraphUtility {
     pac: PointAndCrossings,
     dirToInside: Direction,
   ) {
-    const crossings: GroupBoundaryCrossing[] =
-      PointAndCrossingsList.ToCrossingArray(pac.Crossings, dirToInside)
+    const crossings: GroupBoundaryCrossing[] = PointAndCrossingsList.ToCrossingArray(
+      pac.Crossings,
+      dirToInside,
+    )
     if (crossings != null) {
       const outerVertex =
         this.VisGraph.FindVertex(pac.Location) ?? this.AddVertex(pac.Location)
@@ -818,8 +824,9 @@ export class TransientGraphUtility {
       }
 
       //  We might be walking through a point where a previous chain dead-ended.
-      let nextExtendVertex: VisibilityVertex =
-        this.VisGraph.FindVertex(nextExtendPoint)
+      let nextExtendVertex: VisibilityVertex = this.VisGraph.FindVertex(
+        nextExtendPoint,
+      )
       if (nextExtendVertex != null) {
         if (
           t.spliceTarget == null ||
@@ -892,8 +899,10 @@ export class TransientGraphUtility {
     spliceTargetDir: Direction,
     extendDir: Direction,
   ): boolean {
-    let nextSpliceSource: VisibilityVertex =
-      StaticGraphUtility.FindAdjacentVertex(t.spliceSource, extendDir)
+    let nextSpliceSource: VisibilityVertex = StaticGraphUtility.FindAdjacentVertex(
+      t.spliceSource,
+      extendDir,
+    )
     if (nextSpliceSource == null) {
       //  See if there is a source further away from the extension line - we might have
       //  been on freePoint line (or another nearby PortEntry line) that dead-ended.

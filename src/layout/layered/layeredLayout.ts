@@ -129,8 +129,7 @@ export class LayeredLayout extends Algorithm {
           this.originalGraph.top + this.sugiyamaSettings.margins.top,
         ),
       ) // flip the y coordinate according to the screen standard and shift to origin
-      this.originalGraph.boundingBox.right +=
-        this.sugiyamaSettings.margins.right
+      this.originalGraph.boundingBox.right += this.sugiyamaSettings.margins.right
       this.originalGraph.boundingBox.top += this.sugiyamaSettings.margins.bottom
       this.originalGraph.boundingBox.left = 0
       this.originalGraph.boundingBox.bottom = 0
@@ -138,8 +137,8 @@ export class LayeredLayout extends Algorithm {
   }
 
   runPostLayering() {
-    const routingSettings: EdgeRoutingSettings =
-      this.sugiyamaSettings.EdgeRoutingSettings
+    const routingSettings: EdgeRoutingSettings = this.sugiyamaSettings
+      .EdgeRoutingSettings
     const mode =
       this.constrainedOrdering != null
         ? EdgeRoutingMode.Spline
@@ -374,8 +373,9 @@ export class LayeredLayout extends Algorithm {
       this.HorizontalConstraints == null ||
       this.HorizontalConstraints.IsEmpty
     ) {
-      layerArrays =
-        this.YLayeringAndOrderingWithoutHorizontalConstraints(layerArrays)
+      layerArrays = this.YLayeringAndOrderingWithoutHorizontalConstraints(
+        layerArrays,
+      )
       return layerArrays
     }
 
@@ -549,7 +549,9 @@ export class LayeredLayout extends Algorithm {
       }
   }
 
-  AnalyzeNeedToInsertLayersAndHasMultiedges(layerArrays: LayerArrays): {
+  AnalyzeNeedToInsertLayersAndHasMultiedges(
+    layerArrays: LayerArrays,
+  ): {
     needToInsertLayers: boolean
     multipleEdges: boolean
   } {
@@ -627,7 +629,9 @@ export class LayeredLayout extends Algorithm {
     }
   }
 
-  GetSuccessorAndPredecessor(i: number): {
+  GetSuccessorAndPredecessor(
+    i: number,
+  ): {
     predecessor: Anchor
     successor: Anchor
   } {
@@ -780,8 +784,9 @@ export class LayeredLayout extends Algorithm {
   }
 
   TryShiftToTheLeft(x: number, v: number): boolean {
-    const layer: number[] =
-      this.engineLayerArrays.Layers[this.engineLayerArrays.y[v]]
+    const layer: number[] = this.engineLayerArrays.Layers[
+      this.engineLayerArrays.y[v]
+    ]
     const vPosition: number = this.engineLayerArrays.x[v]
     if (vPosition > 0) {
       const uAnchor: Anchor = this.database.Anchors[layer[vPosition - 1]]
@@ -804,8 +809,9 @@ export class LayeredLayout extends Algorithm {
   }
 
   TryShiftToTheRight(x: number, v: number): boolean {
-    const layer: number[] =
-      this.engineLayerArrays.Layers[this.engineLayerArrays.y[v]]
+    const layer: number[] = this.engineLayerArrays.Layers[
+      this.engineLayerArrays.y[v]
+    ]
     const vPosition: number = this.engineLayerArrays.x[v]
     if (vPosition < layer.length - 1) {
       const uAnchor: Anchor = this.database.Anchors[layer[vPosition + 1]]

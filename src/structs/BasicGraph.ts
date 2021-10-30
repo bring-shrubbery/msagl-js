@@ -3,7 +3,7 @@ import {IEdge} from './iedge'
 
 export class BasicGraph<
   TNode,
-  TEdge extends IEdge,
+  TEdge extends IEdge
 > extends BasicGraphOnEdges<TEdge> {
   nodes: TNode[]
   constructor(edges: TEdge[], numberOfVerts: number) {

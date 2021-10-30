@@ -99,11 +99,10 @@ export class Obstacle {
       paddedBox.pad(padding)
       this.PaddedPolyline = Curve.polyFromBox(paddedBox)
     } else {
-      this.PaddedPolyline =
-        InteractiveObstacleCalculator.PaddedPolylineBoundaryOfNode(
-          shape.BoundaryCurve,
-          padding,
-        )
+      this.PaddedPolyline = InteractiveObstacleCalculator.PaddedPolylineBoundaryOfNode(
+        shape.BoundaryCurve,
+        padding,
+      )
     }
 
     Obstacle.RoundVerticesAndSimplify(this.PaddedPolyline)

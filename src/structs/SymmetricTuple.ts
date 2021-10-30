@@ -25,7 +25,7 @@ export class SymmetricTuple<T> {
       return true
     }
 
-    const other = obj as unknown as SymmetricTuple<T>
+    const other = (obj as unknown) as SymmetricTuple<T>
 
     return (
       (this.A == other.A && this.B == other.B) ||

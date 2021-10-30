@@ -65,7 +65,7 @@ export class GeomGraph extends GeomNode {
   }
   *deepNodes(): IterableIterator<GeomNode> {
     for (const n of this.graph.deepNodes) {
-      yield GeomObject.getGeom(n) as unknown as GeomNode
+      yield (GeomObject.getGeom(n) as unknown) as GeomNode
     }
   }
   setEdge(s: string, t: string): GeomEdge {

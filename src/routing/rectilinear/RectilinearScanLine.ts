@@ -114,18 +114,16 @@ export class RectilinearScanLine {
 
     // RectilinearScanLine.Debug_VerifySidesDoNotIntersect(first, second)
     //  Other than intersecting sides at vertices of the same obstacle, there should be no interior intersections...
-    const firstIntersect: Point =
-      VisibilityGraphGenerator.ScanLineIntersectSidePBS(
-        this.linePositionAtLastInsertOrRemove,
-        first,
-        this.scanDirection,
-      )
-    const secondIntersect: Point =
-      VisibilityGraphGenerator.ScanLineIntersectSidePBS(
-        this.linePositionAtLastInsertOrRemove,
-        second,
-        this.scanDirection,
-      )
+    const firstIntersect: Point = VisibilityGraphGenerator.ScanLineIntersectSidePBS(
+      this.linePositionAtLastInsertOrRemove,
+      first,
+      this.scanDirection,
+    )
+    const secondIntersect: Point = VisibilityGraphGenerator.ScanLineIntersectSidePBS(
+      this.linePositionAtLastInsertOrRemove,
+      second,
+      this.scanDirection,
+    )
     let cmp = firstIntersect.compareTo(secondIntersect)
     //  ... but we may still have rectangular sides that coincide, or angled sides that are close enough here but
     //  are not detected by the convex-hull overlap calculations.  In those cases, we refine the comparison by side
