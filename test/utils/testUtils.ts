@@ -126,8 +126,13 @@ export function nodeBoundaryFunc(id: string): ICurve {
 }
 
 export function parseDotGraph(fileName: string): DrawingGraph {
-  const graphStr = fs.readFileSync(fileName, 'utf-8')
-  return parseDotString(graphStr)
+  try {
+    const graphStr = fs.readFileSync(fileName, 'utf-8')
+    return parseDotString(graphStr)
+  } catch (Error) {
+    console.log('file = ' + fileName + ' error:' + Error.message)
+    return null
+  }
 }
 export function labelRectFunc(text: string): Rectangle {
   return Rectangle.mkPP(new Point(0, 0), new Point(text.length * 10, 10.5))

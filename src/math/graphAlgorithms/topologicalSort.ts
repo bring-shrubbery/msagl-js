@@ -1,46 +1,42 @@
 import {IntPair} from './../../utils/IntPair'
 import {
   BasicGraphOnEdges,
-  mkGraphOnEdgesArray,
+  mkGraphOnEdgesN,
 } from './../../structs/basicGraphOnEdges'
 import {Stack} from 'stack-typescript'
 
 // Implements the topological sort
 import {IEdge} from './../../structs/iedge'
 
-function visitNodeC(
-  g: BasicGraphOnEdges<IEdge>,
-  u: number,
-  t: number[],
-  level: number,
-) {
-  t[u] = level
-  for (const e of g.outEdges[u]) {
-    const v = e.target
-    if (t[v] < level) return true
-    visitNodeC(g, v, t, level + 1)
+export function hasCycle(g: BasicGraphOnEdges<IEdge>): boolean {
+  const visited = new Array(g.nodeCount).fill(false)
+  const reachableFromU = new Array(g.nodeCount).fill(false)
+  for (let u = 0; u < g.nodeCount; u++) {
+    if (hasCycleUnder(g, u, visited, reachableFromU)) return true
   }
+
   return false
 }
 
 export class TopologicalSort {
-  // Do a topological sort of a list of int edge tuples
+  // Topological sort of a list of int edge tuples
   static getOrder(
     numberOfVertices: number,
     edges: [number, number][],
   ): number[] {
-    const dag = mkGraphOnEdgesArray(
-      edges.map((e) => new IntPair(e[0], e[1]), numberOfVertices),
+    const dag = mkGraphOnEdgesN(
+      edges.map(([u, v]) => new IntPair(u, v)),
+      numberOfVertices,
     )
-    //    Assert.assert(!hasCycle(dag), 'no cycles')
+
+    //Assert.assert(!hasCycle(dag), 'no cycles')
     return TopologicalSort.getOrderOnGraph(dag)
   }
 
   // The function returns an array arr such that
-  // arr is a permutation of the graph vertices,
-  // and for any edge e in graph if e.Source=arr[i]
-  // e.Target=arr[j], then i is less than j
+  // every edge points forward in the array. The input has to be a DAG
   static getOrderOnGraph(graph: BasicGraphOnEdges<IEdge>): number[] {
+    // Assert.assert(!hasCycle(graph))
     const visited = new Array<boolean>(graph.nodeCount).fill(false)
 
     //no recursion! So we have to organize a stack
@@ -80,4 +76,25 @@ export class TopologicalSort {
     }
     return order.reverse()
   }
+}
+function hasCycleUnder(
+  g: BasicGraphOnEdges<IEdge>,
+  u: number,
+  visited: boolean[],
+  reachableFromU: boolean[],
+): boolean {
+  if (reachableFromU[u]) {
+    return true
+  }
+
+  if (visited[u]) return false
+  reachableFromU[u] = true
+  visited[u] = true
+  for (const e of g.outEdges[u]) {
+    if (hasCycleUnder(g, e.target, visited, reachableFromU)) {
+      return true
+    }
+  }
+  reachableFromU[u] = false
+  return false
 }

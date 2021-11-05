@@ -7,7 +7,6 @@ import {TriangleOrientation} from '../../../math/geometry/point'
 import {PolylinePoint} from '../../../math/geometry/polylinePoint'
 import {RBNode} from '../../../structs/RBTree/rbNode'
 import {RBTree} from '../../../structs/RBTree/rbTree'
-import {Assert} from '../../../utils/assert'
 import {LineSweeperBase} from '../../visibility/LineSweeperBase'
 import {PortObstacleEvent} from '../../visibility/PortObstacleEvent'
 import {VisibilityEdge} from '../../visibility/VisibilityEdge'
@@ -371,7 +370,7 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
 
   ExtendSegmentToZ(segment: ConeSide): ICurve {
     const den: number = this.GetZP(segment.Direction)
-    Assert.assert(Math.abs(den) > GeomConstants.distanceEpsilon)
+    //Assert.assert(Math.abs(den) > GeomConstants.distanceEpsilon)
     const t: number = (this.Z - this.GetZP(segment.Start)) / den
     return LineSegment.mkPP(
       segment.Start,
@@ -490,9 +489,8 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
     obstacleSideStart: Point,
     obstacleSideVertex: PolylinePoint,
   ) {
-    const node: RBNode<ConeSide> = this.GetLastNodeToTheLeftOfPointInRightSegmentTree(
-      obstacleSideStart,
-    )
+    const node: RBNode<ConeSide> =
+      this.GetLastNodeToTheLeftOfPointInRightSegmentTree(obstacleSideStart)
     if (node != null) {
       const coneRightSide = <ConeRightSide>node.item
       if (coneRightSide != null) {
@@ -521,10 +519,10 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
     intersection: Point,
     obstacleSideVertex: PolylinePoint,
   ): RightIntersectionEvent {
-    Assert.assert(
-      Math.abs(this.GetZP(obstacleSideVertex.point.sub(intersection))) >
-        GeomConstants.distanceEpsilon,
-    )
+    // Assert.assert(
+    //   Math.abs(this.GetZP(obstacleSideVertex.point.sub(intersection))) >
+    //     GeomConstants.distanceEpsilon,
+    // )
     return new RightIntersectionEvent(
       coneRightSide,
       intersection,
@@ -547,9 +545,8 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
     obstacleSideStart: Point,
     obstacleSideVertex: PolylinePoint,
   ) {
-    const node: RBNode<ConeSide> = this.GetFirstNodeToTheRightOfPoint(
-      obstacleSideStart,
-    )
+    const node: RBNode<ConeSide> =
+      this.GetFirstNodeToTheRightOfPoint(obstacleSideStart)
     //           ShowLeftTree(Box(obstacleSideStart));
     if (node == null) {
       return
@@ -621,9 +618,9 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
   }
 
   InsertToTree(tree: RBTree<ConeSide>, coneSide: ConeSide): RBNode<ConeSide> {
-    Assert.assert(
-      this.GetZP(coneSide.Direction) > GeomConstants.distanceEpsilon,
-    )
+    // Assert.assert(
+    //   this.GetZP(coneSide.Direction) > GeomConstants.distanceEpsilon,
+    // )
     this.coneSideComparer.SetOperand(coneSide)
     return tree.insert(coneSide)
   }
@@ -711,7 +708,7 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
   }
 
   RemoveCone(cone: Cone) {
-    Assert.assert(cone.Removed == false)
+    //Assert.assert(cone.Removed == false)
     cone.Removed = true
     this.RemoveSegFromLeftTree(cone.LeftSide)
     this.RemoveSegFromRightTree(cone.RightSide)
@@ -719,7 +716,7 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
 
   RemoveSegFromRightTree(coneSide: ConeSide) {
     //    ShowRightTree();
-    Assert.assert(coneSide.Removed == false)
+    //Assert.assert(coneSide.Removed == false)
     this.coneSideComparer.SetOperand(coneSide)
     let b: RBNode<ConeSide> = this.rightConeSides.remove(coneSide)
     coneSide.Removed = true
@@ -732,11 +729,11 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
       this.Z = tmpZ
     }
 
-    Assert.assert(b != null)
+    //Assert.assert(b != null)
   }
 
   RemoveSegFromLeftTree(coneSide: ConeSide) {
-    Assert.assert(coneSide.Removed == false)
+    // Assert.assert(coneSide.Removed == false)
     coneSide.Removed = true
     this.coneSideComparer.SetOperand(coneSide)
     let b: RBNode<ConeSide> = this.leftConeSides.remove(coneSide)
@@ -748,7 +745,7 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
       this.Z = tmpZ
     }
 
-    Assert.assert(b != null)
+    // Assert.assert(b != null)
   }
 
   FixConeRightSideIntersections(
@@ -785,9 +782,8 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
       //     if (seg != null)
       //         TryIntersectionOfConeLeftSideAndObstacleConeSide(coneLeftSide, seg);
       // }
-      const rightObstacleSide: RightObstacleSide = this.FindFirstObstacleSideToTheLeftOfPoint(
-        coneLeftSide.Start,
-      )
+      const rightObstacleSide: RightObstacleSide =
+        this.FindFirstObstacleSideToTheLeftOfPoint(coneLeftSide.Start)
       if (rightObstacleSide != null) {
         this.TryIntersectionOfConeLeftSideAndObstacleSide(
           coneLeftSide,
@@ -819,9 +815,8 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
       //     if (seg != null)
       //         TryIntersectionOfConeRightSideAndObstacleConeSide(coneRightSide, seg);
       // }
-      const leftObstacleSide: LeftObstacleSide = this.FindFirstObstacleSideToToTheRightOfPoint(
-        coneRightSide.Start,
-      )
+      const leftObstacleSide: LeftObstacleSide =
+        this.FindFirstObstacleSideToToTheRightOfPoint(coneRightSide.Start)
       if (leftObstacleSide != null) {
         this.TryIntersectionOfConeRightSideAndObstacleSide(
           coneRightSide,
@@ -917,9 +912,8 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
 
   //         static int count;
   GoOverConesSeeingVertexEvent(vertexEvent: SweepEvent) {
-    let rbNode: RBNode<ConeSide> = this.FindFirstSegmentInTheRightTreeNotToTheLeftOfVertex(
-      vertexEvent,
-    )
+    let rbNode: RBNode<ConeSide> =
+      this.FindFirstSegmentInTheRightTreeNotToTheLeftOfVertex(vertexEvent)
     if (rbNode == null) {
       return
     }
@@ -968,10 +962,10 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
   }
 
   addEdge(a: Point, b: Point) {
-    Assert.assert(this.PortLocations.findIndex((p) => p.equal(a)) >= 0)
+    // Assert.assert(this.PortLocations.findIndex((p) => p.equal(a)) >= 0)
     const ab: VisibilityEdge = this.visibilityGraph.AddEdge(a, b)
     const av: VisibilityVertex = ab.Source
-    Assert.assert(av.point == a && ab.TargetPoint == b)
+    // Assert.assert(av.point == a && ab.TargetPoint == b)
     // all edges adjacent to a which are different from ab
     const edgesToFix: VisibilityEdge[] = av.InEdges.filter(
       (e) => e != ab,

@@ -4,7 +4,7 @@ import {Color} from '../../src/drawing/color'
 import {sortedList} from '../layout/sortedBySizeListOfgvFiles'
 import {parseDotGraph} from './testUtils'
 
-test('all gv files list ', () => {
+xtest('all gv files list ', () => {
   const path = 'test/data/graphvis/'
   for (const f of sortedList) {
     try {
@@ -15,7 +15,7 @@ test('all gv files list ', () => {
   }
 })
 
-test('pack gv', () => {
+xtest('pack gv', () => {
   const g = parseDotGraph('test/data/graphvis/pack.gv')
   expect(g == null).toBe(false)
 })

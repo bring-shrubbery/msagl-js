@@ -252,6 +252,7 @@ export class LayerInserter {
         const top = this.la.y[ip.x] * 2
         for (const e of v) {
           let layer = top - 1
+          //Assert.assert(e.LayerEdges != undefined && e.LayerEdges != null)
           for (const le of e.LayerEdges)
             if (le.Target != e.target) this.NLayering[le.Target] = layer--
         }

@@ -109,7 +109,7 @@ class Routing {
 export class PolyIntEdge implements IIntEdge {
   source: number
   target: number
-  reversed: boolean
+  reversed = false
   // separation request in the number of layers between the source and the target layers
   separation: number
   weight: number

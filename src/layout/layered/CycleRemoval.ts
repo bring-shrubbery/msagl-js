@@ -4,6 +4,7 @@ import {IntPair} from '../../utils/IntPair'
 import {IntPairSet} from '../../utils/IntPairSet'
 // import {Assert} from '../../utils/assert'
 import {Stack} from 'stack-typescript'
+import {IntPairMap} from '../../utils/IntPairMap'
 
 enum VertStatus {
   NotVisited,
@@ -38,8 +39,8 @@ export class CycleRemoval {
   }
 
   static getFeedbackSet(graph: BasicGraphOnEdges<IEdge>): IEdge[] {
-    const feedbackSet = new Set<IEdge>()
-    if (graph == null || graph.nodeCount == 0) return Array.from(feedbackSet)
+    const feedbackSet = new IntPairMap<IEdge>(graph.nodeCount)
+    if (graph == null || graph.nodeCount == 0) return []
     const status = new Array<VertStatus>(graph.nodeCount).fill(
       VertStatus.NotVisited,
     )
@@ -64,7 +65,7 @@ export class CycleRemoval {
 
           const targetStatus = status[e.target]
           if (targetStatus == VertStatus.InStack) {
-            feedbackSet.add(e)
+            feedbackSet.set(e.source, e.target, e)
           } else if (targetStatus == VertStatus.NotVisited) {
             //have to go deeper
             CycleRemoval.push(stack, status, vertex, i + 1)
@@ -76,6 +77,6 @@ export class CycleRemoval {
         }
       }
     }
-    return Array.from(feedbackSet)
+    return Array.from(feedbackSet.values())
   }
 }

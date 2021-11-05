@@ -1,6 +1,5 @@
 import {Point} from '../../..'
 import {TriangleOrientation} from '../../../math/geometry/point'
-import {Assert} from '../../../utils/assert'
 import {BrokenConeSide} from './BrokenConeSide'
 import {ConeLeftSide} from './ConeLeftSide'
 import {ConeSide} from './ConeSide'
@@ -95,7 +94,7 @@ export class ConeSideComparer {
 
   IntersectionOfSegmentAndSweepLine(obstacleSide: ConeSide): Point {
     const den = obstacleSide.Direction.dot(this.coneSweeper.SweepDirection)
-    Assert.assert(Math.abs(den) > 0)
+    //Assert.assert(Math.abs(den) > 0)
     const t =
       this.coneSweeper.Z -
       obstacleSide.Start.dot(this.coneSweeper.SweepDirection) / den

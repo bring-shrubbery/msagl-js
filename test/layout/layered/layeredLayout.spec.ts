@@ -276,7 +276,7 @@ test('clusters', () => {
   t.writeGeomGraph(rootGeom)
 })
 
-test('layer and node separation', () => {
+xtest('layer and node separation', () => {
   const dg = parseDotGraph('test/data/graphvis/abstract.gv')
   createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const ss = new SugiyamaLayoutSettings()
@@ -385,12 +385,6 @@ xtest('b100', () => {
 test('pmpipe.gv', () => {
   const dg = runLayout('test/data/graphvis/pmpipe.gv')
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/pmpipe.svg')
-  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
-})
-
-test('layered layout hookup longflat', () => {
-  const dg = runLayout('test/data/graphvis/longflat.gv')
-  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/longflat.svg')
   t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
 

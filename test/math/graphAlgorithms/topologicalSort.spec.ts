@@ -1,4 +1,21 @@
-import {TopologicalSort} from '../../../src/math/graphAlgorithms/topologicalSort'
+import {
+  hasCycle,
+  TopologicalSort,
+} from '../../../src/math/graphAlgorithms/topologicalSort'
+import {mkGraphOnEdgesArray} from '../../../src/structs/basicGraphOnEdges'
+import {IntPair} from '../../../src/utils/IntPair'
+
+test('find cycle', () => {
+  const pairs = [
+    [0, 1],
+    [1, 2],
+    [1, 3],
+    [3, 4],
+    [4, 1],
+  ].map(([u, v]) => new IntPair(u, v))
+  const g = mkGraphOnEdgesArray(pairs)
+  expect(hasCycle(g)).toBe(true)
+})
 
 function checkPair(p: [number, number], order: number[]) {
   const sourceIndex = order.indexOf(p[0])

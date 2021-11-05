@@ -1,10 +1,8 @@
-import {from} from 'linq-to-typescript'
 import {BasicGraph} from '../../../structs/BasicGraph'
 import {BasicGraphOnEdges} from '../../../structs/basicGraphOnEdges'
 import {CancelToken} from '../../../utils/cancelToken'
 import {GeomNode} from '../../core/geomNode'
 import {PolyIntEdge} from '../polyIntEdge'
-import {GetConnectedComponents} from './../../../math/graphAlgorithms/ConnectedComponentCalculator'
 import {LayerCalculator} from './layerCalculator'
 import {NetworkSimplex} from './NetworkSimplex'
 export class NetworkSimplexForGeneralGraph implements LayerCalculator {
