@@ -130,7 +130,7 @@ export function parseDotGraph(fileName: string): DrawingGraph {
     const graphStr = fs.readFileSync(fileName, 'utf-8')
     return parseDotString(graphStr)
   } catch (Error) {
-    console.log('file = ' + fileName + ' error:' + Error.message)
+    // console.log('file = ' + fileName + ' error:' + Error.message)
     return null
   }
 }

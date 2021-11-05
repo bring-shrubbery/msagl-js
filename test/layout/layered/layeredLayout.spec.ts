@@ -482,7 +482,7 @@ test('brandes', () => {
       ss.BrandesThreshold = 1
       dg = runLayout(join(path, f), ss)
     } catch (Error) {
-      console.log('i = ' + i + ', file = ' + f + ' error:' + Error.message)
+      // console.log('i = ' + i + ', file = ' + f + ' error:' + Error.message)
       expect(1).toBe(0)
     }
     if (dg != null) {
@@ -503,7 +503,7 @@ test('layout first 150 gv files from list', () => {
     try {
       dg = runLayout(join(path, f))
     } catch (Error) {
-      console.log(f + ' error:' + Error.message)
+      // console.log(f + ' error:' + Error.message)
       expect(1).toBe(0)
     }
     if (dg != null) {
