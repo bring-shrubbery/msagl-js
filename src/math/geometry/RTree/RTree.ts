@@ -228,9 +228,8 @@ export class RTree<T, P> {
       return
     }
 
-    const ret: RectangleNode<T, P> = this._rootNode.FirstIntersectedNode(
-      queryRegion,
-    )
+    const ret: RectangleNode<T, P> =
+      this._rootNode.FirstIntersectedNode(queryRegion)
     if (ret == null) {
       return
     }

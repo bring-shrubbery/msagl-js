@@ -992,9 +992,8 @@ export class Nudger {
       const edgeDir = edge.Direction
       if (edgeDir == this.NudgingDirection || edgeDir == oppositeDir) {
         if (currentLongestSeg == null) {
-          edge.LongestNudgedSegment = currentLongestSeg = new LongestNudgedSegment(
-            this.LongestNudgedSegs.length,
-          )
+          edge.LongestNudgedSegment = currentLongestSeg =
+            new LongestNudgedSegment(this.LongestNudgedSegs.length)
           this.LongestNudgedSegs.push(currentLongestSeg)
         } else {
           edge.LongestNudgedSegment = currentLongestSeg

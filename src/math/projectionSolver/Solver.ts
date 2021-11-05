@@ -200,9 +200,8 @@ export class Solver {
     } else {
       //  Solve() has not yet been called.
       for (const variable of this.loadedVariablesAndConstraintLists.keys()) {
-        const constraintsForVar: ConstraintListForVariable = this.loadedVariablesAndConstraintLists.get(
-          variable,
-        )
+        const constraintsForVar: ConstraintListForVariable =
+          this.loadedVariablesAndConstraintLists.get(variable)
         if (null != constraintsForVar.Constraints) {
           //  Return all variables in the LeftConstraints list for each variable.
           const numConstraints: number = constraintsForVar.Constraints.length
@@ -273,12 +272,10 @@ export class Solver {
     //  varLeft's LeftConstraints and varRight's RightConstraints; this is slightly more complicated logic
     //  than just having two Lists, but for large numbers of variables, having all constraints in a single
     //  list is more memory-efficient.
-    const constraintsForLeftVar: ConstraintListForVariable = this.loadedVariablesAndConstraintLists.get(
-      left,
-    )
-    const constraintsForRightVar: ConstraintListForVariable = this.loadedVariablesAndConstraintLists.get(
-      right,
-    )
+    const constraintsForLeftVar: ConstraintListForVariable =
+      this.loadedVariablesAndConstraintLists.get(left)
+    const constraintsForRightVar: ConstraintListForVariable =
+      this.loadedVariablesAndConstraintLists.get(right)
     //  Now create the new constraint and update the structures.  For varLeft, we must also update the
     //  left-variable count and that requires another lookup to update the structure in the Map
     //  since it's a value type so a copy was returned by-value from Map lookup.
@@ -443,13 +440,16 @@ export class Solver {
       this.solverSolution.MaxInnerProjectIterations
     ) {
       //  Probably this is 0.
-      this.solverSolution.MinInnerProjectIterations = this.solverSolution.MaxInnerProjectIterations
+      this.solverSolution.MinInnerProjectIterations =
+        this.solverSolution.MaxInnerProjectIterations
     }
 
     //  Done.  Caller will copy each var.ActualPos back to the Nodes.  If we had any unsatisfiable
     //  constraints, copy them back out to the caller.
-    this.solverSolution.NumberOfUnsatisfiableConstraints = this.allConstraints.NumberOfUnsatisfiableConstraints
-    this.solverSolution.MaxConstraintTreeDepth = this.allConstraints.MaxConstraintTreeDepth
+    this.solverSolution.NumberOfUnsatisfiableConstraints =
+      this.allConstraints.NumberOfUnsatisfiableConstraints
+    this.solverSolution.MaxConstraintTreeDepth =
+      this.allConstraints.MaxConstraintTreeDepth
     return <Solution>this.solverSolution.Clone()
   }
 
@@ -490,9 +490,8 @@ export class Solver {
   private SplitOnConstraintIfActive(constraint: Constraint) {
     if (constraint.IsActive) {
       //  Similar handling as in SplitBlocks, except that we know which constraint we're splitting on.
-      const newSplitBlock: Block = constraint.Left.Block.SplitOnConstraint(
-        constraint,
-      )
+      const newSplitBlock: Block =
+        constraint.Left.Block.SplitOnConstraint(constraint)
       if (null != newSplitBlock) {
         this.allBlocks.Add(newSplitBlock)
       }
@@ -506,9 +505,8 @@ export class Solver {
     //  iteration than Array).
     this.allConstraints.Create(this.numberOfConstraints)
     for (const variable of this.loadedVariablesAndConstraintLists.keys()) {
-      const constraintsForVar: ConstraintListForVariable = this.loadedVariablesAndConstraintLists.get(
-        variable,
-      )
+      const constraintsForVar: ConstraintListForVariable =
+        this.loadedVariablesAndConstraintLists.get(variable)
       const constraints: Array<Constraint> = constraintsForVar.Constraints
       let numAllConstraints = 0
       let numLeftConstraints = 0
@@ -1069,9 +1067,8 @@ export class Solver {
     //  Now see if any of the cached maxvios are greater than we have now.  Don't remove
     //  it here; we'll wait until Expand/Merge set lastModifiedBlock and then the removal
     //  occurs above in ViolationCache.FilterBlock in this block when we come back in.
-    const cachedConstraint: Constraint = this.violationCache.FindIfGreater(
-      maxViolation,
-    )
+    const cachedConstraint: Constraint =
+      this.violationCache.FindIfGreater(maxViolation)
     if (null != cachedConstraint) {
       //  The cache had something more violated than maxViolatedConstraint, but maxViolatedConstraint
       //  may be larger than at least one cache element.

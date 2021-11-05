@@ -67,11 +67,13 @@ export class Solution {
   public Clone(): Solution {
     const r = new Solution()
     r.GoalFunctionValue = this.GoalFunctionValue
-    r.InnerProjectIterationsLimitExceeded = this.InnerProjectIterationsLimitExceeded
+    r.InnerProjectIterationsLimitExceeded =
+      this.InnerProjectIterationsLimitExceeded
     r.InnerProjectIterationsTotal = this.InnerProjectIterationsTotal
     r.MaxConstraintTreeDepth = this.MaxConstraintTreeDepth
     r.OuterProjectIterations = this.OuterProjectIterations
-    r.OuterProjectIterationsLimitExceeded = this.OuterProjectIterationsLimitExceeded
+    r.OuterProjectIterationsLimitExceeded =
+      this.OuterProjectIterationsLimitExceeded
     r.AlgorithmUsed = this.AlgorithmUsed
     r.NumberOfUnsatisfiableConstraints = this.NumberOfUnsatisfiableConstraints
     r.MaxInnerProjectIterations = this.MaxInnerProjectIterations

@@ -884,11 +884,10 @@ export class PortManager {
     const couple = StaticGraphUtility.SortAscending(first, second)
     const low: Point = couple[0]
     const high: Point = couple[1]
-    const perpendicularScanSegments: ScanSegmentTree = StaticGraphUtility.IsVerticalD(
-      dir,
-    )
-      ? this.HScanSegments
-      : this.VScanSegments
+    const perpendicularScanSegments: ScanSegmentTree =
+      StaticGraphUtility.IsVerticalD(dir)
+        ? this.HScanSegments
+        : this.VScanSegments
     //  Look up the nearest intersection.  For obstacles, we cannot just look for the bounding box
     //  corners because nonrectilinear obstacles may have other obstacles overlapping the bounding
     //  box (at either the corners or between the port border intersection and the bounding box
@@ -1012,11 +1011,12 @@ export class PortManager {
     //   - location is on a VE that is perpendicular to scanSeg.  In that case the vertex on ScanSeg
     //     already exists; TransUtil.FindOrAddEdge just returns the edge starting at that intersection.
     //  FreePoint tests of this are in RectilinearTests.FreePortLocationRelativeToTransientVisibilityEdges*.
-    const perpendicularEdge: VisibilityEdge = this.TransUtil.FindNearestPerpendicularOrContainingEdge(
-      tt.segsegVertex,
-      perpDir,
-      pointLocation,
-    )
+    const perpendicularEdge: VisibilityEdge =
+      this.TransUtil.FindNearestPerpendicularOrContainingEdge(
+        tt.segsegVertex,
+        perpDir,
+        pointLocation,
+      )
     if (perpendicularEdge == null) {
       //  Dead end; we're above the highest point at which there is an intersection of scanSeg.
       //  Create a new vertex and edge higher than the ScanSegment's HighestVisibilityVertex
@@ -1065,10 +1065,8 @@ export class PortManager {
     const intersectingSegments: ScanSegmentTree = scanSeg.IsVertical
       ? this.HScanSegments
       : this.VScanSegments
-    const intSegBefore: ScanSegment = intersectingSegments.FindHighestIntersector(
-      scanSeg.Start,
-      edgeIntersect,
-    )
+    const intSegBefore: ScanSegment =
+      intersectingSegments.FindHighestIntersector(scanSeg.Start, edgeIntersect)
     if (intSegBefore == null) {
       //  Dead end; we're below the lowest point at which there is an intersection of scanSeg.
       //  Create a new vertex and edge lower than the ScanSegment's LowestVisibilityVertex.
@@ -1281,9 +1279,8 @@ export class PortManager {
     //  out of bounds in only one direction; if in two, we'll add a bend. Currently we don't need
     //  to do any more because multiple waypoints are processed as multiple subpaths.
     const oobLocation = freePoint.Point
-    const inboundsLocation: Point = this.graphGenerator.MakeInBoundsLocation(
-      oobLocation,
-    )
+    const inboundsLocation: Point =
+      this.graphGenerator.MakeInBoundsLocation(oobLocation)
     const dirFromGraph: Direction = PointComparer.GetDirections(
       inboundsLocation,
       oobLocation,

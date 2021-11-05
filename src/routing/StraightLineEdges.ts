@@ -204,11 +204,8 @@ export class StraightLineEdges extends Algorithm {
     if (geomedge.source == geomedge.target) {
       const dx = 2 / (3 * geomedge.source.boundaryCurve.boundingBox.width)
       const dy = geomedge.source.boundingBox.height / 4
-      geomedge.underlyingPolyline = StraightLineEdges.CreateUnderlyingPolylineForSelfEdge(
-        a,
-        dx,
-        dy,
-      )
+      geomedge.underlyingPolyline =
+        StraightLineEdges.CreateUnderlyingPolylineForSelfEdge(a, dx, dy)
       geomedge.curve = geomedge.underlyingPolyline.createCurve()
     } else {
       geomedge.underlyingPolyline = SmoothedPolyline.mkFromPoints([a, b])

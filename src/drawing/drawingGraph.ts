@@ -151,7 +151,7 @@ export class DrawingGraph extends DrawingObject {
 
   createNodeGeometry(n: Node, textMeasure: (label: string) => Size): void {
     if (n.isGraph) {
-      const subG = (n as unknown) as Graph
+      const subG = n as unknown as Graph
       const subDg = <DrawingGraph>DrawingObject.getDrawingObj(n)
       GeomGraph.mkWithGraphAndLabel(subG, textMeasure(subDg.labelText))
       subDg.createGeometry(textMeasure)

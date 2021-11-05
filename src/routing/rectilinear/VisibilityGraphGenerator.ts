@@ -108,7 +108,8 @@ export abstract class VisibilityGraphGenerator {
   //  including the direction (along the scanline axis, horizontal or vertical) that a path crossing
   //  that boundary takes toward the group's interior.  A point may be in here twice in the event of
   //  groups sharing a boundary.
-  protected CurrentGroupBoundaryCrossingMap: GroupBoundaryCrossingMap = new GroupBoundaryCrossingMap()
+  protected CurrentGroupBoundaryCrossingMap: GroupBoundaryCrossingMap =
+    new GroupBoundaryCrossingMap()
 
   //  For scanline traversal.
   protected LowNeighborSides: NeighborSides = new NeighborSides()
@@ -495,20 +496,19 @@ export abstract class VisibilityGraphGenerator {
     //  This is inclusive of the endpoints of sideWithRange, to be sure that we remove the item
     //  from LookaheadScan; if it's on an extreme vertex in the perpendicular sweep then it will
     //  stop the chain; see TestRectilinear.Reflection_Staircase_Stops_At_BoundingBox_Side*.
-    let lookaheadSiteNode: RBNode<BasicReflectionEvent> = this.lookaheadScan.FindFirstInRange(
-      low,
-      high,
-    )
+    let lookaheadSiteNode: RBNode<BasicReflectionEvent> =
+      this.lookaheadScan.FindFirstInRange(low, high)
     while (lookaheadSiteNode != null) {
       //  Calculate the lookahead intersection with this side in the perpendicular direction to
       //  the scanline.  Note: due to rounding error, this may be different from the calculation
       //  in the parallel direction when the scanline gets up to the ScanDirection.PerpCoord(intersect);
       //  this will be adjusted in ScanSegmentTree.MergeSegments.
-      const intersect: Point = VisibilityGraphGenerator.ScanLineIntersectSidePBS(
-        lookaheadSiteNode.item.Site,
-        sideToQueue,
-        this.ScanDirection.PerpendicularInstance,
-      )
+      const intersect: Point =
+        VisibilityGraphGenerator.ScanLineIntersectSidePBS(
+          lookaheadSiteNode.item.Site,
+          sideToQueue,
+          this.ScanDirection.PerpendicularInstance,
+        )
       //DevTraceInfoVgGen(1, "Loading reflection from lookahead site {0} to intersect at {1}", lookaheadSiteNode.item.Site, intersect);
       // DevTraceInfoVgGen(2, "     side {0})", sideToQueue);
       //  same indent as AddSegment
@@ -1212,9 +1212,8 @@ export abstract class VisibilityGraphGenerator {
     //  outside the closing obstacle.
     if (this.wantReflections && obstacle.isOverlapped) {
       for (
-        let nextNode: RBNode<BasicObstacleSide> = this.scanLine.NextHighR(
-          lowSideNode,
-        );
+        let nextNode: RBNode<BasicObstacleSide> =
+          this.scanLine.NextHighR(lowSideNode);
         nextNode.item != highSideNode.item;
         nextNode = this.scanLine.NextHighR(nextNode)
       ) {
