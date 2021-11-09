@@ -70,7 +70,7 @@ export class LayeredLayout extends Algorithm {
     this.originalGraph = originalGraph
     this.sugiyamaSettings = settings
     //enumerate the nodes - maps node indices to strings
-    const nodeArray = Array.from(from(originalGraph.shallowNodes()))
+    const nodeArray = Array.from(originalGraph.shallowNodes())
     this.nodeIdToIndex = new Map<string, number>()
 
     let index = 0
