@@ -12,6 +12,11 @@ export function layoutGraphGraphWithMds(
   geomGraph: GeomGraph,
   cancelToken: CancelToken,
 ) {
+  if (
+    !geomGraph.layoutSettings ||
+    geomGraph.layoutSettings instanceof MdsLayoutSettings
+  )
+    geomGraph.layoutSettings = new MdsLayoutSettings()
   layoutGraph(
     geomGraph,
     cancelToken,
