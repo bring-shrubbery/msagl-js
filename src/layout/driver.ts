@@ -1,69 +1,57 @@
 import {RectilinearEdgeRouter} from '../routing/rectilinear/RectilinearEdgeRouter'
 import {GeomGraph} from './core/GeomGraph'
-import {SugiyamaLayoutSettings} from './layered/SugiyamaLayoutSettings'
-import {LayeredLayout} from './layered/layeredLayout'
 import {CancelToken} from '../utils/cancelToken'
 import {CurveFactory} from '../math/geometry/curveFactory'
 import {Point} from '../math/geometry/point'
-import {Rectangle} from '../math/geometry/rectangle'
-import {OptimalRectanglePacking} from '../math/geometry/rectanglePacking/OptimalRectanglePacking'
-import {StraightLineEdges} from '../routing/StraightLineEdges'
 import {Edge} from '../structs/edge'
 import {Graph, shallowConnectedComponents} from '../structs/graph'
 import {GeomEdge} from './core/geomEdge'
-import {LayoutSettings} from './layered/SugiyamaLayoutSettings'
-import {MdsLayoutSettings} from './mds/MDSLayoutSettings'
-import {PivotMDS} from './mds/PivotMDS'
-import {EdgeRoutingMode} from '../routing/EdgeRoutingMode'
-import {EdgeRoutingSettings} from '../routing/EdgeRoutingSettings'
 
-function routeEdges(
-  geomG: GeomGraph,
-  edgeRoutingSettings: EdgeRoutingSettings,
-  cornerFitRadius = 3,
-) {
-  if (edgeRoutingSettings.edgeRoutingMode != EdgeRoutingMode.Rectilinear) {
-    // TODO: enable other modes
-    routeStraightEdges(geomG)
-  } else {
-    if (edgeRoutingSettings.edgeRoutingMode == EdgeRoutingMode.Rectilinear)
-      routeRectilinearEdges(geomG, edgeRoutingSettings.padding, cornerFitRadius)
-  }
-}
+// function routeEdges(
+//   geomG: GeomGraph,
+//   edgeRoutingSettings: EdgeRoutingSettings,
+//   cornerFitRadius = 3,
+// ) {
+//   if (edgeRoutingSettings.edgeRoutingMode != EdgeRoutingMode.Rectilinear) {
+//     // TODO: enable other modes
+//     routeStraightEdges(geomG)
+//   } else {
+//     if (edgeRoutingSettings.edgeRoutingMode == EdgeRoutingMode.Rectilinear)
+//       routeRectilinearEdges(geomG, edgeRoutingSettings.padding, cornerFitRadius)
+//   }
+// }
 
-function routeStraightEdges(geomG: GeomGraph) {
-  for (const u of geomG.deepNodes()) {
-    for (const e of u.outEdges()) {
-      if (e.curve == null) StraightLineEdges.RouteEdge(e, 0)
-    }
-    for (const e of u.selfEdges()) {
-      if (e.curve == null) StraightLineEdges.RouteEdge(e, 0)
-    }
-  }
-}
+// function routeStraightEdges(geomG: GeomGraph) {
+//   for (const u of geomG.deepNodes()) {
+//     for (const e of u.outEdges()) {
+//       if (e.curve == null) StraightLineEdges.RouteEdge(e, 0)
+//     }
+//     for (const e of u.selfEdges()) {
+//       if (e.curve == null) StraightLineEdges.RouteEdge(e, 0)
+//     }
+//   }
+// }
 
 // Lays out a GeomGraph, which is possibly disconnected and might have sub-graphs
 export function layoutGraph(
   geomG: GeomGraph,
   cancelToken: CancelToken,
-  layoutSettingsFunc: (g: GeomGraph) => LayoutSettings,
+  layoutEngine: (g: GeomGraph, cancelToken: CancelToken) => void,
+  edgeRouter: (g: GeomGraph, cancelToken: CancelToken) => void,
+  packing: (g: GeomGraph, subGraphs: GeomGraph[]) => void,
 ) {
   if (geomG.graph.isEmpty()) {
     // if there are no nodes in the graph, create a circle for its boundary and exit
     geomG.boundaryCurve = CurveFactory.mkCircle(10, new Point(0, 0))
+    geomG.boundingBox = geomG.boundaryCurve.boundingBox
     return
   }
   const removedEdges = removeEdgesLeadingOutOfGraph()
 
-  layoutShallowSubgraphs()
+  layoutShallowSubgraphs(geomG)
   const liftedEdges = createLiftedEdges(geomG.graph)
   const connectedGraphs: GeomGraph[] = getConnectedComponents(geomG)
-  // if (connectedGraphs.length == 1) {
-  //   layoutConnectedComponent(geomG, cancelToken, layoutSettingsFunc)
-  //   routeEdges()
-  //   for (const e of removedEdges) e.add()
-  //   return
-  // }
+  // TODO: possible optimization for a connected graph
   layoutComps()
 
   liftedEdges.forEach((e) => {
@@ -78,16 +66,14 @@ export function layoutGraph(
   for (const e of removedEdges) e.add()
 
   if (geomG.graph.parent == null) {
-    const ls = layoutSettingsFunc(geomG)
-    routeEdges(geomG, ls.edgeRoutingSettings)
+    edgeRouter(geomG, cancelToken)
   }
 
-  function layoutShallowSubgraphs() {
+  function layoutShallowSubgraphs(geomG: GeomGraph) {
     for (const n of geomG.shallowNodes()) {
       if (n.isGraph()) {
         const g = <GeomGraph>n
-        layoutGraph(g, cancelToken, layoutSettingsFunc)
-        g.updateBoundingBox()
+        layoutGraph(g, cancelToken, layoutEngine, edgeRouter, packing)
         const bb = g._boundingBox
         if (bb && !bb.isEmpty()) {
           n.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
@@ -120,30 +106,9 @@ export function layoutGraph(
   function layoutComps() {
     if (connectedGraphs.length == 0) return
     for (const cg of connectedGraphs) {
-      layoutConnectedComponent(cg, cancelToken, (g: GeomGraph) =>
-        g == cg ? layoutSettingsFunc(geomG) : layoutSettingsFunc(g),
-      )
+      layoutEngine(cg, cancelToken)
     }
-    const originalLeftBottoms = new Array<{g: GeomGraph; lb: Point}>()
-    for (const g of connectedGraphs) {
-      originalLeftBottoms.push({g: g, lb: g.boundingBox.leftBottom.clone()})
-    }
-    const rectangles = connectedGraphs.map((g) => g.boundingBox)
-    const packing = new OptimalRectanglePacking(
-      rectangles,
-      layoutSettingsFunc(geomG).PackingAspectRatio,
-    )
-    packing.run()
-    for (const {g, lb} of originalLeftBottoms) {
-      const delta = g.boundingBox.leftBottom.sub(lb)
-      g.translate(delta)
-    }
-    geomG.boundingBox = new Rectangle({
-      left: 0,
-      bottom: 0,
-      right: packing.PackedWidth,
-      top: packing.PackedHeight,
-    })
+    packing(geomG, connectedGraphs)
   }
 }
 
@@ -172,37 +137,38 @@ function createLiftedEdges(graph: Graph): Array<[GeomEdge, Edge]> {
   return liftedEdges
 }
 
-function layoutConnectedComponent(
-  geomG: GeomGraph,
-  cancelToken: CancelToken,
-  layoutSettingsFunc: (g: GeomGraph) => LayoutSettings,
-) {
-  const settings = layoutSettingsFunc(geomG)
-  if (settings instanceof MdsLayoutSettings) {
-    const pmd = new PivotMDS(
-      geomG,
-      null,
-      () => 1,
-      <MdsLayoutSettings>settings,
-      layoutSettingsFunc,
-    )
-    pmd.run()
-  } else if (settings instanceof SugiyamaLayoutSettings) {
-    const ll = new LayeredLayout(geomG, <SugiyamaLayoutSettings>settings, null)
-    ll.run()
-  } else {
-    throw new Error('unknown settings')
-  }
-}
+// function layoutConnectedComponent(
+//   geomG: GeomGraph,
+//   cancelToken: CancelToken,
+//   layoutSettingsFunc: (g: GeomGraph) => LayoutSettings,
+// ) {
+//   const settings = layoutSettingsFunc(geomG)
+//   if (settings instanceof MdsLayoutSettings) {
+//     const pmd = new PivotMDS(
+//       geomG,
+//       null,
+//       () => 1,
+//       <MdsLayoutSettings>settings,
+//       layoutSettingsFunc,
+//     )
+//     pmd.run()
+//   } else if (settings instanceof SugiyamaLayoutSettings) {
+//     const ll = new LayeredLayout(geomG, <SugiyamaLayoutSettings>settings, null)
+//     ll.run()
+//   } else {
+//     throw new Error('unknown settings')
+//   }
+// }
 
-function getConnectedComponents(geomGraph: GeomGraph): GeomGraph[] {
-  const graph = geomGraph.graph
+function getConnectedComponents(parentGeomGraph: GeomGraph): GeomGraph[] {
+  const graph = parentGeomGraph.graph
   const comps = shallowConnectedComponents(graph)
   const ret = []
   let i = 0
   for (const comp of comps) {
     const g = new Graph(graph.id + i++)
     const geomG = new GeomGraph(g)
+    geomG.layoutSettings = parentGeomGraph.layoutSettings
     for (const n of comp) {
       n.parent = g
       g.addNode(n) // this changes the parent - should be restored to graph

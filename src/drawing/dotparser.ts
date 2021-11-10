@@ -109,7 +109,7 @@ function parseGraph(o: any, dg: DrawingGraph, directed: boolean) {
 }
 
 function parseNode(o: any, dg: DrawingGraph): DrawingNode {
-  const node = new Node(o.node_id.id)
+  const node = new Node(o.node_id.id.toString())
   dg.graph.addNode(node)
   const drawingNode = new DrawingNode(node)
   fillDrawingObjectAttrs(o, drawingNode)

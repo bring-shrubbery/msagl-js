@@ -1,14 +1,7 @@
-import {
-  Size,
-  GeomGraph,
-  layoutGraph,
-  SugiyamaLayoutSettings,
-  MdsLayoutSettings,
-  GeomEdge,
-  Point,
-  interpolateICurve,
-} from '../../src'
+import {Size, GeomGraph} from '../../src'
 import {DrawingGraph, parseDotString} from '../../src/drawing'
+import {layoutGraphWithSugiayma} from '../../src/layout/layered/layeredLayout'
+import {layoutGraphGraphWithMds} from '../../src/layout/mds/PivotMDS'
 import {parseDotGraph} from '../utils/testUtils'
 
 test('drawingGraph layout', () => {
@@ -87,11 +80,16 @@ test('drawingGraph layout', () => {
   const dg = parseDotString(abstract_gv)
   layoutDrawingGraph(dg)
 })
+// done for SVG
 export function measureTextSize(str: string): Size {
   if (!str) {
-    return null
+    return new Size(1, 1)
   }
-  return new Size(str.length * 8 + 8, 20)
+  const lines = str.split('\n')
+  const w = lines
+    .map((s) => s.length * 15)
+    .reduce((a: number, b: number) => Math.max(a, b), 0)
+  return new Size(w, 15 * lines.length)
 }
 function layoutDrawingGraph(dg: DrawingGraph): void {
   dg.createGeometry(measureTextSize)
@@ -100,9 +98,9 @@ function layoutDrawingGraph(dg: DrawingGraph): void {
 
 export function layoutGeomGraph(geomGraph: GeomGraph, directed: boolean) {
   if (directed) {
-    layoutGraph(geomGraph, null, () => new SugiyamaLayoutSettings())
+    layoutGraphWithSugiayma(geomGraph, null)
   } else {
-    layoutGraph(geomGraph, null, () => new MdsLayoutSettings())
+    layoutGraphGraphWithMds(geomGraph, null)
   }
 }
 test('clusters', () => {

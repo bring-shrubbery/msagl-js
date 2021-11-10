@@ -12,7 +12,6 @@ import {
   Size,
 } from '..'
 import {Graph, Node} from '..'
-import {GeomObject} from '../layout/core/geomObject'
 import {Ellipse} from '../math/geometry/ellipse'
 import {DrawingNode} from './drawingNode'
 import {DrawingObject} from './drawingObject'
@@ -157,12 +156,12 @@ export class DrawingGraph extends DrawingObject {
       subDg.createGeometry(textMeasure)
     } else {
       const drawingNode = <DrawingNode>DrawingNode.getDrawingObj(n)
-      let nodeSize = new Size(1, 1)
+      let textSize = new Size(1, 1)
       if (drawingNode.labelText) {
-        nodeSize = textMeasure(drawingNode.labelText)
+        textSize = textMeasure(drawingNode.labelText)
       }
-      const width = nodeSize.width
-      const height = nodeSize.height
+      const width = textSize.width + drawingNode.LabelMargin * 2
+      const height = textSize.height + drawingNode.LabelMargin * 2
       const center = new Point(0, 0)
       const geomNode = new GeomNode(n)
       geomNode.boundaryCurve = this.curveByShape(

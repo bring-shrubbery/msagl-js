@@ -3,13 +3,15 @@ import {from} from 'linq-to-typescript'
 import * as fs from 'fs'
 // @ts-ignore
 import xmlw from 'xml-writer'
-import {Rectangle, Point, ICurve, GeomGraph, GeomEdge} from '../../src'
+import {Rectangle, Point, ICurve, GeomGraph, GeomEdge, Node} from '../../src'
 import {LineSegment, Curve, Polyline} from '../../src/math/geometry'
 import {BezierSeg} from '../../src/math/geometry/bezierSeg'
 import {DebugCurve} from '../../src/math/geometry/debugCurve'
 import {Ellipse} from '../../src/math/geometry/ellipse'
 import {allVerticesOfParall} from '../../src/math/geometry/parallelogram'
 import {PlaneTransformation} from '../../src/math/geometry/planeTransformation'
+import {DrawingObject} from '../../src/drawing/drawingObject'
+import {DrawingNode} from '../../src/drawing'
 // @ts-check
 export class SvgDebugWriter {
   // Here we import the File System module of node
@@ -297,9 +299,9 @@ export class SvgDebugWriter {
           new Point(box.center.x, box.bottom - gg.labelSize.height / 2),
         )
 
-        this.writeLabel(n.id, labelBox)
+        this.writeLabel(n.node, labelBox)
       } else {
-        this.writeLabel(n.id, box)
+        this.writeLabel(n.node, box)
       }
       for (const e of n.inEdges()) {
         this.writeEdge(e)
@@ -320,12 +322,21 @@ export class SvgDebugWriter {
     this.xw.endElement()
   }
 
-  writeLabel(id: string, label: Rectangle) {
-    if (id == null) id = 'undef'
-    const yScaleAdjustment = 1.5
+  writeLabel(node: Node, label: Rectangle) {
+    const drawingNode = <DrawingNode>DrawingObject.getDrawingObj(node)
+    const text = drawingNode ? drawingNode.labelText ?? node.id : node.id
+    const margin = drawingNode ? drawingNode.LabelMargin : 2
 
-    const x = label.center.x - label.width / 2
-    const y = label.center.y + label.height / (2 * yScaleAdjustment)
+    this.writeLabelTextWithMargin(label, margin, text)
+  }
+
+  private writeLabelTextWithMargin(
+    label: Rectangle,
+    margin: number,
+    text: string,
+  ) {
+    const x = label.center.x - (label.width / 2 - margin) * 0.6
+    const y = label.center.y + (label.height / 2 - margin) * 0.9
     const fontSize = 16
     this.xw.startElement('text')
     this.xw.writeAttribute('x', x)
@@ -333,7 +344,7 @@ export class SvgDebugWriter {
     this.xw.writeAttribute('font-family', 'Arial')
     this.xw.writeAttribute('font-size', fontSize)
     this.xw.writeAttribute('fill', 'Black')
-    this.writeLabelText(id, x)
+    this.writeLabelText(text, x)
     this.xw.endElement()
   }
 
@@ -351,7 +362,11 @@ export class SvgDebugWriter {
     if (edge.edgeGeometry != null && edge.edgeGeometry.targetArrowhead != null)
       this.addArrow(icurve.end, edge.edgeGeometry.targetArrowhead.tipPosition)
     if (edge.label != null) {
-      this.writeLabel(edge.label.label.text, edge.label.boundingBox)
+      this.writeLabelTextWithMargin(
+        edge.label.boundingBox,
+        1,
+        edge.label.label.text,
+      )
     }
   }
 

@@ -5,11 +5,55 @@ import {GeomNode} from './geomNode'
 import {GeomEdge} from './geomEdge'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 import {Point} from '../../math/geometry/point'
+import {OptimalRectanglePacking} from '../../math/geometry/rectanglePacking/OptimalRectanglePacking'
+import {LayoutSettings} from '../layered/SugiyamaLayoutSettings'
 // import {Curve} from '../../math/geometry/curve'
 // import {Ellipse} from '../../math/geometry/ellipse'
 // import {Entity} from '../../structs/entity'
 
+// packs the subgraphs and set the bounding box of the parent graph
+export function optimalPackingRunner(
+  geomGraph: GeomGraph,
+  subGraphs: GeomGraph[],
+) {
+  const originalLeftBottoms = new Array<{g: GeomGraph; lb: Point}>()
+  for (const g of subGraphs) {
+    originalLeftBottoms.push({g: g, lb: g.boundingBox.leftBottom.clone()})
+  }
+  const rectangles = subGraphs.map((g) => g.boundingBox)
+  const packing = new OptimalRectanglePacking(
+    rectangles,
+    1.5, // TODO - pass as a parameter: PackingAspectRatio,
+  )
+  packing.run()
+  for (const {g, lb} of originalLeftBottoms) {
+    const delta = g.boundingBox.leftBottom.sub(lb)
+    g.translate(delta)
+  }
+  geomGraph.boundingBox = new Rectangle({
+    left: 0,
+    bottom: 0,
+    right: packing.PackedWidth,
+    top: packing.PackedHeight,
+  })
+}
+
 export class GeomGraph extends GeomNode {
+  private _layoutSettings: LayoutSettings
+  public get layoutSettings(): LayoutSettings {
+    return this._layoutSettings
+  }
+
+  // recursively sets the same settings for subgraphs
+  public set layoutSettings(value: LayoutSettings) {
+    this._layoutSettings = value
+    for (const n of this.shallowNodes()) {
+      if (!n.isGraph) continue
+      const sg = <GeomGraph>n
+      if (sg.layoutSettings) continue
+      sg.layoutSettings = value
+    }
+  }
   translate(delta: Point) {
     if (delta.x == 0 && delta.y == 0) return
     const m = new PlaneTransformation(1, 0, delta.x, 0, 1, delta.y)

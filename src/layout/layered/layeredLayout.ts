@@ -12,7 +12,7 @@ import {GeomNode} from '../core/geomNode'
 import {Database} from './Database'
 import {LayerArrays} from './LayerArrays'
 import {GeomEdge} from '../core/geomEdge'
-import {GeomGraph} from '../core/GeomGraph'
+import {GeomGraph, optimalPackingRunner} from '../core/GeomGraph'
 import {IntPairMap} from '../../utils/IntPairMap'
 import {IntPairSet} from '../../utils/IntPairSet'
 import {IntPair} from '../../utils/IntPair'
@@ -38,6 +38,32 @@ import {Routing} from './routing'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 import {EdgeRoutingMode} from '../../routing/EdgeRoutingMode'
 import {EdgeRoutingSettings} from '../../routing/EdgeRoutingSettings'
+import {layoutGraph} from '../driver'
+import {straightLineEdgePatcher} from '../../routing/StraightLineEdges'
+function layeredLayoutRunner(geomGraph: GeomGraph, cancelToken: CancelToken) {
+  const ll = new LayeredLayout(
+    geomGraph,
+    <SugiyamaLayoutSettings>geomGraph.layoutSettings,
+    cancelToken,
+  )
+  ll.run()
+}
+
+export function layoutGraphWithSugiayma(
+  geomGraph: GeomGraph,
+  cancelToken: CancelToken,
+) {
+  const ss = geomGraph.layoutSettings
+  if (ss == null || !(ss instanceof SugiyamaLayoutSettings))
+    geomGraph.layoutSettings = new SugiyamaLayoutSettings()
+  layoutGraph(
+    geomGraph,
+    cancelToken,
+    layeredLayoutRunner,
+    straightLineEdgePatcher,
+    optimalPackingRunner,
+  )
+}
 
 export class LayeredLayout extends Algorithm {
   originalGraph: GeomGraph
@@ -81,12 +107,11 @@ export class LayeredLayout extends Algorithm {
     const intEdges: PolyIntEdge[] = []
     for (const edge of this.originalGraph.edges()) {
       /*Assert.assert(!(edge.source == null || edge.target == null))*/
-
-      const intEdge = new PolyIntEdge(
-        this.nodeIdToIndex.get(edge.source.id),
-        this.nodeIdToIndex.get(edge.target.id),
-        edge,
-      )
+      const source = this.nodeIdToIndex.get(edge.source.id)
+      if (source == undefined) continue
+      const target = this.nodeIdToIndex.get(edge.target.id)
+      if (target == undefined) continue
+      const intEdge = new PolyIntEdge(source, target, edge)
       intEdges.push(intEdge)
     }
 

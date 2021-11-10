@@ -1,12 +1,25 @@
-import {Edge} from '../../structs/edge'
+import {straightLineEdgePatcher} from '../../routing/StraightLineEdges'
 import {Algorithm} from '../../utils/algorithm'
 // import {Assert} from '../../utils/assert'
 import {CancelToken} from '../../utils/cancelToken'
 import {GeomEdge} from '../core/geomEdge'
-import {GeomGraph} from '../core/GeomGraph'
-import {LayoutSettings} from '../layered/SugiyamaLayoutSettings'
+import {GeomGraph, optimalPackingRunner} from '../core/GeomGraph'
+import {layoutGraph} from '../driver'
 import {MdsGraphLayout} from './MDSGraphLayout'
 import {MdsLayoutSettings} from './MDSLayoutSettings'
+
+export function layoutGraphGraphWithMds(
+  geomGraph: GeomGraph,
+  cancelToken: CancelToken,
+) {
+  layoutGraph(
+    geomGraph,
+    cancelToken,
+    mdsLayoutRunner,
+    straightLineEdgePatcher,
+    optimalPackingRunner,
+  )
+}
 
 // Initial layout using PivotMDS method for a graph with subgraphs
 export class PivotMDS extends Algorithm {
@@ -16,7 +29,6 @@ export class PivotMDS extends Algorithm {
   // scales the final layout by the specified factor on X
   iterationsWithMajorization: number
   settings: MdsLayoutSettings
-  layoutSettingsFunc: (g: GeomGraph) => LayoutSettings
   public get scaleX(): number {
     return this.settings.ScaleX
   }
@@ -41,14 +53,12 @@ export class PivotMDS extends Algorithm {
     cancelToken: CancelToken,
     length: (e: GeomEdge) => number,
     settings: MdsLayoutSettings,
-    layoutSettingsFunc: (g: GeomGraph) => LayoutSettings,
   ) {
     super(cancelToken)
     this.graph = graph
     this.length = length
     this.settings = settings
     this.settings.ScaleX = this.settings.ScaleY = 200
-    this.layoutSettingsFunc = layoutSettingsFunc
   }
 
   // Executes the actual algorithm.
@@ -66,26 +76,12 @@ export class PivotMDS extends Algorithm {
 }
 
 // returns the map of pairs (new lifted GeomEdge, existing GeomEdge)
-function CreateLiftedEdges(geomGraph: GeomGraph): Map<GeomEdge, GeomEdge> {
-  const liftedEdges = new Map<GeomEdge, GeomEdge>()
-  for (const u of geomGraph.deepNodes()) {
-    const liftedU = geomGraph.liftNode(u)
-
-    for (const uv of u.outEdges()) {
-      const v = uv.target
-      const liftedV = geomGraph.liftNode(v)
-      if (
-        liftedV == null ||
-        (liftedU == u && liftedV == v) ||
-        liftedU == liftedV
-      ) {
-        continue
-      }
-
-      const newLiftedEdge = new Edge(liftedU.node, liftedV.node)
-      const newLiftedGeomEdge = new GeomEdge(newLiftedEdge)
-      liftedEdges.set(newLiftedGeomEdge, uv)
-    }
-  }
-  return liftedEdges
+function mdsLayoutRunner(geomG: GeomGraph, cancelToken: CancelToken) {
+  const pmd = new PivotMDS(
+    geomG,
+    cancelToken,
+    () => 1,
+    <MdsLayoutSettings>geomG.layoutSettings,
+  )
+  pmd.run()
 }

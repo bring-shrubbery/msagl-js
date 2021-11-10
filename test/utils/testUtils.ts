@@ -14,11 +14,16 @@ import {
   GeomNode,
   GeomLabel,
   Graph,
+  Size,
+  Node,
 } from '../../src'
 import {SvgDebugWriter} from './svgDebugWriter'
 import {EdgeRoutingMode} from '../../src/routing/EdgeRoutingMode'
 import {parseDotString} from '../../src/drawing/dotparser'
 import {DrawingGraph} from '../../src/drawing'
+import {layoutGraphGraphWithMds} from '../../src/layout/mds/PivotMDS'
+import {DrawingObject} from '../../src/drawing/drawingObject'
+import {measureTextSize} from '../drawing/drawingGraph.spec'
 export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   const s = e.source.id + '->' + e.target.id
   return (
@@ -79,7 +84,8 @@ export function runMDSLayout(
   const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const settings = new MdsLayoutSettings()
   settings.edgeRoutingSettings.edgeRoutingMode = edgeRoutingMode
-  layoutGraph(gg, null, () => settings)
+  gg.layoutSettings = settings
+  layoutGraphGraphWithMds(gg, null)
   return dg
 }
 
@@ -94,7 +100,8 @@ export function runMDSLayoutNoSubgraphs(
   const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const settings = new MdsLayoutSettings()
   settings.edgeRoutingSettings.edgeRoutingMode = edgeRoutingMode
-  layoutGraph(gg, null, () => settings)
+  gg.layoutSettings = settings
+  layoutGraphGraphWithMds(gg, null)
   return dg
 }
 
@@ -115,12 +122,13 @@ export function outputGraph(g: GeomGraph, name: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function nodeBoundaryFunc(id: string): ICurve {
+export function nodeBoundaryFunc(label: string): ICurve {
+  const size = measureTextSize(label)
   return CurveFactory.mkRectangleWithRoundedCorners(
-    40.1, // tsize.width,
-    30.2, // tsize.height,
-    40.1 / 10, // tsize.width / 10,
-    30.2 / 10, // tsize.height / 10,
+    size.width,
+    size.height,
+    size.width / 10,
+    size.height / 10,
     new Point(0, 0),
   )
 }
@@ -138,6 +146,14 @@ export function labelRectFunc(text: string): Rectangle {
   return Rectangle.mkPP(new Point(0, 0), new Point(text.length * 10, 10.5))
 }
 
+function measureTextSizeOfNode(n: Node): Size {
+  const drawingObject = DrawingObject.getDrawingObj(n)
+
+  const labelText = drawingObject ? drawingObject.labelText ?? n.id : n.id
+
+  return measureTextSize(labelText)
+}
+
 export function createGeometry(
   g: Graph,
   nodeBoundaryFunc: (s: string) => ICurve,
@@ -146,15 +162,14 @@ export function createGeometry(
   for (const n of g.shallowNodes) {
     if (n.isGraph) {
       const subG = n as unknown as Graph
-      GeomGraph.mkWithGraphAndLabel(
-        subG,
-        nodeBoundaryFunc(n.id).boundingBox.size,
-      )
+      GeomGraph.mkWithGraphAndLabel(subG, measureTextSizeOfNode(subG))
       createGeometry(subG, nodeBoundaryFunc, labelRect)
     } else {
       const gn = new GeomNode(n)
       //const tsize = getTextSize(drawingNode.label.text, drawingNode.fontname)
-      gn.boundaryCurve = nodeBoundaryFunc(n.id)
+      const drawingObject = DrawingObject.getDrawingObj(n)
+      const text = drawingObject ? drawingObject.labelText ?? n.id : n.id
+      gn.boundaryCurve = nodeBoundaryFunc(text)
     }
   }
   for (const e of g.edges) {
@@ -164,5 +179,5 @@ export function createGeometry(
       ge.label = new GeomLabel(labelRect(e.label.text), e.label)
     }
   }
-  return GeomGraph.mkWithGraphAndLabel(g, nodeBoundaryFunc(g.id).boundingBox)
+  return GeomGraph.mkWithGraphAndLabel(g, measureTextSizeOfNode(g))
 }

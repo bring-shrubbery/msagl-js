@@ -15,6 +15,22 @@ import {SmoothedPolyline} from '../math/geometry/smoothedPolyline'
 import {Algorithm} from '../utils/algorithm'
 import {SplineRouter} from './splineRouter'
 import {RelativeFloatingPort} from '../layout/core/relativeFloatingPort'
+import {CancelToken} from '..'
+
+export function straightLineEdgePatcher(
+  geomGraph: GeomGraph,
+  cancelToken: CancelToken,
+): void {
+  for (const n of geomGraph.deepNodes()) {
+    if (cancelToken && cancelToken.canceled) {
+      return
+    }
+    for (const e of n.outEdges())
+      if (e.curve == null) StraightLineEdges.RouteEdge(e, geomGraph.padding)
+    for (const e of n.selfEdges())
+      if (e.curve == null) StraightLineEdges.RouteEdge(e, geomGraph.padding)
+  }
+}
 
 export class StraightLineEdges extends Algorithm {
   private edges: GeomEdge[]

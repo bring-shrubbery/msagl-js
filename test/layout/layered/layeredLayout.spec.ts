@@ -28,7 +28,6 @@ import {
   LayerDirectionEnum,
   Graph,
   Edge,
-  layoutGraph,
   GeomEdge,
   Node,
 } from '../../../src'
@@ -37,6 +36,7 @@ import {Arrowhead} from '../../../src/layout/core/arrowhead'
 import {GeomObject} from '../../../src/layout/core/geomObject'
 import {LineSegment} from '../../../src/math/geometry'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'
+import {layoutGraphWithSugiayma} from '../../../src/layout/layered/layeredLayout'
 type P = [number, number]
 
 test('map test', () => {
@@ -270,8 +270,8 @@ test('clusters', () => {
   // Now we create geometry data neccessary for layout
   const rootGeom = createGeometry(root, nodeBoundaryFunc, labelRectFunc)
 
-  const ss = new SugiyamaLayoutSettings()
-  layoutGraph(rootGeom, null, () => ss)
+  rootGeom.layoutSettings = new SugiyamaLayoutSettings()
+  layoutGraphWithSugiayma(rootGeom, null)
   const t = new SvgDebugWriter('/tmp/clustabc' + '.svg')
   t.writeGeomGraph(rootGeom)
 })
@@ -353,7 +353,14 @@ test('b.gv', () => {
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/btest.svg')
   t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
 })
-test('fsm.gv brandes', () => {
+test('b7.gv', () => {
+  const ss = new SugiyamaLayoutSettings()
+  ss.BrandesThreshold = 1
+  const dg = runLayout('test/data/graphvis/b.gv', ss)
+  const t: SvgDebugWriter = new SvgDebugWriter('/tmp/b7test.svg')
+  t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
+})
+xtest('fsm.gv with Brand', () => {
   const ss = new SugiyamaLayoutSettings()
   ss.BrandesThreshold = 1
   const dg = runLayout('test/data/graphvis/fsm.gv', ss)
@@ -432,8 +439,8 @@ function runLayout(fname: string, settings: SugiyamaLayoutSettings = null) {
   const dg = parseDotGraph(fname)
   if (dg == null) return null
   const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
-  if (!settings) settings = new SugiyamaLayoutSettings()
-  layoutGraph(gg, null, () => settings)
+  gg.layoutSettings = settings ?? new SugiyamaLayoutSettings()
+  layoutGraphWithSugiayma(gg, null)
   return dg
 }
 // function runLayout(
@@ -474,7 +481,6 @@ test('brandes', () => {
   for (let i = 0; i < sortedList.length && i < 100; i++) {
     const f = sortedList[i]
     if (f.match('big(.*).gv')) continue // the parser bug
-
     // pmpipe.gv = sortedList[21] fails
     let dg: DrawingGraph
     try {
@@ -482,7 +488,7 @@ test('brandes', () => {
       ss.BrandesThreshold = 1
       dg = runLayout(join(path, f), ss)
     } catch (Error) {
-      // console.log('i = ' + i + ', file = ' + f + ' error:' + Error.message)
+      console.log('i = ' + i + ', file = ' + f + ' error:' + Error.message)
       expect(1).toBe(0)
     }
     if (dg != null) {
@@ -513,7 +519,7 @@ test('layout first 150 gv files from list', () => {
   }
 })
 
-test('layout all gv files', () => {
+xtest('layout all gv files', () => {
   const path = 'test/data/graphvis/'
   fs.readdir(path, (err, files) => {
     expect(err).toBe(null)

@@ -3,6 +3,7 @@ import {Edge} from './edge'
 import {Graph} from './graph'
 // import {Assert} from './../utils/assert'
 import {NodeCollection} from './nodeCollection'
+import {Assert} from '../utils/assert'
 
 export class Node extends Entity {
   private _id: string
@@ -22,7 +23,8 @@ export class Node extends Entity {
   }
   constructor(id: string) {
     super()
-    /*Assert.assert(id != null)*/
+    Assert.assert(id != null && id.toString() === id)
+
     this.id = id
   }
 

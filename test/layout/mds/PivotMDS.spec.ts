@@ -10,9 +10,9 @@ test('graph with subgraphs', () => {
   outputGraph(<GeomGraph>GeomObject.getGeom(dg.graph), 'clustMDS')
 })
 
-xtest('b7 pivot mds', () => {
-  const dg = runMDSLayout('test/data/graphvis/b7.gv')
-  outputGraph(<GeomGraph>GeomObject.getGeom(dg.graph), 'b7Mds.svg')
+test('compound', () => {
+  const dg = runMDSLayout('test/data/graphvis/compound.gv')
+  outputGraph(<GeomGraph>GeomObject.getGeom(dg.graph), 'compound.pivot.svg')
 })
 
 test('layout 0-50 gv files with MDS', () => {

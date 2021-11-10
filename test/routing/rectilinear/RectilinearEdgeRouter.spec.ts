@@ -16,6 +16,7 @@ import {EdgeRoutingMode} from '../../../src/routing/EdgeRoutingMode'
 import {RectilinearEdgeRouter} from '../../../src/routing/rectilinear/RectilinearEdgeRouter'
 import {IntPairSet} from '../../../src/utils/IntPairSet'
 import {initRandom, randomInt} from '../../../src/utils/random'
+import {measureTextSize} from '../../drawing/drawingGraph.spec'
 
 import {sortedList} from '../../layout/sortedBySizeListOfgvFiles'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'
@@ -30,12 +31,14 @@ test('empty graph', () => {
 test('two nodes', () => {
   const gg = new GeomGraph(new Graph('graph'))
 
+  const size = measureTextSize('a')
+
   const a = addNode(
     gg,
     'a',
     CurveFactory.mkRectangleWithRoundedCorners(
-      20,
-      10,
+      size.width + 2,
+      size.height + 2,
       1,
       1,
       new Point(150, 100),
@@ -45,7 +48,13 @@ test('two nodes', () => {
   const b = addNode(
     gg,
     'b',
-    CurveFactory.mkRectangleWithRoundedCorners(20, 10, 1, 1, new Point(100, 0)),
+    CurveFactory.mkRectangleWithRoundedCorners(
+      size.width + 2,
+      size.height + 2,
+      1,
+      1,
+      new Point(100, 0),
+    ),
   )
 
   new GeomEdge(new Edge(a, b))
