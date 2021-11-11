@@ -1,7 +1,5 @@
-import {MdsLayoutSettings} from '../../../src'
-import {MdsGraphLayout} from '../../../src/layout/mds/MDSGraphLayout'
 import {PivotDistances} from '../../../src/layout/mds/PivotDistances'
-import {layoutGraphGraphWithMds} from '../../../src/layout/mds/PivotMDS'
+import {layoutGraphWithMds} from '../../../src/layout/mds/PivotMDS'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'
 import {
   createGeometry,
@@ -38,6 +36,6 @@ test('pivot distances', () => {
 test('MDSGraphLayout - lay out a flat graph, no subgraphs', () => {
   const dg = parseDotGraph('test/data/graphvis/abstract.gv')
   const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
-  layoutGraphGraphWithMds(gg, null)
+  layoutGraphWithMds(gg, null)
   new SvgDebugWriter('/tmp/abstractMDS.svg').writeGeomGraph(gg)
 })

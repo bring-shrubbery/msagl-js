@@ -21,7 +21,7 @@ import {SvgDebugWriter} from './svgDebugWriter'
 import {EdgeRoutingMode} from '../../src/routing/EdgeRoutingMode'
 import {parseDotString} from '../../src/drawing/dotparser'
 import {DrawingGraph} from '../../src/drawing'
-import {layoutGraphGraphWithMds} from '../../src/layout/mds/PivotMDS'
+import {layoutGraphWithMds} from '../../src/layout/mds/PivotMDS'
 import {DrawingObject} from '../../src/drawing/drawingObject'
 import {measureTextSize} from '../drawing/drawingGraph.spec'
 export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
@@ -85,7 +85,7 @@ export function runMDSLayout(
   const settings = new MdsLayoutSettings()
   settings.edgeRoutingSettings.edgeRoutingMode = edgeRoutingMode
   gg.layoutSettings = settings
-  layoutGraphGraphWithMds(gg, null)
+  layoutGraphWithMds(gg, null)
   return dg
 }
 
@@ -95,13 +95,13 @@ export function runMDSLayoutNoSubgraphs(
 ) {
   const dg = parseDotGraph(fname)
   if (dg == null) return null
-  if (from(dg.graph.subgraphs()).any()) return null
+  if (dg.graph.hasSubgraphs()) return null
 
   const gg = createGeometry(dg.graph, nodeBoundaryFunc, labelRectFunc)
   const settings = new MdsLayoutSettings()
   settings.edgeRoutingSettings.edgeRoutingMode = edgeRoutingMode
   gg.layoutSettings = settings
-  layoutGraphGraphWithMds(gg, null)
+  layoutGraphWithMds(gg, null)
   return dg
 }
 

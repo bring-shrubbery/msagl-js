@@ -272,7 +272,7 @@ export class GeomGraph extends GeomNode {
 
   addLabelToGraphBB(rect: Rectangle) {
     if (this.labelSize) {
-      rect.top += this.labelSize.height
+      rect.top += this.labelSize.height + 2 // for label margin
       if (rect.width < this.labelSize.width) {
         rect.width = this.labelSize.width
       }

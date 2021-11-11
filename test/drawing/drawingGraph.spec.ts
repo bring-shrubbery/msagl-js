@@ -1,7 +1,7 @@
 import {Size, GeomGraph} from '../../src'
 import {DrawingGraph, parseDotString} from '../../src/drawing'
 import {layoutGraphWithSugiayma} from '../../src/layout/layered/layeredLayout'
-import {layoutGraphGraphWithMds} from '../../src/layout/mds/PivotMDS'
+import {layoutGraphWithMds} from '../../src/layout/mds/PivotMDS'
 import {parseDotGraph} from '../utils/testUtils'
 
 test('drawingGraph layout', () => {
@@ -100,7 +100,7 @@ export function layoutGeomGraph(geomGraph: GeomGraph, directed: boolean) {
   if (directed) {
     layoutGraphWithSugiayma(geomGraph, null)
   } else {
-    layoutGraphGraphWithMds(geomGraph, null)
+    layoutGraphWithMds(geomGraph, null)
   }
 }
 test('clusters', () => {

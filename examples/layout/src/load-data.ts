@@ -1,14 +1,11 @@
-import {getGeojsonFeatures} from '@deck.gl/layers/geojson-layer/geojson'
 import {
   GeomGraph,
   Graph,
   Size,
-  layoutGraph,
-  SugiyamaLayoutSettings,
-  MdsLayoutSettings,
+  layoutGraphWithSugiayma,
+  layoutGraphWithMds,
 } from 'msagl-js'
 import {DrawingGraph, parseDotString} from 'msagl-js/drawing'
-import {getDefaultCompilerOptions} from 'typescript'
 const abstract_gv =
   'digraph abstract {\n' +
   '	size="6,6";\n' +
@@ -123,8 +120,8 @@ function layoutDrawingGraph(dg: DrawingGraph): void {
 
 export function layoutGeomGraph(geomGraph: GeomGraph, directed: boolean) {
   if (directed) {
-    layoutGraph(geomGraph, null, () => new SugiyamaLayoutSettings())
+    layoutGraphWithSugiayma(geomGraph, null)
   } else {
-    layoutGraph(geomGraph, null, () => new MdsLayoutSettings())
+    layoutGraphWithMds(geomGraph, null)
   }
 }

@@ -5,6 +5,10 @@ import {Node} from './node'
 import {NodeCollection} from './nodeCollection'
 
 export class Graph extends Node {
+  hasSubgraphs(): boolean {
+    for (const n of this.shallowNodes) if (n.isGraph) return true
+    return false
+  }
   *subgraphs(): IterableIterator<Graph> {
     for (const n of this.deepNodes) {
       if (n instanceof Graph) yield <Graph>n

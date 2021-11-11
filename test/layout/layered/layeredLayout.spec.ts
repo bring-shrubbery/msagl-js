@@ -237,7 +237,7 @@ test('clusters', () => {
   // add node 'a' to root
   const a = new Node('a')
   root.addNode(a)
-  //create cluster 'bcd' with nodes 'b',c', and 'd', and add it to bcd
+  //create cluster 'bcd' with nodes 'b',c', and 'd', and add it to root
   const bcd = new Graph('bcd')
   root.addNode(bcd)
   // add nodes 'b', 'c', and 'd' to 'bcd'
@@ -266,7 +266,8 @@ test('clusters', () => {
   new Edge(a, bcd) // a->bcd
   new Edge(bcd, efg)
   new Edge(efg, a)
-  new Edge(a, b) // the layout for this edge is not implemented yet, so it will not appear in the SVG file
+  new Edge(a, b) // the layout for this edge is not implemented yet,
+  // so it will appear in the SVG file as a straight line.
   // Now we create geometry data neccessary for layout
   const rootGeom = createGeometry(root, nodeBoundaryFunc, labelRectFunc)
 
@@ -530,7 +531,7 @@ xtest('layout all gv files', () => {
       const fname = join(path, f)
       const dg = runLayout(fname)
       if (dg != null) {
-        const t: SvgDebugWriter = new SvgDebugWriter('/tmp/' + f + '.svg')
+        const t: SvgDebugWriter = new SvgDebugWriter('/tmp/all' + f + '.svg')
         t.writeGeomGraph(GeomObject.getGeom(dg.graph) as GeomGraph)
       }
     }

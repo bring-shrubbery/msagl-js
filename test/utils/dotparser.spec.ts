@@ -4,7 +4,7 @@ import {Color} from '../../src/drawing/color'
 import {sortedList} from '../layout/sortedBySizeListOfgvFiles'
 import {parseDotGraph} from './testUtils'
 
-xtest('all gv files list ', () => {
+test('all gv files list ', () => {
   const path = 'test/data/graphvis/'
   for (const f of sortedList) {
     try {
@@ -15,17 +15,17 @@ xtest('all gv files list ', () => {
   }
 })
 
-xtest('pack gv', () => {
+test('pack gv', () => {
   const g = parseDotGraph('test/data/graphvis/pack.gv')
   expect(g == null).toBe(false)
 })
 
-xtest('dot parser', () => {
+test('dot parser', () => {
   const g = parseDotGraph('test/data/graphvis/clust4.gv')
   expect(g == null).toBe(false)
 })
 
-xtest('parse with colors ', () => {
+test('parse with colors ', () => {
   const dotString =
     'digraph G {\n' +
     'node [style=filled, shape=box]\n' +

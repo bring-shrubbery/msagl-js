@@ -1,27 +1,31 @@
+import {EdgeRoutingMode} from '../../routing/EdgeRoutingMode'
 import {straightLineEdgePatcher} from '../../routing/StraightLineEdges'
 import {Algorithm} from '../../utils/algorithm'
 // import {Assert} from '../../utils/assert'
 import {CancelToken} from '../../utils/cancelToken'
 import {GeomEdge} from '../core/geomEdge'
 import {GeomGraph, optimalPackingRunner} from '../core/GeomGraph'
-import {layoutGraph} from '../driver'
+import {layoutGraph, routeRectilinearEdges} from '../driver'
 import {MdsGraphLayout} from './MDSGraphLayout'
 import {MdsLayoutSettings} from './MDSLayoutSettings'
 
-export function layoutGraphGraphWithMds(
+export function layoutGraphWithMds(
   geomGraph: GeomGraph,
   cancelToken: CancelToken,
 ) {
   if (
     !geomGraph.layoutSettings ||
-    geomGraph.layoutSettings instanceof MdsLayoutSettings
+    !(geomGraph.layoutSettings instanceof MdsLayoutSettings)
   )
     geomGraph.layoutSettings = new MdsLayoutSettings()
   layoutGraph(
     geomGraph,
     cancelToken,
     mdsLayoutRunner,
-    straightLineEdgePatcher,
+    geomGraph.layoutSettings.edgeRoutingSettings.edgeRoutingMode ==
+      EdgeRoutingMode.Rectilinear
+      ? routeRectilinearEdges
+      : straightLineEdgePatcher,
     optimalPackingRunner,
   )
 }

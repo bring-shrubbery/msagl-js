@@ -109,6 +109,7 @@ export function layoutGraph(
       layoutEngine(cg, cancelToken)
     }
     packing(geomG, connectedGraphs)
+    geomG.addLabelToGraphBB(geomG.boundingBox)
   }
 }
 
@@ -179,8 +180,9 @@ function getConnectedComponents(parentGeomGraph: GeomGraph): GeomGraph[] {
 }
 export function routeRectilinearEdges(
   geomG: GeomGraph,
-  nodePadding: number,
-  cornerFitRadius: number,
+  cancelToken: CancelToken,
+  nodePadding = 1,
+  cornerFitRadius = 3,
 ) {
   const rr = RectilinearEdgeRouter.constructorGNNB(
     geomG,

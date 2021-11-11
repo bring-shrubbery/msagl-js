@@ -318,10 +318,14 @@ export class SvgDebugWriter {
     this.xw.writeAttribute('x', xContainer)
     this.xw.writeAttribute('dy', 0)
 
-    this.xw.writeRaw(text)
+    this.xw.writeRaw(this.myEscape(text))
     this.xw.endElement()
   }
-
+  myEscape(text: string): string {
+    const chars = Array.from(text)
+    const ret = chars.map((a) => (a == '<' ? '&lt;' : a == '>' ? '&gt;' : a))
+    return ret.join('')
+  }
   writeLabel(node: Node, label: Rectangle) {
     const drawingNode = <DrawingNode>DrawingObject.getDrawingObj(node)
     const text = drawingNode ? drawingNode.labelText ?? node.id : node.id
