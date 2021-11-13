@@ -83,7 +83,7 @@ test('drawingGraph layout', () => {
 // done for SVG
 export function measureTextSize(str: string): Size {
   if (!str) {
-    return new Size(1, 1)
+    return new Size(0, 0)
   }
   const lines = str.split('\n')
   const w = lines
@@ -96,11 +96,15 @@ function layoutDrawingGraph(dg: DrawingGraph): void {
   layoutGeomGraph(<GeomGraph>GeomGraph.getGeom(dg.graph), dg.hasDirectedEdge())
 }
 
-export function layoutGeomGraph(geomGraph: GeomGraph, directed: boolean) {
+export function layoutGeomGraph(
+  geomGraph: GeomGraph,
+  directed: boolean,
+  flipToScreenCoords = true,
+) {
   if (directed) {
-    layoutGraphWithSugiayma(geomGraph, null)
+    layoutGraphWithSugiayma(geomGraph, null, flipToScreenCoords)
   } else {
-    layoutGraphWithMds(geomGraph, null)
+    layoutGraphWithMds(geomGraph, null, flipToScreenCoords)
   }
 }
 test('clusters', () => {

@@ -38,7 +38,7 @@ import {Routing} from './routing'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 import {EdgeRoutingMode} from '../../routing/EdgeRoutingMode'
 import {EdgeRoutingSettings} from '../../routing/EdgeRoutingSettings'
-import {layoutGraph} from '../driver'
+import {layoutGeomGraphInternal} from '../driver'
 import {straightLineEdgePatcher} from '../../routing/StraightLineEdges'
 function layeredLayoutRunner(geomGraph: GeomGraph, cancelToken: CancelToken) {
   const ll = new LayeredLayout(
@@ -52,17 +52,36 @@ function layeredLayoutRunner(geomGraph: GeomGraph, cancelToken: CancelToken) {
 export function layoutGraphWithSugiayma(
   geomGraph: GeomGraph,
   cancelToken: CancelToken,
+  flipToScreenCoords = true,
 ) {
-  const ss = geomGraph.layoutSettings
-  if (ss == null || !(ss instanceof SugiyamaLayoutSettings))
-    geomGraph.layoutSettings = new SugiyamaLayoutSettings()
-  layoutGraph(
+  enforceSugiyamaSettings()
+  layoutGeomGraphInternal(
     geomGraph,
     cancelToken,
     layeredLayoutRunner,
     straightLineEdgePatcher,
     optimalPackingRunner,
+    flipToScreenCoords,
   )
+
+  function enforceSugiyamaSettings() {
+    if (
+      !geomGraph.layoutSettings ||
+      !(geomGraph.layoutSettings instanceof SugiyamaLayoutSettings)
+    )
+      geomGraph.layoutSettings = new SugiyamaLayoutSettings()
+
+    for (const n of geomGraph.deepNodes()) {
+      if (n.isGraph) {
+        const graph = <GeomGraph>n
+        if (
+          !graph.layoutSettings ||
+          !(graph.layoutSettings instanceof SugiyamaLayoutSettings)
+        )
+          graph.layoutSettings = new SugiyamaLayoutSettings()
+      }
+    }
+  }
 }
 
 export class LayeredLayout extends Algorithm {
@@ -139,27 +158,15 @@ export class LayeredLayout extends Algorithm {
     }
     postRunTransform(this.originalGraph, this.sugiyamaSettings.transform)
     this.originalGraph.updateBoundingBox()
-    this.FlipYAndSetMargins()
+    this.SetMargins()
   }
 
-  private FlipYAndSetMargins() {
-    if (this.originalGraph.graph.parent == null) {
-      this.originalGraph.transform(
-        new PlaneTransformation(
-          1,
-          0,
-          -this.originalGraph.left + this.sugiyamaSettings.margins.left,
-          0,
-          -1,
-          this.originalGraph.top + this.sugiyamaSettings.margins.top,
-        ),
-      ) // flip the y coordinate according to the screen standard and shift to origin
-      this.originalGraph.boundingBox.right +=
-        this.sugiyamaSettings.margins.right
-      this.originalGraph.boundingBox.top += this.sugiyamaSettings.margins.bottom
-      this.originalGraph.boundingBox.left = 0
-      this.originalGraph.boundingBox.bottom = 0
-    }
+  private SetMargins() {
+    this.originalGraph.boundingBox.right += this.sugiyamaSettings.margins.right
+    this.originalGraph.boundingBox.top += this.sugiyamaSettings.margins.bottom
+    this.originalGraph.boundingBox.left -= this.sugiyamaSettings.margins.left
+    this.originalGraph.boundingBox.bottom -=
+      this.sugiyamaSettings.margins.bottom
   }
 
   runPostLayering() {

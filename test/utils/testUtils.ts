@@ -6,7 +6,7 @@ import {
   Point,
   interpolateICurve,
   MdsLayoutSettings,
-  layoutGraph,
+  layoutGeomGraphInternal,
   GeomGraph,
   ICurve,
   CurveFactory,

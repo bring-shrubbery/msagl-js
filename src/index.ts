@@ -11,7 +11,7 @@ export {
   Size,
 } from './math/geometry'
 export {LayerDirectionEnum} from './layout/layered/layerDirectionEnum'
-export {layoutGraph, routeRectilinearEdges} from './layout/driver'
+export {layoutGeomGraphInternal, routeRectilinearEdges} from './layout/driver'
 export {Edge} from './structs/edge'
 export {Graph} from './structs/graph'
 export {Node} from './structs/node'

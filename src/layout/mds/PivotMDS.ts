@@ -5,20 +5,18 @@ import {Algorithm} from '../../utils/algorithm'
 import {CancelToken} from '../../utils/cancelToken'
 import {GeomEdge} from '../core/geomEdge'
 import {GeomGraph, optimalPackingRunner} from '../core/GeomGraph'
-import {layoutGraph, routeRectilinearEdges} from '../driver'
+import {layoutGeomGraphInternal, routeRectilinearEdges} from '../driver'
 import {MdsGraphLayout} from './MDSGraphLayout'
 import {MdsLayoutSettings} from './MDSLayoutSettings'
 
 export function layoutGraphWithMds(
   geomGraph: GeomGraph,
   cancelToken: CancelToken,
+  flipToScreenCoords = true,
 ) {
-  if (
-    !geomGraph.layoutSettings ||
-    !(geomGraph.layoutSettings instanceof MdsLayoutSettings)
-  )
-    geomGraph.layoutSettings = new MdsLayoutSettings()
-  layoutGraph(
+  enforceMdsSettings()
+
+  layoutGeomGraphInternal(
     geomGraph,
     cancelToken,
     mdsLayoutRunner,
@@ -27,7 +25,26 @@ export function layoutGraphWithMds(
       ? routeRectilinearEdges
       : straightLineEdgePatcher,
     optimalPackingRunner,
+    flipToScreenCoords,
   )
+  function enforceMdsSettings() {
+    if (
+      !geomGraph.layoutSettings ||
+      !(geomGraph.layoutSettings instanceof MdsLayoutSettings)
+    )
+      geomGraph.layoutSettings = new MdsLayoutSettings()
+
+    for (const n of geomGraph.deepNodes()) {
+      if (n.isGraph) {
+        const graph = <GeomGraph>n
+        if (
+          !graph.layoutSettings ||
+          !(graph.layoutSettings instanceof MdsLayoutSettings)
+        )
+          graph.layoutSettings = new MdsLayoutSettings()
+      }
+    }
+  }
 }
 
 // Initial layout using PivotMDS method for a graph with subgraphs

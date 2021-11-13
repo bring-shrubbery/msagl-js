@@ -6,7 +6,10 @@ import {GeomEdge} from './geomEdge'
 import {PlaneTransformation} from '../../math/geometry/planeTransformation'
 import {Point} from '../../math/geometry/point'
 import {OptimalRectanglePacking} from '../../math/geometry/rectanglePacking/OptimalRectanglePacking'
-import {LayoutSettings} from '../layered/SugiyamaLayoutSettings'
+import {
+  LayoutSettings,
+  SugiyamaLayoutSettings,
+} from '../layered/SugiyamaLayoutSettings'
 // import {Curve} from '../../math/geometry/curve'
 // import {Ellipse} from '../../math/geometry/ellipse'
 // import {Entity} from '../../structs/entity'
@@ -39,6 +42,13 @@ export function optimalPackingRunner(
 }
 
 export class GeomGraph extends GeomNode {
+  setSettingsRecursively(ls: LayoutSettings) {
+    this.layoutSettings = ls
+    for (const n of this.deepNodes()) {
+      const gg = <GeomGraph>n
+      gg.layoutSettings = ls
+    }
+  }
   private _layoutSettings: LayoutSettings
   public get layoutSettings(): LayoutSettings {
     return this._layoutSettings
@@ -47,12 +57,6 @@ export class GeomGraph extends GeomNode {
   // recursively sets the same settings for subgraphs
   public set layoutSettings(value: LayoutSettings) {
     this._layoutSettings = value
-    for (const n of this.shallowNodes()) {
-      if (!n.isGraph) continue
-      const sg = <GeomGraph>n
-      if (sg.layoutSettings) continue
-      sg.layoutSettings = value
-    }
   }
   translate(delta: Point) {
     if (delta.x == 0 && delta.y == 0) return
@@ -277,5 +281,9 @@ export class GeomGraph extends GeomNode {
         rect.width = this.labelSize.width
       }
     }
+  }
+
+  FlipYAndMoveLeftTopToOrigin() {
+    this.transform(new PlaneTransformation(1, 0, -this.left, 0, -1, this.top))
   }
 }
