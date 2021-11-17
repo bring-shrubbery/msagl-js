@@ -1,39 +1,34 @@
-/*
-import {Polyline} from '../math/geometry/polyline'
-import {Shape} from './Shape'
-
 //  an utility class to keep different polylines created around a shape
+
+import {Polyline} from '../math/geometry'
+import {Shape} from './shape'
+
 export class TightLooseCouple {
-  TightPolyline: Polyline
+  tightPoly: Polyline
+  get TightPolyline(): Polyline {
+    return this.tightPoly
+  }
+  set TightPolyline(value: Polyline) {
+    this.tightPoly = value
+  }
 
   LooseShape: Shape
 
-  public constructor(
+  static mk(
     tightPolyline: Polyline,
     looseShape: Shape,
     distance: number,
-  ) {
-    this.TightPolyline = tightPolyline
-    this.LooseShape = looseShape
-    this.Distance = distance
+  ): TightLooseCouple {
+    const ret = new TightLooseCouple()
+    ret.TightPolyline = tightPolyline
+    ret.LooseShape = looseShape
+    ret.Distance = distance
+    return ret
   }
 
   //  the loose polyline has been created with this distance
   Distance: number
-  //  compare just by TightPolyline
-
-  //  compare just by TightPolyline
-
-
-  public Equals(couple: TightLooseCouple): boolean {
-    if (couple == null) {
-      return false
-    }
-
-    return this.TightPolyline == couple.TightPolyline
-  }
-
-  public toString(): string {
+  toString(): string {
     return (
       (this.TightPolyline == null
         ? 'null'
@@ -45,4 +40,3 @@ export class TightLooseCouple {
     )
   }
 }
-*/

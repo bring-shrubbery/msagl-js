@@ -5,8 +5,6 @@ import {VisibilityEdge} from './VisibilityEdge'
 export class VisibilityVertex {
   point: Point
 
-  public isReal: boolean
-
   _isTerminal: boolean
 
   _isShortestPathTerminal: boolean

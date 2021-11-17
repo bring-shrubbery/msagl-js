@@ -1,183 +1,194 @@
-// using System.Collections.Generic;
-// using System.Diagnostics;
-// using System.Linq;
-// using Microsoft.Msagl.Core.DataStructures;
-// using Microsoft.Msagl.Core.Geometry.Curves;
-// using Microsoft.Msagl.GraphmapsWithMesh;
-// using Microsoft.Msagl.Routing.Visibility;
+import {IEnumerable} from 'linq-to-typescript'
+import {GenericBinaryHeapPriorityQueue} from '../structs/genericBinaryHeapPriorityQueue'
+import {Assert} from '../utils/assert'
+import {compareNumbers} from '../utils/compare'
+import {TollFreeVisibilityEdge} from './visibility/TollFreeVisibilityEdge'
+import {VisibilityEdge} from './visibility/VisibilityEdge'
+import {VisibilityGraph} from './visibility/VisibilityGraph'
+import {VisibilityVertex} from './visibility/VisibilityVertex'
 
-// namespace Microsoft.Msagl.Routing {
-//     internal class SingleSourceSingleTargetShortestPathOnVisibilityGraph {
-//         public Tiling _g;
-//         readonly VisibilityVertex _source;
-//         readonly VisibilityVertex _target;
-//         VisibilityGraph _visGraph;
-//         double _lengthMultiplier = 1;
-//         public double LengthMultiplier
-//         {
-//         get { return _lengthMultiplier; }
-//         set { _lengthMultiplier = value; }
-//     }
+export class SingleSourceSingleTargetShortestPathOnVisibilityGraph {
+  _source: VisibilityVertex
 
-//     double _lengthMultiplierForAStar = 1;
-//         public double LengthMultiplierForAStar
-//     {
-//         get { return _lengthMultiplierForAStar; }
-//         set { _lengthMultiplierForAStar = value; }
-//     }
+  _target: VisibilityVertex
 
-//     internal SingleSourceSingleTargetShortestPathOnVisibilityGraph(VisibilityGraph visGraph, VisibilityVertex sourceVisVertex, VisibilityVertex targetVisVertex, Tiling g)
-//     {
-//         _visGraph = visGraph;
-//         _source = sourceVisVertex;
-//         _target = targetVisVertex;
-//         _source.Distance = 0;
-//         _g = g;
-//     }
-//     internal SingleSourceSingleTargetShortestPathOnVisibilityGraph(VisibilityGraph visGraph, VisibilityVertex sourceVisVertex, VisibilityVertex targetVisVertex)
-//     {
-//         _visGraph = visGraph;
-//         _source = sourceVisVertex;
-//         _target = targetVisVertex;
-//         _source.Distance = 0;
-//     }
+  _visGraph: VisibilityGraph
 
-//     // Returns  a  path
-//     // <
+  _lengthMultiplier = 1
 
-//     internal IEnumerable < VisibilityVertex > GetPath(bool shrinkEdgeLength)
-//     {
-//         var pq = new GenericBinaryHeapPriorityQueue<VisibilityVertex>();
+  public get LengthMultiplier(): number {
+    return this._lengthMultiplier
+  }
+  public set LengthMultiplier(value: number) {
+    this._lengthMultiplier = value
+  }
 
-//         _source.Distance = 0;
-//         _target.Distance = Number.POSITIVE_INFINITY;
-//         pq.Enqueue(_source, H(_source));
+  _lengthMultiplierForAStar = 1
 
-//         while (!pq.IsEmpty()) {
-//             double hu;
-//             var u = pq.Dequeue(out hu);
-//             if (hu >= _target.Distance)
-//                 break;
+  public get LengthMultiplierForAStar(): number {
+    return this._lengthMultiplierForAStar
+  }
+  public set LengthMultiplierForAStar(value: number) {
+    this._lengthMultiplierForAStar = value
+  }
 
-//             foreach(var e of u.OutEdges)
-//             {
+  constructor(
+    visGraph: VisibilityGraph,
+    sourceVisVertex: VisibilityVertex,
+    targetVisVertex: VisibilityVertex,
+  ) {
+    this._visGraph = visGraph
+    this._source = sourceVisVertex
+    this._target = targetVisVertex
+    this._source.Distance = 0
+  }
 
-//                 if (PassableOutEdge(e)) {
-//                     var v = e.Target;
-//                     if (u != _source && u.isReal) ProcessNeighbor(pq, u, e, v, 1000);
-//                     else ProcessNeighbor(pq, u, e, v);
-//                 }
-//             }
+  //  Returns  a  path
+  GetPath(shrinkEdgeLength: boolean): Array<VisibilityVertex> {
+    const pq = new GenericBinaryHeapPriorityQueue<VisibilityVertex>(
+      compareNumbers,
+    )
+    this._source.Distance = 0
+    this._target.Distance = Number.POSITIVE_INFINITY
+    pq.Enqueue(this._source, this.H(this._source))
+    while (!pq.IsEmpty()) {
+      const hu = {priority: 0}
+      const u = pq.DequeueAndGetPriority(hu)
+      if (hu.priority >= this._target.Distance) {
+        break
+      }
+      for (const e of u.OutEdges) {
+        if (this.PassableOutEdge(e)) {
+          const v = e.Target
+          if (u != this._source) {
+            this.ProcessNeighborN(pq, u, e, v, 1000)
+          } else {
+            this.ProcessNeighbor(pq, u, e, v)
+          }
+        }
+      }
 
-//             foreach(var e of u.InEdges)
-//             {
-//                 if (PassableInEdge(e)) {
-//                     var v = e.Source;
-//                     ProcessNeighbor(pq, u, e, v);
-//                 }
-//             }
+      for (const e of u.InEdges) {
+        if (this.PassableInEdge(e)) {
+          const v = e.Source
+          this.ProcessNeighbor(pq, u, e, v)
+        }
+      }
+    }
 
-//         }
-//         return _visGraph.PreviosVertex(_target) == null
-//             ? null
-//             : CalculatePath(shrinkEdgeLength);
-//     }
+    return this._visGraph.PreviosVertex(this._target) == null
+      ? null
+      : this.CalculatePath(shrinkEdgeLength)
+  }
 
-//     internal void AssertEdgesPassable(Array < VisibilityEdge > path)
-//     {
-//         foreach(var edge of path)
-//         {
-//             Assert.assert(PassableOutEdge(edge) || PassableInEdge(edge));
-//         }
-//     }
+  private AssertEdgesPassable(path: Array<VisibilityEdge>) {
+    for (const edge of path)
+      Assert.assert(this.PassableOutEdge(edge) || this.PassableInEdge(edge))
+  }
 
-//     bool PassableOutEdge(VisibilityEdge e)
-//     {
-//         return e.Source == _source || e.Target == _target || !IsForbidden(e);
-//     }
+  private PassableOutEdge(e: VisibilityEdge): boolean {
+    return (
+      e.Source == this._source ||
+      e.Target == this._target ||
+      !SingleSourceSingleTargetShortestPathOnVisibilityGraph.IsForbidden(e)
+    )
+  }
 
-//     bool PassableInEdge(VisibilityEdge e)
-//     {
-//         return e.Source == _target || e.Target == _source || !IsForbidden(e);
-//     }
+  private PassableInEdge(e: VisibilityEdge): boolean {
+    return (
+      e.Source == this._target ||
+      e.Target == this._source ||
+      !SingleSourceSingleTargetShortestPathOnVisibilityGraph.IsForbidden(e)
+    )
+  }
 
-//     internal static bool IsForbidden(VisibilityEdge e)
-//     {
-//         return e.IsPassable != null && !e.IsPassable() || e is TollFreeVisibilityEdge;
-//     }
+  private static IsForbidden(e: VisibilityEdge): boolean {
+    return (
+      (e.IsPassable != null && !e.IsPassable()) ||
+      e instanceof TollFreeVisibilityEdge
+    )
+  }
 
-//     void ProcessNeighbor(GenericBinaryHeapPriorityQueue < VisibilityVertex > pq, VisibilityVertex u, VisibilityEdge l, VisibilityVertex v, int penalty)
-//     {
-//         var len = l.length + penalty;
-//         var c = u.Distance + len;
+  private ProcessNeighborN(
+    pq: GenericBinaryHeapPriorityQueue<VisibilityVertex>,
+    u: VisibilityVertex,
+    l: VisibilityEdge,
+    v: VisibilityVertex,
+    penalty: number,
+  ) {
+    const len = l.Length + penalty
+    const c = u.Distance + len
+    if (v != this._source && this._visGraph.PreviosVertex(v) == null) {
+      v.Distance = c
+      this._visGraph.SetPreviousEdge(v, l)
+      if (v != this._target) {
+        pq.Enqueue(v, this.H(v))
+      }
+    } else if (v != this._source && c < v.Distance) {
+      // This condition should never hold for the dequeued nodes.
+      // However because of a very rare case of an epsilon error it might!
+      // In this case DecreasePriority will fail to find "v" and the algorithm will continue working.
+      // Since v is not in the queue changing its .Distance will not influence other nodes.
+      // Changing v.Prev is fine since we come up with the path with an insignificantly
+      // smaller distance.
+      v.Distance = c
+      this._visGraph.SetPreviousEdge(v, l)
+      if (v != this._target) {
+        pq.DecreasePriority(v, this.H(v))
+      }
+    }
+  }
 
-//         if (v != _source && _visGraph.PreviosVertex(v) == null) {
-//             v.Distance = c;
-//             _visGraph.SetPreviousEdge(v, l);
-//             if (v != _target) {
-//                 pq.Enqueue(v, H(v));
-//             }
-//         }
-//         else if (v != _source && c < v.Distance) { //This condition should never hold for the dequeued nodes.
-//             //However because of a very rare case of an epsilon error it might!
-//             //In this case DecreasePriority will fail to find "v" and the algorithm will continue working.
-//             //Since v is not in the queue changing its .Distance will not influence other nodes.
-//             //Changing v.Prev is fine since we come up with the path with an insignificantly
-//             //smaller distance.
-//             var prevV = _visGraph.PreviosVertex(v);
-//             v.Distance = c;
-//             _visGraph.SetPreviousEdge(v, l);
-//             if (v != _target)
-//                 pq.DecreasePriority(v, H(v));
-//         }
-//     }
+  private ProcessNeighbor(
+    pq: GenericBinaryHeapPriorityQueue<VisibilityVertex>,
+    u: VisibilityVertex,
+    l: VisibilityEdge,
+    v: VisibilityVertex,
+  ) {
+    const len = l.Length
+    const c = u.Distance + len
+    if (v != this._source && this._visGraph.PreviosVertex(v) == null) {
+      v.Distance = c
+      this._visGraph.SetPreviousEdge(v, l)
+      if (v != this._target) {
+        pq.Enqueue(v, this.H(v))
+      }
+    } else if (v != this._source && c < v.Distance) {
+      // This condition should never hold for the dequeued nodes.
+      // However because of a very rare case of an epsilon error it might!
+      // In this case DecreasePriority will fail to find "v" and the algorithm will continue working.
+      // Since v is not in the queue changing its .Distance will not influence other nodes.
+      // Changing v.Prev is fine since we come up with the path with an insignificantly
+      // smaller distance.
+      v.Distance = c
+      this._visGraph.SetPreviousEdge(v, l)
+      if (v != this._target) {
+        pq.DecreasePriority(v, this.H(v))
+      }
+    }
+  }
 
-//     void ProcessNeighbor(GenericBinaryHeapPriorityQueue < VisibilityVertex > pq, VisibilityVertex u, VisibilityEdge l, VisibilityVertex v)
-//     {
-//         var len = l.length;
-//         var c = u.Distance + len;
+  private H(visibilityVertex: VisibilityVertex): number {
+    return (
+      visibilityVertex.Distance +
+      visibilityVertex.point.sub(this._target.point).length *
+        this.LengthMultiplierForAStar
+    )
+  }
 
-//         if (v != _source && _visGraph.PreviosVertex(v) == null) {
-//             v.Distance = c;
-//             _visGraph.SetPreviousEdge(v, l);
-//             if (v != _target) {
-//                 pq.Enqueue(v, H(v));
-//             }
-//         }
-//         else if (v != _source && c < v.Distance) { //This condition should never hold for the dequeued nodes.
-//             //However because of a very rare case of an epsilon error it might!
-//             //In this case DecreasePriority will fail to find "v" and the algorithm will continue working.
-//             //Since v is not in the queue changing its .Distance will not influence other nodes.
-//             //Changing v.Prev is fine since we come up with the path with an insignificantly
-//             //smaller distance.
-//             var prevV = _visGraph.PreviosVertex(v);
-//             v.Distance = c;
-//             _visGraph.SetPreviousEdge(v, l);
-//             if (v != _target)
-//                 pq.DecreasePriority(v, H(v));
-//         }
-//     }
+  private CalculatePath(shrinkEdgeLength: boolean): Array<VisibilityVertex> {
+    const ret = new Array<VisibilityVertex>()
+    let v = this._target
+    do {
+      ret.push(v)
+      if (shrinkEdgeLength) {
+        this._visGraph.ShrinkLengthOfPrevEdge(v, this.LengthMultiplier)
+      }
 
-//     double H(VisibilityVertex visibilityVertex)
-//     {
-//         return visibilityVertex.Distance + (visibilityVertex.point - _target.point).length * LengthMultiplierForAStar;
-//     }
+      v = this._visGraph.PreviosVertex(v)
+    } while (v != this._source)
 
-//     IEnumerable < VisibilityVertex > CalculatePath(bool shrinkEdgeLength)
-//     {
-//         var ret = new Array<VisibilityVertex>();
-//         var v = _target;
-//         do {
-//             ret.Add(v);
-//             if (shrinkEdgeLength)
-//                 _visGraph.ShrinkLengthOfPrevEdge(v, LengthMultiplier);
-
-//             v = _visGraph.PreviosVertex(v);
-//         } while (v != _source);
-//         ret.Add(_source);
-
-//         for (int i = ret.Count - 1; i >= 0; i--)
-//         yield return ret[i];
-//     }
-// }
-// }
+    ret.push(this._source)
+    return ret.reverse()
+  }
+}
