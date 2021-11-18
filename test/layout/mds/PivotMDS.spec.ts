@@ -1,10 +1,32 @@
-import {GeomGraph} from '../../../src'
+import {GeomGraph, layoutGraphWithMds, Size} from '../../../src'
 import {GeomObject} from '../../../src/layout/core/geomObject'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'
-import {runMDSLayout, outputGraph} from '../../utils/testUtils'
+import {runMDSLayout, outputGraph, setNode} from '../../utils/testUtils'
 import {sortedList} from '../sortedBySizeListOfgvFiles'
 import {join} from 'path'
 import {DrawingGraph} from '../../../src/drawing'
+
+test('show API', () => {
+  // Create a new geometry graph
+  const g = GeomGraph.mk('graph')
+  // Add nodes to the graph
+  setNode(g, 'kspacey', 10, 10)
+  setNode(g, 'swilliams', 10, 10)
+  setNode(g, 'bpitt', 10, 10)
+  setNode(g, 'hford', 10, 10)
+  setNode(g, 'lwilson', 10, 10)
+  setNode(g, 'kbacon', 10, 10)
+
+  // Add edges to the graph.
+  g.setEdge('kspacey', 'swilliams')
+  g.setEdge('swilliams', 'kbacon')
+  g.setEdge('bpitt', 'kbacon')
+  g.setEdge('hford', 'lwilson')
+  g.setEdge('lwilson', 'kbacon')
+  layoutGraphWithMds(g)
+  outputGraph(g, 'readmeMDS')
+})
+
 test('graph with subgraphs', () => {
   const dg = runMDSLayout('test/data/graphvis/clust.gv')
   outputGraph(<GeomGraph>GeomObject.getGeom(dg.graph), 'clustMDS')

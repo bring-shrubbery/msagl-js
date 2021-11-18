@@ -195,7 +195,7 @@ export class GeomGraph extends GeomNode {
     for (const n of this.graph.edges) yield GeomObject.getGeom(n) as GeomEdge
   }
 
-  static mk(id: string, labelSize: Size): GeomGraph {
+  static mk(id: string, labelSize: Size = new Size(0, 0)): GeomGraph {
     const g = new GeomGraph(new Graph(id))
     g.labelSize = labelSize
     return g

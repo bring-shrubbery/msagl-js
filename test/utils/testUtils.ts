@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import * as fs from 'fs'
 import {StringBuilder} from 'typescript-string-operations'
 import {
@@ -6,7 +5,6 @@ import {
   Point,
   interpolateICurve,
   MdsLayoutSettings,
-  layoutGeomGraphInternal,
   GeomGraph,
   ICurve,
   CurveFactory,
@@ -24,6 +22,27 @@ import {DrawingGraph} from '../../src/drawing'
 import {layoutGraphWithMds} from '../../src/layout/mds/PivotMDS'
 import {DrawingObject} from '../../src/drawing/drawingObject'
 import {measureTextSize} from '../drawing/drawingGraph.spec'
+export function setNode(
+  g: GeomGraph,
+  id: string,
+  xRad: number,
+  yRad: number,
+): GeomNode {
+  let node = g.graph.findNode(id)
+  if (node == null) {
+    g.graph.addNode((node = new Node(id)))
+  }
+  const geomNode = new GeomNode(node)
+  const size = measureTextSize(id)
+  geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
+    size.width,
+    size.height,
+    xRad,
+    yRad,
+    new Point(0, 0),
+  )
+  return geomNode
+}
 export function edgeString(e: GeomEdge, edgesAsArrays: boolean): string {
   const s = e.source.id + '->' + e.target.id
   return (

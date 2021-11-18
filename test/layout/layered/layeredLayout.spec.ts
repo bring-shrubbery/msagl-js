@@ -37,6 +37,7 @@ import {GeomObject} from '../../../src/layout/core/geomObject'
 import {LineSegment} from '../../../src/math/geometry'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'
 import {layoutGraphWithSugiayma} from '../../../src/layout/layered/layeredLayout'
+import {measureTextSize} from '../../drawing/drawingGraph.spec'
 type P = [number, number]
 
 test('map test', () => {
@@ -61,7 +62,6 @@ test('map test', () => {
 function setNode(
   g: GeomGraph,
   id: string,
-  size: {width: number; height: number},
   xRad: number,
   yRad: number,
 ): GeomNode {
@@ -70,6 +70,7 @@ function setNode(
     g.graph.addNode((node = new Node(id)))
   }
   const geomNode = new GeomNode(node)
+  const size = measureTextSize(id)
   geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
     size.width,
     size.height,
@@ -82,14 +83,10 @@ function setNode(
 
 test('self on node', () => {
   const g = GeomGraph.mk('graph', Rectangle.mkEmpty())
-  setNode(g, 'a', {width: 10, height: 10}, 10, 10)
+  setNode(g, 'a', 10, 10)
   g.setEdge('a', 'a')
-  const ll = new LayeredLayout(
-    g,
-    new SugiyamaLayoutSettings(),
-    new CancelToken(),
-  )
-  ll.run()
+  g.layoutSettings = new SugiyamaLayoutSettings()
+  layoutGraphWithSugiayma(g, null) // null for the CancelToken that is ignored at the moment
   for (const e of g.edges()) {
     expect(e.curve == null).toBe(false)
   }
@@ -135,12 +132,12 @@ test('show API', () => {
   // Create a new geometry graph
   const g = GeomGraph.mk('graph', new Size(0, 0))
   // Add nodes to the graph. The first argument is the node id. The second is the size string
-  setNode(g, 'kspacey', {width: 144, height: 100}, 10, 10)
-  setNode(g, 'swilliams', {width: 160, height: 100}, 10, 10)
-  setNode(g, 'bpitt', {width: 108, height: 100}, 10, 10)
-  setNode(g, 'hford', {width: 168, height: 100}, 10, 10)
-  setNode(g, 'lwilson', {width: 144, height: 100}, 10, 10)
-  setNode(g, 'kbacon', {width: 121, height: 100}, 10, 10)
+  setNode(g, 'kspacey', 10, 10)
+  setNode(g, 'swilliams', 10, 10)
+  setNode(g, 'bpitt', 10, 10)
+  setNode(g, 'hford', 10, 10)
+  setNode(g, 'lwilson', 10, 10)
+  setNode(g, 'kbacon', 10, 10)
 
   // Add edges to the graph.
   g.setEdge('kspacey', 'swilliams')
@@ -149,17 +146,17 @@ test('show API', () => {
   g.setEdge('hford', 'lwilson')
   g.setEdge('lwilson', 'kbacon')
   const ss = new SugiyamaLayoutSettings()
-  const ll = new LayeredLayout(g, ss, new CancelToken())
-  ll.run()
+  g.layoutSettings = ss
+  layoutGraphWithSugiayma(g)
   outputGraph(g, 'TB')
   ss.layerDirection = LayerDirectionEnum.BT
-  ll.run()
+  layoutGraphWithSugiayma(g)
   outputGraph(g, 'BT')
   ss.layerDirection = LayerDirectionEnum.LR
-  ll.run()
+  layoutGraphWithSugiayma(g)
   outputGraph(g, 'LR')
   ss.layerDirection = LayerDirectionEnum.RL
-  ll.run()
+  layoutGraphWithSugiayma(g)
   outputGraph(g, 'RL')
 })
 
@@ -167,12 +164,12 @@ test('disconnected comps', () => {
   // Create a new geometry graph
   const g = GeomGraph.mk('graph', Rectangle.mkEmpty())
   // Add nodes to the graph. The first argument is the node id. The second is the size string
-  setNode(g, 'kspacey', {width: 144, height: 100}, 10, 10)
-  setNode(g, 'swilliams', {width: 160, height: 100}, 10, 10)
-  setNode(g, 'bpitt', {width: 108, height: 100}, 10, 10)
-  setNode(g, 'hford', {width: 168, height: 100}, 10, 10)
-  setNode(g, 'lwilson', {width: 144, height: 100}, 10, 10)
-  setNode(g, 'kbacon', {width: 121, height: 100}, 10, 10)
+  setNode(g, 'kspacey', 10, 10)
+  setNode(g, 'swilliams', 10, 10)
+  setNode(g, 'bpitt', 10, 10)
+  setNode(g, 'hford', 10, 10)
+  setNode(g, 'lwilson', 10, 10)
+  setNode(g, 'kbacon', 10, 10)
 
   // Add edges to the graph.
   g.setEdge('kspacey', 'swilliams')
@@ -423,12 +420,12 @@ export function qualityMetric(gg: GeomGraph): number {
 
 test('layered layout nodes only', () => {
   const g = new GeomGraph(new Graph('graph'))
-  setNode(g, 'kspacey', {width: 144, height: 100}, 10, 10)
-  setNode(g, 'swilliams', {width: 160, height: 100}, 10, 10)
-  setNode(g, 'bpitt', {width: 108, height: 100}, 10, 10)
-  setNode(g, 'hford', {width: 168, height: 100}, 10, 10)
-  setNode(g, 'lwilson', {width: 144, height: 100}, 10, 10)
-  setNode(g, 'kbacon', {width: 121, height: 100}, 10, 10)
+  setNode(g, 'kspacey', 10, 10)
+  setNode(g, 'swilliams', 10, 10)
+  setNode(g, 'bpitt', 10, 10)
+  setNode(g, 'hford', 10, 10)
+  setNode(g, 'lwilson', 10, 10)
+  setNode(g, 'kbacon', 10, 10)
   const ss = new SugiyamaLayoutSettings()
   const ll = new LayeredLayout(g, ss, new CancelToken())
   ll.run()
@@ -542,7 +539,7 @@ function duplicateDisconnected(g: GeomGraph, suffix: string) {
   const nodes: GeomNode[] = Array.from(g.shallowNodes())
   const edges: GeomEdge[] = Array.from(g.edges())
   for (const n of nodes) {
-    setNode(g, n.node.id + suffix, {width: n.width, height: n.height}, 10, 10)
+    setNode(g, n.node.id + suffix, 10, 10)
   }
   for (const e of edges) {
     g.setEdge(e.source.id + suffix, e.target.id + suffix)

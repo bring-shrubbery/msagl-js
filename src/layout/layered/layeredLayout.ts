@@ -51,7 +51,7 @@ function layeredLayoutRunner(geomGraph: GeomGraph, cancelToken: CancelToken) {
 
 export function layoutGraphWithSugiayma(
   geomGraph: GeomGraph,
-  cancelToken: CancelToken,
+  cancelToken: CancelToken = null,
   flipToScreenCoords = true,
 ) {
   enforceSugiyamaSettings()

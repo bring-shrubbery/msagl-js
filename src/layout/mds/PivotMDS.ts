@@ -11,7 +11,7 @@ import {MdsLayoutSettings} from './MDSLayoutSettings'
 
 export function layoutGraphWithMds(
   geomGraph: GeomGraph,
-  cancelToken: CancelToken,
+  cancelToken: CancelToken = null,
   flipToScreenCoords = true,
 ) {
   enforceMdsSettings()
