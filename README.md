@@ -58,7 +58,7 @@ function setNode(
 
 ## Multi Dimensional Scaling
 
-Multi Dimensional Scaling works: the routing is with just straight or rectilinear edges for now. The routing with smooth edges avoiding the nodes is not implemented yet. If you replate in the example above the line
+Multi Dimensional Scaling works: the routing is with just straight or rectilinear edges for now. The routing with smooth edges avoiding the nodes is not implemented yet. If you replace in the example above the line
 
 ```typescript
 layoutGraphWithSugiayma(g)
