@@ -14,6 +14,7 @@ import {
   outputGraph,
   edgeString,
   parseDotGraph,
+  setNode,
 } from '../../utils/testUtils'
 import {
   GeomGraph,
@@ -58,28 +59,6 @@ test('map test', () => {
 
   expect(mi.get(ip1)).toBe(undefined)
 })
-
-function setNode(
-  g: GeomGraph,
-  id: string,
-  xRad: number,
-  yRad: number,
-): GeomNode {
-  let node = g.graph.findNode(id)
-  if (node == null) {
-    g.graph.addNode((node = new Node(id)))
-  }
-  const geomNode = new GeomNode(node)
-  const size = measureTextSize(id)
-  geomNode.boundaryCurve = CurveFactory.mkRectangleWithRoundedCorners(
-    size.width,
-    size.height,
-    xRad,
-    yRad,
-    new Point(0, 0),
-  )
-  return geomNode
-}
 
 test('self on node', () => {
   const g = GeomGraph.mk('graph', Rectangle.mkEmpty())
