@@ -11,7 +11,10 @@ import {
   mkRectangleNode,
   RectangleNode,
 } from '../math/geometry/RTree/RectangleNode'
-import {CrossRectangleNodes} from '../math/geometry/RTree/RectangleNodeUtils'
+import {
+  CrossRectangleNodes,
+  CrossRectangleNodesSameType,
+} from '../math/geometry/RTree/RectangleNodeUtils'
 import {GetConnectedComponents} from '../math/graphAlgorithms/ConnectedComponentCalculator'
 import {mkGraphOnEdgesArray} from '../structs/basicGraphOnEdges'
 import {Assert} from '../utils/assert'
@@ -193,7 +196,7 @@ export class InteractiveObstacleCalculator {
     rootOfObstacleHierarchy: RectangleNode<Polyline, Point>,
   ): Set<[Polyline, Polyline]> {
     const overlappingPairSet = new Set<[Polyline, Polyline]>()
-    CrossRectangleNodes(
+    CrossRectangleNodesSameType(
       rootOfObstacleHierarchy,
       rootOfObstacleHierarchy,
       (a, b) => {

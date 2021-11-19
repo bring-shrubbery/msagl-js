@@ -59,7 +59,7 @@ export class ShapeObstacleCalculator {
     CrossRectangleNodes(
       childrenShapeHierarchy,
       this.coupleHierarchy,
-      this.TryMapShapeToTightLooseCouple,
+      this.TryMapShapeToTightLooseCouple.bind(this),
     )
   }
 
@@ -118,7 +118,7 @@ export class ShapeObstacleCalculator {
 
   CreateTightObstacles() {
     const tightObstacles = new Set<Polyline>(
-      this.MainShape.Children.map(this.InitialTightPolyline),
+      this.MainShape.Children.map(this.InitialTightPolyline.bind(this)),
     )
     const initialNumberOfTightObstacles: number = tightObstacles.size
     this.tightHierarchy =
