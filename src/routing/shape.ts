@@ -1,4 +1,3 @@
-import {IEnumerable, from} from 'linq-to-typescript'
 import {Queue} from 'queue-typescript'
 import {Port} from '../layout/core/port'
 import {ICurve} from '../math/geometry/icurve'
