@@ -17,7 +17,7 @@ export function mkRTree<T, P>(
 ): RTree<T, P> {
   return new RTree<T, P>(
     CreateRectangleNodeOnEnumeration(
-      rectsAndData.select(([k, v]) => mkRectangleNode<T, P>(v, k)),
+      rectsAndData.select(([k, v]) => mkRectangleNode<T, P>(v, k)).toArray(),
     ),
   )
 }
@@ -47,7 +47,10 @@ function RebuildUnderNodeWithoutLeaf<T, P>(
   /*Assert.assert(leaf.IsLeaf)*/
   /*Assert.assert(!nodeForRebuild.IsLeaf)*/
   const newNode = CreateRectangleNodeOnEnumeration<T, P>(
-    nodeForRebuild.GetAllLeafNodes().where((n) => n != leaf),
+    nodeForRebuild
+      .GetAllLeafNodes()
+      .where((n) => n != leaf)
+      .toArray(),
   )
   nodeForRebuild.Count = newNode.Count
   nodeForRebuild.Left = newNode.Left
@@ -155,7 +158,7 @@ export class RTree<T, P> {
 
   Rebuild() {
     this._rootNode = CreateRectangleNodeOnEnumeration(
-      this._rootNode.GetAllLeafNodes(),
+      this._rootNode.GetAllLeafNodes().toArray(),
     )
   }
 

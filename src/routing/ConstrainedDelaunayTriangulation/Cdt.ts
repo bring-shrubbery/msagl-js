@@ -264,9 +264,11 @@ export class Cdt extends Algorithm {
   GetCdtTree(): RectangleNode<CdtTriangle, Point> {
     if (this.cdtTree == null) {
       this.cdtTree = CreateRectangleNodeOnEnumeration(
-        from(this.GetTriangles().values()).select((t) =>
-          mkRectangleNode<CdtTriangle, Point>(t, t.BoundingBox()),
-        ),
+        from(this.GetTriangles().values())
+          .select((t) =>
+            mkRectangleNode<CdtTriangle, Point>(t, t.BoundingBox()),
+          )
+          .toArray(),
       )
     }
     return this.cdtTree

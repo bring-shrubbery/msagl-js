@@ -8,12 +8,12 @@ export class Shape {
   private parents: Set<Shape> = new Set<Shape>()
   private children: Set<Shape> = new Set<Shape>()
 
-  public get Parents(): IEnumerable<Shape> {
-    return from(this.parents.values())
+  public get Parents(): Array<Shape> {
+    return Array.from(this.parents.values())
   }
 
-  public get Children(): IEnumerable<Shape> {
-    return from(this.children.values())
+  public get Children(): Array<Shape> {
+    return Array.from(this.children.values())
   }
 
   get BoundaryCurve(): ICurve {

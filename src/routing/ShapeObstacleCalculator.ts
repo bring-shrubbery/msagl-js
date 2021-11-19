@@ -1,15 +1,21 @@
 ﻿//  The class calculates obstacles under the shape.
 //  We assume that the boundaries are not set for the shape children yet
-/*
-import {IEnumerable} from 'linq-to-typescript'
-import {Map} from 'lodash'
-import {RectangleNode} from '../core/geometry/RTree/RectangleNode'
-import {Curve} from '../math/geometry/curve'
+
+import {from} from 'linq-to-typescript'
+import {Point} from '..'
+import {Curve, PointLocation} from '../math/geometry'
+import {ConvexHull} from '../math/geometry/convexHull'
 import {Polyline} from '../math/geometry/polyline'
+import {
+  CreateRectangleNodeOnEnumeration,
+  mkRectangleNode,
+  RectangleNode,
+} from '../math/geometry/RTree/RectangleNode'
+import {CrossRectangleNodes} from '../math/geometry/RTree/RectangleNodeUtils'
+import {InteractiveObstacleCalculator} from './interactiveObstacleCalculator'
 import {Shape} from './Shape'
 import {TightLooseCouple} from './TightLooseCouple'
 
-//  <
 export class ShapeObstacleCalculator {
   tightHierarchy: RectangleNode<Polyline, Point>
 
@@ -23,10 +29,10 @@ export class ShapeObstacleCalculator {
     loosePadding: number,
     shapeToTightLooseCouples: Map<Shape, TightLooseCouple>,
   ) {
-    MainShape = shape
-    TightPadding = tightPadding
-    LoosePadding = loosePadding
-    ShapesToTightLooseCouples = shapeToTightLooseCouples
+    this.MainShape = shape
+    this.TightPadding = tightPadding
+    this.LoosePadding = loosePadding
+    this.ShapesToTightLooseCouples = shapeToTightLooseCouples
   }
 
   ShapesToTightLooseCouples: Map<Shape, TightLooseCouple>
@@ -37,7 +43,7 @@ export class ShapeObstacleCalculator {
   OverlapsDetected: boolean
 
   Calculate() {
-    if (this.MainShape.Children.Count() == 0) {
+    if (this.MainShape.Children.length == 0) {
       return
     }
 
@@ -46,61 +52,108 @@ export class ShapeObstacleCalculator {
     this.FillTheMapOfShapeToTightLooseCouples()
   }
 
-    FillTheMapOfShapeToTightLooseCouples() {
-      let childrenShapeHierarchy = RectangleNode.CreateRectangleNodeOnEnumeration(this.MainShape.Children.Select(() => { }, new RectangleNode<Shape, Point>(s, s.BoundingBox)));
-      RectangleNodeUtils.CrossRectangleNodes(childrenShapeHierarchy, this.coupleHierarchy, TryMapShapeToTightLooseCouple);
+  FillTheMapOfShapeToTightLooseCouples() {
+    const childrenShapeHierarchy = CreateRectangleNodeOnEnumeration(
+      this.MainShape.Children.map((s) => mkRectangleNode(s, s.BoundingBox)),
+    )
+    CrossRectangleNodes(
+      childrenShapeHierarchy,
+      this.coupleHierarchy,
+      this.TryMapShapeToTightLooseCouple,
+    )
+  }
+
+  TryMapShapeToTightLooseCouple(
+    shape: Shape,
+    tightLooseCouple: TightLooseCouple,
+  ) {
+    if (
+      ShapeObstacleCalculator.ShapeIsInsideOfPoly(
+        shape,
+        tightLooseCouple.TightPolyline,
+      )
+    ) {
+      this.ShapesToTightLooseCouples.set(shape, tightLooseCouple)
+    }
+  }
+
+  //  this test is valid in our situation where the tight polylines are disjoint and the shape can cross only one of them
+  static ShapeIsInsideOfPoly(shape: Shape, tightPolyline: Polyline): boolean {
+    return (
+      Curve.PointRelativeToCurveLocation(
+        shape.BoundaryCurve.start,
+        tightPolyline,
+      ) == PointLocation.Inside
+    )
+  }
+
+  CreateTigthLooseCouples() {
+    const couples = new Array<TightLooseCouple>()
+    for (const tightPolyline of this.tightHierarchy.GetAllLeaves()) {
+      const distance =
+        InteractiveObstacleCalculator.FindMaxPaddingForTightPolyline(
+          this.tightHierarchy,
+          tightPolyline,
+          this.LoosePadding,
+        )
+      const loosePoly =
+        InteractiveObstacleCalculator.LoosePolylineWithFewCorners(
+          tightPolyline,
+          distance,
+        )
+      couples.push(
+        TightLooseCouple.mk(tightPolyline, new Shape(loosePoly), distance),
+      )
     }
 
-    TryMapShapeToTightLooseCouple(shape: Shape, tightLooseCouple: TightLooseCouple) {
-      if (ShapeObstacleCalculator.ShapeIsInsideOfPoly(shape, tightLooseCouple.TightPolyline)) {
-        this.ShapesToTightLooseCouples[shape] = tightLooseCouple;
-      }
+    this.coupleHierarchy = CreateRectangleNodeOnEnumeration(
+      couples.map((c) =>
+        mkRectangleNode<TightLooseCouple, Point>(
+          c,
+          c.TightPolyline.boundingBox,
+        ),
+      ),
+    )
+  }
 
-      // #if(TEST_MSAGL)
-      // tightLooseCouple.LooseShape.UserData = ((<string>(shape.UserData)) + "x");
-      // #endif
+  CreateTightObstacles() {
+    const tightObstacles = new Set<Polyline>(
+      this.MainShape.Children.map(this.InitialTightPolyline),
+    )
+    const initialNumberOfTightObstacles: number = tightObstacles.size
+    this.tightHierarchy =
+      InteractiveObstacleCalculator.RemovePossibleOverlapsInTightPolylinesAndCalculateHierarchy(
+        tightObstacles,
+      )
+    this.OverlapsDetected = initialNumberOfTightObstacles > tightObstacles.size
+  }
+
+  InitialTightPolyline(shape: Shape): Polyline {
+    const poly = InteractiveObstacleCalculator.PaddedPolylineBoundaryOfNode(
+      shape.BoundaryCurve,
+      this.TightPadding,
+    )
+    const stickingPointsArray = from(this.LoosePolylinesUnderShape(shape))
+      .selectMany((l) => l.points())
+      .where(
+        (p) =>
+          Curve.PointRelativeToCurveLocation(p, poly) == PointLocation.Outside,
+      )
+      .toArray()
+
+    if (stickingPointsArray.length <= 0) {
+      return poly
     }
+    const pts = from(poly.points()).concatenate(from(stickingPointsArray))
+    return Polyline.mkFromPoints(ConvexHull.CalculateConvexHull(pts))
+  }
 
-    
-    //  this test is valid in our situation were the tight polylines are disjoint and the shape can cross only one of them
-    //  <
-
-
-
-    static ShapeIsInsideOfPoly(shape: Shape, tightPolyline: Polyline): boolean {
-      return (Curve.PointRelativeToCurveLocation(shape.BoundaryCurve.start, tightPolyline) == PointLocation.Inside);
-    }
-
-    CreateTigthLooseCouples() {
-      let couples = new Array<TightLooseCouple>();
-      for (let tightPolyline of this.tightHierarchy.GetAllLeaves()) {
-        let distance = InteractiveObstacleCalculator.FindMaxPaddingForTightPolyline(this.tightHierarchy, tightPolyline, this.LoosePadding);
-        let loosePoly = InteractiveObstacleCalculator.LoosePolylineWithFewCorners(tightPolyline, distance);
-        couples.Add(new TightLooseCouple(tightPolyline, new Shape(loosePoly), distance));
-      }
-
-      this.coupleHierarchy = RectangleNode.CreateRectangleNodeOnEnumeration(couples.Select(() => { }, new RectangleNode<TightLooseCouple, Point>(c, c.TightPolyline.BoundingBox)));
-    }
-
-    CreateTightObstacles() {
-      let tightObstacles = new Set<Polyline>(this.MainShape.Children.Select(InitialTightPolyline));
-      let initialNumberOfTightObstacles: number = tightObstacles.Count;
-      this.tightHierarchy = InteractiveObstacleCalculator.RemovePossibleOverlapsInTightPolylinesAndCalculateHierarchy(tightObstacles);
-      this.OverlapsDetected = (initialNumberOfTightObstacles > tightObstacles.Count);
-    }
-
-    InitialTightPolyline(shape: Shape): Polyline {
-      let poly = InteractiveObstacleCalculator.PaddedPolylineBoundaryOfNode(shape.BoundaryCurve, this.TightPadding);
-      let stickingPointsArray = this.LoosePolylinesUnderShape(shape).SelectMany(() => { }, l).Where(() => { }, (Curve.PointRelativeToCurveLocation(p, poly) == PointLocation.Outside)).ToArray();
-      if ((stickingPointsArray.length <= 0)) {
-        return poly;
-      }
-
-      return new Polyline(ConvexHull.CalculateConvexHull(poly.Concat(stickingPointsArray)));
-    }
-
-    LoosePolylinesUnderShape(shape: Shape): IEnumerable<Polyline> {
-      return shape.Children.Select(() => { }, (<Polyline>(this.ShapesToTightLooseCouples[child].LooseShape.BoundaryCurve)));
-    }
+  LoosePolylinesUnderShape(shape: Shape): Array<Polyline> {
+    return shape.Children.map(
+      (child) =>
+        <Polyline>(
+          this.ShapesToTightLooseCouples.get(child).LooseShape.BoundaryCurve
+        ),
+    )
+  }
 }
-*/

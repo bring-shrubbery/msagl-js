@@ -61,13 +61,14 @@ export class Nudger {
     this.HierarchyOfGroups = CreateRectangleNodeOnEnumeration(
       from(ancestorsSets.keys())
         .where((shape) => shape.IsGroup)
-        .select((group) => mkRectangleNode(group, group.BoundingBox)),
+        .select((group) => mkRectangleNode(group, group.BoundingBox))
+        .toArray(),
     )
     this.Obstacles = obstacles
     this.EdgeSeparation = 2 * cornerFitRad
     this.Paths = paths.toArray()
     this.HierarchyOfObstacles = CreateRectangleNodeOnEnumeration(
-      from(obstacles.map((p) => mkRectangleNode(p, p.boundingBox))),
+      from(obstacles.map((p) => mkRectangleNode(p, p.boundingBox))).toArray(),
     )
     this.MapPathsToTheirObstacles()
   }
@@ -842,7 +843,7 @@ export class Nudger {
       this.AncestorsForPort(edgeGeometry.targetPort),
     )
     return from(commonAncestors).where(
-      (anc) => !anc.Children.any((child) => commonAncestors.has(child)),
+      (anc) => !anc.Children.some((child) => commonAncestors.has(child)),
     )
   }
 

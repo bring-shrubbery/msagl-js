@@ -121,10 +121,10 @@ function ChooseSeeds<T, P>(
 
 // calculates a tree based on the given nodes
 export function CreateRectangleNodeOnEnumeration<T, P>(
-  nodes: IEnumerable<RectangleNode<T, P>>,
+  nodes: Array<RectangleNode<T, P>>,
 ): RectangleNode<T, P> {
   if (nodes == null) return null
-  return CreateRectangleNodeOnListOfNodes(nodes.toArray())
+  return CreateRectangleNodeOnListOfNodes(nodes)
 }
 
 //calculates a tree based on the given nodes

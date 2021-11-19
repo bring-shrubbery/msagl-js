@@ -192,7 +192,7 @@ export class CurveFactory {
     height: number,
     radX: number,
     radY: number,
-    center: Point,
+    center: Point = new Point(0, 0),
   ): Curve {
     if (radX == 0 || radY == 0) {
       return CurveFactory.createRectangle(width, height, center)
