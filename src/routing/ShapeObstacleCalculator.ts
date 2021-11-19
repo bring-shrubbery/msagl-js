@@ -13,7 +13,7 @@ import {
 } from '../math/geometry/RTree/RectangleNode'
 import {CrossRectangleNodes} from '../math/geometry/RTree/RectangleNodeUtils'
 import {InteractiveObstacleCalculator} from './interactiveObstacleCalculator'
-import {Shape} from './Shape'
+import {Shape} from './shape'
 import {TightLooseCouple} from './TightLooseCouple'
 
 export class ShapeObstacleCalculator {
