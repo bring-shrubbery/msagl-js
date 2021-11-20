@@ -22,23 +22,23 @@ export class Polyline implements ICurve {
     const p = this.startPoint.next
     p.prev = null
     this.startPoint = p
-    this.requireInit()
+    this.setInitIsRequired()
   }
   RemoveEndPoint() {
     const p = this.endPoint.prev
     p.next = null
     this.endPoint = p
-    this.requireInit()
+    this.setInitIsRequired()
   }
   startPoint: PolylinePoint
   endPoint: PolylinePoint
-  requireInit_: boolean
-  private isClosed_: boolean
+  initIsRequired = true
+  private isClosed_ = false
   pBNode: PN
   private bBox: Rectangle
   private count_: number
-  requireInit() {
-    this.requireInit_ = true
+  setInitIsRequired() {
+    this.initIsRequired = true
   }
 
   addPointXY(x: number, y: number) {
@@ -73,7 +73,7 @@ export class Polyline implements ICurve {
     } else {
       this.startPoint = this.endPoint = pp
     }
-    this.requireInit()
+    this.setInitIsRequired()
   }
 
   *points(): IterableIterator<Point> {
@@ -96,9 +96,15 @@ export class Polyline implements ICurve {
     return Parallelogram.parallelogramByCornerSideSide(a, side, side)
   }
 
-  static mkFromPoints(ps: Iterable<Point>) {
+  static mkFromPoints(ps: Iterable<Point>): Polyline {
     const r = new Polyline()
     for (const p of ps) r.addPoint(p)
+    return r
+  }
+
+  static mkClosedFromPoints(ps: Iterable<Point>): Polyline {
+    const r = Polyline.mkFromPoints(ps)
+    r.closed = true
     return r
   }
 
@@ -167,7 +173,7 @@ export class Polyline implements ICurve {
 
     this.calculatePbNode()
 
-    this.requireInit_ = false
+    this.initIsRequired = false
   }
 
   updateCount(): void {
@@ -178,7 +184,7 @@ export class Polyline implements ICurve {
   }
 
   get count() {
-    if (this.requireInit_) this.init()
+    if (this.initIsRequired) this.init()
     return this.count_
   }
 
@@ -190,7 +196,7 @@ export class Polyline implements ICurve {
   }
 
   value(t: number): Point {
-    if (this.requireInit_) this.init()
+    if (this.initIsRequired) this.init()
     const p = this.getAdjustedParamAndStartEndPoints(t)
     return Point.convSum(p.t, p.a, p.b)
   }
@@ -236,18 +242,18 @@ export class Polyline implements ICurve {
     return new Point(0, 0)
   }
   pNodeOverICurve(): PN {
-    if (this.requireInit_) this.init()
+    if (this.initIsRequired) this.init()
     return this.pBNode
   }
   get boundingBox(): Rectangle {
-    if (this.requireInit_) this.init()
+    if (this.initIsRequired) this.init()
     return this.bBox
   }
   get parStart(): number {
     return 0
   }
   get parEnd(): number {
-    if (this.requireInit_) this.init()
+    if (this.initIsRequired) this.init()
     return this.closed ? this.count_ : this.count_ - 1
   }
   trim(start: number, end: number): ICurve {
@@ -263,7 +269,7 @@ export class Polyline implements ICurve {
       if (p == this.endPoint) break
       p = p.getNext()
     } while (true)
-    this.requireInit()
+    this.setInitIsRequired()
   }
   scaleFromOrigin(xScale: number, yScale: number): ICurve {
     throw new Error('Method not implemented.')

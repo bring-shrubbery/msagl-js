@@ -145,7 +145,7 @@ export class ShapeObstacleCalculator {
       return poly
     }
     const pts = from(poly.points()).concatenate(from(stickingPointsArray))
-    return Polyline.mkFromPoints(ConvexHull.CalculateConvexHull(pts))
+    return Polyline.mkClosedFromPoints(ConvexHull.CalculateConvexHull(pts))
   }
 
   LoosePolylinesUnderShape(shape: Shape): Array<Polyline> {

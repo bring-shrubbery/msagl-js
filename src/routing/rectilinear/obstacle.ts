@@ -115,11 +115,10 @@ export class Obstacle {
 
   static mk(a: Point, b: Point, scanlineOrdinal: number) {
     const obs = new Obstacle(null, false, 0)
-    obs.PaddedPolyline = Polyline.mkFromPoints([
+    obs.PaddedPolyline = Polyline.mkClosedFromPoints([
       GeomConstants.RoundPoint(a),
       GeomConstants.RoundPoint(b),
     ])
-    obs.PaddedPolyline.closed = true
     obs.Ordinal = scanlineOrdinal
     return obs
   }
@@ -166,7 +165,7 @@ export class Obstacle {
 
     Obstacle.RemoveCloseAndCollinearVerticesInPlace(polyline)
     //  We've modified the points so the BoundingBox may have changed; force it to be recalculated.
-    polyline.requireInit()
+    polyline.setInitIsRequired()
     //  Verify that the polyline is still clockwise.
     /*Assert.assert(
       polyline.isClockwise(),
@@ -225,7 +224,7 @@ export class Obstacle {
       polyline.RemoveStartPoint()
     }
 
-    polyline.requireInit()
+    polyline.setInitIsRequired()
     return polyline
   }
   // The ScanLine uses this as a final tiebreaker.  It is set on InitializeEventQueue rather than in

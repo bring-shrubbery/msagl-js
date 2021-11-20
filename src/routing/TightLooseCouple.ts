@@ -4,7 +4,7 @@ import {Polyline} from '../math/geometry'
 import {Shape} from './shape'
 
 export class TightLooseCouple {
-  tightPoly: Polyline
+  private tightPoly: Polyline
   get TightPolyline(): Polyline {
     return this.tightPoly
   }

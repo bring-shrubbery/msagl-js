@@ -9,7 +9,7 @@ import {TangentPair} from './TangentPair'
 export class Polygon {
   polyline: Polyline
   static mkFromPoints(pts: Point[]): Polygon {
-    return new Polygon(Polyline.mkFromPoints(pts))
+    return new Polygon(Polyline.mkClosedFromPoints(pts))
   }
 
   get Polyline(): Polyline {

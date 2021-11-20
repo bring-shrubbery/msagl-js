@@ -21,7 +21,7 @@ export class PolylinePoint {
 
   setNext(nVal: PolylinePoint) {
     this.next = nVal
-    if (this.polyline != null) this.polyline.requireInit()
+    if (this.polyline != null) this.polyline.setInitIsRequired()
   }
 
   //
@@ -30,7 +30,7 @@ export class PolylinePoint {
   }
   setPrev(prevVal: PolylinePoint) {
     this.prev = prevVal
-    if (this.polyline != null) this.polyline.requireInit()
+    if (this.polyline != null) this.polyline.setInitIsRequired()
   }
 
   static mkPolylinePoint(p: Point) {

@@ -408,7 +408,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     //     Point.closeDistEps(np.point, np.nextOnPolyline.point)
     //   ),
     // )
-    borderPolyline.requireInit()
+    borderPolyline.setInitIsRequired()
     return np
   }
 

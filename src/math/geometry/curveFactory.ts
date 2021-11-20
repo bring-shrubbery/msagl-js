@@ -20,7 +20,7 @@ export class CurveFactory {
     const w = width / 2
     const x = center.x
     const y = center.y
-    const poly = Polyline.mkFromPoints([
+    const poly = Polyline.mkClosedFromPoints([
       new Point(w * -1 + x, h * -1 + y),
       new Point(w + x, h * -1 + y),
       new Point(w + (h + x), 0 + y),
@@ -28,7 +28,6 @@ export class CurveFactory {
       new Point(w * -1 + x, h + y),
       new Point((w - h) * -1 + x, 0 + y),
     ])
-    poly.closed = true
     return poly
   }
   // This adds the padding to the edges around the inscribed rectangle of an octagon.
@@ -58,7 +57,7 @@ export class CurveFactory {
       ps[i] = ps[i].add(center)
     }
 
-    return Polyline.mkFromPoints(ps)
+    return Polyline.mkClosedFromPoints(ps)
   }
   public static createInvertedHouse(
     width: number,

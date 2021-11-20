@@ -85,7 +85,7 @@ export class InteractiveObstacleCalculator {
     tightPolyline: Polyline,
     offset: number,
   ): Polyline {
-    return Polyline.mkFromPoints(
+    return Polyline.mkClosedFromPoints(
       ConvexHull.CalculateConvexHull(
         InteractiveObstacleCalculator.BisectorPoints(tightPolyline, offset),
       ),
@@ -350,7 +350,7 @@ export class InteractiveObstacleCalculator {
       )
     ) {
       return InteractiveObstacleCalculator.CreatePaddedPolyline(
-        Polyline.mkFromPoints(
+        Polyline.mkClosedFromPoints(
           Array.from(ConvexHull.CalculateConvexHull(poly.points())),
         ),
         padding,
@@ -367,7 +367,7 @@ export class InteractiveObstacleCalculator {
       )
     ) {
       return InteractiveObstacleCalculator.CreatePaddedPolyline(
-        Polyline.mkFromPoints(
+        Polyline.mkClosedFromPoints(
           Array.from(ConvexHull.CalculateConvexHull(poly.points())),
         ),
         padding,
@@ -385,7 +385,7 @@ export class InteractiveObstacleCalculator {
         )
       ) {
         return InteractiveObstacleCalculator.CreatePaddedPolyline(
-          Polyline.mkFromPoints(
+          Polyline.mkClosedFromPoints(
             Array.from(ConvexHull.CalculateConvexHull(poly.points())),
           ),
           padding,

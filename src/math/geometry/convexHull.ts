@@ -196,7 +196,7 @@ export class ConvexHull {
   }
 
   static createConvexHullAsClosedPolyline(points: Iterable<Point>): Polyline {
-    const convexHull = Polyline.mkFromPoints(
+    const convexHull = Polyline.mkClosedFromPoints(
       Array.from(ConvexHull.CalculateConvexHull(points)),
     )
     // #if (TEST_MSAGL)

@@ -375,28 +375,26 @@ export class Anchor {
   polygonOnLeftLabel(): Polyline {
     const t =
       this.left + (1 - this.labelCornersPreserveCoefficient) * this.LabelWidth
-    const poly = Polyline.mkFromPoints([
+    const poly = Polyline.mkClosedFromPoints([
       new Point(t, this.top),
       this.rightTop,
       this.rightBottom,
       new Point(t, this.bottom),
       new Point(this.left, this.y),
     ])
-    poly.closed = true
     return poly
   }
 
   polygonOnRightLabel() {
     const t =
       this.right - (1 - this.labelCornersPreserveCoefficient) * this.LabelWidth
-    const poly = Polyline.mkFromPoints([
+    const poly = Polyline.mkClosedFromPoints([
       new Point(t, this.top),
       new Point(this.right, this.y),
       new Point(t, this.bottom),
       this.leftBottom,
       this.leftTop,
     ])
-    poly.closed = true
     return poly
   }
 

@@ -18,12 +18,11 @@ test('padded rectangle', () => {
 })
 
 test('padded triangle', () => {
-  const poly = Polyline.mkFromPoints([
+  const poly = Polyline.mkClosedFromPoints([
     new Point(0, 0),
     new Point(10, 100),
     new Point(20, 0),
   ])
-  poly.closed = true
 
   expect(poly instanceof Polyline).toBe(true)
   const paddedPoly = InteractiveObstacleCalculator.CreatePaddedPolyline(
