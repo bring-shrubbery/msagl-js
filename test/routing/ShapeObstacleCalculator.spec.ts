@@ -3,6 +3,7 @@ import {DebugCurve} from '../../src/math/geometry/debugCurve'
 import {Shape} from '../../src/routing/shape'
 import {ShapeObstacleCalculator} from '../../src/routing/ShapeObstacleCalculator'
 import {TightLooseCouple} from '../../src/routing/TightLooseCouple'
+import {randomInt} from '../../src/utils/random'
 import {SvgDebugWriter} from '../utils/svgDebugWriter'
 
 test('initialTightPolyline', () => {
@@ -93,11 +94,45 @@ test('overlap: two children', () => {
   shObstCalc.Calculate()
   const tightPolylines = Array.from(shObstCalc.tightHierarchy.GetAllLeaves())
   expect(tightPolylines.length == 1).toBe(true)
-  const dc = []
-  for (const p of shObstCalc.coupleHierarchy.GetAllLeaves()) {
-    dc.push(DebugCurve.mkDebugCurveCI('Red', p.TightPolyline))
-    dc.push(DebugCurve.mkDebugCurveCI('Blue', p.LooseShape.BoundaryCurve))
-  }
+  // const dc = []
+  // for (const p of shObstCalc.coupleHierarchy.GetAllLeaves()) {
+  //   dc.push(DebugCurve.mkDebugCurveCI('Red', p.TightPolyline))
+  //   dc.push(DebugCurve.mkDebugCurveCI('Blue', p.LooseShape.BoundaryCurve))
+  // }
 
-  SvgDebugWriter.dumpDebugCurves('/tmp/overlapSO.svg', dc)
+  // SvgDebugWriter.dumpDebugCurves('/tmp/overlapSO.svg', dc)
+})
+
+test('overlap: random', () => {
+  const root = new Shape(
+    CurveFactory.mkRectangleWithRoundedCorners(20, 20, 5, 5),
+  )
+  root.UserData = 'root'
+  for (let i = 0; i < 10; i++) {
+    const ch0 = new Shape(
+      CurveFactory.mkRectangleWithRoundedCorners(
+        2.5,
+        3,
+        1,
+        1,
+        new Point(randomInt(30), randomInt(30)),
+      ),
+    )
+    ch0.UserData = i.toString()
+    root.AddChild(ch0)
+  }
+  const shObstCalc = new ShapeObstacleCalculator(
+    root,
+    2,
+    4,
+    new Map<Shape, TightLooseCouple>(),
+  )
+  shObstCalc.Calculate()
+  //const dc = []
+  //for (const p of shObstCalc.coupleHierarchy.GetAllLeaves()) {
+  // dc.push(DebugCurve.mkDebugCurveWCI(0.1, 'Red', p.TightPolyline))
+  // dc.push(DebugCurve.mkDebugCurveWCI(0.1, 'Blue', p.LooseShape.BoundaryCurve))
+  // }
+
+  // SvgDebugWriter.dumpDebugCurves('/tmp/overlapRandom.svg', dc)
 })
