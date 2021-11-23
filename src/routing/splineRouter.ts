@@ -44,6 +44,8 @@ import {
   mkRectangleNode,
   RectangleNode,
 } from '../math/geometry/RTree/RectangleNode'
+import {Port} from 'dotparser'
+import {CurvePort} from '../layout/core/curvePort'
 // import { CancelToken } from '../utils/cancelToken'
 // import { Cdt } from './ConstrainedDelaunayTriangulation/Cdt'
 // import { CdtEdge } from './ConstrainedDelaunayTriangulation/CdtEdge'
@@ -239,9 +241,9 @@ export class SplineRouter extends Algorithm {
 
   // }
 
-  //     static EdgesAttachedToPortAvoidTheNode(port: Port): boolean {
-  //   return (port instanceof ((CurvePort || port) instanceof ClusterBoundaryPort));
-  // }
+  static EdgesAttachedToPortAvoidTheNode(port: Port): boolean {
+    return port instanceof CurvePort || port instanceof ClusterBoundaryPort
+  }
 
   // SetLoosePolylinesForAnywherePorts() {
   //   for (let shapesToTightLooseCouple of this.shapesToTightLooseCouples) {
@@ -753,7 +755,7 @@ export class SplineRouter extends Algorithm {
   //     public set ArrowHeadRatio(value: number)  {
   // }
 
-  LineSweeperPorts: Point[]
+  LineSweeperPorts: Point[];
 
   //
   // AddVisibilityEdgesFromPort(port: Port): IEnumerable < VisibilityEdge > {
@@ -841,42 +843,43 @@ export class SplineRouter extends Algorithm {
   //   "red";
   // }
 
-  // GetTransparentShapes(sourcePort: Port, targetPort: Port, sourceShape: Shape, targetShape: Shape): IEnumerable < Shape > {
-  //   for(let s in this.ancestorSets[sourceShape]) {
-  //   yield;
-  // }
+  *GetTransparentShapes(
+    sourcePort: Port,
+    targetPort: Port,
+    sourceShape: Shape,
+    targetShape: Shape,
+  ): IterableIterator<Shape> {
+    for (const s of this.ancestorSets.get(sourceShape)) {
+      yield s
+    }
 
-  // return s;
-  // for (let s of this.ancestorSets[targetShape]) {
-  //   yield;
-  // }
+    for (const s of this.ancestorSets.get(targetShape)) {
+      yield s
+    }
 
-  // return s;
-  // let routingOutsideOfSourceBoundary = SplineRouter.EdgesAttachedToPortAvoidTheNode(sourcePort);
-  // let routingOutsideOfTargetBoundary = SplineRouter.EdgesAttachedToPortAvoidTheNode(targetPort);
-  // if ((!routingOutsideOfSourceBoundary
-  //   && !routingOutsideOfTargetBoundary)) {
-  //   yield;
-  //   return sourceShape;
-  //   yield;
-  //   return targetShape;
-  // }
-  // else if (routingOutsideOfSourceBoundary) {
-  //   if (this.IsAncestor(sourceShape, targetShape)) {
-  //     yield;
-  //   }
+    const routingOutsideOfSourceBoundary =
+      SplineRouter.EdgesAttachedToPortAvoidTheNode(sourcePort)
+    const routingOutsideOfTargetBoundary =
+      SplineRouter.EdgesAttachedToPortAvoidTheNode(targetPort)
+    if (!routingOutsideOfSourceBoundary && !routingOutsideOfTargetBoundary) {
+      yield
+      return sourceShape
+      yield
+      return targetShape
+    } else if (routingOutsideOfSourceBoundary) {
+      if (this.IsAncestor(sourceShape, targetShape)) {
+        yield
+      }
 
-  //   return sourceShape;
-  // }
-  // else {
-  //   if (this.IsAncestor(targetShape, sourceShape)) {
-  //     yield;
-  //   }
+      return sourceShape
+    } else {
+      if (this.IsAncestor(targetShape, sourceShape)) {
+        yield
+      }
 
-  //   return targetShape;
-  // }
-
-  //     }
+      return targetShape
+    }
+  }
 
   static SetTransparency(shapes: IEnumerable<Shape>, v: boolean) {
     for (const shape of shapes) {
