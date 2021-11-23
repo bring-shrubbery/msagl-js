@@ -1,4 +1,3 @@
-import {IEnumerable} from 'linq-to-typescript'
 import {GenericBinaryHeapPriorityQueue} from '../structs/genericBinaryHeapPriorityQueue'
 import {Assert} from '../utils/assert'
 import {compareNumbers} from '../utils/compare'

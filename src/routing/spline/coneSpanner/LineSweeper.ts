@@ -386,7 +386,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     this.portEdgesGraph.AddEdge(cone.Apex, p)
   }
 
-  private static InsertPointIntoPolylineAfter(
+  static InsertPointIntoPolylineAfter(
     borderPolyline: Polyline,
     insertAfter: PolylinePoint,
     pointToInsert: Point,

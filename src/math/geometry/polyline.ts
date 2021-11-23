@@ -164,7 +164,7 @@ export class Polyline implements ICurve {
   }
 
   init() {
-    this.bBox = Rectangle.rectanglePoint(this.startPoint.point)
+    this.bBox = Rectangle.rectangleOnPoint(this.startPoint.point)
     for (const p of this.skip(1)) {
       this.bBox.add(p.point)
     }

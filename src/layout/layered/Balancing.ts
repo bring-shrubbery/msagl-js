@@ -10,7 +10,7 @@ import {PolyIntEdge} from './polyIntEdge'
 
 // balances the layers by moving vertices with
 // the same number of input-output edges to feasible layers with fewer nodes
-export class Balancing implements Algorithm {
+export class Balancing extends Algorithm {
   jumpers = new Set<number>()
 
   possibleJumperFeasibleIntervals = new Map<number, IntPair>()
@@ -38,9 +38,9 @@ export class Balancing implements Algorithm {
     dag: Graph<PolyIntEdge>,
     layering: number[],
     nodeCount: number[],
-    cancelObj: CancelToken,
+    cancelToken: CancelToken,
   ) {
-    this.cancelToken = cancelObj
+    super(cancelToken)
     this.nodeCount = nodeCount
     this.dag = dag
     this.layering = layering

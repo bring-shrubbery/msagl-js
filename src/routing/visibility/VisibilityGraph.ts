@@ -1,4 +1,5 @@
-import {Point} from '../../math/geometry/point'
+import {Polyline} from '../../math/geometry'
+import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
 // import {Assert} from '../../utils/assert'
 import {PointMap} from '../../utils/PointMap'
@@ -95,30 +96,27 @@ export class VisibilityGraph {
   //       this.AddEdge(polyline.endPoint, polyline.startPoint);
   //   }
 
-  //   static OrientHolesClockwise(holes: IEnumerable<Polyline>): IEnumerable<Polyline> {
-  //       #if ((TEST_MSAGL || VERIFY))
-  //       VisibilityGraph.CheckThatPolylinesAreConvex(holes);
-  //       #endif
-  //       //  TEST || VERIFY
-  //       for (let poly: Polyline of holes) {
-  //           for (let p: PolylinePoint = poly.StartPoint; ; p = p.next) {
-  //               //  Find the first non-collinear segments and see which direction the triangle is.
-  //               //  If it's consistent with Clockwise, then return the polyline, else return its Reverse.
-  //               let orientation = Point.getTriangleOrientation(p.point, p.next.Point, p.next.Next.Point);
-  //               if ((orientation != TriangleOrientation.Collinear)) {
-  //                   yield;
-  //                   return (orientation == TriangleOrientation.Clockwise);
-  //                   // TODO: Warning!!!, inline IF is not supported ?
-  //                   // TODO: Warning!!!! NULL EXPRESSION DETECTED...
-  //                   ;
-  //                   break;
-  //               }
-
-  //           }
-
-  //       }
-
-  //   }
+  static *OrientHolesClockwise(
+    holes: Iterable<Polyline>,
+  ): IterableIterator<Polyline> {
+    for (const poly of holes) {
+      for (let p = poly.startPoint; ; p = p.next) {
+        //  Find the first non-collinear segments and see which direction the triangle is.
+        //  If it's consistent with Clockwise, then return the polyline, else return its Reverse.
+        const orientation = Point.getTriangleOrientation(
+          p.point,
+          p.next.point,
+          p.next.next.point,
+        )
+        if (orientation != TriangleOrientation.Collinear) {
+          yield orientation == TriangleOrientation.Clockwise
+            ? poly
+            : <Polyline>poly.reverse()
+          break
+        }
+      }
+    }
+  }
 
   //   static CheckThatPolylinesAreConvex(holes: IEnumerable<Polyline>) {
   //       for (let polyline of holes) {

@@ -181,7 +181,7 @@ export class Rectangle implements IRectangle<Point> {
   }
 
   // create rectangle from a point
-  static rectanglePoint(p: Point) {
+  static rectangleOnPoint(p: Point) {
     return new Rectangle({left: p.x, right: p.x, top: p.y, bottom: p.y})
   }
 

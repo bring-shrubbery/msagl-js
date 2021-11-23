@@ -1,97 +1,164 @@
-﻿// // written in assumption of a single parent
-// // <
-// export class ShapeCreatorForRoutingToParents {
-//   static GetShapes(inParentEdges: IEnumerable<Edge>, outParentEdges: Array<Edge>): IEnumerable<Shape> {
-//     let nodesToShapes = new Map<Node, Shape>();
-//     for (let edge of inParentEdges) {
-//       ProcessAncestorDescendantCouple((<Cluster>(edge.Target)), edge.Source, nodesToShapes);
-//       InsertEdgePortsToShapes(nodesToShapes, edge);
-//     }
+﻿// written in assumption of a single parent
 
-//     for (let edge of outParentEdges) {
-//       ProcessAncestorDescendantCouple((<Cluster>(edge.Source)), edge.Target, nodesToShapes);
-//       InsertEdgePortsToShapes(nodesToShapes, edge);
-//     }
+import {IEnumerable} from 'linq-to-typescript'
+import {GeomEdge, GeomGraph, GeomNode} from '..'
+import {GeomObject} from '../layout/core/geomObject'
+import {RelativeShape} from './RelativeShape'
+import {Shape} from './shape'
 
-//     BindShapes(nodesToShapes);
-//     return nodesToShapes.Values;
-//   }
-//   private static void InsertEdgePortsToShapes(Map <Node, Shape > nodesToShapes, Edge edge) {
-//   nodesToShapes[edge.Target].Ports.Insert(edge.TargetPort);
-//   nodesToShapes[edge.Source].Ports.Insert(edge.SourcePort);
-// }
+export class ShapeCreatorForRoutingToParents {
+  static GetShapes(
+    inParentEdges: IEnumerable<GeomEdge>,
+    outParentEdges: Array<GeomEdge>,
+  ): Array<Shape> {
+    const nodesToShapes = new Map<GeomNode, Shape>()
+    for (const edge of inParentEdges) {
+      ShapeCreatorForRoutingToParents.ProcessAncestorDescendantCouple(
+        <GeomGraph>edge.target,
+        edge.source,
+        nodesToShapes,
+      )
+      ShapeCreatorForRoutingToParents.InsertEdgePortsToShapes(
+        nodesToShapes,
+        edge,
+      )
+    }
 
-//         static void BindShapes(Map < Node, Shape > nodesToShapes) {
-//   foreach(var nodeShape of nodesToShapes) {
-//     var cluster = nodeShape.Key as Cluster;
-//     if (cluster == null) continue;
-//     var shape = nodeShape.Value;
-//     foreach(var child of Children(cluster) ) {
-//       Shape childShape;
-//       if (nodesToShapes.TryGetValue(child, out childShape))
-//         shape.AddChild(childShape);
-//     }
-//   }
-// }
+    for (const edge of outParentEdges) {
+      ShapeCreatorForRoutingToParents.ProcessAncestorDescendantCouple(
+        <GeomGraph>edge.source,
+        edge.target,
+        nodesToShapes,
+      )
+      ShapeCreatorForRoutingToParents.InsertEdgePortsToShapes(
+        nodesToShapes,
+        edge,
+      )
+    }
 
-//         static void ProcessAncestorDescendantCouple(Cluster ancestor, Node node, Map < Node, Shape > nodesToShapes) {
-//   Cluster parent = Parent(node);
-//   do {
-//     foreach(var n of Children(parent))
-//     CreateShapeIfNeeeded(n, nodesToShapes);
-//     if (parent == ancestor)
-//       break;
-//     parent = Parent(parent);
-//   } while (true);
-//   CreateShapeIfNeeeded(parent, nodesToShapes);
-// }
+    ShapeCreatorForRoutingToParents.BindShapes(nodesToShapes)
+    return Array.from(nodesToShapes.values())
+  }
+  private static InsertEdgePortsToShapes(
+    nodesToShapes: Map<GeomNode, Shape>,
+    edge: GeomEdge,
+  ) {
+    nodesToShapes.get(edge.target).Ports.add(edge.targetPort)
+    nodesToShapes.get(edge.source).Ports.add(edge.sourcePort)
+  }
 
-//         static void CreateShapeIfNeeeded(Node n, Map < Node, Shape > nodesToShapes) {
-//   if (nodesToShapes.ContainsKey(n)) return;
-//   nodesToShapes[n] = new RelativeShape(() => n.BoundaryCurve)
-// #if TEST_MSAGL
-//   {
-//     UserData = n.ToString()
-//   }
-// #endif
-//     ;
-// }
+  static BindShapes(nodesToShapes: Map<GeomNode, Shape>) {
+    for (const [key, shape] of nodesToShapes) {
+      if (!(key instanceof GeomGraph)) {
+        continue
+      }
 
-//         static IEnumerable < Node > Children(Cluster parent) {
-//   return parent.Clusters.Concat(parent.Nodes);
-// }
+      const cluster = <GeomGraph>key
 
-//         static Cluster Parent(Node node) {
-//   return node.ClusterParent;
-// }
+      for (const child of Children(cluster)) {
+        const childShape = nodesToShapes.get(child)
+        if (childShape) {
+          shape.AddChild(childShape)
+        }
+      }
+    }
+  }
 
-// internal static bool NumberOfActiveNodesIsUnderThreshold(Array < Edge > inParentEdges, Array < Edge > outParentEdges, int threshold) {
-//   var usedNodeSet = new Set<Node>();
-//   foreach(var edge of inParentEdges)
-//   if (SetOfActiveNodesIsLargerThanThreshold((Cluster)edge.Target, edge.Source, usedNodeSet, threshold))
-//     return false;
+  static ProcessAncestorDescendantCouple(
+    ancestor: GeomGraph,
+    geomNode: GeomNode,
+    nodesToShapes: Map<GeomNode, Shape>,
+  ) {
+    let parent = Parent(geomNode)
+    do {
+      for (const n of Children(parent))
+        ShapeCreatorForRoutingToParents.CreateShapeIfNeeeded(n, nodesToShapes)
+      if (parent == ancestor) break
+      parent = Parent(parent)
+    } while (true)
+    ShapeCreatorForRoutingToParents.CreateShapeIfNeeeded(parent, nodesToShapes)
+  }
 
-//   foreach(var edge of outParentEdges)
-//   if (SetOfActiveNodesIsLargerThanThreshold((Cluster)edge.Source, edge.Target, usedNodeSet, threshold))
-//     return false;
+  static CreateShapeIfNeeeded(
+    n: GeomNode,
+    nodesToShapes: Map<GeomNode, Shape>,
+  ) {
+    if (nodesToShapes.has(n)) {
+      return
+    }
 
-//   return true;
-// }
+    nodesToShapes.set(n, new RelativeShape(() => n.boundaryCurve))
+  }
 
-//         private static bool SetOfActiveNodesIsLargerThanThreshold(Cluster ancestor, Node node, Set < Node > usedNodeSet, int threshold) {
-//   Cluster parent = Parent(node);
-//   do {
-//     foreach(var n of Children(parent)) {
-//       usedNodeSet.Insert(n);
-//       if (usedNodeSet.Count > threshold)
-//         return true;
-//     }
-//     if (parent == ancestor)
-//       break;
-//     parent = Parent(parent);
-//   } while (true);
+  static NumberOfActiveNodesIsUnderThreshold(
+    inParentEdges: Array<GeomEdge>,
+    outParentEdges: Array<GeomEdge>,
+    threshold: number,
+  ): boolean {
+    const usedNodeSet = new Set<GeomNode>()
+    for (const edge of inParentEdges) {
+      if (
+        ShapeCreatorForRoutingToParents.SetOfActiveNodesIsLargerThanThreshold(
+          <GeomGraph>edge.target,
+          edge.source,
+          usedNodeSet,
+          threshold,
+        )
+      ) {
+        return false
+      }
+    }
 
-//   usedNodeSet.Insert(parent);
-//   return usedNodeSet.Count > threshold;
-// }
-//     }
+    for (const edge of outParentEdges) {
+      if (
+        ShapeCreatorForRoutingToParents.SetOfActiveNodesIsLargerThanThreshold(
+          <GeomGraph>edge.source,
+          edge.target,
+          usedNodeSet,
+          threshold,
+        )
+      ) {
+        return false
+      }
+    }
+    return true
+  }
+
+  private static SetOfActiveNodesIsLargerThanThreshold(
+    ancestor: GeomGraph,
+    node: GeomNode,
+    usedNodeSet: Set<GeomNode>,
+    threshold: number,
+  ): boolean {
+    let parent: GeomGraph = Parent(node)
+    while (true) {
+      for (const n of Children(parent)) {
+        usedNodeSet.add(n)
+        if (usedNodeSet.size > threshold) {
+          return true
+        }
+      }
+
+      if (parent == ancestor) {
+        break
+      }
+
+      parent = Parent(parent)
+    }
+
+    usedNodeSet.add(parent)
+
+    return usedNodeSet.size > threshold
+  }
+}
+
+function Parent(geomNode: GeomNode): GeomGraph {
+  const p = geomNode.node.parent
+  return <GeomGraph>GeomObject.getGeom(p)
+}
+
+function* Children(gg: GeomGraph): IterableIterator<GeomNode> {
+  for (const n of gg.graph.shallowNodes) {
+    yield <GeomNode>GeomObject.getGeom(n)
+  }
+}
