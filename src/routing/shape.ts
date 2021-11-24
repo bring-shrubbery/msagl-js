@@ -51,7 +51,7 @@ export class Shape {
 
   //  Constructor taking the ID and the curve of the shape.
 
-  public constructor(boundaryCurve: ICurve) {
+  public constructor(boundaryCurve: ICurve = null) {
     this.BoundaryCurve = boundaryCurve
   }
 

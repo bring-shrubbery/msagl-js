@@ -11,10 +11,7 @@ import {
   mkRectangleNode,
   RectangleNode,
 } from '../math/geometry/RTree/RectangleNode'
-import {
-  CrossRectangleNodes,
-  CrossRectangleNodesSameType,
-} from '../math/geometry/RTree/RectangleNodeUtils'
+import {CrossRectangleNodesSameType} from '../math/geometry/RTree/RectangleNodeUtils'
 import {GetConnectedComponents} from '../math/graphAlgorithms/ConnectedComponentCalculator'
 import {mkGraphOnEdgesArray} from '../structs/basicGraphOnEdges'
 import {Assert} from '../utils/assert'
@@ -23,6 +20,7 @@ import {Polygon} from './visibility/Polygon'
 // import {Assert} from '../utils/assert'
 
 export class InteractiveObstacleCalculator {
+  LoosePadding: number
   private static PadCorner(
     poly: Polyline,
     p0: PolylinePoint,
@@ -172,6 +170,7 @@ export class InteractiveObstacleCalculator {
       Array.from(tightObsts),
     )
   }
+  RootOfTightHierarchy: RectangleNode<Polyline, Point>
 
   static OneCurveLiesInsideOfOther(polyA: ICurve, polyB: ICurve): boolean {
     Assert.assert(

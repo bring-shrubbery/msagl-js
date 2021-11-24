@@ -136,7 +136,7 @@ export class ConeSpanner extends Algorithm {
   ) {
     for (const edge of vg0.Edges) {
       if (vg1.FindEdgePP(edge.SourcePoint, edge.TargetPoint) != null) {
-        this._visibilityGraph.AddEdge(edge.SourcePoint, edge.TargetPoint)
+        this._visibilityGraph.AddEdgePP(edge.SourcePoint, edge.TargetPoint)
       }
     }
   }

@@ -185,7 +185,7 @@ test('EdgeDirectionVE', () => {
   g.AddVertexP(a)
   g.AddVertexP(b)
   g.AddVertexP(c)
-  const ab = g.AddEdge(a, b)
+  const ab = g.AddEdgePP(a, b)
   expect(StaticGraphUtility.EdgeDirectionVE(ab)).toBe(Direction.East)
 })
 test('interion_x', () => {

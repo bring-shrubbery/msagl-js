@@ -1,72 +1,76 @@
-// using System;
-// using Microsoft.Msagl.Core.Geometry.Curves;
+import {String} from 'typescript-string-operations'
+import {PolylinePoint} from '../../math/geometry/polylinePoint'
+import {Diagonal} from './Diagonal'
 
-// namespace Microsoft.Msagl.Routing.Visibility {
-//     internal class Tangent {
+export class Tangent {
+  comp: Tangent
 
-//         Tangent comp;
+  // the complimentary tangent
+  get Comp(): Tangent {
+    return this.comp
+  }
+  set Comp(value: Tangent) {
+    this.comp = value
+  }
 
-//         //the complimentary tangent
-//         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         internal Tangent Comp {
-//         get { return comp; }
-//         set { comp = value; }
-//     }
+  get IsHigh(): boolean {
+    return !this.IsLow
+  }
 
-//     internal bool IsHigh {
-//         get { return !IsLow; }
-//     }
+  lowTangent: boolean
 
-//     bool lowTangent; //true means that it is a low tangent to Q, false meanst that it is a high tangent to Q
+  // true means that it is a low tangent to Q, false meanst that it is a high tangent to Q
+  get IsLow(): boolean {
+    return this.lowTangent
+  }
+  set IsLow(value: boolean) {
+    this.lowTangent = value
+  }
 
-//     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//     internal bool IsLow {
-//         get { return lowTangent; }
-//         set { lowTangent = value; }
-//     }
+  separatingPolygons: boolean
 
-//     bool separatingPolygons;
+  get SeparatingPolygons(): boolean {
+    return this.separatingPolygons
+  }
+  set SeparatingPolygons(value: boolean) {
+    this.separatingPolygons = value
+  }
 
-//     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//     internal bool SeparatingPolygons
-//     {
-//         get { return separatingPolygons; }
-//         set { separatingPolygons = value; }
-//     }
+  diagonal: Diagonal
 
-//     Diagonal diagonal;
+  //  the diagonal will be not a null only when it is active
+  //  <
+  get Diagonal(): Diagonal {
+    return this.diagonal
+  }
+  set Diagonal(value: Diagonal) {
+    this.diagonal = value
+  }
 
-//     // the diagonal will be not a null only when it is active
-//     // <
-//     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//     internal Diagonal Diagonal {
-//         get { return diagonal; }
-//         set { diagonal = value; }
-//     }
+  start: PolylinePoint
 
-//     PolylinePoint start;
+  get Start(): PolylinePoint {
+    return this.start
+  }
+  set Start(value: PolylinePoint) {
+    this.start = value
+  }
 
-//     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//     internal PolylinePoint Start {
-//         get { return start; }
-//         set { start = value; }
-//     }
+  end: PolylinePoint
 
-//     PolylinePoint end;
+  public get End(): PolylinePoint {
+    return this.end
+  }
+  public set End(value: PolylinePoint) {
+    this.end = value
+  }
 
-//     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         public PolylinePoint End {
-//         get { return end; }
-//         set { end = value; }
-//     }
-//     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//     internal Tangent(PolylinePoint start, PolylinePoint end) {
-//         this.start = start;
-//         this.End = end;
-//     }
+  constructor(start: PolylinePoint, end: PolylinePoint) {
+    this.start = start
+    this.End = end
+  }
 
-//         public override string ToString() {
-//         return String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},{1}", Start, End);
-//     }
-// }
-// }
+  toString(): string {
+    return String.Format('{0},{1}', this.Start, this.End)
+  }
+}

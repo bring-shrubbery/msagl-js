@@ -963,7 +963,7 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
 
   addEdge(a: Point, b: Point) {
     // Assert.assert(this.PortLocations.findIndex((p) => p.equal(a)) >= 0)
-    const ab: VisibilityEdge = this.visibilityGraph.AddEdge(a, b)
+    const ab: VisibilityEdge = this.visibilityGraph.AddEdgePP(a, b)
     const av: VisibilityVertex = ab.Source
     // Assert.assert(av.point == a && ab.TargetPoint == b)
     // all edges adjacent to a which are different from ab
@@ -974,7 +974,7 @@ export class LineSweeperForPortLocations extends LineSweeperBase /* IConeSweeper
     for (const edge of edgesToFix) {
       const c = (edge.Target == av ? edge.Source : edge.Target).point
       VisibilityGraph.RemoveEdge(edge)
-      this.visibilityGraph.AddEdge(c, b)
+      this.visibilityGraph.AddEdgePP(c, b)
     }
   }
 

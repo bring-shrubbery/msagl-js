@@ -355,7 +355,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
     if (this.Ports != null && this.Ports.hasP(cone.Apex)) {
       this.CreatePortEdge(cone, p)
     } else {
-      this.visibilityGraph.AddEdge(cone.Apex, p)
+      this.visibilityGraph.AddEdgePP(cone.Apex, p)
     }
 
     this.RemoveCone(cone)
@@ -380,10 +380,10 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
           edge.Target == coneApexVert ? edge.Source : edge.Target
         ).point
         VisibilityGraph.RemoveEdge(edge)
-        this.portEdgesGraph.AddEdge(otherPort, p)
+        this.portEdgesGraph.AddEdgePP(otherPort, p)
       }
     }
-    this.portEdgesGraph.AddEdge(cone.Apex, p)
+    this.portEdgesGraph.AddEdgePP(cone.Apex, p)
   }
 
   static InsertPointIntoPolylineAfter(

@@ -1,52 +1,83 @@
-// using System.Collections.Generic;
-// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Core.Geometry.Curves;
-// using Microsoft.Msagl.Core;
+import {Point} from '../..'
+import {GeomConstants} from '../../math/geometry'
+import {LinearSystem2} from '../../math/geometry/linearSystem'
+import {TriangleOrientation} from '../../math/geometry/point'
+import {Assert} from '../../utils/assert'
+import {Diagonal} from './Diagonal'
 
-// namespace Microsoft.Msagl.Routing.Visibility {
-//     internal class ActiveDiagonalComparerWithRay: IComparer < Diagonal > {
+export class ActiveDiagonalComparerWithRay {
+  pointOnTheRay: Point
 
-//         Point pointOnTheRay;
+  get PointOnTangentAndInsertedDiagonal(): Point {
+    return this.pointOnTheRay
+  }
+  set PointOnTangentAndInsertedDiagonal(value: Point) {
+    this.pointOnTheRay = value
+  }
 
-//         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//           internal Point PointOnTangentAndInsertedDiagonal {
-//         get { return pointOnTheRay; }
-//         set { pointOnTheRay = value; }
-//     }
+  public Compare(x: Diagonal, y: Diagonal): number {
+    Assert.assert(
+      ActiveDiagonalComparerWithRay.BelongsToTheDiagonal(
+        this.PointOnTangentAndInsertedDiagonal,
+        x.Start,
+        x.End,
+      ),
+    )
+    if (!x.Start.equal(y.Start)) {
+      switch (
+        Point.getTriangleOrientation(
+          this.PointOnTangentAndInsertedDiagonal,
+          y.Start,
+          y.End,
+        )
+      ) {
+        case TriangleOrientation.Counterclockwise:
+          return -1
+        default:
+          return 1
+      }
+    } else {
+      return 0
+    }
+  }
 
-//           public int Compare(Diagonal x, Diagonal y) {
-//         ValidateArg.IsNotNull(x, "x");
-//         ValidateArg.IsNotNull(y, "y");
-//         Assert.assert(BelongsToTheDiagonal(PointOnTangentAndInsertedDiagonal, x.start, x.End));
-//         if (x.start != y.start)
-//             switch (Point.getTriangleOrientation(PointOnTangentAndInsertedDiagonal, y.start, y.End)) {
-//                 case TriangleOrientation.Counterclockwise:
-//                     return -1;
-//                 default:
-//                     return 1;
-//             } else {
-//             return 0;
-//         }
-//     }
+  static BelongsToTheDiagonal(
+    IntersectionOfTheRayAndInsertedEdge: Point,
+    start: Point,
+    end: Point,
+  ): boolean {
+    return Point.closeDistEps(
+      IntersectionOfTheRayAndInsertedEdge,
+      Point.ClosestPointAtLineSegment(
+        IntersectionOfTheRayAndInsertedEdge,
+        start,
+        end,
+      ),
+    )
+  }
 
-//     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//           static bool BelongsToTheDiagonal(Point IntersectionOfTheRayAndInsertedEdge, Point start, Point end) {
-//         return Point.closeDistEps(IntersectionOfTheRayAndInsertedEdge, Point.ClosestPointAtLineSegment(IntersectionOfTheRayAndInsertedEdge, start, end));
-//     }
-
-//     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//           static internal Point IntersectDiagonalWithRay(Point pivot, Point pointOnRay, Diagonal diagonal) {
-//         Point ray = pointOnRay - pivot;
-//         Point source = diagonal.start;
-//         Point target = diagonal.End;
-//         //let x(t-s)+s is on the ray, then for some y we x(t-s)+s=y*ray+pivot, or x(t-s)-y*ray=pivot-s
-//         double x, y;
-//         bool result = LinearSystem2.Solve(target.x - source.x, -ray.x, pivot.x - source.x, target.y - source.y, -ray.y, pivot.y - source.y, out x, out y);
-
-//         Assert.assert(result && -ApproximateComparer.Tolerance <= x && x <= 1 + ApproximateComparer.Tolerance);
-
-//         return pivot + y * ray;
-//     }
-
-// }
-// }
+  static IntersectDiagonalWithRay(
+    pivot: Point,
+    pointOnRay: Point,
+    diagonal: Diagonal,
+  ): Point {
+    const ray: Point = pointOnRay.sub(pivot)
+    const source: Point = diagonal.Start
+    const target: Point = diagonal.End
+    // let x(t-s)+s is on the ray, then for some y we x(t-s)+s=y*ray+pivot, or x(t-s)-y*ray=pivot-s
+    const result = LinearSystem2.solve(
+      target.x - source.x,
+      ray.x * -1,
+      pivot.x - source.x,
+      target.y - source.y,
+      ray.y * -1,
+      pivot.y - source.y,
+    )
+    Assert.assert(
+      result &&
+        -GeomConstants.tolerance <= result.x &&
+        result.x <= 1 + GeomConstants.tolerance,
+    )
+    return pivot.add(ray.mul(result.y))
+  }
+}

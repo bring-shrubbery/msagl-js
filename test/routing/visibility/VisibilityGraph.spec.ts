@@ -27,7 +27,7 @@ test('e0', () => {
   g.AddVertexP(a)
   g.AddVertexP(b)
   g.AddVertexP(c)
-  const ab = g.AddEdge(a, b)
+  const ab = g.AddEdgePP(a, b)
   const e_ab = g.FindEdgePP(a, b)
   expect(ab).toBe(e_ab)
 })

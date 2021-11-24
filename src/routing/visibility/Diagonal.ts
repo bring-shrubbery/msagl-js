@@ -1,48 +1,49 @@
-// using System;
-// using Microsoft.Msagl.Core.DataStructures;
-// using Microsoft.Msagl.Core.Geometry;
+import {String} from 'typescript-string-operations'
+import {Point} from '../..'
+import {RBNode} from '../../structs/RBTree/rbNode'
+import {Tangent} from './Tangent'
+export class Diagonal {
+  toString(): string {
+    return String.Format('{0},{1}', this.Start, this.End)
+  }
 
-// namespace Microsoft.Msagl.Routing.Visibility {
-//     internal class Diagonal {
+  get Start(): Point {
+    return this.leftTangent.End.point
+  }
 
-//         public override string ToString() {
-//             return String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0},{1}", Start, End);
-//         }
-//         internal Point Start {
-//             get { return leftTangent.End.point; }
-//         }
+  get End(): Point {
+    return this.rightTangent.End.point
+  }
 
-//         internal Point End {
-//             get { return rightTangent.End.point; }
-//         }
+  constructor(leftTangent: Tangent, rightTangent: Tangent) {
+    this.LeftTangent = leftTangent
+    this.RightTangent = rightTangent
+  }
 
-//         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         internal Diagonal(Tangent leftTangent, Tangent rightTangent) {
-//             this.LeftTangent = leftTangent;
-//             this.RightTangent = rightTangent;
-//         }
+  leftTangent: Tangent
 
-//         Tangent leftTangent;
+  get LeftTangent(): Tangent {
+    return this.leftTangent
+  }
+  set LeftTangent(value: Tangent) {
+    this.leftTangent = value
+  }
 
-//         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         internal Tangent LeftTangent {
-//             get { return leftTangent; }
-//             set { leftTangent = value; }
-//         }
-//         Tangent rightTangent;
+  rightTangent: Tangent
 
-//         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         internal Tangent RightTangent {
-//             get { return rightTangent; }
-//             set { rightTangent = value; }
-//         }
+  get RightTangent(): Tangent {
+    return this.rightTangent
+  }
+  set RightTangent(value: Tangent) {
+    this.rightTangent = value
+  }
 
-//         RBNode<Diagonal> rbNode;
+  rbNode: RBNode<Diagonal>
 
-//         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         internal RBNode<Diagonal> RbNode {
-//             get { return rbNode; }
-//             set { rbNode = value; }
-//         }
-//     }
-// }
+  get RbNode(): RBNode<Diagonal> {
+    return this.rbNode
+  }
+  set RbNode(value: RBNode<Diagonal>) {
+    this.rbNode = value
+  }
+}

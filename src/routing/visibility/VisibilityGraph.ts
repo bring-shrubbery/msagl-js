@@ -86,15 +86,15 @@ export class VisibilityGraph {
   //       return graphOfHoleBoundaries;
   //   }
 
-  //   AddHole(polyline: Polyline) {
-  //       let p = polyline.startPoint;
-  //       while ((p != polyline.endPoint)) {
-  //           this.AddEdge(p, p.Next);
-  //           p = p.Next;
-  //       }
+  AddHole(polyline: Polyline) {
+    let p = polyline.startPoint
+    while (p != polyline.endPoint) {
+      this.AddEdgePlPl(p, p.next)
+      p = p.next
+    }
 
-  //       this.AddEdge(polyline.endPoint, polyline.startPoint);
-  //   }
+    this.AddEdgePlPl(polyline.endPoint, polyline.startPoint)
+  }
 
   static *OrientHolesClockwise(
     holes: Iterable<Polyline>,
@@ -219,7 +219,7 @@ export class VisibilityGraph {
   //   }
 
   AddEdgePlPl(source: PolylinePoint, target: PolylinePoint) {
-    this.AddEdge(source.point, target.point)
+    this.AddEdgePP(source.point, target.point)
   }
 
   static AddEdge(edge: VisibilityEdge) {
@@ -257,7 +257,7 @@ export class VisibilityGraph {
     return edge
   }
 
-  AddEdge(source: Point, target: Point): VisibilityEdge {
+  AddEdgePP(source: Point, target: Point): VisibilityEdge {
     return this.AddEdgeF(source, target, (a, b) => new VisibilityEdge(a, b))
   }
 
