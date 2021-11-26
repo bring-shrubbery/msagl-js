@@ -21,6 +21,9 @@ import {Polygon} from './visibility/Polygon'
 
 export class InteractiveObstacleCalculator {
   LoosePadding: number
+  tightPolylinesToLooseDistances: Map<Polyline, number>
+  LooseObstacles: Polyline[]
+  TightObstacles: Set<Polyline>
   private static PadCorner(
     poly: Polyline,
     p0: PolylinePoint,
@@ -98,6 +101,34 @@ export class InteractiveObstacleCalculator {
     )
   }
 
+  CreateLooseObstacles() {
+    this.tightPolylinesToLooseDistances = new Map<Polyline, number>()
+    this.LooseObstacles = new Array<Polyline>()
+    for (const tightPolyline of this.TightObstacles) {
+      const distance =
+        InteractiveObstacleCalculator.FindMaxPaddingForTightPolyline(
+          this.RootOfTightHierarchy,
+          tightPolyline,
+          this.LoosePadding,
+        )
+      this.tightPolylinesToLooseDistances.set(tightPolyline, distance)
+      this.LooseObstacles.push(
+        InteractiveObstacleCalculator.LoosePolylineWithFewCorners(
+          tightPolyline,
+          distance,
+        ),
+      )
+    }
+
+    this.RootOfLooseHierarchy =
+      InteractiveObstacleCalculator.CalculateHierarchy(this.LooseObstacles)
+    Assert.assert(
+      InteractiveObstacleCalculator.GetOverlappedPairSet(
+        this.RootOfLooseHierarchy,
+      ).size == 0,
+      'Overlaps are found in LooseObstacles',
+    )
+  }
   static CalculateHierarchy(
     polylines: Array<Polyline>,
   ): RectangleNode<Polyline, Point> {
@@ -171,6 +202,7 @@ export class InteractiveObstacleCalculator {
     )
   }
   RootOfTightHierarchy: RectangleNode<Polyline, Point>
+  RootOfLooseHierarchy: RectangleNode<Polyline, Point>
 
   static OneCurveLiesInsideOfOther(polyA: ICurve, polyB: ICurve): boolean {
     Assert.assert(

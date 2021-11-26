@@ -7,7 +7,7 @@ import {BimodalSequence} from './BimodalSequence'
 import {TangentPair} from './TangentPair'
 
 export class Polygon {
-  polyline: Polyline
+  private polyline: Polyline
   static mkFromPoints(pts: Point[]): Polygon {
     return new Polygon(Polyline.mkClosedFromPoints(pts))
   }

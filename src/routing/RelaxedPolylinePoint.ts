@@ -1,37 +1,45 @@
-// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Core.Geometry.Curves;
+import {Point} from '..'
+import {PolylinePoint} from '../math/geometry/polylinePoint'
 
-// namespace Microsoft.Msagl.Routing {
-//     internal class RelaxedPolylinePoint  {
-//         private PolylinePoint polylinePoint;
+export class RelaxedPolylinePoint {
+  private polylinePoint: PolylinePoint
 
-//         internal PolylinePoint PolylinePoint {
-//             get { return polylinePoint; }
-//             set { polylinePoint = value; }
-//         }
-//         private Point originalPosition;
+  get PolylinePoint(): PolylinePoint {
+    return this.polylinePoint
+  }
+  set PolylinePoint(value: PolylinePoint) {
+    this.polylinePoint = value
+  }
 
-//         internal Point OriginalPosition {
-//             get { return originalPosition; }
-//             set { originalPosition = value; }
-//         }
+  private originalPosition: Point
 
-//         internal RelaxedPolylinePoint(PolylinePoint polylinePoint, Point originalPosition) {
-//             this.PolylinePoint = polylinePoint;
-//             this.OriginalPosition = originalPosition;
-//         }
+  get OriginalPosition(): Point {
+    return this.originalPosition
+  }
+  set OriginalPosition(value: Point) {
+    this.originalPosition = value
+  }
 
-//         RelaxedPolylinePoint next;
+  constructor(polylinePoint: PolylinePoint, originalPosition: Point) {
+    this.PolylinePoint = polylinePoint
+    this.OriginalPosition = originalPosition
+  }
 
-//         internal RelaxedPolylinePoint Next {
-//             get { return next; }
-//             set { next = value; }
-//         }
-//         RelaxedPolylinePoint prev;
+  next: RelaxedPolylinePoint
 
-//         internal RelaxedPolylinePoint Prev {
-//             get { return prev; }
-//             set { prev = value; }
-//         }
-//     }
-// }
+  get Next(): RelaxedPolylinePoint {
+    return this.next
+  }
+  set Next(value: RelaxedPolylinePoint) {
+    this.next = value
+  }
+
+  prev: RelaxedPolylinePoint
+
+  get Prev(): RelaxedPolylinePoint {
+    return this.prev
+  }
+  set Prev(value: RelaxedPolylinePoint) {
+    this.prev = value
+  }
+}
