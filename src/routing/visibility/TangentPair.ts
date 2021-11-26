@@ -1,9 +1,7 @@
 // calculates the pair of tangent line segments between two convex non-intersecting polygons H and Q
 
-// import {GeomConstants} from '../../math/geometry/geomConstants'
 import {LineSegment} from '../../math/geometry/lineSegment'
 import {Point} from '../../math/geometry/point'
-// import {Assert} from '../../utils/assert'
 import {Polygon} from './Polygon'
 
 // we suppose that polygons are clockwise oriented

@@ -1318,10 +1318,3 @@ export class SplineRouter extends Algorithm {
     return loosePadding
   }
 }
-function AddRange<T>(array: Array<T>, addedArray: Iterable<T>) {
-  for (const t of addedArray) array.push(t)
-}
-
-function InsertRange<T>(collection: Set<T>, addedArray: Iterable<T>) {
-  for (const t of addedArray) collection.add(t)
-}

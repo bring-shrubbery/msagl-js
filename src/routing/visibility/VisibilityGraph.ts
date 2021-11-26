@@ -1,6 +1,7 @@
 import {Polyline} from '../../math/geometry'
 import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
+import {Assert} from '../../utils/assert'
 // import {Assert} from '../../utils/assert'
 import {PointMap} from '../../utils/PointMap'
 import {VisibilityEdge} from './VisibilityEdge'
@@ -201,22 +202,25 @@ export class VisibilityGraph {
     return this.pointToVertexMap.hasP(point)
   }
 
-  //   static AddEdge(source: VisibilityVertex, target: VisibilityVertex): VisibilityEdge {
-  //       let visEdge: VisibilityEdge;
-  //       if (source.TryGetEdge(target, /* out */visEdge)) {
-  //           return visEdge;
-  //       }
+  static AddEdgeVV(
+    source: VisibilityVertex,
+    target: VisibilityVertex,
+  ): VisibilityEdge {
+    let visEdge: VisibilityEdge
+    if ((visEdge = source.get(target))) {
+      return visEdge
+    }
 
-  //       if ((source == target)) {
-  //           Assert.assert(false, "Self-edges are not allowed");
-  //           throw new InvalidOperationException("Self-edges are not allowed");
-  //       }
+    if (source == target) {
+      Assert.assert(false, 'Self-edges are not allowed')
+      throw new Error('Self-edges are not allowed')
+    }
 
-  //       let edge = new VisibilityEdge(source, target);
-  //       source.OutEdges.insert(edge);
-  //       target.InEdges.Add(edge);
-  //       return edge;
-  //   }
+    const edge = new VisibilityEdge(source, target)
+    source.OutEdges.insert(edge)
+    target.InEdges.push(edge)
+    return edge
+  }
 
   AddEdgePlPl(source: PolylinePoint, target: PolylinePoint) {
     this.AddEdgePP(source.point, target.point)
@@ -264,10 +268,6 @@ export class VisibilityGraph {
   FindVertex(point: Point): VisibilityVertex {
     return this.pointToVertexMap.get(point)
   }
-
-  //   GetVertex(polylinePoint: PolylinePoint): VisibilityVertex {
-  //       return this.FindVertex(polylinePoint.point);
-  //   }
 
   Vertices(): IterableIterator<VisibilityVertex> {
     return this.pointToVertexMap.values()

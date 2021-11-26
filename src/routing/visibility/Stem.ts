@@ -1,57 +1,52 @@
-// using System;
-// using System.Collections.Generic;
-// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Core.Geometry.Curves;
+import {String} from 'typescript-string-operations'
+import {PolylinePoint} from '../../math/geometry/polylinePoint'
+import {Assert} from '../../utils/assert'
+//  represents a chunk of a hole boundary
+//  <
+export class Stem {
+  private start: PolylinePoint
 
-// namespace Microsoft.Msagl.Routing.Visibility {
+  get Start(): PolylinePoint {
+    return this.start
+  }
+  set Start(value: PolylinePoint) {
+    this.start = value
+  }
 
-//     // represents a chunk of a hole boundary
-//     // <
-//     internal class Stem {
-//         PolylinePoint start;
+  private end: PolylinePoint
 
-//         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         internal PolylinePoint Start {
-//         get { return start; }
-//         set { start = value; }
-//     }
-//     PolylinePoint end;
+  get End(): PolylinePoint {
+    return this.end
+  }
+  set End(value: PolylinePoint) {
+    this.end = value
+  }
 
-//     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//     internal PolylinePoint End {
-//         get { return end; }
-//         set { end = value; }
-//     }
+  constructor(start: PolylinePoint, end: PolylinePoint) {
+    Assert.assert(start.polyline == end.polyline)
+    this.start = start
+    this.end = end
+  }
 
-//     internal Stem(PolylinePoint start, PolylinePoint end) {
-//         Assert.assert(start.Polyline == end.Polyline);
-//         this.start = start;
-//         this.end = end;
-//     }
+  *Sides(): IterableIterator<PolylinePoint> {
+    let v: PolylinePoint = this.start
+    while (v != this.end) {
+      const side: PolylinePoint = v
+      yield side
+      v = side.nextOnPolyline
+    }
+  }
 
-//     internal IEnumerable < PolylinePoint > Sides {
-//         get {
-//             PolylinePoint v = start;
+  MoveStartClockwise(): boolean {
+    if (this.Start != this.End) {
+      this.Start = this.Start.nextOnPolyline
+      return true
+    }
 
-//             while (v != end) {
-//                 PolylinePoint side = v;
-//                 yield return side;
-//                 v = side.NextOnPolyline;
-//             }
-//         }
-//     }
+    return false
+  }
 
-//     internal bool MoveStartClockwise() {
-//         if (Start != End) {
-//             Start = Start.NextOnPolyline;
-//             return true;
-//         }
-//         return false;
-//     }
-
-//         public override string ToString() {
-//         return String.Format(System.Globalization.CultureInfo.InvariantCulture, "Stem({0},{1})", Start, End);
-//     }
-
-// }
-// }
+  toString(): string {
+    return String.Format('Stem({0},{1})', this.Start, this.End)
+  }
+}

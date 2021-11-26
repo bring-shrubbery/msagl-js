@@ -1,82 +1,94 @@
-// using System;
-// using System.Collections.Generic;
-// using Microsoft.Msagl.Core.Geometry;
-// using Microsoft.Msagl.Core.Geometry.Curves;
-// using Microsoft.Msagl.Core;
+//  compares couples only by looking at the couple first point
 
-// namespace Microsoft.Msagl.Routing.Visibility {
+import {IComparer} from 'linq-to-typescript'
+import {Point} from '../..'
+import {GeomConstants} from '../../math/geometry'
+import {Stem} from './Stem'
 
-//     // compares couples only by looking at the couple first point
-//     // we need the couple to hold the stem
-//     // <
-//     internal class StemStartPointComparer : IComparer < Stem > {
-//         Point pivot;
+//  we need the couple to hold the stem
+export class StemStartPointComparer {
+  pivot: Point
 
-//         int IComparer<Stem>.Compare(Stem i, Stem j) {
-//         if (i == j)
-//             return 0;
-//         if (i == null)
-//             return -1;
-//         if (j == null)
-//             return 1;
+  constructor(p: Point) {
+    this.pivot = p
+  }
 
-//         Point a = i.start.point - pivot;
-//         Point b = j.start.point - pivot;
+  IComparer(i: Stem, j: Stem): number {
+    if (i == j) return 0
+    if (i == null) return -1
+    if (j == null) return 1
 
-//         return CompareVectorsByAngleToXAxis(a, b);
+    const a = i.Start.point.sub(this.pivot)
+    const b = j.Start.point.sub(this.pivot)
 
-//     }
+    return StemStartPointComparer.CompareVectorsByAngleToXAxis(a, b)
+  }
 
-//     internal static int CompareVectorsByAngleToXAxis(Point a, Point b) {
-//         if (a.y >= 0) {
-//             if (b.y < 0)
-//                 return -1;
-//             return CompareVectorsPointingToTheSameYHalfPlane(ref a, ref b);
+  static CompareVectorsByAngleToXAxis(a: Point, b: Point): number {
+    if (a.y >= 0) {
+      if (b.y < 0) {
+        return -1
+      }
 
-//         } else {
-//             //a.y <0
-//             if (b.y >= 0)
-//                 return 1;
-//             return CompareVectorsPointingToTheSameYHalfPlane(ref a, ref b);
-//         }
+      return StemStartPointComparer.CompareVectorsPointingToTheSameYHalfPlane(
+        a,
+        b,
+      )
+    } else {
+      // a.y <0
+      if (b.y >= 0) {
+        return 1
+      }
 
-//         throw new Error();
-//     }
+      return StemStartPointComparer.CompareVectorsPointingToTheSameYHalfPlane(
+        a,
+        b,
+      )
+    }
+  }
 
-//         private static int CompareVectorsPointingToTheSameYHalfPlane(ref Point a, ref Point b) {
-//         //now we know that a and b do not point to different Y half planes
-//         double sign = a.x * b.y - a.y * b.x;
-//         if (sign > ApproximateComparer.Tolerance)
-//             return -1;
-//         if (sign < -ApproximateComparer.Tolerance)
-//             return 1;
-//         //are they on the opposite sides of the pivot by X?
-//         if (a.x >= 0) {
-//             if (b.x < 0)//yes
-//                 return -1;
-//         } else
-//             if (b.x >= 0)
-//                 return 1;
+  private static CompareVectorsPointingToTheSameYHalfPlane(
+    a: Point,
+    b: Point,
+  ): number {
+    // now we know that a and b do not point to different Y half planes
+    const sign: number = a.x * b.y - a.y * b.x
+    if (sign > GeomConstants.tolerance) {
+      return -1
+    }
 
-//         double del = Math.Abs(a.x) - Math.Abs(b.x);
-//         if (del < 0)
-//             return -1;
-//         if (del > 0)
-//             return 1;
+    if (sign < -GeomConstants.tolerance) {
+      return 1
+    }
 
-//         del = Math.Abs(a.y) - Math.Abs(b.y);
-//         if (del < 0)
-//             return -1;
-//         if (del > 0)
-//             return 1;
+    // are they on the opposite sides of the pivot by X?
+    if (a.x >= 0) {
+      if (b.x < 0) {
+        return -1
+      }
+    } else if (b.x >= 0) {
+      return 1
+    }
 
-//         return 0; //points are equal
-//     }
+    let del: number = Math.abs(a.x) - Math.abs(b.x)
+    if (del < 0) {
+      return -1
+    }
 
-//     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//     internal StemStartPointComparer(Point pivotPoint) {
-//         this.pivot = pivotPoint;
-//     }
+    if (del > 0) {
+      return 1
+    }
 
-// }
-// }
+    del = Math.abs(a.y) - Math.abs(b.y)
+    if (del < 0) {
+      return -1
+    }
+
+    if (del > 0) {
+      return 1
+    }
+
+    return 0
+    // points are equal
+  }
+}

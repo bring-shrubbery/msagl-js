@@ -268,7 +268,7 @@ export class Curve implements ICurve {
     curve0: ICurve,
     curve1: ICurve,
     liftIntersection: boolean,
-  ) {
+  ): IntersectionInfo {
     /*Assert.assert(curve0 != curve1)*/
     //            number c0S = curve0.parStart, c1S = curve1.parStart;
     //            if (CurvesAreCloseAtParams(curve0, curve1, c0S, c1S)) {

@@ -9,11 +9,7 @@ export class TollFreeVisibilityEdge extends VisibilityEdge {
     return new TollFreeVisibilityEdge(source, target, 0)
   }
 
-  constructor(
-    source: VisibilityVertex,
-    target: VisibilityVertex,
-    weight: number,
-  ) {
+  constructor(source: VisibilityVertex, target: VisibilityVertex, weight = 0) {
     super(source, target, weight)
   }
 }
