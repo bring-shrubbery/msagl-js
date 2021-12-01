@@ -10,6 +10,7 @@ import {GeomConstants} from './geomConstants'
 import {Parallelogram} from './parallelogram'
 import {LineSegment} from './lineSegment'
 import {Curve} from './curve'
+import {Assert} from '../../utils/assert'
 
 type AdjustedPar = {
   a: Point
@@ -32,7 +33,7 @@ export class Polyline implements ICurve {
   }
   startPoint: PolylinePoint
   endPoint: PolylinePoint
-  initIsRequired = true
+  private initIsRequired = true
   private isClosed_ = false
   pBNode: PN
   private bBox: Rectangle
@@ -65,7 +66,7 @@ export class Polyline implements ICurve {
     pp.polyline = this
     pp.point = p.clone()
     if (this.endPoint != null) {
-      // if (!ApproximateComparer.Close(point, EndPoint.Point)) {
+      // if (!ApproximateComparer.Close(point, this.endPoint.Point)) {
       this.endPoint.next = pp
       pp.prev = this.endPoint
       this.endPoint = pp
@@ -76,7 +77,25 @@ export class Polyline implements ICurve {
     this.setInitIsRequired()
   }
 
-  *points(): IterableIterator<Point> {
+  PrependPoint(p: Point) {
+    Assert.assert(
+      this.endPoint == null || !Point.closeDistEps(p, this.endPoint.point),
+    )
+    const pp = PolylinePoint.mkPolylinePoint(p)
+    if (this.startPoint != null) {
+      if (!Point.closeDistEps(p, this.startPoint.point)) {
+        this.startPoint.prev = pp
+        pp.next = this.startPoint
+        this.startPoint = pp
+      }
+    } else {
+      this.endPoint = pp
+      this.startPoint = pp
+    }
+
+    this.setInitIsRequired()
+  }
+  *[Symbol.iterator](): IterableIterator<Point> {
     for (let s = this.startPoint; s != null; s = s.next) yield s.point
   }
 

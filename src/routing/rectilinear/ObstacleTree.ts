@@ -509,8 +509,8 @@ export class ObstacleTree {
     group: Obstacle,
     loosePolyline: Polyline,
   ) {
-    const points = Array.from(group.VisibilityPolyline.points()).concat(
-      Array.from(loosePolyline.points()),
+    const points = Array.from(group.VisibilityPolyline.).concat(
+      Array.from(loosePolyline.),
     )
     group.SetConvexHull(
       new OverlapConvexHull(
@@ -585,7 +585,7 @@ export class ObstacleTree {
       ? b.VisibilityPolyline
       : a.VisibilityPolyline
 
-    for (const innerPoint of innerLoosePolyline.points()) {
+    for (const innerPoint of innerLoosePolyline.) {
       if (
         Curve.PointRelativeToCurveLocation(innerPoint, outerPolyline) ==
         PointLocation.Outside

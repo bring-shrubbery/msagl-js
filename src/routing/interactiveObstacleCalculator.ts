@@ -1,4 +1,6 @@
 import {from} from 'linq-to-typescript'
+import {Rectangle} from '..'
+import {LineSegment} from '../math/geometry'
 import {ConvexHull} from '../math/geometry/convexHull'
 import {Curve, PointLocation} from '../math/geometry/curve'
 import {GeomConstants} from '../math/geometry/geomConstants'
@@ -20,10 +22,16 @@ import {Polygon} from './visibility/Polygon'
 // import {Assert} from '../utils/assert'
 
 export class InteractiveObstacleCalculator {
+  IgnoreTightPadding: boolean
+  ObstaclesIntersectLine(a: Point, b: Point) {
+    return this.ObstaclesIntersectICurve(LineSegment.mkPP(a, b))
+  }
   LoosePadding: number
   tightPolylinesToLooseDistances: Map<Polyline, number>
   LooseObstacles: Polyline[]
   TightObstacles: Set<Polyline>
+  OverlapsDetected: boolean
+  ignoreTightPadding: any
   private static PadCorner(
     poly: Polyline,
     p0: PolylinePoint,
@@ -129,6 +137,180 @@ export class InteractiveObstacleCalculator {
       'Overlaps are found in LooseObstacles',
     )
   }
+
+  Obstacles: Array<ICurve>
+  TightPadding: number
+  CreateTightObstacles() {
+    this.RootOfTightHierarchy =
+      InteractiveObstacleCalculator.CreateTightObstacles_(
+        this.Obstacles,
+        this.TightPadding,
+        this.TightObstacles,
+      )
+    this.OverlapsDetected = this.TightObstacles.size < this.Obstacles.length
+  }
+
+  Calculate() {
+    if (!this.ignoreTightPadding) this.CreateTightObstacles()
+    else this.CreateTightObstaclesIgnoringTightPadding()
+    if (!this.IsEmpty()) this.CreateLooseObstacles()
+  }
+  IsEmpty(): boolean {
+    return this.TightObstacles == null || this.TightObstacles.size == 0
+  }
+  constructor(
+    obstacles: Array<ICurve>,
+    tightPadding: number,
+    loosePadding: number,
+    ignoreTightPadding: boolean,
+  ) {
+    this.Obstacles = obstacles
+    this.TightPadding = tightPadding
+    this.LoosePadding = loosePadding
+    this.IgnoreTightPadding = ignoreTightPadding
+  }
+
+  ObstaclesIntersectICurve(curve: ICurve): boolean {
+    const rect: Rectangle = curve.boundingBox
+    return InteractiveObstacleCalculator.CurveIntersectsRectangleNode(
+      curve,
+      rect,
+      this.RootOfTightHierarchy,
+    )
+  }
+  static CurveIntersectsRectangleNode(
+    curve: ICurve,
+    curveBox: Rectangle,
+    rectNode: RectangleNode<Polyline, Point>,
+  ): boolean {
+    if (!(<Rectangle>rectNode.irect).intersects(curveBox)) {
+      return false
+    }
+
+    if (rectNode.UserData != null) {
+      const curveUnderTest = rectNode.UserData
+      return (
+        Curve.intersectionOne(curveUnderTest, curve, false) != null ||
+        InteractiveObstacleCalculator.Inside(curveUnderTest, curve)
+      )
+    }
+
+    Assert.assert(rectNode.Left != null && rectNode.Right != null)
+    return (
+      InteractiveObstacleCalculator.CurveIntersectsRectangleNode(
+        curve,
+        curveBox,
+        rectNode.Left,
+      ) ||
+      InteractiveObstacleCalculator.CurveIntersectsRectangleNode(
+        curve,
+        curveBox,
+        rectNode.Right,
+      )
+    )
+  }
+
+  static Inside(curveUnderTest: ICurve, curve: ICurve): boolean {
+    return (
+      Curve.PointRelativeToCurveLocation(curve.start, curveUnderTest) ==
+      PointLocation.Inside
+    )
+  }
+
+  CreateTightObstaclesIgnoringTightPadding() {
+    const polysWithoutPadding = this.Obstacles.map((o) =>
+      Curve.polylineAroundClosedCurve(o),
+    )
+    const polylineHierarchy =
+      InteractiveObstacleCalculator.CalculateHierarchy(polysWithoutPadding)
+    const overlappingPairSet =
+      InteractiveObstacleCalculator.GetOverlappedPairSet(polylineHierarchy)
+    this.TightObstacles = new Set<Polyline>()
+    if (overlappingPairSet.size == 0) {
+      for (const polyline of polysWithoutPadding) {
+        const distance =
+          InteractiveObstacleCalculator.FindMaxPaddingForTightPolyline(
+            polylineHierarchy,
+            polyline,
+            this.TightPadding,
+          )
+        this.TightObstacles.add(
+          InteractiveObstacleCalculator.LoosePolylineWithFewCorners(
+            polyline,
+            distance,
+          ),
+        )
+      }
+
+      this.RootOfTightHierarchy =
+        InteractiveObstacleCalculator.CalculateHierarchy(
+          Array.from(this.TightObstacles),
+        )
+    } else {
+      for (const poly of polysWithoutPadding) {
+        this.TightObstacles.add(
+          InteractiveObstacleCalculator.CreatePaddedPolyline(
+            poly,
+            this.TightPadding,
+          ),
+        )
+      }
+
+      if (!this.IsEmpty()) {
+        this.RootOfTightHierarchy =
+          InteractiveObstacleCalculator.CalculateHierarchy(
+            Array.from(this.TightObstacles),
+          )
+        this.OverlapsDetected = false
+        while (
+          InteractiveObstacleCalculator.GetOverlappedPairSet(
+            this.RootOfTightHierarchy,
+          ).size > 0
+        ) {
+          this.RootOfTightHierarchy =
+            InteractiveObstacleCalculator.ReplaceTightObstaclesWithConvexHulls(
+              this.TightObstacles,
+              Array.from(overlappingPairSet),
+            )
+          this.OverlapsDetected = true
+        }
+      }
+    }
+  }
+
+  static CreateTightObstacles_(
+    obstacles: Array<ICurve>,
+    tightPadding: number,
+    tightObstacleSet: Set<Polyline>,
+  ): RectangleNode<Polyline, Point> {
+    if (obstacles.length == 0) {
+      return null
+    }
+
+    for (const curve of obstacles) {
+      InteractiveObstacleCalculator.CalculateTightPolyline(
+        tightObstacleSet,
+        tightPadding,
+        curve,
+      )
+    }
+
+    return InteractiveObstacleCalculator.RemovePossibleOverlapsInTightPolylinesAndCalculateHierarchy(
+      tightObstacleSet,
+    )
+  }
+  static CalculateTightPolyline(
+    tightObstacles: Set<Polyline>,
+    tightPadding: number,
+    curve: ICurve,
+  ) {
+    const tightPoly =
+      InteractiveObstacleCalculator.PaddedPolylineBoundaryOfNode(
+        curve,
+        tightPadding,
+      )
+    tightObstacles.add(tightPoly)
+  }
   static CalculateHierarchy(
     polylines: Array<Polyline>,
   ): RectangleNode<Polyline, Point> {
@@ -188,7 +370,7 @@ export class InteractiveObstacleCalculator {
     const connectedComponents = GetConnectedComponents(graph)
     for (const component of connectedComponents) {
       const polys = component.map((i) => intToPoly[i])
-      const points = from(polys).selectMany((p) => Array.from(p.points()))
+      const points = from(polys).selectMany((p) => Array.from(p.))
       const convexHull = ConvexHull.createConvexHullAsClosedPolyline(points)
       for (const poly of polys) {
         tightObsts.delete(poly)
@@ -382,7 +564,7 @@ export class InteractiveObstacleCalculator {
     ) {
       return InteractiveObstacleCalculator.CreatePaddedPolyline(
         Polyline.mkClosedFromPoints(
-          Array.from(ConvexHull.CalculateConvexHull(poly.points())),
+          Array.from(ConvexHull.CalculateConvexHull(poly.)),
         ),
         padding,
       )
@@ -399,7 +581,7 @@ export class InteractiveObstacleCalculator {
     ) {
       return InteractiveObstacleCalculator.CreatePaddedPolyline(
         Polyline.mkClosedFromPoints(
-          Array.from(ConvexHull.CalculateConvexHull(poly.points())),
+          Array.from(ConvexHull.CalculateConvexHull(poly.)),
         ),
         padding,
       )
@@ -417,7 +599,7 @@ export class InteractiveObstacleCalculator {
       ) {
         return InteractiveObstacleCalculator.CreatePaddedPolyline(
           Polyline.mkClosedFromPoints(
-            Array.from(ConvexHull.CalculateConvexHull(poly.points())),
+            Array.from(ConvexHull.CalculateConvexHull(poly.)),
           ),
           padding,
         )

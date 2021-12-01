@@ -6,7 +6,7 @@ import {BezierSeg} from './../../math/geometry/bezierSeg'
 // import {Assert} from './../../utils/assert'
 export class SmoothedPolyline {
   // creates the polyline from corner points
-  static mkFromPoints(points: Point[]) {
+  static mkFromPoints(points: Iterable<Point>) {
     let ret: SmoothedPolyline = null
     let site: CornerSite = null
     for (const p of points) {
@@ -62,7 +62,7 @@ export class SmoothedPolyline {
     }
   }
 
-  *points(): IterableIterator<Point> {
+  *[Symbol.iterator](): IterableIterator<Point> {
     let s0 = this.headSite
     while (s0 != null) {
       yield s0.point

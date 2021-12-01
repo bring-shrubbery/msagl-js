@@ -134,7 +134,7 @@ export class ShapeObstacleCalculator {
       this.TightPadding,
     )
     const stickingPointsArray = from(this.LoosePolylinesUnderShape(shape))
-      .selectMany((l) => l.points())
+      .selectMany((l) => l.)
       .where(
         (p) =>
           Curve.PointRelativeToCurveLocation(p, poly) == PointLocation.Outside,
@@ -144,7 +144,7 @@ export class ShapeObstacleCalculator {
     if (stickingPointsArray.length <= 0) {
       return poly
     }
-    const pts = from(poly.points()).concatenate(from(stickingPointsArray))
+    const pts = from(poly.).concatenate(from(stickingPointsArray))
     return Polyline.mkClosedFromPoints(ConvexHull.CalculateConvexHull(pts))
   }
 

@@ -61,7 +61,7 @@ export class GeomEdge extends GeomObject {
   get boundingBox(): Rectangle {
     const rect = Rectangle.mkEmpty()
     if (this.underlyingPolyline != null)
-      for (const p of this.underlyingPolyline.points()) rect.add(p)
+      for (const p of this.underlyingPolyline) rect.add(p)
 
     if (this.curve != null) rect.addRecSelf(this.curve.boundingBox)
 

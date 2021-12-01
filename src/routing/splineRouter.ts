@@ -843,7 +843,7 @@ export class SplineRouter extends Algorithm {
 
     const portLoosePoly = boundaryCouple.LooseShape
 
-    for (const point of (portLoosePoly.boundaryCurve as Polyline).points()) {
+    for (const point of (portLoosePoly.boundaryCurve as Polyline).) {
       if (this.visGraph.FindEdgePP(port.Location, point) == null)
         yield this.visGraph.AddEdgePP(port.Location, point)
     }
