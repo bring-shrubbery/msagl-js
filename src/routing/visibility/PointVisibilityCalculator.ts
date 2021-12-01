@@ -57,13 +57,13 @@ export class PointVisibilityCalculator {
   sortedListOfPolypoints: Array<PolylinePoint> = new Array<PolylinePoint>()
 
   //  We suppose that the holes are convex, oriented clockwise, and are mutually disjoint
-  holes: IEnumerable<Polyline>
+  holes: Array<Polyline>
 
   //  "point" can belong to the boundary of one of the holes
   //  tangent or regural visibility
   //  "qVertex" : the graph vertex corresponding to the pivot
   static CalculatePointVisibilityGraph(
-    listOfHoles: IEnumerable<Polyline>,
+    listOfHoles: Iterable<Polyline>,
     visibilityGraph: VisibilityGraph,
     point: Point,
     visibilityKind: VisibilityKind,
@@ -190,16 +190,16 @@ export class PointVisibilityCalculator {
   //     return ret;
   // }
   constructor(
-    holes: IEnumerable<Polyline>,
+    holes: Iterable<Polyline>,
     visibilityGraph: VisibilityGraph,
     point: Point,
     visibilityKind: VisibilityKind,
   ) {
-    this.holes = holes
+    this.holes = Array.from(holes)
     // this.graphOfHoleBoundaries = holeBoundariesGraph;
     this.visibilityGraph = visibilityGraph
     this.q = point
-    this.qPolylinePoint = PolylinePoint.mkPolylinePoint(this.q)
+    this.qPolylinePoint = PolylinePoint.mkFromPoint(this.q)
     this.QVertex = this.visibilityGraph.AddVertexP(this.qPolylinePoint.point)
     this.visibilityKind = visibilityKind
     const comp = new StemStartPointComparer(this.q)

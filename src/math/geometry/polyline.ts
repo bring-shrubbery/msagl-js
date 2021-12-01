@@ -81,7 +81,7 @@ export class Polyline implements ICurve {
     Assert.assert(
       this.endPoint == null || !Point.closeDistEps(p, this.endPoint.point),
     )
-    const pp = PolylinePoint.mkPolylinePoint(p)
+    const pp = PolylinePoint.mkFromPoint(p)
     if (this.startPoint != null) {
       if (!Point.closeDistEps(p, this.startPoint.point)) {
         this.startPoint.prev = pp

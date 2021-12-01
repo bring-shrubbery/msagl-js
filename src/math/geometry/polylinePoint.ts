@@ -33,7 +33,7 @@ export class PolylinePoint {
     if (this.polyline != null) this.polyline.setInitIsRequired()
   }
 
-  static mkPolylinePoint(p: Point) {
+  static mkFromPoint(p: Point) {
     const pp = new PolylinePoint()
     pp.point = p.clone()
     return pp

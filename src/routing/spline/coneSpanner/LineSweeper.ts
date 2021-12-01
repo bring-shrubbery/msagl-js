@@ -393,11 +393,11 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
   ): PolylinePoint {
     let np: PolylinePoint
     if (insertAfter.next != null) {
-      np = PolylinePoint.mkPolylinePoint(pointToInsert)
+      np = PolylinePoint.mkFromPoint(pointToInsert)
       insertAfter.next.prev = np
       insertAfter.next = np
     } else {
-      np = PolylinePoint.mkPolylinePoint(pointToInsert)
+      np = PolylinePoint.mkFromPoint(pointToInsert)
       insertAfter.next = np
       borderPolyline.endPoint = np
     }
