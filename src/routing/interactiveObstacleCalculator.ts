@@ -370,7 +370,7 @@ export class InteractiveObstacleCalculator {
     const connectedComponents = GetConnectedComponents(graph)
     for (const component of connectedComponents) {
       const polys = component.map((i) => intToPoly[i])
-      const points = from(polys).selectMany((p) => Array.from(p.))
+      const points = from(polys).selectMany((p) => Array.from(p))
       const convexHull = ConvexHull.createConvexHullAsClosedPolyline(points)
       for (const poly of polys) {
         tightObsts.delete(poly)
@@ -564,7 +564,7 @@ export class InteractiveObstacleCalculator {
     ) {
       return InteractiveObstacleCalculator.CreatePaddedPolyline(
         Polyline.mkClosedFromPoints(
-          Array.from(ConvexHull.CalculateConvexHull(poly.)),
+          Array.from(ConvexHull.CalculateConvexHull(poly)),
         ),
         padding,
       )
@@ -581,7 +581,7 @@ export class InteractiveObstacleCalculator {
     ) {
       return InteractiveObstacleCalculator.CreatePaddedPolyline(
         Polyline.mkClosedFromPoints(
-          Array.from(ConvexHull.CalculateConvexHull(poly.)),
+          Array.from(ConvexHull.CalculateConvexHull(poly)),
         ),
         padding,
       )
@@ -599,7 +599,7 @@ export class InteractiveObstacleCalculator {
       ) {
         return InteractiveObstacleCalculator.CreatePaddedPolyline(
           Polyline.mkClosedFromPoints(
-            Array.from(ConvexHull.CalculateConvexHull(poly.)),
+            Array.from(ConvexHull.CalculateConvexHull(poly)),
           ),
           padding,
         )

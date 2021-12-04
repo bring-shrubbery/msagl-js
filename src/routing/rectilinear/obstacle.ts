@@ -7,7 +7,7 @@ import {Polyline} from '../../math/geometry/polyline'
 import {PolylinePoint} from '../../math/geometry/polylinePoint'
 import {Rectangle} from '../../math/geometry/rectangle'
 // import {Assert} from '../../utils/assert'
-import {subSets} from '../../utils/setOperations'
+import {substructSets} from '../../utils/setOperations'
 import {InteractiveEdgeRouter} from '../InteractiveEdgeRouter'
 import {InteractiveObstacleCalculator} from '../interactiveObstacleCalculator'
 import {Shape} from '../shape'
@@ -34,8 +34,8 @@ export class Obstacle {
   looseVisibilityPolyline: Polyline
 
   GetPortChanges(t: {addedPorts: Set<Port>; removedPorts: Set<Port>}): boolean {
-    t.addedPorts = subSets(this.InputShape.Ports, this.Ports)
-    t.removedPorts = subSets(this.Ports, this.InputShape.Ports)
+    t.addedPorts = substructSets(this.InputShape.Ports, this.Ports)
+    t.removedPorts = substructSets(this.Ports, this.InputShape.Ports)
     if (0 == t.addedPorts.size && 0 == t.removedPorts.size) {
       return false
     }

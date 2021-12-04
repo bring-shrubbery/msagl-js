@@ -1,4 +1,4 @@
-import {GeomGraph, layoutGraphWithMds, Size} from '../../../src'
+import {GeomGraph, layoutGraphWithMds} from '../../../src'
 import {GeomObject} from '../../../src/layout/core/geomObject'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'
 import {runMDSLayout, outputGraph, setNode} from '../../utils/testUtils'

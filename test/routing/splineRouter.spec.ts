@@ -17,7 +17,7 @@ test('spline router self edge', () => {
   for (const e of g.edges()) {
     expect(e.curve == null).toBe(false)
   }
-  const sr = new SplineRouter(g, 2, 4, Math.PI / 6)
+  const sr = SplineRouter.mk4(g, 2, 4, Math.PI / 6)
   const t: SvgDebugWriter = new SvgDebugWriter('/tmp/self.svg')
   t.writeGeomGraph(g)
 })

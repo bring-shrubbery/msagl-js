@@ -5,7 +5,7 @@
 ///  <summary>
 ///  This stores information mapping the App-level Ports (e.g. FloatingPort, RelativeFloatingPort,
 ///  and MultiLocationFloatingPort) to the router's BasicScanPort subclasses (ObstaclePort and FreePoint).
-import {addSets, subSets} from '../../utils/setOperations'
+import {addSets, substructSets} from '../../utils/setOperations'
 import {from} from 'linq-to-typescript'
 import {Point, Rectangle, ICurve} from '../../math/geometry'
 import {EdgeGeometry} from '../../layout/core/edgeGeometry'
@@ -204,8 +204,8 @@ export class PortManager {
     const ttAncs = this.FindAncestorsAndObstaclePort(edgeGeom.targetPort, t)
     if (this.AncestorSets.size > 0 && s.oport != null && t.oport != null) {
       //  Make non-common ancestors' boundaries transparent (we don't want to route outside common ancestors).
-      const ttAncsOnly = subSets(ttAncs, ssAncs)
-      const ssAncsOnly = subSets(ssAncs, ttAncs)
+      const ttAncsOnly = substructSets(ttAncs, ssAncs)
+      const ssAncsOnly = substructSets(ssAncs, ttAncs)
       this.ActivateAncestors(ssAncsOnly, ttAncsOnly, shapeToObstacleMap)
     }
 
@@ -380,7 +380,7 @@ export class PortManager {
     //  be removed from the graph, its Vertex (and thus Point) are no longer set in the FreePoint, so we
     //  must use the key from the dictionary.
     if (this.freePointMap.size > this.freePointLocationsUsedByRouteEdges.size) {
-      const staleFreePairs = from(this.freePointMap.keyValues())
+      const staleFreePairs = from(this.freePointMap)
         .where((p) => !this.freePointLocationsUsedByRouteEdges.hasP(p[0]))
         .toArray()
       for (const staleFreePair of staleFreePairs) {

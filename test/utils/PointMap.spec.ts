@@ -10,7 +10,7 @@ test('PointMap', () => {
   const p = Array.from(m.keys())
   expect(p.length).toBe(4)
   expect(p[0].y < 3).toBe(true)
-  const kv = Array.from(m.keyValues())
+  const kv = Array.from(m)
   expect(kv[0][1] < 5).toBe(true)
   expect(kv.length == 4).toBe(true)
 

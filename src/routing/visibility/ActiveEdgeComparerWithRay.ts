@@ -1,5 +1,3 @@
-import {IComparer} from 'linq-to-typescript'
-import {result} from 'lodash'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {LinearSystem2} from '../../math/geometry/linearSystem'
 import {Point, TriangleOrientation} from '../../math/geometry/point'

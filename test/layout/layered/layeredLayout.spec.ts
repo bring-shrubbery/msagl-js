@@ -19,8 +19,6 @@ import {
 import {
   GeomGraph,
   GeomNode,
-  CurveFactory,
-  Point,
   Rectangle,
   LayeredLayout,
   SugiyamaLayoutSettings,
@@ -38,7 +36,6 @@ import {GeomObject} from '../../../src/layout/core/geomObject'
 import {LineSegment} from '../../../src/math/geometry'
 import {SvgDebugWriter} from '../../utils/svgDebugWriter'
 import {layoutGraphWithSugiayma} from '../../../src/layout/layered/layeredLayout'
-import {measureTextSize} from '../../drawing/drawingGraph.spec'
 type P = [number, number]
 
 test('map test', () => {

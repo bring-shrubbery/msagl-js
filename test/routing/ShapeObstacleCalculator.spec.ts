@@ -1,5 +1,4 @@
 import {CurveFactory, Point} from '../../src'
-import {DebugCurve} from '../../src/math/geometry/debugCurve'
 import {Shape} from '../../src/routing/shape'
 import {ShapeObstacleCalculator} from '../../src/routing/ShapeObstacleCalculator'
 import {TightLooseCouple} from '../../src/routing/TightLooseCouple'
@@ -17,7 +16,7 @@ test('initialTightPolyline', () => {
     new Map<Shape, TightLooseCouple>(),
   )
   const tightPolyline = shObstCalc.InitialTightPolyline(shape)
-  expect(Array.from(tightPolyline.points()).length).toBe(4)
+  expect(Array.from(tightPolyline).length).toBe(4)
   SvgDebugWriter.dumpICurves('/tmp/initialTight.svg', [
     shape.boundaryCurve,
     tightPolyline,

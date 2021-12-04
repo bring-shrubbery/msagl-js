@@ -1,3 +1,4 @@
+import {from} from 'linq-to-typescript'
 import {Point, Rectangle} from '../..'
 import {
   Polyline,
@@ -434,9 +435,9 @@ export class ObstacleTree {
 
       found = true
       const obstacles = component.map(this.OrdinalToObstacle)
-      const points: Point[] = obstacles
-        .map((p) => p.VisibilityPolyline.points)
-        .reduce((a, b) => a.concat(b), [])
+      const points: Point[] = Array.from(
+        from(obstacles).selectMany((p) => p.VisibilityPolyline),
+      )
       const och = new OverlapConvexHull(
         ConvexHull.createConvexHullAsClosedPolyline(points),
         obstacles,
@@ -509,8 +510,8 @@ export class ObstacleTree {
     group: Obstacle,
     loosePolyline: Polyline,
   ) {
-    const points = Array.from(group.VisibilityPolyline.).concat(
-      Array.from(loosePolyline.),
+    const points = Array.from(group.VisibilityPolyline).concat(
+      Array.from(loosePolyline),
     )
     group.SetConvexHull(
       new OverlapConvexHull(
@@ -585,7 +586,7 @@ export class ObstacleTree {
       ? b.VisibilityPolyline
       : a.VisibilityPolyline
 
-    for (const innerPoint of innerLoosePolyline.) {
+    for (const innerPoint of innerLoosePolyline) {
       if (
         Curve.PointRelativeToCurveLocation(innerPoint, outerPolyline) ==
         PointLocation.Outside

@@ -3,8 +3,8 @@ import {Point} from '../math/geometry/point'
 export class PointMap<T> {
   mapOfMaps: Map<number, Map<number, T>>
   private size_ = 0
-  deleteP(point: Point) {
-    this.delete(point.x, point.y)
+  deleteP(point: Point): boolean {
+    return this.delete(point.x, point.y)
   }
   clear() {
     this.mapOfMaps.clear()
@@ -31,11 +31,14 @@ export class PointMap<T> {
     const m = this.mapOfMaps.get(x)
     if (m != null) {
       if (m.delete(y)) this.size_--
+      return true
     }
+    return false
   }
 
   has(x: number, y: number): boolean {
-    return this.mapOfMaps.has(x) && this.mapOfMaps.get(x).has(y)
+    const m = this.mapOfMaps.get(x)
+    return m != null && m.has(y)
   }
   hasP(p: Point) {
     return this.has(p.x, p.y)
@@ -61,7 +64,7 @@ export class PointMap<T> {
     }
   }
 
-  *keyValues(): IterableIterator<[Point, T]> {
+  *[Symbol.iterator](): IterableIterator<[Point, T]> {
     for (const p of this.mapOfMaps) {
       for (const yV of p[1]) {
         yield [new Point(p[0], yV[0]), yV[1]]

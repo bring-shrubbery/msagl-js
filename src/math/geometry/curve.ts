@@ -218,8 +218,9 @@ export class Curve implements ICurve {
     return c
   }
 
-  addSegs(segs: ICurve[]) {
+  addSegs(segs: ICurve[]): Curve {
     for (const s of segs) this.addSegment(s)
+    return this
   }
 
   // Adds a segment to the curve

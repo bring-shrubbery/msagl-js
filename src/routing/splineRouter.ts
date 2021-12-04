@@ -25,13 +25,7 @@ import {Point} from '../math/geometry/point'
 // import { SmoothedPolyline } from '../math/geometry/smoothedPolyline'
 import {Algorithm} from '../utils/algorithm'
 import {Assert} from '../utils/assert'
-import {
-  Curve,
-  GeomConstants,
-  PointLocation,
-  Polyline,
-  Rectangle,
-} from '../math/geometry'
+import {Curve, PointLocation, Polyline, Rectangle} from '../math/geometry'
 import {PolylinePoint} from '../math/geometry/polylinePoint'
 import {closeDistEps} from '../utils/compare'
 import {PointSet} from '../utils/PointSet'
@@ -59,6 +53,18 @@ import {Port} from '../layout/core/port'
 import {ShapeObstacleCalculator} from './ShapeObstacleCalculator'
 import {InteractiveEdgeRouter} from './InteractiveEdgeRouter'
 import {SmoothedPolyline} from '../math/geometry/smoothedPolyline'
+import {
+  addRange,
+  addSets,
+  insertRange,
+  setIntersection,
+  setsAreEqual,
+} from '../utils/setOperations'
+import {Queue} from 'queue-typescript'
+import {Arrowhead} from '../layout/core/arrowhead'
+import {Polygon} from './visibility/Polygon'
+import {PointPairMap} from '../utils/pointPairMap'
+import {InteractiveObstacleCalculator} from './interactiveObstacleCalculator'
 // import { CancelToken } from '../utils/cancelToken'
 // import { Cdt } from './ConstrainedDelaunayTriangulation/Cdt'
 // import { CdtEdge } from './ConstrainedDelaunayTriangulation/CdtEdge'
@@ -278,7 +284,7 @@ export class SplineRouter extends Algorithm {
       for (const sh of rootShape.Descendants()) {
         for (const port of sh.Ports) {
           const enterableSet = this.portsToEnterableShapes.get(port)
-          InsertRange(
+          insertRange(
             enterableSet,
             from(sh.Ancestors()).where((s) => s.BoundaryCurve != null),
           )
@@ -370,17 +376,34 @@ export class SplineRouter extends Algorithm {
     throw new Error('not implemented')
   }
 
+  GroupEdgesByPassport(): Array<{
+    passport: Set<Shape>
+    edges: Array<GeomEdge>
+  }> {
+    const ret = new Array<{passport: Set<Shape>; edges: Array<GeomEdge>}>()
+    for (const edge of this._edges) {
+      const edgePassport = this.EdgePassport(edge)
+      let pair = ret.find((p) => setsAreEqual(p.passport, edgePassport))
+      if (!pair) {
+        pair = {passport: edgePassport, edges: []}
+      }
+      pair.edges.push(edge)
+    }
+    return ret
+  }
+
   RouteOnVisGraph() {
     this.ancestorSets = SplineRouter.GetAncestorSetsMap(
       from(this.root.Descendants()),
     )
     if (this.BundlingSettings == null) {
-      for (const edgeGroup of from(this._edges).groupBy(this.EdgePassport.bind(this)).) {
-        const passport = edgeGroup[0]
+      for (const edgeGroup of this.GroupEdgesByPassport()) {
+        const passport = edgeGroup.passport
         const obstacleShapes: Set<Shape> =
           this.GetObstaclesFromPassport(passport)
-        const interactiveEdgeRouter =
-          this.CreateInteractiveEdgeRouter(obstacleShapes)
+        const interactiveEdgeRouter = this.CreateInteractiveEdgeRouter(
+          from(obstacleShapes),
+        )
         this.RouteEdgesWithTheSamePassport(
           edgeGroup,
           interactiveEdgeRouter,
@@ -392,64 +415,94 @@ export class SplineRouter extends Algorithm {
     }
   }
 
-  // RouteEdgesWithTheSamePassport(edgeGeometryGroup: IGrouping < Set < Shape >, GeomEdge >, interactiveEdgeRouter: InteractiveEdgeRouter, obstacleShapes: Set<Shape>) {
-  //   let regularEdges: Array<GeomEdge>;
-  //   let multiEdges: Array<GeomEdge[]>;
-  //   if(RouteMultiEdgesAsBundles) {
-  //     this.SplitOnRegularAndMultiedges(edgeGeometryGroup, /* out */regularEdges, /* out */multiEdges);
-  //     for (let edge of regularEdges) {
-  //       this.RouteEdge(interactiveEdgeRouter, edge);
-  //     }
+  RouteEdgesWithTheSamePassport(
+    edgeGeometryGroup: {passport: Set<Shape>; edges: Iterable<GeomEdge>},
+    interactiveEdgeRouter: InteractiveEdgeRouter,
+    obstacleShapes: Set<Shape>,
+  ) {
+    const t: {regularEdges: Array<GeomEdge>; multiEdges: Array<GeomEdge[]>} = {
+      regularEdges: [],
+      multiEdges: [],
+    }
+    if (this.RouteMultiEdgesAsBundles) {
+      this.SplitOnRegularAndMultiedges(edgeGeometryGroup.edges, t)
+      for (const edge of t.regularEdges) {
+        this.RouteEdge(interactiveEdgeRouter, edge)
+      }
 
-  //     if ((multiEdges != null)) {
-  //       this.ScaleDownLooseHierarchy(interactiveEdgeRouter, obstacleShapes);
-  //       this.RouteMultiEdges(multiEdges, interactiveEdgeRouter, edgeGeometryGroup.Key);
-  //     }
+      if (t.multiEdges != null) {
+        this.ScaleDownLooseHierarchy(interactiveEdgeRouter, obstacleShapes)
+        this.RouteMultiEdges(
+          t.multiEdges,
+          interactiveEdgeRouter,
+          edgeGeometryGroup.passport,
+        )
+      }
+    } else {
+      for (const eg of edgeGeometryGroup.edges) {
+        this.RouteEdge(interactiveEdgeRouter, eg)
+      }
+    }
+  }
 
-  //   }
-  //         else {
-  //     for(let eg in edgeGeometryGroup) {
-  //   this.RouteEdge(interactiveEdgeRouter, eg);
-  // }
+  // if set to true routes multi edges as ordered bundles
+  get RouteMultiEdgesAsBundles(): boolean {
+    return this.routeMultiEdgesAsBundles
+  }
+  set RouteMultiEdgesAsBundles(value: boolean) {
+    this.routeMultiEdgesAsBundles = value
+  }
 
-  //         }
+  RouteEdge(interactiveEdgeRouter: InteractiveEdgeRouter, edge: GeomEdge) {
+    const transparentShapes =
+      this.MakeTransparentShapesOfEdgeGeometryAndGetTheShapes(edge.edgeGeometry)
+    this.ProgressStep()
+    this.RouteEdgeGeometry(edge, interactiveEdgeRouter)
+    SplineRouter.SetTransparency(transparentShapes, false)
+  }
 
-  //     }
+  ScaleDownLooseHierarchy(
+    interactiveEdgeRouter: InteractiveEdgeRouter,
+    obstacleShapes: Set<Shape>,
+  ) {
+    const loosePolys = new Array<Polyline>()
+    for (const obstacleShape of obstacleShapes) {
+      const tl = this.shapesToTightLooseCouples.get(obstacleShape)
+      loosePolys.push(
+        InteractiveObstacleCalculator.LoosePolylineWithFewCorners(
+          tl.TightPolyline,
+          tl.Distance / 1.1, // 1.1 is BundleRouter.SuperLoosePaddingCoefficient,
+        ),
+      )
+    }
 
-  //  if set to true routes multi edges as ordered bundles
-  //      get RouteMultiEdgesAsBundles(): boolean {
-  //   return this.routeMultiEdgesAsBundles;
-  // }
-  //      set RouteMultiEdgesAsBundles(value: boolean)  {
-  //   this.routeMultiEdgesAsBundles = value;
-  // }
+    interactiveEdgeRouter.LooseHierarchy =
+      SplineRouter.CreateLooseObstacleHierarachy(from(loosePolys))
+    interactiveEdgeRouter.ClearActivePolygons()
+    interactiveEdgeRouter.AddActivePolygons(
+      from(loosePolys.map((poly) => new Polygon(poly))),
+    )
+  }
 
-  // RouteEdge(interactiveEdgeRouter: InteractiveEdgeRouter, edge: GeomEdge) {
-  //   let transparentShapes = this.MakeTransparentShapesOfEdgeGeometryAndGetTheShapes(edge.EdgeGeometry);
-  //   ProgressStep();
-  //   this.RouteEdgeGeometry(edge, interactiveEdgeRouter);
-  //   SplineRouter.SetTransparency(transparentShapes, false);
-  // }
-
-  // ScaleDownLooseHierarchy(interactiveEdgeRouter: InteractiveEdgeRouter, obstacleShapes: Set<Shape>) {
-  //   let loosePolys = new Array<Polyline>();
-  //   for(let obstacleShape in obstacleShapes) {
-  //   let tl = this.shapesToTightLooseCouples[obstacleShape];
-  //   loosePolys.Add(InteractiveObstacleCalculator.LoosePolylineWithFewCorners(tl.TightPolyline, (tl.Distance / BundleRouter.SuperLoosePaddingCoefficient)));
-  // }
-
-  // interactiveEdgeRouter.LooseHierarchy = SplineRouter.CreateLooseObstacleHierarachy(loosePolys);
-  // interactiveEdgeRouter.ClearActivePolygons();
-  // interactiveEdgeRouter.AddActivePolygons(loosePolys.Select(() => { }, new Polygon(polyline)));
-  //     }
-
-  // RouteMultiEdges(multiEdges: Array < GeomEdge[] >, interactiveEdgeRouter: InteractiveEdgeRouter, parents: Set<Shape>) {
-  //   let mer = new MultiEdgeRouter(multiEdges, interactiveEdgeRouter, parents.SelectMany(() => { }, p.Children).Select(() => { }, s.BoundaryCurve), [][
-  //     InkImportance = 0.00001,
-  //     EdgeSeparation = MultiEdgesSeparation], MakeTransparentShapesOfEdgeGeometryAndGetTheShapes);
-  //   // giving more importance to ink might produce weird routings with huge detours, maybe 0 is the best value here
-  //   mer.Run();
-  // }
+  RouteMultiEdges(
+    multiEdges: Array<GeomEdge[]>,
+    interactiveEdgeRouter: InteractiveEdgeRouter,
+    parents: Set<Shape>,
+  ) {
+    throw new Error('not implemented')
+    // MakeTransparentShapesOfEdgeGeometryAndGetTheShapes')
+    // const mer = new MultiEdgeRouter(
+    //   multiEdges,
+    //   interactiveEdgeRouter,
+    //   parents
+    //     .SelectMany(() => {}, p.Children)
+    //     .Select(() => {}, s.BoundaryCurve),
+    //   [][((InkImportance = 0.00001), (EdgeSeparation = MultiEdgesSeparation))],
+    //   MakeTransparentShapesOfEdgeGeometryAndGetTheShapes,
+    // )
+    // // giving more importance to ink might produce weird routings with huge detours, maybe 0 is the best value here
+    // mer.Run()
+  }
 
   //         void ScaleLoosePolylinesOfInvolvedShapesDown(Set<Shape> parents) {
   //             foreach (var parent in parents) {
@@ -469,151 +522,168 @@ export class SplineRouter extends Algorithm {
   //                 }
   //             }
   //         }
-  //     SplitOnRegularAndMultiedges(edges: IEnumerable < GeomEdge >, /* out */regularEdges: Array < GeomEdge >, /* out */multiEdges: Array<GeomEdge[]>) {
-  //   regularEdges = new Array<GeomEdge>();
-  //   let portLocationPairsToEdges = new Map<PointPair, Array<GeomEdge>>();
-  //   for(let eg in edges) {
-  //   if(SplineRouter.IsEdgeToParent(eg.EdgeGeometry)) {
-  //   regularEdges.Add(eg);
-  // }
-  //             else {
-  //   SplineRouter.RegisterInPortLocationsToEdges(eg, portLocationPairsToEdges);
-  // }
+  SplitOnRegularAndMultiedges(
+    edges: Iterable<GeomEdge>,
+    t: {regularEdges: Array<GeomEdge>; multiEdges: Array<GeomEdge[]>},
+  ) {
+    const portLocationPairsToEdges = new PointPairMap<Array<GeomEdge>>()
+    for (const eg of edges) {
+      if (SplineRouter.IsEdgeToParent(eg.edgeGeometry)) {
+        t.regularEdges.push(eg)
+      } else {
+        SplineRouter.RegisterInPortLocationsToEdges(
+          eg,
+          portLocationPairsToEdges,
+        )
+      }
+    }
 
-  //         }
+    t.multiEdges = null
+    for (const edgeGroup of portLocationPairsToEdges.values()) {
+      if (edgeGroup.length == 1 || this.OverlapsDetected) {
+        addRange(t.regularEdges, from(edgeGroup))
+      } else {
+        if (t.multiEdges == null) {
+          t.multiEdges = new Array<GeomEdge[]>()
+        }
 
-  // multiEdges = null;
-  // for (let edgeGroup of portLocationPairsToEdges.Values) {
-  //   if (((edgeGroup.Count == 1)
-  //     || this.OverlapsDetected)) {
-  //     regularEdges.AddRange(edgeGroup);
-  //   }
-  //   else {
-  //     if ((multiEdges == null)) {
-  //       multiEdges = new Array<GeomEdge[]>();
-  //     }
+        t.multiEdges.push(Array.from(edgeGroup))
+      }
+    }
+  }
 
-  //     multiEdges.Add(edgeGroup.ToArray());
-  //   }
+  static RegisterInPortLocationsToEdges(
+    eg: GeomEdge,
+    portLocationPairsToEdges: PointPairMap<Array<GeomEdge>>,
+  ) {
+    let list: Array<GeomEdge>
+    const pp: [Point, Point] = [eg.sourcePort.Location, eg.targetPort.Location]
+    list = portLocationPairsToEdges.getA(pp)
+    if (!list) {
+      list = new Array<GeomEdge>()
+    }
 
-  // }
+    portLocationPairsToEdges.setA(pp, new Array<GeomEdge>())
+    list.push(eg)
+  }
 
-  //     }
+  static IsEdgeToParent(e: EdgeGeometry): boolean {
+    return (
+      e.sourcePort instanceof HookUpAnywhereFromInsidePort ||
+      e.targetPort instanceof HookUpAnywhereFromInsidePort
+    )
+  }
 
-  //     static RegisterInPortLocationsToEdges(eg: GeomEdge, portLocationPairsToEdges: Map<PointPair, Array<GeomEdge>>) {
-  //   let list: Array<GeomEdge>;
-  //   let pp = new PointPair(eg.SourcePort.Location, eg.TargetPort.Location);
-  //   if(!portLocationPairsToEdges.TryGetValue(pp, /* out */list)) {
-  //   list = new Array<GeomEdge>();
-  // }
+  CreateInteractiveEdgeRouter(
+    obstacleShapes: IEnumerable<Shape>,
+  ): InteractiveEdgeRouter {
+    // we need to create a set here because one loose polyline can hold several original shapes
+    const loosePolys = new Set<Polyline>(
+      obstacleShapes.select(
+        (sh) =>
+          <Polyline>(
+            this.shapesToTightLooseCouples.get(sh).LooseShape.BoundaryCurve
+          ),
+      ),
+    )
+    const router = new InteractiveEdgeRouter(this.cancelToken)
+    ;(router.VisibilityGraph = this.visGraph),
+      (router.TightHierarchy =
+        this.CreateTightObstacleHierarachy(obstacleShapes))
+    router.LooseHierarchy = SplineRouter.CreateLooseObstacleHierarachy(
+      from(loosePolys),
+    )
+    ;(router.UseSpanner = true),
+      (router.LookForRoundedVertices = true),
+      (router.TightPadding = this.tightPadding),
+      (router.LoosePadding = this.LoosePadding),
+      (router.UseEdgeLengthMultiplier = this.UseEdgeLengthMultiplier),
+      (router.UsePolylineEndShortcutting = this.UsePolylineEndShortcutting),
+      (router.UseInnerPolylingShortcutting = this.UseInnerPolylingShortcutting),
+      (router.AllowedShootingStraightLines = this.AllowedShootingStraightLines),
+      router.AddActivePolygons(
+        from(loosePolys).select((polyline) => new Polygon(polyline)),
+      )
+    return router
+  }
 
-  // portLocationPairsToEdges[pp] = new Array<GeomEdge>();
-  // list.Add(eg);
-  //     }
+  GetObstaclesFromPassport(passport: Set<Shape>): Set<Shape> {
+    if (passport.size == 0) {
+      return new Set<Shape>(this.root.Children)
+    }
 
-  //     static IsEdgeToParent(e: EdgeGeometry): boolean {
-  //   return (e.SourcePort instanceof ((HookUpAnywhereFromInsidePort || e.TargetPort) instanceof HookUpAnywhereFromInsidePort));
-  // }
+    const commonAncestors = this.GetCommonAncestorsAbovePassport(passport)
+    const allAncestors = this.GetAllAncestors(passport)
+    const ret = new Set<Shape>(
+      from(passport).selectMany((p) =>
+        from(p.Children).where((child) => !allAncestors.has(child)),
+      ),
+    )
+    const enqueued = addSets(new Set<Shape>(passport), ret)
+    const queue = new Queue<Shape>()
+    for (const shape of from(passport).where(
+      (shape) => !commonAncestors.has(shape),
+    )) {
+      queue.enqueue(shape)
+    }
 
-  // CreateInteractiveEdgeRouter(obstacleShapes: IEnumerable<Shape>): InteractiveEdgeRouter {
-  //   // we need to create a set here because one loose polyline can hold several original shapes
-  //   let loosePolys = new Set<Polyline>(obstacleShapes.Select(() => { }, (<Polyline>(this.shapesToTightLooseCouples[sh].LooseShape.BoundaryCurve))));
-  //   let router =[][
-  //   VisibilityGraph = visGraph,
-  //   TightHierarchy = CreateTightObstacleHierarachy(obstacleShapesUnknown,
-  //     LooseHierarchy = CreateLooseObstacleHierarachy(loosePolysUnknown,
-  //       UseSpanner = true,
-  //       LookForRoundedVertices = true,
-  //       TightPadding = tightPadding,
-  //       LoosePadding = LoosePadding,
-  //       UseEdgeLengthMultiplier = UseEdgeLengthMultiplier,
-  //       UsePolylineEndShortcutting = UsePolylineEndShortcutting,
-  //       UseInnerPolylingShortcutting = UseInnerPolylingShortcutting,
-  //       AllowedShootingStraightLines = AllowedShootingStraightLines,
-  //       CacheCorners = CacheCornersForSmoothing];
-  //   router.AddActivePolygons(loosePolys.Select(() => { }, new Polygon(polyline)));
-  //   return router;
-  // }
+    while (queue.length > 0) {
+      const a = queue.dequeue()
+      for (const parent of a.Parents) {
+        for (const sibling of parent.Children) {
+          if (!allAncestors.has(sibling)) {
+            ret.add(sibling)
+          }
+        }
 
-  //
-  //      get CacheCornersForSmoothing(): boolean {
-  // }
-  //      set CacheCornersForSmoothing(value: boolean)  {
-  // }
+        if (!commonAncestors.has(parent) && !enqueued.has(parent)) {
+          queue.enqueue(parent)
+          enqueued.add(parent)
+        }
+      }
+    }
 
-  //     GetObstaclesFromPassport(passport: Set<Shape>): Set < Shape > {
-  //   if((passport.Count == 0)) {
-  //   return new Set<Shape>(this.root.Children);
-  // }
+    return ret
+  }
 
-  //         let commonAncestors = this.GetCommonAncestorsAbovePassport(passport);
-  // let allAncestors = this.GetAllAncestors(passport);
-  // let ret = new Set<Shape>(passport.SelectMany(() => { }, p.Children.Where(() => { }, !allAncestors.Contains(child))));
-  // let enqueued = new Set<Shape>(passport.Concat(ret));
-  // let queue = new Queue<Shape>();
-  // for (let shape of passport.Where(() => { }, !commonAncestors.Contains(shape))) {
-  //   queue.Enqueue(shape);
-  // }
+  GetAllAncestors(passport: Set<Shape>): Set<Shape> {
+    if (passport.size == 0) {
+      return new Set<Shape>()
+    }
 
-  // while ((queue.Count > 0)) {
-  //   let a = queue.Dequeue();
-  //   for (let parent of a.Parents) {
-  //     for (let sibling of parent.Children) {
-  //       if (!allAncestors.Contains(sibling)) {
-  //         ret.Insert(sibling);
-  //       }
+    let ret = new Set<Shape>(passport)
+    for (const shape of passport) {
+      ret = addSets(ret, this.ancestorSets.get(shape))
+    }
 
-  //     }
+    return ret
+  }
 
-  //     if ((!commonAncestors.Contains(parent)
-  //       && !enqueued.Contains(parent))) {
-  //       queue.Enqueue(parent);
-  //       enqueued.Insert(parent);
-  //     }
+  GetCommonAncestorsAbovePassport(passport: Set<Shape>): Set<Shape> {
+    if (passport.size == 0) {
+      return new Set<Shape>()
+    }
 
-  //   }
+    const en = from(passport)
+    let ret = this.ancestorSets.get(en.first())
+    for (const shape of en.skip(1)) {
+      ret = setIntersection(ret, this.ancestorSets.get(shape))
+    }
 
-  // }
+    return ret
+  }
 
-  // return ret;
-  //     }
-
-  // GetAllAncestors(passport: Set<Shape>): Set < Shape > {
-  //   if(!passport.Any()) {
-  //   return new Set<Shape>();
-  // }
-
-  // let ret = new Set<Shape>(passport);
-  // for (let shape of passport) {
-  //   ret = (ret + this.ancestorSets[shape]);
-  // }
-
-  // return ret;
-  //     }
-
-  // GetCommonAncestorsAbovePassport(passport: Set<Shape>): Set < Shape > {
-  //   if(!passport.Any()) {
-  //   return new Set<Shape>();
-  // }
-
-  // let ret = this.ancestorSets[passport.First()];
-  // for (let shape of passport.Skip(1)) {
-  //   ret = (ret * this.ancestorSets[shape]);
-  // }
-
-  // return ret;
-  //     }
-
-  // RouteBundles() {
-  //   this.ScaleLooseShapesDown();
-  //   this.CalculateEdgeEnterablePolylines();
-  //   let looseHierarchy = this.GetLooseHierarchy();
-  //   let cdt = BundleRouter.CreateConstrainedDelaunayTriangulation(looseHierarchy);
-  //   //  CdtSweeper.ShowFront(cdt.GetTriangles(), null, null,this.visGraph.Edges.Select(e=>new LineSegment(e.SourcePoint,e.TargetPoint)));
-  //   let shortestPath = new SdShortestPath(MakeTransparentShapesOfEdgeGeometryAndGetTheShapes, cdt, this.FindCdtGates(cdt));
-  //   let bundleRouter = new BundleRouter(this.GeomGraph, shortestPath, this.visGraph, this.BundlingSettings, this.LoosePadding, this.GetTightHierarchy(), looseHierarchy, this.enterableLoose, this.enterableTight, () => { }, this.LoosePolyOfOriginalShape(this.portsToShapes[port]));
-  //   bundleRouter.Run();
-  // }
+  RouteBundles() {
+    throw new Error('not implemented')
+    // this.ScaleLooseShapesDown();
+    // this.CalculateEdgeEnterablePolylines();
+    // let looseHierarchy = this.GetLooseHierarchy();
+    // let cdt = BundleRouter.CreateConstrainedDelaunayTriangulation(looseHierarchy);
+    // //  CdtSweeper.ShowFront(cdt.GetTriangles(), null, null,this.visGraph.Edges.Select(e=>new LineSegment(e.SourcePoint,e.TargetPoint)));
+    // let shortestPath = new SdShortestPath(MakeTransparentShapesOfEdgeGeometryAndGetTheShapes, cdt, this.FindCdtGates(cdt));
+    // let bundleRouter = new BundleRouter(this.GeomGraph, shortestPath, this.visGraph, this.BundlingSettings, this.LoosePadding, this.GetTightHierarchy(), looseHierarchy, this.enterableLoose, this.enterableTight, () => { }, this.LoosePolyOfOriginalShape(this.portsToShapes[port]));
+    // bundleRouter.Run();
+  }
 
   // CreateTheMapToParentLooseShapes(shape: Shape, loosePolylinesToLooseParentShapeMap: Map<ICurve, Shape>) {
   //   for(let childShape in shape.Children) {
@@ -648,7 +718,7 @@ export class SplineRouter extends Algorithm {
   //     if ((loosePolylinesToLooseParentShapeMap.TryGetValue(a, /* out */aParent)
   //       && (loosePolylinesToLooseParentShapeMap.TryGetValue(b, /* out */bParent)
   //         && (aParent == bParent)))) {
-  //       gates.Insert(cdtEdge);
+  //       gates.add(cdtEdge);
   //     }
 
   //   }
@@ -716,23 +786,23 @@ export class SplineRouter extends Algorithm {
     const sourceShape = this.portsToShapes.get(edgeGeometry.sourcePort)
     const targetShape = this.portsToShapes.get(edgeGeometry.targetPort)
     if (this.IsAncestor(sourceShape, targetShape)) {
-      InsertRange(ret, targetShape.Parents)
+      insertRange(ret, targetShape.Parents)
       ret.add(sourceShape)
       return ret
     }
 
     if (this.IsAncestor(targetShape, sourceShape)) {
-      InsertRange(ret, sourceShape.Parents)
+      insertRange(ret, sourceShape.Parents)
       ret.add(targetShape)
       return ret
     }
 
     if (sourceShape != this.looseRoot) {
-      InsertRange(ret, sourceShape.Parents)
+      insertRange(ret, sourceShape.Parents)
     }
 
     if (targetShape != this.looseRoot) {
-    InsertRange(ret,targetShape.Parents)
+      insertRange(ret, targetShape.Parents)
     }
 
     return ret
@@ -766,20 +836,20 @@ export class SplineRouter extends Algorithm {
     const edgeGeometry = edge.edgeGeometry
     const addedEdges = new Array<VisibilityEdge>()
     if (!(edgeGeometry.sourcePort instanceof HookUpAnywhereFromInsidePort)) {
-      AddRange(
+      addRange(
         addedEdges,
         this.AddVisibilityEdgesFromPort(edgeGeometry.sourcePort),
       )
     }
 
     if (!(edgeGeometry.targetPort instanceof HookUpAnywhereFromInsidePort)) {
-      AddRange(
+      addRange(
         addedEdges,
         this.AddVisibilityEdgesFromPort(edgeGeometry.targetPort),
       )
     }
 
-    let smoothedPolyline: SmoothedPolyline
+    const t: {smoothedPolyline: SmoothedPolyline} = {smoothedPolyline: null}
     if (
       !Point.closeDistEps(
         edgeGeometry.sourcePort.Location,
@@ -791,37 +861,32 @@ export class SplineRouter extends Algorithm {
           edgeGeometry.sourcePort,
           edgeGeometry.targetPort,
           true,
-          /* out */ smoothedPolyline,
+          t,
         )
     } else {
       edgeGeometry.curve = GeomEdge.RouteSelfEdge(
         edgeGeometry.sourcePort.Curve,
         Math.max(this.LoosePadding * 2, edgeGeometry.GetMaxArrowheadLength()),
-        /* out */ smoothedPolyline,
+        t,
       )
     }
 
-    edgeGeometry.smoothedPolyline = smoothedPolyline
+    edgeGeometry.smoothedPolyline = t.smoothedPolyline
     if (edgeGeometry.curve == null) {
-      throw new NotImplementedException()
+      throw new Error()
     }
 
     for (const visibilityEdge of addedEdges) {
       VisibilityGraph.RemoveEdge(visibilityEdge)
     }
 
-    Arrowheads.TrimSplineAndCalculateArrowheads(
+    Arrowhead.trimSplineAndCalculateArrowheadsII(
       edgeGeometry,
       edgeGeometry.sourcePort.Curve,
       edgeGeometry.targetPort.Curve,
       edgeGeometry.curve,
       false,
-      KeepOriginalSpline,
     )
-    if (this.ReplaceEdgeByRails != null) {
-      ReplaceEdgeByRails(edge)
-    }
-
     //   SetTransparency(transparentShapes, false);
   }
 
@@ -843,55 +908,65 @@ export class SplineRouter extends Algorithm {
 
     const portLoosePoly = boundaryCouple.LooseShape
 
-    for (const point of (portLoosePoly.boundaryCurve as Polyline).) {
+    for (const point of portLoosePoly.boundaryCurve as Polyline) {
       if (this.visGraph.FindEdgePP(port.Location, point) == null)
         yield this.visGraph.AddEdgePP(port.Location, point)
     }
   }
 
-  // MakeTransparentShapesOfEdgeGeometryAndGetTheShapes(edgeGeometry: EdgeGeometry): Array < Shape > {
-  //   // it is OK here to repeat a shape in the returned list
-  //   let sourceShape: Shape = this.portsToShapes[edgeGeometry.SourcePort];
-  //   let targetShape: Shape = this.portsToShapes[edgeGeometry.TargetPort];
-  //   let transparentLooseShapes = new Array<Shape>();
-  //   for(let shape in this.GetTransparentShapes(edgeGeometry.SourcePort, edgeGeometry.TargetPort, sourceShape, targetShape).ToArray()) {
-  //   if ((shape != null)) {
-  //     transparentLooseShapes.Add(this.LooseShapeOfOriginalShape(shape));
-  //   }
+  MakeTransparentShapesOfEdgeGeometryAndGetTheShapes(
+    edgeGeometry: EdgeGeometry,
+  ): Array<Shape> {
+    // it is OK here to repeat a shape in the returned list
+    const sourceShape: Shape = this.portsToShapes.get(edgeGeometry.sourcePort)
+    const targetShape: Shape = this.portsToShapes.get(edgeGeometry.targetPort)
+    const transparentLooseShapes = new Array<Shape>()
+    for (const shape of this.GetTransparentShapes(
+      edgeGeometry.sourcePort,
+      edgeGeometry.targetPort,
+      sourceShape,
+      targetShape,
+    )) {
+      if (shape != null) {
+        transparentLooseShapes.push(this.LooseShapeOfOriginalShape(shape))
+      }
+    }
 
-  // }
+    for (const shape of this.portsToEnterableShapes.get(
+      edgeGeometry.sourcePort,
+    )) {
+      transparentLooseShapes.push(this.LooseShapeOfOriginalShape(shape))
+    }
 
-  // for (let shape of this.portsToEnterableShapes[edgeGeometry.SourcePort]) {
-  //   transparentLooseShapes.Add(this.LooseShapeOfOriginalShape(shape));
-  // }
+    for (const shape of this.portsToEnterableShapes.get(
+      edgeGeometry.targetPort,
+    )) {
+      transparentLooseShapes.push(this.LooseShapeOfOriginalShape(shape))
+    }
 
-  // for (let shape of this.portsToEnterableShapes[edgeGeometry.TargetPort]) {
-  //   transparentLooseShapes.Add(this.LooseShapeOfOriginalShape(shape));
-  // }
+    SplineRouter.SetTransparency(transparentLooseShapes, true)
+    return transparentLooseShapes
+  }
 
-  // SplineRouter.SetTransparency(transparentLooseShapes, true);
-  // return transparentLooseShapes;
-  //     }
+  LooseShapeOfOriginalShape(s: Shape): Shape {
+    if (s == this.root) {
+      return this.looseRoot
+    }
 
-  // LooseShapeOfOriginalShape(s: Shape): Shape {
-  //   if ((s == this.root)) {
-  //     return this.looseRoot;
-  //   }
+    return this.shapesToTightLooseCouples.get(s).LooseShape
+  }
 
-  //   return this.shapesToTightLooseCouples[s].LooseShape;
-  // }
+  LoosePolyOfOriginalShape(s: Shape): Polyline {
+    return <Polyline>this.LooseShapeOfOriginalShape(s).BoundaryCurve
+  }
 
-  // LoosePolyOfOriginalShape(s: Shape): Polyline {
-  //   return (<Polyline>(this.LooseShapeOfOriginalShape(s).BoundaryCurve));
-  // }
+  TightPolyOfOriginalShape(s: Shape): Polyline {
+    if (s == this.root) {
+      return null
+    }
 
-  // TightPolyOfOriginalShape(s: Shape): Polyline {
-  //   if ((s == this.root)) {
-  //     return null;
-  //   }
-
-  //   return this.shapesToTightLooseCouples[s].TightPolyline;
-  // }
+    return this.shapesToTightLooseCouples.get(s).TightPolyline
+  }
 
   //     static GetEdgeColor(e: VisibilityEdge, sourcePort: Port, targetPort: Port): string {
   //   if (((sourcePort == null)
@@ -950,7 +1025,7 @@ export class SplineRouter extends Algorithm {
     }
   }
 
-  static SetTransparency(shapes: IEnumerable<Shape>, v: boolean) {
+  static SetTransparency(shapes: Iterable<Shape>, v: boolean) {
     for (const shape of shapes) {
       shape.IsTransparent = v
     }
