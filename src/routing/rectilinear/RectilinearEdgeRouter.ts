@@ -479,7 +479,7 @@ export class RectilinearEdgeRouter extends Algorithm {
     // this.PortManager.TransUtil.DevTrace_VerifyAllEdgeIntersections(
     //   this.VisibilityGraph,
     // )
-    if (!this.GeneratePath(shortestPathRouter, edgePath)) {
+    if (!this.GeneratePath(shortestPathRouter, edgePath, false)) {
       this.RetryPathsWithAdditionalGroupsEnabled(shortestPathRouter, edgePath)
     }
 
@@ -491,7 +491,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   GeneratePath(
     shortestPathRouter: MsmtRectilinearPath,
     edgePath: Path,
-    lastChance = false,
+    lastChance: boolean,
   ): boolean {
     const sourceVertices = this.PortManager.FindVertices(
       edgePath.EdgeGeometry.sourcePort,
@@ -523,7 +523,7 @@ export class RectilinearEdgeRouter extends Algorithm {
       RectilinearEdgeRouter.EnsureNonNullPath(edgePath)
     }
 
-    return edgePath.PathPoints != null
+    return edgePath.PathPoints != null && edgePath.PathPoints.length > 0
   }
 
   private static EnsureNonNullPath(edgePath: Path) {
@@ -537,18 +537,20 @@ export class RectilinearEdgeRouter extends Algorithm {
           edgePath.EdgeGeometry.targetPort.Location,
         )
       ) {
-        edgePath.EdgeGeometry.sourcePort.Location
-        edgePath.EdgeGeometry.targetPort.Location
-
-        return
+        edgePath.PathPoints = [
+          edgePath.EdgeGeometry.sourcePort.Location,
+          edgePath.EdgeGeometry.targetPort.Location,
+        ]
+      } else {
+        edgePath.PathPoints = [
+          edgePath.EdgeGeometry.sourcePort.Location,
+          new Point(
+            edgePath.EdgeGeometry.sourcePort.Location.x,
+            edgePath.EdgeGeometry.targetPort.Location.y,
+          ),
+          edgePath.EdgeGeometry.targetPort.Location,
+        ]
       }
-
-      edgePath.EdgeGeometry.sourcePort.Location
-      new Point(
-        edgePath.EdgeGeometry.sourcePort.Location.x,
-        edgePath.EdgeGeometry.targetPort.Location.y,
-      )
-      edgePath.EdgeGeometry.targetPort.Location
     }
   }
 
@@ -563,12 +565,12 @@ export class RectilinearEdgeRouter extends Algorithm {
         edgePath.EdgeGeometry,
         this.ShapeToObstacleMap,
       ) ||
-      !this.GeneratePath(shortestPathRouter, edgePath)
+      !this.GeneratePath(shortestPathRouter, edgePath, false)
     ) {
       //  Last chance: enable all groups (if we have any).  Only do this on a per-path basis so a single degenerate
       //  path won't make the entire graph look bad.
       this.PortManager.SetAllGroupsActive()
-      this.GeneratePath(shortestPathRouter, edgePath, /* lastChance:*/ true)
+      this.GeneratePath(shortestPathRouter, edgePath, true)
     }
   }
 
