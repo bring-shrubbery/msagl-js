@@ -141,9 +141,10 @@ export class StaircaseRemover {
     rTree: RTree<SegWithIndex, Point>,
     segsToIgnore: SegWithIndex[],
   ): boolean {
-    return from(rTree.GetAllIntersecting(ls.boundingBox))
-      .where((seg) => segsToIgnore.findIndex((p) => p == seg) == -1)
-      .any()
+    for (const seg of rTree.GetAllIntersecting(ls.boundingBox))
+      if (segsToIgnore.findIndex((p) => p == seg) == -1) return true
+
+    return false
   }
 
   IntersectObstacleHierarchyPPP(a: Point, b: Point, c: Point): boolean {

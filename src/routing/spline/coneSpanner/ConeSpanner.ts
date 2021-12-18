@@ -39,7 +39,7 @@ export class ConeSpanner extends Algorithm {
     )
     Assert.assert(
       borderPolyline == null ||
-        from(ports.values()).all(
+        Array.from(ports.values()).every(
           (o) =>
             Curve.PointRelativeToCurveLocation(o, borderPolyline) ==
             PointLocation.Inside,

@@ -320,12 +320,12 @@ export class PortManager {
 
     //  This is a free Port (not associated with an obstacle) or a Waypoint; return all spatial parents.
     return new Set<Shape>(
-      from(
+      Array.from(
         this.ObstacleTree.Root.AllHitItems(
           Rectangle.mkPP(port.Location, port.Location),
           (shape) => shape.IsGroup,
         ),
-      ).select((obs) => obs.InputShape),
+      ).map((obs) => obs.InputShape),
     )
   }
 
@@ -380,9 +380,9 @@ export class PortManager {
     //  be removed from the graph, its Vertex (and thus Point) are no longer set in the FreePoint, so we
     //  must use the key from the dictionary.
     if (this.freePointMap.size > this.freePointLocationsUsedByRouteEdges.size) {
-      const staleFreePairs = from(this.freePointMap)
-        .where((p) => !this.freePointLocationsUsedByRouteEdges.hasP(p[0]))
-        .toArray()
+      const staleFreePairs = Array.from(this.freePointMap).filter(
+        (p) => !this.freePointLocationsUsedByRouteEdges.hasP(p[0]),
+      )
       for (const staleFreePair of staleFreePairs) {
         this.freePointMap.deleteP(staleFreePair[0])
       }

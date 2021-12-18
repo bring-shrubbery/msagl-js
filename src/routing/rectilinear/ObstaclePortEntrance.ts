@@ -162,12 +162,14 @@ export class ObstaclePortEntrance {
     return this.InteriorEdgeCrossesObstacleRFI(
       rect,
       (obs) => obs.VisibilityPolyline,
-      from(obstacleTree.Root.GetLeafRectangleNodesIntersectingRectangle(rect))
-        .where(
+      Array.from(
+        obstacleTree.Root.GetLeafRectangleNodesIntersectingRectangle(rect),
+      )
+        .filter(
           (node: RectangleNode<Obstacle, Point>) =>
             !node.UserData.IsGroup && node.UserData != this.Obstacle,
         )
-        .select((node: RectangleNode<Obstacle, Point>) => node.UserData),
+        .map((node: RectangleNode<Obstacle, Point>) => node.UserData),
     )
   }
 
@@ -181,11 +183,7 @@ export class ObstaclePortEntrance {
     return this.InteriorEdgeCrossesObstacleRFI(
       rect,
       (obs) => obs.PaddedPolyline,
-      from(
-        this.Obstacle.ConvexHull.Obstacles.filter(
-          (obs) => obs != this.Obstacle,
-        ),
-      ),
+      this.Obstacle.ConvexHull.Obstacles.filter((obs) => obs != this.Obstacle),
     )
   }
 
