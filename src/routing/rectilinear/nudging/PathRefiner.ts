@@ -91,6 +91,24 @@ export class PathRefiner {
 
   ///  refines all segments that are parallel to "direction"
 
+  static *groupByProj(
+    proj: (a: Point) => number,
+    linkedPointsInDirection: LinkedPoint[],
+  ): IterableIterator<Array<LinkedPoint>> {
+    const map = new Map<number, Array<LinkedPoint>>()
+    for (const lp of linkedPointsInDirection) {
+      const p = proj(lp.Point)
+      let arr = map.get(p)
+      if (!arr) {
+        arr = new Array<LinkedPoint>()
+        map.set(p, arr)
+      }
+      arr.push(lp)
+    }
+    for (const v of map.values()) {
+      yield v
+    }
+  }
   ///  <param name="direction"></param>
   ///  <param name="pathFirstPoints"></param>
   static RefineInDirection(
@@ -111,8 +129,9 @@ export class PathRefiner {
         pathFirstPoints,
       ),
     )
-    const colliniarBuckets = from(linkedPointsInDirection).groupBy((p) =>
-      t.projectionToPerp(p.Point),
+    const colliniarBuckets = PathRefiner.groupByProj(
+      t.projectionToDirection,
+      linkedPointsInDirection,
     )
     for (const pathLinkedPointBucket of colliniarBuckets) {
       PathRefiner.RefineCollinearBucket(
@@ -222,13 +241,13 @@ export class PathRefiner {
   }
 
   static CreateLinkedVertexOfEdgePath(path: Path): LinkedPoint {
-    const arr = from(path.PathPoints as Array<Point>)
-    const pathPoint = new LinkedPoint(arr.first())
+    const arr = path.PathPoints as Point[]
+    let pathPoint = new LinkedPoint(arr[0])
     const first = pathPoint
-    arr.skip(1).aggregate(pathPoint, (lp, p) => {
-      lp.Next = new LinkedPoint(p)
-      return lp.Next
-    })
+    for (let i = 1; i < arr.length; i++) {
+      pathPoint.Next = new LinkedPoint(arr[i])
+      pathPoint = pathPoint.Next
+    }
     return first
   }
 }

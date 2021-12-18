@@ -90,7 +90,7 @@ export class PathMerger {
       stemPath,
       departureFromLooping.Point,
     )
-    const pointsToInsert = from(
+    const pointsToInsert = Array.from(
       PathMerger.GetPointsInBetween(departurePointOnStem, arrivalToStem),
     )
     if (PathMerger.Before(departureFromLooping, arrivalToLooping)) {

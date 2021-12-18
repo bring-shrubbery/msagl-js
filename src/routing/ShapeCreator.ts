@@ -65,7 +65,7 @@ export class ShapeCreator {
       }
     }
 
-    return from(nodesToShapes.values())
+    return Array.from(nodesToShapes.values())
   }
 
   ///  <summary>

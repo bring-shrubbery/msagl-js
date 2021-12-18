@@ -100,12 +100,20 @@ export class LongestNudgedSegment extends SegmentBase {
   ///  the maximal width of the edges
 
   public get Width(): number {
-    return from(this.edges).max((e) => e.Width)
+    let w = 0
+    for (const e of this.edges) {
+      w = Math.max(w, e.Width)
+    }
+    return w
   }
 
   GetLeftBound(): number {
     if (!this.IsFixed) {
-      return from(this.Edges).max((edge) => edge.AxisEdge.LeftBound)
+      let lb = Number.NEGATIVE_INFINITY
+      for (const edge of this.edges) {
+        lb = Math.max(lb, edge.AxisEdge.LeftBound)
+      }
+      return lb
     }
 
     return this.CompassDirection == Direction.North
@@ -115,7 +123,11 @@ export class LongestNudgedSegment extends SegmentBase {
 
   GetRightBound(): number {
     if (!this.IsFixed) {
-      return from(this.Edges).min((edge) => edge.AxisEdge.RightBound)
+      let rb = Number.POSITIVE_INFINITY
+      for (const edge of this.edges) {
+        rb = Math.min(rb, edge.AxisEdge.RightBound)
+      }
+      return rb
     }
 
     return this.Position()

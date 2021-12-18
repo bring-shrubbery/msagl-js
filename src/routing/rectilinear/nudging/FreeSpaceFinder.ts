@@ -168,9 +168,7 @@ export class FreeSpaceFinder extends LineSweeperBase {
   // }
 
   GetObstacleBoundaries(color: string): Array<DebugCurve> {
-    return from(this.Obstacles).select((p) =>
-      DebugCurve.mkDebugCurveWCI(1, color, p),
-    )
+    return this.Obstacles.map((p) => DebugCurve.mkDebugCurveWCI(1, color, p))
   }
 
   ///

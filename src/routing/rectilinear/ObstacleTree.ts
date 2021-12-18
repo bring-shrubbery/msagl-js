@@ -434,9 +434,10 @@ export class ObstacleTree {
 
       found = true
       const obstacles = component.map(this.OrdinalToObstacle)
-      const points: Point[] = Array.from(
-        from(obstacles).selectMany((p) => p.VisibilityPolyline),
+      const points: Point[] = obstacles.flatMap((p) =>
+        Array.from(p.VisibilityPolyline),
       )
+
       const och = new OverlapConvexHull(
         ConvexHull.createConvexHullAsClosedPolyline(points),
         obstacles,

@@ -369,7 +369,7 @@ export class InteractiveObstacleCalculator {
     const connectedComponents = GetConnectedComponents(graph)
     for (const component of connectedComponents) {
       const polys = component.map((i) => intToPoly[i])
-      const points = from(polys).selectMany((p) => Array.from(p))
+      const points = polys.flatMap((p) => Array.from(p))
       const convexHull = ConvexHull.createConvexHullAsClosedPolyline(points)
       for (const poly of polys) {
         tightObsts.delete(poly)
@@ -466,9 +466,9 @@ export class InteractiveObstacleCalculator {
     const polygon = new Polygon(polyline)
     const boundingBox = polyline.boundingBox.clone()
     boundingBox.pad(2 * desiredPadding)
-    for (const poly of from(
+    for (const poly of Array.from(
       hierarchy.GetNodeItemsIntersectingRectangle(boundingBox),
-    ).where((p) => p != polyline)) {
+    ).filter((p) => p != polyline)) {
       const separation = Polygon.Distance(polygon, new Polygon(poly)).dist
       dist = Math.min(
         dist,

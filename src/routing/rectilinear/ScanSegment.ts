@@ -541,12 +541,18 @@ export class ScanSegment extends SegmentBase {
     const crossingsArray = crossings.map((c) => c.Group.InputShape)
     const prevIsPassable = edge.IsPassable
     if (prevIsPassable == null) {
-      edge.IsPassable = () => from(crossingsArray).any((s) => s.IsTransparent)
+      edge.IsPassable = () => {
+        for (const s of crossingsArray) if (s.IsTransparent) return true
+        return false
+      }
     } else {
       //  Because we don't have access to the previous delegate's internals, we have to chain.  Fortunately this
       //  will never be more than two deep.  File Test: Groups_Forward_Backward_Between_Same_Vertices.
-      edge.IsPassable = () =>
-        from(crossingsArray).any((s) => s.IsTransparent) || prevIsPassable()
+      edge.IsPassable = () => {
+        for (const s of crossingsArray)
+          if (s.IsTransparent || prevIsPassable()) return true
+        return false
+      }
     }
 
     if (this.LowestVisibilityVertex == null) {
