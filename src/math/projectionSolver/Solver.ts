@@ -1,12 +1,6 @@
 ///  A Solver is the driving class that collects Variables and Constraints and then generates a
 ///  solution that minimally satisfies the constraints.
 
-import {
-  IEnumerable,
-  InvalidOperationException,
-  ArgumentOutOfRangeException,
-  from,
-} from 'linq-to-typescript'
 // import {Assert} from '../../utils/assert'
 import {greaterDistEps} from '../../utils/compare'
 import {Block} from './Block'
@@ -178,8 +172,8 @@ export class Solver {
 
   ///  This enumerates all Variables created by AddVariable.
 
-  public get Variables(): IEnumerable<Variable> {
-    return from(this.allBlocks.Vector).selectMany((block) => block.Variables)
+  public get Variables(): Array<Variable> {
+    return this.allBlocks.Vector.flatMap((block) => block.Variables)
   }
 
   ///  The number of variables added to the Solver.
@@ -257,7 +251,7 @@ export class Solver {
   ): Constraint {
     //  @@DCR "Incremental Solving": See notes in AddVariable; for now, this is disallowed.
     if (!this.allConstraints.IsEmpty) {
-      throw new InvalidOperationException(
+      throw new Error(
         'Cannot add Variables or Constraints once Solve() has been called',
       )
     }
@@ -341,7 +335,7 @@ export class Solver {
       Number.isNaN(relationshipWeight) ||
       !Number.isFinite(relationshipWeight)
     ) {
-      throw new ArgumentOutOfRangeException('relationshipWeight')
+      throw new Error('relationshipWeight')
     }
 
     if (variable1 == variable2) {

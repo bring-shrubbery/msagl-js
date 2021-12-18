@@ -1,7 +1,6 @@
 ﻿///  <summary>
 ///  Class for creating Shape elements from a Graph.
 
-import {from, IEnumerable} from 'linq-to-typescript'
 import {GeomGraph, GeomNode, GeomEdge} from '../layout/core'
 import {Port} from '../layout/core/port'
 import {RelativeFloatingPort} from '../layout/core/relativeFloatingPort'
@@ -18,7 +17,7 @@ export class ShapeCreator {
   ///  </summary>
   ///  <param name="graph">graph with edges to route and nodes/clusters to route around</param>
   ///  <returns>the set of obstacles with correct cluster hierarchy and ports</returns>
-  public static GetShapes(graph: GeomGraph): IEnumerable<Shape> {
+  public static GetShapes(graph: GeomGraph): Array<Shape> {
     const nodesToShapes = new Map<GeomNode, Shape>()
     const interestingNodes = Array.from(graph.shallowNodes()).filter(
       (n) => !n.underCollapsedCluster(),

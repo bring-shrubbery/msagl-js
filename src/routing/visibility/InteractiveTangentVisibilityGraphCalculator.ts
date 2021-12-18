@@ -1,4 +1,3 @@
-import {IEnumerable} from 'linq-to-typescript'
 import {Point, ICurve} from '../..'
 import {TriangleOrientation} from '../../math/geometry/point'
 import {RBNode} from '../../structs/RBTree/rbNode'

@@ -2,7 +2,6 @@
 //  "Two polynomial time algorithms for the bundle-Line crossing minimization problem"
 //  Postprocessing minimizing crossings step that works on the layered graph
 
-import {from} from 'linq-to-typescript'
 import {Point} from '../../../math/geometry/point'
 // import {Assert} from '../../../utils/assert'
 import {compareNumbers} from '../../../utils/compare'
@@ -140,16 +139,27 @@ export class MetroMapOrdering {
     }
   }
 
+  firstSucc(node: number): number {
+    for (const s of this.properLayeredGraph.Succ(node)) {
+      return s
+    }
+  }
+  firstPred(node: number): number {
+    for (const s of this.properLayeredGraph.Pred(node)) {
+      return s
+    }
+  }
+
   Comparison(inverseToOrder: Map<number, number>) {
     return (node1: number, node2: number) => {
       /*Assert.assert(
         this.properLayeredGraph.IsVirtualNode(node1) &&
           this.properLayeredGraph.IsVirtualNode(node2),
       )*/
-      const succ1: number = from(this.properLayeredGraph.Succ(node1)).first()
-      const succ2: number = from(this.properLayeredGraph.Succ(node2)).first()
-      let pred1: number = from(this.properLayeredGraph.Pred(node1)).first()
-      let pred2: number = from(this.properLayeredGraph.Pred(node2)).first()
+      const succ1: number = this.firstSucc(node1)
+      const succ2: number = this.firstSucc(node2)
+      let pred1: number = this.firstPred(node1)
+      let pred2: number = this.firstPred(node2)
       const succPoint1: Point = this.nodePositions.get(succ1)
       const succPoint2: Point = this.nodePositions.get(succ2)
       const predPoint1: Point = this.nodePositions.get(pred1)
@@ -177,8 +187,8 @@ export class MetroMapOrdering {
         this.nodePositions.get(pred1).equal(this.nodePositions.get(pred2)) &&
         this.properLayeredGraph.IsVirtualNode(pred1)
       ) {
-        pred1 = from(this.properLayeredGraph.Pred(pred1)).first()
-        pred2 = from(this.properLayeredGraph.Pred(pred2)).first()
+        pred1 = this.firstPred(pred1)
+        pred2 = this.firstPred(pred2)
       }
 
       if (this.nodePositions.get(pred1).equal(this.nodePositions.get(pred2))) {

@@ -323,7 +323,7 @@
 //     return ret;
 //   }
 
-//   IEnumerable < CdtEdge > CrossedCdtEdgesOfBoneEdge(SdBoneEdge boneEdge) {
+//   Array < CdtEdge > CrossedCdtEdgesOfBoneEdge(SdBoneEdge boneEdge) {
 //     if (boneEdge.CrossedCdtEdges != null)
 //       return boneEdge.CrossedCdtEdges;
 // #if SHARPKIT //https://code.google.com/p/sharpkit/issues/detail?id=368

@@ -67,39 +67,39 @@
 //         return curves;
 //     }
 
-//     IEnumerable < DebugCurve > Obstacles() {
+//     Array < DebugCurve > Obstacles() {
 //         return mgd.TightTree.GetAllLeaves().Select(n => new DebugCurve(100, 0.5, "black", n)).Concat(
 //             mgd.LooseTree.GetAllLeaves().Select(n => new DebugCurve(100, 0.1, "green", n)));
 //     }
 
-//     IEnumerable < DebugCurve > BBoxes() {
+//     Array < DebugCurve > BBoxes() {
 //         return mgd.Stations.Where(n => n.IsRealNode).Select(n => new DebugCurve("red", CurveFactory.CreateCircle(n.BoundaryCurve.BoundingBox.Diagonal / 2, n.Position)));
 //     }
 
-//     IEnumerable < DebugCurve > GraphNodes() {
+//     Array < DebugCurve > GraphNodes() {
 //         var nodes = new Set<ICurve>(mgd.Edges.Select(e => e.SourcePort.Curve).Concat(mgd.Edges.Select(e => e.TargetPort.Curve)));
 //         return nodes.Select(n => new DebugCurve(100, 1, "black", n));
 //     }
 
-//     IEnumerable < DebugCurve > Hubs() {
+//     Array < DebugCurve > Hubs() {
 //         return mgd.Stations.Select(station => new DebugCurve(100, 1, "blue", CurveFactory.CreateCircle(Math.Max(station.Radius, 1.0), station.Position)));
 //     }
 
-//     IEnumerable < DebugCurve > IdealHubs() {
+//     Array < DebugCurve > IdealHubs() {
 //         return mgd.VirtualNodes().Select(station => new DebugCurve(100, 1, "black",
 //             CurveFactory.CreateCircle(HubRadiiCalculator.CalculateIdealHubRadiusWithNeighbors(mgd, bundlingSettings, station), station.Position)));
 //     }
 
-//     IEnumerable < DebugCurve > IdealHubsWithNeighbors() {
+//     Array < DebugCurve > IdealHubsWithNeighbors() {
 //         return mgd.VirtualNodes().Select(station => new DebugCurve(200, 1, "black",
 //             CurveFactory.CreateCircle(HubRadiiCalculator.CalculateIdealHubRadiusWithNeighbors(mgd, bundlingSettings, station), station.Position)));
 //     }
 
-//     IEnumerable < DebugCurve > Bundles() {
+//     Array < DebugCurve > Bundles() {
 //         return mgd.VirtualEdges().Select(pr => new DebugCurve(100, 1, "red", new LineSegment(pr.Item1.Position, pr.Item2.Position)));
 //     }
 
-//     IEnumerable < DebugCurve > IdealBundles() {
+//     Array < DebugCurve > IdealBundles() {
 //         Array < DebugCurve > dc = new Array<DebugCurve>();
 //         foreach(var edge of mgd.VirtualEdges()) {
 //             var node = edge.Item1;
@@ -112,7 +112,7 @@
 //         return dc;
 //     }
 
-//     IEnumerable < DebugCurve > Paths() {
+//     Array < DebugCurve > Paths() {
 //         Array < DebugCurve > dc = new Array<DebugCurve>();
 //         foreach(var metroline of mgd.Metrolines) {
 //             dc.Add(new DebugCurve(100, 1, "black", metroline.Polyline));

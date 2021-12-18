@@ -4,7 +4,7 @@
 import {
   ArgumentOutOfRangeException,
   from,
-  // IEnumerable,
+  // Array,
 } from 'linq-to-typescript'
 import {Point} from '../../math/geometry/point'
 import {CompassVector} from '../../math/geometry/compassVector'

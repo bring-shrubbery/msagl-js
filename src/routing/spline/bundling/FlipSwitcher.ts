@@ -19,7 +19,7 @@
 //     Set < Point > interestingPoints = new PointSet();
 //     int numberOfReducedCrossings;
 
-//     IEnumerable < Polyline > Polylines {
+//     Array < Polyline > Polylines {
 //         get { return polylineToEdgeGeom.Keys; }
 //     }
 
@@ -41,7 +41,7 @@
 //         RegisterPolylinePointInPathsThrough(poly.PolylinePoints);
 //     }
 
-//     void RegisterPolylinePointInPathsThrough(IEnumerable < PolylinePoint > points) {
+//     void RegisterPolylinePointInPathsThrough(Array < PolylinePoint > points) {
 //         foreach(var pp of points)
 //         RegisterPolylinePointInPathsThrough(pp);
 //     }
@@ -50,7 +50,7 @@
 //         CollectionUtilities.AddToMap(pathsThroughPoints, pp.point, pp);
 //     }
 
-//     void UnregisterPolylinePointInPathsThrough(IEnumerable < PolylinePoint > points) {
+//     void UnregisterPolylinePointInPathsThrough(Array < PolylinePoint > points) {
 //         foreach(var pp of points)
 //         UnregisterPolylinePointInPathsThrough(pp);
 //     }

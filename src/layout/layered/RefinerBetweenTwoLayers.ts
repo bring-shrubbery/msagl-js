@@ -1,4 +1,3 @@
-import {from, IEnumerable} from 'linq-to-typescript'
 import {CornerSite} from '../../math/geometry/cornerSite'
 import {CurveFactory} from '../../math/geometry/curveFactory'
 import {DebugCurve} from '../../math/geometry/debugCurve'
@@ -13,7 +12,7 @@ import {LayerEdge} from './LayerEdge'
 import {NodeKind} from './NodeKind'
 import {ProperLayeredGraph} from './ProperLayeredGraph'
 
-type Points = () => IEnumerable<Point>
+type Points = () => Array<Point>
 
 export class RefinerBetweenTwoLayers {
   topNode: number
@@ -34,9 +33,9 @@ export class RefinerBetweenTwoLayers {
 
   originalGraph: GeomGraph
 
-  topCorners: Points
+  topCorners: () => IterableIterator<Point>
 
-  bottomCorners: Points
+  bottomCorners: () => IterableIterator<Point>
 
   anchors: Anchor[]
 
@@ -238,11 +237,11 @@ export class RefinerBetweenTwoLayers {
   // }
   private Init() {
     if (this.IsTopToTheLeftOfBottom()) {
-      this.topCorners = () => from(this.CornersToTheRightOfTop())
-      this.bottomCorners = () => from(this.CornersToTheLeftOfBottom())
+      this.topCorners = () => this.CornersToTheRightOfTop()
+      this.bottomCorners = () => this.CornersToTheLeftOfBottom()
     } else {
-      this.topCorners = () => from(this.CornersToTheLeftOfTop())
-      this.bottomCorners = () => from(this.CornersToTheRightOfBottom())
+      this.topCorners = () => this.CornersToTheLeftOfTop()
+      this.bottomCorners = () => this.CornersToTheRightOfBottom()
     }
   }
 

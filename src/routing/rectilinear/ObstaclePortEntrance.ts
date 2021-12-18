@@ -1,4 +1,3 @@
-import {from, IEnumerable} from 'linq-to-typescript'
 import {String} from 'typescript-string-operations'
 import {
   Point,
@@ -193,7 +192,7 @@ export class ObstaclePortEntrance {
   private InteriorEdgeCrossesObstacleRFI(
     rect: Rectangle,
     whichPolylineToUse: (o: Obstacle) => Polyline,
-    candidates: IEnumerable<Obstacle>,
+    candidates: Array<Obstacle>,
   ): boolean {
     let lineSeg: LineSegment = null
     for (const blocker of candidates) {

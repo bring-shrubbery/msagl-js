@@ -38,7 +38,7 @@
 //         //        }
 
 //         /*
-//                 IEnumerable<CdtEdge> GetCdtEdgesCrossedBySegmentStartingFromSiteAtStart(CdtSiteFeature f, PolylinePoint pp, out CdtFeature nextFeature) {
+//                 Array<CdtEdge> GetCdtEdgesCrossedBySegmentStartingFromSiteAtStart(CdtSiteFeature f, PolylinePoint pp, out CdtFeature nextFeature) {
 //                     Assert.assert(f.Prev == null);
 //                     var ret = new Array<CdtEdge>();
 //                     var site = f.Site;
@@ -87,9 +87,9 @@
 //         */
 
 //         /*
-//                 IEnumerable<CdtEdge> GetCdtEdgesCrossedBySegment(PolylinePoint prevA, PolylinePoint a, PolylinePoint b) {
+//                 Array<CdtEdge> GetCdtEdgesCrossedBySegment(PolylinePoint prevA, PolylinePoint a, PolylinePoint b) {
 //                     var pp = new PointPair(a.point, b.point);
-//                     IEnumerable<CdtEdge> intersections;
+//                     Array<CdtEdge> intersections;
 //                     if (segsToCdtEdges.TryGetValue(pp, out intersections))
 //                         return intersections;
 //                     return segsToCdtEdges[pp] = Cdt.GetCdtEdgesCrossedBySegment(prevA, a, b);

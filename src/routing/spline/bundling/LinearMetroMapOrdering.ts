@@ -37,7 +37,7 @@
 
 //         // Get the ordering of lines on station u with respect to the edge (u->v)
 //         // <
-//         IEnumerable < Metroline > IMetroMapOrderingAlgorithm.GetOrder(Station u, Station v) {
+//         Array < Metroline > IMetroMapOrderingAlgorithm.GetOrder(Station u, Station v) {
 //             MetroEdge me = MetroEdge.CreateFromTwoNodes(u.SerialNumber, v.SerialNumber);
 //             Array < int > orderedMetrolineListForUv = order[me];
 //             if (u.SerialNumber < v.SerialNumber) {

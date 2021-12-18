@@ -8,7 +8,7 @@ import {LineSegment} from './../../math/geometry/lineSegment'
 import {EdgeGeometry} from './edgeGeometry'
 // import {Assert} from './../../utils/assert'
 import {GeomEdge} from './geomEdge'
-import {from} from 'linq-to-typescript'
+
 export class Arrowhead {
   static defaultArrowheadLength = 5
   length = Arrowhead.defaultArrowheadLength
@@ -93,7 +93,7 @@ export class Arrowhead {
       )
       p =
         intersections.length != 0
-          ? from(intersections).max((x) => x.par1)
+          ? Math.max(...intersections.map((x) => x.par1))
           : curve.parEnd
       newCurveEnd = edgeGeometry.curve.value(p)
       arrowheadLength /= 2
@@ -128,10 +128,8 @@ export class Arrowhead {
         curve.start,
       )
       if (intersections.length == 0) return curve.parStart
-      p = from(intersections).min((x) => x.par1)
-      newStart = from(intersections)
-        .where((x) => x.par1 == p)
-        .first().x
+      p = Math.min(...intersections.map((x) => x.par1))
+      newStart = intersections.filter((x) => x.par1 == p)[0].x
       // check that something is left from the curve
       if (newStart.sub(curve.end).lengthSquared >= eps) return p
       arrowheadLength /= 2

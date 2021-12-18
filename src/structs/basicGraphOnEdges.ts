@@ -1,6 +1,6 @@
 import {IEdge} from './iedge'
 import {Queue} from 'queue-typescript'
-import {from} from 'linq-to-typescript'
+
 export function mkGraphOnEdges<TEdge extends IEdge>(
   edges: Array<TEdge>,
 ): BasicGraphOnEdges<TEdge> {

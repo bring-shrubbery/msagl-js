@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import {Interval} from '../../math/geometry/Interval'
 import {Point} from '../../math/geometry/point'
 import {Size} from '../../math/geometry/rectangle'
@@ -57,7 +56,7 @@ export class MstLineSweeper {
   AddIntervalToTree(i: number) {
     const interval: Interval = this.GetInterval(i)
     if (this._intervalTree == null) {
-      this._intervalTree = mkRTree<number, number>(from([]))
+      this._intervalTree = mkRTree<number, number>([])
     }
 
     this._intervalTree.Add(interval, i)

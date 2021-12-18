@@ -1,4 +1,4 @@
-import {from, IEnumerable} from 'linq-to-typescript'
+import {Rectangle} from '..'
 // import {Assert} from '../../../utils/assert'
 import {IRectangle} from '../IRectangle'
 import {
@@ -13,11 +13,11 @@ import {
 
 //  Create the query tree for a given enumerable of T keyed by Rectangles
 export function mkRTree<T, P>(
-  rectsAndData: IEnumerable<[IRectangle<P>, T]>,
+  rectsAndData: Array<[IRectangle<P>, T]>,
 ): RTree<T, P> {
   return new RTree<T, P>(
     CreateRectangleNodeOnEnumeration(
-      rectsAndData.select(([k, v]) => mkRectangleNode<T, P>(v, k)).toArray(),
+      rectsAndData.map(([k, v]) => mkRectangleNode<T, P>(v, k)),
     ),
   )
 }
@@ -46,12 +46,13 @@ function RebuildUnderNodeWithoutLeaf<T, P>(
 ) {
   /*Assert.assert(leaf.IsLeaf)*/
   /*Assert.assert(!nodeForRebuild.IsLeaf)*/
-  const newNode = CreateRectangleNodeOnEnumeration<T, P>(
-    nodeForRebuild
-      .GetAllLeafNodes()
-      .where((n) => n != leaf)
-      .toArray(),
-  )
+  const t = new Array<RectangleNode<T, P>>()
+  for (const n of nodeForRebuild.GetAllLeafNodes()) {
+    if (n != leaf) {
+      t.push(n)
+    }
+  }
+  const newNode = CreateRectangleNodeOnEnumeration<T, P>(t)
   nodeForRebuild.Count = newNode.Count
   nodeForRebuild.Left = newNode.Left
   nodeForRebuild.Right = newNode.Right
@@ -132,10 +133,10 @@ export class RTree<T, P> {
     this._rootNode = rootNode
   }
 
-  GetAllLeaves(): IEnumerable<T> {
+  GetAllLeaves(): Array<T> {
     return this._rootNode != null && this.Count > 0
-      ? this._rootNode.GetAllLeaves()
-      : from([])
+      ? Array.from(this._rootNode.GetAllLeaves())
+      : []
   }
 
   //  The number of data elements of the tree (number of leaf nodes)
@@ -158,7 +159,7 @@ export class RTree<T, P> {
 
   Rebuild() {
     this._rootNode = CreateRectangleNodeOnEnumeration(
-      this._rootNode.GetAllLeafNodes().toArray(),
+      Array.from(this._rootNode.GetAllLeafNodes()),
     )
   }
 
@@ -242,22 +243,21 @@ export class RTree<T, P> {
   //  Get all leaf nodes with rectangles intersecting the specified rectangular region
   GetAllLeavesIntersectingRectangle(
     queryRegion: IRectangle<P>,
-  ): IEnumerable<RectangleNode<T, P>> {
+  ): Iterable<RectangleNode<T, P>> {
     return this._rootNode == null || this.Count == 0
-      ? from([])
-      : from(
-          this._rootNode.GetLeafRectangleNodesIntersectingRectangle(
-            queryRegion,
-          ),
-        )
+      ? []
+      : this._rootNode.GetLeafRectangleNodesIntersectingRectangle(queryRegion)
   }
 
   //  Does minimal work to determine if any objects of the tree intersect with the query region
   public IsIntersecting(queryRegion: IRectangle<P>): boolean {
     if (this._rootNode == null || this.Count == 0) return false
-    return from(
-      this._rootNode.GetNodeItemsIntersectingRectangle(queryRegion),
-    ).any()
+    for (const n of this._rootNode.GetNodeItemsIntersectingRectangle(
+      queryRegion,
+    )) {
+      return true
+    }
+    return false
   }
 
   //  return true iff there is a node with the rectangle and UserData that equals to the parameter "userData"
@@ -265,10 +265,12 @@ export class RTree<T, P> {
     if (this._rootNode == null) {
       return false
     }
-
-    return from(
-      this._rootNode.GetLeafRectangleNodesIntersectingRectangle(rectangle),
-    ).any((node) => node.UserData == userData)
+    for (const node of this._rootNode.GetLeafRectangleNodesIntersectingRectangle(
+      rectangle,
+    )) {
+      if (node.UserData == userData) return true
+    }
+    return false
   }
 
   public Remove(rectangle: IRectangle<P>, userData: T): T {
@@ -276,9 +278,14 @@ export class RTree<T, P> {
       return
     }
 
-    const ret = from(
-      this._rootNode.GetLeafRectangleNodesIntersectingRectangle(rectangle),
-    ).firstOrDefault((node) => node.UserData == userData)
+    let ret = undefined
+    for (const node of this._rootNode.GetLeafRectangleNodesIntersectingRectangle(
+      rectangle,
+    )) {
+      if (node.UserData == userData) {
+        ret = node
+      }
+    }
     if (ret == null) {
       return
     }

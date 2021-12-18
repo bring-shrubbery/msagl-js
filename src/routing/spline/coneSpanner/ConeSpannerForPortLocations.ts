@@ -10,7 +10,7 @@
 // {
 //     internal class ConeSpannerForPortLocations : Algorithm {
 
-//         readonly IEnumerable<Polyline> obstacles;
+//         readonly Array<Polyline> obstacles;
 //         // double coneAngle = Math.PI / 18;// ten degrees
 //         //double coneAngle = Math.PI / 9;// twenty degrees
 //         double coneAngle =
@@ -19,14 +19,14 @@
 //         //double coneAngle = Math.PI / 4;// 45 degrees
 //         //double coneAngle = Math.PI / 2;// 90 degrees!
 
-//         internal ConeSpannerForPortLocations(IEnumerable<Polyline> obstacles, VisibilityGraph visibilityGraph,
-//             IEnumerable<Point> portLocationsPointSet) {
+//         internal ConeSpannerForPortLocations(Array<Polyline> obstacles, VisibilityGraph visibilityGraph,
+//             Array<Point> portLocationsPointSet) {
 //             PortLocations = portLocationsPointSet;
 //             this.obstacles = VisibilityGraph.OrientHolesClockwise(obstacles);
 //             VisibilityGraph = visibilityGraph;
 //         }
 
-//         protected IEnumerable<Point> PortLocations { get; set; }
+//         protected Array<Point> PortLocations { get; set; }
 
 //         public VisibilityGraph VisibilityGraph { get; private set; }
 

@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import {Rectangle, Point} from '../../../../src'
 import {mkRTree} from '../../../../src/math/geometry/RTree/RTree'
 import {randomInt} from '../../../../src/utils/random'
@@ -18,14 +17,14 @@ test('RTreeQuery_IncrementalRectangles', () => {
   // create rTree with just the first rectangle
   const l: [Rectangle, Rectangle][] = [[rects[0], rects[0]]]
 
-  const queryTree = mkRTree<Rectangle, Point>(from(l))
+  const queryTree = mkRTree<Rectangle, Point>(l)
 
   // add remaining rectangles 10 at a time
   for (let a = 1, b = 10; b < RectsCount; a = b, b += 10) {
     for (let i = a; i < b; ++i) {
       queryTree.Add(rects[i], rects[i])
     }
-    let t = queryTree.GetAllLeaves().toArray()
+    let t = queryTree.GetAllLeaves()
     expect(t.length).toBe(b) // "did we lose leaves?");
     t = queryTree.GetAllIntersecting(
       new Rectangle({

@@ -83,7 +83,7 @@
 //         get { return regularEdges; }
 //     }
 
-//     internal IEnumerable < Station > VirtualNodes() {
+//     internal Array < Station > VirtualNodes() {
 //         return Stations.Where(s => !s.IsRealNode);
 //     }
 
@@ -93,7 +93,7 @@
 
 //     internal RectangleNode < Polyline > TightTree { get { return tightIntersections.obstacleTree; } }
 
-//     internal IEnumerable < Tuple < Station, Station >> VirtualEdges() {
+//     internal Array < Tuple < Station, Station >> VirtualEdges() {
 //         return edgeInfoDictionary.Keys;
 //     }
 
@@ -160,7 +160,7 @@
 //         return 0;
 //     }
 
-//     internal double GetWidth(IEnumerable < Metroline > metrolines, double edgeSeparation) {
+//     internal double GetWidth(Array < Metroline > metrolines, double edgeSeparation) {
 //         double width = 0;
 //         foreach(var metroline of metrolines) {
 //             width += metroline.Width;

@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import {Point, Rectangle} from '../..'
 import {
   Polyline,

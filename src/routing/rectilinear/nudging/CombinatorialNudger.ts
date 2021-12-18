@@ -1,6 +1,6 @@
 ///  sets the order of connector paths on the edges
 
-// import {IEnumerable} from 'linq-to-typescript'
+//
 import {Queue} from 'queue-typescript'
 import {Point} from '../../../math/geometry/point'
 import {CompassVector} from '../../../math/geometry/compassVector'

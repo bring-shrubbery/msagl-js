@@ -1,6 +1,5 @@
 // balances the layers by moving vertices with
 
-import {from} from 'linq-to-typescript'
 import {Algorithm} from '../../utils/algorithm'
 import {CancelToken} from '../../utils/cancelToken'
 import {IntPair} from '../../utils/IntPair'
@@ -186,7 +185,7 @@ export class Balancing extends Algorithm {
 
   CalculateLayerCounts() {
     /*Assert.assert(this.layering.length > 0)*/
-    this.vertsCounts = new Array<number>(from(this.layering).max() + 1).fill(0)
+    this.vertsCounts = new Array<number>(Math.max(...this.layering) + 1).fill(0)
     for (const r of this.layering) {
       this.vertsCounts[r] += this.nodeCount[r]
     }

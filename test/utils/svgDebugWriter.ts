@@ -1,5 +1,5 @@
 import {String, StringBuilder} from 'typescript-string-operations'
-import {from} from 'linq-to-typescript'
+
 import * as fs from 'fs'
 // @ts-ignore
 import xmlw from 'xml-writer'

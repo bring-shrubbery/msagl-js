@@ -5,7 +5,6 @@
 //  Copyright Microsoft Corporation.
 
 import {Nudger} from './nudging/Nudger'
-import {from, IEnumerable, InvalidOperationException} from 'linq-to-typescript'
 import {ICurve, Point} from '../../math/geometry'
 import {CancelToken} from '../../utils/cancelToken'
 import {GeomEdge} from '../../layout/core/geomEdge'
@@ -90,8 +89,8 @@ export class RectilinearEdgeRouter extends Algorithm {
   //  Array all edge routing specifications that are currently active.  We want to hide access to the
   //  Array itself so people don't add or remove items directly.
 
-  public get EdgeGeometriesToRoute(): IEnumerable<EdgeGeometry> {
-    return from(this.EdgeGeometries)
+  public get EdgeGeometriesToRoute(): Array<EdgeGeometry> {
+    return this.EdgeGeometries
   }
 
   //  Remove all EdgeGeometries to route
@@ -113,8 +112,8 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   UseObstacleRectangles = false
 
-  public get Obstacles(): IEnumerable<Shape> {
-    return from(this.ShapeToObstacleMap.values()).select(
+  public get Obstacles(): Array<Shape> {
+    return Array.from(this.ShapeToObstacleMap.values()).map(
       (obs) => obs.InputShape,
     )
   }
@@ -129,12 +128,12 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   //  Add obstacles to the router.
 
-  public AddObstacles(obstacles: IEnumerable<Shape>) {
+  public AddObstacles(obstacles: Iterable<Shape>) {
     this.AddShapes(obstacles)
     this.RebuildTreeAndGraph()
   }
 
-  private AddShapes(obstacles: IEnumerable<Shape>) {
+  private AddShapes(obstacles: Iterable<Shape>) {
     for (const shape of obstacles) {
       this.AddObstacleWithoutRebuild(shape)
     }
@@ -149,7 +148,7 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   //  For each Shapes, update its position and reroute as necessary.
 
-  public UpdateObstacles(obstacles: IEnumerable<Shape>) {
+  public UpdateObstacles(obstacles: Iterable<Shape>) {
     for (const shape of obstacles) {
       this.UpdateObstacleWithoutRebuild(shape)
     }
@@ -166,7 +165,7 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   //  Remove obstacles from the router.
 
-  public RemoveObstacles(obstacles: IEnumerable<Shape>) {
+  public RemoveObstacles(obstacles: Iterable<Shape>) {
     for (const shape of obstacles) {
       this.RemoveObstacleWithoutRebuild(shape)
     }
@@ -186,7 +185,7 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   AddObstacleWithoutRebuild(shape: Shape) {
     if (shape.BoundaryCurve == null) {
-      throw new InvalidOperationException('Shape must have a BoundaryCurve')
+      throw new Error('Shape must have a BoundaryCurve')
     }
 
     this.CreatePaddedObstacle(shape)
@@ -194,7 +193,7 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   UpdateObstacleWithoutRebuild(shape: Shape) {
     if (shape.BoundaryCurve == null) {
-      throw new InvalidOperationException('Shape must have a BoundaryCurve')
+      throw new Error('Shape must have a BoundaryCurve')
     }
 
     //  Always do all of this even if the Shape objects are the same, because the BoundaryCurve probably changed.
@@ -276,7 +275,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   }
   static constructorC(cancelToket: CancelToken): RectilinearEdgeRouter {
     return new RectilinearEdgeRouter(
-      from([]),
+      [],
       RectilinearEdgeRouter.DefaultPadding,
       RectilinearEdgeRouter.DefaultCornerFitRadius,
       /* useSparseVisibilityGraph:*/ false,
@@ -296,7 +295,7 @@ export class RectilinearEdgeRouter extends Algorithm {
 
   //  <param name="obstacles">The collection of shapes to route around. Contains all source and target shapes
   //  as well as any intervening obstacles.</param>
-  static constructorI(Obstacle: IEnumerable<Shape>): RectilinearEdgeRouter {
+  static constructorI(Obstacle: Iterable<Shape>): RectilinearEdgeRouter {
     return new RectilinearEdgeRouter(
       Obstacle,
       RectilinearEdgeRouter.DefaultPadding,
@@ -315,7 +314,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   //  <param name="useSparseVisibilityGraph">If true, use a sparse visibility graph, which saves memory for large graphs
   //  but may select suboptimal paths</param>
   static constructorINNB(
-    obstacles: IEnumerable<Shape>,
+    obstacles: Iterable<Shape>,
     padding: number,
     cornerFitRadius: number,
     useSparseVisibilityGraph: boolean,
@@ -339,7 +338,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   //  but may select suboptimal paths</param>
   //  <param name="useObstacleRectangles">Use obstacle bounding boxes in visibility graph</param>
   public constructor(
-    obstacles: IEnumerable<Shape>,
+    obstacles: Iterable<Shape>,
     padding: number,
     cornerFitRadius: number,
     useSparseVisibilityGraph: boolean,
@@ -418,7 +417,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   GeneratePaths() {
     const edgePaths = this.EdgeGeometries.map((eg) => new Path(eg))
     this.FillEdgePathsWithShortestPaths(edgePaths)
-    this.NudgePaths(from(edgePaths))
+    this.NudgePaths(edgePaths)
     this.RouteSelfEdges()
     this.FinaliseEdgeGeometries()
   }
@@ -574,7 +573,7 @@ export class RectilinearEdgeRouter extends Algorithm {
     }
   }
 
-  //  static ShowPointEnum(p: IEnumerable<Point>) {
+  //  static ShowPointEnum(p: Iterable<Point>) {
   //     //  ReSharper disable InconsistentNaming
   //     const w0: number = 0.1;
   //     const w1: number = 3;
@@ -592,7 +591,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   //     //  ReSharper restore InconsistentNaming
   // }
 
-  NudgePaths(edgePaths: IEnumerable<Path>) {
+  NudgePaths(edgePaths: Array<Path>) {
     //  If we adjusted for spatial ancestors, this nudging can get very weird, so refetch in that case.
     const ancestorSets = this.ObsTree.SpatialAncestorsAdjusted
       ? SplineRouter.GetAncestorSetsMap(this.Obstacles)
@@ -661,7 +660,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   }
 
   private GenerateObstacleTree() {
-    if (this.Obstacles == null || !this.Obstacles.any()) {
+    if (this.Obstacles == null || this.Obstacles.length == 0) {
       throw new Error('No obstacles have been added')
     }
 
@@ -699,7 +698,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   }
 
   GenerateVisibilityGraph() {
-    if (this.Obstacles == null || !this.Obstacles.any()) {
+    if (this.Obstacles == null || this.Obstacles.length == 0) {
       throw new Error('No obstacles have been set')
     }
 
@@ -710,7 +709,7 @@ export class RectilinearEdgeRouter extends Algorithm {
     }
   }
 
-  //  ShowPathWithTakenEdgesAndGraph(path: IEnumerable<VisibilityVertex>, takenEdges: Set<VisibilityEdge>) {
+  //  ShowPathWithTakenEdgesAndGraph(path: Iterable<VisibilityVertex>, takenEdges: Set<VisibilityEdge>) {
   //     let list = new Array<VisibilityVertex>(path);
   //     let lines = new Array<LineSegment>();
   //     for (let i: number = 0; (i
@@ -730,7 +729,7 @@ export class RectilinearEdgeRouter extends Algorithm {
   //     }
 
   //     dc.AddRange(takenEdges.Select(() => {  }, new DebugCurve(50, 2, "black", new LineSegment(edge.SourcePoint, edge.TargetPoint))));
-  //     let k: IEnumerable<DebugCurve> = this.GetGraphDebugCurves();
+  //     let k: Iterable<DebugCurve> = this.GetGraphDebugCurves();
   //     dc.AddRange(k);
   //     LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(dc);
   //     //  ReSharper restore InconsistentNaming

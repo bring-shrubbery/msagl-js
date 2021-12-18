@@ -1,6 +1,5 @@
 ///  just a convenient interface to the real solver
 
-import {from, IEnumerable} from 'linq-to-typescript'
 import {RealNumberSpan} from '../../utils/RealNumberSpan'
 import {Solution} from './Solution'
 import {Solver} from './Solver'
@@ -181,15 +180,12 @@ export class SolverShell {
   //             file.Close();
   //         }
   AdjustConstraintsForMovedFixedVars(): boolean {
-    const movedFixedVars = new Set<number>(
-      from(this.fixedVars.entries())
-        .where(
-          ([k, v]) =>
-            !SolverShell.Close(v, this.GetVariableResolvedPosition(k)),
-        )
-        .select(([k, _]) => k)
-        .toArray(),
-    )
+    const movedFixedVars = new Set<number>()
+
+    for (const [k, v] of this.fixedVars.entries()) {
+      if (SolverShell.Close(v, this.GetVariableResolvedPosition(k))) continue
+      movedFixedVars.add(k)
+    }
     if (movedFixedVars.size == 0) {
       return false
     }
@@ -204,9 +200,13 @@ export class SolverShell {
 
   AdjustConstraintsForMovedFixedVarSet(movedFixedVars: Set<number>): boolean {
     while (movedFixedVars.size > 0) {
-      const fixedVar = from(movedFixedVars).first()
+      let fixedVar: number
+      for (const t of movedFixedVars) {
+        fixedVar = t
+        break
+      }
 
-      if (!this.AdjustSubtreeOfFixedVar(fixedVar, /* ref */ movedFixedVars)) {
+      if (!this.AdjustSubtreeOfFixedVar(fixedVar, movedFixedVars)) {
         return false
       }
     }
@@ -227,7 +227,7 @@ export class SolverShell {
       return false
     }
 
-    if (!neighbors.any()) {
+    if (neighbors.length == 0) {
       return false
     }
 
@@ -246,7 +246,7 @@ export class SolverShell {
   AdjustConstraintsOfNeighborsOfFixedVariable(
     fixedVar: number,
     t: {successInAdjusting: boolean},
-  ): IEnumerable<number> {
+  ): Array<number> {
     const nbs = this.variables.get(fixedVar).Block.Variables
     const currentSpan = new RealNumberSpan()
     const idealSpan = new RealNumberSpan()
@@ -268,21 +268,23 @@ export class SolverShell {
     }
 
     // just relax the constraints
-    t.successInAdjusting = this.FixActiveConstraints(from(nbs), scale)
-    return from(nbs).select((u) => <number>u.UserData)
+    t.successInAdjusting = this.FixActiveConstraints(nbs, scale)
+    return nbs.map((u) => <number>u.UserData)
   }
 
   ///  if all active constraint gaps are less than this epsilon we should stop trying adjusting
 
   readonly FailToAdjustEpsilon = 0.001
 
-  FixActiveConstraints(neighbs: IEnumerable<Variable>, scale: number): boolean {
+  FixActiveConstraints(neighbs: Array<Variable>, scale: number): boolean {
     let ret = false
-    for (const c of neighbs
-      .selectMany((v) => v.LeftConstraints)
-      .where((c) => c.IsActive)) {
-      if (c.Gap > this.FailToAdjustEpsilon) ret = true
-      this.solver.SetConstraintUpdate(c, c.Gap / scale)
+    for (const v of neighbs) {
+      for (const c of v.LeftConstraints) {
+        if (c.IsActive) {
+          if (c.Gap > this.FailToAdjustEpsilon) ret = true
+          this.solver.SetConstraintUpdate(c, c.Gap / scale)
+        }
+      }
     }
 
     return ret

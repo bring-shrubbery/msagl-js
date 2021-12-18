@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import {Graph} from './graph'
 import {AttrContainer} from './attrContainer'
 export abstract class Entity extends AttrContainer {

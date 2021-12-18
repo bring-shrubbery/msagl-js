@@ -10,7 +10,7 @@ import {SortedMap} from '@esfx/collections-sortedmap'
 import {CancelToken} from '../../../utils/cancelToken'
 import {LayerEdge} from '../LayerEdge'
 import {Stack} from 'stack-typescript'
-import {from} from 'linq-to-typescript'
+
 import {EdgeComparerBySource} from './EdgeComparerBySource'
 import {EdgeComparerByTarget} from './EdgeComparerByTarget'
 import {Algorithm} from './../../../utils/algorithm'
@@ -112,9 +112,7 @@ function EdgesOfStrip(
   bottomVerts: number[],
   properLayeredGraph: ProperLayeredGraph,
 ): LayerEdge[] {
-  return from(bottomVerts)
-    .selectMany((v) => properLayeredGraph.InEdges(v))
-    .toArray()
+  return bottomVerts.flatMap((v) => Array.from(properLayeredGraph.InEdges(v)))
 }
 
 export function GetCrossingsTotal(

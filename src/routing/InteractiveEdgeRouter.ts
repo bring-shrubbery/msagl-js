@@ -1,6 +1,5 @@
 //  the router between nodes
 
-import {from, IEnumerable} from 'linq-to-typescript'
 import {ICurve, Rectangle, Point} from '..'
 import {CurvePort} from '../layout/core/curvePort'
 import {EdgeGeometry} from '../layout/core/edgeGeometry'
@@ -725,11 +724,11 @@ export class InteractiveEdgeRouter extends Algorithm {
 
   //  ShowPolylineAndObstacles(params curves: ICurve[]) {
   //     //  ReSharper restore UnusedMember.Local
-  //     let ls: IEnumerable<DebugCurve> = this.GetDebugCurves(curves);
+  //     let ls: Array<DebugCurve> = this.GetDebugCurves(curves);
   //     LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(ls);
   // }
 
-  // GetDebugCurves(params curves: ICurve[]): IEnumerable<DebugCurve> {
+  // GetDebugCurves(params curves: ICurve[]): Array<DebugCurve> {
   //     let ls = this.CreateListWithObstaclesAndPolyline(curves);
   //     // ls.AddRange(this.VisibilityGraph.Edges.Select(e => new DebugCurve(100,0.1, e is TollFreeVisibilityEdge?"red":"green", LineSegment.mkPP(e.SourcePoint, e.TargetPoint))));
   //     if ((this._sourceVisibilityVertex != null)) {
@@ -2219,7 +2218,7 @@ return from polygon in activePolygons where polygon.Polyline != targetLoosePoly 
     return InteractiveEdgeRouter.RemoveCollinearVertices(ret)
   }
 
-  Targets(targetLoosePoly: Polyline): IEnumerable<VisibilityVertex> {
+  Targets(targetLoosePoly: Polyline): Array<VisibilityVertex> {
     return from(targetLoosePoly).select((p) =>
       this.visibilityGraph.FindVertex(p),
     )
@@ -2291,7 +2290,7 @@ return from polygon in activePolygons where polygon.Polyline != targetLoosePoly 
   //     LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(obs.Concat(edges));
   // }
 
-  AddActivePolygons(polygons: IEnumerable<Polygon>) {
+  AddActivePolygons(polygons: Array<Polygon>) {
     addRange(this.activePolygons, polygons)
   }
 

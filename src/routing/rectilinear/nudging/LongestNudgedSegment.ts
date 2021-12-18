@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import {Point} from '../../../math/geometry/point'
 import {CompassVector} from '../../../math/geometry/compassVector'
 import {Direction} from '../../../math/geometry/direction'

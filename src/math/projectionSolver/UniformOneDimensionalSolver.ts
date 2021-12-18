@@ -26,7 +26,7 @@ export class UniformOneDimensionalSolver {
 
   graph: BasicGraphOnEdges<IntPair>
 
-  //         delegate IEnumerable<NudgerConstraint> Edges(int i);
+  //         delegate Array<NudgerConstraint> Edges(int i);
   //
   //         delegate int End(NudgerConstraint constraint);
   //         Edges outEdgesDel;

@@ -1,6 +1,5 @@
 ///  The class is looking for the free space around AxisEdges
 
-import {IEnumerable, from} from 'linq-to-typescript'
 import {Point} from '../../../math/geometry/point'
 import {CompassVector} from '../../../math/geometry/compassVector'
 import {DebugCurve} from '../../../math/geometry/debugCurve'
@@ -47,7 +46,7 @@ export class FreeSpaceFinder extends LineSweeperBase {
     obstacles: Array<Polyline>,
     axisEdgesToObstaclesTheyOriginatedFrom: Map<AxisEdge, Polyline>,
     pathOrders: Map<AxisEdge, Array<PathEdge>>,
-    axisEdges: IEnumerable<AxisEdge>,
+    axisEdges: Array<AxisEdge>,
   ) {
     super(obstacles, new CompassVector(direction).ToPoint())
     this.DirectionPerp = new CompassVector(direction).Right.ToPoint()
@@ -168,7 +167,7 @@ export class FreeSpaceFinder extends LineSweeperBase {
   //     new DebugCurve("blue", CurveFactory.CreateEllipse(3, 3, point));
   // }
 
-  GetObstacleBoundaries(color: string): IEnumerable<DebugCurve> {
+  GetObstacleBoundaries(color: string): Array<DebugCurve> {
     return from(this.Obstacles).select((p) =>
       DebugCurve.mkDebugCurveWCI(1, color, p),
     )
@@ -308,7 +307,7 @@ export class FreeSpaceFinder extends LineSweeperBase {
   // }
 
   // @System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")
-  // static RightNeighborsCurvesTest(rbTree: IEnumerable<AxisEdgesContainer>): IEnumerable<DebugCurve> {
+  // static RightNeighborsCurvesTest(rbTree: Array<AxisEdgesContainer>): Array<DebugCurve> {
   //     for (let container of rbTree) {
   //         for (let edge of container) {
   //             for (let rn of edge.RightNeighbors) {
@@ -544,7 +543,7 @@ export class FreeSpaceFinder extends LineSweeperBase {
     }
   }
 
-  AxisEdges: IEnumerable<AxisEdge>
+  AxisEdges: Array<AxisEdge>
 
   EnqueueEventsForEdge(edge: AxisEdge) {
     if (this.EdgeIsParallelToSweepDir(edge)) {

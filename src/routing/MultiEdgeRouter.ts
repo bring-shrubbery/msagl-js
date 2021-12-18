@@ -20,7 +20,7 @@ namespace Microsoft.Msagl.Routing {
         readonly RectangleNode < ICurve > nodeTree;
 
 
-    internal MultiEdgeRouter(Array < Edge[] > multiEdgeGeoms, InteractiveEdgeRouter interactiveEdgeRouter, IEnumerable < ICurve > nodeBoundaryCurves, BundlingSettings bundlingSettings, Func < EdgeGeometry, Array < Shape >> transparentShapeSetter) {
+    internal MultiEdgeRouter(Array < Edge[] > multiEdgeGeoms, InteractiveEdgeRouter interactiveEdgeRouter, Array < ICurve > nodeBoundaryCurves, BundlingSettings bundlingSettings, Func < EdgeGeometry, Array < Shape >> transparentShapeSetter) {
         multiEdgeGeometries = multiEdgeGeoms.Select(l => l.Select(e => e.EdgeGeometry).ToArray()).ToList();
 
         this.interactiveEdgeRouter = interactiveEdgeRouter;
@@ -39,7 +39,7 @@ namespace Microsoft.Msagl.Routing {
         }
     }
 
-    IEnumerable < GeometryGraph > GetGeometryGraphs() {
+    Array < GeometryGraph > GetGeometryGraphs() {
         foreach(PreGraph preGraph of GetIndependantPreGraphs())
         yield return CreateGeometryGraph(preGraph);
     }
@@ -82,7 +82,7 @@ namespace Microsoft.Msagl.Routing {
     // creates a set of pregraphs suitable for bundle routing
     // <
 
-    IEnumerable < PreGraph > GetIndependantPreGraphs() {
+    Array < PreGraph > GetIndependantPreGraphs() {
         Array < PreGraph > preGraphs = CreateInitialPregraphs();
         do {
             int count = preGraphs.Count;
@@ -127,7 +127,7 @@ namespace Microsoft.Msagl.Routing {
         return null;
     }
 
-        static IEnumerable < IntPair > EnumeratePairsOfIntersectedPreGraphs(Array < PreGraph > preGraphs) {
+        static Array < IntPair > EnumeratePairsOfIntersectedPreGraphs(Array < PreGraph > preGraphs) {
         var rn = RectangleNode<int, Point>.CreateRectangleNodeOnData(Enumerable.Range(0, preGraphs.Count), i => preGraphs[i].boundingBox);
         var list = new Array<IntPair>();
         RectangleNodeUtils.CrossRectangleNodes<int>(rn, rn, (a, b) => list.Add(new IntPair(a, b)));

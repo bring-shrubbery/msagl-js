@@ -25,7 +25,7 @@
 //     }
 
 // #if TEST_MSAGL || DEVTRACE
-//     internal IEnumerable < CdtTriangle > Triangles() {
+//     internal Array < CdtTriangle > Triangles() {
 //         while (MoveNext())
 //             yield return CurrentTriangle;
 //     }
@@ -168,7 +168,7 @@
 
 //     }
 
-//     //        void ShowDebug(IEnumerable<CdtTriangle> cdtTriangles, CdtEdge cdtEdge, CdtTriangle cdtTriangle) {
+//     //        void ShowDebug(Array<CdtTriangle> cdtTriangles, CdtEdge cdtEdge, CdtTriangle cdtTriangle) {
 //     //            var l = new Array<DebugCurve> { new DebugCurve(10,"red",new LineSegment(start,end)) };
 //     //            if(cdtEdge!=null)
 //     //                l.Add(new DebugCurve(100,3,"navy", new LineSegment(cdtEdge.upperSite.point,cdtEdge.lowerSite.point)));

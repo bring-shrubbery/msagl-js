@@ -8,7 +8,7 @@ import {GeomNode} from '../core/geomNode'
 import {CycleRemoval} from './CycleRemoval'
 import {PolyIntEdge} from './polyIntEdge'
 import {IntPairSet} from './../../utils/IntPairSet'
-import {from} from 'linq-to-typescript'
+
 import {IEdge} from '../../structs/iedge'
 import {GetConnectedComponents} from './../../math/graphAlgorithms/ConnectedComponentCalculator'
 export class VerticalConstraintsForSugiyama {
@@ -99,7 +99,7 @@ export class VerticalConstraintsForSugiyama {
 
   removeCyclesFromGluedConstraints() {
     const graph = mkGraphOnEdgesN<IntPair>(
-      from(this.gluedUpDownIntConstraints.values()).toArray(),
+      Array.from(this.gluedUpDownIntConstraints.values()),
       this.intGraph.nodeCount,
     )
     const feedbackSet = CycleRemoval.getFeedbackSetWithConstraints(graph, null)
@@ -308,7 +308,7 @@ export class VerticalConstraintsForSugiyama {
     this.intGraph.edges.forEach((e) => set.add(this.gluedIntPairI(e)))
 
     return mkGraphOnEdgesN<IntPair>(
-      from(set.values()).toArray(),
+      Array.from(set.values()),
       this.intGraph.nodeCount,
     )
     //return new BasicGraphOnEdges<IntPair>(new Set<IntPair>(from edge in this.intGraph.Edges select GluedIntPair(edge)), this.intGraph.NodeCount);

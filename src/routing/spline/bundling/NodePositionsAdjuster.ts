@@ -231,7 +231,7 @@
 //     new Polyline(GluedPolyline(poly.Select(p => metroGraphData.PointToStations[p]).ToArray(), gluingMap));
 // }
 
-//         static IEnumerable < Point > GluedPolyline(Station[] metroline, Map < Station, Station > gluedMap) {
+//         static Array < Point > GluedPolyline(Station[] metroline, Map < Station, Station > gluedMap) {
 //   int i;
 //   var ret = new Stack<Station>();
 //   ret.Push(metroline[0]);

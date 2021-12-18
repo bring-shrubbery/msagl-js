@@ -1,4 +1,3 @@
-import {from, IEnumerable} from 'linq-to-typescript'
 import {Point} from '../../../math/geometry/point'
 import {ICurve} from '../../../math/geometry/icurve'
 import {Rectangle} from '../../../math/geometry/rectangle'
@@ -52,23 +51,26 @@ export class Nudger {
   //
   //  <returns></returns>
   constructor(
-    paths: IEnumerable<Path>,
+    paths: Array<Path>,
     cornerFitRad: number,
     obstacles: Array<Polyline>,
     ancestorsSets: Map<Shape, Set<Shape>>,
   ) {
     this.AncestorsSets = ancestorsSets
     this.HierarchyOfGroups = CreateRectangleNodeOnEnumeration(
-      from(ancestorsSets.keys())
+      Array.from(ancestorsSets.keys())
+        .filter((shape) => shape.IsGroup)
+        .map((group) => mkRectangleNode(group, group.BoundingBox)),
+      /*from(ancestorsSets.keys())
         .where((shape) => shape.IsGroup)
         .select((group) => mkRectangleNode(group, group.BoundingBox))
-        .toArray(),
+        .toArray(),*/
     )
     this.Obstacles = obstacles
     this.EdgeSeparation = 2 * cornerFitRad
-    this.Paths = paths.toArray()
+    this.Paths = paths
     this.HierarchyOfObstacles = CreateRectangleNodeOnEnumeration(
-      from(obstacles.map((p) => mkRectangleNode(p, p.boundingBox))).toArray(),
+      obstacles.map((p) => mkRectangleNode(p, p.boundingBox)),
     )
     this.MapPathsToTheirObstacles()
   }
@@ -84,13 +86,13 @@ export class Nudger {
 
   MapPathToItsObstacles(path: Path) {
     if (!path.PathPoints || (<Point[]>path.PathPoints).length == 0) return
-    const fr = from(path.PathPoints as Array<Point>)
+    const fr = path.PathPoints as Array<Point>
     const startNode = this.HierarchyOfObstacles.FirstHitNodeWithPredicate(
-      fr.first(),
+      fr[0],
       Nudger.ObstacleTest,
     )
     const endNode = this.HierarchyOfObstacles.FirstHitNodeWithPredicate(
-      fr.last(),
+      fr[fr.length - 1],
       Nudger.ObstacleTest,
     )
     if (null != startNode && null != endNode) {
@@ -230,8 +232,8 @@ export class Nudger {
   NudgingDirection: Direction
 
   static GetCurvesForShow(
-    paths: IEnumerable<Path>,
-    obstacles: IEnumerable<Polyline>,
+    paths: Iterable<Path>,
+    obstacles: Iterable<Polyline>,
   ): ICurve[] {
     const ret = new Array<ICurve>()
     for (const path of paths) {
@@ -243,14 +245,14 @@ export class Nudger {
       ret.push(poly)
     }
 
-    return ret.concat(obstacles.toArray())
+    return ret.concat(Array.from(obstacles))
   }
 
   DrawPaths() {
     this.SetWidthsOfArrowheads()
     this.CreateLongestNudgedSegments()
     this.FindFreeSpaceInDirection(
-      <IEnumerable<AxisEdge>>from(this.PathVisibilityGraph.Edges),
+      <Array<AxisEdge>>Array.from(this.PathVisibilityGraph.Edges),
     )
     this.MoveLongestSegsIdealPositionsInsideFeasibleIntervals()
     this.PositionShiftedEdges()
@@ -360,7 +362,7 @@ export class Nudger {
       : new Point(point.x, -t)
   }
 
-  //  static ShowPathsFromPoints(paths: IEnumerable<Path>, enumerable: IEnumerable<Polyline>) {
+  //  static ShowPathsFromPoints(paths: Array<Path>, enumerable: Array<Polyline>) {
   //     let dd = new Array<DebugCurve>();
   //     if ((enumerable != null)) {
   //         dd=dd.concat(Nudger.GetObstacleBoundaries(enumerable, "grey"));
@@ -374,7 +376,7 @@ export class Nudger {
   //     LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(dd);
   // }
 
-  // static PathDebugCurvesFromPoints(path: Path, color: string): IEnumerable<DebugCurve> {
+  // static PathDebugCurvesFromPoints(path: Path, color: string): Array<DebugCurve> {
   //     const let startWidth: number = 0.01;
   //     const let endWidth: number = 3;
   //     let pts = path.PathPoints.toArray();
@@ -394,7 +396,7 @@ export class Nudger {
   // }
 
   // //          ReSharper disable UnusedMember.Local
-  //  static ShowOrderedPaths(obstacles: IEnumerable<Polyline>, paths: IEnumerable<Path>, s: Point, e: Point) {
+  //  static ShowOrderedPaths(obstacles: Array<Polyline>, paths: Array<Path>, s: Point, e: Point) {
   //     //            ReSharper restore UnusedMember.Local
   //     let colors: string[] = [
   //             "red",
@@ -421,7 +423,7 @@ export class Nudger {
   //     LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(dd.concat(Nudger.GetObstacleBoundaries(obstacles, "lightblue")));
   // }
 
-  // static GetTestPathAsDebugCurve(startWidth: number, endWidth: number, color: string, path: Path): IEnumerable<DebugCurve> {
+  // static GetTestPathAsDebugCurve(startWidth: number, endWidth: number, color: string, path: Path): Array<DebugCurve> {
   //     if ((path.PathEdges.Count() > 0)) {
   //         let count: number = path.PathEdges.Count();
   //         let deltaW: number = ((endWidth - startWidth)
@@ -459,7 +461,7 @@ export class Nudger {
 
   // }
 
-  //  static GetTestEdgePathAsDebugCurves(startWidth: number, endWidth: number, color: string, path: Path): IEnumerable<DebugCurve> {
+  //  static GetTestEdgePathAsDebugCurves(startWidth: number, endWidth: number, color: string, path: Path): Array<DebugCurve> {
   //     let count: number = path.PathPoints.count();
   //     let deltaW: number = ((endWidth - startWidth)
   //                 / (count - 1));
@@ -478,7 +480,7 @@ export class Nudger {
   // }
 
   // @SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")
-  // static GetEdgePathFromPathEdgesAsDebugCurves(startWidth: number, endWidth: number, color: string, path: Path): IEnumerable<DebugCurve> {
+  // static GetEdgePathFromPathEdgesAsDebugCurves(startWidth: number, endWidth: number, color: string, path: Path): Array<DebugCurve> {
   //     let points = path.PathPoints.toArray();
   //     let count: number = points.length;
   //     let deltaW: number = ((endWidth - startWidth)
@@ -497,13 +499,13 @@ export class Nudger {
   // }
 
   // //  ReSharper disable UnusedMember.Local
-  //  static ShowEdgePaths(obstacles: IEnumerable<Polyline>, edgePaths: IEnumerable<Path>) {
+  //  static ShowEdgePaths(obstacles: Array<Polyline>, edgePaths: Array<Path>) {
   //     //  ReSharper restore UnusedMember.Local
   //     let debCurves: Array<DebugCurve> = Nudger.GetDebCurvesOfPaths(obstacles, edgePaths);
   //     LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(debCurves);
   // }
 
-  //  static GetDebCurvesOfPaths(enumerable: IEnumerable<Polyline>, edgePaths: IEnumerable<Path>): Array<DebugCurve> {
+  //  static GetDebCurvesOfPaths(enumerable: Array<Polyline>, edgePaths: Array<Path>): Array<DebugCurve> {
   //     let debCurves = Nudger.GetObstacleBoundaries(enumerable, "black");
   //     let i: number = 0;
   //     for (let edgePath  of edgePaths) {
@@ -514,7 +516,7 @@ export class Nudger {
   //     return debCurves;
   // }
 
-  //  static ShowPathsInLoop(enumerable: IEnumerable<Polyline>, edgePaths: IEnumerable<Path>, point: Point) {
+  //  static ShowPathsInLoop(enumerable: Array<Polyline>, edgePaths: Array<Path>, point: Point) {
   //     for (let edgePath  of edgePaths.where(() => {  }, (((path.PathPoints.First() - point).Length < 1)
   //                     || ((path.PathPoints.Last() - point).Length < 1)))) {
   //         let debCurves = Nudger.GetObstacleBoundaries(enumerable, "black");
@@ -569,7 +571,7 @@ export class Nudger {
     }
   }
 
-  // ShowPathsDebug(edgePaths: IEnumerable<Path>) {
+  // ShowPathsDebug(edgePaths: Array<Path>) {
   //     let debCurves = Nudger.GetObstacleBoundaries(this.Obstacles, "black");
   //     let i: number = 0;
   //     for (let edgePath  of edgePaths) {
@@ -580,13 +582,13 @@ export class Nudger {
   //     LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(debCurves);
   // }
 
-  // static PathDebugCurves(path: Path, color: string): IEnumerable<DebugCurve> {
+  // static PathDebugCurves(path: Path, color: string): Array<DebugCurve> {
   //     let d = path.PathEdges.Select(() => {  }, new DebugCurve(70, 0.5, color, new LineSegment(e.Source, e.Target)));
   //     return d.Concat(Nudger.MarkPathVerts(path));
   // }
 
   // @SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")
-  // private static MarkPathVerts(path: Path): IEnumerable<DebugCurve> {
+  // private static MarkPathVerts(path: Path): Array<DebugCurve> {
   //     let first: boolean = true;
   //     let p = new Point();
   //     for (let p0  of path.PathPoints) {
@@ -607,7 +609,7 @@ export class Nudger {
   //     return new DebugCurve(200, 1, "green", CurveFactory.CreateDiamond(3, 3, p));
   // }
 
-  //  static PathDebugCurvesFromPoint(path: Path): IEnumerable<DebugCurve> {
+  //  static PathDebugCurvesFromPoint(path: Path): Array<DebugCurve> {
   //     let l = new Array<Point>(path.PathPoints);
   //     for (let i: number = 0; (i
   //                 < (l.Count - 1)); i++) {
@@ -633,10 +635,10 @@ export class Nudger {
   //             LayoutAlgorithmSettings.ShowDebugCurves(dc.ToArray());
   //         }
   //
-  //         static IEnumerable<DebugCurve> SubpathDebugCurves(double w, string color, OrientedSubpath subpath){
+  //         static Array<DebugCurve> SubpathDebugCurves(double w, string color, OrientedSubpath subpath){
   //             return subpath.LinkedPath.Select(e => new DebugCurve(w, color, new LineSegment(e.Source.Point, e.Target.Point)));
   //         }
-  //  static GetObstacleBoundaries(obstacles: IEnumerable<Polyline>, color: string): Array<DebugCurve> {
+  //  static GetObstacleBoundaries(obstacles: Array<Polyline>, color: string): Array<DebugCurve> {
   //     let debugCurves = new Array<DebugCurve>();
   //     if ((obstacles != null)) {
   //         debugCurves.AddRange(obstacles.select(() => {  }, new DebugCurve(50, 0.3, color, poly)));
@@ -674,7 +676,7 @@ export class Nudger {
   CreateConstraintsOfTheOrder() {
     for (const kv of this.PathOrders) {
       if (Nudger.ParallelToDirection(kv[0], this.NudgingDirection)) {
-        this.CreateConstraintsOfThePathOrder(from(kv[1]))
+        this.CreateConstraintsOfThePathOrder(kv[1])
       }
     }
   }
@@ -694,9 +696,9 @@ export class Nudger {
     }
   }
 
-  CreateConstraintsOfThePathOrder(pathOrder: IEnumerable<PathEdge>) {
+  CreateConstraintsOfThePathOrder(pathOrder: Array<PathEdge>) {
     let prevEdge: PathEdge = null
-    for (const pathEdge of pathOrder.where(
+    for (const pathEdge of pathOrder.filter(
       (p) => p.LongestNudgedSegment != null,
     )) {
       if (prevEdge != null) {
@@ -797,7 +799,7 @@ export class Nudger {
   //  where the path starts and the second where the path ends
   PathToObstacles: Map<Path, [Polyline, Polyline]>
 
-  FindFreeSpaceInDirection(axisEdges: IEnumerable<AxisEdge>) {
+  FindFreeSpaceInDirection(axisEdges: Array<AxisEdge>) {
     this.BoundAxisEdgesByRectsKnownInAdvance()
     const freeSpaceFinder = new FreeSpaceFinder(
       this.NudgingDirection,
@@ -820,29 +822,28 @@ export class Nudger {
   }
 
   BoundPathByMinCommonAncestors(path: Path) {
-    for (const rect of this.GetMinCommonAncestors(path.EdgeGeometry).select(
-      (sh) => sh.BoundingBox,
-    )) {
-      for (const edge of from(path.PathEdges())
-        .select((e) => e.AxisEdge)
-        .where((axisEdge) => axisEdge.Direction == this.NudgingDirection)) {
-        this.BoundAxisEdgeByRect(rect, edge)
+    for (const rect of Array.from(
+      this.GetMinCommonAncestors(path.EdgeGeometry),
+    ).map((sh) => sh.BoundingBox)) {
+      for (const e of path.PathEdges()) {
+        const edge = e.AxisEdge
+        if (edge.Direction == this.NudgingDirection) {
+          this.BoundAxisEdgeByRect(rect, edge)
+        }
       }
     }
   }
 
-  GetMinCommonAncestors(edgeGeometry: EdgeGeometry): IEnumerable<Shape> {
+  GetMinCommonAncestors(edgeGeometry: EdgeGeometry): Iterable<Shape> {
     if (this.PortToShapes == null) {
-      this.PortToShapes = Nudger.MapPortsToShapes(
-        from(this.AncestorsSets.keys()),
-      )
+      this.PortToShapes = Nudger.MapPortsToShapes(this.AncestorsSets.keys())
     }
 
     const commonAncestors = IntersectSets(
       this.AncestorsForPort(edgeGeometry.sourcePort),
       this.AncestorsForPort(edgeGeometry.targetPort),
     )
-    return from(commonAncestors).where(
+    return Array.from(commonAncestors).filter(
       (anc) => !anc.Children.some((child) => commonAncestors.has(child)),
     )
   }
@@ -1011,16 +1012,16 @@ export class Nudger {
     }
   }
 
-  static BuildPolylineForPath(path: Path): IEnumerable<Point> {
+  static BuildPolylineForPath(path: Path): Iterable<Point> {
     const t = {points: (path.PathPoints as Array<Point>).map((p) => p.clone())}
     Nudger.ExtendPolylineToPorts(t, path)
-    for (let i = 0; i < t.points.length - 1; i++) {
-      /*Assert.assert(
+    /* for (let i = 0; i < t.points.length - 1; i++) {
+      Assert.assert(
         CompassVector.IsPureDirectionPP(t.points[i], t.points[i + 1]),
-      )*/
-    }
+      )
+    }*/
 
-    return from(t.points)
+    return t.points
   }
 
   static ExtendPolylineToPorts(t: {points: Point[]}, path: Path) {
@@ -1119,13 +1120,13 @@ export class Nudger {
   //
   //  <returns>the mapping of the path to its modified path</returns>
   static NudgePaths(
-    paths: IEnumerable<Path>,
+    paths: Array<Path>,
     cornerFitRadius: number,
     paddedObstacles: Array<Polyline>,
     ancestorsSets: Map<Shape, Set<Shape>>,
     removeStaircases: boolean,
   ) {
-    if (!paths.any()) {
+    if (paths.length == 0) {
       return
     }
 
@@ -1153,7 +1154,7 @@ export class Nudger {
     StaircaseRemover.RemoveStaircases(this.Paths, this.HierarchyOfObstacles)
   }
 
-  static MapPortsToShapes(listOfShapes: IEnumerable<Shape>): Map<Port, Shape> {
+  static MapPortsToShapes(listOfShapes: Iterable<Shape>): Map<Port, Shape> {
     const portToShapes = new Map<Port, Shape>()
     for (const shape of listOfShapes) {
       for (const port of shape.Ports) {

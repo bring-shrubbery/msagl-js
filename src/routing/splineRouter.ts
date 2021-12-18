@@ -1,11 +1,4 @@
 import {Shape} from './shape'
-import {
-  from,
-  IEnumerable,
-  // IGrouping,
-  // from,
-  // InvalidOperationException,
-} from 'linq-to-typescript'
 import {mkRTree} from '../math/geometry/RTree/RTree'
 // import { Queue } from 'queue-typescript'
 // import { GeomGraph } from '../layout/core/GeomGraph'
@@ -172,7 +165,7 @@ export class SplineRouter extends Algorithm {
   ): SplineRouter {
     return new SplineRouter(
       graph,
-      from(graph.edges()),
+      Array.from(graph.edges()),
       tightTightPadding,
       loosePadding,
       coneAngle,
@@ -190,7 +183,7 @@ export class SplineRouter extends Algorithm {
   ) {
     return new SplineRouter(
       graph,
-      from(graph.edges()),
+      Array.from(graph.edges()),
       tightTightPadding,
       loosePadding,
       coneAngle,
@@ -201,7 +194,7 @@ export class SplineRouter extends Algorithm {
   //  Creates a spline group router for a given GeomGraph.
   constructor(
     graph: GeomGraph,
-    edges: IEnumerable<GeomEdge>,
+    edges: Array<GeomEdge>,
     tightPadding: number,
     loosePadding: number,
     coneAngle: number,
@@ -215,7 +208,7 @@ export class SplineRouter extends Algorithm {
     this.LoosePadding = loosePadding
     this.tightPadding = tightPadding
     this.coneAngle = coneAngle
-    // let obstacles: IEnumerable<Shape> = ShapeCreator.GetShapes(this.GeomGraph);
+    // let obstacles: Iterable<Shape> = ShapeCreator.GetShapes(this.GeomGraph);
     // this.Initialize(obstacles, this.coneAngle);
   }
 
@@ -230,7 +223,7 @@ export class SplineRouter extends Algorithm {
   ): SplineRouter {
     const ret = SplineRouter.mk4(graph, tightPadding, loosePadding, coneAngle)
     const obstacles = ShapeCreatorForRoutingToParents.GetShapes(
-      from(inParentEdges),
+      inParentEdges,
       outParentEdges,
     )
     ret.Initialize(obstacles, coneAngle)
@@ -248,9 +241,6 @@ export class SplineRouter extends Algorithm {
 
   //  Executes the algorithm.
   run() {
-    if (!from(this.edgeGeometriesEnumeration()).any()) {
-      return
-    }
     this.GetOrCreateRoot()
     this.RouteOnRoot()
     this.RemoveRoot()
@@ -286,7 +276,7 @@ export class SplineRouter extends Algorithm {
           const enterableSet = this.portsToEnterableShapes.get(port)
           insertRange(
             enterableSet,
-            from(sh.Ancestors()).where((s) => s.BoundaryCurve != null),
+            Array.from(sh.Ancestors()).filter((s) => s.BoundaryCurve != null),
           )
         }
       }
@@ -394,7 +384,7 @@ export class SplineRouter extends Algorithm {
 
   RouteOnVisGraph() {
     this.ancestorSets = SplineRouter.GetAncestorSetsMap(
-      from(this.root.Descendants()),
+      Array.from(this.root.Descendants()),
     )
     if (this.BundlingSettings == null) {
       for (const edgeGroup of this.GroupEdgesByPassport()) {
@@ -402,7 +392,7 @@ export class SplineRouter extends Algorithm {
         const obstacleShapes: Set<Shape> =
           this.GetObstaclesFromPassport(passport)
         const interactiveEdgeRouter = this.CreateInteractiveEdgeRouter(
-          from(obstacleShapes),
+          Array.from(obstacleShapes),
         )
         this.RouteEdgesWithTheSamePassport(
           edgeGroup,
@@ -477,10 +467,10 @@ export class SplineRouter extends Algorithm {
     }
 
     interactiveEdgeRouter.LooseHierarchy =
-      SplineRouter.CreateLooseObstacleHierarachy(from(loosePolys))
+      SplineRouter.CreateLooseObstacleHierarachy(loosePolys)
     interactiveEdgeRouter.ClearActivePolygons()
     interactiveEdgeRouter.AddActivePolygons(
-      from(loosePolys.map((poly) => new Polygon(poly))),
+      loosePolys.map((poly) => new Polygon(poly)),
     )
   }
 
@@ -541,7 +531,7 @@ export class SplineRouter extends Algorithm {
     t.multiEdges = null
     for (const edgeGroup of portLocationPairsToEdges.values()) {
       if (edgeGroup.length == 1 || this.OverlapsDetected) {
-        addRange(t.regularEdges, from(edgeGroup))
+        addRange(t.regularEdges, Array.from(edgeGroup))
       } else {
         if (t.multiEdges == null) {
           t.multiEdges = new Array<GeomEdge[]>()
@@ -575,11 +565,11 @@ export class SplineRouter extends Algorithm {
   }
 
   CreateInteractiveEdgeRouter(
-    obstacleShapes: IEnumerable<Shape>,
+    obstacleShapes: Array<Shape>,
   ): InteractiveEdgeRouter {
     // we need to create a set here because one loose polyline can hold several original shapes
     const loosePolys = new Set<Polyline>(
-      obstacleShapes.select(
+      obstacleShapes.map(
         (sh) =>
           <Polyline>(
             this.shapesToTightLooseCouples.get(sh).LooseShape.BoundaryCurve
@@ -591,7 +581,7 @@ export class SplineRouter extends Algorithm {
       (router.TightHierarchy =
         this.CreateTightObstacleHierarachy(obstacleShapes))
     router.LooseHierarchy = SplineRouter.CreateLooseObstacleHierarachy(
-      from(loosePolys),
+      Array.from(loosePolys),
     )
     ;(router.UseSpanner = true),
       (router.LookForRoundedVertices = true),
@@ -602,7 +592,7 @@ export class SplineRouter extends Algorithm {
       (router.UseInnerPolylingShortcutting = this.UseInnerPolylingShortcutting),
       (router.AllowedShootingStraightLines = this.AllowedShootingStraightLines),
       router.AddActivePolygons(
-        from(loosePolys).select((polyline) => new Polygon(polyline)),
+        Array.from(loosePolys).map((polyline) => new Polygon(polyline)),
       )
     return router
   }
@@ -614,17 +604,17 @@ export class SplineRouter extends Algorithm {
 
     const commonAncestors = this.GetCommonAncestorsAbovePassport(passport)
     const allAncestors = this.GetAllAncestors(passport)
-    const ret = new Set<Shape>(
-      from(passport).selectMany((p) =>
-        from(p.Children).where((child) => !allAncestors.has(child)),
-      ),
-    )
+    const ret = new Set<Shape>()
+    for (const p of passport) {
+      for (const child of p.Children) {
+        if (!allAncestors.has(child)) ret.add(child)
+      }
+    }
     const enqueued = addSets(new Set<Shape>(passport), ret)
     const queue = new Queue<Shape>()
-    for (const shape of from(passport).where(
-      (shape) => !commonAncestors.has(shape),
-    )) {
-      queue.enqueue(shape)
+
+    for (const shape of passport) {
+      if (!commonAncestors.has(shape)) queue.enqueue(shape)
     }
 
     while (queue.length > 0) {
@@ -664,9 +654,10 @@ export class SplineRouter extends Algorithm {
       return new Set<Shape>()
     }
 
-    const en = from(passport)
-    let ret = this.ancestorSets.get(en.first())
-    for (const shape of en.skip(1)) {
+    const en = Array.from(passport)
+    let ret = this.ancestorSets.get(en[0])
+    for (let i = 1; i < en.length; i++) {
+      const shape = en[i]
       ret = setIntersection(ret, this.ancestorSets.get(shape))
     }
 
@@ -1042,27 +1033,23 @@ export class SplineRouter extends Algorithm {
   }
 
   static CreateLooseObstacleHierarachy(
-    loosePolys: IEnumerable<Polyline>,
+    loosePolys: Array<Polyline>,
   ): RectangleNode<Polyline, Point> {
     return CreateRectangleNodeOnEnumeration(
-      loosePolys
-        .select((poly) => mkRectangleNode(poly, poly.boundingBox))
-        .toArray(),
+      loosePolys.map((poly) => mkRectangleNode(poly, poly.boundingBox)),
     )
   }
 
   CreateTightObstacleHierarachy(
-    obstacles: IEnumerable<Shape>,
+    obstacles: Array<Shape>,
   ): RectangleNode<Polyline, Point> {
-    const tightPolys = obstacles.select(
+    const tightPolys = obstacles.map(
       (sh) => this.shapesToTightLooseCouples.get(sh).TightPolyline,
     )
     return CreateRectangleNodeOnEnumeration(
-      tightPolys
-        .select((tightPoly) =>
-          mkRectangleNode<Polyline, Point>(tightPoly, tightPoly.boundingBox),
-        )
-        .toArray(),
+      tightPolys.map((tightPoly) =>
+        mkRectangleNode<Polyline, Point>(tightPoly, tightPoly.boundingBox),
+      ),
     )
   }
 
@@ -1073,7 +1060,7 @@ export class SplineRouter extends Algorithm {
         : new PointSet()
     this.ProcessHookAnyWherePorts(setOfPortLocations)
     this.portRTree = mkRTree(
-      from(setOfPortLocations.values()).select((p) => [
+      Array.from(setOfPortLocations.values()).map((p) => [
         Rectangle.rectangleOnPoint(p),
         p,
       ]),
@@ -1170,7 +1157,7 @@ export class SplineRouter extends Algorithm {
 
   //  #if TEST_MSAGL
   //      [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-  //      static internal void ShowVisGraph(VisibilityGraph tmpVisGraph, IEnumerable<Polyline> obstacles, IEnumerable<ICurve> greenCurves, IEnumerable<ICurve> redCurves) {
+  //      static internal void ShowVisGraph(VisibilityGraph tmpVisGraph, Iterable<Polyline> obstacles, Iterable<ICurve> greenCurves, Iterable<ICurve> redCurves) {
   //        var l = new Array<DebugCurve>(tmpVisGraph.Edges.Select(e => new DebugCurve(100, 1,
   //            e.IsPassable != null && e.IsPassable() ? "green" : "black"
   //            , new LineSegment(e.SourcePoint, e.TargetPoint))));
@@ -1282,10 +1269,6 @@ export class SplineRouter extends Algorithm {
 
   //  creates a root; a shape with BoundaryCurve set to null
   GetOrCreateRoot() {
-    if (this.rootShapes.length == 0) {
-      return
-    }
-
     if (this.rootShapes.length == 1) {
       const r: Shape = this.rootShapes[0]
       if (r.BoundaryCurve == null) {
@@ -1313,7 +1296,7 @@ export class SplineRouter extends Algorithm {
   //      // ReSharper disable UnusedMember.Local
   //      [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
   //      static void Show(
-  //          IEnumerable<EdgeGeometry> edgeGeometries, IEnumerable<Shape> listOfShapes) {
+  //          Iterable<EdgeGeometry> edgeGeometries, Iterable<Shape> listOfShapes) {
   //        // ReSharper restore UnusedMember.Local
   //        var r = new Random(1);
   //        LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(
@@ -1322,11 +1305,9 @@ export class SplineRouter extends Algorithm {
   //                    edgeGeometries.Select(e => new DebugCurve(100, 1, "red", e.Curve))));
   //      }
   //  #endif
-  static GetAncestorSetsMap(
-    shapes: IEnumerable<Shape>,
-  ): Map<Shape, Set<Shape>> {
+  static GetAncestorSetsMap(shapes: Array<Shape>): Map<Shape, Set<Shape>> {
     const ancSets = new Map<Shape, Set<Shape>>()
-    for (const child of shapes.where((child) => !ancSets.has(child))) {
+    for (const child of shapes.filter((child) => !ancSets.has(child))) {
       ancSets.set(child, SplineRouter.GetAncestorSet(child, ancSets))
     }
     return ancSets

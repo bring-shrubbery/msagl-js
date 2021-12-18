@@ -6,7 +6,7 @@
 ///  This stores information mapping the App-level Ports (e.g. FloatingPort, RelativeFloatingPort,
 ///  and MultiLocationFloatingPort) to the router's BasicScanPort subclasses (ObstaclePort and FreePoint).
 import {addSets, substructSets} from '../../utils/setOperations'
-import {from} from 'linq-to-typescript'
+
 import {Point, Rectangle, ICurve} from '../../math/geometry'
 import {EdgeGeometry} from '../../layout/core/edgeGeometry'
 import {Port} from '../../layout/core/port'

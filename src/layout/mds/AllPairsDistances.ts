@@ -1,7 +1,7 @@
 ﻿import {GeomGraph} from '../core/GeomGraph'
 import {Algorithm} from '../../utils/algorithm'
 import {SingleSourceDistances} from './SingleSourceDistances'
-import {from} from 'linq-to-typescript'
+
 import {GeomEdge} from '../core/geomEdge'
 //  Algorithm for computing the distance between every pair of nodes in a graph.
 export class AllPairsDistances extends Algorithm {
@@ -63,7 +63,11 @@ export class AllPairsDistances extends Algorithm {
     const apd = new AllPairsDistances(graph, length)
     apd.run()
     const D = apd.Result
-    const l: number = from(graph.edges()).average((e) => length(e))
+    let l = 0
+    for (const e of graph.edges()) {
+      l += length(e)
+    }
+    l /= graph.edgeCount // average of lengths
     let i = 0
     for (const u of graph.shallowNodes()) {
       let j = 0

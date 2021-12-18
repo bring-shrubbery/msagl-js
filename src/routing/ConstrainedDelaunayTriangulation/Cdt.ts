@@ -2,7 +2,7 @@
 Following "Sweep-line algorithm for constrained Delaunay triangulation", by Domiter and Zalik
 */
 //triangulates the space between point, line segment and polygons of the Delaunay fashion
-import {from, IEnumerable} from 'linq-to-typescript'
+
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {Point} from '../../math/geometry/point'
 import {Polyline} from '../../math/geometry/polyline'
@@ -44,13 +44,13 @@ export class Cdt extends Algorithm {
   // constructor
   constructor(
     isolatedSites: Point[],
-    obstacles: IEnumerable<Polyline>,
-    isolatedSegments: IEnumerable<SymmetricSegment>,
+    obstacles: Array<Polyline>,
+    isolatedSegments: Array<SymmetricSegment>,
   ) {
     super(null)
     this.isolatedSites = isolatedSites
-    if (obstacles) this.obstacles = obstacles.toArray()
-    if (isolatedSegments) this.isolatedSegments = isolatedSegments.toArray()
+    this.obstacles = obstacles
+    this.isolatedSegments = isolatedSegments
   }
 
   //  constructor
@@ -264,11 +264,9 @@ export class Cdt extends Algorithm {
   GetCdtTree(): RectangleNode<CdtTriangle, Point> {
     if (this.cdtTree == null) {
       this.cdtTree = CreateRectangleNodeOnEnumeration(
-        from(this.GetTriangles().values())
-          .select((t) =>
-            mkRectangleNode<CdtTriangle, Point>(t, t.BoundingBox()),
-          )
-          .toArray(),
+        Array.from(this.GetTriangles().values()).map((t) =>
+          mkRectangleNode<CdtTriangle, Point>(t, t.BoundingBox()),
+        ),
       )
     }
     return this.cdtTree

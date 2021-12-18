@@ -1,7 +1,6 @@
 ﻿//  The class calculates obstacles under the shape.
 //  We assume that the boundaries are not set for the shape children yet
 
-import {from} from 'linq-to-typescript'
 import {Point} from '..'
 import {Curve, PointLocation} from '../math/geometry'
 import {ConvexHull} from '../math/geometry/convexHull'

@@ -1,6 +1,6 @@
 //  The class is responsible for general edge bundling with ordered bundles.
 /*
-import {IEnumerable} from 'linq-to-typescript'
+
 import {Map} from 'lodash'
 import {RectangleNode} from '../../../core/geometry/RTree/RectangleNode'
 import {Port} from '../../../core/layout/Port'
@@ -165,7 +165,7 @@ export class BundleRouter extends Algorithm {
   static CreateConstrainedDelaunayTriangulation(
     looseHierarchy: RectangleNode<Polyline, Point>,
   ): Cdt {
-    const obstacles: IEnumerable<Polyline> = looseHierarchy.GetAllLeaves()
+    const obstacles: Array<Polyline> = looseHierarchy.GetAllLeaves()
     const rectangle: Rectangle = looseHierarchy.irect
     const d: number = rectangle.Diagonal / 4
     const lb: Point = rectangle.leftBottom + new Point(d * -1, d * -1)
@@ -181,7 +181,7 @@ export class BundleRouter extends Algorithm {
   }
 
   static GetConstrainedDelaunayTriangulation(
-    obstacles: IEnumerable<Polyline>,
+    obstacles: Array<Polyline>,
   ): Cdt {
     const constrainedDelaunayTriangulation = new Cdt(null, obstacles, null)
     constrainedDelaunayTriangulation.Run()
@@ -205,7 +205,7 @@ export class BundleRouter extends Algorithm {
   //              SplineRouter.ShowVisGraph(VisibilityGraph, LooseHierarchy.GetAllLeaves(), null, l);
   //          }
   //  #endif
-  FixLocationsForHookAnywherePorts(edges: IEnumerable<GeomEdge>) {
+  FixLocationsForHookAnywherePorts(edges: Array<GeomEdge>) {
     for (const edge of edges) {
       const hookPort = <HookUpAnywhereFromInsidePort>edge.SourcePort
       if (hookPort != null) {

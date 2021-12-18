@@ -106,14 +106,14 @@
 //             return bb.Points[index];
 //         }
 
-//         internal static SmoothedPolyline BuildUnderlyingPolyline(Point start, Point end, IEnumerable < ICurve > cubicSegsOfLine) {
+//         internal static SmoothedPolyline BuildUnderlyingPolyline(Point start, Point end, Array < ICurve > cubicSegsOfLine) {
 //             return null;
 //             /*SmoothedPolyline sp = GetVanilaSmoothedPolyline(cubicSegsOfLine, start, end);
 //             FleshOutSites(sp.HeadSite, cubicSegsOfLine);
 //             return sp;*/
 //         }
 
-//         static IEnumerable < ICurve > HubSegsOfLine(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroOrdering, Metroline line) {
+//         static Array < ICurve > HubSegsOfLine(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroOrdering, Metroline line) {
 //             for (PolylinePoint i = line.Polyline.startPoint.next; i.next != null; i = i.next)
 //             yield return SegOnLineVertex(metroGraphData, metroOrdering, line, i);
 //         }
@@ -174,23 +174,23 @@
 //         }
 
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         static internal IEnumerable < DebugCurve > GetAllDebugCurves(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
+//         static internal Array < DebugCurve > GetAllDebugCurves(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
 //             return GraphNodes(metroGraphData).Concat(VertexDebugCurves(metroMapOrdering, metroGraphData)).Concat(DebugEdges(metroGraphData));
 //         }
 
-//         static IEnumerable < DebugCurve > DebugEdges(MetroGraphData metroGraphData1) {
+//         static Array < DebugCurve > DebugEdges(MetroGraphData metroGraphData1) {
 //             return metroGraphData1.Edges.Select(e => new DebugCurve(40, 0.1, "gray", e.Curve));
 //         }
 
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         static IEnumerable < DebugCurve > VertexDebugCurves(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
+//         static Array < DebugCurve > VertexDebugCurves(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
 //             return DebugCircles(metroGraphData).Concat(DebugHubBases(metroGraphData)).
 //                 Concat(DebugSegs(metroGraphData, metroMapOrdering)).
 //                 Concat(BetweenHubs(metroMapOrdering, metroGraphData));
 //         }
 
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         static IEnumerable < DebugCurve > BetweenHubs(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
+//         static Array < DebugCurve > BetweenHubs(IMetroMapOrderingAlgorithm metroMapOrdering, MetroGraphData metroGraphData) {
 //             foreach(Metroline ml of metroGraphData.Metrolines) {
 //                 Array < Tuple < Point, Point >> segs = GetInterestingSegs(metroGraphData, metroMapOrdering, ml);
 //                 string color = GetMonotoneColor(ml.Polyline.start, ml.Polyline.End, segs);
@@ -221,7 +221,7 @@
 //         }
 
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         static IEnumerable < DebugCurve > DebugHubBases(MetroGraphData metroGraphData) {
+//         static Array < DebugCurve > DebugHubBases(MetroGraphData metroGraphData) {
 //             Array < DebugCurve > dc = new Array<DebugCurve>();
 //             foreach(var s of metroGraphData.Stations)
 //             foreach(var h of s.BundleBases.Values) {
@@ -235,14 +235,14 @@
 //         }
 
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         static IEnumerable < DebugCurve > DebugCircles(MetroGraphData metroGraphData) {
+//         static Array < DebugCurve > DebugCircles(MetroGraphData metroGraphData) {
 //             return
 //             metroGraphData.Stations.Select(
 //                 station => new DebugCurve(100, 0.1, "blue", CurveFactory.CreateCircle(station.Radius, station.Position)));
 //         }
 
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         static IEnumerable < DebugCurve > DebugSegs(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroMapOrdering) {
+//         static Array < DebugCurve > DebugSegs(MetroGraphData metroGraphData, IMetroMapOrderingAlgorithm metroMapOrdering) {
 
 //             var ls = new Array<ICurve>();
 //             foreach(var s of metroGraphData.VirtualNodes()) {
@@ -266,7 +266,7 @@
 //         }
 
 //         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-//         static IEnumerable < DebugCurve > GraphNodes(MetroGraphData metroGraphData) {
+//         static Array < DebugCurve > GraphNodes(MetroGraphData metroGraphData) {
 //             var nodes =
 //                 new Set<ICurve>(
 //                     metroGraphData.Edges.Select(e => e.SourcePort.Curve).Concat(

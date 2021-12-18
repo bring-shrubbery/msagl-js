@@ -1,6 +1,5 @@
 //  compares couples only by looking at the couple first point
 
-import {IComparer} from 'linq-to-typescript'
 import {Point} from '../..'
 import {GeomConstants} from '../../math/geometry'
 import {Stem} from './Stem'

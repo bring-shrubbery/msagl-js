@@ -1,4 +1,3 @@
-import {from, IEnumerable} from 'linq-to-typescript'
 import {Stack} from 'stack-typescript'
 // import {Assert} from '../../../utils/assert'
 import {IRectangle} from '../IRectangle'
@@ -129,13 +128,13 @@ export function CreateRectangleNodeOnEnumeration<T, P>(
 
 //calculates a tree based on the given nodes
 export function CreateRectangleNodeOnData<T, P>(
-  dataEnumeration: IEnumerable<T>,
+  dataEnumeration: Iterable<T>,
   rectangleDelegate: (t: T) => IRectangle<P>,
 ): RectangleNode<T, P> {
   if (dataEnumeration == null || rectangleDelegate == null) return null
-  const nodeList = dataEnumeration
-    .select((d) => mkRectangleNode(d, rectangleDelegate(d)))
-    .toArray()
+  const nodeList = Array.from(dataEnumeration).map((d) =>
+    mkRectangleNode(d, rectangleDelegate(d)),
+  )
   return CreateRectangleNodeOnListOfNodes(nodeList)
 }
 
@@ -374,12 +373,12 @@ export class RectangleNode<T, P> {
   }
 
   // Walk the tree and return the data from all leaves
-  GetAllLeaves(): IEnumerable<T> {
-    return this.GetAllLeafNodes().select((n) => n.UserData)
+  *GetAllLeaves(): IterableIterator<T> {
+    for (const n of this.GetAllLeafNodes()) yield n.UserData
   }
 
-  GetAllLeafNodes(): IEnumerable<RectangleNode<T, P>> {
-    return from(this.EnumRectangleNodes(true /*leafOnly*/))
+  *GetAllLeafNodes(): IterableIterator<RectangleNode<T, P>> {
+    return this.EnumRectangleNodes(true /*leafOnly*/)
   }
 
   *EnumRectangleNodes(

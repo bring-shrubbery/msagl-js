@@ -12,7 +12,7 @@
 //     //
 //     // <
 //     interface IMetroMapOrderingAlgorithm {
-//         IEnumerable<Metroline> GetOrder(Station u, Station v);
+//         Array<Metroline> GetOrder(Station u, Station v);
 
 //         // Get the index of line on the edge (u->v) and node u
 //         // <

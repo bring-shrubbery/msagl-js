@@ -2,7 +2,6 @@
 ///  Remove path self loops. Merge paths between the crossings if they have multiple crossings.
 ///  If a path passes through a vertex of another path then insert this vertex into the first path.
 
-import {from} from 'linq-to-typescript'
 import {Point} from '../../../math/geometry/point'
 import {Direction} from '../../../math/geometry/direction'
 import {GeomConstants} from '../../../math/geometry/geomConstants'

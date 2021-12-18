@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import {GeomNode, Point} from '../../../src'
 import {GTreeOverlapRemoval} from '../../../src/layout/GTreeOverlapRemoval/GTreeOverlapRemoval'
 import {MstOnDelaunayTriangulation} from '../../../src/layout/GTreeOverlapRemoval/MstOnDelaunayTriangulation'

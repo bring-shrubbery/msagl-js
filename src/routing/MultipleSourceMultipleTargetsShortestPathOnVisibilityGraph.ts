@@ -10,14 +10,14 @@
 //     internal class MultipleSourceMultipleTargetsShortestPathOnVisibilityGraph {
 //         //we are not using the A* algorithm since it does not make much sense for muliple targets
 //         //but we use the upper bound heuristic
-//         readonly IEnumerable<VisibilityVertex> sources;
+//         readonly Array<VisibilityVertex> sources;
 //         readonly Set<VisibilityVertex> targets;
 //         VisibilityVertex _current;
 //         VisibilityVertex closestTarget;
 //         double upperBound = Number.POSITIVE_INFINITY;
 //         VisibilityGraph _visGraph;
-//         internal MultipleSourceMultipleTargetsShortestPathOnVisibilityGraph(IEnumerable<VisibilityVertex> sourceVisVertices,
-//             IEnumerable < VisibilityVertex > targetVisVertices, VisibilityGraph visibilityGraph)
+//         internal MultipleSourceMultipleTargetsShortestPathOnVisibilityGraph(Array<VisibilityVertex> sourceVisVertices,
+//             Array < VisibilityVertex > targetVisVertices, VisibilityGraph visibilityGraph)
 //     {
 //         _visGraph = visibilityGraph;
 //         visibilityGraph.ClearPrevEdgesTable();
@@ -33,7 +33,7 @@
 //     // Returns  a  path
 //     // <
 
-//     internal IEnumerable < VisibilityVertex > GetPath(){
+//     internal Array < VisibilityVertex > GetPath(){
 //         var pq = new GenericBinaryHeapPriorityQueue<VisibilityVertex>();
 //         foreach(var v of sources) {
 //             v.Distance = 0;
@@ -97,7 +97,7 @@
 //         }
 //     }
 
-//     IEnumerable < VisibilityVertex > CalculatePath() {
+//     Array < VisibilityVertex > CalculatePath() {
 //         if (closestTarget == null)
 //             return null;
 //         var ret = new Array<VisibilityVertex>();

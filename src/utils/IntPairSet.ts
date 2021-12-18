@@ -1,5 +1,4 @@
 import {IntPair} from './IntPair'
-import {IEnumerable} from 'linq-to-typescript'
 
 export class IntPairSet {
   has(p: IntPair): boolean {
@@ -24,7 +23,7 @@ export class IntPairSet {
     this.arrayOfSets = new Array<Set<number>>()
   }
 
-  static mk(ps: IEnumerable<IntPair>) {
+  static mk(ps: Array<IntPair>) {
     const r = new IntPairSet()
     for (const p of ps) r.add(p)
     return r

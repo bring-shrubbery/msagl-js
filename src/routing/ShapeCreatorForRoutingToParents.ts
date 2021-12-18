@@ -1,6 +1,5 @@
 ﻿// written in assumption of a single parent
 
-import {IEnumerable} from 'linq-to-typescript'
 import {GeomEdge, GeomGraph, GeomNode} from '..'
 import {GeomObject} from '../layout/core/geomObject'
 import {RelativeShape} from './RelativeShape'
@@ -8,7 +7,7 @@ import {Shape} from './shape'
 
 export class ShapeCreatorForRoutingToParents {
   static GetShapes(
-    inParentEdges: IEnumerable<GeomEdge>,
+    inParentEdges: Array<GeomEdge>,
     outParentEdges: Array<GeomEdge>,
   ): Array<Shape> {
     const nodesToShapes = new Map<GeomNode, Shape>()

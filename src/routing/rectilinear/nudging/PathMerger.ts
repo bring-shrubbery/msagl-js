@@ -1,7 +1,6 @@
 /// Avoid a situation where two paths cross each other more than once. Remove self loops.
 ///
 
-import {from, IEnumerable} from 'linq-to-typescript'
 import {Point} from '../../../math/geometry/point'
 // import {Assert} from '../../../utils/assert'
 import {PointMap} from '../../../utils/PointMap'
@@ -133,7 +132,7 @@ export class PathMerger {
   ReplacePiece(
     a: LinkedPoint,
     b: LinkedPoint,
-    points: IEnumerable<Point>,
+    points: Array<Point>,
     loopingPath: Path,
   ) {
     let prevPoint = a

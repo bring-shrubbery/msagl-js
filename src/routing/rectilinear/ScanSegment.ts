@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 // import {Curve} from '../../math/geometry/curve'
 import {Point} from '../../math/geometry/point'
 // import {Assert} from '../../utils/assert'

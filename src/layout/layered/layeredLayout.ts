@@ -5,7 +5,7 @@ import {Point, TriangleOrientation} from '../../math/geometry/point'
 import {Algorithm} from '../../utils/algorithm'
 import {PolyIntEdge} from './polyIntEdge'
 import {SugiyamaLayoutSettings, SnapToGridByY} from './SugiyamaLayoutSettings'
-import {from, IEnumerable} from 'linq-to-typescript'
+
 import {IEdge} from '../../structs/iedge'
 import {CycleRemoval} from './CycleRemoval'
 import {GeomNode} from '../core/geomNode'
@@ -947,9 +947,9 @@ export class LayeredLayout extends Algorithm {
       if (e.source != e.target) ret.set(e.source, e.target, e)
     }
 
-    const gluedUpDownConstraints = from(
+    const gluedUpDownConstraints = Array.from(
       this.verticalConstraints.gluedUpDownIntConstraints.values(),
-    ).select((p) => CreateUpDownConstrainedIntEdge(p, null))
+    ).map((p) => CreateUpDownConstrainedIntEdge(p, null))
     for (const e of gluedUpDownConstraints) ret.set(e.source, e.target, e)
     return Array.from(ret.values())
   }
@@ -1132,19 +1132,19 @@ function SetFlatEdgesForLayer(
       layerArrays.y,
       intGraph,
     )
-    if (flatPairs.any()) {
+    if (flatPairs.length) {
       const dyOfFlatEdge = settings.LayerSeparation / 3
       const ym = ymax
-      flatEdgesHeight = flatPairs
-        .select((pair) =>
+      flatEdgesHeight = Math.max(
+        ...flatPairs.map((pair) =>
           SetFlatEdgesLabelsHeightAndPositionts(
             pair,
             ym,
             dyOfFlatEdge,
             database,
           ),
-        )
-        .max()
+        ),
+      )
     }
   }
   return flatEdgesHeight
@@ -1301,7 +1301,7 @@ function GetFlatPairs(
   layer: number[],
   layering: number[],
   intGraph: BasicGraphOnEdges<PolyIntEdge>,
-): IEnumerable<IntPair> {
+): Array<IntPair> {
   const pairs = new IntPairSet()
   for (const v of layer) {
     if (v >= intGraph.nodeCount) continue
@@ -1310,7 +1310,7 @@ function GetFlatPairs(
         pairs.addNN(edge.source, edge.target)
   }
 
-  return from(pairs.values())
+  return Array.from(pairs.values())
 }
 
 function SetFlatEdgesLabelsHeightAndPositionts(

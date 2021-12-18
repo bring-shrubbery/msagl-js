@@ -211,7 +211,7 @@
 //         return true;
 //     }
 
-//     void ShowStationWithObstaclesToIgnore(Station station, IEnumerable < Polyline > allHitItems) {
+//     void ShowStationWithObstaclesToIgnore(Station station, Array < Polyline > allHitItems) {
 //         var l = new Array<DebugCurve>();
 //         foreach(var poly of allHitItems) {
 //             l.Add(new DebugCurve(100, 0.5, "brown", poly));

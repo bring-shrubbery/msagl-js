@@ -1,4 +1,4 @@
-// import {IEnumerable} from 'linq-to-typescript'
+//
 import {Point} from '../../math/geometry/point'
 import {GeomConstants} from '../../math/geometry/geomConstants'
 import {Polyline} from '../../math/geometry/polyline'

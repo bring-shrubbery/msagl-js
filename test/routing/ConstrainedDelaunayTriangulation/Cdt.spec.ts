@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import {Point, Rectangle} from '../../../src'
 import {LineSegment, Polyline} from '../../../src/math/geometry'
 import {PlaneTransformation} from '../../../src/math/geometry/planeTransformation'
@@ -117,12 +116,12 @@ test('SmallTriangulation', () => {
     new SymmetricTuple<Point>(new Point(109, 202), new Point(506, 135)),
     new SymmetricTuple<Point>(new Point(139, 96), new Point(452, 96)),
   ]
-  const cdt = new Cdt(Array.from(Points()), null, from(isolatedObstacles))
+  const cdt = new Cdt(Array.from(Points()), null, isolatedObstacles)
   cdt.run()
   CdtSweeper.ShowCdt(
     [...cdt.GetTriangles().values()],
     null,
-    from(isolatedObstacles).select((s) => LineSegment.mkPP(s.A, s.B)),
+    isolatedObstacles.map((s) => LineSegment.mkPP(s.A, s.B)),
     null,
     '/tmp/smallTriangulationTest.svg',
   )
@@ -179,7 +178,7 @@ test('two holes and one isolated segment', () => {
         new Point(90, 75).rotate(ang),
       ),
     ]
-    const cdt = new Cdt(Array.from(corners), from(holes), from(cut))
+    const cdt = new Cdt(corners, holes, cut)
     cdt.run()
     // CdtSweeper.ShowCdt(
     //   [...cdt.GetTriangles()],
@@ -225,7 +224,7 @@ test('three holes and two isolated segments', () => {
         new Point(90, 70).rotate(ang),
       ),
     ]
-    const cdt = new Cdt(Array.from(corners), from(holes), from(cut))
+    const cdt = new Cdt(Array.from(corners), holes, cut)
     cdt.run()
     // CdtSweeper.ShowCdt(
     //   [...cdt.GetTriangles()],

@@ -1,4 +1,3 @@
-import {IEnumerable, from} from 'linq-to-typescript'
 import {BasicGraph} from '../../../structs/BasicGraph'
 import {IntPairMap} from '../../../utils/IntPairMap'
 import {GeomGraph} from '../../core/GeomGraph'
@@ -103,7 +102,7 @@ export class ConstrainedOrdering {
     return (
       ConstrainedOrdering.ExistsShortLabeledEdge(
         layering,
-        from(this.intGraph.edges),
+        Array.from(this.intGraph.edges),
       ) ||
       ConstrainedOrdering.ExistsShortMultiEdge(
         layering,
@@ -116,7 +115,7 @@ export class ConstrainedOrdering {
     layering: number[],
     multiedges: IntPairMap<Array<PolyIntEdge>>,
   ): boolean {
-    return from(multiedges.keyValues()).any(
+    return Array.from(multiedges.keyValues()).some(
       ([k, v]) => v.length > 2 && layering[k.x] == 1 + layering[k.y],
     )
   }
@@ -134,16 +133,17 @@ export class ConstrainedOrdering {
   }
 
   HasCrossWeights(): boolean {
-    return from(this.ProperLayeredGraph.Edges).any(
-      (le) => le.CrossingWeight != 1,
-    )
+    for (const le of this.ProperLayeredGraph.Edges) {
+      if (le.CrossingWeight != 1) return true
+    }
+    return false
   }
 
   static ExistsShortLabeledEdge(
     layering: number[],
-    edges: IEnumerable<PolyIntEdge>,
+    edges: Array<PolyIntEdge>,
   ): boolean {
-    return edges.any(
+    return edges.some(
       (edge) =>
         layering[edge.source] == layering[edge.target] + 1 &&
         edge.edge.label != null,
@@ -261,7 +261,7 @@ export class ConstrainedOrdering {
   // CreateInitialOrderInLayers() {
   //   // the idea is to topologically ordering all nodes horizontally, by using vertical components, then fill the layers according to this order
   //   let nodesToVerticalComponentsRoots: Map<number, number> = this.CreateVerticalComponents();
-  //   let liftedLeftRightRelations: IEnumerable<IntPair> = this.LiftLeftRightRelationsToComponentRoots(nodesToVerticalComponentsRoots).ToArray();
+  //   let liftedLeftRightRelations: Array<IntPair> = this.LiftLeftRightRelationsToComponentRoots(nodesToVerticalComponentsRoots).ToArray();
   //   let orderOfVerticalComponentRoots: number[] = TopologicalSort.GetOrderOnEdges(liftedLeftRightRelations);
   //   this.FillLayersWithVerticalComponentsOrder(orderOfVerticalComponentRoots, nodesToVerticalComponentsRoots);
   //   this.LayerArrays.UpdateXFromLayers();
@@ -284,7 +284,7 @@ export class ConstrainedOrdering {
 
   // }
 
-  // EnumerateVertComponent(componentRootsToComponents: Map<number, Array<number>>, vertCompRoot: number): IEnumerable<number> {
+  // EnumerateVertComponent(componentRootsToComponents: Map<number, Array<number>>, vertCompRoot: number): Array<number> {
   //   let compList: Array<number>;
   //   if (componentRootsToComponents.TryGetValue(vertCompRoot, TODOOUTcompList)) {
   //     for (let i of compList) {
@@ -300,7 +300,7 @@ export class ConstrainedOrdering {
   //   return vertCompRoot;
   // }
 
-  // PutVerticalComponentIntoLayers(vertComponent: IEnumerable<number>, runningLayerCounts: number[], alreadyInLayers: boolean[]) {
+  // PutVerticalComponentIntoLayers(vertComponent: Array<number>, runningLayerCounts: number[], alreadyInLayers: boolean[]) {
   //   for (let i of vertComponent) {
   //     this.AddVertToLayers(i, runningLayerCounts, alreadyInLayers);
   //   }
@@ -350,7 +350,7 @@ export class ConstrainedOrdering {
   //   return d;
   // }
 
-  // LiftLeftRightRelationsToComponentRoots(nodesToVerticalComponentsRoots: Map<number, number>): IEnumerable<IntPair> {
+  // LiftLeftRightRelationsToComponentRoots(nodesToVerticalComponentsRoots: Map<number, number>): Array<IntPair> {
   //   for (let pair of this.horizontalConstraints.LeftRighInts) {
   //     yield;
   //   }
@@ -570,7 +570,7 @@ export class ConstrainedOrdering {
   //   return false;
   // }
 
-  // static VertConstrainedNodesOfLayer(layerInfo: LayerInfo): IEnumerable<number> {
+  // static VertConstrainedNodesOfLayer(layerInfo: LayerInfo): Array<number> {
   //   if ((layerInfo != null)) {
   //     for (let v: number of layerInfo.constrainedFromAbove.Keys) {
   //       yield;
@@ -608,13 +608,13 @@ export class ConstrainedOrdering {
   // }
 
   // CreateProperLayeredGraph() {
-  //   let edges: IEnumerable<PolyIntEdge> = this.CreatePathEdgesOnIntGraph();
+  //   let edges: Array<PolyIntEdge> = this.CreatePathEdgesOnIntGraph();
   //   let nodeCount = Math.Max(this.intGraph.NodeCount, BasicGraph.VertexCount(edges));
   //   let baseGraph = new BasicGraph<Node, PolyIntEdge>(edges, nodeCount);
   //   this.ProperLayeredGraph = new ProperLayeredGraph(baseGraph);
   // }
 
-  // CreatePathEdgesOnIntGraph(): IEnumerable<PolyIntEdge> {
+  // CreatePathEdgesOnIntGraph(): Array<PolyIntEdge> {
   //   this.numberOfNodesOfProperGraph = this.intGraph.NodeCount;
   //   let ret = new Array<PolyIntEdge>();
   //   for (let ie: PolyIntEdge of this.intGraph.edges) {

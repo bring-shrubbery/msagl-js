@@ -18,13 +18,13 @@
 //         this.polylineAcceptsPoint = polylineAcceptsPoint;
 //     }
 
-//     IEnumerable < PolylinePoint > Vertices() {
+//     Array < PolylinePoint > Vertices() {
 //         return metroGraphData.Edges.Select(e => (Polyline)e.Curve).SelectMany(p => p.PolylinePoints);
 //     }
 
-//     IEnumerable < Polyline > Polylines { get { return metroGraphData.Edges.Select(e => (Polyline)e.Curve); } }
+//     Array < Polyline > Polylines { get { return metroGraphData.Edges.Select(e => (Polyline)e.Curve); } }
 
-//     IEnumerable < PointPair > Edges() {
+//     Array < PointPair > Edges() {
 //         var set = new Set<PointPair>();
 //         foreach(var poly of Polylines)
 //         for (var pp = poly.startPoint; pp.next != null; pp = pp.next)

@@ -58,7 +58,7 @@ export class VisibilityGraph {
   pointToVertexMap: PointMap<VisibilityVertex> =
     new PointMap<VisibilityVertex>()
 
-  //   static GetVisibilityGraphForShortestPath(pathStart: Point, pathEnd: Point, obstacles: IEnumerable<Polyline>, /* out */sourceVertex: VisibilityVertex, /* out */targetVertex: VisibilityVertex): VisibilityGraph {
+  //   static GetVisibilityGraphForShortestPath(pathStart: Point, pathEnd: Point, obstacles: Array<Polyline>, /* out */sourceVertex: VisibilityVertex, /* out */targetVertex: VisibilityVertex): VisibilityGraph {
   //       let holes = new Array<Polyline>(VisibilityGraph.OrientHolesClockwise(obstacles));
   //       let visibilityGraph = VisibilityGraph.CalculateGraphOfBoundaries(holes);
   //       let polygons = holes.Select(() => {  }, new Polygon(holes)).ToList();
@@ -70,7 +70,7 @@ export class VisibilityGraph {
 
   //   //  Calculates the tangent visibility graph
 
-  //   public static FillVisibilityGraphForShortestPath(obstacles: IEnumerable<Polyline>): VisibilityGraph {
+  //   public static FillVisibilityGraphForShortestPath(obstacles: Array<Polyline>): VisibilityGraph {
   //       let holes = new Array<Polyline>(VisibilityGraph.OrientHolesClockwise(obstacles));
   //       let visibilityGraph = VisibilityGraph.CalculateGraphOfBoundaries(holes);
   //       let polygons = holes.Select(() => {  }, new Polygon(hole)).ToList();
@@ -119,7 +119,7 @@ export class VisibilityGraph {
     }
   }
 
-  //   static CheckThatPolylinesAreConvex(holes: IEnumerable<Polyline>) {
+  //   static CheckThatPolylinesAreConvex(holes: Array<Polyline>) {
   //       for (let polyline of holes) {
   //           VisibilityGraph.CheckThatPolylineIsConvex(polyline);
   //       }
@@ -163,7 +163,7 @@ export class VisibilityGraph {
 
   //   //  Enumerate all VisibilityEdges in the VisibilityGraph.
 
-  //   public get Edges(): IEnumerable<VisibilityEdge> {
+  //   public get Edges(): Array<VisibilityEdge> {
   //       return PointToVertexMap.Values.SelectMany(() => {  }, vertex.OutEdges);
   //   }
 

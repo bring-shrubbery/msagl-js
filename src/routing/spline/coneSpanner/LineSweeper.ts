@@ -344,7 +344,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
   //              LayoutAlgorithmSettings.ShowDebugCurvesEnumeration(CreateBoundaryPolyDebugCurves());
   //          }
   //          [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-  //          IEnumerable < DebugCurve > CreateBoundaryPolyDebugCurves() {
+  //          Array < DebugCurve > CreateBoundaryPolyDebugCurves() {
   //              int i = 0;
   //              for (var p = BorderPolyline.startPoint; p != null; p = p.next) {
   //                  yield return new DebugCurve(new Ellipse(1, 1, p.point), i++);
@@ -1432,7 +1432,7 @@ export class LineSweeper extends LineSweeperBase /*implements IConeSweeper*/ {
   //  #if TEST_MSAGL
   //          [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider",
   //              MessageId = "System.Int32.ToString")]
-  //          internal static GeometryGraph CreateGraphFromObstacles(IEnumerable < Polyline > obstacles) {
+  //          internal static GeometryGraph CreateGraphFromObstacles(Array < Polyline > obstacles) {
   //              var gg = new GeometryGraph();
   //              foreach(var ob of obstacles) {
   //                  gg.Nodes.Add(new Node(ob.ToCurve()));

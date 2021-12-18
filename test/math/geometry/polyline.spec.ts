@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import {Point, CurveFactory} from '../../../src'
 import {Polyline, LineSegment, Curve} from '../../../src/math/geometry'
 import {DebugCurve} from '../../../src/math/geometry/debugCurve'

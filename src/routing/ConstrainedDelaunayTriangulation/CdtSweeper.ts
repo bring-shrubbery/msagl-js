@@ -1,5 +1,4 @@
-﻿import {IEnumerable} from 'linq-to-typescript'
-import {Stack} from 'stack-typescript'
+﻿import {Stack} from 'stack-typescript'
 import {DebugCurve} from '../../math/geometry/debugCurve'
 import {Ellipse} from '../../math/geometry/ellipse'
 import {GeomConstants} from '../../math/geometry/geomConstants'
@@ -343,8 +342,8 @@ export class CdtSweeper extends Algorithm {
   static ShowCdt(
     cdtTriangles: CdtTriangle[],
     cdtFrontElements: RBTree<CdtFrontElement>,
-    redCurves: IEnumerable<ICurve>,
-    blueCurves: IEnumerable<ICurve>,
+    redCurves: Array<ICurve>,
+    blueCurves: Array<ICurve>,
     fn: string,
   ) {
     const ls: Array<DebugCurve> = new Array<DebugCurve>()

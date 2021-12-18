@@ -1,5 +1,3 @@
-import {from} from 'linq-to-typescript'
-
 export function substructSets<T>(a: Set<T>, b: Set<T>): Set<T> {
   const ret = new Set<T>()
   for (const u of a) {

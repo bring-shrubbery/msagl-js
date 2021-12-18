@@ -29,9 +29,9 @@
 //         // <
 // #if SHARPKIT //http://code.google.com/p/sharpkit/issues/detail?id=203
 //         //SharpKit/Colin - Interface implementations
-//         public IEnumerable < Metroline > GetOrder(Station u, Station v) {
+//         public Array < Metroline > GetOrder(Station u, Station v) {
 // #else
-//             IEnumerable < Metroline > IMetroMapOrderingAlgorithm.GetOrder(Station u, Station v) {
+//             Array < Metroline > IMetroMapOrderingAlgorithm.GetOrder(Station u, Station v) {
 // #endif
 //                 var pointPair = new PointPair(u.Position, v.Position);
 //                 var orderedMetrolineListForUv = bundles[pointPair].Metrolines;

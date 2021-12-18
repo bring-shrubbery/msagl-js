@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import {
   BasicGraphOnEdges,
   mkGraphOnEdges,
@@ -102,7 +101,7 @@ export class HorizontalConstraintsForSugiyama {
   //        void MakeUpDownRelationsMonotone(number[] yLayers) {
   //            BasicGraph<IntPair> upDownGraph = new BasicGraph<IntPair>(from c in this.verticalInts select new IntPair(c.First,c.Second));
   //            Array<Tuple<number, number>> upDownToRemove = new Array<Tuple<number, number>>();
-  //            foreach (IEnumerable<number> componentNodes of ConnectedComponentCalculator<IntPair>.GetComponents(GraphOfLeftRightRelations())) {
+  //            foreach (Array<number> componentNodes of ConnectedComponentCalculator<IntPair>.GetComponents(GraphOfLeftRightRelations())) {
   //                ResolveConflictsUboveComponent(upDownGraph, componentNodes, upDownToRemove, yLayers);
   //                ResolveConflictsBelowComponent(upDownGraph, componentNodes, upDownToRemove, yLayers);
   //            }
@@ -114,17 +113,17 @@ export class HorizontalConstraintsForSugiyama {
 
   LiftLeftRightRelationsToNeibBlocks() {
     this.LeftRighInts = IntPairSet.mk(
-      from(this.leftRightConstraints)
-        .select((p) => mktuple(this.NodeIndex(p[0]), this.NodeIndex(p[1])))
-        .where((p) => p[0] != -1 && p[1] != -1)
-        .select(
+      this.leftRightConstraints
+        .map((p) => mktuple(this.NodeIndex(p[0]), this.NodeIndex(p[1])))
+        .filter((p) => p[0] != -1 && p[1] != -1)
+        .map(
           (ip) =>
             new IntPair(
               this.NodeToBlockRootSoft(ip[0]),
               this.NodeToBlockRootSoft(ip[1]),
             ),
         )
-        .where((ip) => ip.x != ip.x),
+        .filter((ip) => ip.x != ip.x),
     )
     const feedbackSet = CycleRemoval.getFeedbackSet(
       mkGraphOnEdges(Array.from(this.LeftRighInts.values())),
@@ -135,22 +134,20 @@ export class HorizontalConstraintsForSugiyama {
 
   MapNodesToToIntegers(yLayers: number[]) {
     this.LeftRightIntNeibs = IntPairSet.mk(
-      from(this.leftRightNeighbors.values())
-        .select((p) => [this.NodeIndex(p[0]), this.NodeIndex(p[1])])
-        .where((t) => t[0] != -1 && t[1] != -1)
-        .select((t) => new IntPair(t[0], t[1])),
+      Array.from(this.leftRightNeighbors.values())
+        .map((p) => [this.NodeIndex(p[0]), this.NodeIndex(p[1])])
+        .filter((t) => t[0] != -1 && t[1] != -1)
+        .map((t) => new IntPair(t[0], t[1])),
     )
 
     //as we follow yLayers there will not be cycles in verticalIntConstraints
     this.VerticalInts = IntPairSet.mk(
-      from(
-        this.upDownVerticalConstraints
-          .map((p) => [this.NodeIndex(p[0]), this.NodeIndex(p[1])])
-          .filter(
-            (p) => p[0] != -1 && p[1] != -1 && yLayers[p[0]] > yLayers[p[1]],
-          )
-          .map((p) => new IntPair(p[0], p[1])),
-      ),
+      this.upDownVerticalConstraints
+        .map((p) => [this.NodeIndex(p[0]), this.NodeIndex(p[1])])
+        .filter(
+          (p) => p[0] != -1 && p[1] != -1 && yLayers[p[0]] > yLayers[p[1]],
+        )
+        .map((p) => new IntPair(p[0], p[1])),
     )
   }
 }

@@ -6,13 +6,12 @@ import {
   mkGraphOnEdgesN,
 } from '../../../structs/basicGraphOnEdges'
 import {CancelToken} from '../../../utils/cancelToken'
-import {from} from 'linq-to-typescript'
+
 // import {Assert} from '../../../utils/assert'
 import {NetworkEdge} from './networkEdge'
 import {Stack} from 'stack-typescript'
 import {randomInt} from '../../../utils/random'
 import {PolyIntEdge} from '../polyIntEdge'
-import {GeomConstants} from '../../../math/geometry/geomConstants'
 
 function CreateGraphWithIEEdges(
   bg: BasicGraphOnEdges<PolyIntEdge>,
@@ -63,9 +62,9 @@ export class NetworkSimplex implements LayerCalculator {
   leaves: number[] = []
 
   get weight(): number {
-    return from(this.graph.edges)
-      .select((e) => e.weight * (this.layers[e.source] - this.layers[e.target]))
-      .sum()
+    return this.graph.edges
+      .map((e) => e.weight * (this.layers[e.source] - this.layers[e.target]))
+      .reduce((sum, w) => sum + w, 0)
   }
   get nodeCount() {
     return this.vertices.length

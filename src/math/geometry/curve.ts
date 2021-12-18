@@ -16,7 +16,7 @@ import {PlaneTransformation} from './planeTransformation'
 
 import {BezierSeg} from './bezierSeg'
 import {CornerSite} from './cornerSite'
-import {from} from 'linq-to-typescript'
+
 import {closeDistEps} from '../../utils/compare'
 type Params = {
   start: number
@@ -1821,11 +1821,15 @@ export class Curve implements ICurve {
             innerCurve.value((innerCurve.parStart + innerCurve.parEnd) / 2),
             outerCurve,
           ) == PointLocation.Inside
-    return from(Curve.PointsBetweenIntersections(innerCurve, xx)).all(
-      (p) =>
-        Curve.PointRelativeToCurveLocation(p, outerCurve) !=
-        PointLocation.Outside,
-    )
+    for (const p of Curve.PointsBetweenIntersections(innerCurve, xx)) {
+      if (
+        Curve.PointRelativeToCurveLocation(p, outerCurve) ==
+        PointLocation.Outside
+      ) {
+        return false
+      }
+    }
+    return true
   }
   //  Return points between but not including the intersections.
   static *PointsBetweenIntersections(
@@ -1893,9 +1897,11 @@ export class Curve implements ICurve {
             c1,
           ) == PointLocation.Inside
     }
-    return from(Curve.PointsBetweenIntersections(c1, xx)).any(
-      (p) => Curve.PointRelativeToCurveLocation(p, c2) == PointLocation.Inside,
-    )
+    for (const p of Curve.PointsBetweenIntersections(c1, xx)) {
+      if (Curve.PointRelativeToCurveLocation(p, c2) != PointLocation.Inside)
+        return false
+    }
+    return true
   }
   // ICurve Members
 

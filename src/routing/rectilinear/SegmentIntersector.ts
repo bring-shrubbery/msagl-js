@@ -1,4 +1,3 @@
-import {IEnumerable} from 'linq-to-typescript'
 import {Point} from '../../math/geometry/point'
 import {RBNode} from '../../structs/RBTree/rbNode'
 import {RBTree} from '../../structs/RBTree/rbTree'
@@ -79,8 +78,8 @@ export class SegmentIntersector {
 
   //  This creates the VisibilityVertex objects along the segments.
   Generate(
-    hSegments: IEnumerable<ScanSegment>,
-    vSegments: IEnumerable<ScanSegment>,
+    hSegments: Array<ScanSegment>,
+    vSegments: Array<ScanSegment>,
   ): VisibilityGraph {
     for (const seg of vSegments) {
       this.eventList.push(new SegEvent(SegEventType.VOpen, seg))

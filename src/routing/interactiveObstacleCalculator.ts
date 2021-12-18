@@ -1,4 +1,3 @@
-import {from} from 'linq-to-typescript'
 import {Rectangle} from '..'
 import {LineSegment} from '../math/geometry'
 import {ConvexHull} from '../math/geometry/convexHull'
