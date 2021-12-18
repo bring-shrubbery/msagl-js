@@ -96,9 +96,7 @@ export class SvgDebugWriter {
   static pointsToString(points: Point[]) {
     return String.Join(
       ' ',
-      from(points)
-        .select((p) => SvgDebugWriter.pointToString(p))
-        .toArray(),
+      points.map((p) => SvgDebugWriter.pointToString(p)),
     )
   }
 

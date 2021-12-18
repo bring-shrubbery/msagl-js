@@ -21,6 +21,9 @@ export abstract class Entity extends AttrContainer {
 
   // Determines if this node is a descendant of the given graph.
   isDescendantOf(graph: Graph): boolean {
-    return from(this.getAncestors()).any((p) => p == graph)
+    for (const p of this.getAncestors()) {
+      if (p == graph) return true
+    }
+    return false
   }
 }

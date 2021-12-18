@@ -24,7 +24,7 @@ test('RTreeQuery_IncrementalRectangles', () => {
     for (let i = a; i < b; ++i) {
       queryTree.Add(rects[i], rects[i])
     }
-    let t = queryTree.GetAllLeaves()
+    let t = Array.from(queryTree.GetAllLeaves())
     expect(t.length).toBe(b) // "did we lose leaves?");
     t = queryTree.GetAllIntersecting(
       new Rectangle({
@@ -44,10 +44,7 @@ test('RTreeQuery_IncrementalRectangles', () => {
       new Point(randomInt(RegionSize), randomInt(RegionSize)),
       new Point(randomInt(RegionSize), randomInt(RegionSize)),
     )
-    const checkList = from(rects)
-      .take(b)
-      .where((r) => query.intersects(r))
-      .toArray()
+    const checkList = rects.slice(0, b).filter((r) => query.intersects(r))
 
     const checkSet = new Set<string>(checkList.map((r) => r.toString()))
     const result = queryTree.GetAllIntersecting(query)

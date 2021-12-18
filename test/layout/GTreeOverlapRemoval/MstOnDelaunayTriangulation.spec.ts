@@ -44,7 +44,7 @@ test('gtree on CDT', () => {
   CdtSweeper.ShowCdt(
     [...cdt.GetTriangles()],
     null,
-    from(redCurves),
+    redCurves,
     null,
     '/tmp/mdsCdt.svg',
   )

@@ -378,7 +378,8 @@ export class RectangleNode<T, P> {
   }
 
   *GetAllLeafNodes(): IterableIterator<RectangleNode<T, P>> {
-    return this.EnumRectangleNodes(true /*leafOnly*/)
+    //return this.EnumRectangleNodes(true /*leafOnly*/)
+    for (const p of this.EnumRectangleNodes(true)) yield p
   }
 
   *EnumRectangleNodes(

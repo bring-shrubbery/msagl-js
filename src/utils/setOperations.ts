@@ -17,11 +17,17 @@ export function addRange<T>(array: Array<T>, addedArray: Iterable<T>) {
 }
 
 export function setIntersection<T>(a: Set<T>, b: Set<T>): Set<T> {
-  return new Set<T>(
-    a.size < b.size
-      ? from(a).where((t) => b.has(t))
-      : from(b).where((t) => a.has(t)),
-  )
+  const ret = new Set<T>()
+  if (a.size < b.size) {
+    for (const t of a) {
+      if (b.has(t)) ret.add(t)
+    }
+  } else {
+    for (const t of b) {
+      if (a.has(t)) ret.add(t)
+    }
+  }
+  return ret
 }
 
 export function insertRange<T>(collection: Set<T>, addedArray: Iterable<T>) {

@@ -133,10 +133,10 @@ export class RTree<T, P> {
     this._rootNode = rootNode
   }
 
-  GetAllLeaves(): Array<T> {
-    return this._rootNode != null && this.Count > 0
-      ? Array.from(this._rootNode.GetAllLeaves())
-      : []
+  *GetAllLeaves(): IterableIterator<T> {
+    if (this._rootNode != null && this.Count > 0) {
+      for (const l of this._rootNode.GetAllLeaves()) yield l
+    }
   }
 
   //  The number of data elements of the tree (number of leaf nodes)

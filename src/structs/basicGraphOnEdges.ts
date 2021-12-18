@@ -13,7 +13,7 @@ export function mkGraphOnEdgesArray<TEdge extends IEdge>(
   edges: TEdge[],
 ): BasicGraphOnEdges<TEdge> {
   const n = new BasicGraphOnEdges<TEdge>()
-  n.SetEdges(edges, BasicGraphOnEdges.vertexCount(from(edges)))
+  n.SetEdges(edges, BasicGraphOnEdges.vertexCount(edges))
   return n
 }
 
