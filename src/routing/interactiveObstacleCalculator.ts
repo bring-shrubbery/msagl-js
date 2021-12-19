@@ -17,6 +17,7 @@ import {GetConnectedComponents} from '../math/graphAlgorithms/ConnectedComponent
 import {mkGraphOnEdgesArray} from '../structs/basicGraphOnEdges'
 import {Assert} from '../utils/assert'
 import {IntPair} from '../utils/IntPair'
+import {flatMap} from '../utils/setOperations'
 import {Polygon} from './visibility/Polygon'
 // import {Assert} from '../utils/assert'
 
@@ -369,7 +370,7 @@ export class InteractiveObstacleCalculator {
     const connectedComponents = GetConnectedComponents(graph)
     for (const component of connectedComponents) {
       const polys = component.map((i) => intToPoly[i])
-      const points = polys.flatMap((p) => Array.from(p))
+      const points = flatMap(polys, (p) => Array.from(p))
       const convexHull = ConvexHull.createConvexHullAsClosedPolyline(points)
       for (const poly of polys) {
         tightObsts.delete(poly)

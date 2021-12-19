@@ -14,6 +14,7 @@ import {Stack} from 'stack-typescript'
 import {EdgeComparerBySource} from './EdgeComparerBySource'
 import {EdgeComparerByTarget} from './EdgeComparerByTarget'
 import {Algorithm} from './../../../utils/algorithm'
+import {flatMap} from '../../../utils/setOperations'
 // Works on the layered graph.
 // See GraphLayout.pdfhttps://www.researchgate.net/profile/Lev_Nachmanson/publication/30509007_Drawing_graphs_with_GLEE/links/54b6b2930cf2e68eb27edf71/Drawing-graphs-with-GLEE.pdf
 
@@ -112,7 +113,7 @@ function EdgesOfStrip(
   bottomVerts: number[],
   properLayeredGraph: ProperLayeredGraph,
 ): LayerEdge[] {
-  return bottomVerts.flatMap((v) => Array.from(properLayeredGraph.InEdges(v)))
+  return flatMap(bottomVerts, (v) => Array.from(properLayeredGraph.InEdges(v)))
 }
 
 export function GetCrossingsTotal(
