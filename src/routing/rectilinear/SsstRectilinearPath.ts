@@ -1,11 +1,6 @@
 ///  <summary>
 ///  single source single target rectilinear path
 
-import {
-  ArgumentOutOfRangeException,
-  from,
-  // Array,
-} from 'linq-to-typescript'
 import {Point} from '../../math/geometry/point'
 import {CompassVector} from '../../math/geometry/compassVector'
 import {Direction} from '../../math/geometry/direction'
@@ -313,7 +308,7 @@ export class SsstRectilinearPath {
         return Direction.South
         break
       default:
-        throw new ArgumentOutOfRangeException('direction')
+        throw new Error('direction')
         break
     }
   }
@@ -336,7 +331,7 @@ export class SsstRectilinearPath {
         return Direction.North
         break
       default:
-        throw new ArgumentOutOfRangeException('direction')
+        throw new Error('direction')
         break
     }
   }
@@ -682,9 +677,9 @@ export class SsstRectilinearPath {
   private EnqueueInitialVerticesFromSource(cost: number) {
     const bestEntry = new VertexEntry(this.Source, null, 0, 0, cost)
     //  This routine is only called once so don't worry about optimizing foreach.where
-    for (const edge of from(this.Source.OutEdges).where(
-      SsstRectilinearPath.IsPassable,
-    )) {
+    for (const edge of this.Source.OutEdges) {
+      if (!SsstRectilinearPath.IsPassable(edge)) continue
+
       this.ExtendPathToNeighborVertex(
         bestEntry,
         <VisibilityVertexRectilinear>edge.Target,
@@ -692,9 +687,8 @@ export class SsstRectilinearPath {
       )
     }
 
-    for (const edge of from(Array.from(this.Source.InEdges)).where(
-      SsstRectilinearPath.IsPassable,
-    )) {
+    for (const edge of this.Source.InEdges) {
+      if (!SsstRectilinearPath.IsPassable(edge)) continue
       this.ExtendPathToNeighborVertex(
         bestEntry,
         <VisibilityVertexRectilinear>edge.Source,

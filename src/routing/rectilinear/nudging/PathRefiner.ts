@@ -36,9 +36,9 @@ export class PathRefiner {
   ///  <param name="paths"></param>
   static AdjustPaths(paths: Array<Path>) {
     for (const path of paths) {
-      const arg = (<Array<Point>>path.PathPoints).map((p) => p.clone())
-      const adjusted = PathRefiner.AdjustPathPoints(arg)
-      path.PathPoints = adjusted
+      path.PathPoints = PathRefiner.AdjustPathPoints(
+        <Array<Point>>path.PathPoints,
+      )
     }
   }
 
@@ -130,7 +130,7 @@ export class PathRefiner {
       ),
     )
     const colliniarBuckets = PathRefiner.groupByProj(
-      t.projectionToDirection,
+      t.projectionToPerp,
       linkedPointsInDirection,
     )
     for (const pathLinkedPointBucket of colliniarBuckets) {

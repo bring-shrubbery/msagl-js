@@ -822,9 +822,8 @@ export class Nudger {
   }
 
   BoundPathByMinCommonAncestors(path: Path) {
-    for (const rect of Array.from(
-      this.GetMinCommonAncestors(path.EdgeGeometry),
-    ).map((sh) => sh.BoundingBox)) {
+    for (const sh of this.GetMinCommonAncestors(path.EdgeGeometry)) {
+      const rect = sh.BoundingBox
       for (const e of path.PathEdges()) {
         const edge = e.AxisEdge
         if (edge.Direction == this.NudgingDirection) {
