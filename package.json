@@ -24,6 +24,7 @@
     "prettier": "prettier --write src/**"
   },
   "dependencies": {
+    "@types/parse-color": "^1.0.1",
     "@esfx/collections-sortedmap": "^1.0.0-pre.19",
     "queue-typescript": "^1.0.1",
     "reliable-random": "^0.0.1",
@@ -31,7 +32,6 @@
     "typescript-string-operations": "^1.4.1"
   },
   "devDependencies": {
-    "@types/parse-color": "^1.0.1",
     "@tsconfig/recommended": "^1.0.1",
     "@types/collections": "^5.1.2",
     "@types/jest": "^26.0.24",
