@@ -11,7 +11,6 @@ import {
   RectangleNode,
 } from '../math/geometry/RTree/RectangleNode'
 import {CrossRectangleNodes} from '../math/geometry/RTree/RectangleNodeUtils'
-import {flatMap} from '../utils/setOperations'
 import {InteractiveObstacleCalculator} from './interactiveObstacleCalculator'
 import {Shape} from './shape'
 import {TightLooseCouple} from './TightLooseCouple'
@@ -133,13 +132,12 @@ export class ShapeObstacleCalculator {
       shape.BoundaryCurve,
       this.TightPadding,
     )
-    const stickingPointsArray = flatMap(
-      this.LoosePolylinesUnderShape(shape),
-      (p) => Array.from(p),
-    ).filter(
-      (p) =>
-        Curve.PointRelativeToCurveLocation(p, poly) == PointLocation.Outside,
-    )
+    const stickingPointsArray = this.LoosePolylinesUnderShape(shape)
+      .flatMap((p) => Array.from(p))
+      .filter(
+        (p) =>
+          Curve.PointRelativeToCurveLocation(p, poly) == PointLocation.Outside,
+      )
 
     if (stickingPointsArray.length <= 0) {
       return poly
