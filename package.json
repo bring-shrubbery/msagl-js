@@ -1,6 +1,6 @@
 {
   "name": "msagl-js",
-  "version": "0.0.31",
+  "version": "0.0.29",
   "description": "MSAGL layout in js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,8 +24,9 @@
     "prettier": "prettier --write src/**"
   },
   "dependencies": {
-    "@types/parse-color": "^1.0.1",
+    "@esfx/collections": "^1.0.0-pre.19",
     "@esfx/collections-sortedmap": "^1.0.0-pre.19",
+    "@types/parse-color": "^1.0.1",
     "queue-typescript": "^1.0.1",
     "reliable-random": "^0.0.1",
     "stack-typescript": "^1.0.4",
@@ -46,8 +47,8 @@
     "lint-staged": "10.5.3",
     "parse-color": "^1.0.0",
     "prettier": "^2.5.0",
-    "ts-jest": "^27.1.2",
-    "typescript": "^4.5.4",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.5.2",
     "xml-writer": "^1.7.0"
   },
   "husky": {

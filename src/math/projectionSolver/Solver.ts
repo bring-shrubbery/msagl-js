@@ -3,6 +3,7 @@
 
 // import {Assert} from '../../utils/assert'
 import {greaterDistEps} from '../../utils/compare'
+import {flatMap} from '../../utils/setOperations'
 import {Block} from './Block'
 import {BlockVector} from './BlockVector'
 import {Constraint} from './Constraint'
@@ -173,7 +174,7 @@ export class Solver {
   ///  This enumerates all Variables created by AddVariable.
 
   public get Variables(): Array<Variable> {
-    return this.allBlocks.Vector.flatMap((block) => block.Variables)
+    return flatMap(this.allBlocks.Vector, (block) => block.Variables)
   }
 
   ///  The number of variables added to the Solver.
