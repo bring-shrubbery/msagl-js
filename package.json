@@ -1,6 +1,6 @@
 {
   "name": "msagl-js",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "MSAGL layout in js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,7 +24,6 @@
     "prettier": "prettier --write src/**"
   },
   "dependencies": {
-    "@esfx/collections-sortedmap": "^1.0.0-pre.19",
     "queue-typescript": "^1.0.1",
     "reliable-random": "^0.0.1",
     "stack-typescript": "^1.0.4",
