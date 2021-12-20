@@ -4,8 +4,8 @@ import {
   Size,
   layoutGraphWithSugiayma,
   layoutGraphWithMds,
-} from 'msagl-js'
-import {DrawingGraph, parseDotString} from 'msagl-js/drawing'
+} from 'msagl-js/dist/src'
+import {DrawingGraph, parseDotString} from 'msagl-js/dist/src/drawing'
 const abstract_gv =
   'digraph abstract {\n' +
   '	size="6,6";\n' +

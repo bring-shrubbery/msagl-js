@@ -1,10 +1,16 @@
 import {Deck, OrthographicView} from '@deck.gl/core'
 
-import {interpolateICurve, GeomNode, GeomGraph, GeomEdge, Point} from 'msagl-js'
+import {
+  interpolateICurve,
+  GeomNode,
+  GeomGraph,
+  GeomEdge,
+  Point,
+} from 'msagl-js/dist/src'
 
 import NodeLayer from './layers/node-layer'
 import EdgeLayer from './layers/edge-layer'
-import {DrawingNode, DrawingEdge} from 'msagl-js/drawing'
+import {DrawingNode} from 'msagl-js/dist/src/drawing'
 
 export default class Renderer {
   deck: any
