@@ -28,7 +28,8 @@ layoutGraphWithSugiayma(g)
 ```
 
 The generated layout should look like this:
-![Alt text](./docs/images/showAPI.svg)
+![Alt text](./docs/images/showAPI.svg#gh-light-mode-only)
+![Alt text](./docs/images/showAPI_dark.svg#gh-dark-mode-only)
 
 That is the function that prepares a GeometryNode for layout.
 
