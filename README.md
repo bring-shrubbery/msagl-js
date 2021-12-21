@@ -72,6 +72,7 @@ layoutGraphWithMDS(g)
 ```
 
 then the layout should look like this
-![Alt text](./docs/images/mdsShowAPI.svg)
+![Alt text](./docs/images/mdsShowAPI.svg#gh-light-mode-only)
+![Alt text](./docs/images/mdsShowAPI_dark.svg#gh-dark-mode-only)
 
 ![Test Status](https://github.com/msaglJS/msagl-js/workflows/Test%20Status/badge.svg?branch=master)
